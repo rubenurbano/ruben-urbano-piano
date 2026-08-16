@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cómo escribir melodías en el piano — Rubén Sbarsky</title>
+<meta name="description" content="La guía definitiva para componer melodías sobre una progresión de acordes, por Rubén Sbarsky.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#120f0d;
+    --panel:#1a1512;
+    --panel-2:#221b17;
+    --text:#efe7d8;
+    --text-muted:#a99a85;
+    --text-faint:#7a6d5d;
+    --gold:#c9a227;
+    --gold-soft:rgba(201,162,39,.14);
+    --wine:#a13a4c;
+    --wine-soft:rgba(161,58,76,.14);
+    --teal:#4fa198;
+    --teal-soft:rgba(79,161,152,.14);
+    --plum:#8a68ad;
+    --rust:#c66a35;
+    --line:rgba(201,162,39,.22);
+    --line-strong:rgba(201,162,39,.4);
+    --shadow:0 20px 50px -20px rgba(0,0,0,.6);
+    --radius:14px;
+    --sidebar-w:300px;
+    --font-display:'Fraunces', Georgia, serif;
+    --font-body:'Inter', -apple-system, sans-serif;
+    --font-mono:'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:inherit;}
+  ::selection{background:var(--gold); color:#1a1310;}
+
+  /* subtle grain / vignette on background */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 1200px 700px at 15% -10%, rgba(201,162,39,.08), transparent 60%),
+      radial-gradient(ellipse 900px 600px at 110% 20%, rgba(161,58,76,.08), transparent 55%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* ---------- Progress bar ---------- */
+  #progress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg, var(--wine), var(--gold));
+    z-index:100;
+    transition:width .12s linear;
+  }
+
+  /* ---------- Sidebar nav ---------- */
+  .sidebar{
+    position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w);
+    background:var(--panel);
+    border-right:1px solid var(--line);
+    padding:28px 0 20px;
+    overflow-y:auto;
+    z-index:60;
+    display:flex; flex-direction:column;
+  }
+  .sidebar::-webkit-scrollbar{width:6px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--line-strong); border-radius:4px;}
+
+  .brand{
+    padding:0 26px 22px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:14px;
+  }
+  .brand .eyebrow{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--gold); margin:0 0 8px;
+  }
+  .brand h1{
+    font-family:var(--font-display); font-size:22px; line-height:1.25; margin:0 0 6px;
+    color:var(--text); font-weight:600;
+  }
+  .brand .author{
+    font-family:var(--font-mono); font-size:12px; color:var(--text-muted); letter-spacing:.03em;
+  }
+
+  nav.toc{ padding:6px 14px; flex:1; }
+  nav.toc ul{ list-style:none; margin:0; padding:0; }
+
+  /* Each nav item styled as a piano key: tall, rounded bottom, presses down when active */
+  nav.toc li{ margin-bottom:4px; }
+  nav.toc a{
+    position:relative;
+    display:flex; align-items:baseline; gap:10px;
+    text-decoration:none;
+    padding:9px 14px 9px 16px;
+    border-radius:0 0 8px 8px;
+    color:var(--text-muted);
+    font-size:13.5px;
+    border-left:3px solid transparent;
+    transition:background .18s ease, color .18s ease, border-color .18s ease, transform .12s ease;
+  }
+  nav.toc a .num{
+    font-family:var(--font-mono); font-size:11px; color:var(--text-faint);
+    min-width:16px;
+  }
+  nav.toc a:hover{ background:var(--panel-2); color:var(--text); }
+  nav.toc a.active{
+    background:linear-gradient(180deg, var(--gold-soft), transparent);
+    border-left-color:var(--gold);
+    color:var(--gold);
+    transform:translateY(1px);
+    box-shadow: inset 0 -2px 6px rgba(0,0,0,.35);
+  }
+  nav.toc a.active .num{ color:var(--gold); }
+
+  .sidebar-foot{
+    padding:16px 26px 0; margin-top:14px; border-top:1px solid var(--line);
+    font-family:var(--font-mono); font-size:11px; color:var(--text-faint); letter-spacing:.03em;
+  }
+
+  /* mobile nav toggle */
+  #navToggle{
+    display:none;
+    position:fixed; top:14px; right:14px; z-index:120;
+    width:44px; height:44px; border-radius:10px;
+    background:var(--panel); border:1px solid var(--line-strong);
+    color:var(--gold); font-size:20px;
+    align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+
+  /* ---------- Main content ---------- */
+  main{
+    margin-left:var(--sidebar-w);
+    position:relative; z-index:1;
+    max-width:880px;
+    padding:0 56px 120px;
+  }
+
+  section{ scroll-margin-top:32px; }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding-top:40px;
+  }
+  .hero .eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:22px; display:flex; align-items:center; gap:12px;
+  }
+  .hero .eyebrow::before{ content:""; width:34px; height:1px; background:var(--gold); display:inline-block; }
+  .hero h1{
+    font-family:var(--font-display); font-weight:700; font-size:clamp(40px,6vw,72px);
+    line-height:1.04; margin:0 0 22px; color:var(--text);
+  }
+  .hero h1 em{ font-style:italic; color:var(--gold); font-weight:600; }
+  .hero .lede{
+    font-size:19px; color:var(--text-muted); max-width:560px; line-height:1.65; margin:0 0 40px;
+  }
+  .hero .byline{
+    font-family:var(--font-mono); font-size:13px; color:var(--text-faint);
+  }
+  .hero .byline strong{ color:var(--gold); font-weight:600; }
+
+  .hero-keyboard{ margin-top:52px; opacity:.92; }
+
+  /* ---------- Typography for content ---------- */
+  .kicker{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--gold); margin:0 0 10px;
+  }
+  h2.step-title{
+    font-family:var(--font-display); font-weight:700; font-size:clamp(28px,4vw,40px);
+    color:var(--text); margin:0 0 26px; padding-top:70px; line-height:1.15;
+    border-top:1px solid var(--line); padding-top:56px;
+  }
+  section:first-of-type h2.step-title{ border-top:none; }
+  h3{
+    font-family:var(--font-display); font-weight:600; font-size:23px;
+    color:var(--gold); margin:40px 0 12px;
+  }
+  h4{
+    font-family:var(--font-body); font-weight:700; font-size:15px;
+    color:var(--text); margin:26px 0 8px; text-transform:none;
+  }
+  p{ color:var(--text); margin:0 0 18px; max-width:70ch; }
+  p.muted{ color:var(--text-muted); }
+  strong{ color:var(--text); font-weight:600; }
+  em.term{ color:var(--gold); font-style:normal; font-weight:600; }
+
+  ul.list, ol.list{ margin:0 0 20px; padding-left:0; list-style:none; max-width:70ch; }
+  ul.list li, ol.list li{
+    position:relative; padding-left:26px; margin-bottom:11px; color:var(--text);
+  }
+  ul.list li::before{
+    content:"♪"; position:absolute; left:0; top:0; color:var(--gold); font-size:14px;
+  }
+  ol.list{ counter-reset:step; }
+  ol.list li{ counter-increment:step; }
+  ol.list li::before{
+    content:counter(step); position:absolute; left:0; top:-1px;
+    width:18px; height:18px; border-radius:50%; background:var(--wine-soft); color:var(--wine);
+    font-family:var(--font-mono); font-size:11px; font-weight:600;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---------- Callout boxes ---------- */
+  .box{
+    border:1px solid var(--line); border-left:3px solid var(--gold);
+    background:var(--panel); border-radius:10px;
+    padding:20px 24px; margin:28px 0; box-shadow:var(--shadow);
+  }
+  .box .box-label{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--gold); margin:0 0 8px; display:flex; align-items:center; gap:8px;
+  }
+  .box p{ margin:0; color:var(--text-muted); font-style:italic; }
+  .box.quote{ border-left-color:var(--wine); }
+  .box.quote .box-label{ color:var(--wine); }
+  .box.exercise{ border-left-color:var(--teal); }
+  .box.exercise .box-label{ color:var(--teal); }
+
+  blockquote{
+    margin:32px 0; padding:6px 0 6px 26px; border-left:2px solid var(--gold);
+    font-family:var(--font-display); font-style:italic; font-size:20px; color:var(--text);
+    line-height:1.5;
+  }
+  blockquote cite{
+    display:block; margin-top:10px; font-family:var(--font-mono); font-style:normal;
+    font-size:12px; color:var(--gold); letter-spacing:.05em;
+  }
+
+  /* ---------- Tables ---------- */
+  .table-wrap{ overflow-x:auto; margin:24px 0 30px; border-radius:10px; border:1px solid var(--line); }
+  table{ width:100%; border-collapse:collapse; min-width:520px; }
+  thead th{
+    background:var(--wine); color:#f6e9ea; text-align:left; font-family:var(--font-body);
+    font-size:12.5px; font-weight:600; letter-spacing:.03em; padding:12px 16px;
+  }
+  tbody td{
+    padding:12px 16px; border-top:1px solid var(--line); font-size:14.5px; color:var(--text);
+    background:var(--panel);
+  }
+  tbody tr:nth-child(even) td{ background:var(--panel-2); }
+  tbody td:first-child{ color:var(--gold); font-weight:600; font-family:var(--font-mono); font-size:13px; white-space:nowrap; }
+
+  /* ---------- Keyboard diagrams ---------- */
+  .keyboard-block{ margin:30px 0; }
+  .keyboard-svg{ width:100%; height:auto; display:block; }
+  .wkey{ filter:drop-shadow(0 3px 6px rgba(0,0,0,.35)); }
+  .key-label{ font-family:var(--font-mono); font-size:11px; font-weight:600; fill:#120f0d; }
+  .key-label-black{ fill:#f4ecdf; }
+  .keyboard-caption{
+    display:flex; justify-content:space-between; align-items:baseline; margin-top:10px;
+    font-family:var(--font-mono); font-size:12px; color:var(--text-faint);
+  }
+  .chord-grid{ display:grid; grid-template-columns:1fr 1fr; gap:22px; margin:26px 0 30px; }
+  @media (max-width:640px){ .chord-grid{ grid-template-columns:1fr; } }
+  .chord-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px 18px 14px;
+  }
+  .chord-card .chord-name{
+    font-family:var(--font-display); font-weight:600; font-size:18px; color:var(--text); margin:0 0 2px;
+  }
+  .chord-card .chord-inv{
+    font-family:var(--font-mono); font-size:11.5px; color:var(--text-faint); margin:0 0 12px;
+  }
+  .legend-row{ display:flex; gap:18px; flex-wrap:wrap; margin:18px 0 6px; font-size:13px; color:var(--text-muted); }
+  .legend-row span.dot{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+
+  /* ---------- Timeline / plan tables for step 7 ---------- */
+  .measure-card{
+    display:grid; grid-template-columns:64px 1fr; gap:18px; margin-bottom:20px;
+    padding-bottom:20px; border-bottom:1px solid var(--line);
+  }
+  .measure-card:last-child{ border-bottom:none; }
+  .measure-num{
+    font-family:var(--font-display); font-size:34px; font-weight:700; color:var(--gold); line-height:1;
+  }
+  .measure-chord{ font-family:var(--font-mono); font-size:11px; color:var(--text-faint); margin-top:6px; }
+  .measure-body h5{ margin:0 0 6px; font-size:15px; color:var(--text); font-family:var(--font-body); font-weight:700; }
+  .measure-body p{ margin:0; font-size:14.5px; color:var(--text-muted); }
+
+  /* ---------- Checklist ---------- */
+  .checklist{ margin:28px 0 10px; padding:0; list-style:none; max-width:70ch; }
+  .checklist li{
+    display:flex; align-items:flex-start; gap:14px; padding:14px 16px;
+    border:1px solid var(--line); border-radius:10px; margin-bottom:10px;
+    background:var(--panel); cursor:pointer; transition:background .15s ease, border-color .15s ease;
+  }
+  .checklist li:hover{ border-color:var(--line-strong); }
+  .checklist li.checked{ background:var(--teal-soft); border-color:var(--teal); }
+  .checklist .box-check{
+    flex:0 0 auto; width:20px; height:20px; border-radius:5px; border:2px solid var(--text-faint);
+    display:flex; align-items:center; justify-content:center; margin-top:1px;
+    font-size:13px; color:transparent; transition:all .15s ease;
+  }
+  .checklist li.checked .box-check{ background:var(--teal); border-color:var(--teal); color:#0d1a18; }
+  .checklist .check-text{ color:var(--text); font-size:15px; }
+  .checklist li.checked .check-text{ color:var(--text-muted); text-decoration:line-through; text-decoration-color:var(--text-faint); }
+
+  /* ---------- Footer ---------- */
+  footer.doc-footer{
+    margin-top:90px; padding-top:40px; border-top:1px solid var(--line);
+    text-align:center;
+  }
+  footer.doc-footer .mark{ font-family:var(--font-display); font-style:italic; font-size:20px; color:var(--gold); }
+  footer.doc-footer p{ margin:14px auto 0; color:var(--text-faint); font-size:13px; max-width:50ch; }
+
+  /* ---------- Back to top ---------- */
+  #toTop{
+    position:fixed; right:34px; bottom:34px; z-index:80;
+    width:46px; height:46px; border-radius:50%;
+    background:var(--panel); border:1px solid var(--line-strong); color:var(--gold);
+    display:flex; align-items:center; justify-content:center; font-size:18px;
+    opacity:0; pointer-events:none; transform:translateY(8px);
+    transition:opacity .2s ease, transform .2s ease;
+    cursor:pointer;
+  }
+  #toTop.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:980px){
+    .sidebar{
+      transform:translateX(-100%);
+      transition:transform .25s ease;
+      box-shadow:none;
+      width:280px;
+    }
+    .sidebar.open{ transform:translateX(0); box-shadow:20px 0 40px rgba(0,0,0,.4); }
+    main{ margin-left:0; padding:0 24px 100px; max-width:100%; }
+    #navToggle{ display:flex; }
+    .hero{ min-height:80vh; padding-top:80px; }
+  }
+  @media (max-width:520px){
+    main{ padding:0 18px 90px; }
+    h2.step-title{ padding-top:44px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<button id="navToggle" aria-label="Abrir índice">☰</button>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    <p class="eyebrow">La biblia del compositor</p>
+    <h1>Cómo escribir melodías en el piano</h1>
+    <p class="author">por Rubén Sbarsky</p>
+  </div>
+  <nav class="toc" aria-label="Índice del documento">
+    <ul>
+      <li><a href="#inicio" class="navlink"><span class="num">＊</span>Inicio</a></li>
+      <li><a href="#introduccion" class="navlink"><span class="num">—</span>Introducción</a></li>
+      <li><a href="#paso1" class="navlink"><span class="num">01</span>Fundación armónica</a></li>
+      <li><a href="#paso2" class="navlink"><span class="num">02</span>Chord tones</a></li>
+      <li><a href="#paso3" class="navlink"><span class="num">03</span>Paleta de colores</a></li>
+      <li><a href="#paso4" class="navlink"><span class="num">04</span>Notas extrañas</a></li>
+      <li><a href="#paso5" class="navlink"><span class="num">05</span>Arquitectura melódica</a></li>
+      <li><a href="#paso6" class="navlink"><span class="num">06</span>Arreglo pianístico</a></li>
+      <li><a href="#paso7" class="navlink"><span class="num">07</span>Ejercicio guiado</a></li>
+      <li><a href="#checklist" class="navlink"><span class="num">✓</span>Checklist final</a></li>
+    </ul>
+  </nav>
+  <div class="sidebar-foot">Guía interactiva · lectura ~28 min</div>
+</aside>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section id="inicio" class="hero">
+    <p class="eyebrow">Tratado de composición · piano</p>
+    <h1>Cómo escribir<br><em>melodías</em> que se recuerdan</h1>
+    <p class="lede">Un método paso a paso para transformar cualquier progresión de acordes en una línea melódica que respire, cante y resuelva — de la primera ancla armónica al último suspiro de la frase.</p>
+    <p class="byline">por <strong>Rubén Sbarsky</strong> — La Guía Definitiva</p>
+
+    <div class="hero-keyboard">
+      <div class="keyboard-block" id="kbHero"></div>
+      <div class="keyboard-caption"><span>C3</span><span>La nota que define el modo — su tercera — resaltada en oro.</span><span>C5</span></div>
+    </div>
+  </section>
+
+  <!-- ================= INTRODUCCIÓN ================= -->
+  <section id="introduccion">
+    <p class="kicker">Introducción</p>
+    <h2 class="step-title">La dualidad de la melodía y la armonía</h2>
+
+    <p>En la arquitectura de una composición, la armonía y la melodía sostienen una relación de interdependencia absoluta. Si los acordes representan el <em class="term">maniquí</em> — la estructura estática que provee soporte y forma —, la melodía es el <em class="term">vestuario</em>: el elemento que otorga identidad, carácter y movimiento. El propósito de este tratado no es simplemente enseñarle a elegir notas, sino guiarle en la transformación de una progresión armónica inerte en una narrativa musical que respire y trascienda.</p>
+
+    <p>La genialidad de una melodía memorable reside en la sutil geometría entre la simplicidad predictiva y la sorpresa estética. El cerebro humano encuentra placer en el reconocimiento de patrones, pero solo se mantiene cautivado ante el giro inesperado, la tensión que se estira y el alivio de la resolución.</p>
+
+    <h3>Por qué este documento es una biblia, no un manual</h3>
+    <p>Un manual le da reglas sueltas. Una biblia le da un sistema: una secuencia de pasos que se construyen uno sobre otro, de modo que al llegar al final usted posea un método completo y repetible para escribir melodías sobre cualquier progresión de acordes.</p>
+
+    <ol class="list">
+      <li>Construir el esqueleto armónico sobre el que cantará la melodía.</li>
+      <li>Aprender a moverse con seguridad usando las notas del acorde.</li>
+      <li>Explorar la paleta emocional completa de la escala.</li>
+      <li>Añadir color y tensión con notas ajenas al acorde.</li>
+      <li>Dar forma y arquitectura a la frase melódica.</li>
+      <li>Vestir la melodía con técnicas de arreglo pianístico.</li>
+      <li>Aplicar todo en un ejercicio guiado, compás a compás.</li>
+    </ol>
+
+    <blockquote>
+      “No enseño a elegir notas al azar. Enseño a tomar decisiones — cada nota que usted escribe debe poder justificarse: es un ancla, es un color, es una tensión que resuelve.”
+      <cite>— Rubén Sbarsky</cite>
+    </blockquote>
+  </section>
+
+  <!-- ================= PASO 1 ================= -->
+  <section id="paso1">
+    <p class="kicker">Paso 01</p>
+    <h2 class="step-title">La fundación armónica: el esqueleto de la melodía</h2>
+
+    <p>Antes de buscar la complejidad, el compositor debe establecer un cuadrante de seguridad en el teclado. No se compone una melodía en el vacío: se compone sobre una progresión de acordes concreta, con voicings concretos, en una posición concreta de la mano. Ese es su territorio de trabajo.</p>
+
+    <h3>1.1 La progresión maestra</h3>
+    <p>Utilizaremos una progresión de gran eficacia emocional, presente en cientos de canciones populares: <strong>vi – IV – I – V</strong>. En la tonalidad de Do Mayor:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Grado</th><th>Acorde</th><th>Función</th></tr></thead>
+        <tbody>
+          <tr><td>vi</td><td>La menor</td><td>Relativo menor — introduce introspección</td></tr>
+          <tr><td>IV</td><td>Fa mayor</td><td>Subdominante — abre el horizonte, se aleja de casa</td></tr>
+          <tr><td>I</td><td>Do mayor</td><td>Tónica — el hogar, la estabilidad</td></tr>
+          <tr><td>V</td><td>Sol mayor</td><td>Dominante — la tensión que pide volver a I</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>1.2 Inversiones: la economía de movimiento</h3>
+    <p>Como Maestro, le instruyo a utilizar estas inversiones específicas para garantizar una conducción de voces elegante. La idea es simple: entre un acorde y el siguiente, la mano debe moverse lo mínimo posible.</p>
+
+    <div class="legend-row">
+      <span><span class="dot" style="background:var(--gold)"></span>Fundamental (1ª)</span>
+      <span><span class="dot" style="background:var(--wine)"></span>Tercera (3ª)</span>
+      <span><span class="dot" style="background:var(--teal)"></span>Quinta (5ª)</span>
+    </div>
+
+    <div class="chord-grid">
+      <div class="chord-card">
+        <p class="chord-name">La menor — vi</p>
+        <p class="chord-inv">2ª inversión · Mi–La–Do</p>
+        <div class="keyboard-block" id="kbAm"></div>
+      </div>
+      <div class="chord-card">
+        <p class="chord-name">Fa mayor — IV</p>
+        <p class="chord-inv">Posición fundamental · Fa–La–Do</p>
+        <div class="keyboard-block" id="kbF"></div>
+      </div>
+      <div class="chord-card">
+        <p class="chord-name">Do mayor — I</p>
+        <p class="chord-inv">1ª inversión · Mi–Sol–Do</p>
+        <div class="keyboard-block" id="kbC"></div>
+      </div>
+      <div class="chord-card">
+        <p class="chord-name">Sol mayor — V</p>
+        <p class="chord-inv">2ª inversión · Re–Sol–Si</p>
+        <div class="keyboard-block" id="kbG"></div>
+      </div>
+    </div>
+
+    <div class="box exercise">
+      <p class="box-label">◆ Ejercicio previo obligatorio</p>
+      <p>Antes de tocar una sola nota de melodía, toque esta progresión diez veces seguidas con la mano izquierda, lentamente, sintiendo cómo cada acorde comparte al menos una nota con el siguiente. Este es su terreno. Todo lo que viene después se construye sobre él.</p>
+    </div>
+
+    <h3>1.3 Por qué empezar aquí y no por la melodía</h3>
+    <p>Muchos principiantes intentan "inventar una melodía bonita" primero y buscarle acordes después. Esto invierte el proceso natural de la composición tonal. Al construir primero el esqueleto armónico, usted sabe en todo momento qué notas son estables y cuáles son de paso — y esa certeza es exactamente lo que le permitirá, más adelante, romper las reglas con intención en vez de por accidente.</p>
+  </section>
+
+  <!-- ================= PASO 2 ================= -->
+  <section id="paso2">
+    <p class="kicker">Paso 02</p>
+    <h2 class="step-title">Chord tones: las anclas de seguridad</h2>
+
+    <p>Para dar vida a sus primeras ideas, utilizaremos los <em class="term">Chord Tones</em> (Notas del Acorde) — nuestras anclas de seguridad. Toda melodía sólida, por muy sofisticada que después se vuelva, empieza aquí.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Grado</th><th>Nombre</th><th>Función expresiva</th></tr></thead>
+        <tbody>
+          <tr><td>1º</td><td>La Fundamental</td><td>El pilar de máxima estabilidad. Suena a "llegada".</td></tr>
+          <tr><td>3º</td><td>La Tercera</td><td>El corazón emotivo que define el modo (mayor/menor).</td></tr>
+          <tr><td>5º</td><td>La Quinta</td><td>Refuerzo sonoro que expande el brillo sin generar conflicto.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.1 El ejercicio del desarrollo rítmico</h3>
+    <p>No se limite a tocar una nota larga. Avance en tres etapas, sin saltarse ninguna:</p>
+
+    <ol class="list">
+      <li><strong>Una nota por compás</strong> — elija, para cada acorde, una única nota del acorde y sosténgala durante todo el compás. Esto le obliga a pensar en la melodía como una línea de decisiones, no como relleno.</li>
+      <li><strong>Dos notas por compás</strong> — divida el compás en dos mitades. Comience eligiendo la nota más próxima entre cambios de acorde: esto se llama <em class="term">Voice Leading</em> (conducción de voces), el principio más importante de esta sección.</li>
+      <li><strong>Ocho corcheas por compás</strong> — llene el compás usando solo notas del acorde, repitiéndolas o alternándolas libremente. Este flujo constante le permite sentir la rítmica interna antes de añadir colores externos.</li>
+    </ol>
+
+    <div class="box">
+      <p class="box-label">◆ Tip del Maestro</p>
+      <p>Grábese tocando cada etapa. Escúchela sin mirar el teclado. La etapa 1 debe sonar solemne; la etapa 3 debe sonar viva y en movimiento. Si ambas suenan iguales, está usando el ritmo de forma mecánica, no expresiva.</p>
+    </div>
+  </section>
+
+  <!-- ================= PASO 3 ================= -->
+  <section id="paso3">
+    <p class="kicker">Paso 03</p>
+    <h2 class="step-title">La paleta de colores: escala y grado de tensión</h2>
+
+    <p>Los principios melódicos son universales, independientemente de la tonalidad. Transicionamos a <strong>Re Mayor</strong> para explorar las cualidades ascendentes y luminosas de la escala. Cada grado funciona como un pigmento con un peso emocional distinto.</p>
+
+    <div class="keyboard-block" id="kbScale"></div>
+    <div class="keyboard-caption"><span>D4</span><span>Escala de Re Mayor — grados coloreados por función</span><span>D5</span></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Grado</th><th>Función</th><th>Impacto emocional</th><th>Tip del Maestro</th></tr></thead>
+        <tbody>
+          <tr><td>Tónica (1º)</td><td>Home Base</td><td>Estabilidad total; resolución.</td><td>Úsela para iniciar o dar descanso final.</td></tr>
+          <tr><td>Tercera (3º)</td><td>Elevación</td><td>Esperanza y claridad.</td><td>Ideal para momentos de "despegue" lírico.</td></tr>
+          <tr><td>Quinta (5º)</td><td>Apertura</td><td>Brillantez y amplitud.</td><td>Genera una sensación de cielo abierto.</td></tr>
+          <tr><td>Sexta (6º)</td><td>Misterio</td><td>Tensión sutil; "crunch".</td><td>Añade una sombra introspectiva.</td></tr>
+          <tr><td>Séptima (7º)</td><td>Atracción</td><td>Tensión máxima; imán tonal.</td><td>Obligatorio: resuelva de inmediato a la tónica.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.1 Cómo practicar la paleta</h3>
+    <p>Toque cada grado por separado y, antes de pasar al siguiente, pregúntese en voz alta: "¿qué emoción me produce esta nota si la sostengo?". Este ejercicio de escucha activa entrena su oído para reconocer el peso emocional de cada grado sin depender de la teoría escrita.</p>
+
+    <h3>3.2 Los grados de mayor fricción</h3>
+    <p>Observe que la tabla no es simétrica: la mayoría de los grados abren o expanden, pero la séptima siempre atrae hacia la tónica. Esa asimetría genera movimiento direccional. Una línea melódica que solo usa tónica, tercera y quinta puede sonar bella pero estática; introducir la sexta y, sobre todo, la séptima, es lo que le da a la frase la sensación de "querer ir a algún lugar".</p>
+
+    <div class="box exercise">
+      <p class="box-label">◆ Ejercicio de color</p>
+      <p>Componga cuatro compases usando únicamente tónica y tercera. Luego, reescriba los mismos cuatro compases sustituyendo una nota por la sexta y otra por la séptima (resuelta a la tónica). Compare ambas versiones.</p>
+    </div>
+  </section>
+
+  <!-- ================= PASO 4 ================= -->
+  <section id="paso4">
+    <p class="kicker">Paso 04</p>
+    <h2 class="step-title">El kit de herramientas de notas extrañas</h2>
+
+    <p>Una melodía que solo utiliza notas del acorde es un dibujo sin sombras. Para evitar la monotonía, el compositor profesional emplea la disonancia controlada. Cuidado con la <strong>Bandera Roja</strong>: notas fuera de la escala son "no-nos" absolutos, pues destruyen la coherencia tonal. Manténgase dentro de estos cuatro pilares.</p>
+
+    <h3>4.1 Notas de paso <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-faint);">(Passing Tones)</span></h3>
+    <p>El puente que une dos notas del acorde por grado conjunto. Suaviza los saltos y da fluidez.</p>
+
+    <h3>4.2 Bordaduras <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-faint);">(Neighbor Tones)</span></h3>
+    <p>Salir de una nota del acorde a una adyacente y regresar. Es el ornamento de la elegancia.</p>
+
+    <h3>4.3 Apoyaturas <span style="font-family:var(--font-mono); font-size:13px; color:var(--text-faint);">(Appoggiaturas)</span></h3>
+    <p>El "suspiro" de la música. Es una nota tensa que cae en un tiempo fuerte, suele durar un pulso completo y debe resolver, preferentemente por semitono, hacia una nota del acorde.</p>
+
+    <h3>4.4 Suspensiones</h3>
+    <p>Una nota del acorde anterior que se rehúsa a marchar cuando el acorde cambia, creando un retraso delicioso que genera alivio al resolver.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Recurso</th><th>¿Dónde cae?</th><th>¿Cómo se mueve?</th><th>Efecto</th></tr></thead>
+        <tbody>
+          <tr><td>Nota de paso</td><td>Tiempo débil</td><td>Por grado conjunto entre dos notas del acorde</td><td>Fluidez, conexión</td></tr>
+          <tr><td>Bordadura</td><td>Tiempo débil</td><td>Sale y vuelve a la misma nota</td><td>Ornamento, elegancia</td></tr>
+          <tr><td>Apoyatura</td><td>Tiempo fuerte</td><td>Resuelve por semitono a una nota del acorde</td><td>Tensión emotiva, "suspiro"</td></tr>
+          <tr><td>Suspensión</td><td>Tiempo fuerte (del acorde anterior)</td><td>Retraso que resuelve descendiendo</td><td>Anticipación, alivio</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <p class="box-label">◆ Regla de oro del Paso 4</p>
+      <p>Cada nota extraña que usted añade debe poder explicarse con una sola palabra: paso, bordadura, apoyatura o suspensión. Si no puede nombrar qué es una nota, probablemente no debería estar ahí todavía.</p>
+    </div>
+  </section>
+
+  <!-- ================= PASO 5 ================= -->
+  <section id="paso5">
+    <p class="kicker">Paso 05</p>
+    <h2 class="step-title">Arquitectura melódica: motivos, repetición y contraste</h2>
+
+    <p>La retención del oyente depende de la estructura. El <em class="term">Motivo Melódico</em> es su unidad mínima de sentido: una frase corta y potente. La regla de oro: <strong>repetir para dar identidad, variar para mantener el interés.</strong></p>
+
+    <h3>5.1 Repetición vs. variación</h3>
+    <ul class="list">
+      <li><strong>Repetición exacta</strong> — reafirma el motivo, crea familiaridad inmediata.</li>
+      <li><strong>Repetición secuencial</strong> — el mismo contorno melódico, trasladado a otro grado.</li>
+      <li><strong>Variación rítmica</strong> — mismo contorno de alturas, ritmo distinto.</li>
+      <li><strong>Variación melódica</strong> — mismo ritmo, alturas distintas.</li>
+      <li><strong>Inversión</strong> — el motivo "al revés" en dirección.</li>
+    </ul>
+
+    <h3>5.2 Contraste rítmico</h3>
+    <p>Use notas largas para enfatizar conceptos y notas cortas (corcheas) para generar urgencia. El silencio es su mejor herramienta de puntuación; deje que la melodía respire.</p>
+
+    <h3>5.3 Pregunta y respuesta</h3>
+    <p>Establezca una estructura de <em class="term">antecedente–consecuente</em>: una frase que termine en tensión (la séptima, por ejemplo) y una frase que entregue la solución (la tónica). Es probablemente la herramienta estructural más eficaz de toda la composición melódica.</p>
+
+    <blockquote style="font-size:16px;">
+      Antecedente (compases 1–2): la melodía se mueve y termina abierta, sobre una nota de tensión.<br>
+      Consecuente (compases 3–4): la melodía retoma el motivo inicial pero cierra sobre la tónica.
+    </blockquote>
+
+    <div class="box exercise">
+      <p class="box-label">◆ Ejercicio de arquitectura</p>
+      <p>Escriba un motivo de dos compases. Repítalo de forma secuencial un grado más arriba. Luego escriba un consecuente de dos compases que use el mismo ritmo pero resuelva en la tónica. Ya tiene una frase completa con identidad propia.</p>
+    </div>
+  </section>
+
+  <!-- ================= PASO 6 ================= -->
+  <section id="paso6">
+    <p class="kicker">Paso 06</p>
+    <h2 class="step-title">Técnicas de arreglo en el piano</h2>
+
+    <p>El piano nos permite ser una orquesta en miniatura. La independencia entre manos es la clave de todo arreglo convincente.</p>
+
+    <h3>6.1 Mano derecha — la narrativa</h3>
+    <p>Explore el registro. Use octavas para añadir un dramatismo instantáneo en el clímax de su frase. Es la voz que cuenta la historia.</p>
+
+    <h3>6.2 Mano izquierda — el latido</h3>
+    <p>No sature. Utilice inversiones para un enlace suave y patrones de arpegios o pulsos constantes. Su trabajo es sostener, no protagonizar.</p>
+
+    <h3>6.3 Independencia y contorno: dos caminos válidos</h3>
+    <p>Una melodía maestra debe sostenerse <em class="term">a cappella</em>. Compare estos dos ejemplos clásicos:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Obra</th><th>Estrategia</th><th>Dónde reside la genialidad</th></tr></thead>
+        <tbody>
+          <tr><td>"Over the Rainbow"</td><td>Saltos de octava y pasajes escalares</td><td>El intervalo: memorable por su contorno de alturas</td></tr>
+          <tr><td>"One Note Samba"</td><td>Repetición de una altura con variación rítmica</td><td>El ritmo y el contraste con la armonía cambiante</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box">
+      <p class="box-label">◆ Prueba de independencia</p>
+      <p>Cante o toque su melodía completamente sola, sin acordes de acompañamiento. Si logra transmitir la emoción y la dirección de la frase, ha superado la prueba.</p>
+    </div>
+  </section>
+
+  <!-- ================= PASO 7 ================= -->
+  <section id="paso7">
+    <p class="kicker">Paso 07</p>
+    <h2 class="step-title">Ejercicio guiado: componga su primera melodía completa</h2>
+
+    <p>Integramos los seis pasos anteriores en una sola pieza: ocho compases sobre vi–IV–I–V, repetida dos veces, en Do Mayor.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Compases</th><th>Acorde</th><th>Rol estructural</th></tr></thead>
+        <tbody>
+          <tr><td>1–2</td><td>vi – IV</td><td>Antecedente (pregunta)</td></tr>
+          <tr><td>3–4</td><td>I – V</td><td>Antecedente termina en tensión (7º sobre V)</td></tr>
+          <tr><td>5–6</td><td>vi – IV</td><td>Consecuente — variación del motivo</td></tr>
+          <tr><td>7–8</td><td>I – V → I</td><td>Resolución final en la tónica</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Compás a compás</h3>
+
+    <div class="measure-card">
+      <div><div class="measure-num">1</div><div class="measure-chord">La menor</div></div>
+      <div class="measure-body"><h5>Apertura con bordadura</h5><p>Comience en Mi (la quinta del acorde), suba por grado conjunto a Fa como bordadura y regrese a Mi. Un gesto introspectivo, coherente con el carácter menor.</p></div>
+    </div>
+    <div class="measure-card">
+      <div><div class="measure-num">2</div><div class="measure-chord">Fa mayor</div></div>
+      <div class="measure-body"><h5>Nota de paso hacia el nuevo centro</h5><p>La melodía asciende de Mi a Fa por grado conjunto, conectando con el nuevo acorde. Termine en La (la tercera), abriendo el sonido.</p></div>
+    </div>
+    <div class="measure-card">
+      <div><div class="measure-num">3</div><div class="measure-chord">Do mayor</div></div>
+      <div class="measure-body"><h5>La frase respira</h5><p>Descienda de La a Sol como nota de paso, y luego a Mi, reafirmando la tónica. Incluya una breve corchea de silencio antes del siguiente gesto.</p></div>
+    </div>
+    <div class="measure-card">
+      <div><div class="measure-num">4</div><div class="measure-chord">Sol mayor — fin del antecedente</div></div>
+      <div class="measure-body"><h5>Apoyatura y pregunta abierta</h5><p>Suba a Fa# como apoyatura y resuelva a Sol. Termine sostenido sobre Si — la sensación de "pregunta abierta" que necesita el antecedente.</p></div>
+    </div>
+    <div class="measure-card">
+      <div><div class="measure-num">5</div><div class="measure-chord">La menor — inicia el consecuente</div></div>
+      <div class="measure-body"><h5>Retoma el motivo</h5><p>Repita Mi–Fa–Mi casi literalmente, para que el oyente reconozca el mismo material. Esta repetición ancla la estructura de pregunta-respuesta.</p></div>
+    </div>
+    <div class="measure-card">
+      <div><div class="measure-num">6</div><div class="measure-chord">Fa mayor</div></div>
+      <div class="measure-body"><h5>Repetición secuencial</h5><p>Mismo contorno que el compás 2, iniciado un grado más arriba, terminando en Do en vez de La. Mantiene el interés sin perder la identidad.</p></div>
+    </div>
+    <div class="measure-card">
+      <div><div class="measure-num">7</div><div class="measure-chord">Do mayor</div></div>
+      <div class="measure-body"><h5>Suspensión preparatoria</h5><p>Mantenga la nota Do durante el primer tiempo del nuevo acorde antes de descenderla a Si — prepara la resolución final.</p></div>
+    </div>
+    <div class="measure-card">
+      <div><div class="measure-num">8</div><div class="measure-chord">Sol mayor → Do mayor</div></div>
+      <div class="measure-body"><h5>Resolución final</h5><p>Ascienda con Do–Re–Mi hacia la tensión máxima (Fa#, séptima) y resuélvala de inmediato descendiendo a Sol y cerrando en Do. La melodía llega a casa.</p></div>
+    </div>
+
+    <div class="box">
+      <p class="box-label">◆ Nota del Maestro</p>
+      <p>No copie estas ocho compases como fórmula fija. Este recorrido es un mapa de decisiones — no una melodía que deba memorizar. Repita el ejercicio cambiando las notas exactas pero conservando la lógica: antecedente que abre en tensión, consecuente que cierra en resolución.</p>
+    </div>
+
+    <h3>Cómo practicar este ejercicio a diario</h3>
+    <ol class="list">
+      <li>Día 1–2: toque solo la progresión armónica hasta que la mano izquierda no necesite mirar el teclado.</li>
+      <li>Día 3–4: añada la melodía usando solo chord tones, en las tres densidades rítmicas.</li>
+      <li>Día 5: incorpore una nota de paso y una bordadura por frase.</li>
+      <li>Día 6: incorpore una apoyatura y una suspensión.</li>
+      <li>Día 7: revise la arquitectura completa con la estructura de pregunta y respuesta, y aplique el checklist final.</li>
+    </ol>
+  </section>
+
+  <!-- ================= CHECKLIST ================= -->
+  <section id="checklist">
+    <p class="kicker">Cierre</p>
+    <h2 class="step-title">Checklist del compositor</h2>
+    <p>Escribir melodías es un equilibrio entre el rigor de la teoría y la intuición del oído. Una vez que su boceto esté listo, sométalo a este escrutinio. Toque cada línea para marcarla.</p>
+
+    <ul class="checklist" id="checklist">
+      <li><span class="box-check">✓</span><span class="check-text">Identidad: ¿Existe un motivo claro y reconocible?</span></li>
+      <li><span class="box-check">✓</span><span class="check-text">Conectividad: ¿He usado notas de paso para evitar saltos gratuitos?</span></li>
+      <li><span class="box-check">✓</span><span class="check-text">Voz guía: ¿La melodía fluye hacia la nota más cercana en los cambios de acorde?</span></li>
+      <li><span class="box-check">✓</span><span class="check-text">Emoción: ¿Hay apoyaturas o suspensiones que generen ese "suspiro" necesario?</span></li>
+      <li><span class="box-check">✓</span><span class="check-text">Contraste: ¿Hay equilibrio entre notas largas, corcheas y silencios?</span></li>
+      <li><span class="box-check">✓</span><span class="check-text">Resolución: ¿La melodía descansa finalmente en la tónica?</span></li>
+      <li><span class="box-check">✓</span><span class="check-text">Independencia: ¿Se sostiene a cappella, sin necesitar el acompañamiento?</span></li>
+      <li><span class="box-check">✓</span><span class="check-text">Arquitectura: ¿Existe relación de pregunta (antecedente) y respuesta (consecuente)?</span></li>
+      <li><span class="box-check">✓</span><span class="check-text">Coherencia tonal: ¿He evitado notas ajenas a la escala sin intención cromática?</span></li>
+      <li><span class="box-check">✓</span><span class="check-text">Rol de manos: ¿La izquierda sostiene sin competir con la narrativa de la derecha?</span></li>
+    </ul>
+
+    <blockquote>
+      “Toda melodía memorable es, en el fondo, una serie de decisiones valientes tomadas sobre un esqueleto sólido. Usted ya tiene el esqueleto. Ahora, adelante.”
+      <cite>— Rubén Sbarsky</cite>
+    </blockquote>
+
+    <footer class="doc-footer">
+      <p class="mark">♪</p>
+      <p>Cómo escribir melodías en el piano — La Guía Definitiva, por Rubén Sbarsky.<br>Regrese a su instrumento. La teoría ha terminado; la creación comienza.</p>
+    </footer>
+  </section>
+
+</main>
+
+<div id="toTop" aria-label="Volver arriba" role="button">↑</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- Piano keyboard renderer ---------------- */
+  const LETTERS = ['C','D','E','F','G','A','B'];
+  function hasBlackAfter(letter){ return letter !== 'E' && letter !== 'B'; }
+
+  function buildWhiteKeys(startLetter, startOctave, count){
+    const notes = [];
+    let idx = LETTERS.indexOf(startLetter);
+    let octave = startOctave;
+    for(let i=0;i<count;i++){
+      const letter = LETTERS[idx % 7];
+      notes.push({letter, octave});
+      idx++;
+      if(idx % 7 === 0) octave++;
+    }
+    return notes;
+  }
+
+  // highlights: array of [noteName, color, label]
+  function drawKeyboard(containerId, startLetter, startOctave, whiteCount, highlights, opts){
+    opts = opts || {};
+    const el = document.getElementById(containerId);
+    if(!el) return;
+    const WKW = opts.keyWidth || 56;
+    const WKH = opts.keyHeight || 150;
+    const BKW = WKW * 0.56;
+    const BKH = WKH * 0.62;
+
+    const hMap = new Map(highlights.map(h => [h[0], h]));
+    const notes = buildWhiteKeys(startLetter, startOctave, whiteCount);
+
+    let whiteRects = '', blackRects = '', labels = '';
+
+    notes.forEach((n, i) => {
+      const key = n.letter + n.octave;
+      const h = hMap.get(key);
+      const x = i * WKW;
+      const fill = h ? h[1] : 'url(#wkg)';
+      whiteRects += `<rect x="${x}" y="0" width="${WKW-2}" height="${WKH}" rx="6" class="wkey" fill="${fill}" stroke="rgba(0,0,0,.5)" stroke-width="1"/>`;
+      if(h){
+        labels += `<text x="${x+(WKW-2)/2}" y="${WKH-14}" class="key-label" text-anchor="middle">${h[2]}</text>`;
+      }
+    });
+
+    notes.forEach((n, i) => {
+      if(i === notes.length - 1) return;
+      if(hasBlackAfter(n.letter)){
+        const key = n.letter + '#' + n.octave;
+        const h = hMap.get(key);
+        const x = (i+1) * WKW - BKW/2;
+        const fill = h ? h[1] : '#0c0a09';
+        blackRects += `<rect x="${x}" y="0" width="${BKW}" height="${BKH}" rx="4" class="bkey" fill="${fill}" stroke="#000" stroke-width="1"/>`;
+        if(h){
+          labels += `<text x="${x+BKW/2}" y="${BKH-10}" class="key-label key-label-black" text-anchor="middle">${h[2]}</text>`;
+        }
+      }
+    });
+
+    const totalW = whiteCount * WKW;
+    el.innerHTML = `<svg viewBox="0 0 ${totalW} ${WKH}" class="keyboard-svg" role="img" aria-label="Diagrama de teclado">
+      <defs><linearGradient id="wkg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#efe7d8"/><stop offset="100%" stop-color="#cbbfa6"/>
+      </linearGradient></defs>
+      <g>${whiteRects}</g><g>${blackRects}</g><g>${labels}</g>
+    </svg>`;
+  }
+
+  const GOLD = '#c9a227', WINE = '#a13a4c', TEAL = '#4fa198', PLUM = '#8a68ad', RUST = '#c66a35';
+
+  // Hero: 2-octave decorative keyboard, highlight the "3rd" of C major (E) across octaves
+  drawKeyboard('kbHero', 'C', 3, 15, [
+    ['E3', GOLD, '3ª'], ['E4', GOLD, '3ª']
+  ], { keyWidth: 48, keyHeight: 130 });
+
+  // Paso 1 — chord voicings, all within C3–C4
+  drawKeyboard('kbAm', 'C', 3, 8, [
+    ['E3', TEAL, '5ª'], ['A3', GOLD, '1ª'], ['C4', WINE, '3ª']
+  ]);
+  drawKeyboard('kbF', 'C', 3, 8, [
+    ['F3', GOLD, '1ª'], ['A3', WINE, '3ª'], ['C4', TEAL, '5ª']
+  ]);
+  drawKeyboard('kbC', 'C', 3, 8, [
+    ['E3', WINE, '3ª'], ['G3', TEAL, '5ª'], ['C4', GOLD, '1ª']
+  ]);
+  drawKeyboard('kbG', 'C', 3, 8, [
+    ['D3', TEAL, '5ª'], ['G3', GOLD, '1ª'], ['B3', WINE, '3ª']
+  ]);
+
+  // Paso 3 — scale degree legend in D major
+  drawKeyboard('kbScale', 'D', 4, 8, [
+    ['D4', GOLD, '1ª'], ['F#4', WINE, '3ª'], ['A4', TEAL, '5ª'], ['B4', PLUM, '6ª'], ['C#5', RUST, '7ª']
+  ], { keyWidth: 58 });
+
+  /* ---------------- Scroll progress bar ---------------- */
+  const progress = document.getElementById('progress');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrolled = h.scrollTop;
+    const max = h.scrollHeight - h.clientHeight;
+    progress.style.width = (max > 0 ? (scrolled/max)*100 : 0) + '%';
+  }
+  document.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
+
+  /* ---------------- Scrollspy ---------------- */
+  const navLinks = Array.from(document.querySelectorAll('.navlink'));
+  const sections = navLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const id = '#' + entry.target.id;
+      const link = navLinks.find(a => a.getAttribute('href') === id);
+      if(!link) return;
+      if(entry.isIntersecting){
+        navLinks.forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+  sections.forEach(s => io.observe(s));
+
+  /* ---------------- Mobile nav ---------------- */
+  const sidebar = document.getElementById('sidebar');
+  const navToggle = document.getElementById('navToggle');
+  navToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+  navLinks.forEach(a => a.addEventListener('click', () => sidebar.classList.remove('open')));
+  document.addEventListener('click', (e) => {
+    if(window.innerWidth <= 980 && sidebar.classList.contains('open')){
+      if(!sidebar.contains(e.target) && e.target !== navToggle){
+        sidebar.classList.remove('open');
+      }
+    }
+  });
+
+  /* ---------------- Back to top ---------------- */
+  const toTop = document.getElementById('toTop');
+  document.addEventListener('scroll', () => {
+    toTop.classList.toggle('show', window.scrollY > 700);
+  }, { passive:true });
+  toTop.addEventListener('click', () => window.scrollTo({ top:0, behavior:'smooth' }));
+
+  /* ---------------- Interactive checklist ---------------- */
+  document.querySelectorAll('.checklist li').forEach(li => {
+    li.addEventListener('click', () => li.classList.toggle('checked'));
+  });
+
+})();
+</script>
+
+</body>
+</html>
