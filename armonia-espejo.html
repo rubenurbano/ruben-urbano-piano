@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARMONÍA ESPEJO · Mirror Harmony y Acordes Espejo — Tutorial Interactivo</title>
+<style>
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --card2:#0c1322; --border:#1e3a5f; --border-soft:#16293f;
+  --cyan:#00d4ff; --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+  --text:#dbe7f3; --muted:#8aa2bd; --dim:#5c7691;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65; overflow-x:hidden;
+}
+body::before{
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(0,212,255,.06), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 100%, rgba(168,85,247,.05), transparent 60%);
+}
+/* ---------- Progress bar ---------- */
+#progressWrap{position:fixed;top:0;left:0;right:0;height:5px;background:#111c30;z-index:1000}
+#progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--purple));box-shadow:0 0 12px rgba(0,212,255,.7);transition:width .15s ease-out}
+/* ---------- Navbar (todas las pestañas visibles, con ajuste de línea) ---------- */
+header{
+  position:fixed;top:5px;left:0;right:0;z-index:900;
+  background:rgba(10,14,26,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border-soft);
+}
+.nav-inner{max-width:1200px;margin:0 auto;padding:8px 14px 10px}
+.nav-toprow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.brand{display:flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+.brand-ic{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#062c3d,#0f172a);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 0 14px rgba(0,212,255,.25)}
+.brand-tx b{display:block;font-size:.86rem;letter-spacing:.08em;color:var(--cyan)}
+.brand-tx span{font-size:.62rem;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+.nav-meta{display:flex;align-items:center;gap:10px}
+.sec-ind{font-size:.66rem;font-weight:800;letter-spacing:.1em;color:var(--muted);border:1px solid var(--border-soft);background:var(--card2);padding:5px 10px;border-radius:100px;white-space:nowrap}
+.sec-ind b{color:var(--cyan)}
+.nav-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.nav-tab{
+  background:transparent;border:1px solid var(--border-soft);color:var(--muted);
+  font-family:inherit;font-size:.75rem;font-weight:600;letter-spacing:.02em;
+  padding:6px 11px;border-radius:8px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px;
+}
+.nav-tab:hover{color:var(--text);border-color:var(--border);background:var(--card)}
+.nav-tab.active{color:#031320;background:linear-gradient(135deg,var(--cyan),#38e2ff);border-color:var(--cyan);box-shadow:0 0 16px rgba(0,212,255,.4)}
+.nav-tab .num{font-size:.58rem;opacity:.8;font-weight:800;background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px}
+.nav-tab.active .num{background:rgba(3,19,32,.18)}
+.nav-tab.credit-tab{border-color:rgba(168,85,247,.5);color:#d8b4fe}
+.nav-tab.credit-tab:hover{border-color:var(--purple);background:rgba(168,85,247,.1);color:#e9d5ff}
+.nav-tab.credit-tab.active{color:#1a0533;background:linear-gradient(135deg,var(--purple),#c084fc);border-color:var(--purple);box-shadow:0 0 16px rgba(168,85,247,.5)}
+/* ---------- Layout ---------- */
+main{max-width:1100px;margin:0 auto;padding:170px 16px 40px}
+.page{display:none;animation:fadeUp .45s ease}
+.page.visible{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+/* ---------- Hero ---------- */
+.hero-cover{width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:0 10px 50px rgba(0,0,0,.6),0 0 40px rgba(0,212,255,.08)}
+.hero-cover svg{width:100%;height:100%;display:block}
+.hero-body{margin-top:26px}
+.badge{
+  display:inline-flex;align-items:center;gap:7px;font-size:.68rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--cyan);border:1px solid var(--border);background:rgba(0,212,255,.07);padding:6px 14px;border-radius:100px;margin-bottom:16px;
+}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+h1{font-size:clamp(1.9rem,5.5vw,3.2rem);line-height:1.12;letter-spacing:-.02em}
+h1 .grad{background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{margin-top:8px;font-size:clamp(1rem,2.5vw,1.25rem);color:var(--muted);font-weight:600}
+.desc{margin-top:14px;color:var(--text);max-width:820px;font-size:.98rem}
+.quote-hero{
+  margin:22px 0;padding:18px 22px;border-left:4px solid var(--amber);border-radius:0 10px 10px 0;
+  background:linear-gradient(90deg,rgba(245,158,11,.1),transparent);font-style:italic;color:#fcd34d;font-size:1rem;
+}
+.quote-hero small{display:block;margin-top:6px;color:var(--muted);font-style:normal;font-size:.75rem;letter-spacing:.08em}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:22px}
+.metric{background:var(--card);border:1px solid var(--border-soft);border-radius:10px;padding:14px 16px;transition:.2s}
+.metric:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.metric b{display:block;font-size:1.5rem;color:var(--cyan);letter-spacing:-.02em}
+.metric span{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+/* ---------- Cards ---------- */
+.card{
+  background:var(--card);border:1px solid var(--border-soft);border-radius:12px;
+  margin-bottom:20px;overflow:hidden;transition:border-color .25s;
+}
+.card:hover{border-color:var(--border)}
+.card-head{
+  display:flex;align-items:center;gap:12px;padding:16px 20px;
+  background:linear-gradient(180deg,rgba(30,58,95,.28),transparent);border-bottom:1px solid var(--border-soft);
+}
+.card-ico{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;background:rgba(0,212,255,.1);border:1px solid var(--border)}
+.card-ico.g{background:rgba(34,197,94,.1)}.card-ico.a{background:rgba(245,158,11,.1)}.card-ico.r{background:rgba(239,68,68,.1)}.card-ico.p{background:rgba(168,85,247,.1)}
+.card-head h3{font-size:1.05rem;letter-spacing:.01em}
+.card-head .sec-tag{margin-left:auto;font-size:.62rem;font-weight:800;letter-spacing:.15em;color:var(--dim);border:1px solid var(--border-soft);padding:3px 9px;border-radius:6px;white-space:nowrap}
+.card-body{padding:20px}
+.card-body p{margin-bottom:12px;font-size:.93rem}
+.card-body p:last-child{margin-bottom:0}
+.card-body h4{margin:18px 0 10px;font-size:.95rem;color:var(--cyan);letter-spacing:.04em;text-transform:uppercase}
+.card-body h4:first-child{margin-top:0}
+.lead{font-size:1rem;color:var(--text)}
+.muted{color:var(--muted)}
+/* ---------- Callouts ---------- */
+.callout{border-radius:10px;padding:14px 16px;margin:14px 0;border:1px solid;font-size:.9rem}
+.callout .co-title{font-weight:800;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.callout.info{background:rgba(0,212,255,.06);border-color:rgba(0,212,255,.35)}.callout.info .co-title{color:var(--cyan)}
+.callout.ok{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.35)}.callout.ok .co-title{color:var(--green)}
+.callout.warn{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.35)}.callout.warn .co-title{color:var(--amber)}
+.callout.err{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.35)}.callout.err .co-title{color:var(--red)}
+.callout.pur{background:rgba(168,85,247,.07);border-color:rgba(168,85,247,.4)}.callout.pur .co-title{color:var(--purple)}
+.bigquote{font-style:italic;font-size:1.02rem;color:#e8f6ff;border-left:3px solid var(--cyan);padding:6px 0 6px 16px;margin:12px 0}
+/* ---------- Grids / chips / badges ---------- */
+.grid{display:grid;gap:12px}
+.grid.c2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.grid.c3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.grid.c4{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.tile{background:var(--card2);border:1px solid var(--border-soft);border-radius:10px;padding:14px;font-size:.88rem}
+.tile b{color:var(--cyan)}
+.tile.green b{color:var(--green)}.tile.amber b{color:var(--amber)}.tile.purple b{color:var(--purple)}.tile.red b{color:var(--red)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{font-size:.78rem;font-weight:700;padding:6px 12px;border-radius:100px;border:1px solid var(--border);background:var(--card2);color:var(--text)}
+.chip.cy{border-color:rgba(0,212,255,.5);color:var(--cyan)}
+.chip.gr{border-color:rgba(34,197,94,.5);color:var(--green)}
+.chip.am{border-color:rgba(245,158,11,.5);color:var(--amber)}
+.chip.rd{border-color:rgba(239,68,68,.5);color:#fca5a5}
+.chip.pu{border-color:rgba(168,85,247,.5);color:#d8b4fe}
+/* ---------- Tables ---------- */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border-soft);border-radius:10px;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:320px}
+th{background:rgba(0,212,255,.08);color:var(--cyan);text-align:left;padding:10px 14px;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+td{padding:9px 14px;border-bottom:1px solid var(--border-soft)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,212,255,.04)}
+td.mono{font-family:Consolas,'Courier New',monospace;font-weight:700}
+/* ---------- Steps ---------- */
+.steps{counter-reset:st;margin:12px 0}
+.step{display:flex;gap:14px;padding:11px 0;border-bottom:1px dashed var(--border-soft)}
+.step:last-child{border-bottom:none}
+.step::before{
+  counter-increment:st;content:counter(st,decimal-leading-zero);
+  width:34px;height:34px;flex-shrink:0;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(168,85,247,.15));border:1px solid var(--border);
+  color:var(--cyan);font-weight:800;font-size:.8rem;
+}
+.step div b{color:var(--cyan)}
+/* ---------- Code / mono blocks ---------- */
+.mono-block{
+  background:#070c16;border:1px solid var(--border-soft);border-radius:10px;padding:16px 18px;
+  font-family:Consolas,'Courier New',monospace;font-size:.88rem;line-height:1.8;overflow-x:auto;margin:12px 0;white-space:pre;
+}
+.hl-cy{color:var(--cyan)}.hl-gr{color:var(--green)}.hl-am{color:var(--amber)}.hl-rd{color:var(--red)}.hl-pu{color:var(--purple)}
+.arrow-flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0}
+.aflow{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-weight:700;font-size:.86rem}
+.aflow.c{border-color:rgba(0,212,255,.5);color:var(--cyan)}
+.aflow.g{border-color:rgba(34,197,94,.5);color:var(--green)}
+.aflow.a{border-color:rgba(245,158,11,.5);color:var(--amber)}
+.aflow.p{border-color:rgba(168,85,247,.5);color:#d8b4fe}
+.arr{color:var(--dim);font-size:1.1rem}
+/* ---------- Diagrams ---------- */
+.diagram{background:#070c16;border:1px solid var(--border-soft);border-radius:10px;padding:14px;margin:14px 0}
+.diagram svg{width:100%;height:auto;display:block}
+.figcap{font-size:.72rem;color:var(--dim);text-align:center;margin-top:8px;letter-spacing:.08em;text-transform:uppercase}
+/* ---------- Lab ---------- */
+.lab-panel{background:#081120;border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:8px}
+.lab-row{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:12px}
+.lab-label{font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);width:100%;margin-bottom:6px}
+.note-btn{
+  min-width:44px;padding:9px 6px;border-radius:8px;border:1px solid var(--border);background:var(--card2);
+  color:var(--text);font-family:inherit;font-weight:700;font-size:.82rem;cursor:pointer;transition:.15s;
+}
+.note-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.note-btn.axis-on{background:linear-gradient(135deg,var(--purple),#7c3aed);color:#fff;border-color:var(--purple);box-shadow:0 0 12px rgba(168,85,247,.5)}
+.note-btn.sel{background:linear-gradient(135deg,var(--cyan),#0891b2);color:#031320;border-color:var(--cyan);box-shadow:0 0 10px rgba(0,212,255,.5)}
+.lab-out{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}
+.lab-box{background:#060b14;border:1px solid var(--border-soft);border-radius:9px;padding:12px 14px}
+.lab-box .lb{font-size:.65rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
+.lab-box.orig .lb{color:var(--green)}.lab-box.mir .lb{color:var(--cyan)}
+.lab-seq{display:flex;flex-wrap:wrap;gap:7px;min-height:36px}
+.lab-seq .nt{background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:6px 12px;font-weight:800;font-family:Consolas,monospace;font-size:.9rem}
+.lab-seq.mirr .nt{border-color:rgba(0,212,255,.55);color:var(--cyan);box-shadow:0 0 8px rgba(0,212,255,.15)}
+.lab-seq .empty{color:var(--dim);font-size:.8rem;font-style:italic;padding:6px 0}
+.lab-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{font-family:inherit;font-size:.8rem;font-weight:700;padding:9px 16px;border-radius:8px;cursor:pointer;border:1px solid;transition:.2s}
+.btn-cy{background:rgba(0,212,255,.12);border-color:var(--cyan);color:var(--cyan)}
+.btn-cy:hover{background:rgba(0,212,255,.25)}
+.btn-rd{background:rgba(239,68,68,.1);border-color:var(--red);color:#fca5a5}
+.btn-rd:hover{background:rgba(239,68,68,.22)}
+/* ---------- Level cards ---------- */
+.level{display:flex;gap:14px;background:var(--card2);border:1px solid var(--border-soft);border-radius:10px;padding:14px;margin-bottom:10px}
+.level .lv{width:44px;height:44px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.05rem;border:1px solid}
+.lv.l1{color:var(--green);border-color:var(--green);background:rgba(34,197,94,.08)}
+.lv.l2{color:var(--cyan);border-color:var(--cyan);background:rgba(0,212,255,.08)}
+.lv.l3{color:var(--amber);border-color:var(--amber);background:rgba(245,158,11,.08)}
+.lv.l4{color:var(--purple);border-color:var(--purple);background:rgba(168,85,247,.08)}
+/* ---------- Credits page ---------- */
+.credit-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 0 18px}
+.credit-seal{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#2a1345,#0f172a);border:2px solid var(--purple);display:flex;align-items:center;justify-content:center;font-size:2.2rem;font-weight:900;color:#d8b4fe;box-shadow:0 0 30px rgba(168,85,247,.4);letter-spacing:.05em}
+.credit-name{margin-top:14px;font-size:1.5rem;font-weight:900;letter-spacing:.02em}
+.credit-role{font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--purple);font-weight:800;margin-top:4px}
+.credit-lines{display:grid;gap:10px;margin-top:16px;width:100%}
+.credit-line{display:flex;align-items:center;gap:12px;background:var(--card2);border:1px solid var(--border-soft);border-radius:10px;padding:12px 16px;font-size:.9rem;text-align:left}
+.credit-line .ic{font-size:1.15rem}
+.credit-line b{color:var(--text)}
+.credit-latin{text-align:center;font-style:italic;font-size:1.15rem;color:var(--cyan);letter-spacing:.06em;margin:20px 0 4px}
+.credit-latin-tr{text-align:center;font-size:.75rem;color:var(--dim);letter-spacing:.08em}
+/* ---------- Footer ---------- */
+footer{border-top:1px solid var(--border-soft);margin-top:30px;background:var(--card2)}
+.foot-inner{max-width:1100px;margin:0 auto;padding:34px 16px;display:grid;gap:8px;text-align:center}
+.foot-inner .fl{font-size:.88rem;color:var(--muted)}
+.foot-inner .fl b{color:var(--text)}
+.foot-inner .latin{margin-top:12px;font-style:italic;color:var(--cyan);letter-spacing:.06em;font-size:.95rem}
+.foot-inner .mini{font-size:.7rem;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;margin-top:10px}
+/* ---------- Floating ---------- */
+#topBtn{
+  position:fixed;right:18px;bottom:18px;width:46px;height:46px;border-radius:12px;z-index:950;
+  background:linear-gradient(135deg,var(--cyan),#0891b2);border:none;color:#031320;font-size:20px;font-weight:900;cursor:pointer;
+  opacity:0;pointer-events:none;transform:translateY(12px);transition:.3s;box-shadow:0 6px 20px rgba(0,212,255,.4);
+}
+#topBtn.show{opacity:1;pointer-events:auto;transform:none}
+/* ---------- Responsive ---------- */
+@media (max-width:640px){
+  .brand-tx span{display:none}
+  .sec-ind{display:none}
+  .nav-tabs{gap:4px}
+  .nav-tab{font-size:.64rem;padding:5px 7px;border-radius:7px}
+  .nav-tab .num{display:none}
+  .card-head .sec-tag{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="progressWrap"><div id="progressBar"></div></div>
+
+<header id="mainHeader">
+  <div class="nav-inner">
+    <div class="nav-toprow">
+      <div class="brand" onclick="go('home')">
+        <div class="brand-ic">🪞</div>
+        <div class="brand-tx"><b>ARMONÍA ESPEJO</b><span>Mirror Harmony</span></div>
+      </div>
+      <div class="nav-meta">
+        <span class="sec-ind" id="secIndicator">Sección <b>1</b> / 13 · Inicio</span>
+      </div>
+    </div>
+    <nav class="nav-tabs" id="navTabs">
+      <button class="nav-tab active" data-page="home">🏠 Inicio</button>
+      <button class="nav-tab" data-page="sec-concepto"><span class="num">01</span> Concepto y Eje</button>
+      <button class="nav-tab" data-page="sec-regla"><span class="num">02</span> Regla y Tabla</button>
+      <button class="nav-tab" data-page="sec-melodia"><span class="num">03</span> Melodía</button>
+      <button class="nav-tab" data-page="sec-acordes"><span class="num">04</span> Acordes Espejo</button>
+      <button class="nav-tab" data-page="sec-ejes"><span class="num">05</span> Ejes · Laboratorio</button>
+      <button class="nav-tab" data-page="sec-progresiones"><span class="num">06</span> Progresiones</button>
+      <button class="nav-tab" data-page="sec-simetria"><span class="num">07</span> Tensión y Simetría</button>
+      <button class="nav-tab" data-page="sec-avanzado"><span class="num">08</span> Bartók</button>
+      <button class="nav-tab" data-page="sec-ejercicios"><span class="num">09</span> Ejercicios</button>
+      <button class="nav-tab" data-page="sec-metodo"><span class="num">10</span> Método</button>
+      <button class="nav-tab" data-page="sec-resumen"><span class="num">11</span> Resumen</button>
+      <button class="nav-tab credit-tab" data-page="sec-creditos"><span class="num">★</span> Créditos</button>
+    </nav>
+  </div>
+</header>
+
+<main id="mainContent">
+
+<!-- ================= HOME ================= -->
+<section class="page visible" id="home">
+  <div class="hero-cover">
+    <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Portada: Armonía Espejo">
+      <defs>
+        <linearGradient id="bgG" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#060a14"/><stop offset=".5" stop-color="#0c1526"/><stop offset="1" stop-color="#0a0e1a"/>
+        </linearGradient>
+        <linearGradient id="axisG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#00d4ff" stop-opacity="0"/><stop offset=".5" stop-color="#00d4ff"/><stop offset="1" stop-color="#00d4ff" stop-opacity="0"/>
+        </linearGradient>
+        <radialGradient id="glowC" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#00d4ff" stop-opacity=".35"/><stop offset="1" stop-color="#00d4ff" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="soft"><feGaussianBlur stdDeviation="6"/></filter>
+      </defs>
+      <rect width="1600" height="900" fill="url(#bgG)"/>
+      <g stroke="#1e3a5f" stroke-width="1" opacity=".22">
+        <path d="M0 150H1600M0 300H1600M0 450H1600M0 600H1600M0 750H1600"/>
+        <path d="M200 0V900M400 0V900M600 0V900M1000 0V900M1200 0V900M1400 0V900"/>
+      </g>
+      <g stroke="#33507a" stroke-width="2.5" opacity=".8">
+        <path d="M90 300H720M90 345H720M90 390H720M90 435H720M90 480H720"/>
+        <path d="M880 300H1510M880 345H1510M880 390H1510M880 435H1510M880 480H1510"/>
+      </g>
+      <ellipse cx="800" cy="450" rx="240" ry="380" fill="url(#glowC)"/>
+      <rect x="797" y="60" width="6" height="780" fill="url(#axisG)" filter="url(#soft)"/>
+      <rect x="798.5" y="60" width="3" height="780" fill="#00d4ff"/>
+      <polygon points="800,428 822,450 800,472 778,450" fill="#0a0e1a" stroke="#00d4ff" stroke-width="3"/>
+      <text x="800" y="457" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="17" font-weight="800" fill="#00d4ff">EJE</text>
+      <g font-family="Segoe UI, sans-serif" font-weight="800">
+        <circle cx="250" cy="480" r="30" fill="#0f172a" stroke="#22c55e" stroke-width="3.5"/><text x="250" y="488" text-anchor="middle" font-size="24" fill="#22c55e">C</text>
+        <circle cx="400" cy="435" r="30" fill="#0f172a" stroke="#22c55e" stroke-width="3.5"/><text x="400" y="443" text-anchor="middle" font-size="24" fill="#22c55e">D</text>
+        <circle cx="550" cy="390" r="30" fill="#0f172a" stroke="#22c55e" stroke-width="3.5"/><text x="550" y="398" text-anchor="middle" font-size="24" fill="#22c55e">E</text>
+        <circle cx="680" cy="345" r="30" fill="#0f172a" stroke="#22c55e" stroke-width="3.5"/><text x="680" y="353" text-anchor="middle" font-size="24" fill="#22c55e">F</text>
+        <circle cx="1350" cy="480" r="30" fill="#0f172a" stroke="#00d4ff" stroke-width="3.5"/><text x="1350" y="488" text-anchor="middle" font-size="24" fill="#00d4ff">C</text>
+        <circle cx="1200" cy="525" r="30" fill="#0f172a" stroke="#00d4ff" stroke-width="3.5"/><text x="1200" y="533" text-anchor="middle" font-size="22" fill="#00d4ff">Bb</text>
+        <circle cx="1050" cy="570" r="30" fill="#0f172a" stroke="#00d4ff" stroke-width="3.5"/><text x="1050" y="578" text-anchor="middle" font-size="22" fill="#00d4ff">Ab</text>
+        <circle cx="920" cy="615" r="30" fill="#0f172a" stroke="#00d4ff" stroke-width="3.5"/><text x="920" y="623" text-anchor="middle" font-size="24" fill="#00d4ff">G</text>
+      </g>
+      <g stroke="#a855f7" stroke-width="2" stroke-dasharray="7 6" opacity=".85">
+        <path d="M432 435 Q800 545 1168 525" fill="none"/>
+        <path d="M582 390 Q800 560 1018 570" fill="none"/>
+        <path d="M712 345 Q800 560 888 615" fill="none"/>
+      </g>
+      <g font-family="Segoe UI, sans-serif" font-size="20" font-weight="700" fill="#a855f7">
+        <text x="800" y="545" text-anchor="middle">D ↔ Bb</text>
+        <text x="800" y="600" text-anchor="middle">E ↔ Ab</text>
+        <text x="800" y="655" text-anchor="middle">F ↔ G</text>
+      </g>
+      <g font-family="Segoe UI, sans-serif" font-weight="700">
+        <rect x="180" y="715" width="170" height="44" rx="10" fill="#0f172a" stroke="#1e3a5f"/><text x="265" y="743" text-anchor="middle" font-size="19" fill="#22c55e">ORIGINAL</text>
+        <rect x="380" y="715" width="60" height="44" rx="10" fill="none"/><text x="410" y="745" text-anchor="middle" font-size="22" fill="#8aa2bd">→</text>
+        <rect x="470" y="715" width="170" height="44" rx="10" fill="#0f172a" stroke="#1e3a5f"/><text x="555" y="743" text-anchor="middle" font-size="19" fill="#00d4ff">ESPEJO</text>
+        <rect x="960" y="715" width="460" height="44" rx="10" fill="#0f172a" stroke="#a855f7" stroke-width="1.5"/><text x="1190" y="743" text-anchor="middle" font-size="18" fill="#d8b4fe">fórmula: espejo(n) = 2·eje − n (mod 12)</text>
+      </g>
+      <g font-family="Segoe UI, sans-serif">
+        <text x="90" y="95" font-size="17" letter-spacing="6" fill="#5c7691" font-weight="700">MANUAL TÉCNICO · VOL. 01 · TEORÍA MUSICAL APLICADA</text>
+        <text x="90" y="185" font-size="72" font-weight="900" fill="#ffffff" letter-spacing="2">ARMONÍA <tspan fill="#00d4ff">ESPEJO</tspan></text>
+        <text x="92" y="228" font-size="24" fill="#8aa2bd" font-weight="600" letter-spacing="3">MIRROR HARMONY · Y ACORDES ESPEJO</text>
+        <text x="1510" y="95" text-anchor="end" font-size="16" letter-spacing="4" fill="#5c7691" font-weight="700">RUBÉN SBARSKY</text>
+        <text x="90" y="860" font-size="15" letter-spacing="3" fill="#5c7691">TUTORIAL PRÁCTICO PASO A PASO · SIMETRÍA · EJES · COMPOSICIÓN</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hero-body">
+    <span class="badge">Tutorial práctico paso a paso</span>
+    <h1>ARMONÍA <span class="grad">ESPEJO</span></h1>
+    <p class="subtitle">Mirror Harmony y Acordes Espejo — by Rubén Sbarsky</p>
+    <p class="desc">Una guía completa y visual para aprender a reflejar notas, intervalos, acordes, melodías y progresiones alrededor de un eje. Desde la regla básica de los semitonos hasta las simetrías de Bartók, con ejercicios prácticos y un laboratorio interactivo para experimentar en tiempo real.</p>
+
+    <div class="quote-hero">
+      «Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.»
+      <small>— CITA DESTACADA DEL TUTORIAL</small>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><b>26</b><span>Capítulos</span></div>
+      <div class="metric"><b>12</b><span>Notas · sistema cromático</span></div>
+      <div class="metric"><b>4</b><span>Niveles de profundidad</span></div>
+      <div class="metric"><b>3</b><span>Ejercicios prácticos</span></div>
+      <div class="metric"><b>∞</b><span>Combinaciones armónicas</span></div>
+      <div class="metric"><b>6+6</b><span>Semitonos del tritono</span></div>
+    </div>
+
+    <div class="callout info" style="margin-top:22px">
+      <div class="co-title">🧭 Cómo usar esta aplicación</div>
+      El menú superior muestra <b>todas las pestañas visibles</b>: pulsa cualquier capítulo para abrirlo (solo se muestra una sección por vez). En el capítulo <b>05</b> encontrarás el <b>Laboratorio de Espejo interactivo</b> para calcular reflejos con cualquier eje. La pestaña <b>★ Créditos</b> contiene la información del autor y del documento.
+    </div>
+  </div>
+</section>
+
+<!-- ================= 01 CONCEPTO Y EJE ================= -->
+<section class="page" id="sec-concepto">
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico">🪞</div><h3>1. ¿Qué es la Armonía Espejo?</h3><span class="sec-tag">CAP. 01</span></div>
+    <div class="card-body">
+      <p class="lead">La armonía espejo consiste en tomar las <b>notas, intervalos, acordes o melodías</b> de una estructura musical y <b>reflejarlos alrededor de un eje</b>.</p>
+      <p>Piensa en esto como un espejo colocado verticalmente sobre una nota: lo que está a una determinada distancia de un lado aparece a la <b>misma distancia</b> del otro lado.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="#1e3a5f" stroke-width="1" opacity=".5">
+            <path d="M50 60H650M50 130H650M50 200H650M50 270H650"/>
+          </g>
+          <rect x="347" y="20" width="6" height="300" fill="#00d4ff" opacity=".9"/>
+          <text x="350" y="335" text-anchor="middle" font-family="Segoe UI" font-size="14" font-weight="800" fill="#00d4ff">← EJE C →</text>
+          <g font-family="Segoe UI" font-weight="800" font-size="20">
+            <circle cx="150" cy="60" r="20" fill="#0f172a" stroke="#22c55e" stroke-width="3"/><text x="150" y="67" text-anchor="middle" fill="#22c55e">E</text>
+            <circle cx="230" cy="130" r="20" fill="#0f172a" stroke="#22c55e" stroke-width="3"/><text x="230" y="137" text-anchor="middle" fill="#22c55e">D</text>
+            <circle cx="470" cy="130" r="20" fill="#0f172a" stroke="#00d4ff" stroke-width="3"/><text x="470" y="137" text-anchor="middle" fill="#00d4ff">Bb</text>
+            <circle cx="550" cy="60" r="20" fill="#0f172a" stroke="#00d4ff" stroke-width="3"/><text x="550" y="67" text-anchor="middle" fill="#00d4ff">Ab</text>
+            <circle cx="350" cy="200" r="22" fill="#0a0e1a" stroke="#f59e0b" stroke-width="3"/><text x="350" y="207" text-anchor="middle" fill="#f59e0b">C</text>
+          </g>
+          <g stroke="#a855f7" stroke-width="2" stroke-dasharray="6 5">
+            <path d="M250 130 Q350 90 450 130" fill="none"/>
+            <path d="M170 60 Q350 -10 530 60" fill="none"/>
+          </g>
+          <g font-family="Segoe UI" font-size="15" font-weight="700" fill="#d8b4fe">
+            <text x="350" y="105" text-anchor="middle">D ↔ Bb</text>
+            <text x="350" y="40" text-anchor="middle">E ↔ Ab</text>
+            <text x="350" y="255" text-anchor="middle" fill="#8aa2bd">F ↔ G · C ↔ C</text>
+          </g>
+        </svg>
+        <div class="figcap">Diagrama del reflejo alrededor del eje C</div>
+      </div>
+
+      <div class="chips">
+        <span class="chip gr">D ↔ Bb</span><span class="chip cy">E ↔ Ab</span><span class="chip am">F ↔ G</span><span class="chip pu">C ↔ C</span>
+      </div>
+
+      <div class="callout info">
+        <div class="co-title">💡 La relación fundamental</div>
+        <div class="bigquote">«La distancia ascendente se convierte en la misma distancia descendente.»</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico p">🎯</div><h3>2. El concepto fundamental: el Eje</h3><span class="sec-tag">CAP. 02</span></div>
+    <div class="card-body">
+      <p>Antes de hacer cualquier espejo necesitamos <b>elegir un eje</b>. Puede ser:</p>
+      <div class="grid c4">
+        <div class="tile"><b>🎵 Una nota</b><br><span class="muted">ej: C</span></div>
+        <div class="tile"><b>↔️ Un intervalo</b><br><span class="muted">centro entre dos notas</span></div>
+        <div class="tile"><b>👥 Una pareja de notas</b><br><span class="muted">ej: C ↔ F#</span></div>
+        <div class="tile"><b>🏛️ Un centro tonal</b><br><span class="muted">eje armónico</span></div>
+      </div>
+      <p>Comencemos por el caso más sencillo: <b>Eje = C</b>. Asignamos números a los semitonos:</p>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Nota</th><th>Nº</th><th>Nota</th><th>Nº</th><th>Nota</th><th>Nº</th></tr>
+          <tr><td class="mono">C</td><td>0</td><td class="mono">F</td><td>5</td><td class="mono">A</td><td>9</td></tr>
+          <tr><td class="mono">C#</td><td>1</td><td class="mono">F#</td><td>6</td><td class="mono">Bb</td><td>10</td></tr>
+          <tr><td class="mono">D</td><td>2</td><td class="mono">G</td><td>7</td><td class="mono">B</td><td>11</td></tr>
+          <tr><td class="mono">Eb</td><td>3</td><td class="mono">Ab</td><td>8</td><td></td><td></td></tr>
+          <tr><td class="mono">E</td><td>4</td><td></td><td></td><td></td><td></td></tr>
+        </table>
+      </div>
+      <h4>El espejo respecto de C funciona así:</h4>
+      <div class="mono-block"><span class="hl-gr">C</span>  → <span class="hl-cy">C</span>      <span class="hl-gr">F</span>  → <span class="hl-cy">G</span>      <span class="hl-gr">Bb</span> → <span class="hl-cy">D</span>
+<span class="hl-gr">C#</span> → <span class="hl-cy">B</span>      <span class="hl-gr">F#</span> → <span class="hl-cy">F#</span>     <span class="hl-gr">B</span>  → <span class="hl-cy">C#</span>
+<span class="hl-gr">D</span>  → <span class="hl-cy">Bb</span>     <span class="hl-gr">G</span>  → <span class="hl-cy">F</span>
+<span class="hl-gr">Eb</span> → <span class="hl-cy">A</span>      <span class="hl-gr">Ab</span> → <span class="hl-cy">E</span>
+<span class="hl-gr">E</span>  → <span class="hl-cy">Ab</span>     <span class="hl-gr">A</span>  → <span class="hl-cy">Eb</span></div>
+      <div class="callout warn">
+        <div class="co-title">⚠️ Observa algo importante</div>
+        <b>F# queda exactamente sobre el eje de simetría</b>, porque está a 6 semitonos de C <b>en ambas direcciones</b>. Es el punto de equilibrio perfecto del sistema.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 REGLA Y TABLA ================= -->
+<section class="page" id="sec-regla">
+  <div class="card">
+    <div class="card-head"><div class="card-ico g">🧮</div><h3>3. Una regla muy fácil</h3><span class="sec-tag">CAP. 03</span></div>
+    <div class="card-body">
+      <p>Para construir un espejo mentalmente, sigue siempre estos tres pasos:</p>
+      <div class="steps">
+        <div class="step"><div><b>Elige el eje.</b><br><span class="muted">Ejemplo: C</span></div></div>
+        <div class="step"><div><b>Cuenta los semitonos desde el eje.</b><br>Ejemplo C → D: <span class="mono" style="color:var(--green)">C → C# = 1</span> · <span class="mono" style="color:var(--green)">C# → D = 2</span>. D está a <b>2 semitonos</b>.</div></div>
+        <div class="step"><div><b>Baja exactamente esa cantidad desde el eje.</b><br><span class="mono" style="color:var(--cyan)">C → B = 1</span> · <span class="mono" style="color:var(--cyan)">B → Bb = 2</span>. Por lo tanto: <b>D ↔ Bb</b>.</div></div>
+      </div>
+      <div class="arrow-flow">
+        <span class="aflow g">D (a +2 del eje)</span><span class="arr">⟶ espejo ⟶</span><span class="aflow c">Bb (a −2 del eje)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico">📋</div><h3>4. Tabla completa del espejo de C</h3><span class="sec-tag">CAP. 04</span></div>
+    <div class="card-body">
+      <p>Conviene <b>memorizar esta tabla</b>: es una de las herramientas fundamentales para empezar.</p>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Original</th><th></th><th>Espejo</th><th>Distancia al eje</th></tr>
+          <tr><td class="mono">C</td><td>→</td><td class="mono" style="color:var(--cyan)">C</td><td class="muted">0 (el propio eje)</td></tr>
+          <tr><td class="mono">C#</td><td>→</td><td class="mono" style="color:var(--cyan)">B</td><td class="muted">±1 semitono</td></tr>
+          <tr><td class="mono">D</td><td>→</td><td class="mono" style="color:var(--cyan)">Bb</td><td class="muted">±2 semitonos</td></tr>
+          <tr><td class="mono">Eb</td><td>→</td><td class="mono" style="color:var(--cyan)">A</td><td class="muted">±3 semitonos</td></tr>
+          <tr><td class="mono">E</td><td>→</td><td class="mono" style="color:var(--cyan)">Ab</td><td class="muted">±4 semitonos</td></tr>
+          <tr><td class="mono">F</td><td>→</td><td class="mono" style="color:var(--cyan)">G</td><td class="muted">±5 semitonos</td></tr>
+          <tr><td class="mono">F#</td><td>→</td><td class="mono" style="color:var(--amber)">F#</td><td class="muted">±6 semitonos (sobre el eje de simetría)</td></tr>
+          <tr><td class="mono">G</td><td>→</td><td class="mono" style="color:var(--cyan)">F</td><td class="muted">±5 semitonos</td></tr>
+          <tr><td class="mono">Ab</td><td>→</td><td class="mono" style="color:var(--cyan)">E</td><td class="muted">±4 semitonos</td></tr>
+          <tr><td class="mono">A</td><td>→</td><td class="mono" style="color:var(--cyan)">Eb</td><td class="muted">±3 semitonos</td></tr>
+          <tr><td class="mono">Bb</td><td>→</td><td class="mono" style="color:var(--cyan)">D</td><td class="muted">±2 semitonos</td></tr>
+          <tr><td class="mono">B</td><td>→</td><td class="mono" style="color:var(--cyan)">C#</td><td class="muted">±1 semitono</td></tr>
+        </table>
+      </div>
+      <div class="callout info">
+        <div class="co-title">🔑 Versión compacta para memorizar</div>
+        <div class="chips">
+          <span class="chip cy">C ↔ C</span><span class="chip cy">C# ↔ B</span><span class="chip cy">D ↔ Bb</span><span class="chip cy">Eb ↔ A</span><span class="chip cy">E ↔ Ab</span><span class="chip cy">F ↔ G</span><span class="chip am">F# ↔ F#</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 MELODÍA E INTERVALOS ================= -->
+<section class="page" id="sec-melodia">
+  <div class="card">
+    <div class="card-head"><div class="card-ico g">🎼</div><h3>5. Espejo de una melodía</h3><span class="sec-tag">CAP. 05</span></div>
+    <div class="card-body">
+      <p>Ahora podemos hacer algo mucho más <b>musical</b>. Tenemos la melodía:</p>
+      <div class="mono-block"><span class="hl-gr">C – D – E – G – F – E – D – C</span></div>
+      <p>Utilizando <b>C como eje</b>, reflejamos cada nota:</p>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Original</th><th></th><th>Espejo</th></tr>
+          <tr><td class="mono">C</td><td>→</td><td class="mono" style="color:var(--cyan)">C</td></tr>
+          <tr><td class="mono">D</td><td>→</td><td class="mono" style="color:var(--cyan)">Bb</td></tr>
+          <tr><td class="mono">E</td><td>→</td><td class="mono" style="color:var(--cyan)">Ab</td></tr>
+          <tr><td class="mono">G</td><td>→</td><td class="mono" style="color:var(--cyan)">F</td></tr>
+          <tr><td class="mono">F</td><td>→</td><td class="mono" style="color:var(--cyan)">G</td></tr>
+          <tr><td class="mono">E</td><td>→</td><td class="mono" style="color:var(--cyan)">Ab</td></tr>
+          <tr><td class="mono">D</td><td>→</td><td class="mono" style="color:var(--cyan)">Bb</td></tr>
+          <tr><td class="mono">C</td><td>→</td><td class="mono" style="color:var(--cyan)">C</td></tr>
+        </table>
+      </div>
+      <div class="arrow-flow">
+        <span class="aflow g">C – D – E – G – F – E – D – C</span>
+      </div>
+      <div class="arrow-flow">
+        <span class="aflow c">C – Bb – Ab – F – G – Ab – Bb – C</span><span class="arr">← resultado</span>
+      </div>
+      <div class="callout ok">
+        <div class="co-title">✅ Conclusión</div>
+        La melodía <b>conserva su estructura de distancias, pero invertida</b>. Sube donde antes bajaba y baja donde antes subía.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico p">📐</div><h3>6. ¿Qué pasa con los intervalos?</h3><span class="sec-tag">CAP. 06</span></div>
+    <div class="card-body">
+      <p>Aquí aparece una de las cosas más interesantes. Si una melodía original hace:</p>
+      <div class="grid c2">
+        <div class="tile green"><b>C → E</b><br>Tenemos una <b>tercera mayor ascendente</b>. Su espejo hace <b>C → Ab</b>, que es una <b>tercera mayor descendente</b>.</div>
+        <div class="tile"><b>C → G</b><br>Quinta justa ascendente. Su espejo: <b>C → F</b>, quinta justa <b>descendente</b>.</div>
+      </div>
+      <div class="arrow-flow" style="margin-top:16px">
+        <span class="aflow g">3ª mayor ↑</span><span class="arr">↓ espejo ↓</span><span class="aflow c">3ª mayor ↓</span>
+      </div>
+      <div class="arrow-flow">
+        <span class="aflow g">5ª justa ↑</span><span class="arr">↓ espejo ↓</span><span class="aflow c">5ª justa ↓</span>
+      </div>
+      <div class="callout info">
+        <div class="co-title">💡 En la práctica significa…</div>
+        El espejo conserva el <b>tamaño</b> del intervalo pero invierte su <b>dirección</b>. La identidad interválica permanece; el gesto melódico se refleja.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 ACORDES ESPEJO ================= -->
+<section class="page" id="sec-acordes">
+  <div class="card">
+    <div class="card-head"><div class="card-ico">🎹</div><h3>7. Construyamos un acorde espejo</h3><span class="sec-tag">CAP. 07</span></div>
+    <div class="card-body">
+      <p>Ahora viene la parte divertida. Tenemos <b>C – E – G</b>, es decir, <b>C mayor</b>. Reflejamos cada nota respecto de C:</p>
+      <div class="steps">
+        <div class="step"><div><span class="mono">C → C</span></div></div>
+        <div class="step"><div><span class="mono">E → Ab</span></div></div>
+        <div class="step"><div><span class="mono">G → F</span></div></div>
+      </div>
+      <div class="arrow-flow">
+        <span class="aflow g">C mayor</span><span class="arr">→</span><span class="aflow">C – Ab – F</span><span class="arr">reordenamos →</span><span class="aflow c">F – Ab – C</span><span class="arr">=</span><span class="aflow p">F menor</span>
+      </div>
+      <div class="callout ok">
+        <div class="co-title">✅ Resultado</div>
+        <b>C mayor ↓ espejo ↓ F menor</b>
+      </div>
+      <div class="callout warn">
+        <div class="co-title">⚠️ Importante</div>
+        Esto <b>no significa que exista una única "armonía espejo" universal</b>. El resultado depende del <b>eje elegido</b>.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico a">🔬</div><h3>8. Otro ejemplo</h3><span class="sec-tag">CAP. 08</span></div>
+    <div class="card-body">
+      <p>Tenemos <b>G – B – D</b> (<b>G mayor</b>). Ahora elegimos <b>EJE = C</b> y reflejamos:</p>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Original</th><th></th><th>Espejo</th></tr>
+          <tr><td class="mono">G</td><td>→</td><td class="mono" style="color:var(--cyan)">F</td></tr>
+          <tr><td class="mono">B</td><td>→</td><td class="mono" style="color:var(--cyan)">C#</td></tr>
+          <tr><td class="mono">D</td><td>→</td><td class="mono" style="color:var(--cyan)">Bb</td></tr>
+        </table>
+      </div>
+      <div class="arrow-flow">
+        <span class="aflow">F – C# – Bb</span><span class="arr">reordenando →</span><span class="aflow p">Bb – C# – F</span>
+      </div>
+      <p>Aquí empieza a aparecer una <b>sonoridad bastante diferente</b>. Y esto es precisamente lo interesante:</p>
+      <div class="bigquote">El espejo no tiene por qué producir un acorde convencional. Puede producir estructuras armónicas nuevas.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico p">🛠️</div><h3>9. Acordes espejo como herramienta de composición</h3><span class="sec-tag">CAP. 09</span></div>
+    <div class="card-body">
+      <p>Supongamos que tienes <b>Cmaj7</b> = <span class="mono">C – E – G – B</span>. Con C como eje:</p>
+      <div class="mono-block"><span class="hl-gr">C → C</span>     <span class="hl-gr">E → Ab</span>     <span class="hl-gr">G → F</span>     <span class="hl-gr">B → C#</span>
+
+Resultado:  <span class="hl-cy">C – Ab – F – C#</span>
+Reordenamos: <span class="hl-pu">C – C# – F – Ab</span></div>
+      <p>Esto <b>ya no se comporta como un acorde tonal tradicional</b>. Y ahí está precisamente su valor. Puedes utilizar el acorde espejo como:</p>
+      <div class="chips">
+        <span class="chip cy">Sustitución</span>
+        <span class="chip gr">Acorde de transición</span>
+        <span class="chip am">Dominante alterado</span>
+        <span class="chip pu">Color armónico</span>
+        <span class="chip cy">Puente entre dos tonalidades</span>
+        <span class="chip rd">Recurso para crear tensión</span>
+        <span class="chip gr">Material para composición</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 05 EJES + LABORATORIO ================= -->
+<section class="page" id="sec-ejes">
+  <div class="card">
+    <div class="card-head"><div class="card-ico p">🎯</div><h3>10. El espejo no tiene que utilizar C como eje</h3><span class="sec-tag">CAP. 10</span></div>
+    <div class="card-body">
+      <p>Esto es <b>importantísimo</b>. Podemos utilizar <b>cualquier nota</b>. Por ejemplo: <b>EJE = E</b>. Ahora queremos reflejar <b>G</b>.</p>
+      <div class="grid c2">
+        <div class="tile green">
+          <b>Subimos desde E hasta G:</b><br>
+          E → F = 1<br>F → F# = 2<br>F# → G = 3<br><span class="muted">G está a <b>3 semitonos</b> de E</span>
+        </div>
+        <div class="tile">
+          <b>Bajamos 3 semitonos desde E:</b><br>
+          E → Eb = 1<br>Eb → D = 2<br>D → C# = 3<br><span class="muted">El reflejo está a <b>3 semitonos</b> hacia abajo</span>
+        </div>
+      </div>
+      <div class="arrow-flow" style="margin-top:14px">
+        <span class="aflow g">G (+3 del eje E)</span><span class="arr">⟶ espejo ⟶</span><span class="aflow c">C# (−3 del eje E)</span><span class="arr">⇒</span><span class="aflow p">G ↔ C#</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico a">✏️</div><h3>11. Un ejercicio muy importante</h3><span class="sec-tag">CAP. 11</span></div>
+    <div class="card-body">
+      <p>Toma <b>C – E – G</b>, pero ahora utiliza <b>EJE = G</b>. Calcula cada nota respecto de G — <b>C, E, G</b> — y refléjalas.</p>
+      <div class="callout warn">
+        <div class="co-title">⚠️ El resultado será diferente</div>
+        El resultado será diferente al que obtuvimos utilizando C como eje. Esto demuestra una idea fundamental:
+        <div class="bigquote">«El acorde espejo no depende solamente del acorde original. Depende también del eje elegido.»</div>
+      </div>
+      <p class="muted">Pista: resuélvelo con la regla de los 3 pasos (capítulo 03) o verifícalo en el laboratorio interactivo de aquí abajo. 👇</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico g">⚗️</div><h3>Laboratorio interactivo de espejo</h3><span class="sec-tag">HERRAMIENTA</span></div>
+    <div class="card-body">
+      <p>Elige un <b>eje</b>, pulsa notas para construir tu secuencia y observa su reflejo calculado al instante con la fórmula <span class="mono" style="color:var(--purple)">espejo = 2·eje − nota (mod 12)</span>.</p>
+      <div class="lab-panel">
+        <div class="lab-row"><span class="lab-label">1 · Elige el eje</span><div id="axisRow" class="lab-row" style="margin:0"></div></div>
+        <div class="lab-row"><span class="lab-label">2 · Pulsa notas para añadirlas a la secuencia (en orden)</span><div id="noteRow" class="lab-row" style="margin:0"></div></div>
+        <div class="lab-out">
+          <div class="lab-box orig"><div class="lb">▶ Original</div><div class="lab-seq" id="seqOrig"></div></div>
+          <div class="lab-box mir"><div class="lb">🪞 Espejo (eje <span id="labAxisName">C</span>)</div><div class="lab-seq mirr" id="seqMir"></div></div>
+        </div>
+        <div class="lab-actions">
+          <button class="btn btn-cy" onclick="labUndo()">⌫ Borrar última</button>
+          <button class="btn btn-rd" onclick="labReset()">✕ Vaciar secuencia</button>
+          <button class="btn btn-cy" onclick="labDemo()">★ Cargar ejemplo: D–E–G–A–B / eje C</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 PROGRESIONES ================= -->
+<section class="page" id="sec-progresiones">
+  <div class="card">
+    <div class="card-head"><div class="card-ico">🔄</div><h3>12. Espejo de una progresión</h3><span class="sec-tag">CAP. 12</span></div>
+    <div class="card-body">
+      <p>Ahora podemos aplicar el procedimiento a una <b>progresión completa</b>. Tenemos:</p>
+      <div class="arrow-flow">
+        <span class="aflow g">C</span><span class="arr">→</span><span class="aflow g">Am</span><span class="arr">→</span><span class="aflow g">F</span><span class="arr">→</span><span class="aflow g">G</span>
+      </div>
+      <div class="callout warn">
+        <div class="co-title">⚠️ Atención</div>
+        <b>No</b> debemos pensar necesariamente en "espejar los nombres de los acordes". Lo más interesante es el siguiente procedimiento:
+      </div>
+      <div class="steps">
+        <div class="step"><div><b>Descomponer cada acorde en notas.</b><br><span class="mono">C = C E G · Am = A C E · F = F A C · G = G B D</span></div></div>
+        <div class="step"><div><b>Elegir un eje.</b><br>Por ejemplo: <b>C</b></div></div>
+        <div class="step"><div><b>Reflejar cada nota</b> según la tabla del espejo.</div></div>
+        <div class="step"><div><b>Volver a agrupar las notas.</b></div></div>
+      </div>
+      <div class="callout ok">
+        <div class="co-title">✅ Resultado</div>
+        Así obtenemos una <b>nueva progresión basada en la estructura reflejada</b>.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico g">⚡</div><h3>13. Una forma muy poderosa de utilizarlo</h3><span class="sec-tag">CAP. 13</span></div>
+    <div class="card-body">
+      <p><b>No tienes que transformar toda la música.</b> Puedes hacer:</p>
+      <div class="mono-block"><span class="hl-gr">PROGRESIÓN ORIGINAL</span>
+Cmaj7 → Am7 → Fmaj7 → G7
+
+<span class="hl-am">USO PARCIAL DEL ESPEJO</span>
+Cmaj7 → <span class="hl-pu">[ACORDE ESPEJO]</span> → Fmaj7 → G7</div>
+      <p>Esto crea una sensación de:</p>
+      <div class="arrow-flow">
+        <span class="aflow g">estabilidad</span><span class="arr">↓</span><span class="aflow p">extrañeza</span><span class="arr">↓</span><span class="aflow c">regreso</span>
+      </div>
+      <div class="callout info">
+        <div class="co-title">💡 Por qué funciona</div>
+        Es una herramienta excelente para crear <b>contraste armónico</b> sin cambiar completamente de lenguaje musical.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico a">🎭</div><h3>14. Espejo de una melodía sobre una armonía normal</h3><span class="sec-tag">CAP. 14</span></div>
+    <div class="card-body">
+      <p>Otra técnica muy interesante: mantienes la progresión <b>Cmaj7 → Am7 → Fmaj7 → G7</b>, pero haces que la <b>melodía</b> sea una versión espejo de la melodía original. Así:</p>
+      <div class="grid c2">
+        <div class="tile green"><b>ARMONÍA = convencional</b><br><span class="muted">El oyente reconoce el terreno.</span></div>
+        <div class="tile"><b>MELODÍA = simétrica</b><br><span class="muted">La línea cantable aporta el reflejo.</span></div>
+      </div>
+      <div class="callout ok" style="margin-top:14px">
+        <div class="co-title">✅ Resultado</div>
+        El resultado puede sonar mucho más <b>sofisticado</b> que simplemente cambiar todos los acordes.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 TENSIÓN Y SIMETRÍA ================= -->
+<section class="page" id="sec-simetria">
+  <div class="card">
+    <div class="card-head"><div class="card-ico r">🔥</div><h3>15. Acordes espejo y tensión</h3><span class="sec-tag">CAP. 15</span></div>
+    <div class="card-body">
+      <p>Los acordes espejo pueden generar relaciones que nuestro oído tonal <b>no identifica inmediatamente</b> como mayor, menor, dominante, etc.</p>
+      <div class="grid c2">
+        <div class="tile purple"><b>Estructura espejo</b><br><span class="mono">C – Ab – F – C#</span><br><span class="muted">Contiene relaciones interválicas muy diferentes.</span></div>
+        <div class="tile green"><b>Estructura tonal</b><br><span class="mono">C – E – G</span><br><span class="muted">Referencia inmediata para el oído.</span></div>
+      </div>
+      <div class="callout info" style="margin-top:14px">
+        <div class="co-title">💡 Para qué sirve</div>
+        Esto permite <b>escapar temporalmente de I – IV – V</b> sin abandonar necesariamente la sensación de que existe un centro.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico">🪷</div><h3>16. El concepto de simetría</h3><span class="sec-tag">CAP. 16</span></div>
+    <div class="card-body">
+      <p>Una estructura es especialmente interesante cuando al reflejarla: <b>ORIGINAL = ESPEJO</b>. Por ejemplo:</p>
+      <div class="mono-block"><span class="hl-cy">C – D – E – F# – G – F# – E – D – C</span>
+                 centro: <span class="hl-am">G</span></div>
+      <p>El centro es <b>G</b> y la estructura se refleja alrededor de G. Tenemos <span class="mono">C D E F# G F# E D C</span>: es <b>perfectamente simétrica</b>.</p>
+      <div class="arrow-flow">
+        <span class="aflow g">equilibrio</span><span class="arr">→</span><span class="aflow c">expansión</span><span class="arr">→</span><span class="aflow a">centro</span><span class="arr">→</span><span class="aflow c">contracción</span><span class="arr">→</span><span class="aflow g">equilibrio</span>
+      </div>
+      <div class="callout pur">
+        <div class="co-title">🟣 Sensación musical</div>
+        Esto produce una sensación musical muy particular, descrita por la propia secuencia anterior: equilibrio → expansión → centro → contracción → equilibrio.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico g">🎚️</div><h3>17. Escalas simétricas</h3><span class="sec-tag">CAP. 17</span></div>
+    <div class="card-body">
+      <p>La idea puede aplicarse también a <b>escalas</b>. Una de las más famosas es la <b>escala de tonos enteros</b>:</p>
+      <div class="grid c2">
+        <div class="tile">
+          <b>Escala de tonos enteros</b><br>
+          <span class="mono" style="color:var(--cyan)">C – D – E – F# – G# – A#</span><br>
+          Todos los intervalos son iguales:<br><b>T – T – T – T – T – T</b>
+        </div>
+        <div class="tile purple">
+          <b>Escala disminuida</b><br>
+          Alterna:<br><b>T – ST – T – ST – T – ST – T – ST</b><br>
+          <span class="muted">Otra familia fundamental de la simetría.</span>
+        </div>
+      </div>
+      <div class="callout info" style="margin-top:14px">
+        <div class="co-title">💡 Esto es importante porque…</div>
+        Estas estructuras son muy importantes porque contienen una <b>enorme cantidad de simetría</b>.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 08 BARTÓK ================= -->
+<section class="page" id="sec-avanzado">
+  <div class="card">
+    <div class="card-head"><div class="card-ico p">🎻</div><h3>18. ¿Y Bartók?</h3><span class="sec-tag">CAP. 18</span></div>
+    <div class="card-body">
+      <p>Aquí llegamos a un <b>nivel más avanzado</b>. Béla Bartók utilizó ampliamente principios de <b>simetría y ejes</b> en su lenguaje armónico. En determinadas obras encontramos relaciones del tipo:</p>
+      <div class="chips">
+        <span class="chip pu">C ↔ F#</span><span class="chip pu">D ↔ G#</span><span class="chip pu">E ↔ A</span>
+      </div>
+      <p>Es decir, <b>pares de notas separados por un tritono</b>. El tritono es particularmente importante porque <b>divide la octava exactamente en dos</b>:</p>
+      <div class="arrow-flow">
+        <span class="aflow a">6 semitonos</span><span class="arr">+</span><span class="aflow a">6 semitonos</span><span class="arr">=</span><span class="aflow c">octava (12)</span>
+      </div>
+      <div class="callout pur">
+        <div class="co-title">🟣 Por eso…</div>
+        <b>C ↔ F#</b> puede funcionar como un <b>eje de simetría especialmente potente</b>.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico a">🧩</div><h3>19. Dos tipos de eje que debes conocer</h3><span class="sec-tag">CAP. 19</span></div>
+    <div class="card-body">
+      <p>Podemos pensar principalmente en:</p>
+      <div class="grid c2">
+        <div class="tile green">
+          <b>Eje de nota</b><br>
+          Por ejemplo: <b>C</b>.<br>
+          La nota C <b>permanece fija</b>.
+        </div>
+        <div class="tile purple">
+          <b>Eje de intervalo</b><br>
+          Por ejemplo: <b>C ↔ F#</b>.<br>
+          Aquí el centro de la simetría se encuentra <b>entre ambas notas</b>.
+        </div>
+      </div>
+      <div class="callout info" style="margin-top:14px">
+        <div class="co-title">💡 Una puerta enorme</div>
+        Este segundo concepto abre una puerta enorme hacia la <b>teoría de conjuntos de alturas</b> y la <b>música del siglo XX</b>.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 09 EJERCICIOS ================= -->
+<section class="page" id="sec-ejercicios">
+  <div class="card">
+    <div class="card-head"><div class="card-ico g">📝</div><h3>20. Ejercicio práctico Nº 1</h3><span class="sec-tag">CAP. 20</span></div>
+    <div class="card-body">
+      <p>Elige <b>EJE = C</b> y refleja: <span class="mono" style="color:var(--green)">D – E – G – A – B</span>. Consulta la tabla:</p>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Original</th><th></th><th>Espejo</th></tr>
+          <tr><td class="mono">D</td><td>→</td><td class="mono" style="color:var(--cyan)">Bb</td></tr>
+          <tr><td class="mono">E</td><td>→</td><td class="mono" style="color:var(--cyan)">Ab</td></tr>
+          <tr><td class="mono">G</td><td>→</td><td class="mono" style="color:var(--cyan)">F</td></tr>
+          <tr><td class="mono">A</td><td>→</td><td class="mono" style="color:var(--cyan)">Eb</td></tr>
+          <tr><td class="mono">B</td><td>→</td><td class="mono" style="color:var(--cyan)">C#</td></tr>
+        </table>
+      </div>
+      <div class="arrow-flow"><span class="aflow g">D – E – G – A – B</span></div>
+      <div class="arrow-flow"><span class="aflow c">Resultado: Bb – Ab – F – Eb – C#</span></div>
+      <div class="callout ok">
+        <div class="co-title">✅ Ahora toca ambas versiones</div>
+        Toca <b>D – E – G – A – B</b> y luego <b>Bb – Ab – F – Eb – C#</b>. Escucha cómo cambia el perfil de la melodía.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico">🎹</div><h3>21. Ejercicio práctico Nº 2: acorde</h3><span class="sec-tag">CAP. 21</span></div>
+    <div class="card-body">
+      <p>Toma <b>Am7</b> = <span class="mono">A – C – E – G</span>. Eje: <b>C</b>. Refleja:</p>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Original</th><th></th><th>Espejo</th></tr>
+          <tr><td class="mono">A</td><td>→</td><td class="mono" style="color:var(--cyan)">Eb</td></tr>
+          <tr><td class="mono">C</td><td>→</td><td class="mono" style="color:var(--cyan)">C</td></tr>
+          <tr><td class="mono">E</td><td>→</td><td class="mono" style="color:var(--cyan)">Ab</td></tr>
+          <tr><td class="mono">G</td><td>→</td><td class="mono" style="color:var(--cyan)">F</td></tr>
+        </table>
+      </div>
+      <div class="arrow-flow">
+        <span class="aflow">Resultado: Eb – C – Ab – F</span><span class="arr">reordena →</span><span class="aflow p">C – Eb – F – Ab</span>
+      </div>
+      <div class="callout warn">
+        <div class="co-title">⚠️ Consejo de escucha</div>
+        Ahora tienes una nueva estructura armónica. <b>No intentes obligarla inmediatamente a tener un nombre tradicional.</b> Primero escucha su función sonora.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico a">🧪</div><h3>22. Ejercicio práctico Nº 3: crear tu propio acorde espejo</h3><span class="sec-tag">CAP. 22</span></div>
+    <div class="card-body">
+      <p>Hazlo siempre en este orden:</p>
+      <div class="steps">
+        <div class="step"><div><b>Elige un acorde.</b></div></div>
+        <div class="step"><div><b>Elige un eje.</b></div></div>
+        <div class="step"><div><b>Escribe todas sus notas.</b></div></div>
+        <div class="step"><div><b>Calcula la distancia de cada nota al eje.</b></div></div>
+        <div class="step"><div><b>Recorre esa misma distancia en dirección contraria.</b></div></div>
+        <div class="step"><div><b>Obtén las nuevas notas.</b></div></div>
+        <div class="step"><div><b>Reordena las notas.</b></div></div>
+        <div class="step"><div><b>Tócalas.</b></div></div>
+        <div class="step"><div><b>Escucha qué función pueden tener.</b></div></div>
+      </div>
+      <div class="callout err">
+        <div class="co-title">⛔ Regla crítica</div>
+        <b>No empieces buscando el nombre del acorde.</b> Primero escucha. Después analiza.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10 MÉTODO Y NIVELES ================= -->
+<section class="page" id="sec-metodo">
+  <div class="card">
+    <div class="card-head"><div class="card-ico p">🏗️</div><h3>23. Una idea muy importante: los cuatro niveles</h3><span class="sec-tag">CAP. 23</span></div>
+    <div class="card-body">
+      <p>La armonía espejo <b>no es simplemente "invertir acordes"</b>. Hay tres niveles diferentes… y uno más allá:</p>
+      <div class="level"><div class="lv l1">N1</div><div><b>Nivel 1 — Invertir intervalos</b><br><span class="muted">La base: cada distancia ascendente se convierte en descendente.</span></div></div>
+      <div class="level"><div class="lv l2">N2</div><div><b>Nivel 2 — Reflejar melodías</b><br><span class="muted">Aplicar el espejo a líneas melódicas completas.</span></div></div>
+      <div class="level"><div class="lv l3">N3</div><div><b>Nivel 3 — Reflejar estructuras armónicas completas</b><br><span class="muted">Acordes y progresiones enteras reflejadas alrededor del eje.</span></div></div>
+      <div class="level"><div class="lv l4">N4</div><div><b>Nivel 4 — Crear sistemas armónicos completos basados en ejes</b><br><span class="muted">Ahí es donde la simetría deja de ser un efecto y se convierte en un lenguaje compositivo.</span></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico r">⚖️</div><h3>24. Diferencia con la armonía negativa</h3><span class="sec-tag">CAP. 24</span></div>
+    <div class="card-body">
+      <div class="callout err">
+        <div class="co-title">⛔ No conviene confundirlas</div>
+        La <b>armonía negativa</b> utiliza una inversión alrededor de un eje tonal concreto y normalmente busca una <b>correspondencia funcional</b> con la armonía original.
+      </div>
+      <p>La <b>armonía espejo</b> es un concepto <b>más general</b>. Puedes utilizar simetría espejo:</p>
+      <div class="chips">
+        <span class="chip cy">Sin cambiar de tonalidad</span>
+        <span class="chip gr">Dentro de una tonalidad</span>
+        <span class="chip am">Entre dos tonalidades</span>
+        <span class="chip pu">Construyendo una composición completa alrededor de ella</span>
+      </div>
+      <div class="bigquote">«Toda armonía negativa puede entenderse como una aplicación particular de ideas de inversión, pero la simetría espejo es un concepto mucho más amplio.»</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico a">🥇</div><h3>25. La regla de oro</h3><span class="sec-tag">CAP. 25</span></div>
+    <div class="card-body">
+      <p>Cuando trabajes con armonía espejo, piensa siempre en este orden:</p>
+      <div class="arrow-flow" style="flex-direction:column;align-items:flex-start">
+        <span class="aflow c">¿CUÁL ES MI EJE?</span><span class="arr">↓</span>
+        <span class="aflow c">¿A CUÁNTOS SEMITONOS ESTÁ CADA NOTA?</span><span class="arr">↓</span>
+        <span class="aflow g">REFLEJO ESA DISTANCIA</span><span class="arr">↓</span>
+        <span class="aflow g">¿QUÉ ESTRUCTURA OBTENGO?</span><span class="arr">↓</span>
+        <span class="aflow a">¿CÓMO SUENA?</span><span class="arr">↓</span>
+        <span class="aflow p">¿QUÉ FUNCIÓN ARMÓNICA PUEDO DARLE?</span>
+      </div>
+      <div class="callout err">
+        <div class="co-title">⛔ Y no al revés</div>
+        No empieces pensando: <i>"¿Qué acorde es?"</i><br>
+        Empieza pensando: <i><b>"¿Qué simetría he creado?"</b></i><br>
+        Después descubre qué acorde o estructura armónica ha aparecido.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 11 SIGUIENTE NIVEL Y RESUMEN ================= -->
+<section class="page" id="sec-resumen">
+  <div class="card">
+    <div class="card-head"><div class="card-ico p">🚀</div><h3>26. El siguiente nivel</h3><span class="sec-tag">CAP. 26</span></div>
+    <div class="card-body">
+      <p>Una vez que domines esto, puedes combinar:</p>
+      <div class="chips">
+        <span class="chip cy">Armonía espejo</span><span class="arr" style="align-self:center">+</span>
+        <span class="chip gr">Acordes espejo</span><span class="arr" style="align-self:center">+</span>
+        <span class="chip am">Escalas simétricas</span><span class="arr" style="align-self:center">+</span>
+        <span class="chip pu">Ejes de tritono</span><span class="arr" style="align-self:center">+</span>
+        <span class="chip cy">Inversión de intervalos</span><span class="arr" style="align-self:center">+</span>
+        <span class="chip rd">PoliArmonía</span>
+      </div>
+      <p>Y entonces aparecen posibilidades muy interesantes para composición. Por ejemplo:</p>
+      <div class="grid c2">
+        <div class="mono-block" style="margin:0">EJE
+│
+↓
+C  D  E  F# | G  F#  E  D  C</div>
+        <div class="mono-block" style="margin:0">ACORDE ORIGINAL
+↓
+REFLEJO
+↓
+ACORDE ESPEJO
+↓
+NUEVA TENSIÓN
+↓
+REGRESO AL EJE</div>
+      </div>
+      <div class="callout pur" style="margin-top:14px">
+        <div class="co-title">🟣 La magia de la simetría musical</div>
+        Esto permite construir música que produce una sensación de <b>equilibrio matemático</b>, aunque el oyente no sea consciente de la estructura. Y ahí está precisamente la magia de la simetría musical: <b>el cerebro puede percibir el orden aunque no sepa explicar cuál es.</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="card-ico g">🧾</div><h3>Resumen — Armonía Espejo</h3><span class="sec-tag">SÍNTESIS FINAL</span></div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div><b>Elegir un eje.</b></div></div>
+        <div class="step"><div><b>Medir cada nota respecto al eje.</b></div></div>
+        <div class="step"><div><b>Reflejar la distancia.</b></div></div>
+        <div class="step"><div><b>Obtener las nuevas notas.</b></div></div>
+        <div class="step"><div><b>Reconstruir melodías o acordes.</b></div></div>
+        <div class="step"><div><b>Analizar la nueva estructura.</b></div></div>
+        <div class="step"><div><b>Utilizarla musicalmente.</b></div></div>
+      </div>
+      <h4>Eje C — tabla final:</h4>
+      <div class="chips">
+        <span class="chip cy">C ↔ C</span><span class="chip cy">C# ↔ B</span><span class="chip cy">D ↔ Bb</span><span class="chip cy">Eb ↔ A</span><span class="chip cy">E ↔ Ab</span><span class="chip cy">F ↔ G</span><span class="chip am">F# ↔ F#</span>
+      </div>
+      <div class="callout info">
+        <div class="co-title">🔑 La idea esencial</div>
+        <div class="bigquote">«La armonía espejo no consiste en buscar un acorde "equivalente". Consiste en reflejar relaciones musicales alrededor de un eje y descubrir qué nueva estructura aparece.»</div>
+        <p class="muted" style="text-align:right;margin-top:6px">— <b>Rubén Sbarsky</b></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ★ CRÉDITOS ================= -->
+<section class="page" id="sec-creditos">
+  <div class="card">
+    <div class="card-head"><div class="card-ico p">★</div><h3>Créditos del Tutorial</h3><span class="sec-tag">AUTORÍA</span></div>
+    <div class="card-body">
+      <div class="credit-hero">
+        <div class="credit-seal">RS</div>
+        <div class="credit-name">Rubén Sbarsky</div>
+        <div class="credit-role">Autor · Tutorial práctico paso a paso</div>
+      </div>
+
+      <div class="credit-lines">
+        <div class="credit-line"><span class="ic">📖</span><div><b>Contenido original:</b> ARMONÍA ESPEJO — Mirror Harmony y Acordes Espejo.</div></div>
+        <div class="credit-line"><span class="ic">👨‍💻</span><div><b>Créditos:</b> Rubén Sbarsky — autor del tutorial y del material didáctico.</div></div>
+        <div class="credit-line"><span class="ic">📚</span><div><b>Propósito:</b> tutorial solo con fines <b>Educativos y de Divulgación</b>.</div></div>
+        <div class="credit-line"><span class="ic">📅</span><div><b>Fecha:</b> 07/AGOSTO/2026</div></div>
+        <div class="credit-line"><span class="ic">⏰</span><div><b>Hora:</b> 07:16:05</div></div>
+        <div class="credit-line"><span class="ic">🛠️</span><div><b>Documento:</b> aplicación HTML interactiva autogestionada · sin dependencias externas · sin conexión a Internet.</div></div>
+      </div>
+
+      <div class="credit-latin">Fiat iustitia, ruat caelum.</div>
+      <div class="credit-latin-tr">«Que se haga justicia, aunque se derrumbe el cielo.»</div>
+
+      <div class="callout pur" style="margin-top:18px">
+        <div class="co-title">🟣 Nota del documento</div>
+        Este material reproduce íntegramente el contenido del tutorial original de <b>Rubén Sbarsky</b>, organizado en una experiencia de estudio interactiva. Cualquier uso debe respetar la autoría y el fin educativo-divulgativo de la obra.
+      </div>
+
+      <div style="text-align:center;margin-top:16px">
+        <button class="btn btn-cy" onclick="go('home')">← Volver al inicio del tutorial</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <div class="fl">📚 Tutorial solo con fines <b>Educativos y de Divulgación</b></div>
+    <div class="fl">👨‍💻 Créditos: <b>Rubén Sbarsky</b></div>
+    <div class="fl">📅 FECHA: <b>07/AGOSTO/2026</b> · Hora: <b>07:16:05</b></div>
+    <div class="latin">Fiat iustitia, ruat caelum.</div>
+    <div class="mini">Armonía Espejo · Mirror Harmony · Documento interactivo autogestionado · sin dependencias externas</div>
+  </div>
+</footer>
+
+<button id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+<script>
+/* ============ SPA Navigation ============ */
+const pageOrder = ["home","sec-concepto","sec-regla","sec-melodia","sec-acordes","sec-ejes","sec-progresiones","sec-simetria","sec-avanzado","sec-ejercicios","sec-metodo","sec-resumen","sec-creditos"];
+const pageNames = ["Inicio","Concepto y Eje","Regla y Tabla","Melodía","Acordes Espejo","Ejes · Laboratorio","Progresiones","Tensión y Simetría","Bartók","Ejercicios","Método","Resumen","Créditos"];
+const tabs = document.querySelectorAll(".nav-tab");
+const secIndicator = document.getElementById("secIndicator");
+const mainHeader = document.getElementById("mainHeader");
+const mainContent = document.getElementById("mainContent");
+let currentIdx = 0;
+
+function fixTopPadding(){
+  mainContent.style.paddingTop = (mainHeader.offsetHeight + 22) + "px";
+}
+
+function go(pageId){
+  const idx = pageOrder.indexOf(pageId);
+  if(idx === -1) return;
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("visible"));
+  const target = document.getElementById(pageId);
+  if(target) target.classList.add("visible");
+  tabs.forEach(t=>t.classList.toggle("active", t.dataset.page===pageId));
+  currentIdx = idx;
+  secIndicator.innerHTML = "Sección <b>" + (idx+1) + "</b> / " + pageOrder.length + " · " + pageNames[idx];
+  window.scrollTo({top:0,behavior:"smooth"});
+  updateProgress();
+}
+tabs.forEach(t=>t.addEventListener("click",()=>go(t.dataset.page)));
+
+/* ============ Progress bar ============ */
+const progressBar = document.getElementById("progressBar");
+function updateProgress(){
+  const n = pageOrder.length;
+  const doc = document.documentElement;
+  const maxScroll = doc.scrollHeight - window.innerHeight;
+  const frac = maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 0;
+  const pct = ((currentIdx + frac) / n) * 100;
+  progressBar.style.width = Math.min(100, pct).toFixed(2) + "%";
+}
+window.addEventListener("scroll", updateProgress);
+window.addEventListener("resize", ()=>{ fixTopPadding(); updateProgress(); });
+
+/* ============ Back to top ============ */
+const topBtn = document.getElementById("topBtn");
+window.addEventListener("scroll", ()=>{
+  topBtn.classList.toggle("show", window.scrollY > 320);
+});
+
+/* ============ Laboratorio de espejo ============ */
+const NOTES = ["C","C#","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
+let labAxis = 0;
+let labSeq = [];
+
+function mirrorIdx(noteIdx, axisIdx){
+  return ((2*axisIdx - noteIdx) % 12 + 12) % 12;
+}
+function buildAxisRow(){
+  const row = document.getElementById("axisRow");
+  row.innerHTML = "";
+  NOTES.forEach((nm,i)=>{
+    const b = document.createElement("button");
+    b.className = "note-btn" + (i===labAxis ? " axis-on" : "");
+    b.textContent = nm;
+    b.addEventListener("click", ()=>{ labAxis = i; buildAxisRow(); renderLab(); });
+    row.appendChild(b);
+  });
+}
+function buildNoteRow(){
+  const row = document.getElementById("noteRow");
+  row.innerHTML = "";
+  NOTES.forEach((nm,i)=>{
+    const b = document.createElement("button");
+    b.className = "note-btn";
+    b.textContent = nm;
+    b.addEventListener("click", ()=>{ labSeq.push(i); renderLab(); });
+    row.appendChild(b);
+  });
+}
+function renderLab(){
+  document.getElementById("labAxisName").textContent = NOTES[labAxis];
+  const so = document.getElementById("seqOrig");
+  const sm = document.getElementById("seqMir");
+  so.innerHTML = ""; sm.innerHTML = "";
+  if(labSeq.length===0){
+    so.innerHTML = '<span class="empty">— pulsa notas para construir tu secuencia —</span>';
+    sm.innerHTML = '<span class="empty">— el reflejo aparecerá aquí —</span>';
+    return;
+  }
+  labSeq.forEach(ni=>{
+    const s = document.createElement("span");
+    s.className = "nt"; s.textContent = NOTES[ni];
+    so.appendChild(s);
+    const m = document.createElement("span");
+    m.className = "nt"; m.textContent = NOTES[mirrorIdx(ni,labAxis)];
+    sm.appendChild(m);
+  });
+}
+function labUndo(){ labSeq.pop(); renderLab(); }
+function labReset(){ labSeq = []; renderLab(); }
+function labDemo(){
+  labAxis = 0;
+  labSeq = ["D","E","G","A","B"].map(n=>NOTES.indexOf(n));
+  buildAxisRow();
+  renderLab();
+}
+buildAxisRow();
+buildNoteRow();
+renderLab();
+fixTopPadding();
+updateProgress();
+window.addEventListener("load", fixTopPadding);
+</script>
+</body>
+</html>
