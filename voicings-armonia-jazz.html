@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía Maestra de Voicings y Armonía de Jazz para Piano</title>
+  <style>
+    :root {
+      --bg-dark: #0a0e1a;
+      --card-bg: #0f172a;
+      --card-border: #1e3a5f;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent-cyan: #00d4ff;
+      --accent-green: #22c55e;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-purple: #a855f7;
+      --lh-color: #a855f7;
+      --rh-color: #00d4ff;
+      --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-bottom: 60px;
+    }
+
+    /* BARRA DE PROGRESO DE LECTURA */
+    #progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(30, 58, 95, 0.4);
+      z-index: 1000;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+      transition: width 0.1s ease;
+    }
+
+    /* NAVBAR FIJA CON SCROLL HORIZONTAL (SPA) */
+    .navbar {
+      position: sticky;
+      top: 4px;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: thin;
+      scrollbar-color: var(--card-border) transparent;
+    }
+
+    .navbar::-webkit-scrollbar {
+      height: 4px;
+    }
+    .navbar::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 4px;
+    }
+
+    .nav-btn {
+      background: rgba(30, 58, 95, 0.3);
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-main);
+      border-color: var(--accent-cyan);
+      background: rgba(0, 212, 255, 0.1);
+    }
+
+    .nav-btn.active {
+      color: var(--bg-dark);
+      background: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .container {
+      max-width: 1200px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    /* SPA SECCIONES */
+    .spa-section {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out forwards;
+    }
+
+    .spa-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* HERO SECTION & PORTADA SVG */
+    .hero-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero-svg-wrapper {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      max-height: 420px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      background: #050811;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .badge-cyan { background: rgba(0, 212, 255, 0.15); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+    .badge-purple { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+    .badge-green { background: rgba(34, 197, 94, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+
+    .hero-title {
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--accent-cyan);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .hero-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* QUOTE CARD */
+    .quote-box {
+      border-left: 4px solid var(--accent-amber);
+      background: rgba(245, 158, 11, 0.08);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: #fde68a;
+    }
+
+    /* METRICAS GRID */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .metric-card {
+      background: rgba(30, 58, 95, 0.2);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+    }
+
+    .metric-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* CALLOUTS */
+    .callout {
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      border-left: 4px solid;
+      font-size: 0.92rem;
+    }
+
+    .callout-info { background: rgba(0, 212, 255, 0.08); border-color: var(--accent-cyan); color: #bae6fd; }
+    .callout-success { background: rgba(34, 197, 94, 0.08); border-color: var(--accent-green); color: #bbf7d0; }
+    .callout-warning { background: rgba(245, 158, 11, 0.08); border-color: var(--accent-amber); color: #fef08a; }
+
+    /* CARD STYLE & GRIDS */
+    .content-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.75rem;
+    }
+
+    .card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(0, 212, 255, 0.15);
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .grid-2col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* CALCULADOR DE VOICINGS */
+    .voicing-wrapper {
+      background: #050811;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+
+    .chord-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .chord-select-btn {
+      background: rgba(30, 58, 95, 0.4);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .chord-select-btn:hover {
+      border-color: var(--accent-cyan);
+    }
+
+    .chord-select-btn.active {
+      background: var(--accent-purple);
+      color: #fff;
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+    }
+
+    .voicing-inspector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin: 1.25rem 0;
+    }
+
+    .hand-card {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: left;
+    }
+
+    .hand-card-lh {
+      border-top: 4px solid var(--accent-purple);
+    }
+
+    .hand-card-rh {
+      border-top: 4px solid var(--accent-cyan);
+    }
+
+    .hand-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.5rem;
+    }
+
+    .hand-card-header small {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .note-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(30, 58, 95, 0.25);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .note-name-badge {
+      font-size: 1.1rem;
+      font-weight: 800;
+      padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+      min-width: 50px;
+      text-align: center;
+    }
+
+    .note-lh-badge {
+      background: rgba(168, 85, 247, 0.25);
+      color: #e9d5ff;
+      border: 1px solid var(--accent-purple);
+    }
+
+    .note-rh-badge {
+      background: rgba(0, 212, 255, 0.25);
+      color: #bae6fd;
+      border: 1px solid var(--accent-cyan);
+    }
+
+    .note-meta {
+      text-align: right;
+    }
+
+    .note-function {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .note-detail {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* TABLAS ESTILIZADAS */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: rgba(30, 58, 95, 0.5);
+      color: var(--accent-cyan);
+      padding: 0.75rem 1rem;
+      border-bottom: 2px solid var(--card-border);
+      font-weight: 700;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+
+    tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* BOTÓN VOLVER ARRIBA */
+    #back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      background: var(--accent-cyan);
+      color: var(--bg-dark);
+      border: none;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+      z-index: 1000;
+      transition: transform 0.2s;
+    }
+
+    #back-to-top:hover {
+      transform: scale(1.1);
+    }
+
+    /* FOOTER OBLIGATORIO */
+    footer {
+      margin-top: 3rem;
+      border-top: 1px solid var(--card-border);
+      padding: 1.5rem 1rem;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer p {
+      margin: 0.3rem 0;
+    }
+
+    .hand-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .hand-lh { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+    .hand-rh { background: rgba(0, 212, 255, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+
+    /* MEDIA QUERIES MOBILE (GALAXY A02s OPTIMIZATION) */
+    @media (max-width: 600px) {
+      .container { padding: 0 0.5rem; }
+      .hero-card, .content-card { padding: 1rem; }
+      .card-title { font-size: 1.1rem; }
+      th, td { padding: 0.5rem; font-size: 0.8rem; }
+      .voicing-inspector-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <nav class="navbar" id="top-nav">
+    <button class="nav-btn active" onclick="switchSection('hero-section', this)">🏠 Inicio</button>
+    <button class="nav-btn" onclick="switchSection('sec-reglas', this)">📜 1. Reglas de Oro</button>
+    <button class="nav-btn" onclick="switchSection('sec-acordes', this)">🎹 2. Los 6 Acordes</button>
+    <button class="nav-btn" onclick="switchSection('sec-iiv-i', this)">🔄 3. Progresión II-V-I</button>
+    <button class="nav-btn" onclick="switchSection('sec-usame', this)">🎵 4. Canción "Úsame"</button>
+    <button class="nav-btn" onclick="switchSection('sec-visualizador', this)">📊 5. Calculador Voicings</button>
+    <button class="nav-btn" onclick="switchSection('sec-creditos', this)">👤 Créditos</button>
+  </nav>
+
+  <div class="container">
+
+    <section id="hero-section" class="spa-section active">
+      <div class="hero-card">
+        
+        <div class="hero-svg-wrapper">
+          <svg viewBox="0 0 900 506" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#050811" />
+                <stop offset="50%" stop-color="#0f172a" />
+                <stop offset="100%" stop-color="#1e112a" />
+              </linearGradient>
+              <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.8" />
+                <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.2" />
+              </linearGradient>
+              <linearGradient id="purpGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#a855f7" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="#c084fc" stop-opacity="0.3" />
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <rect width="900" height="506" fill="url(#bgGrad)" />
+            
+            <g stroke="#1e3a5f" stroke-width="0.5" opacity="0.4">
+              <path d="M0,50 H900 M0,100 H900 M0,150 H900 M0,200 H900 M0,250 H900 M0,300 H900 M0,350 H900 M0,400 H900 M0,450 H900" />
+              <path d="M100,0 V506 M200,0 V506 M300,0 V506 M400,0 V506 M500,0 V506 M600,0 V506 M700,0 V506 M800,0 V506" />
+            </g>
+
+            <circle cx="450" cy="220" r="140" fill="none" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="6,6" />
+            <circle cx="450" cy="220" r="100" fill="none" stroke="url(#cyanGlow)" stroke-width="3" filter="url(#glow)" />
+            <circle cx="450" cy="220" r="60" fill="none" stroke="url(#purpGlow)" stroke-width="2" />
+
+            <g font-family="Segoe UI, sans-serif" font-weight="bold" font-size="12" text-anchor="middle">
+              <circle cx="450" cy="120" r="18" fill="#0f172a" stroke="#00d4ff" stroke-width="2" />
+              <text x="450" y="124" fill="#00d4ff">9ª</text>
+
+              <circle cx="550" cy="220" r="18" fill="#0f172a" stroke="#a855f7" stroke-width="2" />
+              <text x="550" y="224" fill="#a855f7">13ª</text>
+
+              <circle cx="450" cy="320" r="18" fill="#0f172a" stroke="#22c55e" stroke-width="2" />
+              <text x="450" y="324" fill="#22c55e">11ª</text>
+
+              <circle cx="350" cy="220" r="18" fill="#0f172a" stroke="#f59e0b" stroke-width="2" />
+              <text x="350" y="224" fill="#f59e0b">7ªM</text>
+            </g>
+
+            <path d="M450,138 L532,220 L450,302 L368,220 Z" fill="none" stroke="#00d4ff" stroke-width="1.5" opacity="0.6" />
+
+            <g transform="translate(100, 360)">
+              <rect x="0" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="35" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="70" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="105" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="140" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="175" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="210" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="245" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="280" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="315" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="350" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="385" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="420" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="455" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="490" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="525" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="560" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="595" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="630" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+              <rect x="665" y="0" width="33" height="110" fill="#f8fafc" rx="3" stroke="#0f172a" />
+
+              <rect x="0" y="0" width="33" height="110" fill="#a855f7" rx="3" stroke="#0f172a" />
+              <rect x="70" y="0" width="33" height="110" fill="#a855f7" rx="3" stroke="#0f172a" />
+              <rect x="280" y="0" width="33" height="110" fill="#00d4ff" rx="3" stroke="#0f172a" filter="url(#glow)" />
+              <rect x="385" y="0" width="33" height="110" fill="#00d4ff" rx="3" stroke="#0f172a" filter="url(#glow)" />
+
+              <rect x="22" y="0" width="22" height="68" fill="#0f172a" rx="2" />
+              <rect x="57" y="0" width="22" height="68" fill="#0f172a" rx="2" />
+              <rect x="127" y="0" width="22" height="68" fill="#0f172a" rx="2" />
+              <rect x="162" y="0" width="22" height="68" fill="#0f172a" rx="2" />
+              <rect x="197" y="0" width="22" height="68" fill="#0f172a" rx="2" stroke="#a855f7" stroke-width="2" />
+              
+              <rect x="267" y="0" width="22" height="68" fill="#0f172a" rx="2" />
+              <rect x="302" y="0" width="22" height="68" fill="#0f172a" rx="2" />
+              <rect x="372" y="0" width="22" height="68" fill="#0f172a" rx="2" />
+              <rect x="407" y="0" width="22" height="68" fill="#0f172a" rx="2" />
+              <rect x="442" y="0" width="22" height="68" fill="#0f172a" rx="2" />
+            </g>
+
+            <text x="450" y="45" font-family="'Segoe UI', sans-serif" font-weight="900" font-size="22" fill="#00d4ff" text-anchor="middle" letter-spacing="2">PIANO JAZZ HARMONY &amp; VOICINGS</text>
+            <text x="450" y="70" font-family="'Segoe UI', sans-serif" font-weight="600" font-size="13" fill="#94a3b8" text-anchor="middle">MANUAL TÉCNICO INTERACTIVO DE DISTRIBUCIÓN ARMÓNICA</text>
+          </svg>
+        </div>
+
+        <span class="badge badge-cyan">MANUAL TÉCNICO AVANZADO • ARMONÍA Y PIANO JAZZ</span>
+        <h1 class="hero-title">Guía Maestra de Voicings y Armonía de Jazz para Piano</h1>
+        <h2 class="hero-subtitle">El Arte de Distribuir el Color Armónico entre Ambas Manos</h2>
+        <p class="hero-desc">
+          Para lograr una sonoridad sofisticada, elegante y con el auténtico carácter del jazz en el piano, no basta con tocar los acordes en su estado básico de tríadas o posiciones cerradas. La clave reside en el concepto de <strong>voicing</strong>: la distribución exacta, estratégica e inteligente de las notas entre la mano izquierda y la mano derecha[cite: 69, 70].
+        </p>
+
+        <div class="quote-box">
+          "Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value">6</div>
+            <div class="metric-label">Acordes Esenciales</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">3</div>
+            <div class="metric-label">Reglas de Oro</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">II - V - I</div>
+            <div class="metric-label">Progresión Maestra</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">100%</div>
+            <div class="metric-label">Voicings Limpios</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="sec-reglas" class="spa-section">
+      <div class="content-card">
+        <div class="card-header">
+          <div class="card-icon">1</div>
+          <h2 class="card-title">Parte 1: Las Tres Reglas de Oro de los Voicings de Jazz</h2>
+        </div>
+
+        <p style="margin-bottom: 1rem; color: var(--text-muted);">
+          Antes de presionar las teclas, debes grabar estas tres reglas en tu mente, pues son las que definen la claridad y riqueza de la armonía moderna[cite: 72]:
+        </p>
+
+        <div class="grid-2col">
+          
+          <div class="callout callout-info" style="border-left-width: 6px;">
+            <h3 style="color: var(--accent-cyan); font-size: 1.1rem; margin-bottom: 0.5rem;">1. "Menos es más" (La omisión de la quinta)</h3>
+            <p>
+              En el jazz, la <strong>quinta justa</strong> es una nota prescindible porque no define la sonoridad ni la naturaleza (mayor, menor, dominante) del acorde[cite: 72, 271]. Al quitarla de la mano izquierda, evitas sobrecargar el registro grave (lo que ensuciaría el sonido) y liberas espacio físico y auditivo en el teclado para que destaquen las notas de color sin saturación[cite: 73, 272].
+            </p>
+          </div>
+
+          <div class="callout callout-success" style="border-left-width: 6px;">
+            <h3 style="color: var(--accent-green); font-size: 1.1rem; margin-bottom: 0.5rem;">2. División del trabajo entre tus manos</h3>
+            <ul style="padding-left: 1.2rem; margin-top: 0.4rem;">
+              <li style="margin-bottom: 0.4rem;">
+                <span class="hand-badge hand-lh">Mano Izquierda (MI)</span> Provee cimientos y estructura básica[cite: 74]. Toca la tónica (raíz) y los tonos guía (la tercera y/o la séptima)[cite: 75].
+              </li>
+              <li>
+                <span class="hand-badge hand-rh">Mano Derecha (MD)</span> Añade las tensiones o "notas de color" (novenas, oncenas o trecenas) en un registro más agudo y limpio[cite: 76].
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="callout callout-warning" style="margin-top: 1rem;">
+          <h3 style="color: var(--accent-amber); font-size: 1.1rem; margin-bottom: 0.5rem;">3. La supremacía de la melodía ("Aprender a restar")</h3>
+          <p>
+            La melodía principal de la canción actúa como el límite físico infranqueable para tus acordes[cite: 77]. Como regla fundamental, la nota de la melodía debe ser la <strong>nota más alta (la voz superior / la nota más aguda en el extremo derecho)</strong> de todo tu voicing para que destaque con claridad y no sea sepultada por las tensiones[cite: 78].
+          </p>
+          <p style="margin-top: 0.5rem; font-weight: 600;">
+            Si una nota de color (como una novena o trecena) "ensucia", choca o compite armónicamente con la melodía, la mejor decisión es omitirla y mantener una estructura de acorde más limpia[cite: 79]. Asimismo, puedes invertir las notas de tu mano derecha para adaptarlas al movimiento de la línea melódica[cite: 80].
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="sec-acordes" class="spa-section">
+      <div class="content-card">
+        <div class="card-header">
+          <div class="card-icon">2</div>
+          <h2 class="card-title">Parte 2: Guía de los 6 Acordes Más Usados del Jazz</h2>
+        </div>
+
+        <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
+          A continuación, encontrarás las fórmulas precisas y trucos de asociación mental rápida para estructurar los acordes esenciales del jazz[cite: 81]:
+        </p>
+
+        <div style="background: rgba(30, 58, 95, 0.2); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.25rem;">
+          <span class="badge badge-cyan">1. Séptima Mayor (Maj7 / Maj9)</span>
+          <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">Estructura y Voicing Profesional</h3>
+          <ul style="padding-left: 1.2rem; color: var(--text-muted); margin-bottom: 1rem;">
+            <li><strong>Estructura básica:</strong> Tónica, tercera mayor y séptima mayor (Ejemplo: Do - Mi - Si para Do Maj7)[cite: 82].</li>
+            <li><strong>Notas de color (Tensiones):</strong> Novena (9ª) y Trecena (13ª)[cite: 83].</li>
+            <li><span class="hand-badge hand-lh">MI</span> Toca la tónica (raíz), la tercera mayor y la séptima mayor[cite: 84].</li>
+            <li><span class="hand-badge hand-rh">MD</span> Toca la novena y la trecena[cite: 85].</li>
+            <li><strong>Variación opcional:</strong> Si prefieres un sonido más despejado sin la trecena, omítela y toca solo la novena en la mano derecha, repitiendo la quinta justa arriba[cite: 86].</li>
+          </ul>
+          <div class="callout callout-info" style="margin: 0;">
+            <strong>💡 Truco mental rápido:</strong> Esto equivale a tocar el bajo y la tercera en la izquierda (Do - Mi), y una tríada completa de Sol mayor en la derecha (Sol - Si - Re) sobre el bajo de Do[cite: 87].
+          </div>
+        </div>
+
+        <div style="background: rgba(30, 58, 95, 0.2); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.25rem;">
+          <span class="badge badge-purple">2. Séptima Menor (m7 / m9 / m11 / m13)</span>
+          <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">Estructura y Voicing Abierto</h3>
+          <ul style="padding-left: 1.2rem; color: var(--text-muted); margin-bottom: 1rem;">
+            <li><strong>Estructura básica:</strong> Raíz, tercera menor y séptima menor (Ejemplo: Re - Fa - Do para Re m7)[cite: 88].</li>
+            <li><strong>Notas de color (Tensiones):</strong> Novena (9ª), Oncenas (11ª) y Trecena (13ª)[cite: 89].</li>
+            <li><span class="hand-badge hand-lh">MI</span> Toca la raíz y la séptima menor (puedes añadir la tercera menor)[cite: 90].</li>
+            <li><span class="hand-badge hand-rh">MD</span> Toca las tensiones según lo requiera la melodía[cite: 91].</li>
+          </ul>
+          <div class="callout callout-success" style="margin: 0 0 0.5rem 0;">
+            <strong>💡 Truco rápido para Re menor 11 (Rem11):</strong> <span class="hand-badge hand-lh">MI</span> Toca Re (y opcionalmente Do)[cite: 92]. <span class="hand-badge hand-rh">MD</span> Toca una tríada completa de Do mayor en estado fundamental (Do - Mi - Sol)[cite: 93]. Resultado: Sonido moderno de Rem11 donde Do es la 7ª, Mi es la 9ª y Sol es la 11ª[cite: 94].
+          </div>
+          <div class="callout callout-info" style="margin: 0;">
+            <strong>💡 Truco para Re menor 13 (Rem13):</strong> Suma la trecena (Si) en la parte superior del acorde anterior, o bien omite la oncena y quédate únicamente con la novena (Mi) y la trecena (Si) en la derecha[cite: 95].
+          </div>
+        </div>
+
+        <div style="background: rgba(30, 58, 95, 0.2); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.25rem;">
+          <span class="badge badge-cyan">3. Séptima Dominante (7 / 13)</span>
+          <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">Estructura y Voicing Abierto Elegante</h3>
+          <p style="color: var(--text-muted); margin-bottom: 0.5rem;">
+            <strong>Ubicación armónica:</strong> Se forma sobre el quinto grado (V) de las escalas mayores (Ejemplo: Sol7 en Do mayor)[cite: 96]. Es el punto de máxima tensión[cite: 97].
+          </p>
+          <ul style="padding-left: 1.2rem; color: var(--text-muted); margin-bottom: 1rem;">
+            <li><span class="hand-badge hand-lh">MI</span> Toca únicamente la tónica (raíz) y la séptima menor[cite: 97]. Evita la tercera y la quinta aquí para que el registro grave no suene pesado o sucio[cite: 98].</li>
+            <li><span class="hand-badge hand-rh">MD</span> Toca la tercera mayor, la trecena y la novena[cite: 99]. Puedes invertir el orden de estas notas en la derecha según el movimiento melódico[cite: 100].</li>
+          </ul>
+          <div class="callout callout-warning" style="margin: 0;">
+            <strong>🎹 Ejemplo práctico en Si bemol 13 (B♭13):</strong> <span class="hand-badge hand-lh">MI</span> Bajo de Si bemol y su séptima menor (La bemol)[cite: 101]. <span class="hand-badge hand-rh">MD</span> Tercera mayor (Re), trecena (Sol) y novena (Do)[cite: 102].
+          </div>
+        </div>
+
+        <div style="background: rgba(30, 58, 95, 0.2); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.25rem;">
+          <span class="badge badge-purple">4. Séptima Disminuida (dim7 con 5ª sostenida)</span>
+          <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">Voicing Profesional de Tensión Ampliada</h3>
+          <ul style="padding-left: 1.2rem; color: var(--text-muted); margin-bottom: 1rem;">
+            <li><strong>Estructura básica:</strong> Intervalos de tercera menor consecutivos (Ejemplo: Do - Mi♭ - Fa# - La para Do dim7)[cite: 103].</li>
+            <li><strong>Notas de color:</strong> Se sitúan exactamente un tono por encima de cada nota del acorde disminuido base[cite: 104].</li>
+            <li><span class="hand-badge hand-lh">MI</span> Toca la tónica, la quinta bemol y la séptima disminuida (se retira la tercera menor de esta mano)[cite: 106].</li>
+            <li><span class="hand-badge hand-rh">MD</span> Toca la tercera menor (duplicada en el agudo) junto con la quinta sostenida (la nota de color)[cite: 107].</li>
+          </ul>
+          <div class="callout callout-info" style="margin: 0;">
+            <strong>💡 Trucos de asociación rápida:</strong>
+            <ul style="margin-top: 0.4rem; padding-left: 1rem;">
+              <li><strong>Re bemol disminuido 7 (D♭dim7 con 5ª sost.):</strong> <span class="hand-badge hand-lh">MI</span> Do# - Sol - Si[cite: 108]. <span class="hand-badge hand-rh">MD</span> Tríada de La mayor en 1ª inversión (Do# - Mi - La)[cite: 109]. El La actúa como 5ª sostenida[cite: 110].</li>
+              <li><strong>Sol disminuido 7 (Gdim7):</strong> <span class="hand-badge hand-lh">MI</span> Sol - Re♭ - Mi[cite: 111]. <span class="hand-badge hand-rh">MD</span> Tríada de Mi bemol mayor completa[cite: 112].</li>
+              <li><strong>Si disminuido 7 (Bdim7):</strong> <span class="hand-badge hand-lh">MI</span> Si - Fa - La♭[cite: 112]. <span class="hand-badge hand-rh">MD</span> Tríada de Sol mayor completa[cite: 113].</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="background: rgba(30, 58, 95, 0.2); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.25rem;">
+          <span class="badge badge-cyan">5. Acorde Menor de Sexta (m6 / m6/9)</span>
+          <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">Distribución de Voicing m6/9</h3>
+          <ul style="padding-left: 1.2rem; color: var(--text-muted); margin-bottom: 1rem;">
+            <li><strong>Estructura básica:</strong> Raíz, tercera menor y sexta (Ejemplo: Do - Mi♭ - La para Do m6)[cite: 113].</li>
+            <li><span class="hand-badge hand-lh">MI</span> Toca la raíz, la tercera menor y la sexta[cite: 116].</li>
+            <li><span class="hand-badge hand-rh">MD</span> Toca la novena y la quinta (reemplazamos la tónica duplicada por la novena para limpiar el acorde)[cite: 115, 117].</li>
+          </ul>
+          <div class="callout callout-success" style="margin: 0;">
+            <strong>🎹 Ejemplo práctico en Sol menor 6/9 (Gm6/9):</strong> <span class="hand-badge hand-lh">MI</span> Sol (raíz), Si bemol (3ª menor) y Mi (6ª)[cite: 118]. <span class="hand-badge hand-rh">MD</span> La (9ª) y Re (5ª)[cite: 119].
+          </div>
+        </div>
+
+        <div style="background: rgba(30, 58, 95, 0.2); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.25rem;">
+          <span class="badge badge-purple">6. Acorde de Séptima Semidisminuida (m7♭5)</span>
+          <h3 style="color: var(--text-main); margin-bottom: 0.5rem;">Fórmula Rápida de Asociación Mental</h3>
+          <p style="color: var(--text-muted); margin-bottom: 0.75rem;">
+            También conocido como menor 7 con quinta bemol (4 notas)[cite: 120]. Es crucial para cadencias y giros armónicos en tonos menores[cite: 121].
+          </p>
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 0.75rem; border-radius: 6px; border: 1px stroke var(--card-border); margin-bottom: 0.75rem;">
+            <ol style="padding-left: 1.2rem; color: var(--accent-cyan);">
+              <li>Toca la raíz (bajo) con la <span class="hand-badge hand-lh">Mano Izquierda</span>[cite: 122].</li>
+              <li>Toca un acorde menor básico <strong>un tono y medio más arriba</strong> de ese bajo con la <span class="hand-badge hand-rh">Mano Derecha</span>[cite: 123].</li>
+            </ol>
+          </div>
+          <div class="callout callout-info" style="margin: 0;">
+            <strong>🎹 Ejemplos prácticos:</strong>
+            <ul style="margin-top: 0.4rem; padding-left: 1rem;">
+              <li><strong>La semidisminuido (Lam7♭5):</strong> <span class="hand-badge hand-lh">MI</span> Bajo de La[cite: 124]. <span class="hand-badge hand-rh">MD</span> Tríada de Do menor (Do - Mi♭ - Sol)[cite: 124].</li>
+              <li><strong>Re semidisminuido (Rem7♭5):</strong> <span class="hand-badge hand-lh">MI</span> Bajo de Re[cite: 125]. <span class="hand-badge hand-rh">MD</span> Tríada de Fa menor (Fa - La♭ - Do)[cite: 125].</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="sec-iiv-i" class="spa-section">
+      <div class="content-card">
+        <div class="card-header">
+          <div class="card-icon">3</div>
+          <h2 class="card-title">Parte 3: Armonía y Voicings para la Progresión II-V-I en Jazz</h2>
+        </div>
+
+        <p style="margin-bottom: 1rem; color: var(--text-muted);">
+          La progresión <strong>II-V-I</strong> es el corazón del jazz[cite: 153]. Tomando como base la tonalidad de Do mayor (C Major), los tres acordes clave se distribuyen así[cite: 154]:
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Grado</th>
+                <th>Acorde</th>
+                <th>Mano Izquierda (MI)</th>
+                <th>Mano Derecha (MD)</th>
+                <th>Análisis de Conducción de Voces</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>II Grado</strong></td>
+                <td>Re m11</td>
+                <td><span class="hand-badge hand-lh">Re - (Do)</span><br><small>Bajo y 7ª menor</small></td>
+                <td><span class="hand-badge hand-rh">Do - Mi - Sol</span><br><small>Tríada Do mayor</small></td>
+                <td>El Do es la 7ª, el Mi la 9ª y el Sol la 11ª[cite: 158]. Sonido abierto y moderno[cite: 157].</td>
+              </tr>
+              <tr>
+                <td><strong>V Grado</strong></td>
+                <td>Sol 13</td>
+                <td><span class="hand-badge hand-lh">Sol - Fa</span><br><small>Bajo y 7ª menor</small></td>
+                <td><span class="hand-badge hand-rh">Si - Mi - La</span><br><small>3ªM, 13ª, 9ª</small></td>
+                <td><strong>Movimiento sutil:</strong> El Do baja a Si, el Mi se mantiene y el Sol sube a La[cite: 163]. Los dedos apenas se mueven[cite: 163].</td>
+              </tr>
+              <tr>
+                <td><strong>I Grado</strong></td>
+                <td>Do Maj9</td>
+                <td><span class="hand-badge hand-lh">Do - Mi - Si</span><br><small>Bajo, 3ªM, 7ªM</small></td>
+                <td><span class="hand-badge hand-rh">Re - Sol</span><br><small>9ª y 5ª justa</small></td>
+                <td>Resolución relajante y sofisticada[cite: 164]. Se omite la quinta en la mano izquierda[cite: 165, 168].</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="background: #050811; border: 1px solid var(--card-border); border-radius: 10px; padding: 1rem; margin-top: 1.5rem; text-align: center;">
+          <h3 style="color: var(--accent-cyan); font-size: 1rem; margin-bottom: 0.75rem;">INFOGRAFÍA: Conducción de Voces Estrecha en la Mano Derecha (MD)</h3>
+          
+          <svg viewBox="0 0 700 160" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+            <rect width="700" height="160" fill="#0f172a" rx="8" />
+            
+            <g transform="translate(50, 20)">
+              <rect width="160" height="120" fill="#1e293b" rx="6" stroke="#a855f7" stroke-width="1.5" />
+              <text x="80" y="25" fill="#a855f7" font-size="14" font-weight="bold" text-anchor="middle">1. Re m11</text>
+              <text x="80" y="55" fill="#f8fafc" font-size="12" text-anchor="middle">Do (7ª)</text>
+              <text x="80" y="80" fill="#f8fafc" font-size="12" text-anchor="middle">Mi (9ª)</text>
+              <text x="80" y="105" fill="#f8fafc" font-size="12" text-anchor="middle">Sol (11ª)</text>
+            </g>
+
+            <path d="M225,80 L275,80" stroke="#00d4ff" stroke-width="2" />
+            <text x="250" y="70" fill="#94a3b8" font-size="10" text-anchor="middle">Transición</text>
+
+            <g transform="translate(285, 20)">
+              <rect width="160" height="120" fill="#1e293b" rx="6" stroke="#00d4ff" stroke-width="1.5" />
+              <text x="80" y="25" fill="#00d4ff" font-size="14" font-weight="bold" text-anchor="middle">2. Sol 13</text>
+              <text x="80" y="55" fill="#38bdf8" font-size="12" text-anchor="middle">Si (3ªM) ← Do↓</text>
+              <text x="80" y="80" fill="#22c55e" font-size="12" text-anchor="middle">Mi (13ª) [Retiene]</text>
+              <text x="80" y="105" fill="#38bdf8" font-size="12" text-anchor="middle">La (9ª) ← Sol↑</text>
+            </g>
+
+            <path d="M460,80 L510,80" stroke="#00d4ff" stroke-width="2" />
+
+            <g transform="translate(520, 20)">
+              <rect width="160" height="120" fill="#1e293b" rx="6" stroke="#22c55e" stroke-width="1.5" />
+              <text x="80" y="25" fill="#22c55e" font-size="14" font-weight="bold" text-anchor="middle">3. Do Maj9</text>
+              <text x="80" y="65" fill="#f8fafc" font-size="12" text-anchor="middle">Re (9ª)</text>
+              <text x="80" y="95" fill="#f8fafc" font-size="12" text-anchor="middle">Sol (5ª)</text>
+            </g>
+          </svg>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="sec-usame" class="spa-section">
+      <div class="content-card">
+        <div class="card-header">
+          <div class="card-icon">4</div>
+          <h2 class="card-title">Parte 4: Estudio de Caso — Armonización de la Canción "Úsame"</h2>
+        </div>
+
+        <p style="margin-bottom: 1rem; color: var(--text-muted);">
+          Aplicación práctica nota por nota en la tonalidad de Do Mayor[cite: 126]. La melodía de la canción dicta exactamente qué tensiones sumar y cuáles omitir[cite: 127]:
+        </p>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Compás / Acorde</th>
+                <th>Mano Izquierda (MI)</th>
+                <th>Mano Derecha (MD)</th>
+                <th>Análisis de Estructura y Melodía</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Do Maj9</strong><br><small>(Grado I)</small></td>
+                <td>Do - Mi - Si<br><small>(Bajo, 3ªM, 7ªM)</small></td>
+                <td>Re - Sol<br><small>(Novena y 5ª justa)</small></td>
+                <td>Omitimos la quinta en MI para limpiar graves[cite: 131]. La melodía reposa sobre <strong>Sol</strong> (nota más aguda), coronando el acorde con claridad[cite: 131].</td>
+              </tr>
+              <tr>
+                <td><strong>2. Do#dim7</strong><br><small>(Paso cromático)</small></td>
+                <td>Do# - Sol - Si<br><small>(Tónica, 5ª♭, 7ªdim)</small></td>
+                <td>Do# - Mi - La<br><small>(Tríada La mayor 1ª inv.)</small></td>
+                <td>El <strong>La</strong> en la derecha funciona como 5ª sostenida (tensión)[cite: 134]. Genera un paso cromático elegante hacia el grado II[cite: 135].</td>
+              </tr>
+              <tr>
+                <td><strong>3. Re m7</strong><br><small>(Grado II)</small></td>
+                <td>Re - Do<br><small>(Bajo y 7ª menor)</small></td>
+                <td>Fa<br><small>(3ª menor / Melodía)</small></td>
+                <td>La melodía reposa en <strong>Fa</strong>[cite: 137]. Si añadiéramos 9ª (Mi) o 13ª (Si) chocarían con la melodía[cite: 137]. Aplicamos <em>"aprender a restar"</em>[cite: 138].</td>
+              </tr>
+              <tr>
+                <td><strong>4. Sol 13</strong><br><small>(Grado V)</small></td>
+                <td>Sol - Fa<br><small>(Bajo y 7ª menor)</small></td>
+                <td>Si - Mi - La<br><small>(3ªM, 13ª, 9ª)</small></td>
+                <td>Se eliminan 3ª y 5ª de MI para no saturar[cite: 141]. La melodía reposa sobre <strong>La</strong> en la voz superior[cite: 142].</td>
+              </tr>
+              <tr>
+                <td><strong>5. Sol m6</strong><br><small>(Giro de paso)</small></td>
+                <td>Sol - Si♭ - Mi<br><small>(Bajo, 3ªm, 6ª)</small></td>
+                <td>Re<br><small>(Quinta justa)</small></td>
+                <td>Giro rápido hacia Fa mayor[cite: 145]. Como la melodía reposa en <strong>Re</strong>, descartamos la novena (La) para no ensuciar[cite: 146].</td>
+              </tr>
+              <tr>
+                <td><strong>6. La m7b5</strong><br><small>(Semidisminuido)</small></td>
+                <td>La<br><small>(Bajo)</small></td>
+                <td>Do - Mi♭ - Sol<br><small>(Tríada Do menor)</small></td>
+                <td>Giro menor rápido[cite: 199]. Tríada menor un tono y medio por encima del bajo crea el semidisminuido instantáneo[cite: 202].</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="sec-visualizador" class="spa-section">
+      <div class="content-card">
+        <div class="card-header">
+          <div class="card-icon">5</div>
+          <h2 class="card-title">Parte 5: Calculador Visual e Inspector de Voicings por Mano</h2>
+        </div>
+
+        <p style="margin-bottom: 1rem; color: var(--text-muted);">
+          Haz clic en cualquier acorde a continuación para examinar el desglose detallado de notas distribuidas entre la <span style="color: var(--accent-purple); font-weight: bold;">Mano Izquierda (MI)</span> y la <span style="color: var(--accent-cyan); font-weight: bold;">Mano Derecha (MD)</span>:
+        </p>
+
+        <div class="voicing-wrapper">
+          <div class="chord-controls">
+            <button class="chord-select-btn active" onclick="renderChordVoicing('domaj9', this)">Do Maj9</button>
+            <button class="chord-select-btn" onclick="renderChordVoicing('rem11', this)">Re m11</button>
+            <button class="chord-select-btn" onclick="renderChordVoicing('sol13', this)">Sol 13</button>
+            <button class="chord-select-btn" onclick="renderChordVoicing('dodesdim', this)">Do# dim7 (5ª#)</button>
+            <button class="chord-select-btn" onclick="renderChordVoicing('solm69', this)">Sol m6/9</button>
+            <button class="chord-select-btn" onclick="renderChordVoicing('lam7b5', this)">La m7♭5</button>
+          </div>
+
+          <div id="voicing-display-container"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="sec-creditos" class="spa-section">
+      <div class="content-card">
+        <div class="card-header">
+          <div class="card-icon">👤</div>
+          <h2 class="card-title">Créditos y Resumen Final</h2>
+        </div>
+
+        <div class="callout callout-success">
+          <h3 style="color: var(--accent-green); margin-bottom: 0.5rem;">Resumen de Estudio</h3>
+          <p>
+            Dominar los voicings de jazz requiere practicar estas estructuras primero en Do mayor hasta que la distribución entre manos sea fluida e intuitiva, para luego transportarlas a través de las 12 tonalidades[cite: 150, 151]. Recuerda siempre priorizar la claridad de la melodía antes de añadir tensiones excesivas[cite: 152].
+          </p>
+        </div>
+
+        <div style="background: rgba(30, 58, 95, 0.2); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.25rem; margin-top: 1rem;">
+          <h3 style="color: var(--accent-cyan); margin-bottom: 0.5rem;">Ficha Técnica del Manual</h3>
+          <p><strong>Título:</strong> Guía Maestra de Voicings y Armonía de Jazz para Piano</p>
+          <p><strong>Autor / Créditos:</strong> Rubén Sbarsky</p>
+          <p><strong>Fecha de Emisión:</strong> 12/AGOSTO/2026</p>
+          <p><strong>Hora:</strong> 07:53:05</p>
+          <p><strong>Formato:</strong> Aplicación Web Interactiva de Archivo Único (SPA Autocontenida)</p>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <button id="back-to-top" onclick="scrollToTop()" title="Volver arriba">↑</button>
+
+  <footer>
+    <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+    <p>👨‍💻 Créditos: Rubén Sbarsky</p>
+    <p>📅 FECHA: 12/AGOSTO/2026</p>
+    <p>Hora: 07:53:05</p>
+    <p style="margin-top: 0.5rem; font-style: italic; color: var(--accent-cyan);">Fiat iustitia, ruat caelum.</p>
+  </footer>
+
+  <script>
+    /* ==================== SCRIPT DE NAVEGACIÓN Y BARRA DE PROGRESO ==================== */
+    
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+
+      const btt = document.getElementById('back-to-top');
+      if (winScroll > 300) {
+        btt.style.display = 'flex';
+      } else {
+        btt.style.display = 'none';
+      }
+    });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchSection(sectionId, btnEl) {
+      const sections = document.querySelectorAll('.spa-section');
+      sections.forEach(sec => sec.classList.remove('active'));
+
+      const buttons = document.querySelectorAll('.nav-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      const targetSection = document.getElementById(sectionId);
+      if (targetSection) {
+        targetSection.classList.add('active');
+      }
+
+      if (btnEl) {
+        btnEl.classList.add('active');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ==================== BASE DE DATOS DE VOICINGS Y RENDERIZADOR ==================== */
+    
+    const CHORD_DATA = {
+      domaj9: {
+        title: "Do Maj9 (Grado I)",
+        lhNotes: [
+          { note: "Do", function: "Tónica / Raíz", detail: "Cimientos / Bajo grave" },
+          { note: "Mi", function: "Tercera Mayor (3ªM)", detail: "Tono guía imprescindible" },
+          { note: "Si", function: "Séptima Mayor (7ªM)", detail: "Tono guía característico" }
+        ],
+        rhNotes: [
+          { note: "Re", function: "Novena (9ª)", detail: "Tensión de color principal" },
+          { note: "Sol", function: "Quinta Justa (5ª)", detail: "Sostén armónico / Voz superior" }
+        ],
+        shortcut: "Mano Izquierda toca bajo y tonos guía (Do - Mi - Si). Mano Derecha toca par Re - Sol (equivalente a completar con tríada de Sol mayor en MD sobre bajo Do).",
+        description: "Se omite la 5ª justa en la mano izquierda para evitar sobrecargar la zona grave del piano. La mano derecha ubica la novena y la quinta en el registro agudo, obteniendo una sonoridad muy limpia, abierta y relajante."
+      },
+      rem11: {
+        title: "Re m11 (Grado II)",
+        lhNotes: [
+          { note: "Re", function: "Tónica / Raíz", detail: "Bajo principal del acorde" },
+          { note: "Do", function: "Séptima Menor (7ªm)", detail: "Tono guía opcional en MI" }
+        ],
+        rhNotes: [
+          { note: "Do", function: "Séptima Menor (7ªm)", detail: "Base de la tríada superior" },
+          { note: "Mi", function: "Novena (9ª)", detail: "Tensión de color brillante" },
+          { note: "Sol", function: "Oncena (11ª)", detail: "Tensión abierta / Voz más aguda" }
+        ],
+        shortcut: "Mano Izquierda toca Bajo Re (y opcionalmente Do). Mano Derecha toca una tríada completa de Do mayor (Do - Mi - Sol) en estado fundamental.",
+        description: "Truco de asociación ultrarrápido: al combinar el bajo Re con la tríada completa de Do mayor en la derecha, construyes automáticamente un Re m11 limpio y moderno. El Do es la 7ª, el Mi es la 9ª y el Sol es la 11ª."
+      },
+      sol13: {
+        title: "Sol 13 (Grado V Dominante)",
+        lhNotes: [
+          { note: "Sol", function: "Tónica / Raíz", detail: "Bajo de dominante" },
+          { note: "Fa", function: "Séptima Menor (7ªm)", detail: "Tono guía de máxima tensión" }
+        ],
+        rhNotes: [
+          { note: "Si", function: "Tercera Mayor (3ªM)", detail: "Tono guía esencial" },
+          { note: "Mi", function: "Trecena (13ª / 6ª)", detail: "Tensión de color principal" },
+          { note: "La", function: "Novena (9ª)", detail: "Voz superior / Línea melódica" }
+        ],
+        shortcut: "Mano Izquierda: Sol y Fa (Tónica y 7ªm). Mano Derecha: Si - Mi - La (3ªM, 13ª y 9ª abiertas).",
+        description: "Voicing abierto súper elegante. En la mano izquierda eliminamos la 3ª y la 5ª para no saturar los graves. La mano derecha ubica las tensiones en un registro cómodo, facilitando una transición suave con muy poco movimiento de dedos hacia Do Maj9."
+      },
+      dodesdim: {
+        title: "Do# dim7 con 5ª Sostenida (Tensión Ampliada)",
+        lhNotes: [
+          { note: "Do#", function: "Tónica / Raíz", detail: "Bajo de paso cromático" },
+          { note: "Sol", function: "Quinta Bemol (5ª♭)", detail: "Tono guía disminuido" },
+          { note: "Si (Do♭)", function: "Séptima Disminuida (7ªdim)", detail: "Estructura disminuida" }
+        ],
+        rhNotes: [
+          { note: "Do#", function: "Tercera Menor (3ªm)", detail: "Duplicación en agudo" },
+          { note: "Mi", function: "Tercera Menor (3ªm)", detail: "Cuerpo del acorde" },
+          { note: "La", function: "Quinta Sostenida (5ª#)", detail: "Tensión de color (Nota especial)" }
+        ],
+        shortcut: "Mano Izquierda: Base disminuida (Do# - Sol - Si). Mano Derecha: Tríada de La mayor en 1ª inversión (Do# - Mi - La).",
+        description: "El La de la mano derecha funciona como la quinta sostenida (5ª#) del acorde disminuido base. Esta tensión de color proporciona una sonoridad clásica y dramática del jazz para conectar Do Mayor con Re Menor."
+      },
+      solm69: {
+        title: "Sol menor 6/9",
+        lhNotes: [
+          { note: "Sol", function: "Tónica / Raíz", detail: "Bajo de acorde menor" },
+          { note: "Si♭", function: "Tercera Menor (3ªm)", detail: "Define la naturaleza menor" },
+          { note: "Mi", function: "Sexta Mayor (6ªM)", detail: "Nota de color m6" }
+        ],
+        rhNotes: [
+          { note: "La", function: "Novena (9ª)", detail: "Tensión que reemplaza la tónica" },
+          { note: "Re", function: "Quinta Justa (5ª)", detail: "Sostén melódico" }
+        ],
+        shortcut: "Mano Izquierda: Sol - Si♭ - Mi. Mano Derecha: La - Re.",
+        description: "Para evitar duplicar la tónica en la mano derecha (lo que empobrecería el color armónico), la reemplazamos por la novena (La), obteniendo un sofisticado acorde de Sol menor 6/9."
+      },
+      lam7b5: {
+        title: "La m7♭5 (Semidisminuido)",
+        lhNotes: [
+          { note: "La", function: "Tónica / Raíz", detail: "Bajo de paso menor" }
+        ],
+        rhNotes: [
+          { note: "Do", function: "Tercera Menor (3ªm)", detail: "Tono guía" },
+          { note: "Mi♭", function: "Quinta Bemol (5ª♭)", detail: "Define la 5ª disminuida" },
+          { note: "Sol", function: "Séptima Menor (7ªm)", detail: "Tono guía" }
+        ],
+        shortcut: "Mano Izquierda: Bajo de La. Mano Derecha: Tríada completa de Do menor (Do - Mi♭ - Sol).",
+        description: "Regla nemotécnica infalible: tocando una tríada menor un tono y medio por encima del bajo de la mano izquierda, construyes de forma automática un acorde semidisminuido (m7♭5) perfecto y sin complicaciones."
+      }
+    };
+
+    function renderChordVoicing(chordKey, btnEl) {
+      const btns = document.querySelectorAll('.chord-select-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+
+      const data = CHORD_DATA[chordKey];
+      if (!data) return;
+
+      const container = document.getElementById('voicing-display-container');
+
+      let lhNotesHtml = data.lhNotes.map(n => `
+        <div class="note-item">
+          <div class="note-name-badge note-lh-badge">${n.note}</div>
+          <div class="note-meta">
+            <div class="note-function">${n.function}</div>
+            <div class="note-detail">${n.detail}</div>
+          </div>
+        </div>
+      `).join('');
+
+      let rhNotesHtml = data.rhNotes.map(n => `
+        <div class="note-item">
+          <div class="note-name-badge note-rh-badge">${n.note}</div>
+          <div class="note-meta">
+            <div class="note-function">${n.function}</div>
+            <div class="note-detail">${n.detail}</div>
+          </div>
+        </div>
+      `).join('');
+
+      container.innerHTML = `
+        <h3 style="color: var(--accent-cyan); font-size: 1.2rem; margin-bottom: 0.5rem; text-align: center;">${data.title}</h3>
+        
+        <div class="voicing-inspector-grid">
+          <div class="hand-card hand-card-lh">
+            <div class="hand-card-header">
+              <span class="hand-badge hand-lh">🤚 MANO IZQUIERDA (MI)</span>
+              <small>Cimientos / Bajo</small>
+            </div>
+            <div class="notes-list">
+              ${lhNotesHtml}
+            </div>
+          </div>
+
+          <div class="hand-card hand-card-rh">
+            <div class="hand-card-header">
+              <span class="hand-badge hand-rh">✋ MANO DERECHA (MD)</span>
+              <small>Tensiones / Color</small>
+            </div>
+            <div class="notes-list">
+              ${rhNotesHtml}
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-success" style="margin-top: 1rem; text-align: left;">
+          <h4 style="color: var(--accent-green); margin-bottom: 0.3rem;">💡 Truco de Asociación Mental Rápida</h4>
+          <p style="font-size: 0.92rem; color: #dcfce7;">${data.shortcut}</p>
+        </div>
+
+        <div class="callout callout-info" style="margin-top: 0.75rem; text-align: left;">
+          <h4 style="color: var(--accent-cyan); margin-bottom: 0.3rem;">📝 Análisis Armónico del Voicing</h4>
+          <p style="font-size: 0.9rem; color: #bae6fd;">${data.description}</p>
+        </div>
+      `;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderChordVoicing('domaj9', null);
+    });
+  </script>
+</body>
+</html>
