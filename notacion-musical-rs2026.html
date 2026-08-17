@@ -1,0 +1,2407 @@
+<!DOCTYPE html>
+
+
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SISTEMA DE NOTACIÓN MUSICAL RS2026 by Rubén Sbarsky</title>
+
+    <style>
+
+        :root {
+
+            --bg-main: #0a0e1a;
+
+            --bg-card: #0f172a;
+
+            --bg-card-hover: #162036;
+
+            --border-color: #1e3a5f;
+
+            --border-glow: #00d4ff44;
+
+            --accent-main: #00d4ff;
+
+            --accent-green: #22c55e;
+
+            --accent-amber: #f59e0b;
+
+            --accent-red: #ef4444;
+
+            --accent-purple: #a855f7;
+
+            --text-main: #f1f5f9;
+
+            --text-muted: #94a3b8;
+
+            --font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+            --radius-sm: 6px;
+
+            --radius-md: 10px;
+
+            --radius-lg: 16px;
+
+        }
+
+        * {
+
+            box-sizing: border-box;
+
+            margin: 0;
+
+            padding: 0;
+
+        }
+
+        body {
+
+            background-color: var(--bg-main);
+
+            color: var(--text-main);
+
+            font-family: var(--font-family);
+
+            line-height: 1.6;
+
+            overflow-x: hidden;
+
+            padding-bottom: 60px;
+
+        }
+
+        #progress-bar {
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            height: 4px;
+
+            background: linear-gradient(90deg, var(--accent-main), var(--accent-purple), var(--accent-green));
+
+            width: 0%;
+
+            z-index: 1000;
+
+            transition: width 0.1s ease-out;
+
+        }
+
+        ::-webkit-scrollbar {
+
+            width: 8px;
+
+            height: 8px;
+
+        }
+
+        ::-webkit-scrollbar-track {
+
+            background: var(--bg-main);
+
+        }
+
+        ::-webkit-scrollbar-thumb {
+
+            background: var(--border-color);
+
+            border-radius: 4px;
+
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+
+            background: var(--accent-main);
+
+        }
+
+        header {
+
+            position: sticky;
+
+            top: 0;
+
+            background-color: rgba(15, 23, 42, 0.92);
+
+            backdrop-filter: blur(12px);
+
+            border-bottom: 1px solid var(--border-color);
+
+            z-index: 900;
+
+        }
+
+        .nav-container {
+
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 16px;
+
+            height: 60px;
+
+        }
+
+        .brand-logo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-weight: 700;
+
+            font-size: 1.1rem;
+
+            color: var(--accent-main);
+
+            white-space: nowrap;
+
+            text-decoration: none;
+
+        }
+
+        .brand-logo svg {
+
+            width: 24px;
+
+            height: 24px;
+
+            fill: var(--accent-main);
+
+        }
+
+        .nav-scroll {
+
+            display: flex;
+
+            gap: 8px;
+
+            overflow-x: auto;
+
+            padding: 8px 0;
+
+            scrollbar-width: none; /* Firefox */
+
+            -ms-overflow-style: none; /* IE/Edge */
+
+        }
+
+        .nav-scroll::-webkit-scrollbar {
+
+            display: none;
+
+        }
+
+        .nav-btn {
+
+            background: transparent;
+
+            border: 1px solid transparent;
+
+            color: var(--text-muted);
+
+            padding: 6px 14px;
+
+            border-radius: var(--radius-sm);
+
+            font-size: 0.85rem;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+
+            transition: all 0.2s ease;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+        }
+
+        .nav-btn:hover {
+
+            color: var(--text-main);
+
+            background-color: rgba(0, 212, 255, 0.1);
+
+            border-color: rgba(0, 212, 255, 0.3);
+
+        }
+
+        .nav-btn.active {
+
+            color: #000;
+
+            background-color: var(--accent-main);
+
+            border-color: var(--accent-main);
+
+            font-weight: 700;
+
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+
+        }
+
+        .container {
+
+            max-width: 1200px;
+
+            margin: 20px auto;
+
+            padding: 0 16px;
+
+        }
+
+        .page-section {
+
+            display: none;
+
+            animation: fadeIn 0.3s ease-in-out;
+
+        }
+
+        .page-section.active {
+
+            display: block;
+
+        }
+
+        @keyframes fadeIn {
+
+            from { opacity: 0; transform: translateY(8px); }
+
+            to { opacity: 1; transform: translateY(0); }
+
+        }
+
+        .card {
+
+            background-color: var(--bg-card);
+
+            border: 1px solid var(--border-color);
+
+            border-radius: var(--radius-md);
+
+            padding: 24px;
+
+            margin-bottom: 24px;
+
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+        .card-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 16px;
+
+            border-bottom: 1px solid rgba(30, 58, 95, 0.5);
+
+            padding-bottom: 12px;
+
+        }
+
+        .card-icon {
+
+            width: 32px;
+
+            height: 32px;
+
+            background: rgba(0, 212, 255, 0.1);
+
+            border: 1px solid var(--accent-main);
+
+            border-radius: var(--radius-sm);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: var(--accent-main);
+
+        }
+
+        .card-title {
+
+            font-size: 1.25rem;
+
+            font-weight: 700;
+
+            color: var(--text-main);
+
+        }
+
+        .badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            padding: 4px 10px;
+
+            border-radius: 20px;
+
+            font-size: 0.75rem;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+        }
+
+        .badge-main { background: rgba(0, 212, 255, 0.15); color: var(--accent-main); border: 1px solid var(--accent-main); }
+
+        .badge-green { background: rgba(34, 197, 94, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+
+        .badge-amber { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border: 1px solid var(--accent-amber); }
+
+        .badge-purple { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+
+        .metrics-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+            gap: 16px;
+
+            margin: 20px 0;
+
+        }
+
+        .metric-card {
+
+            background: rgba(15, 23, 42, 0.8);
+
+            border: 1px solid var(--border-color);
+
+            border-radius: var(--radius-md);
+
+            padding: 16px;
+
+            text-align: center;
+
+        }
+
+        .metric-value {
+
+            font-size: 1.8rem;
+
+            font-weight: 800;
+
+            color: var(--accent-main);
+
+            margin-bottom: 4px;
+
+        }
+
+        .metric-label {
+
+            font-size: 0.85rem;
+
+            color: var(--text-muted);
+
+        }
+
+        .callout {
+
+            padding: 16px;
+
+            border-radius: var(--radius-md);
+
+            margin: 16px 0;
+
+            border-left: 4px solid;
+
+            background: rgba(15, 23, 42, 0.6);
+
+        }
+
+        .callout-info { border-color: var(--accent-main); background: rgba(0, 212, 255, 0.05); }
+
+        .callout-example { border-color: var(--accent-green); background: rgba(34, 197, 94, 0.05); }
+
+        .callout-warning { border-color: var(--accent-amber); background: rgba(245, 158, 11, 0.05); }
+
+        .callout-error { border-color: var(--accent-red); background: rgba(239, 68, 68, 0.05); }
+
+        .callout-title {
+
+            font-weight: 700;
+
+            margin-bottom: 6px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+        }
+
+        .callout-info .callout-title { color: var(--accent-main); }
+
+        .callout-example .callout-title { color: var(--accent-green); }
+
+        .callout-warning .callout-title { color: var(--accent-amber); }
+
+        .callout-error .callout-title { color: var(--accent-red); }
+
+        .custom-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin: 16px 0;
+
+            font-size: 0.95rem;
+
+        }
+
+        .custom-table th, .custom-table td {
+
+            padding: 12px 16px;
+
+            border: 1px solid var(--border-color);
+
+            text-align: left;
+
+        }
+
+        .custom-table th {
+
+            background-color: rgba(30, 58, 95, 0.4);
+
+            color: var(--accent-main);
+
+            font-weight: 700;
+
+        }
+
+        .custom-table tr:nth-child(even) {
+
+            background-color: rgba(255, 255, 255, 0.02);
+
+        }
+
+        code, .code-inline {
+
+            background: rgba(0, 212, 255, 0.1);
+
+            color: var(--accent-main);
+
+            padding: 2px 6px;
+
+            border-radius: var(--radius-sm);
+
+            font-family: 'Courier New', Courier, monospace;
+
+            font-size: 0.9em;
+
+            border: 1px solid rgba(0, 212, 255, 0.2);
+
+        }
+
+        .code-block {
+
+            background-color: #050811;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: var(--radius-md);
+
+            padding: 16px;
+
+            font-family: 'Consolas', 'Courier New', monospace;
+
+            color: #38bdf8;
+
+            overflow-x: auto;
+
+            margin: 16px 0;
+
+            white-space: pre-wrap;
+
+            line-height: 1.5;
+
+        }
+
+        .interactive-box {
+
+            background: rgba(10, 14, 26, 0.8);
+
+            border: 1px solid var(--accent-main);
+
+            border-radius: var(--radius-md);
+
+            padding: 20px;
+
+            margin: 20px 0;
+
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+
+        }
+
+        .interactive-title {
+
+            color: var(--accent-main);
+
+            font-weight: 700;
+
+            margin-bottom: 12px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+        }
+
+        .grid-bits {
+
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 10px;
+
+            margin: 16px 0;
+
+        }
+
+        .bit-btn {
+
+            background: var(--bg-card);
+
+            border: 2px solid var(--border-color);
+
+            color: var(--text-muted);
+
+            padding: 16px;
+
+            border-radius: var(--radius-md);
+
+            font-size: 1.2rem;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: all 0.2s ease;
+
+            text-align: center;
+
+        }
+
+        .bit-btn.active {
+
+            background: rgba(34, 197, 94, 0.2);
+
+            border-color: var(--accent-green);
+
+            color: var(--accent-green);
+
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+
+        }
+
+        .btn-action {
+
+            background: linear-gradient(135deg, var(--accent-main), #0088cc);
+
+            color: #000;
+
+            border: none;
+
+            padding: 10px 20px;
+
+            border-radius: var(--radius-sm);
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            transition: transform 0.2s, box-shadow 0.2s;
+
+        }
+
+        .btn-action:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+
+        }
+
+        .btn-action:active {
+
+            transform: translateY(0);
+
+        }
+
+        .hero-cover {
+
+            width: 100%;
+
+            border-radius: var(--radius-lg);
+
+            overflow: hidden;
+
+            border: 1px solid var(--border-color);
+
+            margin-bottom: 24px;
+
+            background-color: #050811;
+
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+        }
+
+        .hero-cover svg {
+
+            width: 100%;
+
+            height: auto;
+
+            display: block;
+
+        }
+
+        .quote-box {
+
+            font-style: italic;
+
+            border-left: 4px solid var(--accent-purple);
+
+            padding: 12px 20px;
+
+            background: rgba(168, 85, 247, 0.08);
+
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+
+            margin: 20px 0;
+
+            color: #e9d5ff;
+
+        }
+
+        footer {
+
+            margin-top: 60px;
+
+            padding: 30px 16px;
+
+            background-color: var(--bg-card);
+
+            border-top: 1px solid var(--border-color);
+
+            text-align: center;
+
+            color: var(--text-muted);
+
+            font-size: 0.9rem;
+
+        }
+
+        .footer-content {
+
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+
+            align-items: center;
+
+        }
+
+        .btn-top {
+
+            position: fixed;
+
+            bottom: 20px;
+
+            right: 20px;
+
+            width: 44px;
+
+            height: 44px;
+
+            background-color: var(--accent-main);
+
+            color: #000;
+
+            border: none;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            cursor: pointer;
+
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
+
+            opacity: 0;
+
+            visibility: hidden;
+
+            transition: all 0.3s ease;
+
+            z-index: 800;
+
+        }
+
+        .btn-top.visible {
+
+            opacity: 1;
+
+            visibility: visible;
+
+        }
+
+        .btn-top:hover {
+
+            transform: scale(1.1);
+
+        }
+
+        /* Responsive adjustments */
+
+        @media (max-width: 768px) {
+
+            .metrics-grid {
+
+                grid-template-columns: 1fr 1fr;
+
+            }
+
+            .grid-bits {
+
+                grid-template-columns: repeat(2, 1fr);
+
+            }
+
+            .card {
+
+                padding: 16px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div id="progress-bar"></div>
+
+    <header>
+
+        <div class="nav-container">
+
+            <a href="#" class="brand-logo" onclick="switchSection('home'); return false;">
+
+                <svg viewBox="0 0 24 24">
+
+                    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+
+                </svg>
+
+                <span>RS2026</span>
+
+            </a>
+
+            <nav class="nav-scroll">
+
+                <button class="nav-btn active" onclick="switchSection('home')" id="btn-home">
+
+                    <span>🏠 Portada</span>
+
+                </button>
+
+                <button class="nav-btn" onclick="switchSection('elementos')" id="btn-elementos">
+
+                    <span>🎵 Elementos & Sintaxis</span>
+
+                </button>
+
+                <button class="nav-btn" onclick="switchSection('ritmo')" id="btn-ritmo">
+
+                    <span>⚡ Ritmo Binario</span>
+
+                </button>
+
+                <button class="nav-btn" onclick="switchSection('estructura')" id="btn-estructura">
+
+                    <span>🎼 Estructura & Expresividad</span>
+
+                </button>
+
+                <button class="nav-btn" onclick="switchSection('ejemplo')" id="btn-ejemplo">
+
+                    <span>🎹 Ejemplo Completo</span>
+
+                </button>
+
+                <button class="nav-btn" onclick="switchSection('ventajas')" id="btn-ventajas">
+
+                    <span>🚀 Ventajas & Conclusión</span>
+
+                </button>
+
+                <button class="nav-btn" onclick="switchSection('creditos')" id="btn-creditos">
+
+                    <span>👨‍💻 Créditos</span>
+
+                </button>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+    <div class="container">
+
+        <!-- ==================== HOME / HERO SECTION ==================== -->
+
+        <section id="sec-home" class="page-section active">
+
+            
+
+            <!-- MANDATORY HERO COVER SVG (16:9 TECHNICAL DESIGN) -->
+
+            <div class="hero-cover">
+
+                <svg viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg">
+
+                    <defs>
+
+                        <linearGradient id="bgGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+
+                            <stop offset="0%" stop-color="#0a0e1a"/>
+
+                            <stop offset="50%" stop-color="#0f172a"/>
+
+                            <stop offset="100%" stop-color="#1e1b4b"/>
+
+                        </linearGradient>
+
+                        <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+
+                            <stop offset="0%" stop-color="#00d4ff"/>
+
+                            <stop offset="100%" stop-color="#3b82f6"/>
+
+                        </linearGradient>
+
+                        <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+
+                            <stop offset="0%" stop-color="#a855f7"/>
+
+                            <stop offset="100%" stop-color="#ec4899"/>
+
+                        </linearGradient>
+
+                        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+
+                            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e3a5f" stroke-width="0.5" opacity="0.4"/>
+
+                        </pattern>
+
+                    </defs>
+
+                    <!-- Background Grid -->
+
+                    <rect width="960" height="540" fill="url(#bgGlow)"/>
+
+                    <rect width="960" height="540" fill="url(#grid)"/>
+
+                    <!-- Ambient Glow Orbs -->
+
+                    <circle cx="200" cy="150" r="180" fill="#00d4ff" opacity="0.08" filter="blur(40px)"/>
+
+                    <circle cx="760" cy="380" r="220" fill="#a855f7" opacity="0.08" filter="blur(50px)"/>
+
+                    <!-- Technical Digital Audio Waveform Lines -->
+
+                    <path d="M 50 270 Q 150 120 250 270 T 450 270 T 650 270 T 850 270" fill="none" stroke="url(#cyanGrad)" stroke-width="3" opacity="0.6"/>
+
+                    <path d="M 50 270 Q 150 420 250 270 T 450 270 T 650 270 T 850 270" fill="none" stroke="url(#purpleGrad)" stroke-width="2" opacity="0.4"/>
+
+                    <!-- Binary Pulse Visualization Blocks -->
+
+                    <g transform="translate(100, 140)">
+
+                        <!-- Time Beat 1 -->
+
+                        <rect x="0" y="0" width="160" height="90" rx="8" fill="#0f172a" stroke="#00d4ff" stroke-width="2"/>
+
+                        <text x="80" y="38" fill="#00d4ff" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="bold" text-anchor="middle">NOTA: C4</text>
+
+                        <text x="80" y="68" fill="#22c55e" font-family="monospace" font-size="22" font-weight="bold" text-anchor="middle">1 1 1 1</text>
+
+                        
+
+                        <!-- Pulse connection line -->
+
+                        <line x1="160" y1="45" x2="200" y2="45" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="4"/>
+
+                        <!-- Time Beat 2 -->
+
+                        <rect x="200" y="0" width="160" height="90" rx="8" fill="#0f172a" stroke="#1e3a5f" stroke-width="2"/>
+
+                        <text x="280" y="38" fill="#94a3b8" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="bold" text-anchor="middle">NOTA: D4</text>
+
+                        <text x="280" y="68" fill="#f59e0b" font-family="monospace" font-size="22" font-weight="bold" text-anchor="middle">1 1 0 0</text>
+
+                        <!-- Pulse connection line -->
+
+                        <line x1="360" y1="45" x2="400" y2="45" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="4"/>
+
+                        <!-- Time Beat 3 -->
+
+                        <rect x="400" y="0" width="160" height="90" rx="8" fill="#0f172a" stroke="#1e3a5f" stroke-width="2"/>
+
+                        <text x="480" y="38" fill="#94a3b8" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="bold" text-anchor="middle">ACORDE: {C4 E4 G4}</text>
+
+                        <text x="480" y="68" fill="#a855f7" font-family="monospace" font-size="22" font-weight="bold" text-anchor="middle">1 0 1 0</text>
+
+                    </g>
+
+                    <!-- Stylized Digital Piano Keyboard Overlay at bottom -->
+
+                    <g transform="translate(180, 340)">
+
+                        <!-- White Keys -->
+
+                        <rect x="0" y="0" width="50" height="130" rx="4" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+
+                        <rect x="52" y="0" width="50" height="130" rx="4" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+
+                        <rect x="104" y="0" width="50" height="130" rx="4" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+
+                        <rect x="156" y="0" width="50" height="130" rx="4" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+
+                        <rect x="208" y="0" width="50" height="130" rx="4" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+
+                        <rect x="260" y="0" width="50" height="130" rx="4" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+
+                        <rect x="312" y="0" width="50" height="130" rx="4" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+
+                        <rect x="364" y="0" width="50" height="130" rx="4" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+
+                        <!-- Black Keys -->
+
+                        <rect x="34" y="0" width="32" height="80" rx="3" fill="#0f172a"/>
+
+                        <rect x="88" y="0" width="32" height="80" rx="3" fill="#0f172a"/>
+
+                        <rect x="192" y="0" width="32" height="80" rx="3" fill="#0f172a"/>
+
+                        <rect x="244" y="0" width="32" height="80" rx="3" fill="#0f172a"/>
+
+                        <rect x="296" y="0" width="32" height="80" rx="3" fill="#0f172a"/>
+
+                        <!-- Highlight Active Key (C4) -->
+
+                        <rect x="0" y="80" width="50" height="50" rx="2" fill="#00d4ff" opacity="0.8"/>
+
+                        <text x="25" y="115" fill="#000" font-family="'Segoe UI', sans-serif" font-size="14" font-weight="bold" text-anchor="middle">C4</text>
+
+                    </g>
+
+                    <!-- Main System Title Overlay -->
+
+                    <text x="480" y="70" fill="#ffffff" font-family="'Segoe UI', system-ui, sans-serif" font-size="28" font-weight="900" letter-spacing="2" text-anchor="middle">SISTEMA DE NOTACIÓN MUSICAL RS2026</text>
+
+                    <text x="480" y="98" fill="#00d4ff" font-family="'Segoe UI', system-ui, sans-serif" font-size="14" font-weight="600" letter-spacing="4" text-anchor="middle">DESCOUPLING PITCH &amp; BINARY RHYTHM PATTERNS</text>
+
+                    <!-- Technical Decorative Crosshairs -->
+
+                    <path d="M 40 40 L 60 40 M 50 30 L 50 50" stroke="#00d4ff" stroke-width="1.5" opacity="0.6"/>
+
+                    <path d="M 920 40 L 900 40 M 910 30 L 910 50" stroke="#00d4ff" stroke-width="1.5" opacity="0.6"/>
+
+                </svg>
+
+            </div>
+
+            <!-- Hero Text Content & Metrics -->
+
+            <div class="card">
+
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+
+                    <span class="badge badge-main">Versión 1.0 (Borrador)</span>
+
+                    <span class="badge badge-purple">Por Rubén Sbarsky</span>
+
+                    <span class="badge badge-green">Sin Pentagrama</span>
+
+                </div>
+
+                <h1 style="font-size: 2.2rem; margin-bottom: 10px; color: var(--text-main);">
+
+                    SISTEMA DE NOTACIÓN MUSICAL RS2026
+
+                </h1>
+
+                <p style="font-size: 1.1rem; color: var(--text-muted); margin-bottom: 20px;">
+
+                    Una alternativa moderna, compacta e informática que separa completamente la altura de la nota de la estructura rítmica.
+
+                </p>
+
+                <div class="quote-box">
+
+                    "Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."
+
+                </div>
+
+                <!-- Metrics Grid -->
+
+                <div class="metrics-grid">
+
+                    <div class="metric-card">
+
+                        <div class="metric-value">100%</div>
+
+                        <div class="metric-label">Separación Nota/Ritmo</div>
+
+                    </div>
+
+                    <div class="metric-card">
+
+                        <div class="metric-value">4</div>
+
+                        <div class="metric-label">Posiciones / Tiempo (0/1)</div>
+
+                    </div>
+
+                    <div class="metric-card">
+
+                        <div class="metric-value">0</div>
+
+                        <div class="metric-label">Claves o Figura Tradicional</div>
+
+                    </div>
+
+                    <div class="metric-card">
+
+                        <div class="metric-value">MIDI / XML</div>
+
+                        <div class="metric-label">Listo para IA y Software</div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">📖</div>
+
+                    <h2 class="card-title">PREFACIO</h2>
+
+                </div>
+
+                <p style="margin-bottom: 12px;">
+
+                    Durante más de mil años, la música occidental se ha escrito mediante el pentagrama. Es un sistema extraordinariamente eficaz para músicos formados, pero también exige aprender numerosos conceptos simultáneamente: claves, líneas, espacios, figuras rítmicas, silencios, alterations, ligaduras, líneas adicionales y muchos otros símbolos.
+
+                </p>
+
+                <p style="margin-bottom: 12px;">
+
+                    El <strong>Sistema de Notación Musical RS2026</strong> nace con una filosofía diferente.
+
+                </p>
+
+                <div class="callout callout-info">
+
+                    <div class="callout-title">💡 Separación de Conceptos Fundamentales</div>
+
+                    En lugar de representar la música mediante dibujos sobre un pentagrama, RS2026 separa completamente dos conceptos fundamentales:
+
+                    <ul style="margin-left: 20px; margin-top: 8px;">
+
+                        <li><strong>Qué nota tocar:</strong> La altura de la nota la determina su nombre explícito (ej. C4, F#4).</li>
+
+                        <li><strong>Cuándo tocarla:</strong> El ritmo queda representado mediante secuencias de unos y ceros (patrones binarios).</li>
+
+                    </ul>
+
+                </div>
+
+                <p style="margin-bottom: 12px;">
+
+                    De esta manera desaparece la necesidad de aprender figuras musicales tradicionales para comprender el ritmo. RS2026 no pretende reemplazar el pentagrama ni la teoría musical.
+
+                </p>
+
+                <p><strong>Su objetivo es ofrecer una alternativa moderna, especialmente adecuada para:</strong></p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 12px;">
+
+                    <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">• Aprendizaje</div>
+
+                    <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">• Piano</div>
+
+                    <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">• Informática</div>
+
+                    <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">• Inteligencia Artificial</div>
+
+                    <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">• Conversión a MIDI</div>
+
+                    <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">• Conversión a MusicXML</div>
+
+                    <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">• Edición en texto plano</div>
+
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">🎯</div>
+
+                    <h2 class="card-title">FILOSOFÍA DEL SISTEMA</h2>
+
+                </div>
+
+                <p>RS2026 sigue una única regla fundamental:</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+
+                    <div style="background: rgba(0, 212, 255, 0.08); border: 1px solid var(--accent-main); padding: 16px; border-radius: var(--radius-md);">
+
+                        <h4 style="color: var(--accent-main); margin-bottom: 6px;">LA NOTA</h4>
+
+                        <p>Responde a la pregunta:</p>
+
+                        <p style="font-size: 1.2rem; font-weight: 800; margin-top: 6px;">¿QUÉ debo tocar?</p>
+
+                    </div>
+
+                    <div style="background: rgba(34, 197, 94, 0.08); border: 1px solid var(--accent-green); padding: 16px; border-radius: var(--radius-md);">
+
+                        <h4 style="color: var(--accent-green); margin-bottom: 6px;">EL PATRÓN BINARIO</h4>
+
+                        <p>Responde a la pregunta:</p>
+
+                        <p style="font-size: 1.2rem; font-weight: 800; margin-top: 6px;">¿CUÁNDO debo tocar?</p>
+
+                    </div>
+
+                </div>
+
+                <p style="text-align: center; color: var(--text-muted); font-style: italic;">
+
+                    Todo el sistema nace de esa rigurosa separación.
+
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- ==================== ELEMENTOS Y SINTAXIS ==================== -->
+
+        <section id="sec-elementos" class="page-section">
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">🎹</div>
+
+                    <h2 class="card-title">ELEMENTOS DEL SISTEMA</h2>
+
+                </div>
+
+                <p style="margin-bottom: 12px;">
+
+                    En RS2026, una nota se escribe simplemente combinando su nombre en notación anglosajona con el número de octava:
+
+                </p>
+
+                <div class="callout callout-info">
+
+                    <div class="callout-title">Fórmula Básica</div>
+
+                    <code style="font-size: 1.2rem;">Nombre + Octava</code>
+
+                </div>
+
+                <h3 style="margin: 16px 0 8px 0; color: var(--accent-main);">Ejemplos de Notas Naturales</h3>
+
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+
+                    <code>C4</code> <code>D4</code> <code>E4</code> <code>F4</code> <code>G4</code> <code>A4</code> <code>B4</code>
+
+                </div>
+
+                <h3 style="margin: 16px 0 8px 0; color: var(--accent-main);">Con Alteraciones (Sostenidos y Bemoles)</h3>
+
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+
+                    <code>F#4</code> <code>Bb3</code> <code>Eb5</code> <code>C#6</code>
+
+                </div>
+
+                <div class="callout callout-warning">
+
+                    <div class="callout-title">⚠️ Sin Claves Tradicionales</div>
+
+                    No existen claves de Sol ni de Fa. Cada nota identifica directamente una tecla específica del piano (por ejemplo, <code>C4</code> siempre representa el Do central).
+
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">⚡</div>
+
+                    <h2 class="card-title">SINTAXIS GENERAL</h2>
+
+                </div>
+
+                <p style="margin-bottom: 12px;">
+
+                    La estructura atómica de cualquier elemento sonoro en RS2026 une la nota o estructura armónica con su patrón rítmico mediante el carácter dos puntos (<code>:</code>):
+
+                </p>
+
+                <div class="code-block" style="text-align: center; font-size: 1.3rem; color: var(--accent-main);">
+
+                    NOTA : PATRÓN
+
+                </div>
+
+                <h3 style="margin-top: 16px; margin-bottom: 8px;">Ejemplos Directos</h3>
+
+                <table class="custom-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Expresión RS2026</th>
+
+                            <th>Nota (Qué)</th>
+
+                            <th>Patrón Binario (Cuándo)</th>
+
+                            <th>Interpretación</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td><code>C4:1111</code></td>
+
+                            <td>Do (Octava 4)</td>
+
+                            <td><code>1111</code></td>
+
+                            <td>Suena continuo durante todo el tiempo.</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td><code>D4:1100</code></td>
+
+                            <td>Re (Octava 4)</td>
+
+                            <td><code>1100</code></td>
+
+                            <td>Suena durante la primera mitad del tiempo.</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td><code>F#4:1000</code></td>
+
+                            <td>Fa sostenido (Octava 4)</td>
+
+                            <td><code>1000</code></td>
+
+                            <td>Ataque corto en el inicio (primera semicorchea).</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td><code>Bb3:1010</code></td>
+
+                            <td>Si bemol (Octava 3)</td>
+
+                            <td><code>1010</code></td>
+
+                            <td>Dos impulsos alternados (1º y 3º pulso).</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">🔇</div>
+
+                    <h2 class="card-title">SILENCIOS</h2>
+
+                </div>
+
+                <p style="margin-bottom: 12px;">
+
+                    Para representar la ausencia de sonido se utiliza la letra mayúscula <code>R</code> (del inglés <em>Rest</em>), manteniendo exactamente la misma sintaxis con patrón binario:
+
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+
+                    <div style="background: rgba(15,23,42,0.6); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-sm);">
+
+                        <code>R:1111</code>
+
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Silencio durante todo el tiempo.</p>
+
+                    </div>
+
+                    <div style="background: rgba(15,23,42,0.6); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-sm);">
+
+                        <code>R:1100</code>
+
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Silencio la primera mitad del tiempo.</p>
+
+                    </div>
+
+                    <div style="background: rgba(15,23,42,0.6); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-sm);">
+
+                        <code>R:0000</code>
+
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Silencio absoluto en las 4 posiciones.</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ==================== EL RITMO BINARIO ==================== -->
+
+        <section id="sec-ritmo" class="page-section">
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">⏱️</div>
+
+                    <h2 class="card-title">EL RITMO EN RS2026</h2>
+
+                </div>
+
+                <p style="margin-bottom: 12px;">
+
+                    En RS2026, cada tiempo se divide siempre en <strong>cuatro posiciones</strong> fijas. Cada posición representa una <strong>semicorchea</strong>.
+
+                </p>
+
+                <div class="callout callout-example">
+
+                    <div class="callout-title">Valores Binarios</div>
+
+                    Cada posición solo puede tomar dos valores numéricos:
+
+                    <ul style="margin-left: 20px; margin-top: 6px;">
+
+                        <li><code>1</code> = La nota está sonando (Ataque / Mantenimiento).</li>
+
+                        <li><code>0</code> = La nota no suena (Silencio / Reposo).</li>
+
+                    </ul>
+
+                </div>
+
+                <p style="margin-top: 12px; color: var(--text-muted);">
+
+                    No existen figuras tradicionales como negras, corcheas o semicorcheas representadas mediante dibuja de plicas o corchetes. El ritmo surge de forma natural e inequívoca únicamente del patrón binario.
+
+                </p>
+
+            </div>
+
+            <!-- INTERACTIVE RHYTHM EXPLORER -->
+
+            <div class="interactive-box">
+
+                <div class="interactive-title">
+
+                    <span>🎛️ Explorador Interactivo de Patrones Binarios</span>
+
+                    <span class="badge badge-main">Web Audio Synth</span>
+
+                </div>
+
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px;">
+
+                    Haz clic en los 4 bits para activar (1) o desactivar (0) las semicorcheas y presiona "Escuchar Patrón" para oír el resultado en tiempo real.
+
+                </p>
+
+                <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
+
+                    <label style="font-size: 0.9rem; color: var(--accent-main); font-weight: bold;">Nota:</label>
+
+                    <select id="synth-note" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: var(--radius-sm);">
+
+                        <option value="C4">C4 (261.63 Hz)</option>
+
+                        <option value="E4">E4 (329.63 Hz)</option>
+
+                        <option value="G4">G4 (392.00 Hz)</option>
+
+                        <option value="C5">C5 (523.25 Hz)</option>
+
+                    </select>
+
+                </div>
+
+                <div class="grid-bits">
+
+                    <button class="bit-btn active" id="bit-0" onclick="toggleBit(0)">1<br><span style="font-size:0.7rem; font-weight:normal;">Posición 1</span></button>
+
+                    <button class="bit-btn active" id="bit-1" onclick="toggleBit(1)">1<br><span style="font-size:0.7rem; font-weight:normal;">Posición 2</span></button>
+
+                    <button class="bit-btn active" id="bit-2" onclick="toggleBit(2)">1<br><span style="font-size:0.7rem; font-weight:normal;">Posición 3</span></button>
+
+                    <button class="bit-btn active" id="bit-3" onclick="toggleBit(3)">1<br><span style="font-size:0.7rem; font-weight:normal;">Posición 4</span></button>
+
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+
+                    <div style="font-family: monospace; font-size: 1.2rem; color: var(--accent-green);" id="binary-code-display">
+
+                        Patrón generado: C4:1111
+
+                    </div>
+
+                    <button class="btn-action" onclick="playBinaryPattern()">
+
+                        ▶️ Escuchar Patrón
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">📊</div>
+
+                    <h2 class="card-title">CATÁLOGO DE PATRONES RÍTMICOS</h2>
+
+                </div>
+
+                <table class="custom-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Patrón</th>
+
+                            <th>Descripción / Significado Rítmico</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr><td><code>1111</code></td><td>La nota ocupa todo el tiempo de forma continua.</td></tr>
+
+                        <tr><td><code>1100</code></td><td>La nota ocupa la primera mitad del tiempo.</td></tr>
+
+                        <tr><td><code>0011</code></td><td>La nota ocupa la segunda mitad del tiempo.</td></tr>
+
+                        <tr><td><code>1000</code></td><td>Ataque únicamente en la primera semicorchea (contratiempo/staccato).</td></tr>
+
+                        <tr><td><code>0100</code></td><td>Ataque en la segunda semicorchea.</td></tr>
+
+                        <tr><td><code>0010</code></td><td>Ataque en la tercera semicorchea.</td></tr>
+
+                        <tr><td><code>0001</code></td><td>Ataque en la cuarta semicorchea.</td></tr>
+
+                        <tr><td><code>1010</code></td><td>Dos ataques alternados (primer y tercer pulso).</td></tr>
+
+                        <tr><td><code>1001</code></td><td>Ataque al principio y al final del tiempo.</td></tr>
+
+                        <tr><td><code>1110</code></td><td>Tres semicorcheas continuas desde el inicio.</td></tr>
+
+                        <tr><td><code>0111</code></td><td>Tres semicorcheas desplazadas.</td></tr>
+
+                        <tr><td><code>0000</code></td><td>Silencio absoluto en el tiempo.</td></tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- ==================== ESTRUCTURA Y EXPRESIVIDAD ==================== -->
+
+        <section id="sec-estructura" class="page-section">
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">📐</div>
+
+                    <h2 class="card-title">COMPASES Y AGRUPACIONES</h2>
+
+                </div>
+
+                <p style="margin-bottom: 12px;">
+
+                    Los compases se delimitan limpiamente mediante barras verticales (<code>|</code>):
+
+                </p>
+
+                <div class="code-block">
+
+| C4:1111 | D4:1100 | E4:1000 | G4:1111 |
+
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">🎼</div>
+
+                    <h2 class="card-title">ACORDES Y ARPEGIOS</h2>
+
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+                    <div>
+
+                        <h3 style="color: var(--accent-main); margin-bottom: 8px;">Acordes (Entre llaves {})</h3>
+
+                        <p style="font-size: 0.9rem; margin-bottom: 8px;">
+
+                            Todas las notas contenidas en la llave comienzan exactamente al mismo tiempo.
+
+                        </p>
+
+                        <div class="code-block">
+
+{C4 E4 G4}:1111
+
+                        </div>
+
+                    </div>
+
+                    <div>
+
+                        <h3 style="color: var(--accent-green); margin-bottom: 8px;">Arpegiados (Entre corchetes [])</h3>
+
+                        <p style="font-size: 0.9rem; margin-bottom: 8px;">
+
+                            El orden de las notas dentro de los corchetes indica la dirección del arpegio.
+
+                        </p>
+
+                        <div class="code-block">
+
+[C4 E4 G4 C5]:1111 (Ascendente)
+
+[C5 G4 E4 C4]:1111 (Descendente)
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">🔗</div>
+
+                    <h2 class="card-title">LIGADURAS Y SÍNCOPAS</h2>
+
+                </div>
+
+                <h3 style="color: var(--accent-purple); margin-bottom: 8px;">Ligaduras (<code>~</code>)</h3>
+
+                <p style="margin-bottom: 8px;">
+
+                    Las ligaduras unen dos notas o acordes iguales para prolongar su duración sin volver a atacarlos:
+
+                </p>
+
+                <div class="code-block">
+
+| C4:1111 ~ C4:1111 |
+
+| {C4 E4 G4}:1111 ~ {C4 E4 G4}:1111 |
+
+                </div>
+
+                <h3 style="color: var(--accent-amber); margin-top: 16px; margin-bottom: 8px;">Síncopas</h3>
+
+                <p style="margin-bottom: 8px;">
+
+                    Se logran mediante el desplazamiento natural de unos en la cuadrícula binaria entre compases o tiempos:
+
+                </p>
+
+                <div class="code-block">
+
+| C4:0001 | C4:1110 |
+
+                </div>
+
+                <p style="font-size: 0.85rem; color: var(--text-muted);">
+
+                    Explicación: La nota comienza en la cuarta semicorchea del primer tiempo y continúa durante las tres primeras del siguiente tiempo.
+
+                </p>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">🎛️</div>
+
+                    <h2 class="card-title">METADATOS, DINÁMICAS Y ARTICULACIONES</h2>
+
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+
+                    <div style="background: rgba(15,23,42,0.6); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+
+                        <h4 style="color: var(--accent-main);">Tempo, Compás y Clave</h4>
+
+                        <p style="font-family: monospace; font-size: 0.9rem; margin-top: 6px;">
+
+                            Tempo=120<br>
+
+                            Time=4/4<br>
+
+                            Key=C | Key=Am | Key=Eb
+
+                        </p>
+
+                    </div>
+
+                    <div style="background: rgba(15,23,42,0.6); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+
+                        <h4 style="color: var(--accent-green);">Dinámicas</h4>
+
+                        <p style="font-family: monospace; font-size: 0.9rem; margin-top: 6px;">
+
+                            pp | p | mp | mf | f | ff
+
+                        </p>
+
+                    </div>
+
+                    <div style="background: rgba(15,23,42,0.6); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+
+                        <h4 style="color: var(--accent-amber);">Pedal de Sustain</h4>
+
+                        <p style="font-family: monospace; font-size: 0.9rem; margin-top: 6px;">
+
+                            Ped+─────────────Ped-
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <h3 style="margin-top: 20px; margin-bottom: 8px;">Articulaciones</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: var(--radius-sm);">Staccato: <code>C4:1111.</code></div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: var(--radius-sm);">Acento: <code>C4:1111></code></div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: var(--radius-sm);">Tenuto: <code>C4:1111—</code></div>
+
+                    <div style="background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: var(--radius-sm);">Marcato: <code>C4:1111^</code></div>
+
+                </div>
+
+                <h3 style="margin-top: 20px; margin-bottom: 8px;">Voces Independientes (Polifonía)</h3>
+
+                <p style="margin-bottom: 8px;">
+
+                    Cuando una mano interpreta dos voces simultáneamente, se desglosa explícitamente por voz:
+
+                </p>
+
+                <div class="code-block">
+
+V1
+
+| C4:1111 | C4:1111 |
+
+V2
+
+| E4:1100 G4:1100 |
+
+                </div>
+
+                <h3 style="margin-top: 20px; margin-bottom: 8px;">Tupletes / Subdivisión Especial</h3>
+
+                <p style="margin-bottom: 8px;">
+
+                    Permite adaptar cualquier subdivisión irregular manteniendo el principio binario/posicional:
+
+                </p>
+
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+
+                    <code>/3 (Tresillo)</code>
+
+                    <code>/5 (Quintillo)</code>
+
+                    <code>/7 (Septillo)</code>
+
+                </div>
+
+                <div class="code-block" style="margin-top: 8px;">
+
+Ejemplo: C4:/3[1]
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ==================== EJEMPLO COMPLETO ==================== -->
+
+        <section id="sec-ejemplo" class="page-section">
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">🎼</div>
+
+                    <h2 class="card-title">EJEMPLO COMPLETO EN RS2026</h2>
+
+                </div>
+
+                <p style="margin-bottom: 12px;">
+
+                    A continuación se muestra una pieza musical completa escrita con el estándar RS2026, incluyendo metadatos, voces, ligaduras y dinámicas:
+
+                </p>
+
+                <div class="code-block" id="full-score-code">
+
+Tempo=120
+
+Time=4/4
+
+Key=C
+
+mf
+
+| C4:1111 | D4:1100 E4:1000 | {C4 E4 G4}:1111 | [C4 E4 G4 C5]:1111 |
+
+| F4:1000 G4:1000 A4:1000 B4:1000 | C5:1111 | R:1111 | G4:1100 |
+
+| C4:0001 | C4:1110 | {C4 E4 G4}:1111 | C4:1111 ~ C4:1111 |
+
+| [C5 G4 E4 C4]:1111 | E4:1010 | F4:0110 | {G4 B4 D5}:1111 |
+
+Ped+────────────────────────────────────────────Ped-
+
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 12px;">
+
+                    <button class="btn-action" onclick="playFullScore()">
+
+                        ▶️ Reproducir Partitura Completa
+
+                    </button>
+
+                    <button class="btn-action" style="background: linear-gradient(135deg, var(--accent-purple), #7e22ce);" onclick="copyToClipboard('full-score-code')">
+
+                        📋 Copiar RS2026
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ==================== VENTAJAS Y CONCLUSIÓN ==================== -->
+
+        <section id="sec-ventajas" class="page-section">
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">🚀</div>
+
+                    <h2 class="card-title">VENTAJAS DEL SISTEMA RS2026</h2>
+
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+
+                    <div style="background: rgba(15,23,42,0.8); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md);">
+
+                        <h4 style="color: var(--accent-main); margin-bottom: 6px;">🚫 Sin Pentagrama ni Claves</h4>
+
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">Elimina la barrera inicial de lectura de claves (Sol/Fa) y líneas adicionales.</p>
+
+                    </div>
+
+                    <div style="background: rgba(15,23,42,0.8); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md);">
+
+                        <h4 style="color: var(--accent-green); margin-bottom: 6px;">⚡ Altura Inmediata</h4>
+
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">Identificación directa de las teclas del piano (C4, F#4, etc.).</p>
+
+                    </div>
+
+                    <div style="background: rgba(15,23,42,0.8); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md);">
+
+                        <h4 style="color: var(--accent-amber); margin-bottom: 6px;">💻 Nativo Informático & IA</h4>
+
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">Sintaxis plana procesable mediante regex, fácil conversión a MIDI o MusicXML.</p>
+
+                    </div>
+
+                    <div style="background: rgba(15,23,42,0.8); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md);">
+
+                        <h4 style="color: var(--accent-purple); margin-bottom: 6px;">📝 Editor de Texto Plano</h4>
+
+                        <p style="font-size: 0.9rem; color: var(--text-muted);">Puede escribirse y editarse con cualquier bloc de notas básico sin software pesado.</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">📌</div>
+
+                    <h2 class="card-title">CONCLUSIÓN</h2>
+
+                </div>
+
+                <p style="margin-bottom: 12px;">
+
+                    RS2026 propone una forma diferente de escribir música.
+
+                </p>
+
+                <p style="margin-bottom: 12px; color: var(--text-muted);">
+
+                    • No modifica la música.<br>
+
+                    • No modifica la teoría musical.<br>
+
+                    • Únicamente propone una representación más lógica, más compacta y más cercana al funcionamiento de los ordenadores modernos.
+
+                </p>
+
+                <div class="quote-box" style="text-align: center; font-size: 1.1rem; font-weight: 700;">
+
+                    "La nota indica QUÉ tocar.<br>
+
+                    El patrón binario indica CUÁNDO tocar."
+
+                </div>
+
+                <p style="margin-top: 16px; text-align: center; color: var(--accent-main);">
+
+                    RS2026 aspira a convertirse en un lenguaje musical sencillo, moderno y abierto para músicos, profesores, desarrolladores e inteligencias artificiales.
+
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- ==================== CRÉDITOS ==================== -->
+
+        <section id="sec-creditos" class="page-section">
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div class="card-icon">👨‍💻</div>
+
+                    <h2 class="card-title">CRÉDITOS Y FICHA TÉCNICA</h2>
+
+                </div>
+
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+
+                    <span class="badge badge-main">Autor: Rubén Sbarsky</span>
+
+                    <span class="badge badge-purple">RS2026 v1.0</span>
+
+                    <span class="badge badge-green">Divulgación & Educación</span>
+
+                </div>
+
+                <p style="margin-bottom: 16px; color: var(--text-muted);">
+
+                    Esta aplicación y documentación técnica interactiva presenta la especificación oficial del <strong>Sistema de Notación Musical RS2026 by Rubén Sbarsky</strong>.
+
+                </p>
+
+                <div class="metrics-grid">
+
+                    <div class="metric-card">
+
+                        <div class="metric-value" style="font-size: 1.4rem;">Rubén Sbarsky</div>
+
+                        <div class="metric-label">Creador y Autor del Sistema</div>
+
+                    </div>
+
+                    <div class="metric-card">
+
+                        <div class="metric-value" style="font-size: 1.4rem;">27/JULIO/2026</div>
+
+                        <div class="metric-label">Fecha de Publicación</div>
+
+                    </div>
+
+                    <div class="metric-card">
+
+                        <div class="metric-value" style="font-size: 1.4rem;">09:49:01</div>
+
+                        <div class="metric-label">Hora de Registro</div>
+
+                    </div>
+
+                </div>
+
+                <div class="callout callout-info">
+
+                    <div class="callout-title">💡 Finalidad Pedagógica</div>
+
+                    Tutorial desarrollado exclusivamente con fines educativos y de divulgación técnica. El sistema RS2026 promueve la accesibilidad musical y el procesamiento directo por software e inteligencias artificiales.
+
+                </div>
+
+                <div class="quote-box" style="text-align: center; margin-top: 24px;">
+
+                    <p style="font-size: 1.2rem; font-weight: 700; color: var(--accent-main); margin-bottom: 6px;">
+
+                        "Fiat iustitia, ruat caelum."
+
+                    </p>
+
+                    <p style="font-size: 0.9rem; color: var(--text-muted); font-style: italic;">
+
+                        — Lema del documento original
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div>📚 Tutorial solo con fines Educativos y Divulgación</div>
+
+            <div>👨‍💻 Créditos: Rubén Sbarsky</div>
+
+            <div>📅 FECHA: 27/JULIO/2026 | Hora: 09:49:01</div>
+
+            <div style="font-style: italic; color: var(--accent-main); margin-top: 4px;">"Fiat iustitia, ruat caelum."</div>
+
+        </div>
+
+    </footer>
+
+    <!-- Back to top button -->
+
+    <button class="btn-top" id="btn-top" onclick="scrollToTop()">↑</button>
+
+    <script>
+
+        function switchSection(sectionId) {
+
+            // Hide all sections
+
+            const sections = document.querySelectorAll('.page-section');
+
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            // Deactivate all buttons
+
+            const buttons = document.querySelectorAll('.nav-btn');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show target section
+
+            const target = document.getElementById('sec-' + sectionId);
+
+            if (target) {
+
+                target.classList.add('active');
+
+            }
+
+            // Activate nav button
+
+            const btn = document.getElementById('btn-' + sectionId);
+
+            if (btn) {
+
+                btn.classList.add('active');
+
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        }
+
+        // Reading Progress Bar
+
+        window.addEventListener('scroll', () => {
+
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+            const scrolled = (winScroll / height) * 100;
+
+            document.getElementById('progress-bar').style.width = scrolled + '%';
+
+            // Top Button visibility
+
+            const btnTop = document.getElementById('btn-top');
+
+            if (winScroll > 300) {
+
+                btnTop.classList.add('visible');
+
+            } else {
+
+                btnTop.classList.remove('visible');
+
+            }
+
+        });
+
+        function scrollToTop() {
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        }
+
+        let activeBits = [1, 1, 1, 1];
+
+        function toggleBit(index) {
+
+            activeBits[index] = activeBits[index] === 1 ? 0 : 1;
+
+            const btn = document.getElementById(`bit-${index}`);
+
+            if (activeBits[index] === 1) {
+
+                btn.classList.add('active');
+
+                btn.innerHTML = `1<br><span style="font-size:0.7rem; font-weight:normal;">Posición ${index + 1}</span>`;
+
+            } else {
+
+                btn.classList.remove('active');
+
+                btn.innerHTML = `0<br><span style="font-size:0.7rem; font-weight:normal;">Posición ${index + 1}</span>`;
+
+            }
+
+            const noteSelect = document.getElementById('synth-note').value;
+
+            document.getElementById('binary-code-display').innerText = `Patrón generado: ${noteSelect}:${activeBits.join('')}`;
+
+        }
+
+        let audioCtx = null;
+
+        function getAudioContext() {
+
+            if (!audioCtx) {
+
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+            }
+
+            if (audioCtx.state === 'suspended') {
+
+                audioCtx.resume();
+
+            }
+
+            return audioCtx;
+
+        }
+
+        const noteFrequencies = {
+
+            'C3': 130.81, 'D3': 146.83, 'E3': 164.81, 'F3': 174.61, 'G3': 196.00, 'A3': 220.00, 'B3': 246.94, 'Bb3': 233.08,
+
+            'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'Eb4': 311.13, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
+
+            'C5': 523.25, 'D5': 587.33, 'E5': 659.25
+
+        };
+
+        function playTone(freq, startTime, duration) {
+
+            const ctx = getAudioContext();
+
+            const osc = ctx.createOscillator();
+
+            const gain = ctx.createGain();
+
+            osc.type = 'triangle';
+
+            osc.frequency.setValueAtTime(freq, startTime);
+
+            // ADSR envelope
+
+            gain.gain.setValueAtTime(0, startTime);
+
+            gain.gain.linearRampToValueAtTime(0.3, startTime + 0.02);
+
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+            osc.connect(gain);
+
+            gain.connect(ctx.destination);
+
+            osc.start(startTime);
+
+            osc.stop(startTime + duration);
+
+        }
+
+        function playBinaryPattern() {
+
+            const ctx = getAudioContext();
+
+            const noteName = document.getElementById('synth-note').value;
+
+            const freq = noteFrequencies[noteName] || 261.63;
+
+            const startTime = ctx.currentTime + 0.1;
+
+            const beatDuration = 0.15; // 150ms per 16th note
+
+            activeBits.forEach((bit, index) => {
+
+                if (bit === 1) {
+
+                    playTone(freq, startTime + (index * beatDuration), beatDuration * 0.9);
+
+                }
+
+            });
+
+        }
+
+        function playFullScore() {
+
+            const ctx = getAudioContext();
+
+            const startTime = ctx.currentTime + 0.1;
+
+            
+
+            // Simple sequence demonstration of the example piece
+
+            const sequence = [
+
+                { note: 'C4', dur: 0.6 },
+
+                { note: 'D4', dur: 0.3 },
+
+                { note: 'E4', dur: 0.3 },
+
+                { note: 'C4', dur: 0.6 }, // Chord proxy
+
+                { note: 'E4', dur: 0.6 },
+
+                { note: 'G4', dur: 0.6 },
+
+                { note: 'F4', dur: 0.2 },
+
+                { note: 'G4', dur: 0.2 },
+
+                { note: 'A4', dur: 0.2 },
+
+                { note: 'B4', dur: 0.2 },
+
+                { note: 'C5', dur: 0.6 }
+
+            ];
+
+            let currTime = startTime;
+
+            sequence.forEach(step => {
+
+                const freq = noteFrequencies[step.note] || 261.63;
+
+                playTone(freq, currTime, step.dur);
+
+                currTime += step.dur + 0.05;
+
+            });
+
+        }
+
+        function copyToClipboard(elementId) {
+
+            const text = document.getElementById(elementId).innerText;
+
+            const tempInput = document.createElement('textarea');
+
+            tempInput.value = text;
+
+            document.body.appendChild(tempInput);
+
+            tempInput.select();
+
+            document.execCommand('copy');
+
+            document.body.removeChild(tempInput);
+
+            alert('¡Partitura RS2026 copiada al portapapeles!');
+
+        }
+
+    </script>
+
+</body>
+
+</html>
