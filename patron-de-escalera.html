@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Patrón de Escalera · Ladder Pattern · Guía Profesional de Piano</title>
+<style>
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --border:#1e3a5f;
+  --cyan:#00d4ff; --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+  --txt:#e2e8f0; --muted:#94a3b8; --dim:#64748b;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg); color:var(--txt);
+  font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height:1.65; padding-top:66px; min-height:100vh;
+}
+#progressWrap{position:fixed;top:0;left:0;width:100%;height:4px;background:#12203a;z-index:1300;}
+#progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--purple));box-shadow:0 0 10px var(--cyan);transition:width .1s linear;}
+nav#topnav{
+  position:fixed;top:4px;left:0;right:0;height:62px;z-index:1200;
+  background:rgba(10,14,26,.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;padding:0 12px;
+}
+.brand{display:flex;align-items:center;gap:9px;flex-shrink:0;cursor:pointer;padding-right:10px;border-right:1px solid var(--border);}
+.brand-logo{
+  width:38px;height:38px;border-radius:9px;flex-shrink:0;
+  background:linear-gradient(135deg,#083344,#0f172a);border:1px solid var(--cyan);
+  display:flex;align-items:center;justify-content:center;font-size:19px;
+  box-shadow:0 0 12px rgba(0,212,255,.35);
+}
+.brand-txt b{display:block;font-size:13px;letter-spacing:.5px;color:#fff;line-height:1.15;}
+.brand-txt span{font-size:10px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;}
+.nav-scroll{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;padding:4px 2px;}
+.nav-scroll::-webkit-scrollbar{display:none;}
+.nav-btn{
+  flex-shrink:0;background:#0d1830;border:1px solid var(--border);color:var(--muted);
+  padding:8px 13px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;
+  transition:all .2s;font-family:inherit;white-space:nowrap;letter-spacing:.3px;
+}
+.nav-btn:hover{color:var(--txt);border-color:#2c5282;transform:translateY(-1px);}
+.nav-btn.active{
+  color:#001018;background:var(--cyan);border-color:var(--cyan);
+  box-shadow:0 0 14px rgba(0,212,255,.5);
+}
+#creditsBtn{
+  flex-shrink:0;background:linear-gradient(135deg,#2e1065,#1e1b4b);border:1px solid var(--purple);
+  color:#e9d5ff;padding:8px 13px;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;
+  transition:all .2s;font-family:inherit;white-space:nowrap;
+}
+#creditsBtn:hover{box-shadow:0 0 14px rgba(168,85,247,.55);transform:translateY(-1px);}
+main{max-width:1100px;margin:0 auto;padding:26px 16px 60px;}
+.view{display:none;}
+.view.active{display:block;animation:fadeUp .45s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
+.hero-cover{
+  width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;
+  border:1px solid var(--border);box-shadow:0 12px 40px rgba(0,0,0,.55), 0 0 0 1px rgba(0,212,255,.08);
+  background:#0a0e1a;
+}
+.hero-cover svg{width:100%;height:100%;display:block;}
+.badge-top{
+  display:inline-flex;align-items:center;gap:8px;margin:22px 0 12px;
+  background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.45);color:var(--cyan);
+  font-size:11.5px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  padding:7px 15px;border-radius:99px;
+}
+h1.hero-title{font-size:clamp(30px,5.4vw,52px);font-weight:800;line-height:1.12;color:#fff;}
+h1.hero-title span{color:var(--cyan);text-shadow:0 0 24px rgba(0,212,255,.55);}
+.hero-sub{font-size:clamp(15px,2.3vw,20px);color:var(--cyan);font-weight:600;margin:10px 0 14px;letter-spacing:.4px;}
+.hero-desc{color:var(--muted);max-width:820px;font-size:15.5px;}
+.quote-box{
+  margin:26px 0;padding:20px 24px;border-left:4px solid var(--amber);
+  background:linear-gradient(90deg,rgba(245,158,11,.10),transparent 70%);
+  border-radius:0 10px 10px 0;font-size:16.5px;font-style:italic;color:#fde68a;
+}
+.quote-box small{display:block;margin-top:6px;font-style:normal;color:var(--dim);font-size:12px;letter-spacing:1px;}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:24px;}
+.metric{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:16px 14px;text-align:center;transition:all .25s;
+}
+.metric:hover{border-color:var(--cyan);transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,212,255,.12);}
+.metric b{display:block;font-size:26px;color:var(--cyan);font-weight:800;}
+.metric span{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:26px;margin-bottom:22px;box-shadow:0 6px 20px rgba(0,0,0,.3);
+}
+.card-h{display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
+.card-ico{
+  width:46px;height:46px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.4);
+}
+.card-ico.g{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.45);}
+.card-ico.a{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.45);}
+.card-ico.r{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.45);}
+.card-ico.p{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.45);}
+.card-h h2{font-size:clamp(19px,3vw,25px);color:#fff;font-weight:800;}
+.card-h .sec-tag{margin-left:auto;font-size:10.5px;letter-spacing:2px;color:var(--dim);border:1px solid var(--border);padding:4px 10px;border-radius:99px;text-transform:uppercase;white-space:nowrap;}
+.card p{color:#cbd5e1;margin-bottom:12px;font-size:15px;}
+.card p:last-child{margin-bottom:0;}
+.callout{border-radius:10px;padding:16px 18px;margin:18px 0;font-size:14.5px;display:flex;gap:12px;align-items:flex-start;border:1px solid;}
+.callout .ico{font-size:19px;line-height:1.35;}
+.callout.info{background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.4);color:#bae6fd;}
+.callout.ok{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.45);color:#bbf7d0;}
+.callout.warn{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.45);color:#fde68a;}
+.callout.err{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.45);color:#fecaca;}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;}
+.subcard{
+  background:#0b1224;border:1px solid var(--border);border-radius:10px;padding:18px;
+  transition:all .25s;
+}
+.subcard:hover{border-color:#2c5282;transform:translateY(-2px);}
+.subcard h3{font-size:16px;color:var(--cyan);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.subcard h3.g{color:var(--green);} .subcard h3.a{color:var(--amber);} .subcard h3.p{color:var(--purple);}
+.subcard p{font-size:14px;color:var(--muted);}
+.chip{display:inline-block;padding:3px 11px;border-radius:99px;font-size:11.5px;font-weight:700;letter-spacing:.5px;border:1px solid;}
+.chip.i{color:var(--cyan);border-color:var(--cyan);background:rgba(0,212,255,.1);}
+.chip.iii{color:var(--amber);border-color:var(--amber);background:rgba(245,158,11,.1);}
+.chip.v{color:var(--green);border-color:var(--green);background:rgba(34,197,94,.1);}
+.chip.p{color:var(--purple);border-color:var(--purple);background:rgba(168,85,247,.1);}
+.chip.dim{color:var(--muted);border-color:var(--border);background:#0d1830;}
+.chips-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+.steps{counter-reset:paso;list-style:none;margin:16px 0;}
+.steps li{
+  counter-increment:paso;position:relative;padding:16px 16px 16px 62px;margin-bottom:12px;
+  background:#0b1224;border:1px solid var(--border);border-radius:10px;font-size:14.5px;color:#cbd5e1;
+}
+.steps li::before{
+  content:counter(paso);position:absolute;left:16px;top:16px;width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,#0e7490,#155e75);color:#fff;font-weight:800;font-size:15px;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 0 10px rgba(0,212,255,.3);
+}
+.steps li b{color:#fff;}
+.steps li .step-name{display:block;color:var(--cyan);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+table.tech{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;}
+table.tech th{
+  background:#0d1c38;color:var(--cyan);text-align:left;padding:11px 13px;font-size:12px;
+  text-transform:uppercase;letter-spacing:1.2px;border-bottom:2px solid var(--border);
+}
+table.tech td{padding:11px 13px;border-bottom:1px solid #16263f;color:#cbd5e1;}
+table.tech tr:hover td{background:rgba(0,212,255,.04);}
+.svg-fig{width:100%;border:1px solid var(--border);border-radius:10px;background:#0b1224;margin:16px 0;overflow:hidden;}
+.svg-fig svg{width:100%;height:auto;display:block;}
+.fig-cap{font-size:12px;color:var(--dim);text-align:center;margin-top:-8px;margin-bottom:16px;letter-spacing:.5px;}
+.err-list .err-item{
+  background:#0b1224;border:1px solid rgba(239,68,68,.35);border-left:4px solid var(--red);
+  border-radius:10px;padding:16px 18px;margin-bottom:12px;
+}
+.err-item b{color:#fca5a5;display:block;margin-bottom:4px;font-size:15px;}
+.err-item p{font-size:14px;color:#cbd5e1;}
+.piano-shell{background:#0b1224;border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:14px;}
+.piano-controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.seq-btn{
+  background:#0d1c38;border:1px solid var(--border);color:var(--txt);padding:9px 14px;border-radius:8px;
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit;
+}
+.seq-btn:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-1px);}
+.seq-btn.stop{border-color:rgba(239,68,68,.5);}
+.seq-btn.stop:hover{border-color:var(--red);color:var(--red);}
+.piano-status{
+  font-size:12.5px;color:var(--muted);margin-bottom:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+.piano-status b{color:var(--cyan);}
+#kb{position:relative;height:150px;border-radius:8px;overflow:hidden;border:1px solid var(--border);user-select:none;}
+.wkey{
+  position:absolute;top:0;height:100%;background:linear-gradient(180deg,#f8fafc,#dbe3ec 80%,#b9c4d1);
+  border-right:1px solid #64748b;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;
+  transition:background .12s;
+}
+.wkey span{font-size:9.5px;color:#475569;padding-bottom:5px;font-weight:600;pointer-events:none;}
+.wkey.lit{background:linear-gradient(180deg,#67e8f9,#00d4ff);box-shadow:inset 0 0 18px rgba(0,70,90,.6);}
+.wkey.lit span{color:#082f49;}
+.bkey{
+  position:absolute;top:0;height:60%;background:linear-gradient(180deg,#1e293b,#020617);
+  border:1px solid #000;border-radius:0 0 4px 4px;cursor:pointer;z-index:3;transition:background .12s;
+}
+.bkey.lit{background:linear-gradient(180deg,#c084fc,#a855f7);box-shadow:0 0 14px rgba(168,85,247,.8);}
+.level-tag{font-size:10.5px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:99px;}
+.lt-b{background:rgba(34,197,94,.14);color:var(--green);border:1px solid rgba(34,197,94,.5);}
+.lt-i{background:rgba(245,158,11,.14);color:var(--amber);border:1px solid rgba(245,158,11,.5);}
+.lt-d{background:rgba(239,68,68,.14);color:var(--red);border:1px solid rgba(239,68,68,.5);}
+.next-banner{
+  margin-top:18px;background:linear-gradient(120deg,rgba(0,212,255,.12),rgba(168,85,247,.12));
+  border:1px solid rgba(0,212,255,.35);border-radius:10px;padding:20px;font-size:15px;color:#e0f2fe;
+}
+.next-banner b{color:var(--cyan);}
+footer{
+  border-top:1px solid var(--border);background:#0b1120;padding:34px 16px 40px;text-align:center;
+}
+.foot-grid{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:8px;font-size:13.5px;color:var(--muted);}
+.foot-grid .latin{margin-top:12px;font-style:italic;color:var(--amber);letter-spacing:1px;font-size:14px;}
+.foot-brand{margin-top:14px;font-size:11px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;}
+#toTop{
+  position:fixed;right:18px;bottom:18px;width:48px;height:48px;border-radius:10px;z-index:1100;
+  background:var(--card);border:1px solid var(--cyan);color:var(--cyan);font-size:20px;cursor:pointer;
+  opacity:0;pointer-events:none;transition:all .3s;box-shadow:0 4px 18px rgba(0,0,0,.5);
+}
+#toTop.show{opacity:1;pointer-events:auto;}
+#toTop:hover{background:var(--cyan);color:#001018;}
+#modalOverlay{
+  position:fixed;inset:0;background:rgba(2,6,17,.8);backdrop-filter:blur(4px);z-index:1400;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+#modalOverlay.open{display:flex;animation:fadeUp .3s ease;}
+.modal-card{
+  background:var(--card);border:1px solid var(--purple);border-radius:14px;max-width:460px;width:100%;
+  padding:32px 28px;position:relative;box-shadow:0 0 50px rgba(168,85,247,.25);
+  max-height:90vh;overflow-y:auto;
+}
+.modal-card h3{color:#e9d5ff;font-size:21px;margin-bottom:14px;display:flex;gap:10px;align-items:center;}
+.modal-card p{color:var(--muted);font-size:14px;margin-bottom:8px;}
+.modal-card p b{color:#fff;}
+.modal-close{
+  position:absolute;top:12px;right:12px;background:none;border:1px solid var(--border);color:var(--muted);
+  width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:15px;transition:all .2s;
+}
+.modal-close:hover{border-color:var(--red);color:var(--red);}
+.modal-quote{margin-top:14px;padding-top:14px;border-top:1px dashed var(--border);font-style:italic;color:var(--amber);font-size:13px;}
+@media (max-width:640px){
+  body{padding-top:62px;}
+  .brand-txt span{display:none;}
+  .brand{padding-right:7px;}
+  .card{padding:20px 16px;}
+  #kb{height:118px;}
+  .steps li{padding-left:56px;}
+  .metric b{font-size:21px;}
+  main{padding:20px 12px 50px;}
+}
+</style>
+</head>
+<body>
+
+<div id="progressWrap"><div id="progressBar"></div></div>
+
+<nav id="topnav">
+  <div class="brand" onclick="showView('home')">
+    <div class="brand-logo">🎹</div>
+    <div class="brand-txt"><b>LADDER PATTERN</b><span>Patrón de Escalera</span></div>
+  </div>
+  <div class="nav-scroll" id="navScroll">
+    <button class="nav-btn active" data-view="home">🏠 Inicio</button>
+    <button class="nav-btn" data-view="sec1">1 · Introducción</button>
+    <button class="nav-btn" data-view="sec2">2 · Fundamentos</button>
+    <button class="nav-btn" data-view="sec3">3 · Anatomía</button>
+    <button class="nav-btn" data-view="sec4">4 · Ascenso</button>
+    <button class="nav-btn" data-view="sec5">5 · Descenso</button>
+    <button class="nav-btn" data-view="sec6">6 · Aplicación</button>
+    <button class="nav-btn" data-view="sec7">7 · Entrenamiento</button>
+    <button class="nav-btn" data-view="sec8">8 · Repaso</button>
+  </div>
+  <button id="creditsBtn">⭐ Créditos</button>
+</nav>
+
+<main>
+
+<!-- ======================= HOME ======================= -->
+<section class="view active" id="view-home">
+  <div class="hero-cover">
+    <svg viewBox="0 0 1200 640" role="img" aria-label="Portada técnica: El Patrón de Escalera sobre teclado de piano">
+      <defs>
+        <linearGradient id="cvBg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0d1730"/><stop offset="1" stop-color="#0a0e1a"/>
+        </linearGradient>
+        <linearGradient id="cvRail" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" stop-color="#00d4ff" stop-opacity=".1"/><stop offset="1" stop-color="#00d4ff" stop-opacity=".95"/>
+        </linearGradient>
+        <pattern id="cvGrid" width="42" height="42" patternUnits="userSpaceOnUse">
+          <path d="M42 0H0V42" fill="none" stroke="#1e3a5f" stroke-opacity=".33"/>
+        </pattern>
+        <radialGradient id="cvGlow" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#00d4ff" stop-opacity=".28"/><stop offset="1" stop-color="#00d4ff" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="cvKeyHi" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#67e8f9"/><stop offset="1" stop-color="#0891b2"/>
+        </linearGradient>
+        <linearGradient id="cvKeyAm" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fcd34d"/><stop offset="1" stop-color="#b45309"/>
+        </linearGradient>
+        <linearGradient id="cvKeyGr" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#86efac"/><stop offset="1" stop-color="#15803d"/>
+        </linearGradient>
+        <marker id="cvArr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0L10 5L0 10z" fill="#f59e0b"/>
+        </marker>
+        <marker id="cvArrC" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0L10 5L0 10z" fill="#00d4ff"/>
+        </marker>
+      </defs>
+      <rect width="1200" height="640" fill="url(#cvBg)"/>
+      <rect width="1200" height="640" fill="url(#cvGrid)"/>
+      <ellipse cx="820" cy="280" rx="420" ry="260" fill="url(#cvGlow)">
+        <animate attributeName="opacity" values="0.55;1;0.55" dur="5s" repeatCount="indefinite"/>
+      </ellipse>
+      <text x="70" y="92" font-size="56" font-weight="800" fill="#f1f5f9" font-family="Segoe UI, sans-serif">EL PATRÓN DE ESCALERA</text>
+      <text x="72" y="130" font-size="20" fill="#00d4ff" letter-spacing="6" font-family="Segoe UI, sans-serif" font-weight="700">LADDER PATTERN · GUÍA DEFINITIVA · 1 — 5 — 3</text>
+      <text x="72" y="163" font-size="16" fill="#94a3b8" font-family="Segoe UI, sans-serif">Acompañamiento profesional en piano · Arquitectura sonora para progresiones fluidas y elegantes</text>
+      <rect x="72" y="184" rx="14" width="120" height="30" fill="rgba(0,212,255,.1)" stroke="#00d4ff"/>
+      <text x="132" y="204" font-size="13" fill="#67e8f9" text-anchor="middle" font-weight="700" font-family="Segoe UI, sans-serif">F MAJOR</text>
+      <rect x="204" y="184" rx="14" width="120" height="30" fill="rgba(168,85,247,.1)" stroke="#a855f7"/>
+      <text x="264" y="204" font-size="13" fill="#d8b4fe" text-anchor="middle" font-weight="700" font-family="Segoe UI, sans-serif">A MINOR</text>
+      <rect x="336" y="184" rx="14" width="168" height="30" fill="rgba(245,158,11,.1)" stroke="#f59e0b"/>
+      <text x="420" y="204" font-size="13" fill="#fcd34d" text-anchor="middle" font-weight="700" font-family="Segoe UI, sans-serif">PIVOTE · DEDO 2</text>
+      <text x="1160" y="40" font-size="12" fill="#475569" text-anchor="end" font-family="monospace">DOC: LP-153 · REV 2.0</text>
+      <line x1="240" y1="560" x2="980" y2="180" stroke="url(#cvRail)" stroke-width="9" stroke-linecap="round" opacity=".85"/>
+      <line x1="310" y1="600" x2="1050" y2="220" stroke="url(#cvRail)" stroke-width="9" stroke-linecap="round" opacity=".55"/>
+      <line x1="240" y1="560" x2="980" y2="180" stroke="#67e8f9" stroke-width="3" stroke-linecap="round" stroke-dasharray="14 30" opacity=".8">
+        <animate attributeName="stroke-dashoffset" from="0" to="-88" dur="1.8s" repeatCount="indefinite"/>
+      </line>
+      <line x1="310" y1="600" x2="1050" y2="220" stroke="#67e8f9" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="10 34" opacity=".45">
+        <animate attributeName="stroke-dashoffset" from="0" to="-88" dur="2.4s" repeatCount="indefinite"/>
+      </line>
+      <line x1="360" y1="498" x2="430" y2="538" stroke="#00d4ff" stroke-width="5" stroke-linecap="round">
+        <animate attributeName="opacity" values=".25;.95;.25" dur="2s" begin="0s" repeatCount="indefinite"/>
+      </line>
+      <line x1="480" y1="436" x2="550" y2="476" stroke="#00d4ff" stroke-width="5" stroke-linecap="round">
+        <animate attributeName="opacity" values=".25;.95;.25" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+      </line>
+      <line x1="600" y1="374" x2="670" y2="414" stroke="#00d4ff" stroke-width="5" stroke-linecap="round">
+        <animate attributeName="opacity" values=".25;.95;.25" dur="2s" begin="1s" repeatCount="indefinite"/>
+      </line>
+      <line x1="720" y1="312" x2="790" y2="352" stroke="#00d4ff" stroke-width="5" stroke-linecap="round">
+        <animate attributeName="opacity" values=".25;.95;.25" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+      </line>
+      <g>
+        <rect x="120" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="180" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="240" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="300" y="430" width="60" height="170" fill="url(#cvKeyHi)" stroke="#00d4ff" stroke-width="2">
+          <animate attributeName="opacity" values="1;.6;1" dur="1.6s" begin="0s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="360" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="420" y="430" width="60" height="170" fill="url(#cvKeyAm)" stroke="#f59e0b" stroke-width="2">
+          <animate attributeName="opacity" values="1;.6;1" dur="1.6s" begin="0.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="480" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="540" y="430" width="60" height="170" fill="url(#cvKeyGr)" stroke="#22c55e" stroke-width="2">
+          <animate attributeName="opacity" values="1;.6;1" dur="1.6s" begin="0.4s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="600" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="660" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="720" y="430" width="60" height="170" fill="url(#cvKeyHi)" stroke="#00d4ff" stroke-width="2">
+          <animate attributeName="opacity" values="1;.6;1" dur="1.6s" begin="1.2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="780" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="840" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="900" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="960" y="430" width="60" height="170" fill="#e8edf4" stroke="#334155"/>
+        <rect x="161" y="430" width="38" height="105" fill="#0b1220" stroke="#000"/>
+        <rect x="221" y="430" width="38" height="105" fill="#0b1220" stroke="#000"/>
+        <rect x="341" y="430" width="38" height="105" fill="#0b1220" stroke="#000"/>
+        <rect x="401" y="430" width="38" height="105" fill="#0b1220" stroke="#000"/>
+        <rect x="461" y="430" width="38" height="105" fill="#0b1220" stroke="#000"/>
+        <rect x="581" y="430" width="38" height="105" fill="#0b1220" stroke="#000"/>
+        <rect x="641" y="430" width="38" height="105" fill="#0b1220" stroke="#000"/>
+        <rect x="761" y="430" width="38" height="105" fill="#0b1220" stroke="#000"/>
+        <rect x="821" y="430" width="38" height="105" fill="#0b1220" stroke="#000"/>
+        <rect x="881" y="430" width="38" height="105" fill="#0b1220" stroke="#000"/>
+      </g>
+      <text x="330" y="590" font-size="20" fill="#00d4ff" text-anchor="middle" font-weight="800" font-family="Segoe UI, sans-serif">F (I)</text>
+      <text x="450" y="590" font-size="20" fill="#f59e0b" text-anchor="middle" font-weight="800" font-family="Segoe UI, sans-serif">A (III)</text>
+      <text x="570" y="590" font-size="20" fill="#22c55e" text-anchor="middle" font-weight="800" font-family="Segoe UI, sans-serif">C (V)</text>
+      <text x="750" y="590" font-size="20" fill="#00d4ff" text-anchor="middle" font-weight="800" font-family="Segoe UI, sans-serif">F</text>
+      <path d="M335 405 Q455 285 562 402" fill="none" stroke="#f59e0b" stroke-width="4" marker-end="url(#cvArr)">
+        <animate attributeName="opacity" values=".55;1;.55" dur="2s" repeatCount="indefinite"/>
+      </path>
+      <text x="450" y="330" font-size="15" fill="#fcd34d" text-anchor="middle" font-weight="700" font-family="Segoe UI, sans-serif">SALTO DE 5ª</text>
+      <path d="M565 418 Q510 452 458 420" fill="none" stroke="#00d4ff" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#cvArrC)">
+        <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.2s" repeatCount="indefinite"/>
+      </path>
+      <text x="512" y="470" font-size="13" fill="#67e8f9" text-anchor="middle" font-weight="700" font-family="Segoe UI, sans-serif">REGRESO A LA 3ª</text>
+      <path d="M458 398 Q610 230 742 398" fill="none" stroke="#f59e0b" stroke-width="4" stroke-dasharray="2 6" opacity=".85" marker-end="url(#cvArr)">
+        <animate attributeName="stroke-dashoffset" from="0" to="-16" dur="1s" repeatCount="indefinite"/>
+      </path>
+      <g>
+        <circle cx="330" cy="380" r="17" fill="#082f49" stroke="#00d4ff" stroke-width="2"/>
+        <text x="330" y="386" font-size="15" fill="#67e8f9" text-anchor="middle" font-weight="800" font-family="Segoe UI, sans-serif">5</text>
+        <animateTransform attributeName="transform" type="translate" values="0 0;0 -7;0 0" dur="2.4s" begin="0s" repeatCount="indefinite"/>
+      </g>
+      <g>
+        <circle cx="450" cy="380" r="17" fill="#451a03" stroke="#f59e0b" stroke-width="2"/>
+        <text x="450" y="386" font-size="15" fill="#fcd34d" text-anchor="middle" font-weight="800" font-family="Segoe UI, sans-serif">1</text>
+        <animateTransform attributeName="transform" type="translate" values="0 0;0 -7;0 0" dur="2.4s" begin="0.35s" repeatCount="indefinite"/>
+      </g>
+      <g>
+        <circle cx="570" cy="380" r="17" fill="#052e16" stroke="#22c55e" stroke-width="2"/>
+        <text x="570" y="386" font-size="15" fill="#86efac" text-anchor="middle" font-weight="800" font-family="Segoe UI, sans-serif">2</text>
+        <animateTransform attributeName="transform" type="translate" values="0 0;0 -7;0 0" dur="2.4s" begin="0.7s" repeatCount="indefinite"/>
+      </g>
+      <g>
+        <circle r="11" fill="#00d4ff" opacity=".22"/>
+        <circle r="5" fill="#e0f2fe"/>
+        <animateMotion dur="7s" repeatCount="indefinite" path="M335,405 Q455,285 562,402 Q512,452 458,420 Q610,230 742,398"/>
+      </g>
+      <text x="72" y="624" font-size="13" fill="#64748b" letter-spacing="2" font-family="Segoe UI, sans-serif">MANUAL INTERACTIVO · MANO IZQUIERDA · TÉCNICA 1-5-3</text>
+    </svg>
+  </div>
+
+  <div class="badge-top">🎓 Tutorial Técnico Profesional · Piano · Acompañamiento</div>
+  <h1 class="hero-title">El Patrón de Escalera <span>“Ladder Pattern”</span></h1>
+  <div class="hero-sub">Guía Definitiva para el Acompañamiento Profesional en Piano</div>
+  <p class="hero-desc">La diferencia entre un intérprete aficionado y uno profesional radica en la capacidad de generar movimiento sin saturar la armonía. Este tutorial le enseña a dejar de ver los acordes como bloques rígidos y comenzar a verlos como una serie de peldaños interconectados que sostienen la narrativa de la canción.</p>
+
+  <div class="quote-box">
+    “Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.”
+    <small>— CITA DESTACADA DEL MANUAL</small>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><b>1-5-3</b><span>Secuencia núcleo</span></div>
+    <div class="metric"><b>2</b><span>Acordes base: F · Am</span></div>
+    <div class="metric"><b>8</b><span>Secciones de estudio</span></div>
+    <div class="metric"><b>3</b><span>Niveles de práctica</span></div>
+    <div class="metric"><b>∞</b><span>Octavas extensibles</span></div>
+  </div>
+
+  <div class="card" style="margin-top:26px;">
+    <div class="card-h">
+      <div class="card-ico">🗺️</div>
+      <h2>Hoja de ruta del tutorial</h2>
+    </div>
+    <p>Utilice la barra de navegación superior para avanzar sección por sección. Cada módulo es independiente y contiene el 100% del contenido original, diagramas técnicos y ejercicios de comprobación.</p>
+    <div class="chips-row">
+      <span class="chip i">1 · Introducción y objetivos</span>
+      <span class="chip i">2 · Fundamentos armónicos</span>
+      <span class="chip v">3 · Anatomía del patrón</span>
+      <span class="chip iii">4 · Ascenso en F Major</span>
+      <span class="chip p">5 · Descenso en A Minor</span>
+      <span class="chip i">6 · Aplicación práctica</span>
+      <span class="chip v">7 · Entrenamiento con audio</span>
+      <span class="chip iii">8 · Errores y conclusiones</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= SECCIÓN 1 ======================= -->
+<section class="view" id="view-sec1">
+  <div class="card">
+    <div class="card-h">
+      <div class="card-ico">🎯</div>
+      <h2>Introducción y Objetivos Estratégicos</h2>
+      <span class="sec-tag">Sección 1 / 8</span>
+    </div>
+    <p>En el acompañamiento pianístico contemporáneo, la diferencia entre un intérprete aficionado y uno profesional radica en la capacidad de <b style="color:var(--cyan)">generar movimiento sin saturar la armonía</b>. El “Ladder Pattern” (Patrón de Escalera) es una técnica de arquitectura sonora diseñada para transformar progresiones estáticas en texturas fluidas y elegantes.</p>
+    <p>Su impacto es inmediato: permite “llenar el espacio” sonoro de manera dinámica, creando una base que respira y evoluciona. Como estratega pedagógico, mi objetivo es que usted deje de ver los acordes como bloques rígidos y comience a verlos como una serie de <b style="color:var(--amber)">peldaños interconectados</b> que sostienen la narrativa de la canción.</p>
+
+    <div class="callout info"><div class="ico">💡</div><div><b>Pensá en esto como…</b> una escalera real: cada nota del acorde es un peldaño, y el patrón le indica en qué orden subirlos o bajarlos para que el acompañamiento nunca se quede “quieto”.</div></div>
+
+    <h3 style="color:#fff;margin:20px 0 6px;font-size:17px;">🎯 Objetivos del tutorial</h3>
+    <ul class="steps">
+      <li><span class="step-name">Objetivo 01 · Núcleo técnico</span>Dominar la secuencia técnica <b>1-5-3</b> como núcleo del patrón.</li>
+      <li><span class="step-name">Objetivo 02 · Mecánica del pivote</span>Internalizar el uso del <b>“pivote” (dedo 2)</b> para ejecutar intervalos amplios con fluidez.</li>
+      <li><span class="step-name">Objetivo 03 · Extensión</span>Comprender la <b>extensibilidad</b> del patrón para escalar múltiples octavas en el teclado.</li>
+    </ul>
+
+    <div class="callout warn"><div class="ico">⚠️</div><div><b>Requisito técnico:</b> Para iniciar, es fundamental que su mano izquierda mantenga una postura relajada y <b>“en garra”</b>, permitiendo que el peso del brazo facilite los desplazamientos laterales.</div></div>
+  </div>
+</section>
+
+<!-- ======================= SECCIÓN 2 ======================= -->
+<section class="view" id="view-sec2">
+  <div class="card">
+    <div class="card-h">
+      <div class="card-ico g">🧱</div>
+      <h2>Conocimientos Previos y Fundamentos Armónicos</h2>
+      <span class="sec-tag">Sección 2 / 8</span>
+    </div>
+    <p>Antes de construir la escalera, debemos conocer los materiales. El patrón se basa estrictamente en las <b style="color:var(--green)">notas del acorde (chord tones)</b>. Ignorar estas jerarquías resultaría en una sonoridad disonante o carente de dirección.</p>
+
+    <h3 style="color:#fff;margin:18px 0 4px;font-size:17px;">🔑 Conceptos Clave <span style="font-size:12px;color:var(--dim);font-weight:400;">(Nomenclatura Americana)</span></h3>
+    <div class="grid3" style="margin-top:12px;">
+      <div class="subcard">
+        <h3><span class="chip i">I</span> Tónica</h3>
+        <p>El cimiento del acorde. Es la raíz, el punto de partida de toda la escalera.</p>
+      </div>
+      <div class="subcard">
+        <h3 class="g"><span class="chip v">V</span> Quinta</h3>
+        <p>El soporte estructural que define la amplitud del patrón. Es el destino del “salto”.</p>
+      </div>
+      <div class="subcard">
+        <h3 class="a"><span class="chip iii">III</span> Tercera</h3>
+        <p>La nota que aporta el color (mayor o menor) y actúa como punto de retorno.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:18px;">Para este estudio, nos centraremos en <b style="color:#fff">dos estructuras fundamentales</b>:</p>
+    <table class="tech">
+      <tr><th>Estructura</th><th>Tónica (I)</th><th>Tercera (III)</th><th>Quinta (V)</th></tr>
+      <tr><td><b style="color:var(--cyan)">1 · F major</b></td><td>F</td><td>A</td><td>C</td></tr>
+      <tr><td><b style="color:var(--purple)">2 · A minor</b></td><td>A</td><td>C</td><td>E</td></tr>
+    </table>
+
+    <div class="grid2">
+      <div class="subcard">
+        <h3>🎹 F Major · F(I) – A(III) – C(V)</h3>
+        <svg class="svg-fig" viewBox="0 0 340 170" aria-label="Teclado F major">
+          <rect width="340" height="170" fill="#0b1224"/>
+          <rect x="18"  y="28" width="38" height="100" fill="#e8edf4" stroke="#334155"/>
+          <rect x="56"  y="28" width="38" height="100" fill="#e8edf4" stroke="#334155"/>
+          <rect x="94"  y="28" width="38" height="100" fill="#e8edf4" stroke="#334155"/>
+          <rect x="132" y="28" width="38" height="100" fill="#164e63" stroke="#00d4ff" stroke-width="2"/>
+          <rect x="170" y="28" width="38" height="100" fill="#e8edf4" stroke="#334155"/>
+          <rect x="208" y="28" width="38" height="100" fill="#78350f" stroke="#f59e0b" stroke-width="2"/>
+          <rect x="246" y="28" width="38" height="100" fill="#e8edf4" stroke="#334155"/>
+          <rect x="284" y="28" width="38" height="100" fill="#14532d" stroke="#22c55e" stroke-width="2"/>
+          <rect x="45"  y="28" width="22" height="60" fill="#020617"/>
+          <rect x="83"  y="28" width="22" height="60" fill="#020617"/>
+          <rect x="159" y="28" width="22" height="60" fill="#020617"/>
+          <rect x="197" y="28" width="22" height="60" fill="#020617"/>
+          <rect x="235" y="28" width="22" height="60" fill="#020617"/>
+          <text x="151" y="118" font-size="12" fill="#67e8f9" text-anchor="middle" font-weight="700">F</text>
+          <text x="227" y="118" font-size="12" fill="#fcd34d" text-anchor="middle" font-weight="700">A</text>
+          <text x="303" y="118" font-size="12" fill="#86efac" text-anchor="middle" font-weight="700">C</text>
+          <text x="151" y="152" font-size="11" fill="#94a3b8" text-anchor="middle">F (I)</text>
+          <text x="227" y="152" font-size="11" fill="#94a3b8" text-anchor="middle">A (III)</text>
+          <text x="303" y="152" font-size="11" fill="#94a3b8" text-anchor="middle">C (V)</text>
+        </svg>
+      </div>
+      <div class="subcard">
+        <h3 class="p">🎹 A Minor · A(I) – C(III) – E(V)</h3>
+        <svg class="svg-fig" viewBox="0 0 340 170" aria-label="Teclado A minor">
+          <rect width="340" height="170" fill="#0b1224"/>
+          <rect x="18"  y="28" width="38" height="100" fill="#e8edf4" stroke="#334155"/>
+          <rect x="56"  y="28" width="38" height="100" fill="#e8edf4" stroke="#334155"/>
+          <rect x="94"  y="28" width="38" height="100" fill="#14532d" stroke="#22c55e" stroke-width="2"/>
+          <rect x="132" y="28" width="38" height="100" fill="#e8edf4" stroke="#334155"/>
+          <rect x="170" y="28" width="38" height="100" fill="#e8edf4" stroke="#334155"/>
+          <rect x="208" y="28" width="38" height="100" fill="#164e63" stroke="#00d4ff" stroke-width="2"/>
+          <rect x="246" y="28" width="38" height="100" fill="#78350f" stroke="#f59e0b" stroke-width="2"/>
+          <rect x="284" y="28" width="38" height="100" fill="#e8edf4" stroke="#334155"/>
+          <rect x="45"  y="28" width="22" height="60" fill="#020617"/>
+          <rect x="83"  y="28" width="22" height="60" fill="#020617"/>
+          <rect x="159" y="28" width="22" height="60" fill="#020617"/>
+          <rect x="197" y="28" width="22" height="60" fill="#020617"/>
+          <rect x="235" y="28" width="22" height="60" fill="#020617"/>
+          <text x="227" y="118" font-size="12" fill="#67e8f9" text-anchor="middle" font-weight="700">A</text>
+          <text x="265" y="118" font-size="12" fill="#fcd34d" text-anchor="middle" font-weight="700">C</text>
+          <text x="113" y="118" font-size="12" fill="#86efac" text-anchor="middle" font-weight="700">E</text>
+          <text x="227" y="152" font-size="11" fill="#94a3b8" text-anchor="middle">A (I)</text>
+          <text x="265" y="152" font-size="11" fill="#94a3b8" text-anchor="middle">C (III)</text>
+          <text x="113" y="152" font-size="11" fill="#94a3b8" text-anchor="middle">E (V)</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="callout info"><div class="ico">📌</div><div><b>Esto es importante porque…</b> el patrón nunca utiliza notas ajenas al acorde. Si respeta la jerarquía <b>I – III – V</b>, la sonoridad será siempre profesional, incluso en tempo lento.</div></div>
+  </div>
+</section>
+
+<!-- ======================= SECCIÓN 3 ======================= -->
+<section class="view" id="view-sec3">
+  <div class="card">
+    <div class="card-h">
+      <div class="card-ico a">🪜</div>
+      <h2>La Anatomía del “Ladder Pattern”</h2>
+      <span class="sec-tag">Sección 3 / 8</span>
+    </div>
+    <p>La magia del “Ladder Pattern” no reside en tocar las notas en orden lineal, sino en la lógica de <b style="color:var(--amber)">“saltar y regresar”</b>.</p>
+    <div class="callout info"><div class="ico">🎼</div><div>A diferencia de un <b>arpegio tradicional</b>, este patrón crea un <b>relieve sonoro más sofisticado</b>.</div></div>
+
+    <div class="grid2">
+      <div class="subcard">
+        <h3 class="a">⬆️ Lógica de Ascenso (1-5-3)</h3>
+        <p>Se inicia en la <b>raíz (I)</b>, se realiza un salto estratégico <b>saltando la tercera</b> para alcanzar la <b>quinta (V)</b>, y finalmente se “regresa” al peldaño omitido, la <b>tercera (III)</b>.</p>
+      </div>
+      <div class="subcard">
+        <h3 class="g">🧭 El Rol Crítico del Pivote</h3>
+        <p>Para cubrir esta distancia sin tensión, el <b>dedo 2 (índice)</b> actúa como el eje central (<b>pivote</b>). Mientras el dedo 5 (meñique) ancla la raíz, el dedo 2 alcanza la quinta, permitiendo que la mano se expanda naturalmente para que el pulgar o el dedo 3 recuperen la tercera. Esta mecánica es la que permite que el patrón se sienta fluido y no como una serie de saltos inconexos.</p>
+      </div>
+    </div>
+
+    <svg class="svg-fig" viewBox="0 0 640 306" aria-label="Diagrama del salto y regreso con digitación">
+      <rect width="640" height="306" fill="#0b1224"/>
+      <text x="320" y="26" font-size="14" fill="#94a3b8" text-anchor="middle" letter-spacing="2" font-weight="700">MECÁNICA 1-5-3 · ACORDE DE F MAJOR</text>
+      <rect x="95"  y="120" width="90" height="150" fill="#164e63" stroke="#00d4ff" stroke-width="2"/>
+      <rect x="185" y="120" width="90" height="150" fill="#e8edf4" stroke="#334155"/>
+      <rect x="275" y="120" width="90" height="150" fill="#78350f" stroke="#f59e0b" stroke-width="2"/>
+      <rect x="365" y="120" width="90" height="150" fill="#e8edf4" stroke="#334155"/>
+      <rect x="455" y="120" width="90" height="150" fill="#14532d" stroke="#22c55e" stroke-width="2"/>
+      <rect x="169" y="120" width="32" height="92" fill="#020617"/>
+      <rect x="259" y="120" width="32" height="92" fill="#020617"/>
+      <rect x="349" y="120" width="32" height="92" fill="#020617"/>
+      <text x="140" y="255" font-size="17" fill="#67e8f9" text-anchor="middle" font-weight="800">F</text>
+      <text x="320" y="255" font-size="17" fill="#fcd34d" text-anchor="middle" font-weight="800">A</text>
+      <text x="500" y="255" font-size="17" fill="#86efac" text-anchor="middle" font-weight="800">C</text>
+      <defs>
+        <marker id="d3a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#f59e0b"/></marker>
+        <marker id="d3b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#00d4ff"/></marker>
+      </defs>
+      <path d="M140 66 Q320 4 500 66" fill="none" stroke="#f59e0b" stroke-width="3" marker-end="url(#d3a)"/>
+      <text x="320" y="42" font-size="13" fill="#fcd34d" text-anchor="middle" font-weight="700">SALTO · dedo 2 (pivote) alcanza la quinta</text>
+      <path d="M497 100 Q410 138 323 100" fill="none" stroke="#00d4ff" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#d3b)"/>
+      <circle cx="140" cy="98" r="16" fill="#082f49" stroke="#00d4ff" stroke-width="2"/>
+      <text x="140" y="104" font-size="14" fill="#67e8f9" text-anchor="middle" font-weight="800">5</text>
+      <circle cx="320" cy="132" r="16" fill="#451a03" stroke="#f59e0b" stroke-width="2"/>
+      <text x="320" y="138" font-size="14" fill="#fcd34d" text-anchor="middle" font-weight="800">1</text>
+      <circle cx="500" cy="98" r="16" fill="#052e16" stroke="#22c55e" stroke-width="2"/>
+      <text x="500" y="104" font-size="14" fill="#86efac" text-anchor="middle" font-weight="800">2</text>
+      <text x="320" y="295" font-size="12" fill="#64748b" text-anchor="middle">REGRESO · pulgar (1) o dedo 3 recupera la tercera omitida</text>
+    </svg>
+    <p class="fig-cap">FIG. 3.1 — El salto es un desplazamiento de la mano, no un brinco del dedo.</p>
+
+    <div class="callout ok"><div class="ico">🧠</div><div><b>En la práctica significa…</b> que el dedo 2 trabaja como bisagra: la mano se “abre” alrededor de él y el movimiento se percibe como una sola ola continua, no como tres notas aisladas.</div></div>
+  </div>
+</section>
+
+<!-- ======================= SECCIÓN 4 ======================= -->
+<section class="view" id="view-sec4">
+  <div class="card">
+    <div class="card-h">
+      <div class="card-ico">📈</div>
+      <h2>Ejecución Paso a Paso: El Ascenso (F Major)</h2>
+      <span class="sec-tag">Sección 4 / 8</span>
+    </div>
+    <p>La mano izquierda es el <b style="color:var(--cyan)">motor rítmico de la pieza</b>. Aplicaremos el ascenso sobre el acorde de <b>F major</b>, una técnica esencial en baladas de tempo lento como <b style="color:var(--amber)">“Can’t Help Falling in Love”</b>.</p>
+
+    <h3 style="color:#fff;margin:18px 0 4px;font-size:17px;">🪜 Guía de Pasos</h3>
+    <ul class="steps">
+      <li><span class="step-name">Paso 1 · Posicionamiento</span>Coloque el <b>dedo 5 en F(I)</b>.</li>
+      <li><span class="step-name">Paso 2 · El Salto (El Salto de Escalera)</span>Salte la nota <b>A(III)</b> y dirija su <b>dedo 2 hacia C(V)</b>. Este es el movimiento expansivo.</li>
+      <li><span class="step-name">Paso 3 · La Resolución (El Regreso)</span>Toque la nota que saltamos, <b>A(III)</b>, utilizando su <b>dedo pulgar (1) o el dedo 3</b>, dependiendo de la comodidad de su extensión.</li>
+      <li><span class="step-name">Paso 4 · Extensibilidad</span>Una vez en <b>A(III)</b>, este se convierte en su nuevo “piso”. El siguiente paso sería saltar la nota <b>C</b> para alcanzar el <b>F de la siguiente octava</b> y regresar al C. <b style="color:var(--cyan)">¡Usted está subiendo la escalera!</b></li>
+    </ul>
+
+    <svg class="svg-fig" viewBox="0 0 680 330" aria-label="Escalera ascendente F-A-C-F">
+      <rect width="680" height="330" fill="#0b1224"/>
+      <text x="340" y="26" font-size="14" fill="#94a3b8" text-anchor="middle" letter-spacing="2" font-weight="700">ASCENSO · F3 → C4 → A3 → F4</text>
+      <defs>
+        <marker id="d4a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#f59e0b"/></marker>
+        <marker id="d4b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#00d4ff"/></marker>
+      </defs>
+      <rect x="70"  y="230" width="120" height="70"  fill="#0d1c38" stroke="#1e3a5f"/>
+      <rect x="190" y="180" width="120" height="120" fill="#0d1c38" stroke="#1e3a5f"/>
+      <rect x="310" y="130" width="120" height="170" fill="#0d1c38" stroke="#1e3a5f"/>
+      <rect x="430" y="80"  width="120" height="220" fill="#0d1c38" stroke="#1e3a5f"/>
+      <rect x="70"  y="230" width="120" height="5" fill="#00d4ff"/>
+      <rect x="190" y="180" width="120" height="5" fill="#f59e0b"/>
+      <rect x="310" y="130" width="120" height="5" fill="#22c55e"/>
+      <rect x="430" y="80"  width="120" height="5" fill="#00d4ff"/>
+      <text x="130" y="272" font-size="18" fill="#67e8f9" text-anchor="middle" font-weight="800">F3</text>
+      <text x="250" y="245" font-size="18" fill="#fcd34d" text-anchor="middle" font-weight="800">A3</text>
+      <text x="370" y="220" font-size="18" fill="#86efac" text-anchor="middle" font-weight="800">C4</text>
+      <text x="490" y="195" font-size="18" fill="#67e8f9" text-anchor="middle" font-weight="800">F4</text>
+      <circle cx="130" cy="205" r="14" fill="#082f49" stroke="#00d4ff" stroke-width="2"/>
+      <text x="130" y="210" font-size="13" fill="#67e8f9" text-anchor="middle" font-weight="800">1</text>
+      <circle cx="370" cy="105" r="14" fill="#052e16" stroke="#22c55e" stroke-width="2"/>
+      <text x="370" y="110" font-size="13" fill="#86efac" text-anchor="middle" font-weight="800">2</text>
+      <circle cx="250" cy="155" r="14" fill="#451a03" stroke="#f59e0b" stroke-width="2"/>
+      <text x="250" y="160" font-size="13" fill="#fcd34d" text-anchor="middle" font-weight="800">3</text>
+      <circle cx="490" cy="55" r="14" fill="#082f49" stroke="#00d4ff" stroke-width="2"/>
+      <text x="490" y="60" font-size="13" fill="#67e8f9" text-anchor="middle" font-weight="800">4</text>
+      <path d="M147 200 Q255 60 356 103" fill="none" stroke="#f59e0b" stroke-width="3" marker-end="url(#d4a)"/>
+      <path d="M356 116 Q300 138 266 150" fill="none" stroke="#00d4ff" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#d4b)"/>
+      <path d="M263 148 Q375 10 478 52" fill="none" stroke="#f59e0b" stroke-width="3" marker-end="url(#d4a)"/>
+      <text x="340" y="320" font-size="12" fill="#64748b" text-anchor="middle">Cada ciclo 1-5-3 convierte la tercera en el “piso” del siguiente salto · escalera infinita</text>
+    </svg>
+    <p class="fig-cap">FIG. 4.1 — Orden real de ejecución: ① F(I) → ② C(V) → ③ A(III) → ④ F siguiente octava.</p>
+
+    <div class="callout ok"><div class="ico">✅</div><div><b>Análisis de Resultados:</b> El sonido debe ser <b>legato</b>. El “secreto” profesional es que el salto al <b>C(V)</b> no debe sonar acentuado, sino como una continuación natural del flujo.</div></div>
+
+    <button class="seq-btn" style="margin-top:6px;" onclick="playAndGo('fAsc')">▶ Escuchar el ascenso en F Major (ir al Laboratorio)</button>
+  </div>
+</section>
+
+<!-- ======================= SECCIÓN 5 ======================= -->
+<section class="view" id="view-sec5">
+  <div class="card">
+    <div class="card-h">
+      <div class="card-ico p">📉</div>
+      <h2>Ejecución Paso a Paso: El Descenso (A Minor)</h2>
+      <span class="sec-tag">Sección 5 / 8</span>
+    </div>
+    <p>Dominar el descenso es estratégico para <b style="color:var(--purple)">evitar que el acompañamiento colisione con el registro de la mano derecha</b>. Utilizaremos como referencia el tema de <b style="color:var(--amber)">“Love Story”</b>.</p>
+
+    <h3 style="color:#fff;margin:18px 0 4px;font-size:17px;">🪜 Guía de Pasos en A Minor</h3>
+    <ul class="steps">
+      <li><span class="step-name">Paso 1 · Punto de Partida</span>Inicie en una <b>nota alta del acorde</b>, por ejemplo, <b>A(I) en una octava superior</b>.</li>
+      <li><span class="step-name">Paso 2 · El Pivote Inverso</span>Para bajar, utilice el <b>pulgar como ancla</b>. Salte el peldaño inmediatamente inferior (<b>E</b>) y descienda hasta el siguiente (<b>C</b>).</li>
+      <li><span class="step-name">Paso 3 · Recuperación</span>Toque la nota que saltó anteriormente (<b>E</b>).</li>
+      <li><span class="step-name">Paso 4 · Secuencia</span>La lógica resultante es <b>saltar hacia abajo y recuperar la nota intermedia</b>, creando un efecto de <b>cascada armónica</b>.</li>
+    </ul>
+
+    <svg class="svg-fig" viewBox="0 0 680 330" aria-label="Escalera descendente en A minor">
+      <rect width="680" height="330" fill="#0b1224"/>
+      <text x="340" y="26" font-size="14" fill="#94a3b8" text-anchor="middle" letter-spacing="2" font-weight="700">DESCENSO · A4 → C4 → E4 → A3</text>
+      <defs>
+        <marker id="d5a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#a855f7"/></marker>
+        <marker id="d5b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#00d4ff"/></marker>
+      </defs>
+      <rect x="70"  y="60"  width="120" height="240" fill="#0d1c38" stroke="#1e3a5f"/>
+      <rect x="190" y="110" width="120" height="190" fill="#0d1c38" stroke="#1e3a5f"/>
+      <rect x="310" y="160" width="120" height="140" fill="#0d1c38" stroke="#1e3a5f"/>
+      <rect x="430" y="210" width="120" height="90"  fill="#0d1c38" stroke="#1e3a5f"/>
+      <rect x="70"  y="60"  width="120" height="5" fill="#a855f7"/>
+      <rect x="190" y="110" width="120" height="5" fill="#22c55e"/>
+      <rect x="310" y="160" width="120" height="5" fill="#f59e0b"/>
+      <rect x="430" y="210" width="120" height="5" fill="#a855f7"/>
+      <text x="130" y="185" font-size="18" fill="#d8b4fe" text-anchor="middle" font-weight="800">A4</text>
+      <text x="250" y="210" font-size="18" fill="#86efac" text-anchor="middle" font-weight="800">E4</text>
+      <text x="370" y="235" font-size="18" fill="#fcd34d" text-anchor="middle" font-weight="800">C4</text>
+      <text x="490" y="258" font-size="18" fill="#d8b4fe" text-anchor="middle" font-weight="800">A3</text>
+      <circle cx="130" cy="42" r="14" fill="#2e1065" stroke="#a855f7" stroke-width="2"/>
+      <text x="130" y="47" font-size="13" fill="#d8b4fe" text-anchor="middle" font-weight="800">1</text>
+      <circle cx="370" cy="142" r="14" fill="#451a03" stroke="#f59e0b" stroke-width="2"/>
+      <text x="370" y="147" font-size="13" fill="#fcd34d" text-anchor="middle" font-weight="800">2</text>
+      <circle cx="250" cy="92" r="14" fill="#052e16" stroke="#22c55e" stroke-width="2"/>
+      <text x="250" y="97" font-size="13" fill="#86efac" text-anchor="middle" font-weight="800">3</text>
+      <circle cx="490" cy="192" r="14" fill="#2e1065" stroke="#a855f7" stroke-width="2"/>
+      <text x="490" y="197" font-size="13" fill="#d8b4fe" text-anchor="middle" font-weight="800">4</text>
+      <path d="M147 46 Q262 62 356 136" fill="none" stroke="#a855f7" stroke-width="3" marker-end="url(#d5a)"/>
+      <path d="M356 150 Q300 122 266 100" fill="none" stroke="#00d4ff" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#d5b)"/>
+      <path d="M264 104 Q380 130 477 186" fill="none" stroke="#a855f7" stroke-width="3" stroke-dasharray="2 6" marker-end="url(#d5a)"/>
+      <text x="340" y="320" font-size="12" fill="#64748b" text-anchor="middle">Se salta E hacia C y se recupera E · la secuencia se repite como cascada armónica</text>
+    </svg>
+    <p class="fig-cap">FIG. 5.1 — El pivote inverso usa el pulgar como ancla del descenso.</p>
+
+    <div class="callout ok"><div class="ico">💧</div><div><b>Efecto cascada:</b> al alternar “salto hacia abajo + recuperación de la nota intermedia”, el acompañamiento desciende con elegancia sin invadir el territorio melódico de la mano derecha.</div></div>
+
+    <button class="seq-btn" style="margin-top:6px;" onclick="playAndGo('amDesc')">▶ Escuchar el descenso en A Minor (ir al Laboratorio)</button>
+  </div>
+</section>
+
+<!-- ======================= SECCIÓN 6 ======================= -->
+<section class="view" id="view-sec6">
+  <div class="card">
+    <div class="card-h">
+      <div class="card-ico g">🎛️</div>
+      <h2>Aplicación Práctica y Versatilidad</h2>
+      <span class="sec-tag">Sección 6 / 8</span>
+    </div>
+    <p>El “Ladder Pattern” es una <b style="color:var(--green)">herramienta de control interpretativo</b>. A diferencia de los ejercicios mecánicos, aquí usted decide la <b style="color:var(--amber)">“altura” de la escalera</b>.</p>
+
+    <div class="grid2" style="margin-top:16px;">
+      <div class="subcard">
+        <h3>🔄 Versatilidad</h3>
+        <p>Funciona <b>exactamente igual para acordes mayores y menores</b>. Solo debe identificar sus tres notas básicas <b>(I-III-V)</b> y aplicar el salto <b>1-5-3</b>.</p>
+        <div class="chips-row">
+          <span class="chip i">Mayores ✔</span>
+          <span class="chip p">Menores ✔</span>
+          <span class="chip v">Misma mecánica</span>
+        </div>
+      </div>
+      <div class="subcard">
+        <h3 class="a">🎚️ Control de Intensidad</h3>
+        <p>Puede usar <b>solo un ciclo del patrón</b> para una estrofa íntima, o <b>escalar dos octavas completas</b> para un estribillo épico. El ejecutante tiene el mando sobre cuánto espacio desea llenar.</p>
+        <div class="chips-row">
+          <span class="chip dim">1 ciclo → estrofa íntima</span>
+          <span class="chip iii">2 octavas → estribillo épico</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info"><div class="ico">🧭</div><div><b>Un intérprete observaría que…</b> la intensidad del acompañamiento no depende de tocar más fuerte, sino de decidir cuántos peldaños de la escalera se recorren en cada sección de la canción.</div></div>
+  </div>
+</section>
+
+<!-- ======================= SECCIÓN 7 ======================= -->
+<section class="view" id="view-sec7">
+  <div class="card">
+    <div class="card-h">
+      <div class="card-ico">🏋️</div>
+      <h2>Bloque de Entrenamiento y Comprobación</h2>
+      <span class="sec-tag">Sección 7 / 8</span>
+    </div>
+    <p>Para consolidar la <b style="color:var(--cyan)">memoria muscular</b> y la <b style="color:var(--amber)">precisión del pivote</b>, realice la siguiente rutina:</p>
+
+    <div class="grid3" style="margin-top:14px;">
+      <div class="subcard">
+        <h3 class="g"><span class="level-tag lt-b">Nivel Básico</span></h3>
+        <p><b style="color:#fff">Ascenso en C major:</b> Ejecute la secuencia <b>C(I) – G(V) – E(III)</b>. Enfoque su atención en el <b>dedo 2 llegando al G</b>.</p>
+        <div class="chips-row"><span class="chip i">C</span><span class="chip v">G</span><span class="chip iii">E</span></div>
+      </div>
+      <div class="subcard">
+        <h3 class="a"><span class="level-tag lt-i">Nivel Intermedio</span></h3>
+        <p><b style="color:#fff">Fluidez en G major:</b> Alterne ascenso y descenso: <b>G(I) – D(V) – B(III)</b> y luego regrese. Busque un <b>pulso constante</b>.</p>
+        <div class="chips-row"><span class="chip i">G</span><span class="chip v">D</span><span class="chip iii">B</span></div>
+      </div>
+      <div class="subcard">
+        <h3 style="color:var(--red)"><span class="level-tag lt-d">Desafío</span></h3>
+        <p><b style="color:#fff">Progresión Profesional en C Major:</b> Aplique el patrón 1-5-3 a la siguiente progresión circular:</p>
+        <div class="chips-row"><span class="chip i">C (I)</span><span class="chip v">G (V)</span><span class="chip iii">Am (vi)</span><span class="chip p">F (IV)</span></div>
+      </div>
+    </div>
+
+    <div class="callout ok"><div class="ico">🔑</div><div><b>Solución:</b> En cada cambio de acorde, identifique la <b>nueva raíz</b> y ejecute el <b>salto a su quinta respectiva</b> antes de volver a su tercera.</div></div>
+
+    <h3 style="color:#fff;margin:22px 0 4px;font-size:17px;">🎧 Laboratorio Sonoro Interactivo</h3>
+    <p style="color:var(--muted);font-size:14px;">Pulse un botón para escuchar el patrón y observe las teclas iluminarse. También puede tocar cualquier tecla directamente. Leyenda: <span class="chip i">I Tónica</span> <span class="chip iii">III Tercera</span> <span class="chip v">V Quinta</span></p>
+
+    <div class="piano-shell">
+      <div class="piano-controls">
+        <button class="seq-btn" onclick="playSeq('fAsc')">▶ Ascenso · F Major</button>
+        <button class="seq-btn" onclick="playSeq('amDesc')">▶ Descenso · A Minor</button>
+        <button class="seq-btn" onclick="playSeq('cBas')">▶ Básico · C Major</button>
+        <button class="seq-btn" onclick="playSeq('gInt')">▶ Intermedio · G Major</button>
+        <button class="seq-btn" onclick="playSeq('prog')">▶ Desafío · C–G–Am–F</button>
+        <button class="seq-btn stop" onclick="stopSeq()">⏹ Detener</button>
+      </div>
+      <div class="piano-status">Estado: <b id="pStatus">listo para practicar</b> · Acorde: <b id="pChord">—</b></div>
+      <div id="kb" aria-label="Teclado interactivo"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= SECCIÓN 8 ======================= -->
+<section class="view" id="view-sec8">
+  <div class="card">
+    <div class="card-h">
+      <div class="card-ico r">🧾</div>
+      <h2>Repaso, Errores Comunes y Conclusiones</h2>
+      <span class="sec-tag">Sección 8 / 8</span>
+    </div>
+    <p>El “Ladder Pattern” es el <b style="color:var(--cyan)">lenguaje de la sofisticación en el piano moderno</b>. No es solo un patrón; es una forma de entender el movimiento armónico.</p>
+
+    <h3 style="color:#fff;margin:18px 0 10px;font-size:17px;">🚫 Lista de Errores a Evitar</h3>
+    <div class="err-list">
+      <div class="err-item">
+        <b>✖ Omitir el Pivote</b>
+        <p>Intentar tocar el patrón sin usar el dedo 2 como eje provocará saltos bruscos y falta de control dinámico.</p>
+      </div>
+      <div class="err-item">
+        <b>✖ Rigidez en el Salto</b>
+        <p>El “salto” es un desplazamiento de la mano, no un brinco del dedo. Mantenga la muñeca flexible.</p>
+      </div>
+      <div class="err-item">
+        <b>✖ Obligación de Completar</b>
+        <p>No es necesario llegar siempre al final de la escalera. Puede detenerse en cualquier nota del patrón según lo dicte su gusto personal.</p>
+      </div>
+    </div>
+
+    <div class="next-banner">
+      🚀 <b>Próximos Pasos:</b> Una vez automatizado el movimiento en la mano izquierda, el siguiente nivel es mantener este “motor” mientras su mano derecha ejecuta la melodía o acordes bloque. La independencia vendrá de la seguridad que le brinda este patrón sólido y profesional. <b>¡Feliz práctica!</b>
+    </div>
+
+    <h3 style="color:#fff;margin:24px 0 10px;font-size:17px;">📦 Bloque de Resumen Final</h3>
+    <table class="tech">
+      <tr><th>Elemento</th><th>Concepto clave</th></tr>
+      <tr><td>Núcleo del patrón</td><td>Secuencia <b>1-5-3</b>: raíz → salto a la quinta → regreso a la tercera</td></tr>
+      <tr><td>Pivote</td><td>Dedo 2 (índice) como eje; pulgar o dedo 3 recuperan la tercera</td></tr>
+      <tr><td>Postura</td><td>Mano izquierda relajada “en garra”; peso del brazo en los desplazamientos</td></tr>
+      <tr><td>Ascenso</td><td>F Major · referencia: “Can’t Help Falling in Love” · sonido legato</td></tr>
+      <tr><td>Descenso</td><td>A Minor · referencia: “Love Story” · efecto cascada armónica</td></tr>
+      <tr><td>Versatilidad</td><td>Idéntico en acordes mayores y menores · altura de escalera a criterio del intérprete</td></tr>
+      <tr><td>Entrenamiento</td><td>C Major (básico) → G Major (intermedio) → C–G–Am–F (desafío)</td></tr>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<button id="toTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Volver arriba">↑</button>
+
+<div id="modalOverlay">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>⭐ Créditos del Tutorial</h3>
+    <div id="creditsSvgWrap" style="width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;border:1px solid var(--border);background:#0a0e1a;margin-bottom:16px;"></div>
+    <p>👨‍💻 <b>Rubén Sbarsky</b></p>
+    <p>Autor de la fuente documental del cuaderno de NotebookLM</p>
+    <p>📘 Obra fuente → <b>Guía Definitiva de Accio Work</b></p>
+    <p>📅 Fecha → <b id="credFecha">—</b></p>
+    <p>⏰ Hora → <b id="credHora">—</b></p>
+    <p>🎯 Propósito → <b>Educativo y divulgativo</b></p>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-grid">
+    <div>📚 Tutorial solo con fines Educativos y Divulgación</div>
+    <div>👨‍💻 Créditos: <b style="color:#fff">Rubén Sbarsky</b></div>
+    <div>📅 FECHA: <span id="footFecha">—</span> · Hora: <span id="footHora">—</span></div>
+    <div class="latin">Fiat iustitia, ruat caelum.</div>
+    <div class="foot-brand">El Patrón de Escalera · Ladder Pattern · Manual Interactivo</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var views=document.querySelectorAll('.view');
+  var navBtns=document.querySelectorAll('.nav-btn');
+  var navScroll=document.getElementById('navScroll');
+
+  window.showView=function(id){
+    views.forEach(function(v){v.classList.remove('active');});
+    var target=document.getElementById('view-'+id);
+    if(target){target.classList.add('active');}
+    navBtns.forEach(function(b){
+      var on=b.getAttribute('data-view')===id;
+      b.classList.toggle('active',on);
+      if(on&&navScroll){b.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});}
+    });
+    stopSeq();
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(history.replaceState){history.replaceState(null,'','#'+id);}
+    updateProgress();
+  };
+
+  navBtns.forEach(function(b){
+    b.addEventListener('click',function(){showView(b.getAttribute('data-view'));});
+  });
+
+  var initial=(location.hash||'').replace('#','');
+  if(initial&&document.getElementById('view-'+initial)){showView(initial);}
+
+  var pBar=document.getElementById('progressBar');
+  var toTop=document.getElementById('toTop');
+  function updateProgress(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    var pct=max>0?(h.scrollTop/max)*100:0;
+    pBar.style.width=pct+'%';
+    toTop.classList.toggle('show',h.scrollTop>300);
+  }
+  window.updateProgress=updateProgress;
+  window.addEventListener('scroll',updateProgress,{passive:true});
+  window.addEventListener('resize',updateProgress);
+  updateProgress();
+
+  var overlay=document.getElementById('modalOverlay');
+  document.getElementById('creditsBtn').addEventListener('click',function(){
+    if(typeof actualizarFechaHora==='function'){actualizarFechaHora();}
+    overlay.classList.add('open');
+  });
+  window.closeModal=function(){overlay.classList.remove('open');};
+  overlay.addEventListener('click',function(e){if(e.target===overlay){overlay.classList.remove('open');}});
+})();
+
+/* ---------- Laboratorio sonoro ---------- */
+var AC=null;
+function ac(){
+  if(!AC){var Ctx=window.AudioContext||window.webkitAudioContext;if(Ctx){AC=new Ctx();}}
+  if(AC&&AC.state==='suspended'){AC.resume();}
+  return AC;
+}
+function midiFreq(m){return 440*Math.pow(2,(m-69)/12);}
+function playNote(m,dur){
+  var c=ac();if(!c)return;
+  var t=c.currentTime;
+  var o1=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),g2=c.createGain(),f=c.createBiquadFilter();
+  o1.type='triangle';o1.frequency.value=midiFreq(m);
+  o2.type='sine';o2.frequency.value=midiFreq(m)*2;
+  g2.gain.value=0.12;
+  f.type='lowpass';f.frequency.value=2400;
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.linearRampToValueAtTime(0.5,t+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o1.connect(f);o2.connect(g2);g2.connect(f);f.connect(g);g.connect(c.destination);
+  o1.start(t);o2.start(t);
+  o1.stop(t+dur+0.06);o2.stop(t+dur+0.06);
+}
+
+var NOTE_NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function noteLabel(m){return NOTE_NAMES[m%12]+(Math.floor(m/12)-1);}
+var isBlack=function(m){return [1,3,6,8,10].indexOf(m%12)!==-1;};
+
+var keyEls={};
+(function buildKeyboard(){
+  var kb=document.getElementById('kb');
+  if(!kb)return;
+  var whites=[],blacks=[];
+  for(var m=48;m<=72;m++){(isBlack(m)?blacks:whites).push(m);}
+  var ww=100/whites.length;
+  whites.forEach(function(m,i){
+    var d=document.createElement('div');
+    d.className='wkey';
+    d.style.left=(i*ww)+'%';
+    d.style.width=ww+'%';
+    d.innerHTML='<span>'+noteLabel(m)+'</span>';
+    d.setAttribute('data-midi',m);
+    d.addEventListener('pointerdown',function(){tapKey(m);});
+    kb.appendChild(d);
+    keyEls[m]=d;
+  });
+  var bw=ww*0.62;
+  blacks.forEach(function(m){
+    var idx=whites.indexOf(m-1)+1;
+    var d=document.createElement('div');
+    d.className='bkey';
+    d.style.left=(idx*ww-bw/2)+'%';
+    d.style.width=bw+'%';
+    d.setAttribute('data-midi',m);
+    d.addEventListener('pointerdown',function(){tapKey(m);});
+    kb.appendChild(d);
+    keyEls[m]=d;
+  });
+})();
+
+function lightKey(m,durMs){
+  var el=keyEls[m];if(!el)return;
+  el.classList.add('lit');
+  setTimeout(function(){el.classList.remove('lit');},durMs);
+}
+function tapKey(m){
+  ac();playNote(m,0.8);lightKey(m,350);
+}
+
+var SEQUENCES={
+  fAsc:{label:'Ascenso en F Major (1-5-3 extendido)',tempo:430,notes:[
+    {n:53,ch:'F'},{n:60,ch:'F'},{n:57,ch:'F'},{n:65,ch:'F'},{n:60,ch:'F'},{n:69,ch:'F'}]},
+  amDesc:{label:'Descenso en A Minor (cascada)',tempo:430,notes:[
+    {n:69,ch:'Am'},{n:60,ch:'Am'},{n:64,ch:'Am'},{n:57,ch:'Am'},{n:52,ch:'Am'},{n:48,ch:'Am'}]},
+  cBas:{label:'Nivel Básico · Ascenso en C Major',tempo:410,notes:[
+    {n:48,ch:'C'},{n:55,ch:'C'},{n:52,ch:'C'},{n:60,ch:'C'}]},
+  gInt:{label:'Nivel Intermedio · Fluidez en G Major',tempo:370,notes:[
+    {n:55,ch:'G'},{n:62,ch:'G'},{n:59,ch:'G'},{n:67,ch:'G'},{n:59,ch:'G'},{n:62,ch:'G'},{n:55,ch:'G'}]},
+  prog:{label:'Desafío · Progresión C – G – Am – F',tempo:330,notes:[
+    {n:48,ch:'C'},{n:55,ch:'C'},{n:52,ch:'C'},null,
+    {n:55,ch:'G'},{n:62,ch:'G'},{n:59,ch:'G'},null,
+    {n:57,ch:'Am'},{n:64,ch:'Am'},{n:60,ch:'Am'},null,
+    {n:53,ch:'F'},{n:60,ch:'F'},{n:57,ch:'F'}]}
+};
+
+var playToken=0,pendingTimers=[];
+var stEl=document.getElementById('pStatus'),chEl=document.getElementById('pChord');
+
+function clearTimers(){
+  pendingTimers.forEach(function(t){clearTimeout(t);});
+  pendingTimers=[];
+}
+function stopSeq(){
+  playToken++;
+  clearTimers();
+  Object.keys(keyEls).forEach(function(k){keyEls[k].classList.remove('lit');});
+  if(stEl){stEl.textContent='detenido / listo para practicar';}
+  if(chEl){chEl.textContent='—';}
+}
+function playSeq(key){
+  var seq=SEQUENCES[key];if(!seq)return;
+  stopSeq();
+  var token=++playToken;
+  ac();
+  if(stEl){stEl.textContent=seq.label;}
+  var tempo=seq.tempo;
+  var total=seq.notes.length;
+  seq.notes.forEach(function(item,i){
+    var t=setTimeout(function(){
+      if(token!==playToken)return;
+      if(!item){if(chEl){chEl.textContent='· · ·';}return;}
+      playNote(item.n,(tempo/1000)*1.7);
+      lightKey(item.n,tempo*0.9);
+      if(chEl&&item.ch){chEl.textContent=item.ch;}
+    },i*tempo);
+    pendingTimers.push(t);
+  });
+  var end=setTimeout(function(){
+    if(token!==playToken)return;
+    if(stEl){stEl.textContent='¡ciclo completado! Repita para consolidar la memoria muscular.';}
+    if(chEl){chEl.textContent='—';}
+  },total*tempo+250);
+  pendingTimers.push(end);
+}
+function playAndGo(key){
+  showView('sec7');
+  setTimeout(function(){playSeq(key);},420);
+}
+window.playSeq=playSeq;
+window.stopSeq=stopSeq;
+window.playAndGo=playAndGo;
+window.tapKey=tapKey;
+
+/* ============================================================
+   FECHA Y HORA DINÁMICAS · Créditos y Footer
+   Formato: FECHA → DD/MES/AAAA (mes en español MAYÚSCULAS)
+            HORA → HH:MM:SS (hora local del navegador)
+   ============================================================ */
+function obtenerFechaHoraActual(){
+  var ahora=new Date();
+  var meses=['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+  function dosDigitos(n){return (n<10)?'0'+n:''+n;}
+  var fecha=dosDigitos(ahora.getDate())+'/'+meses[ahora.getMonth()]+'/'+ahora.getFullYear();
+  var hora=dosDigitos(ahora.getHours())+':'+dosDigitos(ahora.getMinutes())+':'+dosDigitos(ahora.getSeconds());
+  return {fecha:fecha,hora:hora};
+}
+function actualizarFechaHora(){
+  var t=obtenerFechaHoraActual();
+  var cf=document.getElementById('credFecha');
+  var ch=document.getElementById('credHora');
+  var ff=document.getElementById('footFecha');
+  var fh=document.getElementById('footHora');
+  if(cf){cf.textContent=t.fecha;}
+  if(ch){ch.textContent=t.hora;}
+  if(ff){ff.textContent=t.fecha;}
+  if(fh){fh.textContent=t.hora;}
+}
+actualizarFechaHora();
+
+/* ---------- Portada SVG animada · también visible en Créditos ---------- */
+(function(){
+  var heroSvg=document.querySelector('#view-home .hero-cover svg');
+  var wrap=document.getElementById('creditsSvgWrap');
+  if(heroSvg&&wrap){
+    var clon=heroSvg.outerHTML.replace(/cv([A-Z])/g,'cvm$1');
+    wrap.innerHTML=clon;
+    var svgClonado=wrap.querySelector('svg');
+    if(svgClonado){svgClonado.style.width='100%';svgClonado.style.height='100%';svgClonado.style.display='block';}
+  }
+})();
+</script>
+</body>
+</html>
