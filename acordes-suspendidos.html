@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Acordes Suspendidos — Tutorial de Piano | Rubén Sbarsky</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --text:#e2e8f0;
+  --text-dim:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+::selection{background:var(--accent);color:#001018;}
+
+/* progress bar */
+#progressBar{
+  position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--purple));
+  width:0%;z-index:9999;transition:width .1s linear;
+}
+
+/* navbar */
+nav{
+  position:fixed;top:3px;left:0;right:0;z-index:999;
+  background:rgba(15,23,42,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  display:flex;align-items:center;gap:4px;overflow-x:auto;
+  padding:10px 12px;scrollbar-width:thin;
+}
+.nav-inner::-webkit-scrollbar{height:4px;}
+.nav-inner::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+.nav-brand{
+  font-weight:700;color:var(--accent);white-space:nowrap;padding-right:14px;
+  border-right:1px solid var(--border);margin-right:6px;font-size:.95rem;
+}
+.nav-btn{
+  white-space:nowrap;background:transparent;border:1px solid transparent;color:var(--text-dim);
+  padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600;
+  transition:.2s;flex-shrink:0;
+}
+.nav-btn:hover{color:var(--text);background:rgba(0,212,255,.08);}
+.nav-btn.active{color:var(--accent);background:rgba(0,212,255,.12);border-color:var(--border);}
+
+main{padding-top:64px;max-width:960px;margin:0 auto;padding-left:16px;padding-right:16px;padding-bottom:80px;}
+section{display:none;animation:fadeIn .4s ease;}
+section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* HOME */
+.hero{text-align:center;padding:36px 0 20px;}
+.badge{
+  display:inline-block;background:rgba(0,212,255,.1);border:1px solid var(--accent);
+  color:var(--accent);padding:6px 16px;border-radius:20px;font-size:.75rem;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;
+}
+.hero h1{
+  font-size:clamp(1.8rem,5vw,3rem);font-weight:800;
+  background:linear-gradient(135deg,#fff,var(--accent));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+}
+.hero .sub{color:var(--text-dim);font-size:clamp(1rem,2.5vw,1.25rem);margin-bottom:20px;}
+.hero p.desc{max-width:640px;margin:0 auto 24px;color:var(--text-dim);}
+.quote{
+  max-width:600px;margin:24px auto;padding:18px 22px;background:var(--card);
+  border-left:4px solid var(--purple);border-radius:10px;font-style:italic;color:var(--text);
+}
+.metrics{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:28px 0;}
+.metric{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:14px 22px;text-align:center;min-width:110px;
+}
+.metric .num{font-size:1.5rem;font-weight:800;color:var(--accent);}
+.metric .lbl{font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;}
+.datehour{color:var(--text-dim);font-size:.85rem;margin-top:10px;}
+
+.svg-wrap{
+  max-width:900px;margin:24px auto;border-radius:12px;overflow:hidden;
+  border:1px solid var(--border);background:var(--card);
+}
+.svg-wrap svg{width:100%;height:auto;display:block;}
+
+/* cards */
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:20px;margin-bottom:18px;
+}
+.card h2{color:var(--accent);font-size:1.3rem;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card h3{color:var(--text);font-size:1.05rem;margin:16px 0 8px;}
+.card p{margin-bottom:10px;color:var(--text);}
+.card p.dim{color:var(--text-dim);}
+
+.section-header{margin:28px 0 16px;}
+.section-header h1{font-size:clamp(1.4rem,4vw,2rem);color:#fff;display:flex;align-items:center;gap:10px;}
+.section-header .eyebrow{color:var(--accent);font-size:.8rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;}
+
+/* chord formula blocks */
+.formula{
+  background:#0a1628;border:1px solid var(--border);border-radius:8px;
+  padding:14px 18px;margin:10px 0;font-family:'Courier New',monospace;font-size:1.05rem;
+  color:var(--accent);overflow-x:auto;white-space:nowrap;
+}
+.formula .grade{color:var(--amber);}
+.formula .flat{color:var(--red);}
+
+.chord-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0;}
+.chord-box{
+  background:#0a1628;border:1px solid var(--border);border-radius:10px;padding:16px;
+}
+.chord-box h4{color:var(--purple);margin-bottom:8px;font-size:1rem;}
+.chord-box .notes{font-family:'Courier New',monospace;color:var(--green);font-size:.95rem;}
+
+/* callouts */
+.callout{
+  border-radius:8px;padding:14px 16px;margin:14px 0;border-left:4px solid;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.callout .icon{font-size:1.2rem;flex-shrink:0;}
+.callout-info{background:rgba(0,212,255,.07);border-color:var(--accent);}
+.callout-example{background:rgba(34,197,94,.07);border-color:var(--green);}
+.callout-warning{background:rgba(245,158,11,.07);border-color:var(--amber);}
+.callout-error{background:rgba(239,68,68,.07);border-color:var(--red);}
+
+/* table */
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem;}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+th{color:var(--accent);text-transform:uppercase;font-size:.75rem;letter-spacing:.5px;}
+td{color:var(--text);}
+tr:hover td{background:rgba(0,212,255,.04);}
+.table-wrap{overflow-x:auto;}
+
+/* progression steps */
+.steps{counter-reset:step;margin:16px 0;}
+.step{
+  display:flex;gap:14px;margin-bottom:14px;background:#0a1628;border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;align-items:flex-start;
+}
+.step-num{
+  counter-increment:step;background:var(--accent);color:#001018;font-weight:800;
+  width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:.85rem;
+}
+.step-num::before{content:counter(step);}
+.step-body h4{color:var(--text);margin-bottom:4px;}
+.step-body .notes{font-family:'Courier New',monospace;color:var(--green);font-size:.9rem;}
+.arrow{color:var(--purple);font-weight:700;text-align:center;margin:4px 0;}
+
+/* accordion */
+.accordion-item{border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;}
+.accordion-head{
+  background:#0a1628;padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;
+  align-items:center;font-weight:600;color:var(--text);user-select:none;
+}
+.accordion-head:hover{background:#0f1d33;}
+.accordion-head .chevron{transition:.25s;color:var(--accent);}
+.accordion-item.open .chevron{transform:rotate(180deg);}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 16px;}
+.accordion-item.open .accordion-body{max-height:600px;padding:14px 16px;}
+
+/* piano keys mini */
+.piano-mini{display:flex;gap:2px;margin:14px 0;flex-wrap:wrap;}
+.key-mini{
+  background:#0a1628;border:1px solid var(--border);border-radius:6px;
+  padding:8px 10px;min-width:44px;text-align:center;font-family:'Courier New',monospace;
+  font-size:.85rem;color:var(--text-dim);
+}
+.key-mini.active{background:rgba(0,212,255,.15);border-color:var(--accent);color:var(--accent);font-weight:700;}
+.key-mini.root{background:rgba(34,197,94,.15);border-color:var(--green);color:var(--green);font-weight:700;}
+.key-mini.third{background:rgba(168,85,247,.15);border-color:var(--purple);color:var(--purple);font-weight:700;}
+
+/* practice keys grid */
+.keys-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:14px 0;}
+.key-card{
+  background:#0a1628;border:1px solid var(--border);border-radius:8px;padding:10px 12px;
+  font-family:'Courier New',monospace;font-size:.85rem;color:var(--text-dim);text-align:center;
+}
+
+/* back to top */
+#backTop{
+  position:fixed;bottom:22px;right:22px;width:48px;height:48px;border-radius:50%;
+  background:var(--accent);color:#001018;border:none;font-size:1.3rem;cursor:pointer;
+  display:none;align-items:center;justify-content:center;z-index:998;
+  box-shadow:0 4px 16px rgba(0,212,255,.4);
+}
+#backTop.show{display:flex;}
+
+/* footer */
+footer{
+  text-align:center;padding:30px 16px;color:var(--text-dim);font-size:.82rem;
+  border-top:1px solid var(--border);margin-top:40px;
+}
+footer div{margin:4px 0;}
+footer .latin{color:var(--purple);font-style:italic;margin-top:10px;}
+
+/* credits */
+.credits-box{text-align:center;padding:20px 0;}
+.credits-box h2{color:#fff;font-size:1.6rem;margin:20px 0 6px;}
+.credits-box .name{color:var(--accent);font-size:1.2rem;font-weight:700;margin-bottom:16px;}
+.credits-box .meta{color:var(--text-dim);margin:4px 0;}
+.credits-box .latin{color:var(--purple);font-style:italic;margin-top:18px;font-size:1.05rem;}
+
+@media (max-width:640px){
+  .nav-btn{padding:7px 10px;font-size:.78rem;}
+  .card{padding:14px;}
+  .formula{font-size:.9rem;}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
+}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+<nav>
+  <div class="nav-inner" id="navInner">
+    <span class="nav-brand">🎹 SUS</span>
+    <button class="nav-btn active" data-target="home">Home</button>
+    <button class="nav-btn" data-target="concepto">Concepto</button>
+    <button class="nav-btn" data-target="sus2">Sus2</button>
+    <button class="nav-btn" data-target="sus4">Sus4</button>
+    <button class="nav-btn" data-target="sus9">Sus9</button>
+    <button class="nav-btn" data-target="sus7">Sus7</button>
+    <button class="nav-btn" data-target="comparativa">Comparativa</button>
+    <button class="nav-btn" data-target="progresiones">Progresiones</button>
+    <button class="nav-btn" data-target="voces">Voice Leading</button>
+    <button class="nav-btn" data-target="tonalidades">Tonalidades</button>
+    <button class="nav-btn" data-target="ejercicios">Ejercicios</button>
+    <button class="nav-btn" data-target="creditos">Créditos</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section id="home" class="active">
+  <div class="hero">
+    <span class="badge">Tutorial de Armonía para Piano</span>
+    <h1>Acordes Suspendidos</h1>
+    <p class="sub">sus2 · sus4 · sus9 · sus7 — Cómo tocarlos y qué son</p>
+    <p class="desc">Un recorrido completo por la familia de acordes "sus": la idea de sustituir la tercera, cómo se construyen sus2, sus4, sus9 y sus7, cómo resuelven hacia el acorde mayor, y cómo aplicarlos en el piano con voice leading real.</p>
+    <div class="quote">"Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."</div>
+    <div class="metrics">
+      <div class="metric"><div class="num">4</div><div class="lbl">Tipos de sus</div></div>
+      <div class="metric"><div class="num">5</div><div class="lbl">Tonalidades desarrolladas</div></div>
+      <div class="metric"><div class="num">42</div><div class="lbl">Conceptos originales</div></div>
+      <div class="metric"><div class="num">12</div><div class="lbl">Tonalidades a practicar</div></div>
+    </div>
+    <div class="datehour">📅 20/12/2026 &nbsp;·&nbsp; 🕐 01:40</div>
+  </div>
+
+  <div class="svg-wrap" id="svgHome"></div>
+
+  <div class="card">
+    <h2>🎯 La idea central</h2>
+    <p>Un acorde suspendido (<strong>sus</strong>) es un acorde en el que la <strong>tercera (III)</strong> es sustituida por otra nota. Esa es la única idea que necesitas memorizar de verdad — todo lo demás son variaciones sobre ella.</p>
+    <div class="formula">Mayor = I – <span class="grade">III</span> – V &nbsp;→&nbsp; sus = I – <span class="grade">?</span> – V (sin III)</div>
+  </div>
+</section>
+
+<!-- ============ CONCEPTO ============ -->
+<section id="concepto">
+  <div class="section-header">
+    <div class="eyebrow">Fundamentos</div>
+    <h1>🎼 ¿Qué es un acorde suspendido?</h1>
+  </div>
+
+  <div class="card">
+    <h2>1. Definición</h2>
+    <p>Un acorde suspendido (sus) es un acorde en el que la tercera (III) es sustituida por otra nota.</p>
+    <div class="formula">Acorde mayor = I – <span class="grade">III</span> – V</div>
+    <p>En un acorde suspendido desaparece la III. Puede aparecer:</p>
+    <ul style="margin-left:20px;color:var(--text-dim);margin-bottom:10px;">
+      <li>II → <strong style="color:var(--accent)">sus2</strong></li>
+      <li>IV → <strong style="color:var(--accent)">sus4</strong></li>
+      <li>IV + IX → <strong style="color:var(--accent)">sus9</strong></li>
+    </ul>
+    <p>Y cuando añadimos la séptima menor:</p>
+    <ul style="margin-left:20px;color:var(--text-dim);">
+      <li>IV + ♭VII → <strong style="color:var(--accent)">sus7</strong></li>
+    </ul>
+
+    <div class="callout callout-example">
+      <span class="icon">🎹</span>
+      <div>
+        <p style="margin-bottom:6px;"><strong>Ejemplo en C mayor:</strong></p>
+        <p class="dim">Escala: C(I) – D(II) – E(III) – F(IV) – G(V) – A(VI) – B(VII)</p>
+        <p class="dim">C mayor = C(I) – E(III) – G(V)</p>
+        <p class="dim">Si sustituimos E(III) por D(II) → C(I) – D(II) – G(V) = <strong style="color:var(--green)">Csus2</strong></p>
+        <p class="dim">Si sustituimos E(III) por F(IV) → C(I) – F(IV) – G(V) = <strong style="color:var(--green)">Csus4</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2. La regla de oro</h2>
+    <p>Memoriza esto:</p>
+    <div class="formula">Mayor = I – <span class="grade">III</span> – V</div>
+    <div class="formula">sus2 &nbsp; = I – II – V</div>
+    <div class="formula">sus4 &nbsp; = I – IV – V</div>
+    <div class="formula">sus9 &nbsp; = I – IV – V – IX</div>
+    <div class="formula">sus7 &nbsp; = I – IV – V – <span class="flat">♭VII</span></div>
+    <div class="callout callout-warning">
+      <span class="icon">⚠️</span>
+      <p>«En un acorde sus propiamente dicho, la III no está presente.» Esta es la característica que define la suspensión.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>3. ¿Por qué se llaman "suspendidos"?</h2>
+    <p>La tercera, que normalmente determina en gran medida el carácter mayor o menor del acorde, ha sido reemplazada temporalmente.</p>
+    <p>C(I) – E(III) – G(V) es C mayor. Pero C(I) – F(IV) – G(V) no nos dice directamente "C mayor" ni "C menor". La tercera ha desaparecido. El resultado es una sonoridad más abierta y ambigua.</p>
+    <p>En muchos casos el oído espera que la nota suspendida se mueva hacia la tercera: F(IV) → E(III). Por eso <strong>Csus4 → C</strong> es una de las resoluciones más características.</p>
+  </div>
+</section>
+
+<!-- ============ SUS2 ============ -->
+<section id="sus2">
+  <div class="section-header">
+    <div class="eyebrow">Tipo de suspensión</div>
+    <h1>🎹 Csus2</h1>
+  </div>
+
+  <div class="card">
+    <h2>4. Fórmula y construcción</h2>
+    <div class="formula">I – II – V</div>
+    <p>En C mayor: C(I) – D(II) – G(V)</p>
+    <div class="formula">Csus2 = C(I) – D(II) – G(V)</div>
+    <p>Observa: la tercera E(III) ha desaparecido y ha sido sustituida por D(II).</p>
+  </div>
+
+  <div class="card">
+    <h2>5. Cómo tocar Csus2 en el piano</h2>
+    <p>Una posición sencilla:</p>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>Mano izquierda</h4><div class="notes">C(I)</div></div>
+      <div class="chord-box"><h4>Mano derecha</h4><div class="notes">C(I) – D(II) – G(V)</div></div>
+    </div>
+    <p>También puedes utilizar diferentes inversiones y disposiciones, por ejemplo: C(I) – G(V) – D(II).</p>
+    <div class="callout callout-info">
+      <span class="icon">💡</span>
+      <p>Lo importante no es que las notas estén necesariamente en ese orden. Lo importante es que el acorde contenga I – II – V y que no aparezca III.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>9. Csus2 → C (resolución)</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus2</h4><div class="notes">C(I) – D(II) – G(V)</div></div></div>
+      <div class="arrow">↓ &nbsp; D(II) → E(III)</div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+    </div>
+    <p>Aquí la nota suspendida D(II) se sustituye por E(III). El efecto es diferente del sus4, pero sigue existiendo una transformación entre la suspensión y la tercera.</p>
+  </div>
+
+  <div class="card">
+    <h2>10. Sus2 frente a sus4</h2>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>Csus2</h4><div class="notes">C(I) – D(II) – G(V)</div></div>
+      <div class="chord-box"><h4>Csus4</h4><div class="notes">C(I) – F(IV) – G(V)</div></div>
+    </div>
+    <p>El sus2 suele tener un carácter más: abierto, espacioso, ligero, flotante.</p>
+    <p>El sus4 suele tener mayor sensación de: tensión, expectativa, resolución (especialmente por la relación F(IV) → E(III)).</p>
+  </div>
+</section>
+
+<!-- ============ SUS4 ============ -->
+<section id="sus4">
+  <div class="section-header">
+    <div class="eyebrow">Tipo de suspensión</div>
+    <h1>🎹 Csus4</h1>
+  </div>
+
+  <div class="card">
+    <h2>6. Fórmula y construcción</h2>
+    <div class="formula">I – IV – V</div>
+    <p>En C mayor: C(I) – F(IV) – G(V)</p>
+    <div class="formula">Csus4 = C(I) – F(IV) – G(V)</div>
+    <p>Aquí E(III) ha sido sustituida por F(IV).</p>
+  </div>
+
+  <div class="card">
+    <h2>7. Cómo tocar Csus4 en el piano</h2>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>Mano izquierda</h4><div class="notes">C(I)</div></div>
+      <div class="chord-box"><h4>Mano derecha</h4><div class="notes">C(I) – F(IV) – G(V)</div></div>
+    </div>
+    <p>También puedes tocar C(I) – G(V) con la mano izquierda y F(IV) con la mano derecha.</p>
+    <div class="callout callout-info">
+      <span class="icon">🎧</span>
+      <p>Experimenta con diferentes registros. La misma combinación de notas puede producir sensaciones muy diferentes dependiendo de la octava y de la disposición.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>8. La resolución clásica: sus4 → mayor</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus4</h4><div class="notes">C(I) – F(IV) – G(V)</div></div></div>
+      <div class="arrow">↓ &nbsp; F(IV) → E(III)</div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+    </div>
+    <p>El movimiento fundamental es F(IV) → E(III), mientras C(I) y G(V) pueden permanecer. Esto produce una sensación muy clara de <strong>tensión → resolución</strong>.</p>
+  </div>
+
+  <div class="card">
+    <h2>35. Advertencia: sus no significa "añadir"</h2>
+    <div class="callout callout-error">
+      <span class="icon">❌</span>
+      <div>
+        <p><strong>Incorrecto</strong> como definición de Csus4: C(I) – E(III) – F(IV) – G(V) — aquí la tercera continúa presente.</p>
+      </div>
+    </div>
+    <div class="callout callout-example">
+      <span class="icon">✅</span>
+      <p><strong>Csus4 correcto:</strong> C(I) – F(IV) – G(V). Por eso <strong>sus = sustitución</strong>, no <strong>add = adición</strong>.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>36. Sus4 frente a add4</h2>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>Csus4</h4><div class="notes">C(I) – F(IV) – G(V)</div></div>
+      <div class="chord-box"><h4>Cadd4</h4><div class="notes">C(I) – E(III) – F(IV) – G(V)</div></div>
+    </div>
+    <p>La diferencia fundamental es: Csus4 no tiene III. Cadd4 sí tiene III.</p>
+  </div>
+</section>
+
+<!-- ============ SUS9 ============ -->
+<section id="sus9">
+  <div class="section-header">
+    <div class="eyebrow">Tipo de suspensión</div>
+    <h1>🎹 Csus9</h1>
+  </div>
+
+  <div class="card">
+    <h2>11. Cuidado con la confusión habitual</h2>
+    <p>Un sus9 <strong>no</strong> debe entenderse simplemente como I – V – IX. Para el uso armónico habitual del símbolo sus9, debemos pensar en:</p>
+    <div class="formula">I – IV – V – IX &nbsp;(sin III)</div>
+  </div>
+
+  <div class="card">
+    <h2>12. Construcción de Csus9</h2>
+    <p>Escala de C mayor: C(I) – D(II) – E(III) – F(IV) – G(V) – A(VI) – B(VII)</p>
+    <p>La novena es D(IX).</p>
+    <div class="formula">Csus9 = C(I) – F(IV) – G(V) – D(IX)</div>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>C(I)</h4><div class="notes">fundamental</div></div>
+      <div class="chord-box"><h4>F(IV)</h4><div class="notes">cuarta suspendida</div></div>
+      <div class="chord-box"><h4>G(V)</h4><div class="notes">quinta</div></div>
+      <div class="chord-box"><h4>D(IX)</h4><div class="notes">novena</div></div>
+    </div>
+    <p>Y falta E(III).</p>
+  </div>
+
+  <div class="card">
+    <h2>13. ¿Por qué aparece la IV en el sus9?</h2>
+    <p>El sus9 mantiene la idea de suspensión del sus4 (I – IV – V) y añade la novena (IX). La novena añade profundidad y amplitud a la suspensión.</p>
+    <p>Csus4: C(I) – F(IV) – G(V) &nbsp;→ se convierte en →&nbsp; Csus9: C(I) – F(IV) – G(V) – D(IX). La tercera sigue ausente.</p>
+  </div>
+
+  <div class="card">
+    <h2>14. Csus9 en el piano</h2>
+    <p>Una disposición muy práctica:</p>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>Mano izquierda</h4><div class="notes">C(I) – G(V)</div></div>
+      <div class="chord-box"><h4>Mano derecha</h4><div class="notes">F(IV) – D(IX)</div></div>
+    </div>
+    <div class="callout callout-info">
+      <span class="icon">💡</span>
+      <p>Esta disposición es especialmente útil porque evita que todas las notas queden amontonadas.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>15. Sus2 y sus9: cuidado con la confusión</h2>
+    <p>En C, D(II) y D(IX) son la misma clase de nota. Pero eso no significa que Csus2 y Csus9 sean necesariamente el mismo acorde desde el punto de vista del cifrado y de la construcción armónica.</p>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>Csus2</h4><div class="notes">C(I) – D(II) – G(V)</div></div>
+      <div class="chord-box"><h4>Csus9</h4><div class="notes">C(I) – F(IV) – G(V) – D(IX)</div></div>
+    </div>
+    <p>El sus9 incorpora explícitamente la IV y la IX. Por eso produce una estructura más completa.</p>
+  </div>
+
+  <div class="card">
+    <h2>16. Sus9 frente a add9</h2>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>Csus9</h4><div class="notes">C(I) – F(IV) – G(V) – D(IX)</div><p class="dim" style="margin-top:6px;">No contiene E(III)</p></div>
+      <div class="chord-box"><h4>Cadd9</h4><div class="notes">C(I) – E(III) – G(V) – D(IX)</div><p class="dim" style="margin-top:6px;">Sí contiene E(III)</p></div>
+    </div>
+    <div class="callout callout-warning">
+      <span class="icon">⚠️</span>
+      <p><strong>sus</strong> = la tercera se sustituye. <strong>add</strong> = la tercera permanece y añadimos otra nota. No confundas Csus9 con Cadd9.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SUS7 ============ -->
+<section id="sus7">
+  <div class="section-header">
+    <div class="eyebrow">Tipo de suspensión</div>
+    <h1>🎹 Csus7</h1>
+  </div>
+
+  <div class="card">
+    <h2>17. Fórmula</h2>
+    <div class="formula">I – IV – V – <span class="flat">♭VII</span></div>
+    <p>En C: C(I) – F(IV) – G(V) – B♭(♭VII)</p>
+    <div class="formula">Csus7 = C(I) – F(IV) – G(V) – B♭(♭VII)</div>
+    <p>La tercera E(III) no aparece.</p>
+  </div>
+
+  <div class="card">
+    <h2>18. ¿Por qué es ♭VII y no VII?</h2>
+    <p>En C mayor: C(I) – D(II) – E(III) – F(IV) – G(V) – A(VI) – B(VII). El VII natural es B(VII), pero Csus7 utiliza B♭(♭VII).</p>
+    <div class="callout callout-warning">
+      <span class="icon">⚠️</span>
+      <p>Debemos escribir ♭VII, no simplemente VII. Esta distinción es importantísima.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>19. Csus7 en el piano</h2>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>Mano izquierda</h4><div class="notes">C(I)</div></div>
+      <div class="chord-box"><h4>Mano derecha</h4><div class="notes">F(IV) – G(V) – B♭(♭VII)</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>20. Csus7 frente a C7</h2>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>C7</h4><div class="notes">C(I) – E(III) – G(V) – B♭(♭VII)</div></div>
+      <div class="chord-box"><h4>Csus7</h4><div class="notes">C(I) – F(IV) – G(V) – B♭(♭VII)</div></div>
+    </div>
+    <p>La diferencia es E(III) → F(IV). C7 contiene la tercera. Csus7 no.</p>
+  </div>
+
+  <div class="card">
+    <h2>21. Csus7 → C7 (resolución)</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus7</h4><div class="notes">C(I) – F(IV) – G(V) – B♭(♭VII)</div></div></div>
+      <div class="arrow">↓ &nbsp; F(IV) → E(III)</div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>C7</h4><div class="notes">C(I) – E(III) – G(V) – B♭(♭VII)</div></div></div>
+    </div>
+    <p>Las otras notas pueden permanecer. Es una forma excelente de escuchar qué significa realmente "suspender" una nota.</p>
+  </div>
+
+  <div class="card">
+    <h2>37. Sus9 frente a add9 (repaso)</h2>
+    <p>sus9 = suspensión + novena &nbsp;·&nbsp; add9 = acorde normal + novena. Esta diferencia debes memorizarla.</p>
+  </div>
+</section>
+
+<!-- ============ COMPARATIVA ============ -->
+<section id="comparativa">
+  <div class="section-header">
+    <div class="eyebrow">Síntesis</div>
+    <h1>📊 Comparativa completa</h1>
+  </div>
+
+  <div class="card">
+    <h2>22. Las cuatro estructuras juntas</h2>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>C mayor</h4><div class="notes">C(I) – E(III) – G(V)</div></div>
+      <div class="chord-box"><h4>Csus2</h4><div class="notes">C(I) – D(II) – G(V)</div></div>
+      <div class="chord-box"><h4>Csus4</h4><div class="notes">C(I) – F(IV) – G(V)</div></div>
+      <div class="chord-box"><h4>Csus9</h4><div class="notes">C(I) – F(IV) – G(V) – D(IX)</div></div>
+      <div class="chord-box"><h4>Csus7</h4><div class="notes">C(I) – F(IV) – G(V) – B♭(♭VII)</div></div>
+    </div>
+    <p>La idea central permanece: la III desaparece.</p>
+  </div>
+
+  <div class="card">
+    <h2>38. Tabla definitiva</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Acorde</th><th>Fórmula</th></tr></thead>
+        <tbody>
+          <tr><td>Mayor</td><td>I – III – V</td></tr>
+          <tr><td>sus2</td><td>I – II – V</td></tr>
+          <tr><td>sus4</td><td>I – IV – V</td></tr>
+          <tr><td>sus7</td><td>I – IV – V – ♭VII</td></tr>
+          <tr><td>sus9</td><td>I – IV – V – IX</td></tr>
+          <tr><td>add9</td><td>I – III – V – IX</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout callout-info">
+      <span class="icon">🔑</span>
+      <p>La regla esencial: los acordes sus sustituyen la III.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>16 · 36 · 37. Sus vs Add — resumen</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Concepto</th><th>Fórmula</th><th>¿Tiene III?</th></tr></thead>
+        <tbody>
+          <tr><td>Csus4</td><td>I – IV – V</td><td>No</td></tr>
+          <tr><td>Cadd4</td><td>I – III – IV – V</td><td>Sí</td></tr>
+          <tr><td>Csus9</td><td>I – IV – V – IX</td><td>No</td></tr>
+          <tr><td>Cadd9</td><td>I – III – V – IX</td><td>Sí</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>sus</strong> = la tercera se sustituye. <strong>add</strong> = la tercera permanece y añadimos otra nota.</p>
+  </div>
+</section>
+
+<!-- ============ PROGRESIONES ============ -->
+<section id="progresiones">
+  <div class="section-header">
+    <div class="eyebrow">Práctica</div>
+    <h1>🎵 Progresiones para practicar</h1>
+  </div>
+
+  <div class="accordion" id="accordionProg">
+    <div class="accordion-item open">
+      <div class="accordion-head">26. Progresión 1: sus4 → mayor <span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="formula">Csus4: C(I) – F(IV) – G(V) &nbsp;→&nbsp; C: C(I) – E(III) – G(V)</div>
+        <p>Practica manteniendo C(I) y G(V) y moviendo únicamente F(IV) → E(III). Este ejercicio es fundamental.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">27. Progresión 2: sus2 → mayor <span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="formula">Csus2: C(I) – D(II) – G(V) &nbsp;→&nbsp; C: C(I) – E(III) – G(V)</div>
+        <p>Ahora escucha: D(II) → E(III).</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">28. Progresión 3: sus9 → mayor <span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="formula">Csus9: C(I) – F(IV) – G(V) – D(IX) &nbsp;→&nbsp; C: C(I) – E(III) – G(V)</div>
+        <p>Aquí tienes una transformación más compleja porque desaparecen F(IV) y D(IX), mientras aparece E(III). Una posible resolución sencilla en el piano es F(IV) → E(III) y D(IX) → C(I), creando un movimiento melódico descendente.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">29. Progresión 4: sus7 → 7 <span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="formula">Csus7: C(I) – F(IV) – G(V) – B♭(♭VII) &nbsp;→&nbsp; C7: C(I) – E(III) – G(V) – B♭(♭VII)</div>
+        <p>Mantén C(I), G(V), B♭(♭VII) y mueve F(IV) → E(III). Es una de las maneras más claras de entender auditivamente la diferencia entre ambos acordes.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">30. C → Csus2 → Csus4 → C <span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="steps">
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus2</h4><div class="notes">C(I) – D(II) – G(V)</div></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus4</h4><div class="notes">C(I) – F(IV) – G(V)</div></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+        </div>
+        <p>Observa la línea: E(III) → D(II) → F(IV) → E(III). El acorde prácticamente no cambia de identidad fundamental. Lo que cambia es la tensión interna.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">31. C → Csus4 → C → Am <span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="steps">
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus4</h4><div class="notes">C(I) – F(IV) – G(V)</div></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>Am</h4><div class="notes">A(VI) – C(I) – E(III)</div></div></div>
+        </div>
+        <p>Aquí el sus4 funciona como una pequeña tensión antes de regresar a C.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">32. C → Csus9 → C <span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="steps">
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus9</h4><div class="notes">C(I) – F(IV) – G(V) – D(IX)</div></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+        </div>
+        <p>Este recurso puede producir una sensación mucho más amplia que el simple C → Csus4 → C, porque estamos introduciendo también D(IX).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VOCES ============ -->
+<section id="voces">
+  <div class="section-header">
+    <div class="eyebrow">Técnica</div>
+    <h1>🪄 El poder de las voces internas</h1>
+  </div>
+
+  <div class="card">
+    <h2>33. Movimiento de voces (voice leading)</h2>
+    <p>En piano no pienses únicamente: <em>"Voy de un acorde a otro."</em> Piensa también: <em>"¿Qué notas puedo mantener y qué nota puedo mover?"</em></p>
+    <div class="formula">Csus4: C(I) – F(IV) – G(V) &nbsp;→&nbsp; C: C(I) – E(III) – G(V)</div>
+    <p>Solamente una voz cambia: F(IV) → E(III). Esto se denomina <strong>movimiento de voces (voice leading)</strong>. Es una de las herramientas más importantes de la armonía para piano.</p>
+  </div>
+
+  <div class="card">
+    <h2>34. Sus y movimiento de voces</h2>
+    <p>Con los sus puedes crear pequeños movimientos melódicos dentro de un acorde estático.</p>
+    <div class="piano-mini">
+      <div class="key-mini third">E (III)</div>
+      <div class="key-mini active">D (II)</div>
+      <div class="key-mini third">E (III)</div>
+    </div>
+    <p class="dim">C → Csus2 → C &nbsp;·&nbsp; línea melódica: E(III) → D(II) → E(III)</p>
+    <div class="piano-mini">
+      <div class="key-mini third">E (III)</div>
+      <div class="key-mini active">F (IV)</div>
+      <div class="key-mini third">E (III)</div>
+    </div>
+    <p class="dim">C → Csus4 → C &nbsp;·&nbsp; línea melódica: E(III) → F(IV) → E(III)</p>
+    <p>Esto puede convertirse en una pequeña melodía mientras la mano izquierda mantiene la misma fundamental.</p>
+  </div>
+</section>
+
+<!-- ============ TONALIDADES ============ -->
+<section id="tonalidades">
+  <div class="section-header">
+    <div class="eyebrow">Transposición</div>
+    <h1>🎼 Ejemplos en otras tonalidades</h1>
+  </div>
+
+  <div class="card">
+    <h2>23. Ejemplo en G mayor</h2>
+    <p class="dim">Escala: G(I) – A(II) – B(III) – C(IV) – D(V) – E(VI) – F♯(VII)</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Acorde</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>G mayor</td><td>G(I) – B(III) – D(V)</td></tr>
+          <tr><td>Gsus2</td><td>G(I) – A(II) – D(V)</td></tr>
+          <tr><td>Gsus4</td><td>G(I) – C(IV) – D(V)</td></tr>
+          <tr><td>Gsus9</td><td>G(I) – C(IV) – D(V) – A(IX)</td></tr>
+          <tr><td>Gsus7</td><td>G(I) – C(IV) – D(V) – F(♭VII)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>24. Ejemplo en D mayor</h2>
+    <p class="dim">Escala: D(I) – E(II) – F♯(III) – G(IV) – A(V) – B(VI) – C♯(VII)</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Acorde</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>D mayor</td><td>D(I) – F♯(III) – A(V)</td></tr>
+          <tr><td>Dsus2</td><td>D(I) – E(II) – A(V)</td></tr>
+          <tr><td>Dsus4</td><td>D(I) – G(IV) – A(V)</td></tr>
+          <tr><td>Dsus9</td><td>D(I) – G(IV) – A(V) – E(IX)</td></tr>
+          <tr><td>Dsus7</td><td>D(I) – G(IV) – A(V) – C(♭VII)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>25. Ejemplo en A mayor</h2>
+    <p class="dim">Escala: A(I) – B(II) – C♯(III) – D(IV) – E(V) – F♯(VI) – G♯(VII)</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Acorde</th><th>Notas</th></tr></thead>
+        <tbody>
+          <tr><td>A mayor</td><td>A(I) – C♯(III) – E(V)</td></tr>
+          <tr><td>Asus2</td><td>A(I) – B(II) – E(V)</td></tr>
+          <tr><td>Asus4</td><td>A(I) – D(IV) – E(V)</td></tr>
+          <tr><td>Asus9</td><td>A(I) – D(IV) – E(V) – B(IX)</td></tr>
+          <tr><td>Asus7</td><td>A(I) – D(IV) – E(V) – G(♭VII)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EJERCICIOS ============ -->
+<section id="ejercicios">
+  <div class="section-header">
+    <div class="eyebrow">Práctica final</div>
+    <h1>🏋️ Ejercicios</h1>
+  </div>
+
+  <div class="card">
+    <h2>39. Ejercicio completo en C</h2>
+    <p>Toca lentamente:</p>
+    <div class="steps">
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus2</h4><div class="notes">C(I) – D(II) – G(V)</div></div></div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus4</h4><div class="notes">C(I) – F(IV) – G(V)</div></div></div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus9</h4><div class="notes">C(I) – F(IV) – G(V) – D(IX)</div></div></div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div></div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>Csus7</h4><div class="notes">C(I) – F(IV) – G(V) – B♭(♭VII)</div></div></div>
+      <div class="step"><div class="step-num"></div><div class="step-body"><h4>C7</h4><div class="notes">C(I) – E(III) – G(V) – B♭(♭VII)</div></div></div>
+    </div>
+    <p>Escucha cómo cada suspensión tiene una personalidad diferente.</p>
+  </div>
+
+  <div class="card">
+    <h2>40. Ejercicio para dominar realmente los sus</h2>
+    <p>Haz este ejercicio en las 12 tonalidades. Para cada fundamental construye: <strong>Mayor → sus2 → sus4 → sus9 → sus7</strong></p>
+    <div class="formula">C → Csus2 → Csus4 → Csus9 → Csus7</div>
+    <div class="formula">D → Dsus2 → Dsus4 → Dsus9 → Dsus7</div>
+    <div class="formula">E → Esus2 → Esus4 → Esus9 → Esus7</div>
+    <p>Y continúa con: F, G, A, B. Después trabaja las tonalidades que contienen sostenidos y bemoles.</p>
+    <div class="keys-grid">
+      <div class="key-card">C</div><div class="key-card">C♯/D♭</div><div class="key-card">D</div>
+      <div class="key-card">D♯/E♭</div><div class="key-card">E</div><div class="key-card">F</div>
+      <div class="key-card">F♯/G♭</div><div class="key-card">G</div><div class="key-card">G♯/A♭</div>
+      <div class="key-card">A</div><div class="key-card">A♯/B♭</div><div class="key-card">B</div>
+    </div>
+    <div class="callout callout-warning">
+      <span class="icon">⚠️</span>
+      <p>No memorices únicamente las posiciones. Calcula las notas utilizando I – II – III – IV – V – VI – VII y las extensiones IX, XI, XIII.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>41. El concepto definitivo</h2>
+    <p>Si solamente recuerdas una cosa de todo este tutorial, que sea esta:</p>
+    <div class="callout callout-info">
+      <span class="icon">🎯</span>
+      <p><strong>Un acorde suspendido elimina la tercera.</strong></p>
+    </div>
+    <div class="formula">sus2 = I – II – V</div>
+    <div class="formula">sus4 = I – IV – V</div>
+    <div class="formula">sus9 = I – IV – V – IX</div>
+    <div class="formula">sus7 = I – IV – V – ♭VII</div>
+    <div class="callout callout-warning">
+      <span class="icon">⚠️</span>
+      <p>«sus9 no es simplemente sus2 con la D una octava más arriba.» Para el cifrado armónico habitual que estamos estudiando: sus9 = I – IV – V – IX, sin III.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>42. Llevarlo a la música real</h2>
+    <p>Cuando improvises o acompañes al piano, no pienses en los acordes suspendidos como simples "dibujos" que debes memorizar. Piensa:</p>
+    <ul style="margin-left:20px;color:var(--text-dim);margin-bottom:10px;">
+      <li>¿Dónde está la fundamental?</li>
+      <li>¿Dónde está la III?</li>
+      <li>¿Qué nota la está sustituyendo?</li>
+      <li>¿Dónde está la V?</li>
+      <li>¿Hay una ♭VII?</li>
+      <li>¿Hay una IX?</li>
+      <li>Y sobre todo: ¿hacia dónde quiere resolver la nota suspendida?</li>
+    </ul>
+    <p>Cuando empieces a escuchar IV → III o II → III como movimientos naturales dentro de una armonía, estarás dejando de tocar acordes mecánicamente y empezarás a comprender la armonía desde dentro. Ese es el verdadero objetivo de estudiar los acordes suspendidos.</p>
+  </div>
+
+  <div class="card">
+    <h2>Resumen final</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Acorde</th><th>Fórmula</th></tr></thead>
+        <tbody>
+          <tr><td>Mayor</td><td>I – III – V</td></tr>
+          <tr><td>sus2</td><td>I – II – V</td></tr>
+          <tr><td>sus4</td><td>I – IV – V</td></tr>
+          <tr><td>sus7</td><td>I – IV – V – ♭VII</td></tr>
+          <tr><td>sus9</td><td>I – IV – V – IX</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>La idea fundamental: III desaparece. Y la suspensión crea una tensión que puede resolverse posteriormente hacia la tercera.</p>
+    <p>En el piano, escucha especialmente estos movimientos: IV → III, II → III, y en el sus9: IV → III junto con el movimiento de IX → I.</p>
+    <div class="callout callout-example">
+      <span class="icon">✨</span>
+      <p>Es ahí donde los acordes suspendidos dejan de ser simplemente nombres de acordes y se convierten en una herramienta real para crear tensión, movimiento, color, expectativa y resolución musical.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREDITOS ============ -->
+<section id="creditos">
+  <div class="credits-box">
+    <div class="svg-wrap" id="svgCredits"></div>
+    <h2>Acordes Suspendidos</h2>
+    <div class="name">Rubén Sbarsky</div>
+    <p class="meta">📚 Tutorial de Piano — Fines Educativos y de Divulgación</p>
+    <p class="meta">📅 20/12/2026 &nbsp;·&nbsp; 🕐 01:40</p>
+    <p class="latin">Fiat iustitia, ruat caelum.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div>📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div>👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div>📅 FECHA: 20/12/2026 &nbsp;·&nbsp; Hora: 01:40</div>
+  <div class="latin">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<button id="backTop">↑</button>
+
+<script>
+/* ---------- SVG temático animado: teclado con sustitución de la III ---------- */
+const pianoSVG = `
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animación de teclado mostrando la sustitución de la tercera en acordes suspendidos">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0a0e1a"/>
+    </linearGradient>
+    <linearGradient id="glowA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bgGrad)"/>
+  <text x="400" y="40" text-anchor="middle" fill="#00d4ff" font-family="Segoe UI, sans-serif" font-size="20" font-weight="700">La III se sustituye — sus2 / sus4 / sus7 → resolución</text>
+
+  <!-- piano keys row: C D E F G A B -->
+  <g id="keysGroup" transform="translate(80,120)">
+    <!-- white keys -->
+    <g id="whiteKeys">
+      <rect x="0"   y="0" width="88" height="200" rx="6" fill="#0a1628" stroke="#1e3a5f" stroke-width="2" id="key-C"/>
+      <rect x="92"  y="0" width="88" height="200" rx="6" fill="#0a1628" stroke="#1e3a5f" stroke-width="2" id="key-D"/>
+      <rect x="184" y="0" width="88" height="200" rx="6" fill="#0a1628" stroke="#1e3a5f" stroke-width="2" id="key-E"/>
+      <rect x="276" y="0" width="88" height="200" rx="6" fill="#0a1628" stroke="#1e3a5f" stroke-width="2" id="key-F"/>
+      <rect x="368" y="0" width="88" height="200" rx="6" fill="#0a1628" stroke="#1e3a5f" stroke-width="2" id="key-G"/>
+      <rect x="460" y="0" width="88" height="200" rx="6" fill="#0a1628" stroke="#1e3a5f" stroke-width="2" id="key-A"/>
+      <rect x="552" y="0" width="88" height="200" rx="6" fill="#0a1628" stroke="#1e3a5f" stroke-width="2" id="key-B"/>
+    </g>
+    <!-- labels -->
+    <text x="44"  y="230" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="16">C (I)</text>
+    <text x="136" y="230" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="16">D (II)</text>
+    <text x="228" y="230" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="16">E (III)</text>
+    <text x="320" y="230" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="16">F (IV)</text>
+    <text x="412" y="230" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="16">G (V)</text>
+    <text x="504" y="230" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="16">A (VI)</text>
+    <text x="596" y="230" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="16">B (VII)</text>
+
+    <!-- root + fifth constant glow (C and G always sound) -->
+    <rect x="0"   y="0" width="88" height="200" rx="6" fill="#22c55e" opacity="0.28" filter="url(#softGlow)"/>
+    <rect x="368" y="0" width="88" height="200" rx="6" fill="#22c55e" opacity="0.28" filter="url(#softGlow)"/>
+
+    <!-- the moving "suspended note" highlight: cycles D(II) -> F(IV) -> B(flatVII proxy via A area) -> E(III) -->
+    <rect id="movingHighlight" x="92" y="0" width="88" height="200" rx="6" fill="#a855f7" opacity="0.55" filter="url(#softGlow)">
+      <animate attributeName="x" values="92;92;276;276;552;552;184;184;92" keyTimes="0;0.12;0.20;0.32;0.40;0.52;0.60;0.92;1" dur="9s" repeatCount="indefinite"/>
+      <animate attributeName="fill" values="#a855f7;#a855f7;#f59e0b;#f59e0b;#ef4444;#ef4444;#a855f7;#a855f7;#a855f7" keyTimes="0;0.12;0.20;0.32;0.40;0.52;0.60;0.92;1" dur="9s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- floating label showing current chord name -->
+  <g transform="translate(400,370)">
+    <text class="chordLabel" x="0" y="0" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, sans-serif" font-size="22" font-weight="700">Csus2</text>
+  </g>
+  <text x="400" y="405" text-anchor="middle" fill="#64748b" font-family="Segoe UI, sans-serif" font-size="13">La III (púrpura) desaparece — sus2, sus4 y sus7 sustituyen la tercera y luego resuelven</text>
+</svg>
+`;
+
+document.getElementById('svgHome').innerHTML = pianoSVG;
+document.getElementById('svgCredits').innerHTML = pianoSVG;
+
+/* Ciclo de etiquetas de acorde (JS externo, ya que <script> embebido en SVG insertado vía innerHTML no se ejecuta) */
+(function(){
+  var labels = ["Csus2","Csus2","Csus4","Csus4","Csus7","Csus7","C (resuelto)","C (resuelto)"];
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce) return;
+  var i = 0;
+  setInterval(function(){
+    document.querySelectorAll('.chordLabel').forEach(function(el){
+      el.textContent = labels[i % labels.length];
+    });
+    i++;
+  }, 1125);
+})();
+
+/* ---------- SPA navigation ---------- */
+const sections = document.querySelectorAll('main > section');
+const navButtons = document.querySelectorAll('.nav-btn');
+
+function showSection(id){
+  sections.forEach(s => s.classList.toggle('active', s.id === id));
+  navButtons.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+  window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+  updateProgress();
+}
+
+navButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=> showSection(btn.dataset.target));
+});
+
+/* ---------- progress bar (based on scroll within active section) ---------- */
+function updateProgress(){
+  const active = document.querySelector('main > section.active');
+  if(!active){ document.getElementById('progressBar').style.width='0%'; return; }
+  const scrollTop = window.scrollY;
+  const docHeight = document.body.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? Math.min(100, (scrollTop/docHeight)*100) : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+window.addEventListener('scroll', updateProgress);
+window.addEventListener('resize', updateProgress);
+
+/* ---------- back to top ---------- */
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', ()=>{
+  backTop.classList.toggle('show', window.scrollY > 300);
+});
+backTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+/* ---------- accordion ---------- */
+document.querySelectorAll('.accordion-head').forEach(head=>{
+  head.addEventListener('click', ()=>{
+    head.parentElement.classList.toggle('open');
+  });
+});
+
+updateProgress();
+</script>
+</body>
+</html>
