@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>10 Progresiones de Acordes de The Beatles — Tutorial de Piano | Rubén Sbarsky</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --text:#e2e8f0;
+  --text-dim:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+::selection{background:var(--accent);color:#001018;}
+
+#progressBar{
+  position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--purple));
+  width:0%;z-index:9999;transition:width .1s linear;
+}
+
+nav{
+  position:fixed;top:3px;left:0;right:0;z-index:999;
+  background:rgba(15,23,42,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  display:flex;align-items:center;gap:4px;overflow-x:auto;
+  padding:10px 12px;scrollbar-width:thin;
+}
+.nav-inner::-webkit-scrollbar{height:4px;}
+.nav-inner::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+.nav-brand{
+  font-weight:700;color:var(--accent);white-space:nowrap;padding-right:14px;
+  border-right:1px solid var(--border);margin-right:6px;font-size:.95rem;
+}
+.nav-btn{
+  white-space:nowrap;background:transparent;border:1px solid transparent;color:var(--text-dim);
+  padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600;
+  transition:.2s;flex-shrink:0;
+}
+.nav-btn:hover{color:var(--text);background:rgba(0,212,255,.08);}
+.nav-btn.active{color:var(--accent);background:rgba(0,212,255,.12);border-color:var(--border);}
+
+main{padding-top:64px;max-width:960px;margin:0 auto;padding-left:16px;padding-right:16px;padding-bottom:80px;}
+section{display:none;animation:fadeIn .4s ease;}
+section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.hero{text-align:center;padding:36px 0 20px;}
+.badge{
+  display:inline-block;background:rgba(0,212,255,.1);border:1px solid var(--accent);
+  color:var(--accent);padding:6px 16px;border-radius:20px;font-size:.75rem;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;
+}
+.hero h1{
+  font-size:clamp(1.6rem,4.6vw,2.7rem);font-weight:800;
+  background:linear-gradient(135deg,#fff,var(--accent));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+}
+.hero .sub{color:var(--text-dim);font-size:clamp(1rem,2.5vw,1.2rem);margin-bottom:20px;}
+.hero p.desc{max-width:660px;margin:0 auto 24px;color:var(--text-dim);}
+.quote{
+  max-width:620px;margin:24px auto;padding:18px 22px;background:var(--card);
+  border-left:4px solid var(--purple);border-radius:10px;font-style:italic;color:var(--text);
+}
+.metrics{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:28px 0;}
+.metric{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:14px 20px;text-align:center;min-width:100px;
+}
+.metric .num{font-size:1.4rem;font-weight:800;color:var(--accent);}
+.metric .lbl{font-size:.7rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;}
+.datehour{color:var(--text-dim);font-size:.85rem;margin-top:10px;}
+
+.svg-wrap{
+  max-width:900px;margin:24px auto;border-radius:12px;overflow:hidden;
+  border:1px solid var(--border);background:var(--card);
+}
+.svg-wrap svg{width:100%;height:auto;display:block;}
+
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:20px;margin-bottom:18px;
+}
+.card h2{color:var(--accent);font-size:1.25rem;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.card h3{color:var(--text);font-size:1.02rem;margin:16px 0 8px;}
+.card p{margin-bottom:10px;color:var(--text);}
+.card p.dim{color:var(--text-dim);}
+
+.section-header{margin:28px 0 16px;}
+.section-header h1{font-size:clamp(1.3rem,3.8vw,1.9rem);color:#fff;display:flex;align-items:center;gap:10px;}
+.section-header .eyebrow{color:var(--accent);font-size:.78rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;}
+
+.formula{
+  background:#0a1628;border:1px solid var(--border);border-radius:8px;
+  padding:14px 18px;margin:10px 0;font-family:'Courier New',monospace;font-size:1.02rem;
+  color:var(--accent);overflow-x:auto;white-space:nowrap;
+}
+.formula .flat{color:var(--red);}
+
+.chord-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:16px 0;}
+.chord-box{
+  background:#0a1628;border:1px solid var(--border);border-radius:10px;padding:16px;
+}
+.chord-box h4{color:var(--purple);margin-bottom:8px;font-size:1rem;}
+.chord-box .notes{font-family:'Courier New',monospace;color:var(--green);font-size:.92rem;}
+
+.callout{
+  border-radius:8px;padding:14px 16px;margin:14px 0;border-left:4px solid;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.callout .icon{font-size:1.2rem;flex-shrink:0;}
+.callout-info{background:rgba(0,212,255,.07);border-color:var(--accent);}
+.callout-example{background:rgba(34,197,94,.07);border-color:var(--green);}
+.callout-warning{background:rgba(245,158,11,.07);border-color:var(--amber);}
+.callout-error{background:rgba(239,68,68,.07);border-color:var(--red);}
+
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.9rem;}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+th{color:var(--accent);text-transform:uppercase;font-size:.72rem;letter-spacing:.5px;}
+td{color:var(--text);}
+tr:hover td{background:rgba(0,212,255,.04);}
+.table-wrap{overflow-x:auto;}
+
+.steps{counter-reset:step;margin:16px 0;}
+.step{
+  display:flex;gap:14px;margin-bottom:14px;background:#0a1628;border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;align-items:flex-start;
+}
+.step-num{
+  counter-increment:step;background:var(--accent);color:#001018;font-weight:800;
+  width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:.85rem;
+}
+.step-num::before{content:counter(step);}
+.step-body h4{color:var(--text);margin-bottom:4px;}
+.step-body .notes{font-family:'Courier New',monospace;color:var(--green);font-size:.88rem;}
+.arrow{color:var(--purple);font-weight:700;text-align:center;margin:4px 0;}
+
+.accordion-item{border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;}
+.accordion-head{
+  background:#0a1628;padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;
+  align-items:center;font-weight:600;color:var(--text);user-select:none;gap:10px;
+}
+.accordion-head:hover{background:#0f1d33;}
+.accordion-head .song-tag{color:var(--text-dim);font-weight:400;font-size:.85rem;}
+.accordion-head .chevron{transition:.25s;color:var(--accent);flex-shrink:0;}
+.accordion-item.open .chevron{transform:rotate(180deg);}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 16px;}
+.accordion-item.open .accordion-body{max-height:2400px;padding:16px;}
+
+.resumen-card{
+  background:#0a1628;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;
+}
+.resumen-card h4{color:var(--accent);margin-bottom:6px;}
+.resumen-card .prog{font-family:'Courier New',monospace;color:var(--green);font-size:.9rem;margin-bottom:4px;}
+.resumen-card .grados{font-family:'Courier New',monospace;color:var(--text-dim);font-size:.85rem;margin-bottom:6px;}
+.resumen-card .recurso{color:var(--purple);font-size:.85rem;}
+
+#backTop{
+  position:fixed;bottom:22px;right:22px;width:48px;height:48px;border-radius:50%;
+  background:var(--accent);color:#001018;border:none;font-size:1.3rem;cursor:pointer;
+  display:none;align-items:center;justify-content:center;z-index:998;
+  box-shadow:0 4px 16px rgba(0,212,255,.4);
+}
+#backTop.show{display:flex;}
+
+footer{
+  text-align:center;padding:30px 16px;color:var(--text-dim);font-size:.82rem;
+  border-top:1px solid var(--border);margin-top:40px;
+}
+footer div{margin:4px 0;}
+footer .latin{color:var(--purple);font-style:italic;margin-top:10px;}
+
+.credits-box{text-align:center;padding:20px 0;}
+.credits-box h2{color:#fff;font-size:1.5rem;margin:20px 0 6px;}
+.credits-box .name{color:var(--accent);font-size:1.15rem;font-weight:700;margin-bottom:16px;}
+.credits-box .meta{color:var(--text-dim);margin:4px 0;}
+.credits-box .latin{color:var(--purple);font-style:italic;margin-top:18px;font-size:1.02rem;}
+
+@media (max-width:640px){
+  .nav-btn{padding:7px 10px;font-size:.76rem;}
+  .card{padding:14px;}
+  .formula{font-size:.85rem;}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
+}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+<nav>
+  <div class="nav-inner" id="navInner">
+    <span class="nav-brand">🎹 BEATLES</span>
+    <button class="nav-btn active" data-target="home">Home</button>
+    <button class="nav-btn" data-target="intro">Introducción</button>
+    <button class="nav-btn" data-target="canciones-1-5">Canciones 1–5</button>
+    <button class="nav-btn" data-target="canciones-6-10">Canciones 6–10</button>
+    <button class="nav-btn" data-target="resumen">Resumen</button>
+    <button class="nav-btn" data-target="lecciones">5 Lecciones</button>
+    <button class="nav-btn" data-target="ejercicios">Ejercicio Final</button>
+    <button class="nav-btn" data-target="conclusion">Conclusión</button>
+    <button class="nav-btn" data-target="creditos">Créditos</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section id="home" class="active">
+  <div class="hero">
+    <span class="badge">Tutorial de Armonía para Piano</span>
+    <h1>10 Progresiones de Acordes de The Beatles</h1>
+    <p class="sub">Y por qué funcionan</p>
+    <p class="desc">Un análisis armónico, orientado al piano, de diez progresiones características de The Beatles: acordes prestados, dominantes secundarios, líneas cromáticas, notas comunes y bajos descendentes — los recursos que convierten canciones aparentemente simples en piezas de estudio armónico.</p>
+    <div class="quote">"Sabían cómo hacer que cada acorde tuviera una razón para aparecer."</div>
+    <div class="metrics">
+      <div class="metric"><div class="num">10</div><div class="lbl">Canciones analizadas</div></div>
+      <div class="metric"><div class="num">5</div><div class="lbl">Lecciones armónicas</div></div>
+      <div class="metric"><div class="num">5</div><div class="lbl">Ejercicios finales</div></div>
+      <div class="metric"><div class="num">A,B,C...</div><div class="lbl">Sistema americano</div></div>
+    </div>
+    <div class="datehour">📅 20/08/2026 &nbsp;·&nbsp; 🕐 01:48</div>
+  </div>
+
+  <div class="svg-wrap" id="svgHome"></div>
+
+  <div class="card">
+    <h2>🎯 La idea central</h2>
+    <p>The Beatles utilizaron la armonía de una manera extraordinariamente creativa. Muchas de sus canciones parecen sencillas cuando las escuchamos, pero contienen recursos armónicos que todavía se estudian: acordes prestados, dominantes secundarios, cambios de tonalidad, movimientos cromáticos, acordes disminuidos, sustituciones y progresiones que desafían las expectativas de la tonalidad tradicional.</p>
+    <div class="callout callout-info">
+      <span class="icon">💡</span>
+      <p>La selección no pretende decir que estas sean objetivamente las diez mejores progresiones de toda la obra de The Beatles. "Mejor" es necesariamente subjetivo. Son diez progresiones especialmente interesantes por su valor musical, armónico y didáctico.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTRO ============ -->
+<section id="intro">
+  <div class="section-header">
+    <div class="eyebrow">Convenciones del tutorial</div>
+    <h1>📖 Introducción</h1>
+  </div>
+  <div class="card">
+    <p>En este tutorial utilizaremos siempre:</p>
+    <ul style="margin-left:20px;color:var(--text-dim);margin-bottom:10px;">
+      <li>Sistema americano: A, B, C, D, E, F, G</li>
+      <li>Grados de escala: I, ii, iii, IV, V, vi, vii</li>
+      <li>Cuando corresponda, indicaremos también alteraciones como ♭VII, ♭VI, etc.</li>
+      <li>Las tonalidades se indicarán explícitamente.</li>
+      <li>Los ejemplos estarán orientados al piano.</li>
+    </ul>
+    <div class="callout callout-warning">
+      <span class="icon">⚠️</span>
+      <p>La selección no pretende decir que estas sean objetivamente las diez mejores progresiones de toda la obra de The Beatles. "Mejor" es necesariamente subjetivo. Son diez progresiones especialmente interesantes por su valor musical, armónico y didáctico.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CANCIONES 1-5 ============ -->
+<section id="canciones-1-5">
+  <div class="section-header">
+    <div class="eyebrow">Análisis canción por canción</div>
+    <h1>🎵 Canciones 1–5</h1>
+  </div>
+
+  <div class="accordion" id="accSongs1">
+    <!-- 1. Something -->
+    <div class="accordion-item open">
+      <div class="accordion-head">1. "Something" <span class="song-tag">C major — I → Imaj7 → I7 → IV</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <h3>Progresión principal</h3>
+        <p>La canción está en C major. Una de sus progresiones más características es:</p>
+        <div class="formula">C → Cmaj7 → C7 → F</div>
+        <div class="formula">I → Imaj7 → I7 → IV</div>
+        <div class="chord-grid">
+          <div class="chord-box"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div>
+          <div class="chord-box"><h4>Cmaj7</h4><div class="notes">C(I) – E(III) – G(V) – B(VII)</div></div>
+          <div class="chord-box"><h4>C7</h4><div class="notes">C(I) – E(III) – G(V) – B♭(♭VII)</div></div>
+          <div class="chord-box"><h4>F</h4><div class="notes">F(IV) – A(VI) – C(I)</div></div>
+        </div>
+        <h3>¿Por qué es tan buena?</h3>
+        <p>Porque tenemos una transformación progresiva de la misma fundamental: C → Cmaj7 → C7. La nota B realiza B(VII) → B♭(♭VII) → A(VI). Es decir, aparece una línea cromática descendente: B → B♭ → A, mientras la fundamental permanece inicialmente en C.</p>
+        <div class="callout callout-info">
+          <span class="icon">💡</span>
+          <p>Esto es un ejemplo magnífico de voice leading. No estamos cambiando radicalmente de acorde. Estamos haciendo que las voces internas se muevan.</p>
+        </div>
+        <h3>Ejercicio de piano</h3>
+        <p>Mantén C(I) en la mano izquierda. Con la derecha:</p>
+        <div class="steps">
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>Con Cmaj7</h4><div class="notes">E(III) – G(V) – B(VII)</div></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>Con C7</h4><div class="notes">E(III) – G(V) – B♭(♭VII)</div></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>Con F</h4><div class="notes">F(IV) – A(VI) – C(I)</div></div></div>
+        </div>
+        <p>Escucha especialmente: B(VII) → B♭(♭VII) → A(VI)</p>
+      </div>
+    </div>
+
+    <!-- 2. In My Life -->
+    <div class="accordion-item">
+      <div class="accordion-head">2. "In My Life" <span class="song-tag">A major — I → vi → IV → V</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <h3>Progresión característica</h3>
+        <p>Una de las grandes maravillas de "In My Life" está en su movimiento armónico. Una parte fundamental puede analizarse como:</p>
+        <div class="formula">A → F♯m → D → E</div>
+        <div class="formula">I → vi → IV → V</div>
+        <div class="chord-grid">
+          <div class="chord-box"><h4>A</h4><div class="notes">A(I) – C♯(III) – E(V)</div></div>
+          <div class="chord-box"><h4>F♯m</h4><div class="notes">F♯(VI) – A(I) – C♯(III)</div></div>
+          <div class="chord-box"><h4>D</h4><div class="notes">D(IV) – F♯(VI) – A(I)</div></div>
+          <div class="chord-box"><h4>E</h4><div class="notes">E(V) – G♯(VII) – B(II)</div></div>
+        </div>
+        <h3>¿Por qué funciona?</h3>
+        <p>Es una progresión extremadamente eficiente porque utiliza I → vi → IV → V. Cada acorde comparte notas con el siguiente.</p>
+        <p>Por ejemplo, A: A – C♯ – E, y F♯m: F♯ – A – C♯. Dos notas permanecen: A y C♯. Esto produce continuidad.</p>
+        <p>Después, F♯m → D comparten F♯ y A. Y D → E genera una fuerte dirección hacia la dominante.</p>
+        <div class="callout callout-example">
+          <span class="icon">✨</span>
+          <p><strong>Lección:</strong> una progresión poderosa no necesita muchos acordes. Puede funcionar extraordinariamente bien mediante notas comunes y movimiento mínimo de voces.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Let It Be -->
+    <div class="accordion-item">
+      <div class="accordion-head">3. "Let It Be" <span class="song-tag">C major — I → V → vi → IV</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <h3>Progresión</h3>
+        <p>La progresión del estribillo es uno de los ejemplos más reconocibles de I → V → vi → IV:</p>
+        <div class="formula">C → G → Am → F</div>
+        <div class="formula">I → V → vi → IV</div>
+        <div class="chord-grid">
+          <div class="chord-box"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div>
+          <div class="chord-box"><h4>G</h4><div class="notes">G(V) – B(VII) – D(II)</div></div>
+          <div class="chord-box"><h4>Am</h4><div class="notes">A(VI) – C(I) – E(III)</div></div>
+          <div class="chord-box"><h4>F</h4><div class="notes">F(IV) – A(VI) – C(I)</div></div>
+        </div>
+        <h3>¿Por qué funciona?</h3>
+        <p>Porque es una de las progresiones más equilibradas de la música popular:</p>
+        <div class="steps">
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>I</h4><p class="dim" style="margin:0;">establecimiento de la tonalidad</p></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>V</h4><p class="dim" style="margin:0;">tensión</p></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>vi</h4><p class="dim" style="margin:0;">resolución engañosa</p></div></div>
+          <div class="step"><div class="step-num"></div><div class="step-body"><h4>IV</h4><p class="dim" style="margin:0;">apertura que vuelve a preparar el ciclo</p></div></div>
+        </div>
+        <p>El detalle interesante es V → vi, en lugar de V → I. La dominante G(V) parece querer resolver a C(I), pero llega a Am(vi).</p>
+        <div class="callout callout-warning">
+          <span class="icon">⚠️</span>
+          <p>Esto se llama <strong>resolución engañosa</strong>.</p>
+        </div>
+        <h3>En piano</h3>
+        <p>Toca C → G → Am → F y después intenta mantener las notas comunes siempre que sea posible.</p>
+      </div>
+    </div>
+
+    <!-- 4. Hey Jude -->
+    <div class="accordion-item">
+      <div class="accordion-head">4. "Hey Jude" <span class="song-tag">I → V → vi → IV</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <h3>Progresión</h3>
+        <p>El famoso final utiliza una progresión extraordinariamente sencilla:</p>
+        <div class="formula">C → G → Am → F</div>
+        <div class="formula">I → V → vi → IV</div>
+        <p>Pero el contexto musical hace que parezca enorme.</p>
+        <h3>¿Por qué funciona?</h3>
+        <p>Porque The Beatles no dependen únicamente de la progresión. Utilizan:</p>
+        <ul style="margin-left:20px;color:var(--text-dim);margin-bottom:10px;">
+          <li>repetición</li>
+          <li>melodía</li>
+          <li>crecimiento dinámico</li>
+          <li>voces</li>
+          <li>instrumentación</li>
+          <li>duración</li>
+          <li>cambios de registro</li>
+        </ul>
+        <div class="callout callout-example">
+          <span class="icon">✨</span>
+          <p>«Una progresión sencilla puede producir una experiencia musical extraordinaria si el contexto está bien construido.»</p>
+        </div>
+        <h3>Ejercicio</h3>
+        <p>Toca C(I) → G(V) → Am(vi) → F(IV). Después repítelo varias veces. La progresión no cambia. Lo que cambia es nuestra percepción a medida que aumenta la intensidad.</p>
+      </div>
+    </div>
+
+    <!-- 5. While My Guitar Gently Weeps -->
+    <div class="accordion-item">
+      <div class="accordion-head">5. "While My Guitar Gently Weeps" <span class="song-tag">A minor — i → i/♭VII → ♭VI → V</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <h3>Progresión</h3>
+        <p>La canción utiliza una armonía que puede analizarse mediante una combinación de funciones tonales y movimientos descendentes. Una secuencia muy útil para estudiar es:</p>
+        <div class="formula">Am → Am/G → F → E</div>
+        <div class="formula">i → i/<span class="flat">♭VII</span> → <span class="flat">♭VI</span> → V</div>
+        <div class="chord-grid">
+          <div class="chord-box"><h4>Am</h4><div class="notes">A(i) – C(♭III) – E(V)</div></div>
+          <div class="chord-box"><h4>Am/G</h4><div class="notes">G(♭VII) en el bajo</div></div>
+          <div class="chord-box"><h4>F</h4><div class="notes">F(♭VI) – A(i) – C(♭III)</div></div>
+          <div class="chord-box"><h4>E</h4><div class="notes">E(V) – G♯(VII) – B(II)</div></div>
+        </div>
+        <h3>¿Por qué es interesante?</h3>
+        <p>Tenemos una línea descendente en el bajo: A → G → F → E. Este tipo de movimiento produce una sensación inevitable de descenso. La armonía y el bajo trabajan juntos.</p>
+        <p>No escuchamos simplemente "Am, F, E". Escuchamos una línea: A → G → F → E.</p>
+        <div class="callout callout-example">
+          <span class="icon">✨</span>
+          <p><strong>Lección:</strong> una progresión puede adquirir una personalidad completamente diferente cuando controlamos el bajo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CANCIONES 6-10 ============ -->
+<section id="canciones-6-10">
+  <div class="section-header">
+    <div class="eyebrow">Análisis canción por canción</div>
+    <h1>🎵 Canciones 6–10</h1>
+  </div>
+
+  <div class="accordion" id="accSongs2">
+    <!-- 6. Here There and Everywhere -->
+    <div class="accordion-item open">
+      <div class="accordion-head">6. "Here, There and Everywhere" <span class="song-tag">G major — I → Imaj7 → I7 → IV</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <h3>Progresión característica</h3>
+        <p>Esta canción es especialmente interesante por su uso de movimiento cromático y acordes con séptimas. Un ejemplo característico de su lenguaje armónico puede estudiarse como:</p>
+        <div class="formula">G → Gmaj7 → G7 → C</div>
+        <div class="formula">I → Imaj7 → I7 → IV</div>
+        <div class="chord-grid">
+          <div class="chord-box"><h4>G</h4><div class="notes">G(I) – B(III) – D(V)</div></div>
+          <div class="chord-box"><h4>Gmaj7</h4><div class="notes">G(I) – B(III) – D(V) – F♯(VII)</div></div>
+          <div class="chord-box"><h4>G7</h4><div class="notes">G(I) – B(III) – D(V) – F(♭VII)</div></div>
+          <div class="chord-box"><h4>C</h4><div class="notes">C(IV) – E(VI) – G(I)</div></div>
+        </div>
+        <h3>¿Por qué funciona?</h3>
+        <p>Otra vez aparece: F♯ → F → E. Una línea cromática descendente. Este recurso aparece repetidamente en el lenguaje de The Beatles. La armonía parece moverse porque una sola voz está descendiendo.</p>
+        <div class="callout callout-example">
+          <span class="icon">✨</span>
+          <p><strong>Lección:</strong> aprende a buscar líneas cromáticas dentro de progresiones aparentemente simples.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Across the Universe -->
+    <div class="accordion-item">
+      <div class="accordion-head">7. "Across the Universe" <span class="song-tag">D major — I → iii → vi → IV</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <h3>Progresión característica</h3>
+        <p>"Across the Universe" presenta una armonía que mezcla simplicidad y color modal. Una progresión muy interesante para estudiar es:</p>
+        <div class="formula">D → F♯m → Bm → G</div>
+        <div class="formula">I → iii → vi → IV</div>
+        <div class="chord-grid">
+          <div class="chord-box"><h4>D</h4><div class="notes">D(I) – F♯(III) – A(V)</div></div>
+          <div class="chord-box"><h4>F♯m</h4><div class="notes">F♯(III) – A(V) – C♯(VII)</div></div>
+          <div class="chord-box"><h4>Bm</h4><div class="notes">B(vi) – D(I) – F♯(III)</div></div>
+          <div class="chord-box"><h4>G</h4><div class="notes">G(IV) – B(vi) – D(I)</div></div>
+        </div>
+        <h3>¿Por qué funciona?</h3>
+        <p>Observa la enorme cantidad de notas comunes:</p>
+        <p>D: D – F♯ – A &nbsp;·&nbsp; F♯m: F♯ – A – C♯ &nbsp;→ comparten F♯ – A</p>
+        <p>F♯m → Bm: comparten F♯</p>
+        <p>Bm → G: comparten B – D</p>
+        <p>Esto genera una continuidad extraordinaria.</p>
+        <div class="callout callout-example">
+          <span class="icon">✨</span>
+          <p><strong>Lección:</strong> las progresiones pueden sonar fluidas porque los acordes están conectados mediante notas comunes.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Yesterday -->
+    <div class="accordion-item">
+      <div class="accordion-head">8. "Yesterday" <span class="song-tag">C major — IV → iii7 → V7/ii → ii</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <h3>Progresión característica</h3>
+        <p>"Yesterday" es una de las mejores canciones para estudiar cómo una progresión relativamente sencilla puede adquirir profundidad mediante acordes de paso. Un movimiento muy interesante aparece alrededor de:</p>
+        <div class="formula">F → Em7 → A7 → Dm</div>
+        <div class="formula">IV → iii7 → V7/ii → ii</div>
+        <div class="chord-grid">
+          <div class="chord-box"><h4>F</h4><div class="notes">F(IV) – A(VI) – C(I)</div></div>
+          <div class="chord-box"><h4>Em7</h4><div class="notes">E(III) – G(V) – B(VII) – D(II)</div></div>
+          <div class="chord-box"><h4>A7</h4><div class="notes">A(VI) – C♯(III of A) – E(V) – G(♭VII of A)</div></div>
+          <div class="chord-box"><h4>Dm</h4><div class="notes">D(II) – F(IV) – A(VI)</div></div>
+        </div>
+        <h3>¿Por qué es interesante?</h3>
+        <p>Porque aparece A7, que no pertenece diatónicamente a C major. A7 funciona como V7/ii, es decir, dominante secundaria del acorde ii. A7 quiere resolver hacia Dm(ii).</p>
+        <div class="callout callout-warning">
+          <span class="icon">⚠️</span>
+          <p>Por tanto, A7 → Dm produce una fuerte sensación de dirección.</p>
+        </div>
+        <div class="callout callout-example">
+          <span class="icon">✨</span>
+          <p><strong>Lección:</strong> una de las grandes herramientas de los Beatles es utilizar acordes que temporalmente parecen "salirse" de la tonalidad para crear una dirección armónica muy fuerte.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Michelle -->
+    <div class="accordion-item">
+      <div class="accordion-head">9. "Michelle" <span class="song-tag">F major — I → vi → ii → V</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <h3>Progresión característica</h3>
+        <p>"Michelle" contiene un lenguaje armónico mucho más sofisticado de lo que aparenta. Una progresión muy interesante es:</p>
+        <div class="formula">F → Dm → Gm → C</div>
+        <div class="formula">I → vi → ii → V</div>
+        <div class="chord-grid">
+          <div class="chord-box"><h4>F</h4><div class="notes">F(I) – A(III) – C(V)</div></div>
+          <div class="chord-box"><h4>Dm</h4><div class="notes">D(vi) – F(I) – A(III)</div></div>
+          <div class="chord-box"><h4>Gm</h4><div class="notes">G(ii) – B♭(IV) – D(vi)</div></div>
+          <div class="chord-box"><h4>C</h4><div class="notes">C(V) – E(VII) – G(II)</div></div>
+        </div>
+        <h3>¿Por qué funciona?</h3>
+        <p>Porque tenemos una preparación perfecta hacia la dominante: ii → V → I, es decir, Gm(ii) → C(V) → F(I). Este movimiento es una de las estructuras fundamentales de la armonía tonal.</p>
+        <div class="callout callout-example">
+          <span class="icon">✨</span>
+          <p><strong>Lección:</strong> antes de intentar estudiar armonía compleja, domina ii → V → I. The Beatles lo utilizaron constantemente dentro de contextos mucho más elaborados.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. A Day in the Life -->
+    <div class="accordion-item">
+      <div class="accordion-head">10. "A Day in the Life" <span class="song-tag">G major — I → iii → vi → IV</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <p>Esta probablemente sea una de las mejores elecciones para estudiar la capacidad de The Beatles de convertir la armonía en narrativa.</p>
+        <h3>Una progresión fundamental</h3>
+        <p>Una parte puede estudiarse alrededor del movimiento:</p>
+        <div class="formula">G → Bm → Em → C</div>
+        <div class="formula">I → iii → vi → IV</div>
+        <div class="chord-grid">
+          <div class="chord-box"><h4>G</h4><div class="notes">G(I) – B(III) – D(V)</div></div>
+          <div class="chord-box"><h4>Bm</h4><div class="notes">B(III) – D(V) – F♯(VII)</div></div>
+          <div class="chord-box"><h4>Em</h4><div class="notes">E(vi) – G(I) – B(III)</div></div>
+          <div class="chord-box"><h4>C</h4><div class="notes">C(IV) – E(vi) – G(I)</div></div>
+        </div>
+        <h3>¿Por qué es interesante?</h3>
+        <p>Porque existe una fuerte sensación de movimiento descendente mediante notas comunes.</p>
+        <p>G: G – B – D &nbsp;·&nbsp; Bm: B – D – F♯ &nbsp;·&nbsp; Em: E – G – B &nbsp;·&nbsp; C: C – E – G</p>
+        <p>Las triadas están íntimamente relacionadas. Pero "A Day in the Life" va mucho más allá de esta progresión. La canción demuestra que la armonía puede utilizarse para construir una auténtica narrativa musical.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESUMEN ============ -->
+<section id="resumen">
+  <div class="section-header">
+    <div class="eyebrow">Vista general</div>
+    <h1>📊 Las 10 progresiones resumidas</h1>
+  </div>
+
+  <div class="card">
+    <div class="resumen-card">
+      <h4>1. Something</h4>
+      <div class="prog">C → Cmaj7 → C7 → F</div>
+      <div class="grados">I → Imaj7 → I7 → IV</div>
+      <div class="recurso">Recurso: línea cromática descendente B → B♭ → A</div>
+    </div>
+    <div class="resumen-card">
+      <h4>2. In My Life</h4>
+      <div class="prog">A → F♯m → D → E</div>
+      <div class="grados">I → vi → IV → V</div>
+      <div class="recurso">Recurso: notas comunes y movimiento de voces</div>
+    </div>
+    <div class="resumen-card">
+      <h4>3. Let It Be</h4>
+      <div class="prog">C → G → Am → F</div>
+      <div class="grados">I → V → vi → IV</div>
+      <div class="recurso">Recurso: resolución engañosa V → vi</div>
+    </div>
+    <div class="resumen-card">
+      <h4>4. Hey Jude</h4>
+      <div class="prog">C → G → Am → F</div>
+      <div class="grados">I → V → vi → IV</div>
+      <div class="recurso">Recurso: repetición + crecimiento musical</div>
+    </div>
+    <div class="resumen-card">
+      <h4>5. While My Guitar Gently Weeps</h4>
+      <div class="prog">Am → Am/G → F → E</div>
+      <div class="grados">i → i/♭VII → ♭VI → V</div>
+      <div class="recurso">Recurso: línea de bajo descendente A → G → F → E</div>
+    </div>
+    <div class="resumen-card">
+      <h4>6. Here, There and Everywhere</h4>
+      <div class="prog">G → Gmaj7 → G7 → C</div>
+      <div class="grados">I → Imaj7 → I7 → IV</div>
+      <div class="recurso">Recurso: F♯ → F → E</div>
+    </div>
+    <div class="resumen-card">
+      <h4>7. Across the Universe</h4>
+      <div class="prog">D → F♯m → Bm → G</div>
+      <div class="grados">I → iii → vi → IV</div>
+      <div class="recurso">Recurso: notas comunes</div>
+    </div>
+    <div class="resumen-card">
+      <h4>8. Yesterday</h4>
+      <div class="prog">F → Em7 → A7 → Dm</div>
+      <div class="grados">IV → iii7 → V7/ii → ii</div>
+      <div class="recurso">Recurso: dominante secundaria</div>
+    </div>
+    <div class="resumen-card">
+      <h4>9. Michelle</h4>
+      <div class="prog">F → Dm → Gm → C</div>
+      <div class="grados">I → vi → ii → V</div>
+      <div class="recurso">Recurso: ii → V → I</div>
+    </div>
+    <div class="resumen-card">
+      <h4>10. A Day in the Life</h4>
+      <div class="prog">G → Bm → Em → C</div>
+      <div class="grados">I → iii → vi → IV</div>
+      <div class="recurso">Recurso: conexión mediante notas comunes</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LECCIONES ============ -->
+<section id="lecciones">
+  <div class="section-header">
+    <div class="eyebrow">Síntesis conceptual</div>
+    <h1>🧠 Las 5 grandes lecciones armónicas de The Beatles</h1>
+  </div>
+  <div class="card">
+    <p>Después de estudiar estas diez progresiones, podemos encontrar cinco ideas que aparecen una y otra vez.</p>
+  </div>
+
+  <div class="card">
+    <h2>1. Movimiento cromático</h2>
+    <div class="formula">B(VII) → B♭(♭VII) → A(VI)</div>
+    <p>No necesitas cambiar constantemente de acorde para crear movimiento. Una sola voz puede crear una enorme sensación de transformación.</p>
+  </div>
+
+  <div class="card">
+    <h2>2. Dominantes secundarias</h2>
+    <div class="formula">A7 → Dm</div>
+    <p>A7 funciona como V7/ii. Esto permite temporalmente enfatizar un acorde que normalmente no sería dominante.</p>
+  </div>
+
+  <div class="card">
+    <h2>3. Notas comunes</h2>
+    <p>Cuando dos acordes comparten notas, las voces pueden moverse muy poco. Eso produce fluidez.</p>
+    <div class="chord-grid">
+      <div class="chord-box"><h4>C</h4><div class="notes">C(I) – E(III) – G(V)</div></div>
+      <div class="chord-box"><h4>Am</h4><div class="notes">A(vi) – C(I) – E(III)</div></div>
+    </div>
+    <p>Se mantienen: C(I) y E(III).</p>
+  </div>
+
+  <div class="card">
+    <h2>4. Bajo descendente</h2>
+    <div class="formula">A → G → F → E</div>
+    <p>El bajo se convierte en una melodía. Esto puede hacer que una progresión relativamente sencilla resulte emocionalmente poderosa.</p>
+  </div>
+
+  <div class="card">
+    <h2>5. La progresión no lo es todo</h2>
+    <p>Una progresión como I → V → vi → IV puede aparecer en miles de canciones. Pero una gran canción no depende exclusivamente de la progresión.</p>
+    <p>The Beatles combinaban: armonía + melodía + ritmo + textura + instrumentación + voz + producción + forma.</p>
+    <div class="callout callout-warning">
+      <span class="icon">⚠️</span>
+      <p>Por eso no debemos caer en la idea de: «"Si utilizo la misma progresión, conseguiré sonar como The Beatles."» No. La progresión es solamente una parte del lenguaje musical.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EJERCICIOS ============ -->
+<section id="ejercicios">
+  <div class="section-header">
+    <div class="eyebrow">Práctica</div>
+    <h1>🏋️ Ejercicio final para el piano</h1>
+  </div>
+  <div class="card"><p>Toca lentamente estas progresiones.</p></div>
+
+  <div class="accordion" id="accEjercicios">
+    <div class="accordion-item open">
+      <div class="accordion-head">Ejercicio 1 <span class="song-tag">Something</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="formula">C → Cmaj7 → C7 → F</div>
+        <div class="formula">I → Imaj7 → I7 → IV</div>
+        <p>Escucha: B(VII) → B♭(♭VII) → A(VI)</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">Ejercicio 2 <span class="song-tag">Let It Be</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="formula">C → G → Am → F</div>
+        <div class="formula">I → V → vi → IV</div>
+        <p>Escucha la relación: V → vi</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">Ejercicio 3 <span class="song-tag">While My Guitar Gently Weeps</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="formula">Am → Am/G → F → E</div>
+        <div class="formula">i → i/♭VII → ♭VI → V</div>
+        <p>Escucha: A → G → F → E en el bajo.</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">Ejercicio 4 <span class="song-tag">Michelle</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="formula">F → Dm → Gm → C → F</div>
+        <div class="formula">I → vi → ii → V → I</div>
+        <p>Este ejercicio te permite escuchar: ii → V → I</p>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-head">Ejercicio 5 <span class="song-tag">Yesterday</span><span class="chevron">▾</span></div>
+      <div class="accordion-body">
+        <div class="formula">F → Em7 → A7 → Dm</div>
+        <div class="formula">IV → iii7 → V7/ii → ii</div>
+        <p>Escucha cómo A7 → Dm crea una dirección mucho más fuerte que un simple acorde diatónico.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCLUSION ============ -->
+<section id="conclusion">
+  <div class="section-header">
+    <div class="eyebrow">Cierre</div>
+    <h1>🎯 Conclusión</h1>
+  </div>
+  <div class="card">
+    <p>La gran lección de The Beatles no es que utilizaran "acordes raros". Es algo mucho más interesante. Sabían cómo hacer que cada acorde tuviera una razón para aparecer.</p>
+    <p>Un acorde puede funcionar porque:</p>
+    <ul style="margin-left:20px;color:var(--text-dim);margin-bottom:10px;">
+      <li>prepara al siguiente;</li>
+      <li>comparte notas con el anterior;</li>
+      <li>contiene una línea cromática;</li>
+      <li>crea una tensión;</li>
+      <li>resuelve una tensión;</li>
+      <li>modifica el bajo;</li>
+      <li>cambia temporalmente la tonalidad;</li>
+      <li>o simplemente cambia el color de un acorde que permanece en la misma fundamental.</li>
+    </ul>
+    <div class="callout callout-info">
+      <span class="icon">🎹</span>
+      <div>
+        <p style="margin-bottom:6px;">Por eso, cuando estudies una progresión de The Beatles en el piano, no te limites a memorizar:</p>
+        <div class="formula" style="margin:6px 0;">C → Cmaj7 → C7 → F</div>
+        <p style="margin-bottom:0;">Pregúntate:</p>
+      </div>
+    </div>
+    <ul style="margin-left:20px;color:var(--text-dim);margin-bottom:10px;">
+      <li>¿Qué nota se está moviendo?</li>
+      <li>¿Qué grado de la escala representa?</li>
+      <li>¿Por qué ese acorde aparece aquí?</li>
+      <li>¿Qué tensión crea?</li>
+      <li>¿Hacia dónde quiere ir?</li>
+      <li>¿Qué notas comparte con el acorde anterior?</li>
+    </ul>
+    <div class="callout callout-example">
+      <span class="icon">✨</span>
+      <p>Ahí comienza realmente el estudio de la armonía de The Beatles. Y esa es probablemente la diferencia fundamental entre saber tocar una progresión y entender por qué funciona.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREDITOS ============ -->
+<section id="creditos">
+  <div class="credits-box">
+    <div class="svg-wrap" id="svgCredits"></div>
+    <h2>10 Progresiones de Acordes de The Beatles</h2>
+    <div class="name">Rubén Sbarsky</div>
+    <p class="meta">📚 Tutorial de Piano — Fines Educativos y de Divulgación</p>
+    <p class="meta">📅 20/08/2026 &nbsp;·&nbsp; 🕐 01:48</p>
+    <p class="latin">Fiat iustitia, ruat caelum.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div>📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div>👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div>📅 FECHA: 20/08/2026 &nbsp;·&nbsp; Hora: 01:48</div>
+  <div class="latin">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<button id="backTop">↑</button>
+
+<script>
+/* ---------- SVG temático animado: línea cromática descendente sobre acordes encadenados ---------- */
+const beatlesSVG = `
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animación de una línea cromática descendente moviéndose sobre una cadena de acordes, representando el voice leading en las progresiones de The Beatles">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0a0e1a"/>
+    </linearGradient>
+    <filter id="softGlow2" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bgGrad2)"/>
+  <text x="400" y="38" text-anchor="middle" fill="#00d4ff" font-family="Segoe UI, sans-serif" font-size="19" font-weight="700">Voice leading: una sola voz se mueve mientras el acorde cambia</text>
+
+  <!-- 4 chord blocks representing C -> Cmaj7 -> C7 -> F -->
+  <g transform="translate(60,90)">
+    <rect x="0"   y="0" width="160" height="240" rx="10" fill="#0a1628" stroke="#1e3a5f" stroke-width="2"/>
+    <rect x="180" y="0" width="160" height="240" rx="10" fill="#0a1628" stroke="#1e3a5f" stroke-width="2"/>
+    <rect x="360" y="0" width="160" height="240" rx="10" fill="#0a1628" stroke="#1e3a5f" stroke-width="2"/>
+    <rect x="540" y="0" width="160" height="240" rx="10" fill="#0a1628" stroke="#1e3a5f" stroke-width="2"/>
+
+    <text x="80"  y="270" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="15">C</text>
+    <text x="260" y="270" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="15">Cmaj7</text>
+    <text x="440" y="270" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="15">C7</text>
+    <text x="620" y="270" text-anchor="middle" fill="#94a3b8" font-family="Courier New, monospace" font-size="15">F</text>
+
+    <!-- fixed notes: root & fifth (green) constant across first 3 chords -->
+    <circle cx="80"  cy="180" r="14" fill="#22c55e" opacity="0.85"/>
+    <circle cx="260" cy="180" r="14" fill="#22c55e" opacity="0.85"/>
+    <circle cx="440" cy="180" r="14" fill="#22c55e" opacity="0.85"/>
+    <text x="80"  y="205" text-anchor="middle" fill="#22c55e" font-family="Courier New, monospace" font-size="12">C(I)</text>
+    <text x="260" y="205" text-anchor="middle" fill="#22c55e" font-family="Courier New, monospace" font-size="12">C(I)</text>
+    <text x="440" y="205" text-anchor="middle" fill="#22c55e" font-family="Courier New, monospace" font-size="12">C(I)</text>
+
+    <circle cx="80"  cy="130" r="14" fill="#f59e0b" opacity="0.85"/>
+    <circle cx="260" cy="130" r="14" fill="#f59e0b" opacity="0.85"/>
+    <circle cx="440" cy="130" r="14" fill="#f59e0b" opacity="0.85"/>
+    <text x="80"  y="155" text-anchor="middle" fill="#f59e0b" font-family="Courier New, monospace" font-size="12">G(V)</text>
+    <text x="260" y="155" text-anchor="middle" fill="#f59e0b" font-family="Courier New, monospace" font-size="12">G(V)</text>
+    <text x="440" y="155" text-anchor="middle" fill="#f59e0b" font-family="Courier New, monospace" font-size="12">G(V)</text>
+
+    <circle cx="80"  cy="80" r="14" fill="#a855f7" opacity="0.85"/>
+    <circle cx="260" cy="80" r="14" fill="#a855f7" opacity="0.85"/>
+    <text x="80"  y="105" text-anchor="middle" fill="#a855f7" font-family="Courier New, monospace" font-size="12">E(III)</text>
+    <text x="260" y="105" text-anchor="middle" fill="#a855f7" font-family="Courier New, monospace" font-size="12">E(III)</text>
+
+    <!-- F chord notes -->
+    <circle cx="620" cy="180" r="14" fill="#22c55e" opacity="0.85"/>
+    <text x="620" y="205" text-anchor="middle" fill="#22c55e" font-family="Courier New, monospace" font-size="12">C(I)</text>
+    <circle cx="620" cy="130" r="14" fill="#f59e0b" opacity="0.85"/>
+    <text x="620" y="155" text-anchor="middle" fill="#f59e0b" font-family="Courier New, monospace" font-size="12">A(VI)</text>
+    <circle cx="620" cy="80" r="14" fill="#00d4ff" opacity="0.9"/>
+    <text x="620" y="105" text-anchor="middle" fill="#00d4ff" font-family="Courier New, monospace" font-size="12">F(IV)</text>
+
+    <!-- the moving chromatic voice: B -> Bb -> A, glowing dot traveling across the top row (pure SMIL, no JS dependency) -->
+    <circle r="16" fill="#ef4444" filter="url(#softGlow2)">
+      <animate attributeName="cx" values="80;260;440;620;620" keyTimes="0;0.30;0.62;0.90;1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="80;80;80;80;80" keyTimes="0;0.30;0.62;0.90;1" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="fill" values="#ef4444;#ef4444;#f59e0b;#f59e0b;#00d4ff" keyTimes="0;0.30;0.62;0.90;1" dur="6s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- static labels per position, fading in as the dot passes through -->
+    <text x="80" y="55" text-anchor="middle" fill="#ef4444" font-family="Courier New, monospace" font-size="13" font-weight="700" opacity="0">B(VII)
+      <animate attributeName="opacity" values="1;1;0;0;0;0" keyTimes="0;0.22;0.30;0.9;0.98;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+    <text x="260" y="55" text-anchor="middle" fill="#f59e0b" font-family="Courier New, monospace" font-size="13" font-weight="700" opacity="0">B♭(♭VII)
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.30;0.40;0.62;0.70;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+    <text x="440" y="55" text-anchor="middle" fill="#f59e0b" font-family="Courier New, monospace" font-size="13" font-weight="700" opacity="0">B♭(♭VII)
+      <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.62;0.68;0.85;0.90" dur="6s" repeatCount="indefinite"/>
+    </text>
+    <text x="620" y="55" text-anchor="middle" fill="#00d4ff" font-family="Courier New, monospace" font-size="13" font-weight="700" opacity="0">A(VI)
+      <animate attributeName="opacity" values="0;0;1;1" keyTimes="0;0.90;0.95;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <text x="400" y="410" text-anchor="middle" fill="#64748b" font-family="Segoe UI, sans-serif" font-size="13">Una sola voz desciende — B → B♭ → A → (F) — mientras C(I) y G(V) permanecen</text>
+</svg>
+`;
+
+document.getElementById('svgHome').innerHTML = beatlesSVG;
+document.getElementById('svgCredits').innerHTML = beatlesSVG;
+
+/* ---------- SPA navigation ---------- */
+const sections = document.querySelectorAll('main > section');
+const navButtons = document.querySelectorAll('.nav-btn');
+
+function showSection(id){
+  sections.forEach(s => s.classList.toggle('active', s.id === id));
+  navButtons.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+  window.scrollTo({top:0});
+  updateProgress();
+}
+
+navButtons.forEach(btn=>{
+  btn.addEventListener('click', ()=> showSection(btn.dataset.target));
+});
+
+/* ---------- progress bar ---------- */
+function updateProgress(){
+  const active = document.querySelector('main > section.active');
+  if(!active){ document.getElementById('progressBar').style.width='0%'; return; }
+  const scrollTop = window.scrollY;
+  const docHeight = document.body.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? Math.min(100, (scrollTop/docHeight)*100) : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+window.addEventListener('scroll', updateProgress);
+window.addEventListener('resize', updateProgress);
+
+/* ---------- back to top ---------- */
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', ()=>{
+  backTop.classList.toggle('show', window.scrollY > 300);
+});
+backTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+/* ---------- accordion ---------- */
+document.querySelectorAll('.accordion-head').forEach(head=>{
+  head.addEventListener('click', ()=>{
+    head.parentElement.classList.toggle('open');
+  });
+});
+
+updateProgress();
+</script>
+</body>
+</html>
