@@ -273,6 +273,11 @@ footer .f-info{font-size:.75rem;color:var(--t3);margin-top:.3rem}
 const NN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const NF=['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
 const ROM=['I','II','III','IV','V','VI','VII'];
+function extraDegreeLabel(scaleName){
+if(scaleName==='Bebop Dom')return'cromática (bebop)';
+if(scaleName==='HW Diminished'||scaleName==='WH Diminished')return'cromática (dism.)';
+return'nota añadida';
+}
 const N2I={C:0,'C#':1,Db:1,D:2,'D#':3,Eb:3,E:4,F:5,'F#':6,Gb:6,G:7,'G#':8,Ab:8,A:9,'A#':10,Bb:10,B:11};
 const INT_NAME={0:'Root',1:'b2',2:'M2',3:'m3',4:'M3',5:'P4',6:'b5',7:'P5',8:'m6',9:'M6',10:'m7',11:'M7'};
 const INT_FUNC={0:'Root',1:'b9',2:'9',3:'b3',4:'3',5:'11',6:'#11/b5',7:'5',8:'b13/#5',9:'13',10:'b7',11:'7'};
@@ -557,28 +562,32 @@ var ni=(ch.root+i)%12;
 var inC=!!chSet[ni];
 var inS=!!scSet[ni];
 var di=ps.iv.indexOf(i);
-var rom=di>-1?ROM[di]:null;
+var rom=null;
+if(di>-1&&di<7)rom=ROM[di];
+else if(di>=7)rom=extraDegreeLabel(ps.name);
 var st,fn,cat;
 
 if(inC){
-if(i===0){st='s1';fn='Root — máxima estabilidad';cat='chord';}
-else if(i===3||i===4){st='s1';fn=INT_NAME[i]+' — define cualidad';cat='chord';}
-else if(i===7){st='s2';fn='P5 — estabilidad';cat='chord';}
-else if(i===10||i===11){st='s2';fn=INT_NAME[i]+' — carácter';cat='chord';}
+if(i===0){st='s1';fn='Root — máxima estabilidad, centro tonal del acorde';cat='chord';}
+else if(i===4){st='s1';fn='M3 — define la cualidad mayor; nota guía con gran estabilidad';cat='chord';}
+else if(i===3){st='s1';fn='m3 — define la cualidad menor; nota guía con gran estabilidad';cat='chord';}
+else if(i===7){st='s2';fn='P5 — refuerza la estabilidad, poco carácter propio';cat='chord';}
+else if(i===11){st='s2';fn='M7 — nota guía; tiende a resolver ↑ semitono hacia la tónica';cat='chord';}
+else if(i===10){st='s2';fn='b7 — nota guía; en dominantes tiende a resolver ↓ hacia la 3ª siguiente';cat='chord';}
 else{st='s2';fn=INT_NAME[i]+' — nota del acorde';cat='chord';}
 }else if(inS){
-if(i===1){st='s4';fn='b9 — tensión fuerte';cat='tension';}
-else if(i===2){st='s3';fn='9 — extensión, color';cat='ext';}
+if(i===1){st='s4';fn='b9 — tensión fuerte, requiere resolución cuidadosa';cat='tension';}
+else if(i===2){st='s3';fn='9 — extensión disponible, añade color sin alterar la cualidad';cat='ext';}
 else if(i===5){
-if(isAvoid(ch,ps)){st='s4';fn='11 — evitar como nota larga';cat='avoid';}
-else{st='s3';fn='11 — extensión';cat='ext';}
+if(isAvoid(ch,ps)){st='s4';fn='11 — fricción con la 3ª mayor si se usa como nota larga; funciona bien como passing tone o approach breve';cat='avoid';}
+else{st='s3';fn='11 — extensión disponible';cat='ext';}
 }
-else if(i===6){st='s3';fn='#11 — tensión característica';cat='char';}
-else if(i===8){st='s4';fn='b13 — tensión oscura';cat='tension';}
-else if(i===9){st='s3';fn='13 — color brillante';cat='ext';}
+else if(i===6){st='s3';fn='#11 — tensión característica, evita el choque de la 11 natural con la 3ª mayor';cat='char';}
+else if(i===8){st='s4';fn='b13 — tensión oscura, típica de dominantes alterados';cat='tension';}
+else if(i===9){st='s3';fn='13 — color brillante, buena sustituta de la 6ª';cat='ext';}
 else{st='s3';fn=INT_NAME[i]+' — nota de escala';cat='ext';}
 }else{
-st='s6';fn=INT_NAME[i]+' — cromática';cat='chrom';
+st='s6';fn=INT_NAME[i]+' — cromática, fuera de la escala sugerida';cat='chrom';
 }
 
 res.push({idx:ni,name:noteName(ni,ch.uf),iv:i,rom:rom||'—',st:st,fn:fn,cat:cat,inC:inC,inS:inS});
@@ -688,6 +697,23 @@ analysis.key=manualKey||detectKey(chords);
 analysis.keyIsManual=!!manualKey;
 analysis.romans=chords.map(function(ch){return chordRoman(ch,analysis.key.root)});
 
+// Flag secondary dominants (V7/x) that are not the main diatonic V of the key
+for(var sd=0;sd<chords.length-1;sd++){
+var chSD=chords[sd];
+var relSD=(chSD.root-analysis.key.root+12)%12;
+var isMainV=(relSD===7);
+if(!isMainV&&qualGroup(chSD.cq)==='dom'){
+var intervalToNext=(chords[sd+1].root-chSD.root+12)%12;
+if(intervalToNext===5){
+var relTarget=(chords[sd+1].root-analysis.key.root+12)%12;
+var baseTarget=ROMAN_BASE[relTarget];
+var gTarget=qualGroup(chords[sd+1].cq);
+var targetLabel=(gTarget==='min'||gTarget==='dim')?baseTarget.toLowerCase():baseTarget;
+analysis.romans[sd]+='/'+targetLabel;
+}
+}
+}
+
 // Detect roman numeral functions
 analysis.functions=detectFunctions(chords);
 
@@ -752,7 +778,7 @@ func='Suspendido';
 if(i<chords.length-1){
 var nextRoot=chords[i+1].root;
 var intervalToNext=(nextRoot-ch.root+12)%12;
-if(intervalToNext===7&&(q.indexOf('dom')>-1||q==='alt')){
+if(intervalToNext===5&&(q.indexOf('dom')>-1||q==='alt')){
 func+=' → V/'+getSimpleRootName(nextRoot,chords[i+1]);
 }
 }
@@ -786,19 +812,19 @@ var lastQ=last.cq;
 var prevQ=prev.cq;
 
 // V -> I (Authentic)
-if(interval===7&&(prevQ.indexOf('dom')>-1||prevQ==='alt')&&(lastQ.indexOf('maj')>-1)){
+if(interval===5&&(prevQ.indexOf('dom')>-1||prevQ==='alt')&&(lastQ.indexOf('maj')>-1)){
 cadences.push({type:'Cadencia Auténtica (V→I)',desc:'Resolución dominante a tónica. Fuerte cierre.'});
 }
 // V -> i in minor
-if(interval===7&&(prevQ.indexOf('dom')>-1||prevQ==='alt')&&(lastQ.indexOf('min')>-1)){
+if(interval===5&&(prevQ.indexOf('dom')>-1||prevQ==='alt')&&(lastQ.indexOf('min')>-1)){
 cadences.push({type:'Cadencia Auténtica en menor (V→i)',desc:'Dominante resolviendo a tónica menor.'});
 }
 // ii -> V
-if(interval===7&&(prevQ==='min7'||prevQ==='m7b5')&&(lastQ.indexOf('dom')>-1)){
+if(interval===5&&(prevQ==='min7'||prevQ==='m7b5')&&(lastQ.indexOf('dom')>-1)){
 cadences.push({type:'ii → V',desc:'Preparación de dominante. Movimiento fundamental del jazz.'});
 }
 // IV -> I (Plagal)
-if(interval===5&&(prevQ.indexOf('maj')>-1)&&(lastQ.indexOf('maj')>-1)){
+if(interval===7&&(prevQ.indexOf('maj')>-1)&&(lastQ.indexOf('maj')>-1)){
 cadences.push({type:'Cadencia Plagal (IV→I)',desc:'Resolución subdominante. Sonido "Amén".'});
 }
 // V -> vi (Deceptive)
@@ -813,7 +839,7 @@ for(var i=0;i<len-2;i++){
 var c1=chords[i],c2=chords[i+1],c3=chords[i+2];
 var int12=(c2.root-c1.root+12)%12;
 var int23=(c3.root-c2.root+12)%12;
-if(int12===7&&int23===7){
+if(int12===5&&int23===5){
 var q1=c1.cq,q2=c2.cq,q3=c3.cq;
 if((q1==='min7'||q1==='m7b5')&&(q2.indexOf('dom')>-1||q2==='alt')&&(q3.indexOf('maj')>-1||q3.indexOf('min')>-1)){
 cadences.push({type:'ii-V-I detectado',desc:'Progresión fundamental del jazz: preparación → tensión → resolución.'});
@@ -843,7 +869,7 @@ return'other';
 }
 
 function detectKey(chords){
-var best=-999,bestKey=null;
+var scores=[];
 for(var root=0;root<12;root++){
 ['major','minor'].forEach(function(mode){
 var exp=mode==='major'?MAJOR_EXPECTED:MINOR_EXPECTED;
@@ -859,10 +885,20 @@ else score+=0.8;
 score-=0.4;
 }
 });
-if(score>best){best=score;bestKey={root:root,mode:mode};}
+scores.push({root:root,mode:mode,score:score});
 });
 }
-return bestKey;
+scores.sort(function(a,b){return b.score-a.score});
+var best=scores[0];
+// Look for a genuinely different alternate (different root or mode) close in score
+var alt=null;
+for(var s=1;s<scores.length;s++){
+if(scores[s].root!==best.root||scores[s].mode!==best.mode){
+if(best.score-scores[s].score<=1.5&&scores[s].score>0)alt=scores[s];
+break;
+}
+}
+return{root:best.root,mode:best.mode,score:best.score,alt:alt};
 }
 
 function parseKeyInput(str){
@@ -945,7 +981,11 @@ var chords=analysis.chords;
 
 // Key badge
 if(analysis.key){
-h+='<div class="key-badge">🔑 Tonalidad '+(analysis.keyIsManual?'(manual)':'(detectada)')+': <span class="kv">'+keyName(analysis.key)+'</span></div>';
+h+='<div class="key-badge">🔑 Tonalidad más probable '+(analysis.keyIsManual?'(manual)':'(detectada)')+': <span class="kv">'+keyName(analysis.key)+'</span>';
+if(!analysis.keyIsManual&&analysis.key.alt){
+h+=' <span style="color:var(--t3);font-weight:400">— también compatible con <span class="kv" style="font-weight:700">'+keyName(analysis.key.alt)+'</span> (ambigüedad tonal)</span>';
+}
+h+='</div>';
 }
 
 // Chord flow with roman numerals
