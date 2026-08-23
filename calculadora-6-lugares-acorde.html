@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de los 6 Lugares del Acorde — by Rubén Sbarsky (2026)</title>
+<style>
+:root{
+  --bg:#05070d; --bg2:#0a0f1c; --card:#0f1526; --card2:#111a30; --border:#1e2a45;
+  --accent:#00e5ff; --accent2:#7c5cff; --green:#22d38f; --amber:#f7b733; --red:#ff5470;
+  --text:#eaf0ff; --muted:#8ea0c2; --dim:#546281;
+  --radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(124,92,255,.18), transparent 60%),
+    radial-gradient(1000px 700px at 110% 10%, rgba(0,229,255,.12), transparent 60%),
+    var(--bg);
+  color:var(--text); font-family:'Segoe UI',system-ui,-apple-system,sans-serif; line-height:1.6;
+  min-height:100vh; padding-bottom:60px;
+}
+::selection{background:rgba(0,229,255,.28)}
+.wrap{max-width:1180px;margin:0 auto;padding:36px 20px 10px}
+
+/* header */
+header{display:flex;flex-direction:column;gap:10px;margin-bottom:34px}
+.eyebrow{display:inline-flex;align-self:flex-start;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:2px;color:var(--accent);
+  border:1px solid rgba(0,229,255,.4);background:rgba(0,229,255,.07);padding:7px 14px;border-radius:999px;text-transform:uppercase}
+h1{font-size:clamp(26px,4.2vw,42px);font-weight:800;line-height:1.15;
+  background:linear-gradient(100deg,#fff 30%,var(--accent) 65%,var(--accent2) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+h1 .sub{display:block;font-size:.42em;font-weight:700;color:var(--muted);
+  -webkit-text-fill-color:var(--muted);margin-top:6px;letter-spacing:.5px}
+.lead{color:var(--muted);max-width:760px;font-size:15px;margin-top:4px}
+
+/* generic section */
+section{margin-bottom:38px}
+.sec-title{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.sec-title .num{width:34px;height:34px;border-radius:10px;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.4);
+  color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex:0 0 auto}
+.sec-title h2{font-size:19px;font-weight:800}
+.sec-title p{font-size:13px;color:var(--dim)}
+
+.panel{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:var(--radius);
+  padding:22px;box-shadow:0 10px 34px rgba(0,0,0,.35)}
+
+/* root selector */
+.root-row{display:flex;flex-wrap:wrap;gap:8px}
+.root-btn{width:56px;height:56px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.02);
+  color:var(--text);font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.root-btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.root-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#04101c;
+  box-shadow:0 6px 20px rgba(0,229,255,.35);transform:translateY(-2px)}
+.root-display{margin-top:16px;font-size:14px;color:var(--muted)}
+.root-display b{color:var(--accent);font-size:20px}
+
+/* movement cards */
+.mov-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+@media(max-width:900px){.mov-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.mov-grid{grid-template-columns:1fr}}
+.mov-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;
+  transition:all .18s;position:relative;overflow:hidden}
+.mov-card:hover{border-color:var(--accent);transform:translateY(-3px)}
+.mov-card.active{border-color:var(--accent);background:rgba(0,229,255,.06);box-shadow:0 8px 24px rgba(0,229,255,.15)}
+.mov-card.active.tri{border-color:var(--red);background:rgba(255,84,112,.07);box-shadow:0 8px 24px rgba(255,84,112,.18)}
+.mov-card .mc-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.mov-num{width:36px;height:36px;border-radius:10px;background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.4);
+  color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800}
+.mov-card.tri .mov-num{background:rgba(255,84,112,.14);border-color:rgba(255,84,112,.5);color:var(--red)}
+.mc-title{font-size:13.5px;font-weight:700}
+.mc-sub{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.dest-row{display:flex;gap:8px}
+.dest{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:9px;padding:9px 10px;text-align:center}
+.dest .dd{font-size:10px;letter-spacing:1.5px;color:var(--dim);display:block;margin-bottom:2px}
+.dest .dn{font-size:16px;font-weight:800;color:var(--accent)}
+.dest.down .dn{color:var(--green)}
+.dest.tri .dn{color:var(--red)}
+.mc-note{margin-top:9px;font-size:11.5px;color:var(--muted)}
+
+/* visuals */
+.vis-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;margin-top:18px}
+@media(max-width:860px){.vis-grid{grid-template-columns:1fr}}
+.vis-panel{background:rgba(255,255,255,.015);border:1px solid var(--border);border-radius:14px;padding:16px}
+.vis-panel h4{font-size:11px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+.vis-panel svg{width:100%;height:auto;display:block}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:4px;display:inline-block}
+.dot.root{background:#fff}
+.dot.up{background:var(--accent)}
+.dot.down{background:var(--green)}
+.dot.tri{background:var(--red)}
+
+/* piano */
+.pk-white{fill:#e6ecfb;stroke:#04101c;stroke-width:1.4;transition:fill .18s}
+.pk-black{fill:#0c1220;stroke:#3a4a70;stroke-width:1.2;transition:fill .18s}
+.pk-white.root{fill:#fff;stroke:var(--accent);stroke-width:2.4}
+.pk-black.root{fill:#334; stroke:#fff;stroke-width:2}
+.pk-white.up,.pk-black.up{fill:var(--accent)}
+.pk-white.down,.pk-black.down{fill:var(--green)}
+.pk-white.tri,.pk-black.tri{fill:var(--red)}
+.pk-lab{font-size:10px;font-weight:700;fill:#56607e;text-anchor:middle}
+
+/* wheel */
+.w-node{fill:#0c1220;stroke:#33436b;stroke-width:2;transition:all .18s}
+.w-node.root{fill:#fff;stroke:var(--accent);stroke-width:3}
+.w-node.up{fill:var(--accent);stroke:var(--accent)}
+.w-node.down{fill:var(--green);stroke:var(--green)}
+.w-node.tri{fill:var(--red);stroke:var(--red)}
+.w-txt{font-size:12px;font-weight:800;fill:var(--muted);text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+.w-node.root + .w-txt, .w-node.up + .w-txt, .w-node.down + .w-txt, .w-node.tri + .w-txt{fill:#04101c}
+.w-axis{stroke:var(--dim);stroke-opacity:.35;stroke-dasharray:3 6}
+.w-link{stroke:var(--amber);stroke-width:2;stroke-dasharray:2 5;opacity:.85}
+
+/* interval calculator */
+.calc-row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;font-weight:700}
+select{background:rgba(0,0,0,.3);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:15px;
+  padding:11px 14px;border-radius:10px;min-width:160px;cursor:pointer}
+select:focus{outline:none;border-color:var(--accent)}
+.arrow{font-size:22px;color:var(--dim);padding-bottom:10px}
+.result-box{margin-top:20px;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:14px;padding:20px}
+.res-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:700px){.res-grid{grid-template-columns:repeat(2,1fr)}}
+.res-item{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.res-item .rl{font-size:10px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;display:block;margin-bottom:4px}
+.res-item .rv{font-size:19px;font-weight:800;color:var(--accent)}
+.res-expl{padding:14px 16px;border-radius:10px;border:1px solid rgba(0,229,255,.3);background:rgba(0,229,255,.05);font-size:14px}
+.res-expl.tri{border-color:rgba(255,84,112,.4);background:rgba(255,84,112,.07)}
+.res-expl.same{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.03)}
+
+/* table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;margin-top:16px}
+table{width:100%;border-collapse:collapse;min-width:640px;font-size:13.5px}
+th{background:#0c1425;color:var(--accent);text-align:left;padding:11px 13px;font-size:11px;letter-spacing:1.2px;
+  text-transform:uppercase;border-bottom:2px solid var(--border)}
+td{padding:10px 13px;border-bottom:1px solid rgba(30,42,69,.6);color:var(--text)}
+tr:hover td{background:rgba(0,229,255,.04)}
+tr.tri-row td{background:rgba(255,84,112,.06)}
+.pair-tag{font-size:11px;color:var(--dim)}
+
+/* footer / credits */
+footer{max-width:1180px;margin:50px auto 0;padding:26px 20px;border-top:1px solid var(--border);text-align:center}
+.credit-card{display:inline-flex;flex-direction:column;gap:4px;background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:22px 34px}
+.credit-card .c-name{font-size:20px;font-weight:800;color:var(--accent)}
+.credit-card .c-role{font-size:11px;letter-spacing:2px;color:var(--dim);text-transform:uppercase}
+.credit-card .c-meta{font-size:12.5px;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">🎼 Teoría Musical · Herramienta Interactiva</span>
+  <h1>Calculadora de los 6 Lugares del Acorde
+    <span class="sub">by Rubén Sbarsky (2026)</span>
+  </h1>
+  <p class="lead">Calcula, para cualquier raíz, los seis movimientos fundamentales de la octava simétrica: distancia en semitonos, destino ↑ arriba, destino ↓ abajo, el tritono como comodín y el grado correspondiente (I–VII) en notación americana.</p>
+</header>
+
+<!-- 1. RAÍZ -->
+<section>
+  <div class="sec-title"><div class="num">1</div><div><h2>Elige la nota raíz — C(I)</h2><p>Todo se recalcula automáticamente al cambiar la raíz.</p></div></div>
+  <div class="panel">
+    <div class="root-row" id="rootRow"></div>
+    <div class="root-display">Raíz actual: <b id="rootLabel">C</b> &nbsp;·&nbsp; grado <b id="rootDeg">I</b></div>
+  </div>
+</section>
+
+<!-- 2. LOS 6 MOVIMIENTOS -->
+<section>
+  <div class="sec-title"><div class="num">2</div><div><h2>Los 6 movimientos fundamentales de raíz</h2><p>Haz clic en una tarjeta para verla resaltada en el piano y la rueda.</p></div></div>
+  <div class="panel">
+    <div class="mov-grid" id="movGrid"></div>
+
+    <div class="vis-grid">
+      <div class="vis-panel">
+        <h4>Piano — teclado cromático</h4>
+        <svg id="pianoSvg" viewBox="0 0 400 210"></svg>
+      </div>
+      <div class="vis-panel">
+        <h4>Rueda del espejo — raíz en el eje</h4>
+        <svg id="wheelSvg" viewBox="0 0 300 300"></svg>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i class="dot root"></i> Raíz</span>
+      <span><i class="dot up"></i> Destino ↑ arriba</span>
+      <span><i class="dot down"></i> Destino ↓ abajo</span>
+      <span><i class="dot tri"></i> Tritono (comodín)</span>
+    </div>
+  </div>
+</section>
+
+<!-- 3. CALCULADORA DE INTERVALO -->
+<section>
+  <div class="sec-title"><div class="num">3</div><div><h2>Calculadora de intervalo entre dos notas</h2><p>Elige un origen y un destino cualquiera para saber a qué movimiento y grado corresponden.</p></div></div>
+  <div class="panel">
+    <div class="calc-row">
+      <div class="field">
+        <label>Nota origen</label>
+        <select id="selOrigin"></select>
+      </div>
+      <div class="arrow">→</div>
+      <div class="field">
+        <label>Nota destino</label>
+        <select id="selTarget"></select>
+      </div>
+    </div>
+
+    <div class="result-box">
+      <div class="res-grid">
+        <div class="res-item"><span class="rl">Semitonos ↑ ascendente</span><span class="rv" id="rAsc">–</span></div>
+        <div class="res-item"><span class="rl">Semitonos ↓ descendente</span><span class="rv" id="rDesc">–</span></div>
+        <div class="res-item"><span class="rl">Grado</span><span class="rv" id="rDeg">–</span></div>
+        <div class="res-item"><span class="rl">Movimiento fundamental</span><span class="rv" id="rMov">–</span></div>
+      </div>
+      <div class="res-expl" id="rExpl">–</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. TABLA COMPLETA -->
+<section>
+  <div class="sec-title"><div class="num">4</div><div><h2>Tabla del espejo completo (0–11 semitonos)</h2><p>Desde la raíz actual. Los movimientos 7–11 son el reflejo invertido de los movimientos 5–1.</p></div></div>
+  <div class="panel">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Semitonos</th><th>Nota</th><th>Grado</th><th>Movimiento fundamental equivalente</th></tr></thead>
+        <tbody id="fullTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <div class="credit-card">
+    <span class="c-role">Concepto y teoría</span>
+    <span class="c-name">Rubén Sbarsky</span>
+    <span class="c-meta">Calculadora de los 6 Lugares del Acorde · by Rubén Sbarsky (2026)</span>
+    <span class="c-meta">Generado el 23/08/2026 · 10:07:51</span>
+  </div>
+</footer>
+
+<script>
+/* ===================== datos base ===================== */
+var CHROM   = ["C","Db","D","Eb","E","F","F#","G","Ab","A","Bb","B"];
+var DEGREES = ["I","♭II","II","♭III","III","IV","♯IV","V","♭VI","VI","♭VII","VII"];
+
+function mod(n,m){ return ((n % m) + m) % m; }
+function noteAt(rootIdx, offset){ return CHROM[mod(rootIdx + offset, 12)]; }
+
+var state = { rootIdx: 0, selMove: 1 };
+
+/* ===================== 1. selector de raíz ===================== */
+function buildRootRow(){
+  var row = document.getElementById("rootRow");
+  row.innerHTML = "";
+  CHROM.forEach(function(note, i){
+    var b = document.createElement("button");
+    b.className = "root-btn" + (i === state.rootIdx ? " active" : "");
+    b.textContent = note;
+    b.setAttribute("aria-label", "Raíz " + note);
+    b.addEventListener("click", function(){ state.rootIdx = i; renderAll(); });
+    row.appendChild(b);
+  });
+}
+
+/* ===================== 2. tarjetas de movimiento ===================== */
+function buildMovementCards(){
+  var grid = document.getElementById("movGrid");
+  grid.innerHTML = "";
+  for(var m = 1; m <= 6; m++){
+    var upNote = noteAt(state.rootIdx, m);
+    var upDeg  = DEGREES[m];
+    var downNote, downDeg, isTri = (m === 6);
+    if(isTri){ downNote = upNote; downDeg = upDeg; }
+    else { downNote = noteAt(state.rootIdx, -m); downDeg = DEGREES[mod(12 - m, 12)]; }
+
+    var card = document.createElement("div");
+    card.className = "mov-card" + (isTri ? " tri" : "") + (m === state.selMove ? " active" : "");
+    card.setAttribute("data-m", m);
+
+    var head = '<div class="mc-head"><div class="mov-num">' + m + '</div><div>' +
+      '<div class="mc-title">Movimiento ' + m + (isTri ? " · TRITONO" : "") + '</div>' +
+      '<div class="mc-sub">' + m + " semitono" + (m > 1 ? "s" : "") + '</div></div></div>';
+
+    var body;
+    if(isTri){
+      body = '<div class="dest-row"><div class="dest tri"><span class="dd">↑↓ AMBAS DIRECCIONES</span>' +
+        '<span class="dn">' + upNote + '(' + upDeg + ')</span></div></div>' +
+        '<div class="mc-note">⚡ Comodín: mitad exacta de la octava. Subir o bajar 6 semitonos lleva a la misma nota, en distinta octava.</div>';
+    } else {
+      body = '<div class="dest-row">' +
+        '<div class="dest up"><span class="dd">↑ ARRIBA</span><span class="dn">' + upNote + '(' + upDeg + ')</span></div>' +
+        '<div class="dest down"><span class="dd">↓ ABAJO</span><span class="dn">' + downNote + '(' + downDeg + ')</span></div>' +
+        '</div><div class="mc-note">👥 Gemelos no idénticos: misma distancia, direcciones opuestas.</div>';
+    }
+    card.innerHTML = head + body;
+    card.addEventListener("click", function(){
+      state.selMove = parseInt(this.getAttribute("data-m"), 10);
+      renderAll();
+    });
+    grid.appendChild(card);
+  }
+}
+
+/* ===================== piano (SVG estático + clases dinámicas) ===================== */
+var WHITE = [{n:"C",x:0},{n:"D",x:56},{n:"E",x:112},{n:"F",x:168},{n:"G",x:224},{n:"A",x:280},{n:"B",x:336}];
+var BLACK = [{n:"Db",x:38},{n:"Eb",x:96},{n:"F#",x:210},{n:"Ab",x:266},{n:"Bb",x:322}];
+var WW = 54, WH = 170, BW = 32, BH = 105;
+
+function buildPiano(){
+  var svg = document.getElementById("pianoSvg");
+  var html = "";
+  WHITE.forEach(function(k){
+    html += '<rect class="pk-white" data-note="' + k.n + '" x="' + (k.x+2) + '" y="4" width="' + WW + '" height="' + WH + '" rx="6"></rect>';
+    html += '<text class="pk-lab" x="' + (k.x+2+WW/2) + '" y="' + (WH-10) + '">' + k.n + '</text>';
+  });
+  BLACK.forEach(function(k){
+    html += '<rect class="pk-black" data-note="' + k.n + '" x="' + (k.x+2) + '" y="4" width="' + BW + '" height="' + BH + '" rx="5"></rect>';
+  });
+  svg.innerHTML = html;
+}
+
+/* ===================== rueda del espejo ===================== */
+function buildWheel(){
+  var svg = document.getElementById("wheelSvg");
+  var cx=150, cy=150, R=112, NR=22;
+  var html = '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#1e2a45" stroke-width="1.5"></circle>';
+  html += '<line class="w-axis" x1="'+cx+'" y1="'+(cy-R-14)+'" x2="'+cx+'" y2="'+(cy+R+14)+'"></line>';
+  html += '<g id="wheelLink"></g>';
+  for(var o=0; o<12; o++){
+    var ang = (-90 + o*30) * Math.PI/180;
+    var x = cx + R*Math.cos(ang), y = cy + R*Math.sin(ang);
+    html += '<circle class="w-node" data-off="'+o+'" cx="'+x+'" cy="'+y+'" r="'+NR+'"></circle>';
+    html += '<text class="w-txt" data-off-t="'+o+'" x="'+x+'" y="'+(y+1)+'">?</text>';
+  }
+  svg.innerHTML = html;
+}
+
+/* ===================== render de highlights (piano + rueda) ===================== */
+function renderVisualHighlights(){
+  var rootNote = CHROM[state.rootIdx];
+  var m = state.selMove;
+  var upNote = noteAt(state.rootIdx, m);
+  var downNote = (m === 6) ? upNote : noteAt(state.rootIdx, -m);
+
+  document.querySelectorAll("#pianoSvg [data-note]").forEach(function(el){
+    el.classList.remove("root","up","down","tri");
+    var note = el.getAttribute("data-note");
+    if(note === rootNote) el.classList.add("root");
+    if(m === 6){ if(note === upNote) el.classList.add("tri"); }
+    else {
+      if(note === upNote) el.classList.add("up");
+      if(note === downNote) el.classList.add("down");
+    }
+  });
+
+  document.querySelectorAll("#wheelSvg .w-node").forEach(function(el){
+    el.classList.remove("root","up","down","tri");
+    var off = parseInt(el.getAttribute("data-off"),10);
+    if(off === 0) el.classList.add("root");
+    if(m === 6){ if(off === 6) el.classList.add("tri"); }
+    else {
+      if(off === m) el.classList.add("up");
+      if(off === mod(12-m,12)) el.classList.add("down");
+    }
+  });
+  document.querySelectorAll("#wheelSvg .w-txt").forEach(function(el){
+    var off = parseInt(el.getAttribute("data-off-t"),10);
+    el.textContent = noteAt(state.rootIdx, off);
+  });
+
+  var link = document.getElementById("wheelLink");
+  if(m === 6){ link.innerHTML=""; }
+  else {
+    var cx=150, cy=150, R=112;
+    function pos(o){ var ang=(-90+o*30)*Math.PI/180; return [cx+R*Math.cos(ang), cy+R*Math.sin(ang)]; }
+    var p1 = pos(m), p2 = pos(mod(12-m,12));
+    link.innerHTML = '<line class="w-link" x1="'+p1[0]+'" y1="'+p1[1]+'" x2="'+p2[0]+'" y2="'+p2[1]+'"></line>';
+  }
+}
+
+/* ===================== 3. calculadora de intervalo ===================== */
+function buildIntervalSelectors(){
+  var so = document.getElementById("selOrigin");
+  var st = document.getElementById("selTarget");
+  so.innerHTML = ""; st.innerHTML = "";
+  CHROM.forEach(function(n,i){
+    var o1 = document.createElement("option"); o1.value=i; o1.textContent=n; so.appendChild(o1);
+    var o2 = document.createElement("option"); o2.value=i; o2.textContent=n; st.appendChild(o2);
+  });
+  so.value = state.rootIdx;
+  st.value = mod(state.rootIdx + 5, 12);
+  so.addEventListener("change", renderInterval);
+  st.addEventListener("change", renderInterval);
+}
+
+function renderInterval(){
+  var so = document.getElementById("selOrigin");
+  var st = document.getElementById("selTarget");
+  var oi = parseInt(so.value,10), ti = parseInt(st.value,10);
+  var n = mod(ti - oi, 12);
+  var desc = mod(12 - n, 12);
+  var deg = DEGREES[n];
+
+  document.getElementById("rAsc").textContent = n + " st";
+  document.getElementById("rDesc").textContent = (n===0?0:desc) + " st";
+  document.getElementById("rDeg").textContent = deg;
+
+  var box = document.getElementById("rExpl");
+  var movLab, movText, cls="";
+  if(n === 0){
+    movLab = "0 (misma nota)";
+    movText = CHROM[ti] + " es la propia raíz " + CHROM[oi] + " — no hay movimiento.";
+    cls = "same";
+  } else if(n === 6){
+    movLab = "6 · TRITONO";
+    movText = "⚡ " + CHROM[ti] + "(" + deg + ") es el comodín del espejo: está a 6 semitonos de " + CHROM[oi] + " tanto subiendo como bajando, siempre la misma nota en octavas distintas.";
+    cls = "tri";
+  } else if(n < 6){
+    movLab = "Movimiento " + n + " · ↑ arriba";
+    movText = "👥 " + CHROM[ti] + "(" + deg + ") es el destino ↑ ARRIBA del Movimiento " + n + " desde " + CHROM[oi] + " (" + n + " semitono" + (n>1?"s":"") + ").";
+  } else {
+    var m = 12 - n;
+    movLab = "Movimiento " + m + " · ↓ abajo (reflejo)";
+    movText = "🪞 " + CHROM[ti] + "(" + deg + ") está a " + n + " semitonos ascendentes, lo que equivale al destino ↓ ABAJO del Movimiento " + m + " (" + m + " semitono" + (m>1?"s":"") + "): el mismo movimiento, con las posiciones invertidas.";
+  }
+  document.getElementById("rMov").textContent = movLab.split(" · ")[0];
+  box.className = "res-expl" + (cls ? " " + cls : "");
+  box.textContent = movText;
+}
+
+/* ===================== 4. tabla completa ===================== */
+function buildFullTable(){
+  var tbody = document.getElementById("fullTable");
+  var rows = "";
+  for(var n=0; n<12; n++){
+    var note = noteAt(state.rootIdx, n);
+    var deg = DEGREES[n];
+    var fundamental;
+    if(n === 0) fundamental = "0 — raíz";
+    else if(n === 6) fundamental = "6 — TRITONO (comodín)";
+    else if(n < 6) fundamental = "Movimiento " + n + " (↑ arriba)";
+    else fundamental = "Movimiento " + (12-n) + " (↓ abajo, reflejo de " + n + " st)";
+    rows += '<tr class="' + (n===6?"tri-row":"") + '"><td><b>' + n + ' st</b></td><td>' + note + '</td><td>' + deg + '</td><td class="pair-tag">' + fundamental + '</td></tr>';
+  }
+  tbody.innerHTML = rows;
+}
+
+/* ===================== render global ===================== */
+function renderAll(){
+  document.getElementById("rootLabel").textContent = CHROM[state.rootIdx];
+  document.getElementById("rootDeg").textContent = "I";
+  buildRootRow();
+  buildMovementCards();
+  renderVisualHighlights();
+  buildFullTable();
+  renderInterval();
+}
+
+/* ===================== init ===================== */
+(function init(){
+  buildPiano();
+  buildWheel();
+  buildIntervalSelectors();
+  renderAll();
+})();
+</script>
+</body>
+</html>
