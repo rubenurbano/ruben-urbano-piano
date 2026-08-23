@@ -93,14 +93,17 @@ header p{color:var(--t2)}
 .ctxc.curr{background:rgba(245,158,11,.2);color:var(--gold);border:1px solid var(--gold)}
 .ctxc.next{background:rgba(100,116,139,.2);color:var(--t2)}
 .ctxa{color:var(--t3);font-size:1.3rem}
-.piano{display:flex;justify-content:center;position:relative;height:120px;margin:1rem 0;background:var(--bg);border-radius:8px;padding:1rem;overflow-x:auto}
-.pk{width:36px;height:90px;border:1px solid #333;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-size:.6rem;font-weight:600;position:relative;flex-shrink:0}
-.pk.w{background:#e2e8f0;color:#1e293b;border-radius:0 0 4px 4px}
+.piano{display:flex;justify-content:center;position:relative;height:170px;margin:1rem 0;background:var(--bg);border-radius:8px;padding:1rem;overflow-x:auto}
+.piano-inner{position:relative;height:140px;flex-shrink:0}
+.pk{position:absolute;top:0;display:flex;align-items:flex-end;justify-content:center;font-weight:700;box-sizing:border-box}
+.pk.w{height:140px;background:#e2e8f0;color:#1e293b;border:1px solid #94a3b8;border-radius:0 0 5px 5px;padding-bottom:8px;font-size:.68rem;z-index:1}
+.pk.b{height:88px;background:#1a1a1a;color:#fff;border:1px solid #000;border-radius:0 0 4px 4px;padding-bottom:6px;font-size:.6rem;z-index:2}
 .pk.ct{background:var(--green)!important;color:#000!important}
 .pk.ex{background:var(--gold)!important;color:#000!important}
 .pk.tn{background:var(--orange)!important;color:#000!important}
 .pk.av{background:var(--red)!important;color:#fff!important}
 .pk.cr{background:var(--purple)!important;color:#fff!important}
+.piano-note{color:var(--t3);font-size:.75rem;margin-top:.4rem;text-align:center}
 .legend{display:flex;gap:1rem;flex-wrap:wrap;padding:.6rem;background:var(--bg);border-radius:8px;margin:.8rem 0;font-size:.75rem;color:var(--t2)}
 .legend i{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:.3rem}
 .warn{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:.9rem;color:var(--gold);font-size:.85rem;margin:.8rem 0}
@@ -1140,9 +1143,10 @@ h+='</div></div>';
 }
 });
 
-h+='<div class="sec"><div class="sec-t">Visualización</div>';
+h+='<div class="sec"><div class="sec-t">Visualización — Teclado Cromático</div>';
 h+='<div class="legend"><span><i style="background:var(--green)"></i>Chord tones</span><span><i style="background:var(--gold)"></i>Extensiones</span><span><i style="background:var(--orange)"></i>Tensiones</span><span><i style="background:var(--red)"></i>Avoid</span><span><i style="background:var(--purple)"></i>Cromáticas</span></div>';
-h+='<div class="piano" id="pianoBox"></div></div>';
+h+='<div class="piano" id="pianoBox"></div>';
+h+='<div class="piano-note">Teclado real de 12 notas (blancas y negras). Las teclas sin color no forman parte del acorde ni de la escala sugerida.</div></div>';
 h+='</div>';
 
 // TAB 4
@@ -1350,24 +1354,35 @@ return h;
 function renderPiano(ch,notes){
 var box=document.getElementById('pianoBox');
 if(!box)return;
-var h='';
-var whites=[0,2,4,5,7,9,11];
-var start=ch.root;
-for(var oct=0;oct<2;oct++){
-for(var w=0;w<7;w++){
-var ni=(start+whites[w]+oct*12)%12;
+var WHITE_W=42,BLACK_W=26,OCTAVES=2;
+var whiteSemis=[0,2,4,5,7,9,11];
+var blackMap=[{s:1,after:0},{s:3,after:1},{s:6,after:3},{s:8,after:4},{s:10,after:5}];
+function classify2(ni){
 var nd=notes.find(function(n){return n.idx===ni});
-var cls='w';
-if(nd){
-if(nd.inC)cls='w ct';
-else if(nd.cat==='ext'||nd.cat==='char')cls='w ex';
-else if(nd.cat==='avoid')cls='w av';
-else if(nd.cat==='tension')cls='w tn';
-else if(nd.cat==='chrom')cls='w cr';
+if(!nd)return{cls:'',label:noteName(ni,ch.uf)};
+var cls='';
+if(nd.inC)cls='ct';
+else if(nd.cat==='ext'||nd.cat==='char')cls='ex';
+else if(nd.cat==='avoid')cls='av';
+else if(nd.cat==='tension')cls='tn';
+else if(nd.cat==='chrom')cls='cr';
+return{cls:cls,label:nd.name};
 }
-h+='<div class="pk '+cls+'">'+noteName(ni,ch.uf)+'</div>';
+var totalW=WHITE_W*7*OCTAVES;
+var h='<div class="piano-inner" style="width:'+totalW+'px">';
+for(var oct=0;oct<OCTAVES;oct++){
+var baseX=oct*7*WHITE_W;
+whiteSemis.forEach(function(s,i){
+var info=classify2(s);
+h+='<div class="pk w '+info.cls+'" style="left:'+(baseX+i*WHITE_W)+'px;width:'+WHITE_W+'px">'+info.label+'</div>';
+});
+blackMap.forEach(function(b){
+var info=classify2(b.s);
+var left=baseX+(b.after+1)*WHITE_W-BLACK_W/2;
+h+='<div class="pk b '+info.cls+'" style="left:'+left+'px;width:'+BLACK_W+'px">'+(info.cls?info.label:'')+'</div>';
+});
 }
-}
+h+='</div>';
 box.innerHTML=h;
 }
 
