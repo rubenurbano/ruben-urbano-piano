@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Los 6 Lugares del Acorde · Calculadora Simétrica by Rubén Sbarsky (2026)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/700.css">
+<style>
+  :root{
+    --bg:#060913; --panel:rgba(255,255,255,.042); --panel2:rgba(255,255,255,.07);
+    --line:rgba(255,255,255,.09); --txt:#e9eef8; --mut:#8fa0bb;
+    --gold:#fbbf24; --up:#38bdf8; --down:#34d399; --tri:#f87171; --acc:#818cf8;
+    --disp:'Space Grotesk',sans-serif; --body:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:var(--body);min-height:100vh;overflow-x:hidden}
+  body.lock{overflow:hidden}
+  section[id],header[id],footer[id]{scroll-margin-top:84px}
+  .blob{position:fixed;border-radius:50%;filter:blur(110px);opacity:.16;pointer-events:none;z-index:0;animation:drift 22s ease-in-out infinite alternate}
+  .b1{width:520px;height:520px;background:#6366f1;top:-160px;left:-120px}
+  .b2{width:460px;height:460px;background:#0ea5e9;top:32%;right:-160px;animation-delay:-7s}
+  .b3{width:480px;height:480px;background:#f59e0b;bottom:-180px;left:26%;animation-delay:-13s}
+  @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(60px,-50px) scale(1.12)}}
+  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 22px 70px}
+
+  /* ===== BARRA SUPERIOR ===== */
+  .topNav{position:sticky;top:0;z-index:100;background:rgba(6,9,19,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+  .topNavIn{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 22px}
+  .tnBrand{display:flex;align-items:center;gap:10px;min-width:0}
+  .tnIco{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--gold),#f59e0b);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex:none}
+  .tnBrand b{font-family:var(--disp);font-size:.94rem;display:block;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tnBrand small{font-size:.62rem;color:var(--mut);letter-spacing:.06em}
+  .menuBtn{display:flex;align-items:center;gap:8px;background:linear-gradient(92deg,var(--gold),#f59e0b);color:#1a1200;border:none;font-family:var(--disp);font-weight:700;font-size:.86rem;padding:12px 18px;border-radius:12px;cursor:pointer;letter-spacing:.04em;transition:all .25s;min-height:46px;flex:none}
+  .menuBtn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(245,158,11,.6)}
+  @media(max-width:480px){.tnBrand small{display:none}.menuBtn{padding:12px 14px}}
+
+  /* ===== MENÚ OVERLAY (estilo Melodic Analyzer) ===== */
+  .overlay{position:fixed;inset:0;z-index:200;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .overlay.open{opacity:1;visibility:visible}
+  .overlayBg{position:fixed;inset:0;background:rgba(3,5,12,.8);backdrop-filter:blur(6px)}
+  .menuPanel{position:relative;width:min(860px,calc(100% - 28px));margin:5vh auto;background:#0b1020;border:1px solid var(--line);border-radius:22px;padding:20px;transform:translateY(-18px) scale(.98);transition:transform .3s ease;box-shadow:0 40px 80px -30px rgba(0,0,0,.85)}
+  .overlay.open .menuPanel{transform:none}
+  .mpHead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+  .mpHead span{font-family:var(--disp);font-weight:700;font-size:1.05rem}
+  .mpClose{width:44px;height:44px;flex:none;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:1.1rem;cursor:pointer;transition:all .2s}
+  .mpClose:hover{background:rgba(248,113,113,.18);border-color:var(--tri);color:var(--tri)}
+  .mpGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(max-width:640px){.mpGrid{grid-template-columns:1fr}}
+  .mpCard{display:flex;align-items:center;gap:12px;text-align:left;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:var(--panel);cursor:pointer;transition:all .25s;color:var(--txt);min-height:60px;font-family:var(--body)}
+  .mpCard:hover{border-color:var(--acc);transform:translateY(-2px);background:var(--panel2)}
+  .mpCard.active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 8px 24px -10px rgba(251,191,36,.5)}
+  .mpEmoji{font-size:1.45rem;width:46px;height:46px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:12px;background:rgba(255,255,255,.06)}
+  .mpCard.active .mpEmoji{background:rgba(251,191,36,.14)}
+  .mpTxt{min-width:0}
+  .mpTxt b{font-family:var(--disp);font-size:.92rem;display:block;line-height:1.25}
+  .mpTxt small{color:var(--mut);font-size:.7rem;display:block;margin-top:2px}
+  .mpFoot{margin-top:16px;text-align:center;font-size:.64rem;color:var(--mut);letter-spacing:.12em;text-transform:uppercase;font-family:var(--disp)}
+
+  /* botón volver arriba */
+  #toTop{position:fixed;right:20px;bottom:20px;z-index:150;width:50px;height:50px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold),#f59e0b);color:#1a1200;font-size:1.15rem;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(14px);transition:all .3s;box-shadow:0 10px 26px -8px rgba(245,158,11,.6)}
+  #toTop.show{opacity:1;visibility:visible;transform:none}
+  #toTop:hover{transform:translateY(-3px)}
+
+  .navFlash{animation:secFlash 1.6s ease}
+  @keyframes secFlash{0%,35%{background-color:rgba(251,191,36,.06)}100%{background-color:transparent}}
+  section.navFlash,header.navFlash,footer.navFlash{border-radius:18px}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 0 10px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-family:var(--disp);flex-wrap:wrap}
+  .topbar .dot{color:var(--acc)}
+  header.hero{text-align:center;padding:30px 0 26px}
+  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);padding:7px 16px;border-radius:999px;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);font-family:var(--disp)}
+  h1{font-family:var(--disp);font-weight:700;font-size:clamp(2.1rem,5.4vw,3.6rem);line-height:1.06;margin:18px 0 10px;letter-spacing:-.02em}
+  h1 .grad{background:linear-gradient(92deg,var(--gold),var(--up) 55%,var(--down));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .byline{font-family:var(--disp);color:var(--mut);font-size:.95rem}
+  .byline b{color:var(--gold);font-weight:600}
+  .hero p.desc{max-width:760px;margin:16px auto 0;color:var(--mut);font-size:.95rem;line-height:1.65}
+  .stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px}
+  .stat{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:12px 18px;min-width:150px;transition:transform .3s,border-color .3s}
+  .stat:hover{transform:translateY(-3px);border-color:rgba(251,191,36,.4)}
+  .stat b{display:block;font-family:var(--mono);font-size:1.35rem;color:var(--gold)}
+  .stat span{font-size:.72rem;color:var(--mut);letter-spacing:.08em;text-transform:uppercase}
+
+  section{margin-top:56px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+  .sec-num{font-family:var(--mono);font-size:.8rem;color:var(--acc);border:1px solid rgba(129,140,248,.35);padding:4px 10px;border-radius:8px;background:rgba(129,140,248,.08)}
+  .sec-head h2{font-family:var(--disp);font-size:clamp(1.25rem,2.6vw,1.7rem);font-weight:700;letter-spacing:-.01em}
+  .sec-sub{color:var(--mut);font-size:.88rem;max-width:860px;line-height:1.6;margin-bottom:20px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(12px);padding:22px}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  .roots{display:grid;grid-template-columns:repeat(12,1fr);gap:8px}
+  .rootChip{font-family:var(--mono);font-weight:700;font-size:.95rem;padding:13px 0;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--txt);cursor:pointer;transition:all .25s}
+  .rootChip small{display:block;font-size:.58rem;color:var(--mut);font-weight:500;margin-top:3px;letter-spacing:.05em}
+  .rootChip:hover{transform:translateY(-3px);border-color:var(--acc)}
+  .rootChip.on{background:linear-gradient(160deg,#fcd34d,#f59e0b);color:#1f1300;border-color:transparent;box-shadow:0 8px 26px -8px rgba(245,158,11,.6)}
+  .rootChip.on small{color:rgba(31,19,0,.65)}
+  .fChips{display:grid;grid-template-columns:repeat(12,1fr);gap:7px}
+  .fChip{font-family:var(--mono);font-weight:700;font-size:.9rem;padding:10px 0;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--txt);cursor:pointer;transition:all .22s}
+  .fChip:hover{transform:translateY(-2px);border-color:var(--acc)}
+  .fChip.on{background:linear-gradient(160deg,#a5b4fc,#6366f1);color:#101235;border-color:transparent;box-shadow:0 6px 20px -8px rgba(129,140,248,.7)}
+  @media(max-width:760px){.roots,.fChips{grid-template-columns:repeat(6,1fr)}}
+
+  .freeGrid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+  @media(max-width:920px){.freeGrid{grid-template-columns:1fr}}
+  .fLabel{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-family:var(--disp);margin:16px 0 9px}
+  .fLabel:first-child{margin-top:0}
+  .dirGroup{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .dirBtn{padding:13px 6px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--mut);cursor:pointer;font-family:var(--disp);font-weight:600;font-size:.82rem;transition:all .25s;letter-spacing:.03em}
+  .dirBtn:hover{transform:translateY(-2px)}
+  .dirBtn.on.dUp{background:rgba(56,189,248,.14);border-color:var(--up);color:var(--up)}
+  .dirBtn.on.dDown{background:rgba(52,211,153,.14);border-color:var(--down);color:var(--down)}
+  .dirBtn.on.dBoth{background:rgba(129,140,248,.14);border-color:var(--acc);color:#c7d2fe}
+  .stepper{display:flex;align-items:center;justify-content:center;gap:16px;margin:6px 0 12px}
+  .stepBtn{width:46px;height:46px;border-radius:13px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:1.3rem;font-family:var(--mono);cursor:pointer;transition:all .2s}
+  .stepBtn:hover{background:rgba(255,255,255,.14);transform:scale(1.08)}
+  .stVal{font-family:var(--mono);font-weight:700;font-size:2.3rem;color:var(--gold);min-width:86px;text-align:center;line-height:1}
+  .stVal small{display:block;font-size:.6rem;color:var(--mut);letter-spacing:.14em;margin-top:3px;font-family:var(--disp);font-weight:500}
+  .freeRes{display:flex;flex-direction:column;gap:13px}
+  .resTitle{font-family:var(--disp);font-weight:700;font-size:1.1rem;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .resTitle small{display:block;font-size:.68rem;color:var(--mut);letter-spacing:.12em;text-transform:uppercase;font-weight:500;margin-bottom:3px}
+  .destRow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .destRow.one{grid-template-columns:1fr}
+  .dest{border:1px solid var(--line);border-radius:16px;padding:14px;position:relative;transition:transform .3s}
+  .dest:hover{transform:translateY(-3px)}
+  .dest.upD{background:rgba(56,189,248,.07);border-color:rgba(56,189,248,.3)}
+  .dest.downD{background:rgba(52,211,153,.07);border-color:rgba(52,211,153,.3)}
+  .dest.midD{background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.35)}
+  .dest h4{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);font-family:var(--disp)}
+  .dest .big{font-family:var(--mono);font-size:2rem;font-weight:700;margin:6px 0 2px;line-height:1}
+  .dest.upD .big{color:var(--up)} .dest.downD .big{color:var(--down)} .dest.midD .big{color:var(--gold)}
+  .dest .deg{font-family:var(--mono);font-size:.92rem;opacity:.92}
+  .dest .lin{font-size:.7rem;color:var(--mut);margin-top:6px;font-family:var(--mono)}
+  .dest .enh{font-size:.66rem;color:var(--mut);font-style:italic}
+  .miniPlay{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--txt);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.8rem;transition:all .25s}
+  .miniPlay:hover{background:rgba(255,255,255,.16);transform:scale(1.12)}
+  .movBox{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:16px;padding:12px 16px;background:var(--panel2);flex-wrap:wrap}
+  .movBox .mv{font-family:var(--disp);font-weight:700;font-size:.98rem}
+  .movBox .mv b{color:var(--gold);font-family:var(--mono)}
+  .movBox .dist{font-family:var(--mono);font-size:.76rem;color:var(--mut)}
+  .twinHint{font-size:.76rem;color:var(--mut);border:1px dashed var(--line);border-radius:12px;padding:10px 13px;line-height:1.55}
+  .twinHint b{font-family:var(--mono)}
+  .badge{font-size:.66rem;font-family:var(--disp);letter-spacing:.1em;padding:6px 12px;border-radius:999px;border:1px solid;text-transform:uppercase;white-space:nowrap}
+  .badge.inv{color:#c7d2fe;border-color:rgba(129,140,248,.5);background:rgba(129,140,248,.1)}
+  .badge.tri{color:#fecaca;border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.1)}
+  .badge.uni{color:#fde68a;border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.1)}
+  .playMov{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;border-radius:14px;border:none;cursor:pointer;font-family:var(--disp);font-weight:700;font-size:.85rem;letter-spacing:.08em;color:#150f00;background:linear-gradient(92deg,var(--gold),#f59e0b);transition:all .25s;text-transform:uppercase}
+  .playMov:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(245,158,11,.6)}
+  input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--down),var(--gold) 50%,var(--up));outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid var(--acc);box-shadow:0 4px 16px rgba(129,140,248,.55);transition:transform .2s}
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:4px solid var(--acc);cursor:pointer}
+
+  .calcGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
+  @media(max-width:920px){.calcGrid{grid-template-columns:1fr}}
+  .wheelPanel{display:flex;flex-direction:column;align-items:center;gap:10px}
+  #wheelSvg{width:min(360px,88vw);height:auto}
+  .node circle{fill:#0e1526;stroke:#2b3a5e;stroke-width:1.5;transition:all .45s}
+  .node text{fill:#9db0d0;font-family:var(--mono);transition:all .45s}
+  .node .nn{font-size:11.5px;font-weight:700}
+  .node .nd{font-size:8.5px;opacity:.75}
+  .node.root circle{fill:url(#gGold);stroke:#fde68a;stroke-width:2}
+  .node.root text{fill:#231a00}
+  .node.up circle{fill:url(#gUp);stroke:#7dd3fc;stroke-width:2}
+  .node.up text{fill:#04202e}
+  .node.down circle{fill:url(#gDown);stroke:#6ee7b7;stroke-width:2}
+  .node.down text{fill:#03231a}
+  .node.tri circle{fill:url(#gTri);stroke:#fca5a5;stroke-width:2;animation:pulse 2s infinite}
+  .node.tri text{fill:#2d0606}
+  @keyframes pulse{0%,100%{filter:drop-shadow(0 0 0 rgba(248,113,113,0))}50%{filter:drop-shadow(0 0 9px rgba(248,113,113,.8))}}
+  #axisLine{stroke:rgba(251,191,36,.4);stroke-dasharray:4 7;stroke-width:1.2}
+  #twinLine{stroke-width:2;stroke-dasharray:6 5;opacity:.85;transition:all .45s}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:.72rem;color:var(--mut)}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+  .readout{display:flex;flex-direction:column;gap:14px;height:100%}
+  .roTop{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+  .roTitle{font-family:var(--disp);font-size:1.2rem;font-weight:700}
+  .roTitle small{display:block;font-size:.7rem;color:var(--mut);font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+  .sliderWrap{padding-top:4px}
+  .sliderLbl{display:flex;justify-content:space-between;font-size:.68rem;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;font-family:var(--disp);margin-bottom:10px;gap:8px;flex-wrap:wrap}
+  .ticks{display:flex;justify-content:space-between;margin-top:8px}
+  .tick{font-family:var(--mono);font-size:.68rem;color:var(--mut);background:none;border:none;cursor:pointer;padding:3px 5px;border-radius:6px;transition:all .2s}
+  .tick:hover{color:#fff;background:rgba(255,255,255,.08)}
+  .tick.on{color:var(--gold);font-weight:700}
+  .tick.t6{color:var(--tri)}
+
+  .pianoBox{margin-top:18px}
+  .piano{position:relative;display:flex;height:160px;border-radius:12px;overflow:hidden;user-select:none}
+  .wk{flex:1;background:linear-gradient(180deg,#f7f9fc,#dfe5ee);border:1px solid #9aa5b5;border-radius:0 0 7px 7px;position:relative;transition:background .35s}
+  .wk span{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.62rem;color:#5b6575}
+  .bk{position:absolute;top:0;height:60%;background:linear-gradient(180deg,#20242c,#0a0d13);border:1px solid #000;border-radius:0 0 6px 6px;z-index:2;transition:background .35s}
+  .k.root{background:linear-gradient(180deg,#fde68a,#f59e0b)!important}
+  .k.root span{color:#4a3000;font-weight:700}
+  .k.up{background:linear-gradient(180deg,#7dd3fc,#0284c7)!important}
+  .k.up span{color:#fff}
+  .k.down{background:linear-gradient(180deg,#6ee7b7,#059669)!important}
+  .k.down span{color:#fff}
+  .k.tri{background:linear-gradient(180deg,#fca5a5,#dc2626)!important}
+  .k.tri span{color:#fff}
+  .pianoLegend{margin-top:12px;font-size:.75rem;color:var(--mut);display:flex;gap:18px;flex-wrap:wrap}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+  .card{border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:20px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;inset:0;background:radial-gradient(400px 120px at 20% -10%,rgba(129,140,248,.14),transparent);opacity:0;transition:opacity .3s}
+  .card:hover{transform:translateY(-4px);border-color:rgba(129,140,248,.45)}
+  .card:hover::before{opacity:1}
+  .card.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 14px 40px -14px rgba(251,191,36,.4)}
+  .card.tritone{background:linear-gradient(160deg,rgba(248,113,113,.08),var(--panel))}
+  .card.tritone.on{border-color:var(--tri);box-shadow:0 0 0 1px var(--tri),0 14px 40px -14px rgba(248,113,113,.45)}
+  .cHead{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .cNum{font-family:var(--mono);font-size:1.6rem;font-weight:700;color:var(--acc);width:44px;height:44px;border:1px solid rgba(129,140,248,.4);border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(129,140,248,.08);flex:none}
+  .card.tritone .cNum{color:var(--tri);border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.08)}
+  .cHead h3{font-family:var(--disp);font-size:1rem;line-height:1.25}
+  .cHead small{display:block;color:var(--mut);font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;margin-top:2px}
+  .twinRow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+  .twin{border-radius:12px;padding:10px 12px;font-family:var(--mono)}
+  .twin b{display:block;font-size:1.15rem}
+  .twin small{font-size:.66rem;opacity:.85}
+  .twin.u{background:rgba(56,189,248,.09);border:1px solid rgba(56,189,248,.3);color:var(--up)}
+  .twin.d{background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.3);color:var(--down)}
+  .twin.solo{grid-column:1/-1;background:rgba(248,113,113,.09);border:1px solid rgba(248,113,113,.35);color:var(--tri);text-align:center}
+  .cNote{font-size:.76rem;color:var(--mut);line-height:1.55}
+  .flipBadge{position:absolute;top:14px;right:14px;font-size:.62rem;font-family:var(--disp);letter-spacing:.1em;color:#c7d2fe;border:1px solid rgba(129,140,248,.5);background:rgba(129,140,248,.12);padding:4px 9px;border-radius:99px;text-transform:uppercase}
+
+  .concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .concept{border:1px solid var(--line);border-radius:18px;padding:20px;background:var(--panel);transition:transform .3s}
+  .concept:hover{transform:translateY(-4px)}
+  .concept .ico{font-size:1.6rem}
+  .concept h3{font-family:var(--disp);margin:10px 0 6px;font-size:1rem}
+  .concept p{font-size:.82rem;color:var(--mut);line-height:1.6}
+
+  .tblWrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+  table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:640px}
+  th{font-family:var(--disp);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);text-align:left;padding:13px 16px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03)}
+  td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(255,255,255,.03)}
+  td .nn2{font-family:var(--mono);font-weight:700}
+  td .dg{font-family:var(--mono);font-size:.72rem;opacity:.75;margin-left:5px}
+  .u2{color:var(--up)} .d2{color:var(--down)} .t2{color:var(--tri)} .g2{color:var(--gold)}
+  .tag{font-size:.66rem;font-family:var(--disp);letter-spacing:.08em;padding:4px 10px;border-radius:99px;border:1px solid var(--line);color:var(--mut);text-transform:uppercase;white-space:nowrap}
+  .tag.warn{color:#fecaca;border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.08)}
+
+  footer{margin-top:70px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(160deg,rgba(129,140,248,.08),var(--panel));padding:34px;text-align:center}
+  footer .fTitle{font-family:var(--disp);font-size:1.2rem;font-weight:700}
+  footer .fTitle span{color:var(--gold)}
+  footer .fMeta{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin:14px 0;font-family:var(--mono);font-size:.8rem;color:var(--mut)}
+  footer .motto{font-style:italic;color:var(--mut);font-size:.85rem;margin-top:8px}
+  footer .edu{font-size:.7rem;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-top:14px}
+  @media(max-width:640px){.destRow{grid-template-columns:1fr}.twinRow{grid-template-columns:1fr}.dirGroup{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<!-- ===== BARRA SUPERIOR ===== -->
+<header class="topNav" id="topNav">
+  <div class="topNavIn">
+    <div class="tnBrand">
+      <span class="tnIco">🎼</span>
+      <div>
+        <b>Los 6 Lugares del Acorde</b>
+        <small>Calculadora Simétrica · by Rubén Sbarsky (2026)</small>
+      </div>
+    </div>
+    <button class="menuBtn" id="menuBtn">☰ Secciones ▾</button>
+  </div>
+</header>
+
+<!-- ===== MENÚ OVERLAY CON TARJETAS ===== -->
+<div class="overlay" id="overlay">
+  <div class="overlayBg" id="overlayBg"></div>
+  <div class="menuPanel" id="menuPanel">
+    <div class="mpHead">
+      <span>📚 Secciones de la app</span>
+      <button class="mpClose" id="mpClose" aria-label="Cerrar menú">✕</button>
+    </div>
+    <div class="mpGrid" id="mpGrid">
+      <button class="mpCard" data-target="inicio">
+        <span class="mpEmoji">🏠</span>
+        <span class="mpTxt"><b>Inicio</b><small>Panorama del sistema simétrico</small></span>
+      </button>
+      <button class="mpCard" data-target="secRaiz">
+        <span class="mpEmoji">🎯</span>
+        <span class="mpTxt"><b>01 · Raíz de partida</b><small>El centro geométrico del espejo</small></span>
+      </button>
+      <button class="mpCard" data-target="secCalc">
+        <span class="mpEmoji">🧮</span>
+        <span class="mpTxt"><b>02 · Calculadora libre</b><small>Nota + semitonos + dirección ↑ ↓ ↑↓</small></span>
+      </button>
+      <button class="mpCard" data-target="secLab">
+        <span class="mpEmoji">🎡</span>
+        <span class="mpTxt"><b>03 · Laboratorio simétrico</b><small>Rueda cromática y teclado de piano</small></span>
+      </button>
+      <button class="mpCard" data-target="secMov">
+        <span class="mpEmoji">🃏</span>
+        <span class="mpTxt"><b>04 · Los 6 movimientos</b><small>Los seis lugares donde puede ir un acorde</small></span>
+      </button>
+      <button class="mpCard" data-target="secConceptos">
+        <span class="mpEmoji">🪞</span>
+        <span class="mpTxt"><b>05 · Conceptos clave</b><small>Espejo, tritono-comodín y disfraz</small></span>
+      </button>
+      <button class="mpCard" data-target="secTablas">
+        <span class="mpEmoji">📋</span>
+        <span class="mpTxt"><b>06 · Tablas completas</b><small>Resumen 1–6 y espejo 7–11</small></span>
+      </button>
+      <button class="mpCard" data-target="creditos">
+        <span class="mpEmoji">★</span>
+        <span class="mpTxt"><b>Créditos</b><small>Autor, fecha y hora</small></span>
+      </button>
+    </div>
+    <div class="mpFoot">Los 6 lugares donde puede ir un acorde · by Rubén Sbarsky (2026)</div>
+  </div>
+</div>
+
+<!-- botón volver arriba -->
+<button id="toTop" title="Volver arriba" aria-label="Volver arriba">▲</button>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <div>♪ TUTORIAL INTERACTIVO <span class="dot">·</span> TEORÍA MUSICAL <span class="dot">·</span> ARMONÍA SIMÉTRICA</div>
+    <div>📅 23/08/2026 · 🕗 10:07:51</div>
+  </div>
+
+  <header class="hero" id="inicio">
+    <div class="pill">🎼 Calculadora de destinos armónicos</div>
+    <h1>Los 6 Lugares del Acorde<br><span class="grad">Calculadora Simétrica</span></h1>
+    <div class="byline">Una perspectiva simétrica de la octava musical · <b>by Rubén Sbarsky (2026)</b></div>
+    <p class="desc">Aunque una octava tiene doce notas, un acorde solo tiene <b style="color:var(--gold)">seis destinos fundamentales de raíz</b>. Elige cualquier raíz, usa la <b style="color:var(--acc)">calculadora libre</b> (nota + semitonos + dirección) o explora el laboratorio del espejo. Sistema americano (A–G) con grados I–VII.</p>
+    <div class="stats">
+      <div class="stat"><b>12</b><span>Notas por octava</span></div>
+      <div class="stat"><b>11 → 6</b><span>Destinos lineales → simétricos</span></div>
+      <div class="stat"><b>6 st</b><span>Tritono · eje del espejo</span></div>
+      <div class="stat"><b>×2</b><span>Direcciones por distancia</span></div>
+    </div>
+  </header>
+
+  <!-- ============ 01 RAÍZ ============ -->
+  <section class="reveal" id="secRaiz">
+    <div class="sec-head"><span class="sec-num">01</span><h2>Raíz de partida · centro del espejo</h2></div>
+    <p class="sec-sub">Elige la nota raíz global de la app. La raíz actúa como <b>centro geométrico del espejo</b>: cada distancia se mide en dos direcciones simultáneas. Afecta al laboratorio, a las tarjetas y a las tablas.</p>
+    <div class="roots" id="roots"></div>
+  </section>
+
+  <!-- ============ 02 CALCULADORA LIBRE ============ -->
+  <section class="reveal" id="secCalc">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Calculadora libre · nota + semitonos + dirección</h2></div>
+    <p class="sec-sub">Escribe cualquier operación: elige una <b>nota</b>, cuántos <b>semitonos</b> (0–12) y la <b>dirección</b>: hacia <b style="color:var(--up)">↑ arriba</b>, hacia <b style="color:var(--down)">↓ abajo</b>, o <b style="color:#c7d2fe">↑↓ ambas</b> para ver el par de gemelos y su movimiento simétrico equivalente.</p>
+    <div class="freeGrid">
+      <div class="panel">
+        <div class="fLabel">🎵 Nota de partida</div>
+        <div class="fChips" id="fChips"></div>
+        <div class="fLabel">🧭 Dirección del movimiento</div>
+        <div class="dirGroup">
+          <button class="dirBtn dUp" data-dir="up">↑ Arriba</button>
+          <button class="dirBtn dDown" data-dir="down">↓ Abajo</button>
+          <button class="dirBtn dBoth on" data-dir="both">↑↓ Ambas</button>
+        </div>
+        <div class="fLabel">📏 Semitonos (distancia lineal)</div>
+        <div class="stepper">
+          <button class="stepBtn" id="stMinus">−</button>
+          <div class="stVal"><span id="stNum">5</span><small>semitonos</small></div>
+          <button class="stepBtn" id="stPlus">+</button>
+        </div>
+        <input type="range" id="fSlider" min="0" max="12" step="1" value="5">
+        <div class="ticks" id="fTicks"></div>
+      </div>
+      <div class="panel freeRes" id="freeRes"></div>
+    </div>
+  </section>
+
+  <!-- ============ 03 LABORATORIO SIMÉTRICO ============ -->
+  <section class="reveal" id="secLab">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Laboratorio simétrico · rueda y teclado</h2></div>
+    <p class="sec-sub">Mueve el control de <b>distancia lineal (1–11 semitonos hacia arriba)</b> desde la raíz global. El laboratorio muestra el destino ↑, el reflejo ↓, el movimiento simétrico equivalente y lo dibuja sobre la rueda cromática y el teclado de piano. También puedes usar las flechas ← → del teclado.</p>
+    <div class="calcGrid">
+      <div class="panel wheelPanel">
+        <svg id="wheelSvg" viewBox="0 0 360 360">
+          <defs>
+            <radialGradient id="gGold"><stop offset="0%" stop-color="#fde68a"/><stop offset="100%" stop-color="#f59e0b"/></radialGradient>
+            <radialGradient id="gUp"><stop offset="0%" stop-color="#bae6fd"/><stop offset="100%" stop-color="#0ea5e9"/></radialGradient>
+            <radialGradient id="gDown"><stop offset="0%" stop-color="#a7f3d0"/><stop offset="100%" stop-color="#10b981"/></radialGradient>
+            <radialGradient id="gTri"><stop offset="0%" stop-color="#fecaca"/><stop offset="100%" stop-color="#ef4444"/></radialGradient>
+            <radialGradient id="gHub"><stop offset="0%" stop-color="rgba(251,191,36,.22)"/><stop offset="100%" stop-color="rgba(251,191,36,.04)"/></radialGradient>
+          </defs>
+          <line id="axisLine" x1="180" y1="40" x2="180" y2="320"></line>
+          <line id="twinLine" x1="180" y1="54" x2="180" y2="54"></line>
+          <g id="nodesG"></g>
+          <circle cx="180" cy="180" r="40" fill="url(#gHub)" stroke="rgba(251,191,36,.45)" stroke-width="1"></circle>
+          <text id="hubName" x="180" y="177" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="19" font-weight="700" fill="#fbbf24">C</text>
+          <text id="hubDeg" x="180" y="196" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="rgba(251,191,36,.75)">I · CENTRO</text>
+        </svg>
+        <div class="legend">
+          <span><i style="background:var(--gold)"></i>Raíz (I)</span>
+          <span><i style="background:var(--up)"></i>Destino ↑ arriba</span>
+          <span><i style="background:var(--down)"></i>Destino ↓ abajo</span>
+          <span><i style="background:var(--tri)"></i>Tritono · comodín</span>
+        </div>
+      </div>
+
+      <div class="panel readout">
+        <div class="roTop">
+          <div class="roTitle"><small>Resultado del espejo</small><span id="roTitle">Movimiento 1 semitono</span></div>
+          <span id="roBadge"></span>
+        </div>
+        <div class="destRow">
+          <div class="dest upD">
+            <button class="miniPlay" id="playUp" title="Escuchar destino ↑">🔊</button>
+            <h4>↑ Arriba</h4>
+            <div class="big" id="upName">Db</div>
+            <div class="deg" id="upDeg">♭II</div>
+            <div class="enh" id="upEnh"></div>
+            <div class="lin" id="upLin">lineal: 1 st</div>
+          </div>
+          <div class="dest downD">
+            <button class="miniPlay" id="playDown" title="Escuchar destino ↓">🔊</button>
+            <h4>↓ Abajo</h4>
+            <div class="big" id="downName">B</div>
+            <div class="deg" id="downDeg">VII</div>
+            <div class="enh" id="downEnh"></div>
+            <div class="lin" id="downLin">lineal: 11 st</div>
+          </div>
+        </div>
+        <div class="movBox">
+          <div class="mv">Movimiento simétrico: <b id="movBig">Mov. 1</b></div>
+          <div class="dist" id="linDist">1 st ↑ · 11 st ↓ · suman 12</div>
+        </div>
+        <div class="sliderWrap">
+          <div class="sliderLbl"><span>🎛️ Distancia lineal desde la raíz (hacia arriba)</span><span id="sliderVal" style="font-family:var(--mono);color:var(--gold)">1 st</span></div>
+          <input type="range" id="distSlider" min="1" max="11" step="1" value="1">
+          <div class="ticks" id="ticks"></div>
+        </div>
+        <button class="playMov" id="playMov">▶ Escuchar movimiento (raíz → ↑ → raíz → ↓)</button>
+      </div>
+    </div>
+
+    <div class="panel pianoBox">
+      <div class="sliderLbl" style="margin-bottom:12px"><span>🎹 Teclado de piano · verificación física del espejo</span><span style="font-family:var(--mono);color:var(--mut)">cuenta semitonos desde la raíz dorada</span></div>
+      <div class="piano" id="piano"></div>
+      <div class="pianoLegend">
+        <span><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:var(--gold);margin-right:6px"></i>Raíz (I)</span>
+        <span><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:var(--up);margin-right:6px"></i>🔵 destino ↑</span>
+        <span><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:var(--down);margin-right:6px"></i>🟢 destino ↓</span>
+        <span><i style="display:inline-block;width:11px;height:11px;border-radius:3px;background:var(--tri);margin-right:6px"></i>🔴 tritono</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 LOS 6 MOVIMIENTOS ============ -->
+  <section class="reveal" id="secMov">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Los 6 movimientos fundamentales de raíz</h2></div>
+    <p class="sec-sub">Desde la raíz elegida, estos son los seis lugares posibles. Haz clic en una tarjeta para cargarla en el laboratorio. Cada par de gemelos suma <b>12 semitonos lineales</b> (1+11, 2+10, 3+9, 4+8, 5+7… y 6+6), porque son el reflejo exacto uno del otro.</p>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <!-- ============ 05 CONCEPTOS ============ -->
+  <section class="reveal" id="secConceptos">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Conceptos clave del sistema</h2></div>
+    <div class="concepts">
+      <div class="concept">
+        <div class="ico">🃏</div>
+        <h3>El tritono · comodín (6 st)</h3>
+        <p>Seis semitonos son exactamente la mitad de la octava (12 ÷ 2 = 6). Subir o bajar 6 st lleva a la <b style="color:var(--tri)">misma nota</b>, solo que en diferentes octavas. Es el punto de reflexión definitivo: por eso el conteo se detiene en 6 y no en 7.</p>
+      </div>
+      <div class="concept">
+        <div class="ico">🪞</div>
+        <h3>El espejo 7–11</h3>
+        <p>Cualquier distancia mayor que 6 refleja una ya recorrida: <b>7→5, 8→4, 9→3, 10→2, 11→1</b>. Las notas son las mismas; solo se intercambian las posiciones de los gemelos («movimiento volteado»).</p>
+      </div>
+      <div class="concept">
+        <div class="ico">🎭</div>
+        <h3>Raíz y disfraz</h3>
+        <p>Estas notas son <b>raíces potenciales de acordes</b>, no notas sueltas. La raíz define la identidad del viaje armónico; el tipo de acorde (mayor, menor, extensiones) es solo el «disfraz» que no altera el destino.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 TABLAS ============ -->
+  <section class="reveal" id="secTablas">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Tablas completas · <span id="tblRootName" style="color:var(--gold)"></span></h2></div>
+    <p class="sec-sub">Los 6 movimientos calculados para la raíz actual, con los destinos ↑ y ↓ y su grado respecto a la raíz, más el espejo de los movimientos lineales 7–11 con posiciones invertidas.</p>
+    <div class="tblWrap">
+      <table>
+        <thead><tr><th>Mov.</th><th>Semitonos</th><th>↑ Arriba</th><th>↓ Abajo</th><th>Tipo de par</th></tr></thead>
+        <tbody id="tbl6"></tbody>
+      </table>
+    </div>
+    <div style="height:18px"></div>
+    <div class="tblWrap">
+      <table>
+        <thead><tr><th>Mov. lineal</th><th>↑ Arriba</th><th>↓ Abajo</th><th>Equivalente simétrico</th><th>Relación</th></tr></thead>
+        <tbody id="tbl711"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="reveal" id="creditos">
+    <div class="pill">★ Créditos</div>
+    <div class="fTitle" style="margin-top:14px">Los 6 lugares donde puede ir un acorde<br><span>by Rubén Sbarsky (2026)</span></div>
+    <div class="fMeta">
+      <span>👨‍💻 Rubén Sbarsky · Autor y Dirección educativa</span>
+      <span>📅 Fecha: 23/08/2026</span>
+      <span>🕗 Hora: 10:07:51</span>
+    </div>
+    <div class="motto">«Fiat iustitia, ruat caelum.»</div>
+    <div class="edu">📚 Tutorial con fines educativos y de divulgación · Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.</div>
+  </footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+function $(id){return document.getElementById(id);}
+
+/* ================= NAVEGACIÓN (overlay con tarjetas) ================= */
+var topNav=$('topNav');
+var overlay=$('overlay');
+var menuBtn=$('menuBtn');
+var mpClose=$('mpClose');
+var overlayBg=$('overlayBg');
+var mpGrid=$('mpGrid');
+var toTop=$('toTop');
+var menuOpen=false;
+
+function openOverlay(){
+  menuOpen=true;
+  overlay.classList.add('open');
+  document.body.classList.add('lock');
+}
+function closeOverlay(){
+  if(!menuOpen)return;
+  menuOpen=false;
+  overlay.classList.remove('open');
+  document.body.classList.remove('lock');
+}
+menuBtn.addEventListener('click',function(){
+  if(menuOpen){closeOverlay();}else{openOverlay();}
+});
+mpClose.addEventListener('click',function(){closeOverlay();});
+overlayBg.addEventListener('click',function(){closeOverlay();});
+document.addEventListener('keydown',function(ev){
+  if(ev.key==='Escape'){closeOverlay();}
+});
+
+function setActive(id){
+  var cs=mpGrid.querySelectorAll('.mpCard');
+  for(var i=0;i<cs.length;i++){
+    if(cs[i].dataset.target===id){cs[i].classList.add('active');}
+    else{cs[i].classList.remove('active');}
+  }
+}
+function smoothScrollTo(y){
+  var supported=false;
+  try{supported=('scrollBehavior' in document.documentElement.style);}catch(e){}
+  if(supported){window.scrollTo({top:y,left:0,behavior:'smooth'});}
+  else{window.scrollTo(0,y);}
+}
+function flashSection(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  el.classList.remove('navFlash');
+  void el.offsetWidth;
+  el.classList.add('navFlash');
+  setTimeout(function(){el.classList.remove('navFlash');},1700);
+}
+function goToId(id){
+  var el=document.getElementById(id);
+  if(!el){return false;}
+  var navH=topNav.offsetHeight||64;
+  var rect=el.getBoundingClientRect();
+  var y=(window.pageYOffset||document.documentElement.scrollTop)+rect.top-navH-12;
+  if(y<0){y=0;}
+  smoothScrollTo(y);
+  setActive(id);
+  flashSection(id);
+  return true;
+}
+/* tarjetas del menú: tocar → cerrar → navegar */
+mpGrid.addEventListener('click',function(ev){
+  var target=ev.target;
+  var card=null;
+  while(target&&target!==mpGrid){
+    if(target.classList&&target.classList.contains('mpCard')){card=target;break;}
+    target=target.parentNode;
+  }
+  if(!card){return;}
+  var dest=card.dataset.target;
+  closeOverlay();
+  setTimeout(function(){goToId(dest);},80);
+});
+
+/* volver arriba */
+toTop.addEventListener('click',function(){
+  smoothScrollTo(0);
+  setActive('inicio');
+});
+
+/* scroll-spy + visibilidad del botón ▲ */
+var spyIds=['inicio','secRaiz','secCalc','secLab','secMov','secConceptos','secTablas','creditos'];
+var spyTicking=false;
+function runSpy(){
+  var navH=topNav.offsetHeight||64;
+  var current='inicio';
+  for(var s=0;s<spyIds.length;s++){
+    var el=document.getElementById(spyIds[s]);
+    if(el&&el.getBoundingClientRect().top<=navH+160){current=spyIds[s];}
+  }
+  var doc=document.documentElement;
+  var atBottom=(window.innerHeight+(window.pageYOffset||doc.scrollTop))>=doc.scrollHeight-4;
+  if(atBottom){current=spyIds[spyIds.length-1];}
+  setActive(current);
+  var sy=window.pageYOffset||doc.scrollTop;
+  if(sy>500){toTop.classList.add('show');}else{toTop.classList.remove('show');}
+  spyTicking=false;
+}
+window.addEventListener('scroll',function(){
+  if(!spyTicking){spyTicking=true;requestAnimationFrame(runSpy);}
+},{passive:true});
+window.addEventListener('resize',function(){
+  if(!spyTicking){spyTicking=true;requestAnimationFrame(runSpy);}
+});
+runSpy();
+
+/* ================= DATOS ================= */
+var LETTERS=['C','D','E','F','G','A','B'];
+var LSEMI=[0,2,4,5,7,9,11];
+var PCNAME=['C','Db','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
+var DEG={1:'♭II',2:'II',3:'♭III',4:'III',5:'IV',6:'♯IV',7:'V',8:'♭VI',9:'VI',10:'♭VII',11:'VII'};
+var LSU={1:1,2:1,3:2,4:2,5:3,6:3,7:4,8:5,9:5,10:6,11:6};
+var SUBS={1:'Gemelos más cercanos',2:'Segunda / séptima',3:'Tercera menor / sexta',4:'Tercera mayor / sexta menor',5:'Cuarta / quinta',6:'Anomalía simétrica · comodín'};
+var ROOTS=[
+  {n:'C',li:0,acc:0,pc:0},{n:'Db',li:1,acc:-1,pc:1},{n:'D',li:1,acc:0,pc:2},
+  {n:'Eb',li:2,acc:-1,pc:3},{n:'E',li:2,acc:0,pc:4},{n:'F',li:3,acc:0,pc:5},
+  {n:'F#',li:3,acc:1,pc:6},{n:'G',li:4,acc:0,pc:7},{n:'Ab',li:5,acc:-1,pc:8},
+  {n:'A',li:5,acc:0,pc:9},{n:'Bb',li:6,acc:-1,pc:10},{n:'B',li:6,acc:0,pc:11}
+];
+var state={root:0,dist:1};
+var fState={note:0,dir:'both',st:5};
+
+/* ================= UTILIDADES ================= */
+function accStr(a){return a===0?'':(a>0?new Array(a+1).join('♯'):new Array(-a+1).join('♭'));}
+function nameOf(x){return x.letter+accStr(x.acc);}
+function spellNote(root,semis,letters){
+  var li=(root.li+letters)%7;
+  var natural=LSEMI[li];
+  var targetPc=((root.pc+semis)%12+12)%12;
+  var acc=targetPc-natural;
+  while(acc>6)acc-=12; while(acc<-6)acc+=12;
+  return {letter:LETTERS[li],acc:acc,pc:targetPc};
+}
+function enh(x){return Math.abs(x.acc)>=2?('≈ enarmónico: '+PCNAME[x.pc]):'';}
+function degOf(rel){return rel===0?'I':DEG[rel];}
+function destFrom(rootIdx,dirSign,d){
+  var r=ROOTS[rootIdx];
+  if(d%12===0){return {name:r.n,deg:'I',pc:r.pc,enh:'',oct:d===12};}
+  if(dirSign===1){
+    var n1=spellNote(r,d,LSU[d]);
+    return {name:nameOf(n1),deg:DEG[d],pc:n1.pc,enh:enh(n1),oct:false};
+  }
+  if(d===6){
+    var n6=spellNote(r,6,3);
+    return {name:nameOf(n6),deg:'♯IV',pc:n6.pc,enh:enh(n6),oct:false};
+  }
+  var dd=12-d,n2=spellNote(r,dd,7-LSU[d]);
+  return {name:nameOf(n2),deg:DEG[dd],pc:n2.pc,enh:enh(n2),oct:false};
+}
+function computePair(){
+  var r=ROOTS[state.root],d=state.dist,tri=(d===6);
+  var up=spellNote(r,d,LSU[d]);
+  var down=tri?up:spellNote(r,12-d,7-LSU[d]);
+  return {r:r,d:d,m:Math.min(d,12-d),tri:tri,inv:d>6,up:up,down:down,upDeg:DEG[d],downDeg:tri?'♯IV':DEG[12-d]};
+}
+
+/* ================= AUDIO ================= */
+var actx=null;
+function ensureCtx(){
+  var AC=window.AudioContext||window.webkitAudioContext;
+  if(!actx&&AC)actx=new AC();
+  if(actx&&actx.state==='suspended')actx.resume();
+}
+function playMidi(midi,when,dur){
+  try{
+    ensureCtx(); if(!actx)return;
+    var t=actx.currentTime+(when||0),f=440*Math.pow(2,(midi-69)/12);
+    var o=actx.createOscillator(),g=actx.createGain();
+    o.type='triangle';o.frequency.value=f;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(.22,t+.02);
+    g.gain.exponentialRampToValueAtTime(.001,t+(dur||.5));
+    o.connect(g);g.connect(actx.destination);
+    o.start(t);o.stop(t+(dur||.5)+.05);
+  }catch(e){}
+}
+function baseMidi(rootIdx){var b=60+ROOTS[rootIdx].pc;if(b>70)b-=12;return b;}
+
+/* ================= REVEAL (con respaldo) ================= */
+function showAll(){
+  var els=document.querySelectorAll('.reveal');
+  for(var r=0;r<els.length;r++){els[r].classList.add('in');}
+}
+if('IntersectionObserver' in window){
+  var io=new IntersectionObserver(function(es){
+    for(var k=0;k<es.length;k++){if(es[k].isIntersecting)es[k].target.classList.add('in');}
+  },{threshold:.05});
+  var revs=document.querySelectorAll('.reveal');
+  for(var rv=0;rv<revs.length;rv++){io.observe(revs[rv]);}
+  setTimeout(showAll,1200);
+}else{
+  showAll();
+}
+
+/* ================= CHIPS RAÍZ GLOBAL ================= */
+var rootsEl=$('roots');
+for(var ri=0;ri<ROOTS.length;ri++){
+  (function(i){
+    var r=ROOTS[i];
+    var b=document.createElement('button');
+    b.className='rootChip'+(i===0?' on':'');
+    b.innerHTML=r.n+'<small>'+(i===0?'EJE':'Raíz')+'</small>';
+    b.addEventListener('click',function(){
+      state.root=i;
+      var chips=document.querySelectorAll('.rootChip');
+      for(var c=0;c<chips.length;c++){chips[c].classList.toggle('on',c===i);}
+      render();
+    });
+    rootsEl.appendChild(b);
+  })(ri);
+}
+
+/* ================= CALCULADORA LIBRE ================= */
+var fChipsEl=$('fChips');
+for(var fi=0;fi<ROOTS.length;fi++){
+  (function(i){
+    var b=document.createElement('button');
+    b.className='fChip'+(i===0?' on':'');
+    b.textContent=ROOTS[i].n;
+    b.addEventListener('click',function(){
+      fState.note=i;
+      var chips=document.querySelectorAll('.fChip');
+      for(var c=0;c<chips.length;c++){chips[c].classList.toggle('on',c===i);}
+      renderFree();
+    });
+    fChipsEl.appendChild(b);
+  })(fi);
+}
+var fTicksEl=$('fTicks');
+for(var fv=0;fv<=12;fv++){
+  (function(v){
+    var t=document.createElement('button');
+    t.className='tick'+(v===6?' t6':'');t.dataset.v=v;t.textContent=v;
+    t.addEventListener('click',function(){fState.st=v;syncFree();renderFree();});
+    fTicksEl.appendChild(t);
+  })(fv);
+}
+var dirBtns=document.querySelectorAll('.dirBtn');
+for(var di=0;di<dirBtns.length;di++){
+  (function(b){
+    b.addEventListener('click',function(){
+      fState.dir=b.dataset.dir;
+      for(var x=0;x<dirBtns.length;x++){dirBtns[x].classList.toggle('on',dirBtns[x]===b);}
+      renderFree();
+    });
+  })(dirBtns[di]);
+}
+$('stMinus').addEventListener('click',function(){fState.st=Math.max(0,fState.st-1);syncFree();renderFree();});
+$('stPlus').addEventListener('click',function(){fState.st=Math.min(12,fState.st+1);syncFree();renderFree();});
+$('fSlider').addEventListener('input',function(e){fState.st=+e.target.value;syncFree();renderFree();});
+function syncFree(){
+  $('fSlider').value=fState.st;
+  $('stNum').textContent=fState.st;
+  var ts=fTicksEl.querySelectorAll('.tick');
+  for(var t=0;t<ts.length;t++){ts[t].classList.toggle('on',+ts[t].dataset.v===fState.st);}
+}
+function destCard(dirCls,title,info,stLabel){
+  return '<div class="dest '+dirCls+'">'+
+    '<button class="miniPlay" data-fplay="'+dirCls+'" title="Escuchar">🔊</button>'+
+    '<h4>'+title+'</h4>'+
+    '<div class="big">'+info.name+'</div>'+
+    '<div class="deg">'+info.deg+(info.oct?' · octava':'')+'</div>'+
+    (info.enh?'<div class="enh">'+info.enh+'</div>':'')+
+    '<div class="lin">'+stLabel+'</div></div>';
+}
+function renderFree(){
+  var box=$('freeRes');
+  var ni=fState.note,d=fState.st,dir=fState.dir;
+  var rName=ROOTS[ni].n;
+  var up=destFrom(ni,1,d),down=destFrom(ni,-1,d);
+  var html='';
+  var formula=rName+' '+(d===0?'± 0':(dir==='down'?'− ':dir==='up'?'+ ':'± ')+d)+' st';
+
+  if(d===0||d===12){
+    html+='<div class="resTitle"><span><small>Resultado</small>'+formula+'</span><span class="badge uni">'+(d===0?'Unísono · misma nota':'Octava · misma nota')+'</span></div>';
+    html+='<div class="destRow one">'+destCard('midD',(d===0?'La misma nota':'Octava'),up,(d===0?'0 st · grado I':'12 st · grado I (octava)'))+'</div>';
+    html+='<div class="twinHint">ℹ️ <b>0 st</b> es el unísono y <b>12 st</b> es la octava: la octava es un patrón repetitivo, así que ambos devuelven la <b>misma nota</b> '+rName+'(I), con distinto registro.</div>';
+  }else if(dir==='both'){
+    var m=Math.min(d,12-d),tri=(d===6);
+    html+='<div class="resTitle"><span><small>Resultado · par de gemelos</small>'+formula+'</span>'+
+      (tri?'<span class="badge tri">🃏 Tritono · comodín</span>':(d>6?'<span class="badge inv">🔁 ≡ Mov. '+m+' · invertido</span>':'<span class="badge uni">Movimiento '+m+'</span>'))+'</div>';
+    if(tri){
+      html+='<div class="destRow one">'+destCard('midD','↑ Arriba y ↓ Abajo · misma nota',up,'6 st ↑ · 6 st ↓ · mitad exacta de la octava')+'</div>';
+      html+='<div class="twinHint">🃏 El tritono no tiene gemelo: sus dos direcciones colapsan en <b>'+up.name+'('+up.deg+')</b>, solo que en diferentes octavas. Por eso el espejo se detiene exactamente en 6.</div>';
+    }else{
+      html+='<div class="destRow">'+
+        destCard('upD','↑ Arriba · '+d+' st',up,'lineal: '+d+' st · grado '+up.deg+' respecto a '+rName)+
+        destCard('downD','↓ Abajo · '+(12-d)+' st',down,'lineal: '+(12-d)+' st · grado '+down.deg+' respecto a '+rName)+'</div>';
+      html+='<div class="movBox"><div class="mv">Movimiento simétrico: <b>Mov. '+m+(d>6?' (volteado)':'')+'</b></div>'+
+        '<div class="dist">'+d+' st ↑ · '+(12-d)+' st ↓ · suman 12</div></div>';
+    }
+  }else if(dir==='up'){
+    var twinU=destFrom(ni,-1,d),mU=Math.min(d,12-d),triU=(d===6);
+    html+='<div class="resTitle"><span><small>Resultado</small>'+formula+'</span>'+
+      (triU?'<span class="badge tri">🃏 Tritono · comodín</span>':'<span class="badge uni">'+(d>6?'≡ Mov. '+mU+' invertido':'Movimiento '+mU)+'</span>')+'</div>';
+    html+='<div class="destRow one">'+destCard('upD','↑ '+d+' semitonos arriba de '+rName,up,'lineal: '+d+' st · grado '+up.deg+' respecto a '+rName)+'</div>';
+    html+='<div class="twinHint">🪞 Su gemelo reflejado: <b>'+twinU.name+'('+twinU.deg+')</b>, a '+d+' st hacia abajo (linealmente '+(12-d)+' st). Son dos caras de la misma moneda.</div>';
+  }else{
+    var twinD=destFrom(ni,1,d),mD=Math.min(d,12-d),triD=(d===6);
+    html+='<div class="resTitle"><span><small>Resultado</small>'+formula+'</span>'+
+      (triD?'<span class="badge tri">🃏 Tritono · comodín</span>':'<span class="badge uni">'+(d>6?'≡ Mov. '+mD+' invertido':'Movimiento '+mD)+'</span>')+'</div>';
+    html+='<div class="destRow one">'+destCard('downD','↓ '+d+' semitonos abajo de '+rName,down,'lineal: '+(12-d)+' st · grado '+down.deg+' respecto a '+rName)+'</div>';
+    html+='<div class="twinHint">🪞 Su gemelo reflejado: <b>'+twinD.name+'('+twinD.deg+')</b>, a '+d+' st hacia arriba. Misma distancia física, sentido contrario: gemelos no idénticos.</div>';
+  }
+  html+='<button class="playMov" id="fPlay">▶ Escuchar ('+rName+' → destino'+(dir==='both'?'s':'')+') · 🔊</button>';
+  box.innerHTML=html;
+
+  var b=baseMidi(ni);
+  var fm=b+(fState.dir==='down'?-d:d);
+  $('fPlay').addEventListener('click',function(){
+    if(fState.dir==='both'){
+      playMidi(b,0,.45);playMidi(b+d,.4,.5);playMidi(b,.95,.4);playMidi(b-d,1.35,.65);
+    }else{
+      playMidi(b,0,.45);playMidi(fm,.4,.7);
+    }
+  });
+  var miniBtns=box.querySelectorAll('[data-fplay]');
+  for(var mb=0;mb<miniBtns.length;mb++){
+    (function(btn){
+      btn.addEventListener('click',function(){
+        var cls=btn.dataset.fplay;
+        if(cls==='midD'){playMidi(b+d,0,.55);playMidi(b-d,.4,.55);}
+        else if(cls==='upD'){playMidi(b+d,0,.6);}
+        else{playMidi(b-d,0,.6);}
+      });
+    })(miniBtns[mb]);
+  }
+}
+
+/* ================= RUEDA ================= */
+var svgNS='http://www.w3.org/2000/svg';
+var nodesG=$('nodesG');
+var wheelNodes=[];
+for(var wpc=0;wpc<12;wpc++){
+  var wg=document.createElementNS(svgNS,'g');wg.setAttribute('class','node');
+  var wc=document.createElementNS(svgNS,'circle');wc.setAttribute('r','21');
+  var wt1=document.createElementNS(svgNS,'text');wt1.setAttribute('class','nn');wt1.setAttribute('text-anchor','middle');wt1.setAttribute('dy','-2');
+  var wt2=document.createElementNS(svgNS,'text');wt2.setAttribute('class','nd');wt2.setAttribute('text-anchor','middle');wt2.setAttribute('dy','11');
+  wg.appendChild(wc);wg.appendChild(wt1);wg.appendChild(wt2);nodesG.appendChild(wg);
+  wheelNodes.push({g:wg,t1:wt1,t2:wt2});
+}
+function wheelPos(rel){
+  var a=(rel*30-90)*Math.PI/180;
+  return {x:180+126*Math.cos(a),y:180+126*Math.sin(a)};
+}
+function renderWheel(P){
+  var pc,rel,pos,nd,cls;
+  var rootPc=P.r.pc;
+  for(pc=0;pc<12;pc++){
+    rel=(pc-rootPc+12)%12;
+    pos=wheelPos(rel);
+    nd=wheelNodes[pc];
+    nd.g.setAttribute('transform','translate('+pos.x.toFixed(2)+','+pos.y.toFixed(2)+')');
+    nd.t1.textContent=PCNAME[pc];
+    nd.t2.textContent=degOf(rel);
+    cls='node';
+    if(rel===0)cls+=' root';
+    else if(P.tri&&rel===6)cls+=' tri';
+    else if(rel===P.d)cls+=' up';
+    else if(rel===12-P.d)cls+=' down';
+    nd.g.setAttribute('class',cls);
+  }
+  var line=$('twinLine'),pa,pb;
+  if(P.tri){
+    pa=wheelPos(0);pb=wheelPos(6);
+    line.setAttribute('stroke','#f87171');
+  }else{
+    pa=wheelPos(P.d);pb=wheelPos(12-P.d);
+    line.setAttribute('stroke','#818cf8');
+  }
+  line.setAttribute('x1',pa.x.toFixed(2));line.setAttribute('y1',pa.y.toFixed(2));
+  line.setAttribute('x2',pb.x.toFixed(2));line.setAttribute('y2',pb.y.toFixed(2));
+  $('hubName').textContent=P.r.n;
+}
+
+/* ================= PIANO ================= */
+var pianoEl=$('piano');
+var keyByMidi={};
+(function buildPiano(){
+  var LOW=48,HIGH=76,html='',wIdx=0,blacks=[],m,pc,isWhite;
+  for(m=LOW;m<=HIGH;m++){
+    pc=m%12;
+    isWhite=(pc===0||pc===2||pc===4||pc===5||pc===7||pc===9||pc===11);
+    if(isWhite){html+='<div class="k wk" data-midi="'+m+'"><span>'+PCNAME[pc]+'</span></div>';wIdx++;}
+    else blacks.push({m:m,wi:wIdx});
+  }
+  pianoEl.innerHTML=html;
+  var wW=100/17,wB=wW*0.62;
+  for(var bb=0;bb<blacks.length;bb++){
+    var bk=blacks[bb];
+    var el=document.createElement('div');
+    el.className='k bk';el.dataset.midi=bk.m;
+    el.style.width=wB+'%';
+    el.style.left=(bk.wi*wW-wB/2)+'%';
+    pianoEl.appendChild(el);
+  }
+  var keys=pianoEl.querySelectorAll('.k');
+  for(var kk=0;kk<keys.length;kk++){keyByMidi[keys[kk].dataset.midi]=keys[kk];}
+})();
+function visibleKey(midi){
+  var m=midi;
+  while(m<48)m+=12;
+  while(m>76)m-=12;
+  return keyByMidi[m];
+}
+function renderPiano(P){
+  for(var k in keyByMidi){keyByMidi[k].classList.remove('root','up','down','tri');}
+  var b=baseMidi(state.root);
+  var rk=keyByMidi[b]; if(rk)rk.classList.add('root');
+  if(P.tri){
+    var t1=visibleKey(b+6); if(t1)t1.classList.add('tri');
+    var t2=visibleKey(b-6); if(t2)t2.classList.add('tri');
+  }else{
+    var ku=visibleKey(b+P.d); if(ku)ku.classList.add('up');
+    var kd=visibleKey(b-P.d); if(kd)kd.classList.add('down');
+  }
+}
+
+/* ================= TARJETAS ================= */
+function renderCards(P){
+  var box=$('cards');box.innerHTML='';
+  for(var n=1;n<=6;n++){
+    (function(n){
+      var up=spellNote(P.r,n,LSU[n]);
+      var down=(n===6)?up:spellNote(P.r,12-n,7-LSU[n]);
+      var active=(P.m===n);
+      var card=document.createElement('div');
+      card.className='card'+(n===6?' tritone':'')+(active?' on':'');
+      var twins;
+      if(n===6){
+        twins='<div class="twin solo"><b>'+nameOf(up)+' · '+DEG[6]+'</b><small>↑ ARRIBA Y ↓ ABAJO · la misma nota en diferentes octavas</small></div>';
+      }else{
+        twins='<div class="twin u"><small>↑ ARRIBA</small><b>'+nameOf(up)+' · '+DEG[n]+'</b><small>'+n+' st</small></div>'+
+              '<div class="twin d"><small>↓ ABAJO</small><b>'+nameOf(down)+' · '+DEG[12-n]+'</b><small>'+(12-n)+' st</small></div>';
+      }
+      var note=(n===6)
+        ?'⚠️ Al ser exactamente la mitad de la octava (12÷2=6), sus dos direcciones colapsan en la misma nota. El espejo se detiene aquí: no existe un séptimo movimiento.'
+        :'👥 Gemelos no idénticos: '+nameOf(up)+' está a '+n+' st lineales y '+nameOf(down)+' a '+(12-n)+' st, pero simétricamente son dos caras de la misma moneda ('+n+'+'+(12-n)+'=12).';
+      card.innerHTML=(active&&P.inv?'<span class="flipBadge">🔁 Volteado</span>':'')+
+        '<div class="cHead"><div class="cNum">'+n+'</div><h3>Movimiento de '+n+(n===1?' semitono':' semitonos')+'<small>'+SUBS[n]+'</small></h3></div>'+
+        '<div class="twinRow">'+twins+'</div><div class="cNote">'+note+'</div>';
+      card.addEventListener('click',function(){state.dist=n;render();});
+      box.appendChild(card);
+    })(n);
+  }
+}
+
+/* ================= TABLAS ================= */
+function renderTables(P){
+  $('tblRootName').textContent='desde '+P.r.n+'('+degOf(0)+')';
+  var h1='',n;
+  for(n=1;n<=6;n++){
+    var up=spellNote(P.r,n,LSU[n]);
+    var down=(n===6)?up:spellNote(P.r,12-n,7-LSU[n]);
+    var tipo=(n===6)?'<span class="tag warn">Tritono · comodín</span>':'<span class="tag">Gemelos no idénticos</span>';
+    var cells=(n===6)
+      ?'<td><span class="nn2 t2">'+nameOf(up)+'</span><span class="dg t2">'+DEG[6]+' · un solo destino (diferentes octavas)</span></td>'.repeat(2)
+      :'<td><span class="nn2 u2">'+nameOf(up)+'</span><span class="dg u2">'+DEG[n]+'</span></td>'+
+       '<td><span class="nn2 d2">'+nameOf(down)+'</span><span class="dg d2">'+DEG[12-n]+'</span></td>';
+    h1+='<tr><td><b style="font-family:var(--mono)">'+n+'</b></td><td style="font-family:var(--mono)">'+n+' st</td>'+cells+'<td>'+tipo+'</td></tr>';
+  }
+  $('tbl6').innerHTML=h1;
+  var h2='',d;
+  for(d=7;d<=11;d++){
+    var upD=spellNote(P.r,d,LSU[d]);
+    var downD=spellNote(P.r,12-d,7-LSU[d]);
+    var m=12-d;
+    h2+='<tr><td style="font-family:var(--mono)">'+d+' st</td>'+
+      '<td><span class="nn2 u2">'+nameOf(upD)+'</span><span class="dg u2">'+DEG[d]+'</span></td>'+
+      '<td><span class="nn2 d2">'+nameOf(downD)+'</span><span class="dg d2">'+DEG[12-d]+'</span></td>'+
+      '<td style="font-size:.8rem;color:var(--mut)">Movimiento de <b class="g2">'+m+' st</b>: '+nameOf(downD)+' ↑ / '+nameOf(upD)+' ↓</td>'+
+      '<td><span class="tag">Posiciones invertidas</span></td></tr>';
+  }
+  $('tbl711').innerHTML=h2;
+}
+
+/* ================= RENDER GENERAL (LABORATORIO) ================= */
+function render(){
+  var P=computePair();
+  $('roTitle').textContent=
+    P.inv?('Movimiento lineal '+P.d+' st'):
+    (P.tri?'Movimiento 6 st · TRITONO':'Movimiento '+P.d+(P.d===1?' semitono':' semitonos'));
+  var badge=$('roBadge');
+  badge.innerHTML=P.inv?'<span class="badge inv">🔁 ≡ Mov. '+P.m+' · posiciones invertidas</span>'
+    :P.tri?'<span class="badge tri">🃏 Comodín · anomalía simétrica</span>':'';
+  $('upName').textContent=nameOf(P.up);
+  $('upDeg').textContent=P.upDeg;
+  $('upEnh').textContent=enh(P.up);
+  $('upLin').textContent='lineal: '+P.d+' st';
+  $('downName').textContent=nameOf(P.down);
+  $('downDeg').textContent=P.downDeg;
+  $('downEnh').textContent=P.tri?'misma nota · distinta octava':enh(P.down);
+  $('downLin').textContent=P.tri?'lineal: 6 st (misma distancia)':'lineal: '+(12-P.d)+' st';
+  $('movBig').textContent='Mov. '+P.m+(P.tri?' · Tritono':'');
+  $('linDist').textContent=P.d+' st ↑ · '+(12-P.d)+' st ↓ · suman 12';
+  $('sliderVal').textContent=P.d+' st';
+  $('distSlider').value=P.d;
+  var ts=document.querySelectorAll('#ticks .tick');
+  for(var t=0;t<ts.length;t++){ts[t].classList.toggle('on',+ts[t].dataset.v===P.d);}
+  renderWheel(P);
+  renderPiano(P);
+  renderCards(P);
+  renderTables(P);
+}
+
+/* ================= CONTROLES DEL LABORATORIO ================= */
+var ticksEl=$('ticks');
+for(var tv=1;tv<=11;tv++){
+  (function(v){
+    var t=document.createElement('button');
+    t.className='tick'+(v===6?' t6':'');t.dataset.v=v;
+    t.textContent=(v===6)?'6·♯IV':v;
+    t.addEventListener('click',function(){state.dist=v;render();});
+    ticksEl.appendChild(t);
+  })(tv);
+}
+$('distSlider').addEventListener('input',function(e){state.dist=+e.target.value;render();});
+
+/* ================= AUDIO LAB ================= */
+$('playUp').addEventListener('click',function(){playMidi(baseMidi(state.root)+state.dist,0,.6);});
+$('playDown').addEventListener('click',function(){playMidi(baseMidi(state.root)-state.dist,0,.6);});
+$('playMov').addEventListener('click',function(){
+  var b=baseMidi(state.root),d=state.dist;
+  if(d===6){playMidi(b,0,.5);playMidi(b+6,.45,.5);playMidi(b,.95,.4);playMidi(b-6,1.4,.7);}
+  else{playMidi(b,0,.45);playMidi(b+d,.4,.5);playMidi(b,.95,.4);playMidi(b-d,1.35,.7);}
+});
+document.addEventListener('keydown',function(e){
+  if(e.target&&e.target.tagName==='INPUT')return;
+  if(e.key==='ArrowRight'&&state.dist<11){state.dist++;render();}
+  if(e.key==='ArrowLeft'&&state.dist>1){state.dist--;render();}
+});
+
+/* ================= ARRANQUE ================= */
+syncFree();
+renderFree();
+render();
+
+})();
+</script>
+</body>
+</html>
