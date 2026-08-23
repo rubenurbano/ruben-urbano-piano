@@ -132,6 +132,39 @@ footer .f-info{font-size:.75rem;color:var(--t3);margin-top:.3rem}
 /* Export */
 .export-bar{display:flex;gap:.5rem;justify-content:flex-end;margin-bottom:1rem;flex-wrap:wrap}
 @media(max-width:768px){.grid3{grid-template-columns:1fr}.wrap{padding:1rem}.credits{flex-direction:column;text-align:center}}
+/* Key detection & roman numerals */
+.key-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);border-radius:8px;padding:.4rem .8rem;font-size:.85rem;color:var(--gold);margin-bottom:.8rem}
+.key-badge .kv{font-family:'JetBrains Mono',monospace;font-weight:700}
+.rom{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-weight:700}
+.key-field{display:flex;gap:.5rem;align-items:center;margin:.5rem 0 1rem}
+.key-field input{max-width:160px}
+.key-field .hint{font-size:.7rem;color:var(--t3)}
+/* Transpose */
+.transpose-bar{display:flex;gap:.4rem;align-items:center}
+.tbtn{padding:.5rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--t2);cursor:pointer;font-size:.9rem;font-weight:700}
+.tbtn:hover{border-color:var(--cyan);color:var(--cyan)}
+/* Favorites */
+.fav-btn{padding:.5rem .8rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--t2);cursor:pointer;font-size:.9rem}
+.fav-btn.on,.fav-btn:hover{border-color:var(--gold);color:var(--gold)}
+.fav-chip{padding:.3rem .7rem;border:1px solid rgba(245,158,11,.35);border-radius:20px;background:rgba(245,158,11,.08);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:.75rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem}
+.fav-chip .x{color:var(--t3);font-weight:700}
+.fav-chip .x:hover{color:var(--red)}
+/* Practice mode */
+.practice-row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.practice-row select{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.6rem .9rem;color:var(--t1);font-family:'JetBrains Mono',monospace;font-size:.9rem}
+.practice-card{background:var(--bg);border:2px dashed var(--border);border-radius:12px;padding:1.5rem;text-align:center;margin-top:.5rem}
+.practice-card .pc-label{font-size:.75rem;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem}
+.practice-card .pc-item{font-family:'JetBrains Mono',monospace;font-size:1.6rem;color:var(--t1);font-weight:700;margin:.4rem 0}
+.practice-card .pc-item.prog{font-size:1.2rem}
+/* Scale comparison matrix */
+.cmp-wrap{overflow-x:auto;margin-top:.8rem}
+.cmp-tbl{border-collapse:collapse;font-size:.8rem;white-space:nowrap}
+.cmp-tbl th,.cmp-tbl td{border:1px solid var(--border);padding:.4rem .6rem;text-align:center}
+.cmp-tbl th{background:var(--bg3);color:var(--t2);font-size:.7rem;text-transform:uppercase}
+.cmp-tbl td.deg{background:var(--bg3);color:var(--t2);font-weight:700;text-align:left}
+.cmp-tbl td.has{color:var(--t1);font-family:'JetBrains Mono',monospace}
+.cmp-tbl td.has.ct{background:rgba(16,185,129,.15);color:var(--green);font-weight:700}
+.cmp-tbl td.miss{color:var(--t3)}
 </style>
 </head>
 <body>
@@ -161,11 +194,33 @@ footer .f-info{font-size:.75rem;color:var(--t3);margin-top:.3rem}
 <div style="display:flex;gap:.5rem;flex-wrap:wrap">
 <button class="btn" id="btnGo">Analizar Acorde</button>
 <button class="btn-outline" id="btnQuickRef">📋 Referencia Rápida</button>
+<button class="fav-btn" id="btnFavChord">☆ Guardar en favoritos</button>
 </div>
 <div class="quick" id="quickBtns"></div>
 <div class="history-bar" id="historyBar" style="display:none">
 <span style="font-size:.75rem;color:var(--t3);margin-right:.5rem">Historial:</span>
 </div>
+<div class="history-bar" id="favChordBar" style="display:none">
+<span style="font-size:.75rem;color:var(--t3);margin-right:.5rem">⭐ Favoritos:</span>
+</div>
+</div>
+
+<!-- Practice Mode -->
+<div class="panel">
+<h2>🎯 Modo Práctica</h2>
+<div class="practice-row">
+<select id="practiceStyle">
+<option value="Jazz">Jazz</option>
+<option value="Blues">Blues</option>
+<option value="Pop/Rock">Pop / Rock</option>
+<option value="Flamenco">Flamenco</option>
+<option value="Latin">Latin / Bossa</option>
+<option value="Funk">Funk / Neo-Soul</option>
+</select>
+<button class="btn btn-sm" id="btnRandChord">🎲 Acorde Aleatorio</button>
+<button class="btn btn-sm" id="btnRandProg">🎲 Progresión Aleatoria</button>
+</div>
+<div id="practiceOut"></div>
 </div>
 
 <!-- Progression Section -->
@@ -175,6 +230,15 @@ footer .f-info{font-size:.75rem;color:var(--t3);margin-top:.3rem}
 <div class="field" style="flex:1"><label>Progresión (separar con → o ,)</label><input type="text" id="progInp" placeholder="Dm7 → G7 → Cmaj7 → Am7"></div>
 <button class="btn btn-sm" id="btnProg">Analizar Progresión</button>
 </div>
+<div class="key-field">
+<div class="field" style="max-width:160px"><label>Tonalidad (opcional)</label><input type="text" id="keyInp" placeholder="auto"></div>
+<span class="hint">Déjalo vacío para detección automática</span>
+</div>
+<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem" class="transpose-bar">
+<button class="tbtn" id="btnTransDown" title="Bajar semitono">▼ Semitono</button>
+<button class="tbtn" id="btnTransUp" title="Subir semitono">▲ Semitono</button>
+<button class="fav-btn" id="btnFavProg">☆ Guardar en favoritos</button>
+</div>
 <div class="quick">
 <button class="qbtn" data-prog="Dm7 → G7 → Cmaj7">ii-V-I (C)</button>
 <button class="qbtn" data-prog="Dm7 → G7 → Cmaj7 → Am7">ii-V-I-vi</button>
@@ -182,6 +246,9 @@ footer .f-info{font-size:.75rem;color:var(--t3);margin-top:.3rem}
 <button class="qbtn" data-prog="Am7 → D7 → Gmaj7 → Em7">ii-V-I-iii (G)</button>
 <button class="qbtn" data-prog="Em7b5 → A7b9 → Dm7">ii-V-i (Dm)</button>
 <button class="qbtn" data-prog="Cmaj7 → D7 → G7 → Cmaj7">I-II-V-I</button>
+</div>
+<div class="history-bar" id="favProgBar" style="display:none">
+<span style="font-size:.75rem;color:var(--t3);margin-right:.5rem">⭐ Favoritos:</span>
 </div>
 <div id="progOut"></div>
 </div>
@@ -321,8 +388,19 @@ const CHORDS={
 '69':{n:'6/9',iv:[0,4,7,9,2],q:'maj69'}
 };
 
+// ===== STORAGE (localStorage) =====
+var STORE_KEYS={hist:'melodicAnalyzer_history',favChord:'melodicAnalyzer_favChords',favProg:'melodicAnalyzer_favProgs'};
+function loadStore(key){
+try{var raw=localStorage.getItem(key);return raw?JSON.parse(raw):[];}catch(e){return[];}
+}
+function saveStore(key,arr){
+try{localStorage.setItem(key,JSON.stringify(arr));}catch(e){/* storage unavailable, ignore */}
+}
+
 // ===== HISTORY =====
-var history=[];
+var history=loadStore(STORE_KEYS.hist);
+var favChords=loadStore(STORE_KEYS.favChord);
+var favProgs=loadStore(STORE_KEYS.favProg);
 
 // ===== PARSER =====
 function parseChord(str){
@@ -348,8 +426,11 @@ qual=qual.replace(/Δ7?/g,'maj7').replace(/ø7?/g,'m7b5').replace(/°7?/g,'dim7'
 var tpl=null,mq='';
 var keys=Object.keys(CHORDS).sort(function(a,b){return b.length-a.length});
 for(var k=0;k<keys.length;k++){
-if(qual===keys[k]||qual.toLowerCase()===keys[k].toLowerCase()){
-tpl=CHORDS[keys[k]];mq=keys[k];break;
+if(qual===keys[k]){tpl=CHORDS[keys[k]];mq=keys[k];break;}
+}
+if(!tpl){
+for(var k2=0;k2<keys.length;k2++){
+if(qual.toLowerCase()===keys[k2].toLowerCase()){tpl=CHORDS[keys[k2]];mq=keys[k2];break;}
 }
 }
 if(!tpl){
@@ -585,7 +666,7 @@ return ex;
 }
 
 // ===== PROGRESSION ANALYSIS =====
-function analyzeProgression(progStr){
+function analyzeProgression(progStr,keyOverrideStr){
 var parts=progStr.split(/[→,\->]+/).map(function(s){return s.trim()}).filter(function(s){return s.length>0});
 if(parts.length<2)return{err:'Introduce al menos 2 acordes separados por → o ,'};
 
@@ -597,6 +678,12 @@ chords.push(ch);
 }
 
 var analysis={chords:chords,commonTones:[],voiceLeading:[],cadences:[],functions:[]};
+
+// Key detection + roman numerals
+var manualKey=keyOverrideStr?parseKeyInput(keyOverrideStr):null;
+analysis.key=manualKey||detectKey(chords);
+analysis.keyIsManual=!!manualKey;
+analysis.romans=chords.map(function(ch){return chordRoman(ch,analysis.key.root)});
 
 // Detect roman numeral functions
 analysis.functions=detectFunctions(chords);
@@ -739,6 +826,109 @@ function getSimpleRootName(root,ch){
 return noteName(root,ch.uf);
 }
 
+// ===== KEY DETECTION & ROMAN NUMERALS =====
+var ROMAN_BASE=['I','bII','II','bIII','III','IV','#IV','V','bVI','VI','bVII','VII'];
+var MAJOR_EXPECTED={0:'maj',2:'min',4:'min',5:'maj',7:'dom',9:'min',11:'dim'};
+var MINOR_EXPECTED={0:'min',2:'dim',3:'maj',5:'min',7:'min',8:'maj',10:'maj'};
+
+function qualGroup(cq){
+if(cq.indexOf('dom')>-1||cq==='alt'||cq.indexOf('sus')>-1)return'dom';
+if(cq==='dim'||cq==='dim7'||cq==='m7b5')return'dim';
+if(cq.indexOf('min')>-1||cq==='mMaj7')return'min';
+if(cq.indexOf('maj')>-1||cq==='power')return'maj';
+return'other';
+}
+
+function detectKey(chords){
+var best=-999,bestKey=null;
+for(var root=0;root<12;root++){
+['major','minor'].forEach(function(mode){
+var exp=mode==='major'?MAJOR_EXPECTED:MINOR_EXPECTED;
+var score=0;
+chords.forEach(function(ch){
+var rel=(ch.root-root+12)%12;
+var g=qualGroup(ch.cq);
+if(exp[rel]!==undefined){
+if(exp[rel]===g)score+=3;
+else if(mode==='minor'&&rel===7&&g==='dom')score+=2.5; // V7 harmonic minor
+else score+=0.8;
+}else{
+score-=0.4;
+}
+});
+if(score>best){best=score;bestKey={root:root,mode:mode};}
+});
+}
+return bestKey;
+}
+
+function parseKeyInput(str){
+if(!str||!str.trim())return null;
+str=str.trim();
+var isMinor=/(m|min|menor)$/i.test(str)&&!/^[A-Ga-g][#b]?$/i.test(str);
+var rootPart=str.replace(/(min|menor|m)$/i,'').trim();
+var m=rootPart.match(/^([A-Ga-g])([#b]?)/);
+if(!m)return null;
+var rootStr=m[1].toUpperCase()+(m[2]||'');
+var root=N2I[rootStr];
+if(root===undefined)return null;
+return{root:root,mode:isMinor?'minor':'major'};
+}
+
+function chordRoman(ch,keyRoot){
+var rel=(ch.root-keyRoot+12)%12;
+var base=ROMAN_BASE[rel];
+var g=qualGroup(ch.cq);
+if(ch.cq==='m7b5')return base.toLowerCase()+'ø7';
+if(g==='dim')return base.toLowerCase()+'°';
+if(g==='min')return base.toLowerCase()+'7';
+if(g==='dom')return base+'7';
+if(g==='maj')return base+(ch.cq.indexOf('7')>-1?'maj7':'');
+return base;
+}
+
+function keyName(key){
+var uf=useFlats(key.root);
+return noteName(key.root,uf)+(key.mode==='minor'?' menor':' mayor');
+}
+
+// ===== TRANSPOSE =====
+function transposeChordStr(str,semi){
+str=str.trim();
+var bassSuffix='';
+var parts=str.split('/');
+var main=parts[0];
+if(parts.length>1){
+var bm=parts[1].trim().match(/^([A-Ga-g])([#b]?)/);
+if(bm){
+var bRootStr=bm[1].toUpperCase()+(bm[2]||'');
+var bRoot=N2I[bRootStr];
+if(bRoot!==undefined){
+var nbRoot=(bRoot+semi+12)%12;
+bassSuffix='/'+noteName(nbRoot,useFlats(nbRoot));
+}
+}
+}
+var m=main.match(/^([A-Ga-g])([#b]?)/);
+if(!m)return str;
+var rootStr=m[1].toUpperCase()+(m[2]||'');
+var root=N2I[rootStr];
+if(root===undefined)return str;
+var rest=main.slice(m[0].length);
+var newRoot=(root+semi+12)%12;
+var newRootName=noteName(newRoot,useFlats(newRoot));
+return newRootName+rest+bassSuffix;
+}
+
+function transposeProgressionStr(str,semi){
+var parts=str.split(/([→,])/); // keep separators
+return parts.map(function(p){
+var t=p.trim();
+if(t==='→'||t===','||t==='')return p;
+return transposeChordStr(t,semi);
+}).join('');
+}
+
 // ===== RENDER PROGRESSION =====
 function renderProgression(analysis){
 var out=document.getElementById('progOut');
@@ -750,18 +940,23 @@ return;
 var h='';
 var chords=analysis.chords;
 
-// Chord flow
+// Key badge
+if(analysis.key){
+h+='<div class="key-badge">🔑 Tonalidad '+(analysis.keyIsManual?'(manual)':'(detectada)')+': <span class="kv">'+keyName(analysis.key)+'</span></div>';
+}
+
+// Chord flow with roman numerals
 h+='<div class="sec"><div class="sec-t">Progresión</div><div class="prog-chords">';
 chords.forEach(function(ch,i){
 if(i>0)h+='<span class="prog-arrow">→</span>';
-h+='<span class="prog-chord">'+ch.rootName+ch.qual+'</span>';
+h+='<span class="prog-chord">'+ch.rootName+ch.qual+'<br><span class="rom" style="font-size:.75rem">'+(analysis.romans?analysis.romans[i]:'')+'</span></span>';
 });
 h+='</div></div>';
 
 // Functions
-h+='<div class="sec"><div class="sec-t">Función Armónica</div><table class="tbl"><thead><tr><th>Acorde</th><th>Función</th></tr></thead><tbody>';
+h+='<div class="sec"><div class="sec-t">Función Armónica</div><table class="tbl"><thead><tr><th>Acorde</th><th>Grado</th><th>Función</th></tr></thead><tbody>';
 chords.forEach(function(ch,i){
-h+='<tr><td><strong>'+ch.rootName+ch.qual+'</strong></td><td>'+analysis.functions[i]+'</td></tr>';
+h+='<tr><td><strong>'+ch.rootName+ch.qual+'</strong></td><td class="rom">'+(analysis.romans?analysis.romans[i]:'—')+'</td><td>'+analysis.functions[i]+'</td></tr>';
 });
 h+='</tbody></table></div>';
 
@@ -899,6 +1094,8 @@ var styles=(s.styles||[]).slice(0,3).join(', ');
 h+='<tr><td><strong>'+ch.rootName+' '+s.name+'</strong></td><td style="font-size:.75rem;color:var(--cyan)">'+styles+'</td><td><span class="badge '+lc+'">'+lbl+'</span></td><td>'+s.extra.length+'</td></tr>';
 });
 h+='</tbody></table></div>';
+
+h+=renderScaleMatrix(ch,sc.slice(0,5));
 
 sc.slice(0,5).forEach(function(s,i2){
 var lbl=i2===0?'b1':(i2<2?'b3':'b5');
@@ -1125,6 +1322,31 @@ h+='Alterado: máxima tensión (b9, #9, b5, #5).';
 return h;
 }
 
+function renderScaleMatrix(ch,scales){
+if(scales.length<2)return'';
+var degrees=[0,1,2,3,4,5,6,7,8,9,10,11];
+var h='<div class="sec"><div class="sec-t">Comparativa Lado a Lado — Notas Características</div>';
+h+='<div class="cmp-wrap"><table class="cmp-tbl"><thead><tr><th style="text-align:left">Grado</th>';
+scales.forEach(function(s){h+='<th>'+s.name+'</th>';});
+h+='</tr></thead><tbody>';
+degrees.forEach(function(iv){
+h+='<tr><td class="deg">'+(INT_NAME[iv]||iv)+'</td>';
+scales.forEach(function(s){
+if(s.iv.indexOf(iv)>-1){
+var ni=(ch.root+iv)%12;
+var isCT=ch.notes.indexOf(ni)>-1;
+h+='<td class="has'+(isCT?' ct':'')+'">'+noteName(ni,ch.uf)+'</td>';
+}else{
+h+='<td class="miss">–</td>';
+}
+});
+h+='</tr>';
+});
+h+='</tbody></table></div>';
+h+='<div class="exp">Verde = nota del acorde presente en esa escala. Compara de un vistazo qué grados distinguen a cada escala candidata antes de elegir.</div></div>';
+return h;
+}
+
 function renderPiano(ch,notes){
 var box=document.getElementById('pianoBox');
 if(!box)return;
@@ -1186,6 +1408,7 @@ function addToHistory(chordStr){
 if(history.indexOf(chordStr)===-1){
 history.unshift(chordStr);
 if(history.length>12)history.pop();
+saveStore(STORE_KEYS.hist,history);
 renderHistory();
 }
 }
@@ -1207,14 +1430,140 @@ bar.appendChild(chip);
 });
 }
 
+// ===== FAVORITES =====
+function renderFavChips(barId,arr,storeKey,onClick){
+var bar=document.getElementById(barId);
+if(arr.length===0){bar.style.display='none';return;}
+bar.style.display='flex';
+var label=barId==='favChordBar'?'⭐ Favoritos:':'⭐ Favoritos:';
+bar.innerHTML='<span style="font-size:.75rem;color:var(--t3);margin-right:.5rem">'+label+'</span>';
+arr.forEach(function(item,idx){
+var chip=document.createElement('span');
+chip.className='fav-chip';
+var txt=document.createElement('span');
+txt.textContent=item;
+txt.addEventListener('click',function(){onClick(item);});
+var x=document.createElement('span');
+x.className='x';x.textContent='✕';
+x.addEventListener('click',function(ev){
+ev.stopPropagation();
+arr.splice(idx,1);
+saveStore(storeKey,arr);
+renderFavChips(barId,arr,storeKey,onClick);
+});
+chip.appendChild(txt);chip.appendChild(x);
+bar.appendChild(chip);
+});
+}
+function renderFavChords(){
+renderFavChips('favChordBar',favChords,STORE_KEYS.favChord,function(item){
+document.getElementById('inp').value=item;doAnalyze();
+});
+}
+function renderFavProgs(){
+renderFavChips('favProgBar',favProgs,STORE_KEYS.favProg,function(item){
+document.getElementById('progInp').value=item;doProgression();
+});
+}
+function toggleFavChord(){
+var v=document.getElementById('inp').value.trim();
+if(!v)return;
+var i=favChords.indexOf(v);
+if(i>-1)favChords.splice(i,1);else favChords.unshift(v);
+saveStore(STORE_KEYS.favChord,favChords);
+renderFavChords();
+}
+function toggleFavProg(){
+var v=document.getElementById('progInp').value.trim();
+if(!v)return;
+var i=favProgs.indexOf(v);
+if(i>-1)favProgs.splice(i,1);else favProgs.unshift(v);
+saveStore(STORE_KEYS.favProg,favProgs);
+renderFavProgs();
+}
+
 function doProgression(){
 var inp=document.getElementById('progInp').value;
+var keyOv=document.getElementById('keyInp').value;
 if(!inp.trim()){
 document.getElementById('progOut').innerHTML='<div class="err">Introduce una progresión.</div>';
 return;
 }
-var analysis=analyzeProgression(inp);
+var analysis=analyzeProgression(inp,keyOv);
 renderProgression(analysis);
+}
+
+function doTranspose(semi){
+var el=document.getElementById('progInp');
+if(!el.value.trim())return;
+el.value=transposeProgressionStr(el.value,semi);
+var keyEl=document.getElementById('keyInp');
+if(keyEl.value.trim()){
+var k=parseKeyInput(keyEl.value);
+if(k){
+var nr=(k.root+semi+12)%12;
+keyEl.value=noteName(nr,useFlats(nr))+(k.mode==='minor'?'m':'');
+}
+}
+doProgression();
+}
+
+// ===== PRACTICE MODE =====
+var STYLE_POOLS={
+'Jazz':{chords:['maj7','m7','7','m7b5','dim7','7#9','7alt','9','13'],
+progs:['Dm7 → G7 → Cmaj7','Em7b5 → A7b9 → Dm7','Fmaj7 → Em7 → Dm7 → G7','Am7 → D7 → Gmaj7','Cmaj7 → A7 → Dm7 → G7']},
+'Blues':{chords:['7','9','13','7#9','m7'],
+progs:['C7 → F7 → C7 → C7','F7 → F7 → C7 → C7','G7 → F7 → C7 → G7','C7 → C7 → C7 → C7']},
+'Pop/Rock':{chords:['','m','sus4','6','add9'],
+progs:['C → G → Am → F','Am → F → C → G','C → Am → F → G','F → G → Em → Am']},
+'Flamenco':{chords:['','7','sus4','m'],
+progs:['Am → G → F → E7','Dm → C → Bb → A7','Em → D → C → B7']},
+'Latin':{chords:['maj7','m7','7','9','m9'],
+progs:['Dm7 → G7 → Cmaj7 → A7','Am7 → D7 → Gmaj7 → Em7','Fmaj7 → Bm7b5 → E7 → Am7']},
+'Funk':{chords:['9','13','m7','7#9','m9'],
+progs:['Dm9 → G13 → Cmaj9','Em7 → A7#9 → Dm9','Am7 → D9 → Gmaj7']}
+};
+var NOTE_ROOTS=['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'];
+
+function randChordFromStyle(style){
+var pool=STYLE_POOLS[style]||STYLE_POOLS['Jazz'];
+var root=NOTE_ROOTS[Math.floor(Math.random()*NOTE_ROOTS.length)];
+var qual=pool.chords[Math.floor(Math.random()*pool.chords.length)];
+return root+qual;
+}
+function randProgFromStyle(style){
+var pool=STYLE_POOLS[style]||STYLE_POOLS['Jazz'];
+var base=pool.progs[Math.floor(Math.random()*pool.progs.length)];
+var semi=Math.floor(Math.random()*12);
+return semi===0?base:transposeProgressionStr(base,semi);
+}
+
+function showPracticeChord(){
+var style=document.getElementById('practiceStyle').value;
+var chStr=randChordFromStyle(style);
+var out=document.getElementById('practiceOut');
+out.innerHTML='<div class="practice-card"><div class="pc-label">Estilo: '+style+' — identifica escala y notas guía</div>'+
+'<div class="pc-item">'+chStr+'</div>'+
+'<button class="btn btn-sm" id="btnRevealChord">👁 Revelar Análisis</button></div>';
+document.getElementById('btnRevealChord').addEventListener('click',function(){
+document.getElementById('inp').value=chStr;
+doAnalyze();
+window.scrollTo({top:document.getElementById('out').offsetTop-20,behavior:'smooth'});
+});
+}
+function showPracticeProg(){
+var style=document.getElementById('practiceStyle').value;
+var progStr=randProgFromStyle(style);
+var out=document.getElementById('practiceOut');
+out.innerHTML='<div class="practice-card"><div class="pc-label">Estilo: '+style+' — identifica cadencias y grados</div>'+
+'<div class="pc-item prog">'+progStr+'</div>'+
+'<button class="btn btn-sm" id="btnRevealProg">👁 Revelar Análisis</button></div>';
+document.getElementById('btnRevealProg').addEventListener('click',function(){
+document.getElementById('progInp').value=progStr;
+document.getElementById('keyInp').value='';
+doProgression();
+window.scrollTo({top:document.getElementById('progOut').offsetTop-20,behavior:'smooth'});
+});
 }
 
 // ===== EVENT LISTENERS =====
@@ -1223,6 +1572,15 @@ document.getElementById('inp').addEventListener('keypress',function(e){if(e.key=
 document.getElementById('btnQuickRef').addEventListener('click',showQuickRef);
 document.getElementById('btnProg').addEventListener('click',doProgression);
 document.getElementById('progInp').addEventListener('keypress',function(e){if(e.key==='Enter')doProgression()});
+document.getElementById('keyInp').addEventListener('keypress',function(e){if(e.key==='Enter')doProgression()});
+document.getElementById('btnTransUp').addEventListener('click',function(){doTranspose(1)});
+document.getElementById('btnTransDown').addEventListener('click',function(){doTranspose(-1)});
+document.getElementById('btnFavChord').addEventListener('click',toggleFavChord);
+document.getElementById('btnFavProg').addEventListener('click',toggleFavProg);
+document.getElementById('btnRandChord').addEventListener('click',showPracticeChord);
+document.getElementById('btnRandProg').addEventListener('click',showPracticeProg);
+renderFavChords();
+renderFavProgs();
 
 // Quick chord buttons
 var quickList=['Cmaj7','Dm7','Em7','Fmaj7','G7','Am7','Bm7b5','C7#9','G7alt','Dm7b5','C7b9','F#m7','Bbmaj7','Ebm7','Ab7','Csus4','C9sus4','Cdim7','CmMaj7','C7#11','Dm9','G13','Am11'];
