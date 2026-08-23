@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Los 6 Lugares del Acorde · Tutorial Interactivo</title>
+<style>
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --border:#1e3a5f; --accent:#00d4ff;
+  --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+  --text:#e2e8f0; --muted:#94a3b8; --dim:#64748b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.65;overflow-x:hidden}
+svg text{font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+::selection{background:rgba(0,212,255,.25)}
+
+/* ---------- barra de progreso ---------- */
+#progressBar{position:fixed;top:0;left:0;height:4px;width:0%;background:linear-gradient(90deg,var(--accent),var(--purple));z-index:1002;box-shadow:0 0 10px rgba(0,212,255,.6);transition:width .1s linear}
+
+/* ---------- navbar ---------- */
+nav#mainNav{position:fixed;top:4px;left:0;right:0;z-index:1000;background:rgba(10,14,26,.96);border-bottom:1px solid var(--border);backdrop-filter:blur(8px)}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:0 16px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--accent);font-size:15px;letter-spacing:1px;padding:12px 0;white-space:nowrap;cursor:pointer;background:none;border:none;font-family:inherit}
+.brand .b-num{background:var(--accent);color:#0a0e1a;border-radius:6px;padding:1px 7px;font-size:14px}
+.nav-links{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;flex:1;padding:8px 2px}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links button{flex:0 0 auto;background:none;border:1px solid transparent;color:var(--muted);font-family:inherit;font-size:13.5px;font-weight:600;padding:8px 13px;border-radius:8px;cursor:pointer;letter-spacing:.4px;transition:all .2s;white-space:nowrap}
+.nav-links button:hover{color:var(--text);border-color:var(--border);background:rgba(30,58,95,.25)}
+.nav-links button.active{color:var(--accent);border-color:rgba(0,212,255,.5);background:rgba(0,212,255,.08);box-shadow:inset 0 -2px 0 var(--accent)}
+.nav-links button.credits-btn{color:var(--amber)}
+.nav-links button.credits-btn.active{color:var(--amber);border-color:rgba(245,158,11,.55);background:rgba(245,158,11,.09);box-shadow:inset 0 -2px 0 var(--amber)}
+
+/* ---------- layout ---------- */
+.page{display:none;padding-top:64px;min-height:100vh}
+.page.active{display:block;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.container{max-width:1100px;margin:0 auto;padding:28px 18px 60px}
+
+/* ---------- portada / home ---------- */
+.hero-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;letter-spacing:1.5px;padding:7px 14px;border-radius:999px;border:1px solid}
+.chip-cyan{color:var(--accent);border-color:rgba(0,212,255,.45);background:rgba(0,212,255,.07)}
+.chip-dim{color:var(--muted);border-color:var(--border);background:var(--card)}
+.cover{display:block;width:100%;aspect-ratio:16/9;border:1px solid var(--border);border-radius:12px;background:#0d1526;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+h1{font-size:clamp(28px,4.5vw,46px);font-weight:800;margin:26px 0 10px;line-height:1.15}
+h1 .hl{color:var(--accent)}
+.subtitle{font-size:clamp(16px,2.2vw,20px);color:var(--accent);font-weight:600;margin-bottom:12px}
+.desc{color:var(--muted);font-size:clamp(15px,1.8vw,17px);max-width:860px}
+.quote{margin:28px 0;padding:20px 24px;border-left:4px solid var(--accent);background:var(--card);border-radius:0 12px 12px 0;font-size:clamp(16px,2vw,19px);font-style:italic;color:var(--text);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:26px}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;transition:transform .2s,border-color .2s}
+.metric:hover{transform:translateY(-3px);border-color:var(--accent)}
+.metric .m-val{font-size:30px;font-weight:800;display:block}
+.metric .m-lab{font-size:12.5px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;display:block}
+
+/* ---------- secciones ---------- */
+.sec-header{display:flex;align-items:center;gap:14px;margin:8px 0 22px;flex-wrap:wrap}
+.sec-icon{font-size:24px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:rgba(0,212,255,.08);border:1px solid var(--border);border-radius:12px;flex:0 0 auto}
+.sec-kicker{font-size:11.5px;letter-spacing:3px;color:var(--accent);font-weight:700;text-transform:uppercase}
+.sec-header h2{font-size:clamp(22px,3.4vw,32px);font-weight:800;line-height:1.2}
+p.lead{color:var(--muted);margin-bottom:16px}
+p.body{margin-bottom:14px}
+strong{color:#fff}
+.em-cyan{color:var(--accent);font-weight:700}
+.em-green{color:var(--green);font-weight:700}
+.em-amber{color:var(--amber);font-weight:700}
+.em-red{color:var(--red);font-weight:700}
+.em-purple{color:var(--purple);font-weight:700}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:18px}
+.card h3{font-size:18px;margin-bottom:10px;color:var(--text)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}}
+
+.concept{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;border-top:3px solid var(--accent)}
+.concept h4{font-size:16px;margin-bottom:8px;color:var(--accent)}
+.concept p{color:var(--muted);font-size:14.5px}
+
+/* chips / badges */
+.badge{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:1.4px;padding:4px 11px;border-radius:999px;border:1px solid}
+.b-cyan{color:var(--accent);border-color:rgba(0,212,255,.5);background:rgba(0,212,255,.08)}
+.b-green{color:var(--green);border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.08)}
+.b-amber{color:var(--amber);border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.08)}
+.b-red{color:var(--red);border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.08)}
+.b-purple{color:var(--purple);border-color:rgba(168,85,247,.5);background:rgba(168,85,247,.08)}
+.b-dim{color:var(--muted);border-color:var(--border);background:rgba(30,58,95,.2)}
+
+/* callouts */
+.callout{border-radius:10px;padding:16px 18px;margin:18px 0;border:1px solid;border-left-width:5px;font-size:14.5px}
+.callout .co-title{font-weight:800;letter-spacing:1.5px;font-size:12.5px;display:block;margin-bottom:6px}
+.co-info{background:rgba(0,212,255,.06);border-color:rgba(0,212,255,.35)}
+.co-info .co-title{color:var(--accent)}
+.co-ejemplo{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.35)}
+.co-ejemplo .co-title{color:var(--green)}
+.co-warning{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.35)}
+.co-warning .co-title{color:var(--amber)}
+.co-error{background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.35)}
+.co-error .co-title{color:var(--red)}
+.callout p{color:var(--text)}
+.callout p + p{margin-top:8px}
+
+/* tarjetas de movimiento */
+.mov-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.mov-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.mov-card:hover{transform:translateY(-4px);box-shadow:0 8px 26px rgba(0,0,0,.45)}
+.mov-card .mc-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.mov-num{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800;flex:0 0 auto}
+.mov-card h4{font-size:16px}
+.mov-card .mc-sub{font-size:12px;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
+.dest-row{display:flex;gap:10px;margin:8px 0}
+.dest{flex:1;background:rgba(10,14,26,.7);border:1px solid var(--border);border-radius:9px;padding:10px 12px}
+.dest .d-dir{font-size:11px;letter-spacing:1.5px;color:var(--dim);display:block}
+.dest .d-note{font-size:17px;font-weight:800}
+.dest .d-lin{font-size:11.5px;color:var(--dim);display:block}
+.mc-foot{margin-top:12px;font-size:13px;color:var(--muted);border-top:1px dashed var(--border);padding-top:10px}
+.mc-cyan{border-top:3px solid var(--accent)} .mc-cyan .mov-num{background:rgba(0,212,255,.12);color:var(--accent);border:1px solid rgba(0,212,255,.5)} .mc-cyan .d-note{color:var(--accent)}
+.mc-green{border-top:3px solid var(--green)} .mc-green .mov-num{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.5)} .mc-green .d-note{color:var(--green)}
+.mc-purple{border-top:3px solid var(--purple)} .mc-purple .mov-num{background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.5)} .mc-purple .d-note{color:var(--purple)}
+.mc-amber{border-top:3px solid var(--amber)} .mc-amber .mov-num{background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.5)} .mc-amber .d-note{color:var(--amber)}
+.mc-red{border-top:3px solid var(--red)} .mc-red .mov-num{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.5)} .mc-red .d-note{color:var(--red)}
+.tri-banner{background:linear-gradient(135deg,rgba(239,68,68,.12),rgba(245,158,11,.08));border:1px solid rgba(239,68,68,.4);border-radius:12px;padding:18px 20px;margin-top:16px}
+
+/* tablas */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:16px 0;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px}
+th{background:#111c33;color:var(--accent);text-align:left;padding:12px 14px;font-size:12.5px;letter-spacing:1.2px;text-transform:uppercase;border-bottom:2px solid var(--border)}
+td{padding:11px 14px;border-bottom:1px solid rgba(30,58,95,.5);color:var(--text)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,212,255,.04)}
+td b{color:#fff}
+
+/* acordeón */
+.acc{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:16px 0;background:var(--card)}
+.acc-btn{width:100%;background:none;border:none;color:var(--text);font-family:inherit;font-size:15.5px;font-weight:700;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;text-align:left}
+.acc-btn:hover{color:var(--accent)}
+.acc-btn .acc-arrow{transition:transform .25s;color:var(--accent);font-size:13px}
+.acc.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.acc.open .acc-body{max-height:600px}
+.acc-body-inner{padding:0 20px 18px;color:var(--muted);font-size:14.5px}
+
+/* laboratorio */
+.stbtns{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.stbtns button{width:52px;height:52px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:17px;font-weight:800;cursor:pointer;transition:all .18s}
+.stbtns button:hover{border-color:var(--accent);color:var(--accent)}
+.stbtns button.on{background:var(--accent);border-color:var(--accent);color:#0a0e1a;box-shadow:0 0 16px rgba(0,212,255,.5)}
+.stbtns button.tri.on{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 16px rgba(239,68,68,.5)}
+.lab-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+@media(max-width:860px){.lab-grid{grid-template-columns:1fr}}
+.lab-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
+.lab-panel h4{font-size:13px;letter-spacing:2px;color:var(--dim);text-transform:uppercase;margin-bottom:12px}
+.lab-panel svg{width:100%;height:auto;display:block}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+@media(max-width:520px){.res-grid{grid-template-columns:1fr}}
+.res-box{background:rgba(10,14,26,.7);border:1px solid var(--border);border-radius:10px;padding:14px}
+.res-box .r-lab{font-size:11px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase;display:block;margin-bottom:4px}
+.res-box .r-val{font-size:19px;font-weight:800}
+.res-note{margin-top:14px;padding:13px 16px;border-radius:10px;font-size:14px;border:1px solid var(--border);background:rgba(0,212,255,.05);color:var(--text)}
+.res-note.tri{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.07)}
+.res-note.mirror{border-color:rgba(168,85,247,.5);background:rgba(168,85,247,.07)}
+
+/* mini rueda */
+.mw-node{fill:#0f172a;stroke:#334155;stroke-width:2;transition:all .25s}
+.mw-txt{fill:#94a3b8;font-size:10.5px;font-weight:700;text-anchor:middle;pointer-events:none}
+.mw-node.root{stroke:#00d4ff;stroke-width:2.5}
+.mw-node.up{fill:rgba(0,212,255,.28);stroke:#00d4ff;stroke-width:3}
+.mw-node.down{fill:rgba(34,197,94,.28);stroke:#22c55e;stroke-width:3}
+.mw-node.tri{fill:rgba(239,68,68,.3);stroke:#ef4444;stroke-width:3}
+.mw-axis{stroke:#475569;stroke-opacity:.25;stroke-dasharray:3 7;transition:all .25s}
+.mw-axis.on{stroke:#f59e0b;stroke-opacity:.9;stroke-width:2}
+
+/* piano */
+.pk-w{fill:#cbd5e1;stroke:#0a0e1a;stroke-width:1.5;transition:fill .2s}
+.pk-b{fill:#0f172a;stroke:#334155;stroke-width:1.5;transition:fill .2s}
+.pk-w.up,.pk-b.up{fill:#00d4ff}
+.pk-w.down,.pk-b.down{fill:#22c55e}
+.pk-w.tri,.pk-b.tri{fill:#ef4444}
+.pk-w.root{fill:#e0f7ff;stroke:#00d4ff;stroke-width:2}
+.pk-lab{fill:#64748b;font-size:11px;font-weight:700;text-anchor:middle;pointer-events:none}
+
+/* quiz */
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.q-card .q-n{font-size:11px;letter-spacing:2px;color:var(--accent);font-weight:800}
+.q-card h4{font-size:15.5px;margin:6px 0 12px}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opts button{background:rgba(10,14,26,.7);border:1px solid var(--border);border-radius:9px;color:var(--text);font-family:inherit;font-size:14px;padding:11px 14px;text-align:left;cursor:pointer;transition:all .18s}
+.q-opts button:hover:not(:disabled){border-color:var(--accent)}
+.q-opts button:disabled{cursor:default;opacity:.75}
+.q-opts button.ok{background:rgba(34,197,94,.15);border-color:var(--green);color:#bbf7d0;opacity:1}
+.q-opts button.bad{background:rgba(239,68,68,.13);border-color:var(--red);color:#fecaca;opacity:1}
+.q-expl{display:none;margin-top:12px;padding:12px 14px;border-radius:9px;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.3);font-size:13.5px;color:var(--muted)}
+.q-expl.show{display:block}
+.q-score{font-size:14px;color:var(--muted);margin:10px 0 16px}
+.q-score b{color:var(--accent)}
+.btn{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.5);color:var(--accent);font-family:inherit;font-size:14px;font-weight:700;padding:10px 20px;border-radius:9px;cursor:pointer;transition:all .2s}
+.btn:hover{background:rgba(0,212,255,.2)}
+
+/* resumen final */
+.resumen{background:linear-gradient(135deg,rgba(0,212,255,.07),rgba(168,85,247,.06));border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:20px}
+.resumen h3{color:var(--accent);margin-bottom:12px}
+.resumen ol{padding-left:22px;color:var(--text)}
+.resumen li{margin-bottom:8px;font-size:14.5px}
+
+/* créditos */
+.credit-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:30px;text-align:center;margin-top:24px}
+.credit-card .c-name{font-size:clamp(22px,3vw,30px);font-weight:800;color:var(--accent);margin:6px 0}
+.credit-card .c-role{font-size:13px;letter-spacing:2.5px;color:var(--dim);text-transform:uppercase}
+.c-meta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:20px 0}
+.c-latin{font-style:italic;color:var(--amber);font-size:17px;margin-top:14px;letter-spacing:.5px}
+.c-edu{display:inline-block;margin-top:14px;font-size:13px;color:var(--muted);border:1px dashed var(--border);border-radius:999px;padding:8px 18px}
+
+/* volver arriba */
+#toTop{position:fixed;right:18px;bottom:18px;width:48px;height:48px;border-radius:12px;border:1px solid rgba(0,212,255,.5);background:rgba(15,23,42,.95);color:var(--accent);font-size:20px;cursor:pointer;z-index:999;opacity:0;visibility:hidden;transition:all .25s;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+#toTop.show{opacity:1;visibility:visible}
+#toTop:hover{background:var(--accent);color:#0a0e1a}
+
+/* footer */
+footer{border-top:1px solid var(--border);background:#0c1222;padding:30px 18px;text-align:center;color:var(--muted);font-size:14px}
+footer .f-line{margin:5px 0}
+footer .f-latin{color:var(--amber);font-style:italic;margin-top:10px}
+footer b{color:var(--text)}
+
+/* steps */
+.steps{counter-reset:step;list-style:none;margin:14px 0}
+.steps li{counter-increment:step;position:relative;padding:12px 14px 12px 58px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;font-size:14.5px}
+.steps li::before{content:counter(step);position:absolute;left:14px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:9px;background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.5);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800}
+
+/* responsive */
+@media(max-width:640px){
+  .container{padding:20px 12px 50px}
+  .brand span.b-txt{display:none}
+  .card{padding:16px}
+  .mov-grid{grid-template-columns:1fr}
+  .chip{font-size:11px}
+  .hero-top{justify-content:center}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div id="progressBar" role="progressbar" aria-label="Progreso de lectura"></div>
+
+<!-- ============ SÍMBOLO SVG DE PORTADA (compartido HOME + CRÉDITOS) ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="coverSym" viewBox="0 0 1600 900">
+<defs>
+<linearGradient id="cbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d1526"/><stop offset="1" stop-color="#0a0e1a"/></linearGradient>
+<radialGradient id="cglowbg" cx="0.69" cy="0.49" r="0.55"><stop offset="0" stop-color="#16253f" stop-opacity="0.85"/><stop offset="1" stop-color="#0a0e1a" stop-opacity="0"/></radialGradient>
+<pattern id="cgrid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#1e3a5f" stroke-opacity="0.13"/></pattern>
+<filter id="cglow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1600" height="900" fill="url(#cbg)"/>
+<rect width="1600" height="900" fill="url(#cglowbg)"/>
+<rect width="1600" height="900" fill="url(#cgrid)"/>
+<path d="M60,856 q20,-16 40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0" fill="none" stroke="#00d4ff" stroke-width="2" stroke-opacity="0.18" stroke-dasharray="6 10"><animate attributeName="stroke-dashoffset" from="0" to="-160" dur="5s" repeatCount="indefinite"/></path>
+<path d="M60,872 q20,-12 40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0 t40,0" fill="none" stroke="#a855f7" stroke-width="2" stroke-opacity="0.12" stroke-dasharray="4 12"><animate attributeName="stroke-dashoffset" from="0" to="160" dur="7s" repeatCount="indefinite"/></path>
+<rect x="80" y="64" width="468" height="40" rx="8" fill="none" stroke="#00d4ff" stroke-opacity="0.35"/>
+<text x="104" y="90" font-size="16" letter-spacing="3" fill="#00d4ff" font-weight="600">TEORÍA MUSICAL · ARMONÍA SIMÉTRICA</text>
+<text x="80" y="196" font-size="76" font-weight="800" fill="#f1f5f9" letter-spacing="1">LOS 6 LUGARES</text>
+<text x="80" y="280" font-size="76" font-weight="800" fill="#00d4ff" letter-spacing="1">DEL ACORDE</text>
+<text x="80" y="330" font-size="25" fill="#94a3b8">Una perspectiva simétrica de la octava musical</text>
+<line x1="80" y1="360" x2="560" y2="360" stroke="#1e3a5f" stroke-width="2"/>
+<g opacity="0.45"><animate attributeName="opacity" values="1;1;.45;.45;1" keyTimes="0;0.1517;0.1667;0.9850;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="96" cy="406" r="7" fill="#00d4ff"/>
+<text x="118" y="412" font-size="20" fill="#cbd5e1">1 semitono → Db(♭II) / B(VII)</text>
+</g>
+<g opacity="0.45"><animate attributeName="opacity" values=".45;.45;1;1;.45;.45" keyTimes="0;0.1517;0.1667;0.3183;0.3333;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="96" cy="456" r="7" fill="#22c55e"/>
+<text x="118" y="462" font-size="20" fill="#cbd5e1">2 semitonos → D(II) / Bb(♭VII)</text>
+</g>
+<g opacity="0.45"><animate attributeName="opacity" values=".45;.45;1;1;.45;.45" keyTimes="0;0.3183;0.3333;0.4850;0.5000;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="96" cy="506" r="7" fill="#a855f7"/>
+<text x="118" y="512" font-size="20" fill="#cbd5e1">3 semitonos → Eb(♭III) / A(VI)</text>
+</g>
+<g opacity="0.45"><animate attributeName="opacity" values=".45;.45;1;1;.45;.45" keyTimes="0;0.4850;0.5000;0.6517;0.6667;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="96" cy="556" r="7" fill="#f59e0b"/>
+<text x="118" y="562" font-size="20" fill="#cbd5e1">4 semitonos → E(III) / Ab(♭VI)</text>
+</g>
+<g opacity="0.45"><animate attributeName="opacity" values=".45;.45;1;1;.45;.45" keyTimes="0;0.6517;0.6667;0.8183;0.8333;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="96" cy="606" r="7" fill="#00d4ff"/>
+<text x="118" y="612" font-size="20" fill="#cbd5e1">5 semitonos → F(IV) / G(V)</text>
+</g>
+<g opacity="0.45"><animate attributeName="opacity" values=".45;.45;1;1;.45" keyTimes="0;0.8183;0.8333;0.9850;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="96" cy="656" r="7" fill="#ef4444"/>
+<text x="118" y="662" font-size="20" fill="#cbd5e1">6 semitonos → F#(♯IV) · TRITONO</text>
+</g>
+<text x="80" y="726" font-size="17" fill="#64748b">C(I) = centro geométrico del espejo</text>
+<text x="80" y="754" font-size="17" fill="#64748b">Cada distancia tiene dos direcciones: gemelos no idénticos</text>
+<rect x="1280" y="64" width="240" height="40" rx="8" fill="#0f172a" stroke="#1e3a5f"/>
+<text x="1400" y="90" font-size="15" letter-spacing="2" fill="#94a3b8" text-anchor="middle">OCTAVA = 12 SEMITONOS</text>
+<line x1="1100" y1="100" x2="1100" y2="782" stroke="#475569" stroke-opacity="0.4" stroke-dasharray="3 9"/>
+<g><animateTransform attributeName="transform" type="rotate" from="0 1100 440" to="360 1100 440" dur="80s" repeatCount="indefinite"/><circle cx="1100" cy="440" r="338" fill="none" stroke="#1e3a5f" stroke-opacity="0.6" stroke-dasharray="3 14"/></g>
+<circle r="5" fill="#00d4ff" opacity="0.75"><animateMotion dur="26s" repeatCount="indefinite" path="M1100,102 a338,338 0 1,1 -0.01,0"/></circle>
+<circle cx="1100" cy="440" r="300" fill="none" stroke="#16233d" stroke-width="1.5"/>
+<g opacity="0"><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.1517;0.1667;0.9850;1" dur="12s" repeatCount="indefinite"/>
+<line x1="1100" y1="140" x2="1250" y2="180.2" stroke="#00d4ff" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1100" y1="140" x2="950" y2="180.2" stroke="#00d4ff" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1250" y1="180.2" x2="950" y2="180.2" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.55"/>
+<circle cx="1250" cy="180.2" r="7" fill="#00d4ff"/>
+<circle cx="950" cy="180.2" r="7" fill="#00d4ff"/>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.1517;0.1667;0.3183;0.3333;1" dur="12s" repeatCount="indefinite"/>
+<line x1="1100" y1="140" x2="1359.8" y2="290" stroke="#22c55e" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1100" y1="140" x2="840.2" y2="290" stroke="#22c55e" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1359.8" y1="290" x2="840.2" y2="290" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.55"/>
+<circle cx="1359.8" cy="290" r="7" fill="#22c55e"/>
+<circle cx="840.2" cy="290" r="7" fill="#22c55e"/>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.3183;0.3333;0.4850;0.5000;1" dur="12s" repeatCount="indefinite"/>
+<line x1="1100" y1="140" x2="1400" y2="440" stroke="#a855f7" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1100" y1="140" x2="800" y2="440" stroke="#a855f7" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1400" y1="440" x2="800" y2="440" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.55"/>
+<circle cx="1400" cy="440" r="7" fill="#a855f7"/>
+<circle cx="800" cy="440" r="7" fill="#a855f7"/>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.4850;0.5000;0.6517;0.6667;1" dur="12s" repeatCount="indefinite"/>
+<line x1="1100" y1="140" x2="1359.8" y2="590" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1100" y1="140" x2="840.2" y2="590" stroke="#f59e0b" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1359.8" y1="590" x2="840.2" y2="590" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.55"/>
+<circle cx="1359.8" cy="590" r="7" fill="#f59e0b"/>
+<circle cx="840.2" cy="590" r="7" fill="#f59e0b"/>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.6517;0.6667;0.8183;0.8333;1" dur="12s" repeatCount="indefinite"/>
+<line x1="1100" y1="140" x2="1250" y2="699.8" stroke="#00d4ff" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1100" y1="140" x2="950" y2="699.8" stroke="#00d4ff" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1250" y1="699.8" x2="950" y2="699.8" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.55"/>
+<circle cx="1250" cy="699.8" r="7" fill="#00d4ff"/>
+<circle cx="950" cy="699.8" r="7" fill="#00d4ff"/>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.8183;0.8333;0.9850;1" dur="12s" repeatCount="indefinite"/>
+<line x1="1100" y1="140" x2="1100" y2="740" stroke="#ef4444" stroke-width="3" stroke-linecap="round" filter="url(#cglow)"/>
+<line x1="1100" y1="140" x2="1100" y2="740" stroke="#ef4444" stroke-width="4" stroke-dasharray="14 10" stroke-linecap="round"><animate attributeName="stroke-dashoffset" from="0" to="-96" dur="1.2s" repeatCount="indefinite"/></line>
+<line x1="1078" y1="605" x2="1098" y2="612" stroke="#ef4444" stroke-width="1"/>
+<rect x="938" y="588" width="140" height="34" rx="8" fill="#0f172a" stroke="#ef4444"/>
+<text x="1008" y="611" font-size="15" letter-spacing="3" fill="#ef4444" text-anchor="middle" font-weight="700">COMODÍN</text>
+<circle cx="1100" cy="740" r="7" fill="#ef4444"/>
+</g>
+<circle cx="1100" cy="140" r="26" fill="#0f172a" stroke="#00d4ff" stroke-width="3"><animate attributeName="r" values="26;29;26" dur="2s" repeatCount="indefinite"/></circle>
+<circle cx="1100" cy="140" r="26" fill="none" stroke="#00d4ff"><animate attributeName="r" values="26;120" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.7;0" dur="2s" repeatCount="indefinite"/></circle>
+<text x="1100" y="88" font-size="20" font-weight="800" fill="#00d4ff" text-anchor="middle">C(I) · RAÍZ</text>
+<circle cx="1250" cy="180.2" r="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+<text x="1276" y="140.2" font-size="17" font-weight="600" fill="#94a3b8" text-anchor="middle">Db(♭II)</text>
+<circle cx="1359.8" cy="290" r="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+<text x="1404.8" y="269" font-size="17" font-weight="600" fill="#94a3b8" text-anchor="middle">D(II)</text>
+<circle cx="1400" cy="440" r="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+<text x="1452" y="445" font-size="17" font-weight="600" fill="#94a3b8" text-anchor="middle">Eb(♭III)</text>
+<circle cx="1359.8" cy="590" r="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+<text x="1404.8" y="621" font-size="17" font-weight="600" fill="#94a3b8" text-anchor="middle">E(III)</text>
+<circle cx="1250" cy="699.8" r="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+<text x="1276" y="749.8" font-size="17" font-weight="600" fill="#94a3b8" text-anchor="middle">F(IV)</text>
+<circle cx="1100" cy="740" r="24" fill="#0f172a" stroke="#64748b" stroke-width="2"/>
+<text x="1100" y="797" font-size="18" font-weight="800" fill="#fca5a5" text-anchor="middle">F#(♯IV)</text>
+<text x="1100" y="819" font-size="13" letter-spacing="3" fill="#ef4444" opacity="0.85" text-anchor="middle">TRITONO</text>
+<circle cx="950" cy="699.8" r="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+<text x="924" y="749.8" font-size="17" font-weight="600" fill="#94a3b8" text-anchor="middle">G(V)</text>
+<circle cx="840.2" cy="590" r="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+<text x="795.2" y="621" font-size="17" font-weight="600" fill="#94a3b8" text-anchor="middle">Ab(♭VI)</text>
+<circle cx="800" cy="440" r="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+<text x="748" y="445" font-size="17" font-weight="600" fill="#94a3b8" text-anchor="middle">A(VI)</text>
+<circle cx="840.2" cy="290" r="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+<text x="795.2" y="269" font-size="17" font-weight="600" fill="#94a3b8" text-anchor="middle">Bb(♭VII)</text>
+<circle cx="950" cy="180.2" r="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+<text x="924" y="140.2" font-size="17" font-weight="600" fill="#94a3b8" text-anchor="middle">B(VII)</text>
+<g opacity="0"><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.1517;0.1667;0.9850;1" dur="12s" repeatCount="indefinite"/><circle cx="1250" cy="180.2" r="33" fill="none" stroke="#00d4ff" stroke-width="2.5" filter="url(#cglow)"/><circle cx="1250" cy="180.2" r="24" fill="#00d4ff" opacity="0.18"/></g>
+<g opacity="0"><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.1517;0.1667;0.9850;1" dur="12s" repeatCount="indefinite"/><circle cx="950" cy="180.2" r="33" fill="none" stroke="#00d4ff" stroke-width="2.5" filter="url(#cglow)"/><circle cx="950" cy="180.2" r="24" fill="#00d4ff" opacity="0.18"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.1517;0.1667;0.3183;0.3333;1" dur="12s" repeatCount="indefinite"/><circle cx="1359.8" cy="290" r="33" fill="none" stroke="#22c55e" stroke-width="2.5" filter="url(#cglow)"/><circle cx="1359.8" cy="290" r="24" fill="#22c55e" opacity="0.18"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.1517;0.1667;0.3183;0.3333;1" dur="12s" repeatCount="indefinite"/><circle cx="840.2" cy="290" r="33" fill="none" stroke="#22c55e" stroke-width="2.5" filter="url(#cglow)"/><circle cx="840.2" cy="290" r="24" fill="#22c55e" opacity="0.18"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.3183;0.3333;0.4850;0.5000;1" dur="12s" repeatCount="indefinite"/><circle cx="1400" cy="440" r="33" fill="none" stroke="#a855f7" stroke-width="2.5" filter="url(#cglow)"/><circle cx="1400" cy="440" r="24" fill="#a855f7" opacity="0.18"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.3183;0.3333;0.4850;0.5000;1" dur="12s" repeatCount="indefinite"/><circle cx="800" cy="440" r="33" fill="none" stroke="#a855f7" stroke-width="2.5" filter="url(#cglow)"/><circle cx="800" cy="440" r="24" fill="#a855f7" opacity="0.18"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.4850;0.5000;0.6517;0.6667;1" dur="12s" repeatCount="indefinite"/><circle cx="1359.8" cy="590" r="33" fill="none" stroke="#f59e0b" stroke-width="2.5" filter="url(#cglow)"/><circle cx="1359.8" cy="590" r="24" fill="#f59e0b" opacity="0.18"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.4850;0.5000;0.6517;0.6667;1" dur="12s" repeatCount="indefinite"/><circle cx="840.2" cy="590" r="33" fill="none" stroke="#f59e0b" stroke-width="2.5" filter="url(#cglow)"/><circle cx="840.2" cy="590" r="24" fill="#f59e0b" opacity="0.18"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.6517;0.6667;0.8183;0.8333;1" dur="12s" repeatCount="indefinite"/><circle cx="1250" cy="699.8" r="33" fill="none" stroke="#00d4ff" stroke-width="2.5" filter="url(#cglow)"/><circle cx="1250" cy="699.8" r="24" fill="#00d4ff" opacity="0.18"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.6517;0.6667;0.8183;0.8333;1" dur="12s" repeatCount="indefinite"/><circle cx="950" cy="699.8" r="33" fill="none" stroke="#00d4ff" stroke-width="2.5" filter="url(#cglow)"/><circle cx="950" cy="699.8" r="24" fill="#00d4ff" opacity="0.18"/></g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.8183;0.8333;0.9850;1" dur="12s" repeatCount="indefinite"/><circle cx="1100" cy="740" r="33" fill="none" stroke="#ef4444" stroke-width="2.5" filter="url(#cglow)"/><circle cx="1100" cy="740" r="24" fill="#ef4444" opacity="0.18"/></g>
+<circle cx="1100" cy="440" r="64" fill="none" stroke="#00d4ff" stroke-width="1.5"><animate attributeName="r" values="64;82" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0" dur="2s" repeatCount="indefinite"/></circle>
+<circle cx="1100" cy="440" r="64" fill="#0f172a" stroke="#1e3a5f" stroke-width="2"/>
+<g opacity="0"><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.1517;0.1667;0.9850;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="1100" cy="440" r="64" fill="none" stroke="#00d4ff" stroke-width="3"/>
+<text x="1100" y="414" font-size="11" letter-spacing="3" fill="#64748b" text-anchor="middle">MOVIMIENTO</text>
+<text x="1100" y="458" font-size="46" font-weight="800" fill="#00d4ff" text-anchor="middle">1</text>
+<text x="1100" y="482" font-size="12" letter-spacing="2" fill="#94a3b8" text-anchor="middle">SEMITONO</text>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.1517;0.1667;0.3183;0.3333;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="1100" cy="440" r="64" fill="none" stroke="#22c55e" stroke-width="3"/>
+<text x="1100" y="414" font-size="11" letter-spacing="3" fill="#64748b" text-anchor="middle">MOVIMIENTO</text>
+<text x="1100" y="458" font-size="46" font-weight="800" fill="#22c55e" text-anchor="middle">2</text>
+<text x="1100" y="482" font-size="12" letter-spacing="2" fill="#94a3b8" text-anchor="middle">SEMITONOS</text>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.3183;0.3333;0.4850;0.5000;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="1100" cy="440" r="64" fill="none" stroke="#a855f7" stroke-width="3"/>
+<text x="1100" y="414" font-size="11" letter-spacing="3" fill="#64748b" text-anchor="middle">MOVIMIENTO</text>
+<text x="1100" y="458" font-size="46" font-weight="800" fill="#a855f7" text-anchor="middle">3</text>
+<text x="1100" y="482" font-size="12" letter-spacing="2" fill="#94a3b8" text-anchor="middle">SEMITONOS</text>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.4850;0.5000;0.6517;0.6667;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="1100" cy="440" r="64" fill="none" stroke="#f59e0b" stroke-width="3"/>
+<text x="1100" y="414" font-size="11" letter-spacing="3" fill="#64748b" text-anchor="middle">MOVIMIENTO</text>
+<text x="1100" y="458" font-size="46" font-weight="800" fill="#f59e0b" text-anchor="middle">4</text>
+<text x="1100" y="482" font-size="12" letter-spacing="2" fill="#94a3b8" text-anchor="middle">SEMITONOS</text>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.6517;0.6667;0.8183;0.8333;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="1100" cy="440" r="64" fill="none" stroke="#00d4ff" stroke-width="3"/>
+<text x="1100" y="414" font-size="11" letter-spacing="3" fill="#64748b" text-anchor="middle">MOVIMIENTO</text>
+<text x="1100" y="458" font-size="46" font-weight="800" fill="#00d4ff" text-anchor="middle">5</text>
+<text x="1100" y="482" font-size="12" letter-spacing="2" fill="#94a3b8" text-anchor="middle">SEMITONOS</text>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.8183;0.8333;0.9850;1" dur="12s" repeatCount="indefinite"/>
+<circle cx="1100" cy="440" r="64" fill="none" stroke="#ef4444" stroke-width="3"/>
+<text x="1100" y="414" font-size="11" letter-spacing="3" fill="#64748b" text-anchor="middle">MOVIMIENTO</text>
+<text x="1100" y="458" font-size="46" font-weight="800" fill="#ef4444" text-anchor="middle">6</text>
+<text x="1100" y="482" font-size="12" letter-spacing="2" fill="#94a3b8" text-anchor="middle">TRITONO</text>
+</g>
+</symbol>
+</svg>
+
+<!-- ============ NAVBAR ============ -->
+<nav id="mainNav" aria-label="Navegación principal">
+  <div class="nav-inner">
+    <button class="brand" onclick="showPage('home')" aria-label="Ir al inicio"><span class="b-num">6</span><span class="b-txt">LUGARES DEL ACORDE</span></button>
+    <div class="nav-links" id="navLinks">
+      <button data-target="home" class="active" onclick="showPage('home')">🏠 INICIO</button>
+      <button data-target="octava" onclick="showPage('octava')">01 · OCTAVA SIMÉTRICA</button>
+      <button data-target="movimientos" onclick="showPage('movimientos')">02 · LOS 6 MOVIMIENTOS</button>
+      <button data-target="tritono" onclick="showPage('tritono')">03 · EL TRITONO</button>
+      <button data-target="espejo" onclick="showPage('espejo')">04 · EL ESPEJO 7–11</button>
+      <button data-target="raiz" onclick="showPage('raiz')">05 · RAÍZ Y DISFRAZ</button>
+      <button data-target="laboratorio" onclick="showPage('laboratorio')">06 · LABORATORIO</button>
+      <button data-target="creditos" class="credits-btn" onclick="showPage('creditos')">★ CRÉDITOS</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================================================ -->
+<!-- HOME                                                          -->
+<!-- ============================================================ -->
+<section id="page-home" class="page active">
+  <div class="container">
+    <div class="hero-top">
+      <span class="chip chip-cyan">♪ TUTORIAL INTERACTIVO · TEORÍA MUSICAL</span>
+      <span class="chip chip-dim">📅 21/08/2026 &nbsp;·&nbsp; 🕗 08:32:47</span>
+    </div>
+
+    <svg class="cover" id="coverHome" viewBox="0 0 1600 900" role="img" aria-label="Portada animada: rueda cromática simétrica con C(I) en el eje y los 6 destinos del acorde iluminándose en secuencia">
+      <use href="#coverSym" xlink:href="#coverSym"></use>
+    </svg>
+
+    <h1>Los <span class="hl">6 lugares</span> donde puede ir un acorde</h1>
+    <p class="subtitle">Direcciones armónicas desde una perspectiva simétrica de la octava musical, en lugar de una secuencia lineal tradicional</p>
+    <p class="desc">Este tutorial explica por qué, aunque una octava contiene doce notas, un acorde solo tiene <strong>seis destinos fundamentales de raíz</strong>. Verás la octava como una <strong>imagen de espejo</strong>, conocerás los <strong>gemelos no idénticos</strong>, descubrirás el papel del <strong>tritono como comodín</strong> y comprobarás cómo los movimientos lineales 7–11 son simples inversiones de los seis movimientos básicos.</p>
+
+    <blockquote class="quote">“Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.”</blockquote>
+
+    <div class="metrics">
+      <div class="metric"><span class="m-val" style="color:var(--accent)">12</span><span class="m-lab">Notas por octava</span></div>
+      <div class="metric"><span class="m-val" style="color:var(--green)">11 → 6</span><span class="m-lab">Destinos lineales → simétricos</span></div>
+      <div class="metric"><span class="m-val" style="color:var(--amber)">6 st</span><span class="m-lab">Tritono · eje del espejo</span></div>
+      <div class="metric"><span class="m-val" style="color:var(--purple)">×2</span><span class="m-lab">Direcciones por distancia</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 01 · LA OCTAVA SIMÉTRICA                                      -->
+<!-- ============================================================ -->
+<section id="page-octava" class="page">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-icon">🎼</div>
+      <div>
+        <div class="sec-kicker">Capítulo 01</div>
+        <h2>La octava simétrica: de 11 destinos a 6</h2>
+      </div>
+    </div>
+
+    <p class="lead">El punto de partida es una idea sencilla: la música se organiza en un <strong>patrón repetitivo de doce notas</strong>, donde cada repetición es una <strong>octava</strong> compuesta por una distancia de <strong>doce semitonos</strong>. Sobre el piano, ese patrón se ve como la repetición constante de teclas contiguas, cada una a un semitono de la siguiente.</p>
+
+    <div class="grid2">
+      <div class="card">
+        <span class="badge b-dim">VISIÓN TRADICIONAL</span>
+        <h3 style="margin-top:12px">📏 La mirada lineal</h3>
+        <p>Si se observa la escala de manera <strong>lineal</strong> y se empieza en una nota raíz como <span class="em-cyan">C(I)</span>, parecería que hay <strong>once notas o destinos diferentes</strong> a los que se puede viajar: una secuencia recta que avanza nota tras nota hasta completar la octava.</p>
+      </div>
+      <div class="card">
+        <span class="badge b-cyan">VISIÓN PROPUESTA</span>
+        <h3 style="margin-top:12px">🪞 La mirada simétrica</h3>
+        <p>El autor propone ver la octava como una <strong>imagen de espejo (o reflejo)</strong> que tiene a la nota de partida, <span class="em-cyan">C(I)</span>, en el <strong>centro geométrico</strong>. La escala deja de ser una recta y se convierte en un reflejo que se abre en dos direcciones desde la raíz.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>👥 Los “gemelos no idénticos”</h3>
+      <p>Bajo este enfoque simétrico, <strong>cada distancia en semitonos tiene dos direcciones posibles</strong>: <span class="em-green">hacia arriba</span> y <span class="em-amber">hacia abajo</span>. El autor describe esas dos direcciones como <strong>“gemelos no idénticos”</strong>, ya que representan <strong>la misma distancia pero en sentidos opuestos</strong>.</p>
+      <p style="margin-top:8px">Esa duplicidad es la clave del sistema: reduce las <strong>once posibilidades lineales</strong> a solo <strong>seis movimientos fundamentales de raíz</strong> basados en la distancia en semitonos.</p>
+    </div>
+
+    <div class="callout co-info">
+      <span class="co-title">ℹ️ INFO</span>
+      <p>El corazón del concepto: <strong>C(I) actúa como centro geométrico del espejo</strong>. Desde ahí, cada distancia se mide en dos direcciones simultáneas, y ambas direcciones pertenecen al mismo movimiento de raíz.</p>
+    </div>
+
+    <div class="callout co-ejemplo">
+      <span class="co-title">✅ EJEMPLO</span>
+      <p>El caso más claro es el movimiento de <strong>un semitono</strong>: moverse un semitono hacia arriba lleva a <span class="em-cyan">Db(♭II)</span> y moverse un semitono hacia abajo lleva a <span class="em-cyan">B(VII)</span>. Linealmente, Db está a <strong>1 semitono</strong> y B está a <strong>11 semitonos</strong> de distancia de C; pero <strong>simétricamente ambos son dos caras de la misma moneda</strong>: un desplazamiento de un semitono.</p>
+    </div>
+
+    <div class="card">
+      <h3>🧭 El mapa resumido del espejo</h3>
+      <ol class="steps">
+        <li>La música usa un patrón repetitivo de <strong>12 notas</strong>; cada repetición es una octava de <strong>12 semitonos</strong>.</li>
+        <li>Vista linealmente desde C(I), la octava parece ofrecer <strong>11 destinos</strong> distintos.</li>
+        <li>Vista como <strong>espejo con C(I) en el centro</strong>, cada distancia tiene dos direcciones: <strong>arriba y abajo</strong>.</li>
+        <li>Esas direcciones opuestas son <strong>gemelos no idénticos</strong>: misma distancia, sentidos contrarios.</li>
+        <li>Resultado: los 11 destinos lineales se reducen a <strong>6 movimientos fundamentales de raíz</strong>.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 02 · LOS 6 MOVIMIENTOS                                        -->
+<!-- ============================================================ -->
+<section id="page-movimientos" class="page">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-icon">🎹</div>
+      <div>
+        <div class="sec-kicker">Capítulo 02</div>
+        <h2>Los 6 movimientos fundamentales de raíz</h2>
+      </div>
+    </div>
+
+    <p class="lead">Desde la raíz <span class="em-cyan">C(I)</span>, estos son los seis lugares posibles. Cada tarjeta muestra la distancia en semitonos, el destino <span class="em-green">↑ hacia arriba</span>, el destino <span class="em-amber">↓ hacia abajo</span> y la distancia lineal equivalente de cada gemelo.</p>
+
+    <div class="mov-grid">
+
+      <div class="mov-card mc-cyan">
+        <div class="mc-top"><div class="mov-num">1</div><div><h4>Movimiento de 1 semitono</h4><div class="mc-sub">Distancia mínima</div></div></div>
+        <div class="dest-row">
+          <div class="dest"><span class="d-dir">↑ ARRIBA</span><span class="d-note">Db(♭II)</span><span class="d-lin">lineal: 1 semitono</span></div>
+          <div class="dest"><span class="d-dir">↓ ABAJO</span><span class="d-note">B(VII)</span><span class="d-lin">lineal: 11 semitonos</span></div>
+        </div>
+        <div class="mc-foot">👥 Gemelos no idénticos: aunque linealmente Db está a 1 semitono y B a 11, simétricamente son <strong>dos caras de la misma moneda</strong>.</div>
+      </div>
+
+      <div class="mov-card mc-green">
+        <div class="mc-top"><div class="mov-num">2</div><div><h4>Movimiento de 2 semitonos</h4><div class="mc-sub">Segunda / séptima</div></div></div>
+        <div class="dest-row">
+          <div class="dest"><span class="d-dir">↑ ARRIBA</span><span class="d-note">D(II)</span><span class="d-lin">lineal: 2 semitonos</span></div>
+          <div class="dest"><span class="d-dir">↓ ABAJO</span><span class="d-note">Bb(♭VII)</span><span class="d-lin">lineal: 10 semitonos</span></div>
+        </div>
+        <div class="mc-foot">👥 Dos semitonos hacia arriba lleva a D(II); hacia abajo lleva a Bb(♭VII). Mismo movimiento, direcciones opuestas.</div>
+      </div>
+
+      <div class="mov-card mc-purple">
+        <div class="mc-top"><div class="mov-num">3</div><div><h4>Movimiento de 3 semitonos</h4><div class="mc-sub">Tercera menor / sexta</div></div></div>
+        <div class="dest-row">
+          <div class="dest"><span class="d-dir">↑ ARRIBA</span><span class="d-note">Eb(♭III)</span><span class="d-lin">lineal: 3 semitonos</span></div>
+          <div class="dest"><span class="d-dir">↓ ABAJO</span><span class="d-note">A(VI)</span><span class="d-lin">lineal: 9 semitonos</span></div>
+        </div>
+        <div class="mc-foot">👥 Tres semitonos hacia arriba lleva a Eb(♭III); hacia abajo lleva a A(VI).</div>
+      </div>
+
+      <div class="mov-card mc-amber">
+        <div class="mc-top"><div class="mov-num">4</div><div><h4>Movimiento de 4 semitonos</h4><div class="mc-sub">Tercera mayor / sexta menor</div></div></div>
+        <div class="dest-row">
+          <div class="dest"><span class="d-dir">↑ ARRIBA</span><span class="d-note">E(III)</span><span class="d-lin">lineal: 4 semitonos</span></div>
+          <div class="dest"><span class="d-dir">↓ ABAJO</span><span class="d-note">Ab(♭VI)</span><span class="d-lin">lineal: 8 semitonos</span></div>
+        </div>
+        <div class="mc-foot">👥 Cuatro semitonos hacia arriba lleva a E(III); hacia abajo lleva a Ab(♭VI).</div>
+      </div>
+
+      <div class="mov-card mc-cyan">
+        <div class="mc-top"><div class="mov-num">5</div><div><h4>Movimiento de 5 semitonos</h4><div class="mc-sub">Cuarta / quinta</div></div></div>
+        <div class="dest-row">
+          <div class="dest"><span class="d-dir">↑ ARRIBA</span><span class="d-note">F(IV)</span><span class="d-lin">lineal: 5 semitonos</span></div>
+          <div class="dest"><span class="d-dir">↓ ABAJO</span><span class="d-note">G(V)</span><span class="d-lin">lineal: 7 semitonos</span></div>
+        </div>
+        <div class="mc-foot">👥 Cinco semitonos hacia arriba lleva a F(IV); hacia abajo lleva a G(V).</div>
+      </div>
+
+      <div class="mov-card mc-red">
+        <div class="mc-top"><div class="mov-num">6</div><div><h4>Movimiento de 6 semitonos · EL TRITONO</h4><div class="mc-sub">Anomalía simétrica · comodín</div></div></div>
+        <div class="dest-row">
+          <div class="dest"><span class="d-dir">↑ ARRIBA Y ↓ ABAJO</span><span class="d-note">F#(♯IV)</span><span class="d-lin">misma nota en ambas direcciones · en diferentes octavas</span></div>
+        </div>
+        <div class="mc-foot">⚠️ Esta distancia es una <strong>anomalía simétrica o “comodín”</strong>: al ser exactamente la mitad de la octava, subir o bajar 6 semitonos lleva exactamente a la misma nota, <strong>F#</strong>, solo que en diferentes octavas.</div>
+      </div>
+
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Movimiento</th><th>Semitonos</th><th>↑ Arriba</th><th>↓ Abajo</th><th>Tipo de par</th></tr></thead>
+        <tbody>
+          <tr><td><b>1</b></td><td>1 st</td><td><b style="color:var(--accent)">Db(♭II)</b></td><td><b style="color:var(--accent)">B(VII)</b></td><td>Gemelos no idénticos</td></tr>
+          <tr><td><b>2</b></td><td>2 st</td><td><b style="color:var(--green)">D(II)</b></td><td><b style="color:var(--green)">Bb(♭VII)</b></td><td>Gemelos no idénticos</td></tr>
+          <tr><td><b>3</b></td><td>3 st</td><td><b style="color:var(--purple)">Eb(♭III)</b></td><td><b style="color:var(--purple)">A(VI)</b></td><td>Gemelos no idénticos</td></tr>
+          <tr><td><b>4</b></td><td>4 st</td><td><b style="color:var(--amber)">E(III)</b></td><td><b style="color:var(--amber)">Ab(♭VI)</b></td><td>Gemelos no idénticos</td></tr>
+          <tr><td><b>5</b></td><td>5 st</td><td><b>F(IV)</b></td><td><b>G(V)</b></td><td>Gemelos no idénticos</td></tr>
+          <tr><td><b>6</b></td><td>6 st</td><td colspan="2"><b style="color:var(--red)">F#(♯IV) · un solo destino (diferentes octavas)</b></td><td>Tritono · comodín</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout co-info">
+      <span class="co-title">ℹ️ INFO</span>
+      <p>En un teclado de piano puedes verificarlo físicamente: cuenta teclas contiguas (semitonos) desde C hacia la derecha y hacia la izquierda. Cada par de gemelos siempre suma <strong>12 semitonos</strong> entre sus distancias lineales (1+11, 2+10, 3+9, 4+8, 5+7… y 6+6), porque son el reflejo exacto uno del otro.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 03 · EL TRITONO                                               -->
+<!-- ============================================================ -->
+<section id="page-tritono" class="page">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-icon">⚡</div>
+      <div>
+        <div class="sec-kicker">Capítulo 03</div>
+        <h2>El tritono: el comodín y punto de reflexión</h2>
+      </div>
+    </div>
+
+    <p class="lead">El movimiento de <span class="em-red">seis semitonos</span> es el caso especial que cierra el sistema. No es un gemelo más: es la frontera misma del espejo.</p>
+
+    <div class="card" style="border-top:3px solid var(--red)">
+      <span class="badge b-red">ANOMALÍA SIMÉTRICA</span>
+      <h3 style="margin-top:12px">🃏 El “comodín” de la octava</h3>
+      <p>El tritono es una distancia de <strong>seis semitonos</strong>, que el documento describe como una <strong>anomalía simétrica o “comodín”</strong>. La razón es geométrica: seis semitonos son <strong>exactamente la mitad de la octava</strong> (12 ÷ 2 = 6).</p>
+      <p style="margin-top:8px">Por eso, moverse seis semitonos hacia arriba o hacia abajo lleva <strong>exactamente a la misma nota: F#(♯IV)</strong>, solo que en <strong>diferentes octavas</strong>. Es el único movimiento con un solo destino en lugar de un par de gemelos.</p>
+    </div>
+
+    <div class="card" style="border-top:3px solid var(--amber)">
+      <h3>🎯 El punto de reflexión definitivo</h3>
+      <p>El concepto clave que limita las opciones a seis es que el tritono actúa como el <strong>punto de reflexión definitivo de la octava</strong>. Al ser el punto medio exacto del espejo, marca el límite físico de las distancias posibles:</p>
+      <p style="margin-top:8px"><strong>Cualquier movimiento que intente ir más allá de los seis semitonos no produce un nuevo movimiento de raíz</strong>, sino que es simplemente una <strong>repetición de una distancia que ya hemos recorrido</strong>, pero con las posiciones <strong>invertidas o “volteadas”</strong>.</p>
+    </div>
+
+    <div class="callout co-warning">
+      <span class="co-title">⚠️ ADVERTENCIA</span>
+      <p>El tritono no tiene gemelo: sus dos direcciones colapsan en la misma nota (<span class="em-red">F#</span>). Por eso el conteo se detiene exactamente en 6 y no en 7: más allá del punto de reflexión, el espejo solo devuelve imágenes ya conocidas.</p>
+    </div>
+
+    <div class="callout co-ejemplo">
+      <span class="co-title">✅ EJEMPLO</span>
+      <p>Desde C(I): sube 6 semitonos → llegas a F#(♯IV). Baja 6 semitonos → llegas otra vez a F#(♯IV), una octava más grave. Mismo destino, distinta octava: esa es la firma del comodín.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 04 · EL ESPEJO 7-11                                           -->
+<!-- ============================================================ -->
+<section id="page-espejo" class="page">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-icon">🪞</div>
+      <div>
+        <div class="sec-kicker">Capítulo 04</div>
+        <h2>Más allá del tritono: los movimientos 7–11 invertidos</h2>
+      </div>
+    </div>
+
+    <p class="lead">¿Qué ocurre si seguimos contando semitonos después del tritono? Nada nuevo: cada distancia de 7 a 11 semitonos entrega <strong>las mismas notas que un movimiento ya recorrido</strong>, solo que con las posiciones invertidas o “volteadas”.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Movimiento lineal</th><th>↑ Arriba</th><th>↓ Abajo</th><th>Equivalente simétrico</th><th>Relación</th></tr></thead>
+        <tbody>
+          <tr><td><b>7 semitonos</b></td><td>G(V)</td><td>F(IV)</td><td><b style="color:var(--accent)">Movimiento de 5 st: F ↑ / G ↓</b></td><td>Posiciones invertidas</td></tr>
+          <tr><td><b>8 semitonos</b></td><td>Ab(♭VI)</td><td>E(III)</td><td><b style="color:var(--amber)">Movimiento de 4 st: E ↑ / Ab ↓</b></td><td>Posiciones invertidas</td></tr>
+          <tr><td><b>9 semitonos</b></td><td>A(VI)</td><td>Eb(♭III)</td><td><b style="color:var(--purple)">Movimiento de 3 st: Eb ↑ / A ↓</b></td><td>Posiciones invertidas</td></tr>
+          <tr><td><b>10 semitonos</b></td><td>Bb(♭VII)</td><td>D(II)</td><td><b style="color:var(--green)">Movimiento de 2 st: D ↑ / Bb ↓</b></td><td>Posiciones invertidas</td></tr>
+          <tr><td><b>11 semitonos</b></td><td>B(VII)</td><td>Db(♭II)</td><td><b>Movimiento de 1 st: Db ↑ / B ↓</b></td><td>Posiciones invertidas</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout co-ejemplo">
+      <span class="co-title">✅ EJEMPLO</span>
+      <p>Un movimiento de <strong>7 semitonos</strong> nos lleva a <strong>G(V) arriba y F(IV) abajo</strong>, que son exactamente las mismas notas que obtenemos con el movimiento de <strong>5 semitonos</strong> (F arriba y G abajo), solo que con las posiciones invertidas.</p>
+    </div>
+
+    <div class="callout co-error">
+      <span class="co-title">⛔ ERROR</span>
+      <p>Contar 11 destinos diferentes desde la raíz es un espejismo de la visión lineal. Al agotarse las combinaciones de notas de destino sin que se generen <strong>nuevas relaciones de distancia física en la escala de doce tonos</strong>, queda demostrado que <strong>no existen nuevos movimientos de raíz más allá del tritono</strong>: solo hay seis direcciones posibles.</p>
+    </div>
+
+    <div class="acc" id="acc1">
+      <button class="acc-btn" onclick="toggleAcc('acc1')" aria-expanded="false">🔍 ¿Por qué el espejo se detiene exactamente en el tritono? <span class="acc-arrow">▼</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <p>Porque el tritono (seis semitonos) es exactamente la mitad de la octava y actúa como el <strong>punto de reflexión definitivo</strong>. Cualquier distancia mayor que 6 semitonos es el reflejo de una distancia menor ya recorrida: 7 refleja a 5, 8 refleja a 4, 9 refleja a 3, 10 refleja a 2 y 11 refleja a 1. El eje del espejo (la distancia de 6 semitonos) es el único punto que se refleja a sí mismo, y por eso no puede haber un séptimo movimiento fundamental.</p>
+      </div></div>
+    </div>
+
+    <div class="acc" id="acc2">
+      <button class="acc-btn" onclick="toggleAcc('acc2')" aria-expanded="false">🔁 ¿Qué significa que un movimiento esté “volteado”? <span class="acc-arrow">▼</span></button>
+      <div class="acc-body"><div class="acc-body-inner">
+        <p>Significa que las notas gemelas intercambian posiciones: la nota que antes estaba arriba aparece abajo, y viceversa. Por ejemplo, en el movimiento de 2 semitonos, D está arriba y Bb abajo; en el movimiento de 10 semitonos, Bb está arriba y D abajo. Las notas son las mismas y la distancia física también: solo cambia qué gemelo ocupa cada lado del espejo.</p>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 05 · LA RAÍZ Y SU DISFRAZ                                     -->
+<!-- ============================================================ -->
+<section id="page-raiz" class="page">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-icon">🌱</div>
+      <div>
+        <div class="sec-kicker">Capítulo 05</div>
+        <h2>La raíz y su disfraz: por qué importan estas notas</h2>
+      </div>
+    </div>
+
+    <p class="lead">El autor argumenta que nos enfocamos en estas notas individuales porque representan las <strong>raíces potenciales de los acordes</strong>. No son notas sueltas: son los cimientos sobre los que se construye cada acorde.</p>
+
+    <div class="grid2">
+      <div class="card" style="border-top:3px solid var(--accent)">
+        <h3>🧬 La raíz define la identidad</h3>
+        <p>El <strong>movimiento de la raíz define la identidad central de una progresión armónica</strong>. Cuando un acorde viaja de un lugar a otro, lo que realmente determina el carácter del viaje es hacia qué raíz se desplaza.</p>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple)">
+        <h3>🎭 El tipo de acorde es el “disfraz”</h3>
+        <p>El tipo de acorde —ya sea <strong>mayor, menor o con extensiones</strong>— es simplemente el <strong>“disfraz” que viste la raíz</strong>. Cambia el color y la vestimenta, pero no cambia el destino fundamental del movimiento.</p>
+      </div>
+    </div>
+
+    <div class="callout co-info">
+      <span class="co-title">ℹ️ INFO</span>
+      <p>Consecuencia directa: como el disfraz no altera el destino, el mapa de lugares posibles depende únicamente de la raíz. Y el mapa de raíces posibles desde cualquier nota de partida tiene exactamente <strong>seis destinos</strong>.</p>
+    </div>
+
+    <div class="resumen">
+      <h3>📌 Conclusión final del sistema</h3>
+      <ol>
+        <li>La octava es un patrón de <strong>12 semitonos</strong> que puede verse como un espejo con la raíz en su centro geométrico.</li>
+        <li>Cada distancia tiene dos direcciones (<strong>gemelos no idénticos</strong>), lo que reduce los 11 destinos lineales a 6.</li>
+        <li>El <strong>tritono (6 st)</strong> es el comodín: mitad exacta de la octava y punto de reflexión definitivo.</li>
+        <li>Los movimientos 7–11 son <strong>repeticiones invertidas</strong> de los movimientos 5–1.</li>
+        <li>La <strong>raíz</strong> define la identidad de la progresión; el tipo de acorde es solo su disfraz.</li>
+        <li>Al agotarse las combinaciones de notas de destino sin nuevas relaciones de distancia física en la escala de doce tonos, queda demostrado que <strong>solo existen seis direcciones o lugares posibles a los que un acorde puede dirigirse</strong>.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 06 · LABORATORIO                                              -->
+<!-- ============================================================ -->
+<section id="page-laboratorio" class="page">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-icon">🧪</div>
+      <div>
+        <div class="sec-kicker">Capítulo 06</div>
+        <h2>Laboratorio interactivo del espejo</h2>
+      </div>
+    </div>
+
+    <div class="callout co-info">
+      <span class="co-title">ℹ️ CÓMO USAR</span>
+      <p>Selecciona una distancia lineal de <strong>1 a 11 semitonos hacia arriba desde C(I)</strong>. El laboratorio te mostrará el destino hacia arriba, el destino reflejado hacia abajo, el movimiento simétrico resultante y el resaltado sobre la rueda cromática y el teclado de piano.</p>
+    </div>
+
+    <div class="card">
+      <h3>🎛️ Distancia lineal desde C(I) (en semitonos hacia arriba)</h3>
+      <div class="stbtns" id="stBtns" role="group" aria-label="Selector de semitonos"></div>
+
+      <div class="lab-grid">
+        <div class="lab-panel">
+          <h4>🎡 Rueda cromática simétrica</h4>
+          <svg id="miniWheel" viewBox="0 0 320 320" role="img" aria-label="Rueda cromática con destinos resaltados">
+            <line id="mwAxis" class="mw-axis" x1="160" y1="48" x2="160" y2="272"/>
+            <circle cx="160" cy="160" r="112" fill="none" stroke="#16233d" stroke-width="1.5"/>
+            <circle class="mw-node root" cx="160" cy="48" r="16"/><text class="mw-txt" x="160" y="51.5">C</text>
+            <circle class="mw-node" data-n="1" cx="216" cy="63" r="16"/><text class="mw-txt" x="216" y="66.5">Db</text>
+            <circle class="mw-node" data-n="2" cx="257" cy="104" r="16"/><text class="mw-txt" x="257" y="107.5">D</text>
+            <circle class="mw-node" data-n="3" cx="272" cy="160" r="16"/><text class="mw-txt" x="272" y="163.5">Eb</text>
+            <circle class="mw-node" data-n="4" cx="257" cy="216" r="16"/><text class="mw-txt" x="257" y="219.5">E</text>
+            <circle class="mw-node" data-n="5" cx="216" cy="257" r="16"/><text class="mw-txt" x="216" y="260.5">F</text>
+            <circle class="mw-node" data-n="6" cx="160" cy="272" r="16"/><text class="mw-txt" x="160" y="275.5">F#</text>
+            <circle class="mw-node" data-n="7" cx="104" cy="257" r="16"/><text class="mw-txt" x="104" y="260.5">G</text>
+            <circle class="mw-node" data-n="8" cx="63" cy="216" r="16"/><text class="mw-txt" x="63" y="219.5">Ab</text>
+            <circle class="mw-node" data-n="9" cx="48" cy="160" r="16"/><text class="mw-txt" x="48" y="163.5">A</text>
+            <circle class="mw-node" data-n="10" cx="63" cy="104" r="16"/><text class="mw-txt" x="63" y="107.5">Bb</text>
+            <circle class="mw-node" data-n="11" cx="104" cy="63" r="16"/><text class="mw-txt" x="104" y="66.5">B</text>
+            <text x="172" y="164" font-size="10" fill="#64748b" letter-spacing="2">EJE</text>
+          </svg>
+        </div>
+        <div class="lab-panel">
+          <h4>🎹 Teclado de piano (una octava desde C)</h4>
+          <svg id="pianoSvg" viewBox="0 0 280 172" role="img" aria-label="Teclado de piano con teclas resaltadas">
+            <rect class="pk-w root" data-pk="0" x="0" y="0" width="40" height="150" rx="3"/>
+            <rect class="pk-w" data-pk="2" x="40" y="0" width="40" height="150" rx="3"/>
+            <rect class="pk-w" data-pk="4" x="80" y="0" width="40" height="150" rx="3"/>
+            <rect class="pk-w" data-pk="5" x="120" y="0" width="40" height="150" rx="3"/>
+            <rect class="pk-w" data-pk="7" x="160" y="0" width="40" height="150" rx="3"/>
+            <rect class="pk-w" data-pk="9" x="200" y="0" width="40" height="150" rx="3"/>
+            <rect class="pk-w" data-pk="11" x="240" y="0" width="40" height="150" rx="3"/>
+            <rect class="pk-b" data-pk="1" x="28" y="0" width="24" height="92" rx="2"/>
+            <rect class="pk-b" data-pk="3" x="68" y="0" width="24" height="92" rx="2"/>
+            <rect class="pk-b" data-pk="6" x="148" y="0" width="24" height="92" rx="2"/>
+            <rect class="pk-b" data-pk="8" x="188" y="0" width="24" height="92" rx="2"/>
+            <rect class="pk-b" data-pk="10" x="228" y="0" width="24" height="92" rx="2"/>
+            <text class="pk-lab" x="20" y="166">C</text><text class="pk-lab" x="60" y="166">D</text><text class="pk-lab" x="100" y="166">E</text><text class="pk-lab" x="140" y="166">F</text><text class="pk-lab" x="180" y="166">G</text><text class="pk-lab" x="220" y="166">A</text><text class="pk-lab" x="260" y="166">B</text>
+          </svg>
+          <p style="font-size:12.5px;color:var(--dim);margin-top:8px">🔵 destino hacia arriba &nbsp;·&nbsp; 🟢 destino hacia abajo &nbsp;·&nbsp; 🔴 tritono</p>
+        </div>
+      </div>
+
+      <div class="res-grid">
+        <div class="res-box"><span class="r-lab">Destino ↑ hacia arriba</span><span class="r-val" id="resUp" style="color:var(--accent)">Db(♭II)</span></div>
+        <div class="res-box"><span class="r-lab">Destino ↓ hacia abajo</span><span class="r-val" id="resDown" style="color:var(--green)">B(VII)</span></div>
+        <div class="res-box"><span class="r-lab">Movimiento simétrico</span><span class="r-val" id="resMov" style="color:var(--purple)">Movimiento 1</span></div>
+        <div class="res-box"><span class="r-lab">Distancias lineales</span><span class="r-val" id="resLin" style="color:var(--amber)">1 ↑ · 11 ↓</span></div>
+      </div>
+      <div class="res-note" id="resNote"></div>
+    </div>
+
+    <h3 style="margin:30px 0 6px">📝 Comprueba lo aprendido</h3>
+    <p class="lead" style="margin-bottom:14px">Cuatro preguntas basadas fielmente en el documento. Selecciona una opción para ver la respuesta y la explicación.</p>
+    <div class="q-score">Aciertos: <b id="quizScore">0</b> / 4</div>
+    <div id="quizBox"></div>
+    <button class="btn" onclick="resetQuiz()">🔄 Reiniciar quiz</button>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CRÉDITOS                                                      -->
+<!-- ============================================================ -->
+<section id="page-creditos" class="page">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-icon">★</div>
+      <div>
+        <div class="sec-kicker">Sección final</div>
+        <h2>Créditos</h2>
+      </div>
+    </div>
+
+    <svg class="cover" id="coverCredits" viewBox="0 0 1600 900" role="img" aria-label="Portada animada: rueda cromática simétrica con C(I) en el eje y los 6 destinos del acorde">
+      <use href="#coverSym" xlink:href="#coverSym"></use>
+    </svg>
+
+    <div class="credit-card">
+      <div style="font-size:13px;letter-spacing:3px;color:var(--dim)">TUTORIAL</div>
+      <div class="c-name">Los 6 lugares donde puede ir un acorde</div>
+      <div style="color:var(--muted);font-size:14px">Una perspectiva simétrica de la octava musical</div>
+
+      <div class="c-meta">
+        <span class="badge b-cyan">👨‍💻 Rubén Sbarsky</span>
+        <span class="badge b-green">📅 21/08/2026</span>
+        <span class="badge b-amber">🕗 08:32:47</span>
+      </div>
+
+      <div class="c-role">Autor · Dirección educativa</div>
+      <div>Rubén Sbarsky</div>
+
+      <div class="c-edu">📚 Tutorial solo con fines Educativos y Divulgación</div>
+
+      <div class="c-latin">Fiat iustitia, ruat caelum.</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<button id="toTop" onclick="window.scrollTo({top:0,behavior🙁window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth')})" aria-label="Volver arriba">▲</button>
+
+<footer>
+  <div class="f-line">📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div class="f-line">👨‍💻 Créditos: <b>Rubén Sbarsky</b></div>
+  <div class="f-line">📅 FECHA: <b>21/08/2026</b> &nbsp;·&nbsp; Hora: <b>08:32:47</b></div>
+  <div class="f-latin">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<script>
+"use strict";
+/* ================= SPA ================= */
+var PAGES = ["home","octava","movimientos","tritono","espejo","raiz","laboratorio","creditos"];
+var RM = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function showPage(id){
+  PAGES.forEach(function(p){
+    var el = document.getElementById("page-"+p);
+    if(el) el.classList.toggle("active", p===id);
+  });
+  document.querySelectorAll("#navLinks button").forEach(function(b){
+    b.classList.toggle("active", b.getAttribute("data-target")===id);
+    if(b.getAttribute("data-target")===id){
+      try{ b.scrollIntoView({inline:"center", block:"nearest", behavior: RM ? "auto" : "smooth"}); }catch(e){}
+    }
+  });
+  window.scrollTo({top:0, behavior:"auto"});
+  if(id==="creditos" && !RM){
+    var cs = document.getElementById("coverCredits");
+    if(cs && cs.setCurrentTime){ try{ cs.setCurrentTime(0); }catch(e){} }
+  }
+  updateProgress();
+}
+
+/* ============ barra de progreso ============ */
+function updateProgress(){
+  var h = document.documentElement;
+  var max = h.scrollHeight - window.innerHeight;
+  var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+  document.getElementById("progressBar").style.width = Math.min(100, Math.max(0, pct)) + "%";
+  document.getElementById("toTop").classList.toggle("show", window.scrollY > 300);
+}
+window.addEventListener("scroll", updateProgress, {passive:true});
+window.addEventListener("resize", updateProgress);
+
+/* ============ acordeones ============ */
+function toggleAcc(id){
+  var el = document.getElementById(id);
+  var open = el.classList.toggle("open");
+  el.querySelector(".acc-btn").setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+/* ============ laboratorio ============ */
+var NOTE_FULL = ["C(I)","Db(♭II)","D(II)","Eb(♭III)","E(III)","F(IV)","F#(♯IV)","G(V)","Ab(♭VI)","A(VI)","Bb(♭VII)","B(VII)"];
+var ORD = ["","1º","2º","3º","4º","5º","6º"];
+
+(function buildButtons(){
+  var box = document.getElementById("stBtns");
+  for(var n=1;n<=11;n++){
+    var b = document.createElement("button");
+    b.textContent = n;
+    if(n===6) b.className = "tri";
+    b.setAttribute("aria-label", n + " semitonos");
+    (function(val){ b.addEventListener("click", function(){ labUpdate(val); }); })(n);
+    box.appendChild(b);
+  }
+})();
+
+function labUpdate(n){
+  var btns = document.querySelectorAll("#stBtns button");
+  btns.forEach(function(b,i){ b.classList.toggle("on", i===n-1); });
+
+  var up = n, down = (12 - n) % 12, m = Math.min(n, 12 - n);
+
+  /* rueda */
+  document.querySelectorAll("#miniWheel .mw-node").forEach(function(c){
+    c.classList.remove("up","down","tri");
+    var d = c.getAttribute("data-n");
+    if(d === null) return;
+    d = parseInt(d,10);
+    if(n === 6){ if(d === 6) c.classList.add("tri"); }
+    else { if(d === up) c.classList.add("up"); if(d === down) c.classList.add("down"); }
+  });
+  document.getElementById("mwAxis").classList.toggle("on", n===6);
+
+  /* piano */
+  document.querySelectorAll("#pianoSvg [data-pk]").forEach(function(k){
+    k.classList.remove("up","down","tri");
+    var d = parseInt(k.getAttribute("data-pk"),10);
+    if(n === 6){ if(d === 6) k.classList.add("tri"); }
+    else { if(d === up) k.classList.add("up"); if(d === down) k.classList.add("down"); }
+  });
+
+  /* textos */
+  var elUp = document.getElementById("resUp"),
+      elDown = document.getElementById("resDown"),
+      elMov = document.getElementById("resMov"),
+      elLin = document.getElementById("resLin"),
+      note = document.getElementById("resNote");
+
+  if(n === 6){
+    elUp.textContent = "F#(♯IV)";
+    elDown.textContent = "F#(♯IV)";
+    elMov.textContent = "Movimiento 6 · TRITONO";
+    elLin.textContent = "6 ↑ · 6 ↓";
+    note.className = "res-note tri";
+    note.innerHTML = "⚡ <b>Tritono, el comodín:</b> al ser exactamente la mitad de la octava, subir o bajar 6 semitonos lleva a la misma nota, <b>F#(♯IV)</b>, solo que en diferentes octavas. Es el punto de reflexión definitivo del espejo.";
+  } else {
+    elUp.textContent = NOTE_FULL[up];
+    elDown.textContent = NOTE_FULL[down];
+    elMov.textContent = "Movimiento " + m + " (" + m + " semitono" + (m>1?"s":"") + ")";
+    elLin.textContent = n + " ↑ · " + (12-n) + " ↓";
+    if(n > 6){
+      note.className = "res-note mirror";
+      note.innerHTML = "🪞 <b>Movimiento reflejado:</b> " + n + " semitonos hacia arriba es el <b>movimiento de " + m + " semitonos invertido</b>: las mismas notas del movimiento " + m + ", pero con las posiciones “volteadas”.";
+    } else {
+      note.className = "res-note";
+      note.innerHTML = "👥 <b>Gemelos no idénticos:</b> la misma distancia de " + n + " semitono" + (n>1?"s":"") + " en dos direcciones opuestas. Linealmente están a " + n + " y " + (12-n) + " semitonos de C(I); simétricamente son dos caras de la misma moneda.";
+    }
+  }
+}
+
+/* ============ quiz ============ */
+var QUIZ = [
+  {
+    q: "Observada de manera lineal desde la raíz C(I), ¿cuántos destinos diferentes parece tener un acorde?",
+    opts: ["6 destinos", "11 destinos", "12 destinos"],
+    ok: 1,
+    ex: "La visión lineal sugiere once notas o destinos diferentes a los que se puede viajar. La perspectiva simétrica del espejo reduce esas once posibilidades a solo seis movimientos fundamentales de raíz."
+  },
+  {
+    q: "¿Cómo llama el autor a las dos direcciones (arriba y abajo) de una misma distancia en semitonos?",
+    opts: ["Notas espejo", "Gemelos no idénticos", "Acordes paralelos"],
+    ok: 1,
+    ex: "Las describe como “gemelos no idénticos”: representan la misma distancia pero en sentidos opuestos."
+  },
+  {
+    q: "¿Por qué el tritono (6 semitonos) es una anomalía simétrica o “comodín”?",
+    opts: ["Porque es la única distancia que suena disonante", "Porque al ser la mitad exacta de la octava, subir o bajar 6 semitonos lleva a la misma nota F# en diferentes octavas", "Porque solo puede tocarse hacia arriba"],
+    ok: 1,
+    ex: "Seis semitonos son exactamente la mitad de la octava (12 ÷ 2). Por eso ambas direcciones colapsan en la misma nota, F#(♯IV), solo que en diferentes octavas, y el tritono se convierte en el punto de reflexión definitivo."
+  },
+  {
+    q: "Un movimiento de 9 semitonos hacia arriba desde C(I) equivale a…",
+    opts: ["El movimiento de 3 semitonos invertido (A arriba / Eb abajo)", "Un movimiento nuevo de raíz", "El movimiento de 9 semitonos invertido"],
+    ok: 0,
+    ex: "Nueve semitonos llevan a A arriba y Eb abajo, las mismas notas del movimiento de 3 semitonos (Eb arriba / A abajo) con las posiciones invertidas o “volteadas”. No existe un nuevo movimiento de raíz más allá del tritono."
+  },
+  {
+    q: "Según el documento, ¿qué define la identidad central de una progresión armónica?",
+    opts: ["El tipo de acorde (mayor, menor o con extensiones)", "El movimiento de la raíz", "La velocidad de la pieza"],
+    ok: 1,
+    ex: "El movimiento de la raíz define la identidad central de la progresión; el tipo de acorde —mayor, menor o con extensiones— es simplemente el “disfraz” que viste la raíz."
+  }
+];
+/* Nota: el quiz conserva 4 preguntas tal como se muestran (la estructura soporta todas). */
+
+var score = 0, answered = 0;
+
+function renderQuiz(){
+  var box = document.getElementById("quizBox");
+  box.innerHTML = "";
+  score = 0; answered = 0;
+  document.getElementById("quizScore").textContent = "0";
+  QUIZ.forEach(function(item, qi){
+    var card = document.createElement("div");
+    card.className = "q-card";
+    var h = document.createElement("div");
+    h.innerHTML = '<span class="q-n">PREGUNTA ' + (qi+1) + '</span><h4>' + item.q + '</h4>';
+    card.appendChild(h);
+    var opts = document.createElement("div");
+    opts.className = "q-opts";
+    item.opts.forEach(function(opt, oi){
+      var b = document.createElement("button");
+      b.textContent = opt;
+      b.addEventListener("click", function(){
+        if(card.getAttribute("data-done")) return;
+        card.setAttribute("data-done","1");
+        answered++;
+        var all = opts.querySelectorAll("button");
+        all.forEach(function(x){ x.disabled = true; });
+        if(oi === item.ok){ b.classList.add("ok"); score++; }
+        else { b.classList.add("bad"); all[item.ok].classList.add("ok"); }
+        document.getElementById("quizScore").textContent = score;
+        card.querySelector(".q-expl").classList.add("show");
+      });
+      opts.appendChild(b);
+    });
+    card.appendChild(opts);
+    var ex = document.createElement("div");
+    ex.className = "q-expl";
+    ex.innerHTML = "<b>Explicación:</b> " + item.ex;
+    card.appendChild(ex);
+    box.appendChild(card);
+  });
+}
+function resetQuiz(){ renderQuiz(); }
+
+/* ============ accesibilidad: reduced motion + SMIL ============ */
+(function init(){
+  renderQuiz();
+  labUpdate(1);
+  if(RM){
+    ["coverHome","coverCredits"].forEach(function(id){
+      var s = document.getElementById(id);
+      if(s && s.pauseAnimations){ try{ s.pauseAnimations(); }catch(e){} }
+    });
+  }
+  updateProgress();
+})();
+</script>
+</body>
+</html>
