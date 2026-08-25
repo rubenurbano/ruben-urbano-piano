@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>Analizador intervalico by Rubén Sbarsky (2026)</title>
+<title>Analizador interválico by Rubén Sbarsky (2026)</title>
 <style>
   :root{
     --bg:#0e1117;
@@ -198,8 +198,14 @@
   }
   .wheel-node-text{
     fill:var(--text);
-    font-size:15px;
+    font-size:14px;
     font-weight:700;
+    font-family:inherit;
+  }
+  .wheel-node-value{
+    fill:var(--text-dim);
+    font-size:9px;
+    font-weight:400;
     font-family:inherit;
   }
   .wheel-node.is-origin .wheel-node-circle{
@@ -231,6 +237,80 @@
   .sw-up{background:var(--accent-up);}
   .sw-down{background:var(--accent-down);}
 
+  .chroma-notice{
+    text-align:center;
+    color:var(--text-dim);
+    font-size:.82rem;
+    margin:0 0 20px;
+    padding:10px 12px;
+    background:var(--bg-card-alt);
+    border:1px solid var(--border);
+    border-radius:10px;
+  }
+  .chroma-notice strong{
+    display:block;
+    color:var(--text);
+    font-size:.85rem;
+    letter-spacing:.04em;
+    margin-bottom:4px;
+  }
+
+  .octave-note{
+    text-align:center;
+    margin:14px 0 0;
+    padding:10px 12px;
+    border-radius:10px;
+    background:var(--bg-card-alt);
+    border:1px dashed var(--border);
+    font-size:.9rem;
+    color:var(--text-dim);
+    line-height:1.5;
+  }
+
+  .formula-line{
+    font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    font-size:.88rem;
+    background:var(--bg-card-alt);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px 12px;
+    margin:0 0 10px;
+    word-break:break-word;
+  }
+  .formula-line:last-child{margin-bottom:0;}
+
+  .edu-line{
+    font-size:.92rem;
+    color:var(--text-dim);
+    margin:0 0 8px;
+  }
+  .edu-line:last-child{margin-bottom:0;}
+
+  .table-wrap{
+    overflow-x:auto;
+  }
+  .conv-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:.9rem;
+    min-width:280px;
+  }
+  .conv-table th,
+  .conv-table td{
+    text-align:left;
+    padding:9px 10px;
+    border-bottom:1px solid var(--border);
+  }
+  .conv-table th{
+    color:var(--text-dim);
+    text-transform:uppercase;
+    font-size:.75rem;
+    letter-spacing:.05em;
+  }
+  .conv-table tbody tr:last-child td{
+    border-bottom:none;
+  }
+
   footer{
     text-align:center;
     color:var(--text-dim);
@@ -247,8 +327,12 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>Analizador intervalico by Rubén Sbarsky (2026)</h1>
+  <h1>Analizador interválico by Rubén Sbarsky (2026)</h1>
   <p class="subtitle">Selecciona una nota de origen y una nota de destino para conocer la distancia exacta hacia arriba y hacia abajo.</p>
+  <p class="chroma-notice">
+    <strong>DISTANCIA CROMÁTICA MÍNIMA</strong><br>
+    El cálculo utiliza las 12 clases de altura cromáticas dentro de una octava. No determina intervalos diatónicos como tercera mayor, quinta justa, etc.
+  </p>
 
   <section>
     <div class="selectors">
@@ -283,6 +367,13 @@
         <div class="result-tones" id="downTones">0 tonos</div>
       </div>
     </div>
+    <p class="octave-note" id="octaveNote">0 semitonos ↑ / 0 semitonos ↓</p>
+  </section>
+
+  <section>
+    <h2>Cómo se calcula</h2>
+    <p class="formula-line" id="formulaAsc">Ascendente: (0 − 0 + 12) % 12 = 0 semitonos</p>
+    <p class="formula-line" id="formulaDesc">Descendente: (0 − 0 + 12) % 12 = 0 semitonos</p>
   </section>
 
   <section>
@@ -295,6 +386,24 @@
       <span><i class="swatch sw-dest"></i> Destino</span>
       <span><i class="swatch sw-up"></i> Anillo interior: ascendente ↑</span>
       <span><i class="swatch sw-down"></i> Anillo exterior: descendente ↓</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tono y semitono</h2>
+    <p class="edu-line">1 tono = 2 semitonos</p>
+    <p class="edu-line">1 semitono = la distancia cromática mínima entre dos notas consecutivas del sistema utilizado.</p>
+  </section>
+
+  <section>
+    <h2>Tabla de conversión</h2>
+    <div class="table-wrap">
+      <table class="conv-table">
+        <thead>
+          <tr><th>Semitonos</th><th>Tonos + semitonos</th></tr>
+        </thead>
+        <tbody id="convTableBody"></tbody>
+      </table>
     </div>
   </section>
 
@@ -322,6 +431,10 @@
   var upTonesEl = document.getElementById("upTones");
   var downSemiEl = document.getElementById("downSemi");
   var downTonesEl = document.getElementById("downTones");
+  var octaveNoteEl = document.getElementById("octaveNote");
+  var formulaAscEl = document.getElementById("formulaAsc");
+  var formulaDescEl = document.getElementById("formulaDesc");
+  var convTableBody = document.getElementById("convTableBody");
 
   function buildOptions(select){
     for(var i=0;i<NOTES.length;i++){
@@ -379,11 +492,19 @@
 
       var text = document.createElementNS(SVG_NS, "text");
       text.setAttribute("x", p.x);
-      text.setAttribute("y", p.y + 5);
+      text.setAttribute("y", p.y + 1);
       text.setAttribute("text-anchor", "middle");
       text.setAttribute("class", "wheel-node-text");
       text.textContent = NOTES[i];
       g.appendChild(text);
+
+      var valueText = document.createElementNS(SVG_NS, "text");
+      valueText.setAttribute("x", p.x);
+      valueText.setAttribute("y", p.y + 13);
+      valueText.setAttribute("text-anchor", "middle");
+      valueText.setAttribute("class", "wheel-node-value");
+      valueText.textContent = i;
+      g.appendChild(valueText);
 
       nodesGroup.appendChild(g);
     }
@@ -432,6 +553,21 @@
   function formatSemi(n){
     return n + (n === 1 ? " semitono" : " semitonos");
   }
+
+  function buildConversionTable(){
+    convTableBody.innerHTML = "";
+    for(var s=0; s<=11; s++){
+      var tr = document.createElement("tr");
+      var tdSemi = document.createElement("td");
+      tdSemi.textContent = s;
+      var tdTones = document.createElement("td");
+      tdTones.textContent = formatTones(s);
+      tr.appendChild(tdSemi);
+      tr.appendChild(tdTones);
+      convTableBody.appendChild(tr);
+    }
+  }
+  buildConversionTable();
 
   function arcPathD(cx, cy, r, angleStartDeg, angleEndDeg, sweepFlag, largeArcFlag){
     var start = polarPoint(cx, cy, r, angleStartDeg);
@@ -490,6 +626,15 @@
     downSemiEl.textContent = formatSemi(r.descendente);
     downTonesEl.textContent = formatTones(r.descendente);
 
+    if(originName === destName){
+      octaveNoteEl.textContent = "0 semitonos ↑ / 0 semitonos ↓";
+    } else {
+      octaveNoteEl.textContent = r.ascendente + " semitonos ↑ + " + r.descendente + " semitonos ↓ = 12 semitonos (12 semitonos = 1 octava)";
+    }
+
+    formulaAscEl.textContent = "Ascendente: (" + r.d + " − " + r.o + " + 12) % 12 = " + formatSemi(r.ascendente);
+    formulaDescEl.textContent = "Descendente: (" + r.o + " − " + r.d + " + 12) % 12 = " + formatSemi(r.descendente);
+
     updateWheel(r.o, r.d, r.ascendente, r.descendente);
   }
 
@@ -547,13 +692,26 @@
       assertEqual(suma, sumaEsperada, "C -> " + note + " suma asc+desc");
     }
 
-    // Comprobación con origen distinto de C: probar todos los pares posibles
+    // Comprobación exhaustiva: las 12 x 12 = 144 combinaciones posibles
     for(var i=0;i<NOTES.length;i++){
       for(var j=0;j<NOTES.length;j++){
         var o = NOTES[i], d = NOTES[j];
         var r2 = computeInterval(o, d);
+
+        // Valor esperado calculado de forma independiente a partir de los índices
+        var ascEsperado = (j - i + 12) % 12;
+        var descEsperado = (i - j + 12) % 12;
+        assertEqual(r2.ascendente, ascEsperado, o + " -> " + d + " ascendente");
+        assertEqual(r2.descendente, descEsperado, o + " -> " + d + " descendente");
+
         var sumaEsp = (o === d) ? 0 : 12;
         assertEqual(r2.ascendente + r2.descendente, sumaEsp, o + " -> " + d + " suma asc+desc");
+
+        if(o === d){
+          assertEqual(r2.ascendente, 0, o + " -> " + d + " misma nota ascendente=0");
+          assertEqual(r2.descendente, 0, o + " -> " + d + " misma nota descendente=0");
+        }
+
         if(r2.ascendente < 0 || r2.ascendente > 11){
           failures.push(o + " -> " + d + " ascendente fuera de rango: " + r2.ascendente);
         }
