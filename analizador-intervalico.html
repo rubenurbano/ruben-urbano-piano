@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Analizador intervalico by Rubén Sbarsky (2026)</title>
+<style>
+  :root{
+    --bg:#0e1117;
+    --bg-card:#171c26;
+    --bg-card-alt:#1c2330;
+    --border:#2a3242;
+    --text:#f2f4f8;
+    --text-dim:#a6adba;
+    --accent-up:#3ddc97;
+    --accent-down:#ff8a5b;
+    --accent-origin:#4d8dff;
+    --accent-dest:#ff5b8d;
+    --focus:#ffd23d;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.4;
+    padding:16px;
+    padding-bottom:60px;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+  h1{
+    font-size:1.5rem;
+    text-align:center;
+    margin:8px 0 4px;
+    letter-spacing:.3px;
+  }
+  .subtitle{
+    text-align:center;
+    color:var(--text-dim);
+    font-size:.95rem;
+    margin:0 0 24px;
+    padding:0 8px;
+  }
+  section{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:16px;
+  }
+  .selectors{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+  @media(min-width:520px){
+    .selectors{grid-template-columns:1fr 1fr;}
+  }
+  .field label{
+    display:block;
+    font-weight:700;
+    font-size:.85rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:6px;
+  }
+  .field.origin label{color:var(--accent-origin);}
+  .field.dest label{color:var(--accent-dest);}
+  select{
+    width:100%;
+    font-size:1.15rem;
+    padding:14px 12px;
+    border-radius:10px;
+    border:2px solid var(--border);
+    background:var(--bg-card-alt);
+    color:var(--text);
+    appearance:none;
+    -webkit-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a6adba' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;
+    background-position:right 12px center;
+    background-size:18px;
+  }
+  select:focus{
+    outline:none;
+    border-color:var(--focus);
+  }
+  .field.origin select{border-color:var(--accent-origin);}
+  .field.dest select{border-color:var(--accent-dest);}
+
+  .buttons{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+    margin-top:16px;
+  }
+  @media(min-width:520px){
+    .buttons{grid-template-columns:1fr 1fr 1fr;}
+  }
+  button{
+    font-size:1rem;
+    font-weight:700;
+    padding:16px 10px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    min-height:52px;
+    letter-spacing:.02em;
+  }
+  button:active{transform:scale(0.98);}
+  #btnCalc{background:var(--accent-up);color:#06281c;}
+  #btnSwap{background:var(--bg-card-alt);color:var(--text);border:2px solid var(--border);}
+  #btnClear{background:var(--bg-card-alt);color:var(--accent-down);border:2px solid var(--accent-down);}
+
+  .results{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+  @media(min-width:520px){
+    .results{grid-template-columns:1fr 1fr;}
+  }
+  .result-card{
+    border-radius:12px;
+    padding:18px;
+    text-align:center;
+    border:2px solid var(--border);
+  }
+  .result-card.up{border-color:var(--accent-up);}
+  .result-card.down{border-color:var(--accent-down);}
+  .result-arrow{
+    font-size:1.3rem;
+    font-weight:800;
+    margin-bottom:6px;
+  }
+  .result-card.up .result-arrow{color:var(--accent-up);}
+  .result-card.down .result-arrow{color:var(--accent-down);}
+  .result-semitones{
+    font-size:2rem;
+    font-weight:800;
+    margin:4px 0;
+  }
+  .result-tones{
+    color:var(--text-dim);
+    font-size:1rem;
+  }
+
+  .notepath{
+    text-align:center;
+    font-size:1.1rem;
+    font-weight:700;
+    margin-bottom:14px;
+    color:var(--text);
+  }
+  .notepath .n-origin{color:var(--accent-origin);}
+  .notepath .n-dest{color:var(--accent-dest);}
+
+  h2{
+    font-size:1rem;
+    margin:0 0 14px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--text-dim);
+  }
+
+  .wheel-wrap{
+    display:flex;
+    justify-content:center;
+    padding:4px 0 10px;
+  }
+  #wheelSvg{
+    width:100%;
+    max-width:380px;
+    height:auto;
+  }
+  .wheel-guide{
+    fill:none;
+    stroke:var(--border);
+    stroke-width:2;
+  }
+  .arc-up{
+    fill:none;
+    stroke:var(--accent-up);
+    stroke-width:10;
+    stroke-linecap:round;
+  }
+  .arc-down{
+    fill:none;
+    stroke:var(--accent-down);
+    stroke-width:10;
+    stroke-linecap:round;
+  }
+  .wheel-node-circle{
+    fill:var(--bg-card-alt);
+    stroke:var(--border);
+    stroke-width:2;
+  }
+  .wheel-node-text{
+    fill:var(--text);
+    font-size:15px;
+    font-weight:700;
+    font-family:inherit;
+  }
+  .wheel-node.is-origin .wheel-node-circle{
+    stroke:var(--accent-origin);
+    stroke-width:4;
+    fill:rgba(77,141,255,.28);
+  }
+  .wheel-node.is-dest .wheel-node-circle{
+    stroke:var(--accent-dest);
+    stroke-width:4;
+    fill:rgba(255,91,141,.28);
+  }
+  .wheel-node.is-origin.is-dest .wheel-node-circle{
+    stroke:var(--focus);
+  }
+
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 18px;
+    margin-top:12px;
+    font-size:.8rem;
+    color:var(--text-dim);
+  }
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;}
+  .sw-origin{background:var(--accent-origin);}
+  .sw-dest{background:var(--accent-dest);}
+  .sw-up{background:var(--accent-up);}
+  .sw-down{background:var(--accent-down);}
+
+  footer{
+    text-align:center;
+    color:var(--text-dim);
+    font-size:.78rem;
+    margin-top:20px;
+  }
+  .visually-hidden{
+    position:absolute;
+    width:1px;height:1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Analizador intervalico by Rubén Sbarsky (2026)</h1>
+  <p class="subtitle">Selecciona una nota de origen y una nota de destino para conocer la distancia exacta hacia arriba y hacia abajo.</p>
+
+  <section>
+    <div class="selectors">
+      <div class="field origin">
+        <label for="origin">Nota de origen</label>
+        <select id="origin" aria-label="Nota de origen"></select>
+      </div>
+      <div class="field dest">
+        <label for="dest">Nota de destino</label>
+        <select id="dest" aria-label="Nota de destino"></select>
+      </div>
+    </div>
+    <div class="buttons">
+      <button id="btnCalc" type="button">CALCULAR INTERVALO</button>
+      <button id="btnSwap" type="button">⇄ INTERCAMBIAR</button>
+      <button id="btnClear" type="button">LIMPIAR</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Resultado</h2>
+    <p class="notepath"><span id="pathOrigin" class="n-origin">C</span> → <span id="pathDest" class="n-dest">C</span></p>
+    <div class="results">
+      <div class="result-card up">
+        <div class="result-arrow">ASCENDENTE ↑</div>
+        <div class="result-semitones" id="upSemi">0 semitonos</div>
+        <div class="result-tones" id="upTones">0 tonos</div>
+      </div>
+      <div class="result-card down">
+        <div class="result-arrow">DESCENDENTE ↓</div>
+        <div class="result-semitones" id="downSemi">0 semitonos</div>
+        <div class="result-tones" id="downTones">0 tonos</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Cromatismo (12 semitonos)</h2>
+    <div class="wheel-wrap">
+      <svg id="wheelSvg" viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rueda cromática de 12 semitonos"></svg>
+    </div>
+    <div class="legend">
+      <span><i class="swatch sw-origin"></i> Origen</span>
+      <span><i class="swatch sw-dest"></i> Destino</span>
+      <span><i class="swatch sw-up"></i> Anillo interior: ascendente ↑</span>
+      <span><i class="swatch sw-down"></i> Anillo exterior: descendente ↓</span>
+    </div>
+  </section>
+
+  <footer>Calcula distancia cromática (semitonos), no intervalos diatónicos. Funciona 100% offline.</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+
+  var originSel = document.getElementById("origin");
+  var destSel = document.getElementById("dest");
+  var wheelSvg = document.getElementById("wheelSvg");
+
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  var WHEEL_CX = 180, WHEEL_CY = 180;
+  var NODE_R = 125, NODE_CIRCLE_R = 26;
+  var ARC_UP_R = 150, ARC_DOWN_R = 168;
+
+  var pathOriginEl = document.getElementById("pathOrigin");
+  var pathDestEl = document.getElementById("pathDest");
+  var upSemiEl = document.getElementById("upSemi");
+  var upTonesEl = document.getElementById("upTones");
+  var downSemiEl = document.getElementById("downSemi");
+  var downTonesEl = document.getElementById("downTones");
+
+  function buildOptions(select){
+    for(var i=0;i<NOTES.length;i++){
+      var opt = document.createElement("option");
+      opt.value = NOTES[i];
+      opt.textContent = NOTES[i];
+      select.appendChild(opt);
+    }
+  }
+  buildOptions(originSel);
+  buildOptions(destSel);
+  originSel.value = "C";
+  destSel.value = "C";
+
+  function polarPoint(cx, cy, r, angleDeg){
+    var rad = (angleDeg - 90) * Math.PI / 180;
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  }
+
+  function buildWheel(){
+    var guide = document.createElementNS(SVG_NS, "circle");
+    guide.setAttribute("cx", WHEEL_CX);
+    guide.setAttribute("cy", WHEEL_CY);
+    guide.setAttribute("r", NODE_R);
+    guide.setAttribute("class", "wheel-guide");
+    wheelSvg.appendChild(guide);
+
+    var arcUp = document.createElementNS(SVG_NS, "path");
+    arcUp.setAttribute("id", "arcUp");
+    arcUp.setAttribute("class", "arc-up");
+    wheelSvg.appendChild(arcUp);
+
+    var arcDown = document.createElementNS(SVG_NS, "path");
+    arcDown.setAttribute("id", "arcDown");
+    arcDown.setAttribute("class", "arc-down");
+    wheelSvg.appendChild(arcDown);
+
+    var nodesGroup = document.createElementNS(SVG_NS, "g");
+    nodesGroup.setAttribute("id", "wheelNodes");
+    wheelSvg.appendChild(nodesGroup);
+
+    for(var i=0;i<NOTES.length;i++){
+      var p = polarPoint(WHEEL_CX, WHEEL_CY, NODE_R, i * 30);
+
+      var g = document.createElementNS(SVG_NS, "g");
+      g.setAttribute("class", "wheel-node");
+      g.dataset.index = i;
+
+      var circle = document.createElementNS(SVG_NS, "circle");
+      circle.setAttribute("cx", p.x);
+      circle.setAttribute("cy", p.y);
+      circle.setAttribute("r", NODE_CIRCLE_R);
+      circle.setAttribute("class", "wheel-node-circle");
+      g.appendChild(circle);
+
+      var text = document.createElementNS(SVG_NS, "text");
+      text.setAttribute("x", p.x);
+      text.setAttribute("y", p.y + 5);
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("class", "wheel-node-text");
+      text.textContent = NOTES[i];
+      g.appendChild(text);
+
+      nodesGroup.appendChild(g);
+    }
+  }
+  buildWheel();
+
+  function noteValue(name){
+    return NOTES.indexOf(name);
+  }
+
+  function computeInterval(originName, destName){
+    var o = noteValue(originName);
+    var d = noteValue(destName);
+    var ascendente = (d - o + 12) % 12;
+    var descendente = (o - d + 12) % 12;
+    return { ascendente: ascendente, descendente: descendente, o: o, d: d };
+  }
+
+  function toTones(semitonos){
+    var tonos = Math.floor(semitonos / 2);
+    var resto = semitonos % 2;
+    return { tonos: tonos, resto: resto };
+  }
+
+  function formatTones(semitonos){
+    var t = toTones(semitonos);
+    if(t.tonos === 0 && t.resto === 0){
+      return "0 tonos";
+    }
+    var parts = [];
+    if(t.tonos > 0){
+      parts.push(t.tonos + (t.tonos === 1 ? " tono" : " tonos"));
+    }
+    if(t.resto > 0){
+      parts.push(t.resto + " semitono");
+    }
+    if(t.tonos === 0){
+      return parts.join(" + ");
+    }
+    if(t.resto === 0){
+      return t.tonos + (t.tonos === 1 ? " tono" : " tonos");
+    }
+    return parts.join(" + ");
+  }
+
+  function formatSemi(n){
+    return n + (n === 1 ? " semitono" : " semitonos");
+  }
+
+  function arcPathD(cx, cy, r, angleStartDeg, angleEndDeg, sweepFlag, largeArcFlag){
+    var start = polarPoint(cx, cy, r, angleStartDeg);
+    var end = polarPoint(cx, cy, r, angleEndDeg);
+    return "M " + start.x.toFixed(2) + " " + start.y.toFixed(2) +
+           " A " + r + " " + r + " 0 " + largeArcFlag + " " + sweepFlag + " " +
+           end.x.toFixed(2) + " " + end.y.toFixed(2);
+  }
+
+  function updateWheel(o, d, ascendente, descendente){
+    var angleO = o * 30;
+    var angleD = d * 30;
+    var arcUp = document.getElementById("arcUp");
+    var arcDown = document.getElementById("arcDown");
+
+    // Anillo interior: recorrido ascendente, en sentido horario (indices crecientes)
+    if(ascendente > 0){
+      var largeUp = (ascendente * 30 > 180) ? 1 : 0;
+      arcUp.setAttribute("d", arcPathD(WHEEL_CX, WHEEL_CY, ARC_UP_R, angleO, angleD, 1, largeUp));
+      arcUp.style.display = "";
+    } else {
+      arcUp.removeAttribute("d");
+      arcUp.style.display = "none";
+    }
+
+    // Anillo exterior: recorrido descendente, en sentido antihorario (indices decrecientes)
+    if(descendente > 0){
+      var largeDown = (descendente * 30 > 180) ? 1 : 0;
+      arcDown.setAttribute("d", arcPathD(WHEEL_CX, WHEEL_CY, ARC_DOWN_R, angleO, angleD, 0, largeDown));
+      arcDown.style.display = "";
+    } else {
+      arcDown.removeAttribute("d");
+      arcDown.style.display = "none";
+    }
+
+    var nodes = document.querySelectorAll("#wheelNodes .wheel-node");
+    for(var i=0;i<nodes.length;i++){
+      nodes[i].classList.remove("is-origin", "is-dest");
+    }
+    nodes[o].classList.add("is-origin");
+    nodes[d].classList.add("is-dest");
+  }
+
+  function update(){
+    var originName = originSel.value;
+    var destName = destSel.value;
+
+    var r = computeInterval(originName, destName);
+
+    pathOriginEl.textContent = originName;
+    pathDestEl.textContent = destName;
+
+    upSemiEl.textContent = formatSemi(r.ascendente);
+    upTonesEl.textContent = formatTones(r.ascendente);
+
+    downSemiEl.textContent = formatSemi(r.descendente);
+    downTonesEl.textContent = formatTones(r.descendente);
+
+    updateWheel(r.o, r.d, r.ascendente, r.descendente);
+  }
+
+  document.getElementById("btnCalc").addEventListener("click", update);
+  document.getElementById("btnSwap").addEventListener("click", function(){
+    var tmp = originSel.value;
+    originSel.value = destSel.value;
+    destSel.value = tmp;
+    update();
+  });
+  document.getElementById("btnClear").addEventListener("click", function(){
+    originSel.value = "C";
+    destSel.value = "C";
+    update();
+  });
+  originSel.addEventListener("change", update);
+  destSel.addEventListener("change", update);
+
+  update();
+
+  // ---------------------------------------------------------------
+  // AUTOVERIFICACIÓN (batería interna de pruebas, no afecta a la UI)
+  // ---------------------------------------------------------------
+  (function runSelfTests(){
+    var failures = [];
+
+    function assertEqual(actual, expected, label){
+      if(actual !== expected){
+        failures.push(label + " -> esperado " + expected + ", obtenido " + actual);
+      }
+    }
+
+    var expected = {
+      "C":  {asc:0,  desc:0},
+      "C#": {asc:1,  desc:11},
+      "D":  {asc:2,  desc:10},
+      "D#": {asc:3,  desc:9},
+      "E":  {asc:4,  desc:8},
+      "F":  {asc:5,  desc:7},
+      "F#": {asc:6,  desc:6},
+      "G":  {asc:7,  desc:5},
+      "G#": {asc:8,  desc:4},
+      "A":  {asc:9,  desc:3},
+      "A#": {asc:10, desc:2},
+      "B":  {asc:11, desc:1}
+    };
+
+    for(var note in expected){
+      var res = computeInterval("C", note);
+      assertEqual(res.ascendente, expected[note].asc, "C -> " + note + " ascendente");
+      assertEqual(res.descendente, expected[note].desc, "C -> " + note + " descendente");
+      // Regla crítica: ascendente + descendente = 12 (o 0 si son la misma nota)
+      var suma = res.ascendente + res.descendente;
+      var sumaEsperada = (note === "C") ? 0 : 12;
+      assertEqual(suma, sumaEsperada, "C -> " + note + " suma asc+desc");
+    }
+
+    // Comprobación con origen distinto de C: probar todos los pares posibles
+    for(var i=0;i<NOTES.length;i++){
+      for(var j=0;j<NOTES.length;j++){
+        var o = NOTES[i], d = NOTES[j];
+        var r2 = computeInterval(o, d);
+        var sumaEsp = (o === d) ? 0 : 12;
+        assertEqual(r2.ascendente + r2.descendente, sumaEsp, o + " -> " + d + " suma asc+desc");
+        if(r2.ascendente < 0 || r2.ascendente > 11){
+          failures.push(o + " -> " + d + " ascendente fuera de rango: " + r2.ascendente);
+        }
+        if(r2.descendente < 0 || r2.descendente > 11){
+          failures.push(o + " -> " + d + " descendente fuera de rango: " + r2.descendente);
+        }
+      }
+    }
+
+    // Comprobación de conversión a tonos/semitonos para 0..11
+    var toneExpected = [
+      "0 tonos","1 semitono","1 tono","1 tono + 1 semitono",
+      "2 tonos","2 tonos + 1 semitono","3 tonos","3 tonos + 1 semitono",
+      "4 tonos","4 tonos + 1 semitono","5 tonos","5 tonos + 1 semitono"
+    ];
+    for(var k=0;k<12;k++){
+      assertEqual(formatTones(k), toneExpected[k], "formatTones(" + k + ")");
+    }
+
+    if(failures.length > 0){
+      console.error("Autoverificación: se encontraron errores:\n" + failures.join("\n"));
+    } else {
+      console.log("Autoverificación: todas las pruebas del analizador intervalico pasaron correctamente.");
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
