@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El Arte de la Melodía Fantasma · Tutorial Técnico de Acompañamiento al Piano</title>
+<style>
+/* ============ BASE / PALETA ============ */
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --card2:#0d1526; --border:#1e3a5f;
+  --accent:#00d4ff; --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+  --text:#dce8f7; --muted:#8ea8c6; --dim:#64809f;
+  --r:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size:16px; line-height:1.65; -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .4em}
+p{margin:0 0 .9em}
+a{color:var(--accent)}
+button{font-family:inherit}
+
+/* ============ BARRA DE PROGRESO ============ */
+#progressWrap{position:fixed;top:0;left:0;right:0;height:4px;background:#0c1526;z-index:1300;border-bottom:1px solid #12233c}
+#progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--purple));box-shadow:0 0 12px rgba(0,212,255,.7);transition:width .12s linear}
+
+/* ============ NAVBAR ============ */
+.topbar{position:fixed;top:4px;left:0;right:0;z-index:1200;background:rgba(9,13,24,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.topbar-in{display:flex;align-items:center;gap:10px;padding:7px 12px}
+.brand{display:flex;align-items:center;gap:8px;flex:0 0 auto;padding-right:10px;border-right:1px solid var(--border);margin-right:2px}
+.brand .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(145deg,#0b3b52,#0a1b2c);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 12px rgba(0,212,255,.35)}
+.brand b{font-size:14px;letter-spacing:.6px;color:#eaf7ff;white-space:nowrap}
+.brand small{display:block;font-size:10px;color:var(--dim);letter-spacing:1.4px;text-transform:uppercase}
+.nav{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;-webkit-overflow-scrolling:touch;flex:1 1 auto;padding-bottom:2px}
+.nav::-webkit-scrollbar{height:5px}
+.nav::-webkit-scrollbar-thumb{background:#1d3category}
+.nav::-webkit-scrollbar-thumb{background:#1d3a5c;border-radius:4px}
+.navbtn{flex:0 0 auto;background:#0c1526;border:1px solid var(--border);color:var(--muted);padding:8px 13px;border-radius:9px;font-size:12.5px;font-weight:600;letter-spacing:.4px;cursor:pointer;white-space:nowrap;transition:.18s;position:relative}
+.navbtn:hover{color:#eaf7ff;border-color:#2d6d94;background:#111f36}
+.navbtn.active{color:#04121a;background:linear-gradient(180deg,#5ce1ff,#00b8e0);border-color:#7ee9ff;box-shadow:0 0 14px rgba(0,212,255,.45)}
+.navbtn.credits{border-color:#4b2b78;color:#d9b8ff;background:#150f26}
+.navbtn.credits.active{background:linear-gradient(180deg,#c98bff,#9333ea);border-color:#d8a6ff;color:#160625}
+
+/* ============ LAYOUT ============ */
+main{padding:118px 16px 40px;max-width:1240px;margin:0 auto}
+.section{display:none;animation:fade .35s ease}
+.section.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.sec-head{display:flex;gap:14px;align-items:flex-start;margin:6px 0 20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.sec-ico{flex:0 0 auto;width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;background:linear-gradient(145deg,#12293f,#0b1526);border:1px solid var(--border);box-shadow:inset 0 0 18px rgba(0,212,255,.12)}
+.eyebrow{font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);font-weight:700}
+.sec-head h2{font-size:clamp(1.3rem,3.4vw,1.9rem);color:#f1f8ff;margin:.15em 0 .2em}
+.sec-head p{margin:0;color:var(--muted);font-size:.95rem;max-width:80ch}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px}
+.card.tight{padding:14px}
+.card h3{font-size:1.06rem;color:#eaf6ff;display:flex;align-items:center;gap:8px}
+.card h4{font-size:.95rem;color:#cfe6fa}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.tiny{font-size:.76rem;color:var(--dim)}
+
+.badge{display:inline-flex;align-items:center;gap:6px;background:#0b2233;border:1px solid #2b6a8c;color:#8ee6ff;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;padding:5px 11px;border-radius:999px}
+.chip{display:inline-block;background:#0d1c2e;border:1px solid var(--border);color:#bfe4f7;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:600;font-family:'Consolas','Courier New',monospace}
+.chip.top{border-color:var(--accent);color:#7ff0ff;box-shadow:0 0 10px rgba(0,212,255,.2)}
+.chip.lh{border-color:#8a6314;color:#ffd28a}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:14px 16px 14px 14px;margin:14px 0;border:1px solid var(--border);border-left-width:5px;background:#0d1728;display:flex;gap:12px}
+.callout .ci{flex:0 0 auto;font-size:18px;line-height:1.4}
+.callout .ct{font-size:11.5px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:3px}
+.callout p:last-child{margin-bottom:0}
+.callout.info{border-left-color:var(--accent);background:linear-gradient(90deg,rgba(0,212,255,.09),rgba(13,23,40,.4))}
+.callout.info .ct{color:var(--accent)}
+.callout.example{border-left-color:var(--green);background:linear-gradient(90deg,rgba(34,197,94,.09),rgba(13,23,40,.4))}
+.callout.example .ct{color:var(--green)}
+.callout.warning{border-left-color:var(--amber);background:linear-gradient(90deg,rgba(245,158,11,.09),rgba(13,23,40,.4))}
+.callout.warning .ct{color:var(--amber)}
+.callout.error{border-left-color:var(--red);background:linear-gradient(90deg,rgba(239,68,68,.09),rgba(13,23,40,.4))}
+.callout.error .ct{color:var(--red)}
+
+/* ============ TABLAS ============ */
+.table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:var(--r);background:var(--card);margin:14px 0;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:.92rem}
+thead th{background:#0b1c2e;color:#8ee6ff;text-align:left;padding:12px 14px;font-size:11.5px;letter-spacing:1.3px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:12px 14px;border-bottom:1px solid #16293f;vertical-align:top;color:#d5e6f7}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:rgba(255,255,255,.018)}
+tbody tr:hover{background:rgba(0,212,255,.05)}
+td.dimcol{color:#f0d9a8;font-weight:600;white-space:nowrap}
+
+/* ============ PASOS ============ */
+.steps{counter-reset:st;display:grid;gap:12px;margin:14px 0}
+.step{position:relative;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 16px 16px 62px}
+.step::before{counter-increment:st;content:counter(st);position:absolute;left:16px;top:16px;width:32px;height:32px;border-radius:9px;background:linear-gradient(145deg,#0b3548,#0a1a2b);border:1px solid var(--accent);color:#8ff0ff;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(0,212,255,.25)}
+.step h4{margin:0 0 4px;color:#eaf6ff;font-size:1rem}
+.step p{margin:0;color:var(--muted);font-size:.93rem}
+
+/* ============ ACORDEONES ============ */
+details.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;margin:10px 0;overflow:hidden}
+details.acc>summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:700;color:#dff1ff;display:flex;align-items:center;gap:10px;user-select:none}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary .arw{margin-left:auto;transition:.25s;color:var(--accent);font-size:13px}
+details.acc[open]>summary{background:#101f33;border-bottom:1px solid var(--border)}
+details.acc[open]>summary .arw{transform:rotate(90deg)}
+.acc-body{padding:14px 16px}
+.acc-body p:last-child{margin-bottom:0}
+
+/* ============ TABS INTERNAS ============ */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.tabbtn{background:#0c1526;border:1px solid var(--border);color:var(--muted);padding:9px 15px;border-radius:9px;cursor:pointer;font-weight:700;font-size:.86rem;transition:.18s}
+.tabbtn.active{background:linear-gradient(180deg,#12415a,#0d2438);color:#8ff0ff;border-color:#2b7ea3;box-shadow:0 0 12px rgba(0,212,255,.2)}
+.tabpanel{display:none}
+.tabpanel.active{display:block;animation:fade .3s ease}
+
+/* ============ BOTONES ============ */
+.btn{background:linear-gradient(180deg,#0d3348,#0a1e2e);border:1px solid #2b7ea3;color:#cdf3ff;padding:10px 16px;border-radius:9px;cursor:pointer;font-weight:700;font-size:.88rem;transition:.18s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--accent);box-shadow:0 0 14px rgba(0,212,255,.3);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.primary{background:linear-gradient(180deg,#00b8e0,#0078a0);color:#03151d;border-color:#67e3ff}
+.btn.ghost{background:#0c1526;border-color:var(--border);color:var(--muted)}
+.btn.amber{border-color:#8a6314;color:#ffd28a;background:linear-gradient(180deg,#3a2a08,#1d1607)}
+.btn.green{border-color:#1f7a45;color:#a8f0c4;background:linear-gradient(180deg,#0d3323,#08201a)}
+.btn.playing{animation:playingPulse .7s ease-in-out infinite alternate}
+@keyframes playingPulse{from{box-shadow:0 0 6px rgba(0,212,255,.3)}to{box-shadow:0 0 20px rgba(0,212,255,.7)}}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+
+.switch{display:inline-flex;align-items:center;gap:9px;background:#0c1526;border:1px solid var(--border);padding:8px 13px;border-radius:9px;cursor:pointer;font-size:.84rem;color:var(--muted);font-weight:600}
+.switch input{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
+
+/* ============ LABORATORIO ============ */
+.lab{background:linear-gradient(180deg,#0d1a2c,#0a1120);border:1px solid #23496b;border-radius:14px;padding:16px;margin:16px 0;box-shadow:inset 0 0 40px rgba(0,60,100,.18)}
+.lab-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.pchip{background:#0b1526;border:1px solid var(--border);color:var(--muted);padding:7px 11px;border-radius:8px;cursor:pointer;font-size:.78rem;font-weight:700;transition:.15s;text-align:left}
+.pchip:hover{border-color:#2d6d94;color:#dff1ff}
+.pchip.active{background:linear-gradient(180deg,#00b8e0,#0078a0);color:#03151d;border-color:#67e3ff;box-shadow:0 0 12px rgba(0,212,255,.4)}
+.lab-title{font-size:1rem;font-weight:800;color:#eaf7ff;margin-bottom:4px}
+.lab-sub{font-size:.8rem;color:var(--dim);letter-spacing:1.4px;text-transform:uppercase;margin-bottom:10px}
+.lab-keys{background:#070d18;border:1px solid var(--border);border-radius:10px;padding:10px;overflow-x:auto}
+.lab-keys svg{display:block;width:100%;height:auto;min-width:420px}
+.lab-controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:12px;padding-top:12px;border-top:1px dashed #23496b}
+.readout{display:grid;gap:8px;margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.ro{background:#0b1526;border:1px solid var(--border);border-radius:9px;padding:10px 12px}
+.ro .k{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);font-weight:700}
+.ro .v{font-size:.95rem;font-weight:700;color:#dff1ff;font-family:'Consolas','Courier New',monospace}
+.ro.top{border-color:#2b7ea3;background:linear-gradient(180deg,#0d2a3d,#0b1526)}
+.ro.top .v{color:#7ff0ff}
+.ro.lh .v{color:#ffd28a}
+
+/* teclas mini */
+.wk{fill:url(#wkG)}
+.bk{fill:url(#bkG)}
+.hl-lh{fill:rgba(245,158,11,.85)}
+.hl-rh{fill:rgba(0,150,210,.6)}
+.hl-top{fill:rgba(0,212,255,.95)}
+.mlabel{font-size:13px;font-weight:700;font-family:'Consolas','Courier New',monospace}
+.mtop{fill:#7ff0ff}.mrh{fill:#8fd0ee}.mlh{fill:#ffd28a}
+
+/* ============ CHECKLIST ============ */
+.checklist{display:grid;gap:10px;margin:12px 0}
+.chk{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px;cursor:pointer;transition:.18s}
+.chk:hover{border-color:#2d6d94}
+.chk .box{flex:0 0 auto;width:22px;height:22px;border-radius:6px;border:2px solid #3a6d92;display:flex;align-items:center;justify-content:center;font-size:14px;color:#04121a;margin-top:2px;transition:.18s;background:#0b1526}
+.chk.done{border-color:#1f7a45;background:linear-gradient(90deg,rgba(34,197,94,.09),var(--card))}
+.chk.done .box{background:var(--green);border-color:var(--green)}
+.chk .txt{font-size:.93rem}
+.chk.done .txt{color:#bdf5d2}
+.meter{height:8px;background:#0b1526;border:1px solid var(--border);border-radius:99px;overflow:hidden;margin:10px 0}
+.meter>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--accent));transition:width .35s ease}
+
+/* ============ DIAGRAMAS ============ */
+.diagram{background:#080e1a;border:1px solid var(--border);border-radius:var(--r);padding:14px;margin:14px 0;overflow-x:auto}
+.diagram svg{display:block;width:100%;height:auto;min-width:340px}
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0}
+.flow .node{background:#0d2233;border:1px solid #2b6a8c;border-radius:9px;padding:9px 13px;font-weight:700;font-size:.86rem;color:#cdf3ff}
+.flow .arr{color:var(--accent);font-weight:800}
+
+/* ============ HOME ============ */
+.hero{padding:2px 0 8px}
+.hero .badge{margin-bottom:10px}
+.hero h1{font-size:clamp(1.45rem,4.6vw,2.5rem);color:#f2fbff;margin:0 0 6px;letter-spacing:-.3px}
+.hero .sub{font-size:clamp(.95rem,2.4vw,1.14rem);color:var(--accent);font-weight:600;margin:0 0 14px}
+.cover-holder{margin:6px 0 20px;border-radius:16px;overflow:hidden;border:1px solid #23496b;background:#070d18;box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 30px rgba(0,140,200,.12)}
+.cover-holder svg{display:block;width:100%;height:auto}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:16px 0}
+.metric{background:linear-gradient(180deg,#0e1e31,#0b1424);border:1px solid var(--border);border-radius:11px;padding:14px;text-align:center}
+.metric .n{font-size:1.7rem;font-weight:800;color:var(--accent);line-height:1;text-shadow:0 0 16px rgba(0,212,255,.35)}
+.metric .l{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);margin-top:6px;font-weight:700}
+.quote{margin:18px 0;padding:20px 22px;border-left:5px solid var(--purple);background:linear-gradient(90deg,rgba(168,85,247,.13),rgba(15,23,42,.35));border-radius:0 12px 12px 0;font-size:clamp(1rem,2.6vw,1.22rem);font-style:italic;color:#f0e6ff}
+.quote .who{display:block;margin-top:8px;font-size:.78rem;font-style:normal;letter-spacing:1.6px;text-transform:uppercase;color:#c9a8f5}
+.datetime{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.dt{background:#0b1526;border:1px solid var(--border);border-radius:9px;padding:9px 14px;font-size:.86rem}
+.dt b{color:var(--accent);font-family:'Consolas','Courier New',monospace}
+.idx-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-top:14px}
+.idx{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px;cursor:pointer;transition:.2s;text-align:left;width:100%;color:var(--text)}
+.idx:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.4)}
+.idx .num{font-size:11px;letter-spacing:1.6px;color:var(--accent);font-weight:800}
+.idx .tt{font-weight:700;color:#eaf6ff;margin:3px 0 4px;font-size:.98rem}
+.idx .dd{font-size:.82rem;color:var(--muted)}
+
+/* ============ CRÉDITOS ============ */
+.credits-card{text-align:center;background:linear-gradient(180deg,#111a2e,#0a1120);border:1px solid #2b4d75;border-radius:16px;padding:26px 20px;margin-top:18px}
+.credits-card .autor{font-size:clamp(1.5rem,5vw,2.3rem);font-weight:800;color:#f3fbff;letter-spacing:.5px;margin:10px 0 4px}
+.credits-card .rol{font-size:.82rem;letter-spacing:2.6px;text-transform:uppercase;color:var(--accent);font-weight:700}
+.latin{margin-top:18px;font-style:italic;color:#d9c6ff;font-size:1.05rem;letter-spacing:.6px}
+
+/* ============ FOOTER ============ */
+footer{border-top:1px solid var(--border);background:#080d18;margin-top:26px;padding:26px 16px;text-align:center}
+footer .fl{font-size:.9rem;color:var(--muted);margin:4px 0}
+footer .latin{font-size:.9rem;margin-top:12px;color:#c9a8f5}
+
+/* ============ VOLVER ARRIBA ============ */
+#toTop{position:fixed;right:16px;bottom:18px;width:50px;height:50px;border-radius:14px;background:linear-gradient(180deg,#00b8e0,#0078a0);border:1px solid #67e3ff;color:#03151d;font-size:20px;font-weight:800;cursor:pointer;z-index:1250;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 8px 22px rgba(0,0,0,.5)}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{transform:translateY(-3px)}
+
+/* ============ SVG PORTADA ============ */
+.cv text{font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+.cv .ttl{font-size:44px;font-weight:800;fill:#eef9ff;letter-spacing:5px}
+.cv .stl{font-size:19px;fill:#8fd9f5;letter-spacing:1.2px}
+.cv .prg{font-size:16px;fill:#9fc4de;letter-spacing:.6px;font-family:'Consolas','Courier New',monospace}
+.cv .ptitle{font-size:12.5px;font-weight:800;fill:#7fd4f2;letter-spacing:1.8px}
+.cv .pcap{font-size:11.5px;fill:#93aec9}
+.cv .badgeT{font-size:17px;font-weight:800;fill:#04121a;letter-spacing:.6px}
+.cv .nodeT{font-size:15px;font-weight:800;fill:#04121a}
+.cv .nlabel{font-size:13px;fill:#bfe6fa;font-family:'Consolas','Courier New',monospace;font-weight:700}
+.cv .nlabelTop{font-size:13.5px;fill:#7ff0ff;font-family:'Consolas','Courier New',monospace;font-weight:800}
+.cv .lhlabel{font-size:12.5px;fill:#ffd28a;font-family:'Consolas','Courier New',monospace;font-weight:700}
+.cv .brk{font-size:12px;fill:#9fb8d2;letter-spacing:1.2px;font-weight:700}
+.cv .annot{font-size:12.5px;fill:#8fe8b4;letter-spacing:.4px}
+.cv .hint{font-size:11.5px;fill:#5f7e9e;letter-spacing:.6px}
+.cv .foot{font-size:19px;fill:#9adcff;font-style:italic;letter-spacing:.6px}
+.cv .corner{font-size:11px;fill:#4d6a88;letter-spacing:2px}
+.cv .sideLbl{font-size:13px;fill:#3f9dc4;letter-spacing:5px;font-weight:700}
+.cv .wk{fill:url(#wkG)}
+.cv .bk{fill:url(#bkG)}
+.cv .badgeR{fill:#00d4ff;stroke:#a9f2ff;stroke-width:1.2}
+.cv .nodeC{fill:#00d4ff;stroke:#d6fbff;stroke-width:2}
+.cv .ghostDot{fill:#0f2436;stroke:#2f6f92;stroke-width:1.6}
+.cv .gseg{fill:none;stroke:#00d4ff;stroke-width:3.4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1}
+.cv .gtrace{fill:none;stroke:#1d4f6d;stroke-width:2;stroke-dasharray:7 7;opacity:.8}
+.cv .stkLine{stroke:#2f6f92;stroke-width:1.6;stroke-dasharray:4 5}
+.cv .dm{fill:#12344c;stroke:#4d9dc4;stroke-width:1.6}
+.cv .dmTop{fill:#00d4ff;stroke:#e2fdff;stroke-width:2}
+.cv .dmLH{fill:#4a3410;stroke:#f59e0b;stroke-width:1.8}
+.cv .ring{fill:none;stroke:#00d4ff;stroke-width:2.4}
+.cv .hlw{fill:url(#hlTopG)}
+.cv .hlwMid{fill:rgba(0,150,210,.55)}
+.cv .hlwLH{fill:rgba(245,158,11,.75)}
+.cv .hlb{fill:rgba(0,212,255,.9)}
+.cv .hlbLH{fill:rgba(245,158,11,.85)}
+.cv .brkLine{stroke:#4d9dc4;stroke-width:1.8;fill:none}
+.cv .brkLineLH{stroke:#f59e0b;stroke-width:1.8;fill:none}
+.cv .eqbar{fill:url(#eqG);transform-box:fill-box;transform-origin:bottom}
+.cv .sketch{fill:none;stroke:#00d4ff;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1}
+.cv .skdot{fill:#00d4ff}
+.cv .dense{fill:#7d97b3}
+.cv .signal{fill:none;stroke:#00d4ff;stroke-width:2.4;stroke-dasharray:14 20;opacity:.65}
+.cv .staff{stroke:#1a3d5c;stroke-width:1.2;opacity:.75}
+
+/* animaciones de la portada */
+@keyframes sl0{0%{opacity:0;transform:translateY(10px)}2%,23%{opacity:1;transform:translateY(0)}25%,100%{opacity:0;transform:translateY(-8px)}}
+@keyframes sl1{0%,25%{opacity:0;transform:translateY(10px)}27%,48%{opacity:1;transform:translateY(0)}50%,100%{opacity:0;transform:translateY(-8px)}}
+@keyframes sl2{0%,50%{opacity:0;transform:translateY(10px)}52%,73%{opacity:1;transform:translateY(0)}75%,100%{opacity:0;transform:translateY(-8px)}}
+@keyframes sl3{0%,75%{opacity:0;transform:translateY(10px)}77%,98%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-8px)}}
+.cv .slot{opacity:0}
+.cv .s0{animation:sl0 12s linear infinite}
+.cv .s1{animation:sl1 12s linear infinite}
+.cv .s2{animation:sl2 12s linear infinite}
+.cv .s3{animation:sl3 12s linear infinite}
+@keyframes sg1{0%,25%{stroke-dashoffset:1}35%,100%{stroke-dashoffset:0}}
+@keyframes sg2{0%,50%{stroke-dashoffset:1}60%,100%{stroke-dashoffset:0}}
+@keyframes sg3{0%,75%{stroke-dashoffset:1}85%,100%{stroke-dashoffset:0}}
+.cv .g1{animation:sg1 12s linear infinite}
+.cv .g2{animation:sg2 12s linear infinite}
+.cv .g3{animation:sg3 12s linear infinite}
+@keyframes topGlow{0%,100%{opacity:.62}50%{opacity:1}}
+.cv .glowPulse{animation:topGlow 1.5s ease-in-out infinite}
+@keyframes beamPulse{0%,100%{opacity:.12}50%{opacity:.42}}
+.cv .beam{animation:beamPulse 2.4s ease-in-out infinite}
+@keyframes eqA{0%,100%{transform:scaleY(.18)}50%{transform:scaleY(1)}}
+@keyframes eqB{0%,100%{transform:scaleY(.85)}45%{transform:scaleY(.22)}}
+@keyframes eqC{0%,100%{transform:scaleY(.4)}60%{transform:scaleY(1)}}
+@keyframes fotoFade{0%,100%{opacity:.92}50%{opacity:.3}}
+.cv .denseG{animation:fotoFade 6s ease-in-out infinite}
+@keyframes sketchDraw{0%{stroke-dashoffset:1}45%,82%{stroke-dashoffset:0}100%{stroke-dashoffset:1}}
+.cv .sketch{animation:sketchDraw 6s ease-in-out infinite}
+@keyframes signalFlow{to{stroke-dashoffset:-340}}
+.cv .signal{animation:signalFlow 4.5s linear infinite}
+@keyframes arrowSlide{0%,100%{transform:translateX(-4px);opacity:.55}50%{transform:translateX(4px);opacity:1}}
+.cv .arrowP{animation:arrowSlide 2.6s ease-in-out infinite}
+@keyframes dotTwinkle{0%,100%{opacity:.35}50%{opacity:.9}}
+
+/* ============ RESPONSIVE (Samsung Galaxy A02s 360px) ============ */
+@media (max-width:760px){
+  main{padding:112px 11px 34px}
+  .brand b{font-size:12.5px}.brand small{font-size:9px}
+  .navbtn{padding:8px 11px;font-size:11.6px}
+  .sec-head{gap:10px}
+  .sec-ico{width:44px;height:44px;font-size:20px;border-radius:12px}
+  .card{padding:14px}
+  .step{padding:14px 14px 14px 56px}
+  .cv .ttl{font-size:40px;letter-spacing:2px}
+}
+@media (max-width:420px){
+  .topbar-in{padding:6px 8px;gap:7px}
+  .brand{padding-right:7px}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .lab-controls .btn{flex:1 1 100%;justify-content:center}
+  .switch{flex:1 1 100%;justify-content:center}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .cv *{animation:none !important;transition:none !important}
+  .cv .slot{opacity:1 !important}
+  .cv .gseg{stroke-dashoffset:0 !important}
+  .cv .sketch{stroke-dashoffset:0 !important}
+  .section{animation:none}
+  .btn:hover{transform:none}
+}
+</style>
+</head>
+<body>
+
+<div id="progressWrap"><div id="progressBar"></div></div>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="logo">🎹</div>
+      <div>
+        <b>MELODÍA FANTASMA</b>
+        <small>Piano de acompañamiento</small>
+      </div>
+    </div>
+    <nav class="nav" id="nav" aria-label="Navegación del tutorial">
+      <button class="navbtn active" data-target="home">INICIO</button>
+      <button class="navbtn" data-target="sec-concepto">1 · MELODÍA FANTASMA</button>
+      <button class="navbtn" data-target="sec-roles">2 · SOLISTA vs ACOMPAÑANTE</button>
+      <button class="navbtn" data-target="sec-voicing">3 · FÓRMULA DEL VOICING</button>
+      <button class="navbtn" data-target="sec-niveles">4 · NIVELES + CHECKLIST</button>
+      <button class="navbtn" data-target="sec-inversiones">5 · INVERSIONES Y TENSIONES</button>
+      <button class="navbtn" data-target="sec-repertorio">6 · LABORATORIO DE REPERTORIO</button>
+      <button class="navbtn" data-target="sec-errores">7 · ERRORES + FAQ</button>
+      <button class="navbtn" data-target="sec-ejercicios">8 · EJERCICIOS</button>
+      <button class="navbtn" data-target="sec-glosario">9 · GLOSARIO Y RECURSOS</button>
+      <button class="navbtn credits" data-target="creditos">★ CRÉDITOS</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ==================== HOME ==================== -->
+<section id="home" class="section active">
+  <div class="hero">
+    <span class="badge">📘 Tutorial técnico interactivo · Pedagogía pianística</span>
+    <h1>Adornos y Conceptos de Ritmo para Piano: El Arte de la Melodía Fantasma</h1>
+    <p class="sub">Cuándo actuar como solista y cuándo como soporte: el cambio de paradigma del acompañamiento profesional.</p>
+  </div>
+
+  <div class="cover-holder" id="coverHome" aria-label="Portada animada: voicing de acompañamiento y melodía fantasma sobre el teclado"></div>
+
+  <div class="card">
+    <p>Como pianista profesional y pedagogo, he observado que uno de los mayores obstáculos para el estudiante es <strong>discernir cuándo debe actuar como solista y cuándo como soporte</strong>. En la enseñanza técnica de alto nivel, la transición de tocar una pieza instrumental a realizar un acompañamiento profesional requiere un <strong>cambio de paradigma</strong>.</p>
+    <p style="margin-bottom:0">No se trata simplemente de tocar menos, sino de <strong style="color:#7ff0ff">tocar de manera más inteligente</strong>. Para lograrlo, debemos dominar un concepto que he denominado la <strong style="color:#7ff0ff">«Melodía Fantasma»</strong>.</p>
+  </div>
+
+  <div class="callout info">
+    <div class="ci">🎼</div>
+    <div>
+      <div class="ct">Convención de notación usada en todo el tutorial</div>
+      <p class="small" style="margin:0">Sistema americano de notas: <span class="chip">C</span> <span class="chip">D</span> <span class="chip">E</span> <span class="chip">F</span> <span class="chip">G</span> <span class="chip">A</span> <span class="chip">B</span> &nbsp;·&nbsp; Grados de la escala: <span class="chip">C (I)</span> <span class="chip">D (II)</span> <span class="chip">E (III)</span> <span class="chip">F (IV)</span> <span class="chip">G (V)</span> <span class="chip">A (VI)</span> <span class="chip">B (VII)</span>. Todo el contenido está orientado a su ejecución al piano.</p>
+    </div>
+  </div>
+
+  <blockquote class="quote">«Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.»
+    <span class="who">Principio pedagógico rector de este tutorial</span>
+  </blockquote>
+
+  <div class="metrics">
+    <div class="metric"><div class="n">9</div><div class="l">Secciones técnicas</div></div>
+    <div class="metric"><div class="n">3</div><div class="l">Casos de repertorio</div></div>
+    <div class="metric"><div class="n">3</div><div class="l">Niveles de evolución</div></div>
+    <div class="metric"><div class="n">4</div><div class="l">Ejercicios resueltos</div></div>
+    <div class="metric"><div class="n">3</div><div class="l">Errores comunes</div></div>
+    <div class="metric"><div class="n">12</div><div class="l">Voicings audibles</div></div>
+    <div class="metric"><div class="n">5</div><div class="l">Términos del glosario</div></div>
+    <div class="metric"><div class="n">3</div><div class="l">Prompts para IA</div></div>
+  </div>
+
+  <div class="datetime">
+    <div class="dt">📅 Fecha: <b>08/09/2026</b></div>
+    <div class="dt">🕒 Hora: <b>07:14:08</b></div>
+    <div class="dt">👨‍💻 Créditos: <b>Rubén Sbarsky</b></div>
+  </div>
+
+  <div class="card">
+    <h3>🗂️ Índice del tutorial</h3>
+    <p class="small muted">Pulse cualquier tarjeta para desplazarse a la sección. La navegación funciona como una aplicación (SPA): solo se muestra una sección cada vez.</p>
+    <div class="idx-grid">
+      <button class="idx" data-goto="sec-concepto"><div class="num">SECCIÓN 1</div><div class="tt">La Melodía Fantasma</div><div class="dd">El boceto frente a la fotografía: presencia estratégica, no ausencia.</div></button>
+      <button class="idx" data-goto="sec-roles"><div class="num">SECCIÓN 2</div><div class="tt">Piano instrumental vs acompañamiento</div><div class="dd">Tabla comparativa de las cuatro dimensiones técnicas.</div></button>
+      <button class="idx" data-goto="sec-voicing"><div class="num">SECCIÓN 3</div><div class="tt">La Fórmula Maestra: voicing y ubicación melódica</div><div class="dd">Los 2 pasos críticos + laboratorio audible de voicings.</div></button>
+      <button class="idx" data-goto="sec-niveles"><div class="num">SECCIÓN 4</div><div class="tt">Hoja de ruta evolutiva por niveles</div><div class="dd">Principiante · Intermedio · Avanzado + checklist de excelencia.</div></button>
+      <button class="idx" data-goto="sec-inversiones"><div class="num">SECCIÓN 5</div><div class="tt">Inversiones y tensiones armónicas</div><div class="dd">1ª y 2ª inversión, notas ajenas al acorde y demo sonora del choque.</div></button>
+      <button class="idx" data-goto="sec-repertorio"><div class="num">SECCIÓN 6</div><div class="tt">Laboratorio de práctica: repertorio</div><div class="dd">Hallelujah · Let It Be · What a Wonderful World.</div></button>
+      <button class="idx" data-goto="sec-errores"><div class="num">SECCIÓN 7</div><div class="tt">Errores comunes y mejores prácticas</div><div class="dd">Etiología y protocolo de corrección + FAQ del acompañante.</div></button>
+      <button class="idx" data-goto="sec-ejercicios"><div class="num">SECCIÓN 8</div><div class="tt">Conclusión y ejercicios de aplicación</div><div class="dd">4 ejercicios con solución oculta y reto profesional.</div></button>
+      <button class="idx" data-goto="sec-glosario"><div class="num">SECCIÓN 9</div><div class="tt">Glosario, recursos y prompts para IA</div><div class="dd">Definiciones técnicas, fuente original y profundización.</div></button>
+      <button class="idx" data-goto="creditos"><div class="num">★</div><div class="tt">Créditos</div><div class="dd">Autoría, fecha, hora y aviso educativo.</div></button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECCIÓN 1 ==================== -->
+<section id="sec-concepto" class="section">
+  <div class="sec-head">
+    <div class="sec-ico">👻</div>
+    <div>
+      <div class="eyebrow">Sección 1 · Concepto central</div>
+      <h2>La Melodía Fantasma: el boceto frente a la fotografía</h2>
+      <p>El fundamento filosófico y perceptivo que sostiene todo el acompañamiento profesional al piano.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🎯 Presencia estratégica, no ausencia</h3>
+    <p>Como concepto pedagógico, debemos visualizar la <strong>«Melodía Fantasma» (Ghost Melody)</strong> <strong>no como una ausencia, sino como una presencia estratégica</strong>.</p>
+    <p style="margin-bottom:0">Esta técnica consiste en <strong style="color:#7ff0ff">insinuar la línea melódica a través del voicing de los acordes, sin ejecutar cada nota de forma literal</strong>.</p>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card">
+      <h3>📷 Tocar como solista = FOTOGRAFÍA</h3>
+      <p class="muted">Una <strong>fotografía de alta resolución</strong> que muestra <strong>cada poro y detalle</strong>: cada nota de la melodía se ejecuta de forma explícita.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 420 130" role="img" aria-label="Diagrama: todas las notas de la melodía ejecutadas literalmente">
+          <text x="10" y="20" class="nlabel" fill="#93aec9" font-size="12">MELODÍA LITERAL (cada nota suena)</text>
+          <g fill="#7d97b3">
+            <circle cx="30" cy="60" r="7"/><circle cx="70" cy="52" r="7"/><circle cx="110" cy="70" r="7"/>
+            <circle cx="150" cy="46" r="7"/><circle cx="190" cy="64" r="7"/><circle cx="230" cy="50" r="7"/>
+            <circle cx="270" cy="72" r="7"/><circle cx="310" cy="44" r="7"/><circle cx="350" cy="62" r="7"/>
+            <circle cx="390" cy="54" r="7"/>
+          </g>
+          <path d="M30,60 L70,52 L110,70 L150,46 L190,64 L230,50 L270,72 L310,44 L350,62 L390,54" fill="none" stroke="#4a6a8a" stroke-width="1.6"/>
+          <text x="10" y="115" fill="#93aec9" font-size="12" class="pcap">Densidad máxima · el pianista es el narrador</text>
+        </svg>
+      </div>
+    </div>
+    <div class="card">
+      <h3>✏️ Acompañamiento profesional = BOCETO</h3>
+      <p class="muted">Un <strong>boceto a lápiz</strong>: utiliza <strong>solo las líneas esenciales</strong> para que el ojo identifique el rostro, permitiendo que sea <strong>el cantante quien «coloree» la obra</strong> con su interpretación.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 420 130" role="img" aria-label="Diagrama: solo las notas superiores esenciales insinúan la melodía">
+          <text x="10" y="20" class="nlabel" fill="#7fd4f2" font-size="12">SOLO LA CIMA DE CADA ACORDE (líneas esenciales)</text>
+          <path d="M30,58 L150,44 L270,70 L390,52" fill="none" stroke="#00d4ff" stroke-width="2.6" stroke-linejoin="round"/>
+          <g fill="#00d4ff">
+            <circle cx="30" cy="58" r="9"/><circle cx="150" cy="44" r="9"/><circle cx="270" cy="70" r="9"/><circle cx="390" cy="52" r="9"/>
+          </g>
+          <g fill="#2c4a68">
+            <circle cx="70" cy="80" r="4.5"/><circle cx="110" cy="88" r="4.5"/><circle cx="190" cy="70" r="4.5"/>
+            <circle cx="230" cy="80" r="4.5"/><circle cx="310" cy="92" r="4.5"/><circle cx="350" cy="80" r="4.5"/>
+          </g>
+          <text x="10" y="115" fill="#93aec9" font-size="12" class="pcap">Las notas internas quedan en segundo plano · el oyente completa la melodía</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout example">
+    <div class="ci">✅</div>
+    <div>
+      <div class="ct">Por qué funciona (beneficios directos)</div>
+      <p class="small" style="margin:0">Al <strong>no saturar el espectro sonoro</strong>, otorgamos <strong>libertad creativa al solista</strong> y <strong>evitamos colisiones de frecuencias</strong>. Una vez asimilada esta distinción filosófica, podemos analizar las diferencias estructurales de ejecución.</p>
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="ci">⚠️</div>
+    <div>
+      <div class="ct">Advertencia de enfoque</div>
+      <p class="small" style="margin:0">La Melodía Fantasma <strong>no es tocar menos notas por pereza</strong>: es decidir <em>cuáles</em> notas sostienen la identidad de la obra. Sin esa decisión consciente, la transparencia se convierte en vacío.</p>
+    </div>
+  </div>
+
+  <div class="btn-row"><button class="btn primary" data-goto="sec-roles">Continuar → Sección 2: Solista vs Acompañante</button></div>
+</section>
+
+<!-- ==================== SECCIÓN 2 ==================== -->
+<section id="sec-roles" class="section">
+  <div class="sec-head">
+    <div class="sec-ico">🎭</div>
+    <div>
+      <div class="eyebrow">Sección 2 · Comparativa estructural</div>
+      <h2>Piano instrumental frente a piano de acompañamiento</h2>
+      <p>La arquitectura musical cambia radicalmente cuando el piano deja de ser el único narrador.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="ci">🏛️</div>
+    <div>
+      <div class="ct">Idea rectora</div>
+      <p class="small" style="margin:0">En el acompañamiento, <strong>el piano se convierte en el escenario, no en el actor principal</strong>.</p>
+    </div>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Dimensión técnica</th><th>Piano instrumental / Solista</th><th>Piano de acompañamiento</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="dimcol">Rol de la melodía</td><td>Explícita, detallada y protagonista.</td><td><strong style="color:#7ff0ff">Insinuada (Ghost Melody)</strong> como anclaje.</td></tr>
+        <tr><td class="dimcol">Arquitectura de voces</td><td>Densa (Melodía + Armonía + Bajos).</td><td>Transparente, priorizando el soporte armónico.</td></tr>
+        <tr><td class="dimcol">Control creativo</td><td>Centralizado en el pianista.</td><td>Cedido al cantante para permitir <em>rubato</em> y variaciones.</td></tr>
+        <tr><td class="dimcol">Riesgo acústico</td><td>Mínimo (una sola fuente melódica).</td><td>Alto (posibles choques si el piano «pisa» al cantante).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>🎤 Consecuencia narrativa</h3>
+      <p class="muted" style="margin-bottom:0">Este cambio de enfoque permite que <strong>el cantante posea el control absoluto de la dinámica narrativa</strong>.</p>
+    </div>
+    <div class="card">
+      <h3>🧱 Condición para que funcione</h3>
+      <p class="muted" style="margin-bottom:0">No obstante, para que esta «transparencia» <strong>no se convierta en vacío</strong>, debemos apoyarnos en un elemento inalterable: <strong style="color:#7ff0ff">la estructura interna del acorde</strong>.</p>
+    </div>
+  </div>
+
+  <div class="diagram">
+    <svg viewBox="0 0 900 200" role="img" aria-label="Esquema del reparto de roles entre piano y cantante">
+      <rect x="20" y="30" width="300" height="120" rx="12" fill="#0d1c2e" stroke="#2b6a8c"/>
+      <text x="170" y="62" text-anchor="middle" fill="#7fd4f2" font-size="15" font-weight="700">PIANO · EL ESCENARIO</text>
+      <text x="170" y="90" text-anchor="middle" fill="#bfe6fa" font-size="12.5">Soporte armónico transparente</text>
+      <text x="170" y="112" text-anchor="middle" fill="#bfe6fa" font-size="12.5">Cima del acorde = nota melódica</text>
+      <text x="170" y="134" text-anchor="middle" fill="#ffd28a" font-size="12.5">Bajo / raíz sólida (LH)</text>
+      <path d="M330,90 L470,90" stroke="#00d4ff" stroke-width="3" marker-end="url(#arwR)"/>
+      <text x="400" y="78" text-anchor="middle" fill="#8fe8b4" font-size="12">cede el control</text>
+      <rect x="480" y="30" width="400" height="120" rx="12" fill="#160f26" stroke="#7a4bb0"/>
+      <text x="680" y="62" text-anchor="middle" fill="#d9b8ff" font-size="15" font-weight="700">CANTANTE · EL ACTOR PRINCIPAL</text>
+      <text x="680" y="90" text-anchor="middle" fill="#e6d6ff" font-size="12.5">Control absoluto de la dinámica narrativa</text>
+      <text x="680" y="112" text-anchor="middle" fill="#e6d6ff" font-size="12.5">Rubato, variaciones, riffs y adornos</text>
+      <text x="680" y="134" text-anchor="middle" fill="#e6d6ff" font-size="12.5">«Colorea» el boceto con su interpretación</text>
+      <text x="450" y="185" text-anchor="middle" fill="#5f7e9e" font-size="12">Riesgo acústico alto si el piano «pisa» al cantante → la cima del acorde es la referencia común</text>
+      <defs><marker id="arwR" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#00d4ff"/></marker></defs>
+    </svg>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="sec-concepto">← Sección 1</button>
+    <button class="btn primary" data-goto="sec-voicing">Continuar → Sección 3: La Fórmula Maestra</button>
+  </div>
+</section>
+
+<!-- ==================== SECCIÓN 3 ==================== -->
+<section id="sec-voicing" class="section">
+  <div class="sec-head">
+    <div class="sec-ico">🧮</div>
+    <div>
+      <div class="eyebrow">Sección 3 · Técnica aplicable</div>
+      <h2>La Fórmula Maestra: voicing y ubicación melódica</h2>
+      <p>Para que la Melodía Fantasma sea efectiva es imperativo dominar el <strong>voicing</strong>: la disposición de las notas dentro de un acorde.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="muted" style="margin-bottom:6px">La capacidad de hacer que una canción sea <strong style="color:#eaf6ff">reconocible con un solo ataque</strong> depende de <strong>dos pasos críticos</strong>:</p>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <h4>Identifique la nota melódica del cambio armónico</h4>
+      <p>Localice la nota de la melodía que <strong>coincide cronológicamente con el cambio de armonía</strong> (generalmente la nota que inicia la frase).</p>
+    </div>
+    <div class="step">
+      <h4>Coloque esa nota como cima del acorde en la mano derecha</h4>
+      <p>Disponga el acorde de modo que esa nota melódica sea <strong>siempre la nota más aguda (la cima del acorde)</strong> en la mano derecha.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="ci">🧠</div>
+    <div>
+      <div class="ct">Análisis técnico · psicoacústica</div>
+      <p class="small">El cerebro humano posee una inclinación psicoacústica a <strong>priorizar la nota más aguda</strong> de cualquier estructura polifónica.</p>
+      <p class="small" style="margin:0">Al situar la nota melódica en el «techo» del acorde, generamos una <strong>ilusión auditiva</strong>: el oyente <strong>«completa» la melodía en su mente</strong> aunque no estemos tocando todas sus notas intermedias.</p>
+    </div>
+  </div>
+
+  <div class="callout example">
+    <div class="ci">🏆</div>
+    <div>
+      <div class="ct">La diferencia de nivel</div>
+      <p class="small" style="margin:0">Esta disposición técnica es la que <strong>separa a un pianista funcional de un acompañante de élite</strong>.</p>
+    </div>
+  </div>
+
+  <!-- LABORATORIO -->
+  <div class="lab" id="lab">
+    <div class="lab-title">🎛️ Laboratorio de voicing audible</div>
+    <div class="lab-sub">Seleccione un caso del documento · escuche el resultado · observe la cima del acorde</div>
+
+    <div class="lab-chips" id="labChips"></div>
+
+    <div class="lab-title" id="labTitle" style="font-size:1.02rem">—</div>
+    <div class="lab-sub" id="labKind">—</div>
+
+    <div class="lab-keys" id="labKeys"></div>
+
+    <!-- CONTROLES JUSTO DEBAJO DEL TECLADO -->
+    <div class="lab-controls">
+      <button class="btn primary" id="labPlay">▶ Reproducir voicing completo</button>
+      <button class="btn" id="labPlayLH">🖐 LH (raíz)</button>
+      <button class="btn" id="labPlayRH">🖐 RH (acorde)</button>
+      <label class="switch" title="Aplica el criterio del checklist: la nota superior suena con mayor proyección">
+        <input type="checkbox" id="labBoost" checked> Resaltar la cima (+proyección)
+      </label>
+    </div>
+
+    <div class="readout">
+      <div class="ro lh"><div class="k">Mano izquierda · fundamento</div><div class="v" id="roLH">—</div></div>
+      <div class="ro"><div class="k">Mano derecha · voicing</div><div class="v" id="roRH">—</div></div>
+      <div class="ro top"><div class="k">Cima del acorde · nota melódica</div><div class="v" id="roTop">—</div></div>
+    </div>
+
+    <div class="callout info" style="margin-bottom:0">
+      <div class="ci">📖</div>
+      <div>
+        <div class="ct">Explicación del caso</div>
+        <p class="small" id="labDesc" style="margin:0">—</p>
+      </div>
+    </div>
+    <p class="tiny" id="audioNote" style="margin-top:10px">🔊 El sonido se genera localmente en su navegador (Web Audio). Pulse cualquier botón para activar el audio.</p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="sec-roles">← Sección 2</button>
+    <button class="btn primary" data-goto="sec-niveles">Continuar → Sección 4: Niveles</button>
+  </div>
+</section>
+
+<!-- ==================== SECCIÓN 4 ==================== -->
+<section id="sec-niveles" class="section">
+  <div class="sec-head">
+    <div class="sec-ico">🪜</div>
+    <div>
+      <div class="eyebrow">Sección 4 · Progresión pedagógica</div>
+      <h2>Hoja de ruta evolutiva: implementación por niveles</h2>
+      <p>A medida que el pianista desarrolla su destreza técnica, la ejecución de la Melodía Fantasma debe ganar en <strong>sofisticación y textura</strong>.</p>
+    </div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tabbtn active" data-tab="niv1" role="tab">🟢 Nivel principiante</button>
+    <button class="tabbtn" data-tab="niv2" role="tab">🔵 Nivel intermedio</button>
+    <button class="tabbtn" data-tab="niv3" role="tab">🟣 Nivel avanzado</button>
+  </div>
+
+  <div class="tabpanel active" id="niv1">
+    <div class="card">
+      <h3>🟢 Nivel principiante</h3>
+      <ul class="muted">
+        <li>Ejecución de la <strong>raíz del acorde en la mano izquierda</strong> (nota única).</li>
+        <li>El acorde en <strong>posición fundamental o inversión simple</strong> en la mano derecha.</li>
+        <li><strong style="color:#7ff0ff">Asegurando la nota melódica arriba</strong> (cima del acorde).</li>
+      </ul>
+      <div class="diagram">
+        <svg viewBox="0 0 620 130" role="img" aria-label="Esquema del nivel principiante">
+          <rect x="20" y="30" width="170" height="70" rx="10" fill="#0d1c2e" stroke="#f59e0b"/>
+          <text x="105" y="58" text-anchor="middle" fill="#ffd28a" font-size="13.5" font-weight="700">LH · raíz (nota única)</text>
+          <text x="105" y="82" text-anchor="middle" fill="#c9d9ea" font-size="12.5" font-family="Consolas,monospace">C3</text>
+          <path d="M195,65 L255,65" stroke="#00d4ff" stroke-width="2.6"/>
+          <rect x="260" y="20" width="330" height="90" rx="10" fill="#0d1c2e" stroke="#2b6a8c"/>
+          <text x="425" y="46" text-anchor="middle" fill="#7fd4f2" font-size="13.5" font-weight="700">RH · posición fundamental o inversión simple</text>
+          <text x="425" y="72" text-anchor="middle" fill="#bfe6fa" font-size="13" font-family="Consolas,monospace">C4 · E4 · G4</text>
+          <text x="425" y="95" text-anchor="middle" fill="#7ff0ff" font-size="12.5" font-weight="700">▲ cima = nota melódica (G4)</text>
+        </svg>
+      </div>
+      <div class="btn-row"><button class="btn" data-play="lib1">▶ Escuchar C (I) con G en la cima</button></div>
+    </div>
+  </div>
+
+  <div class="tabpanel" id="niv2">
+    <div class="card">
+      <h3>🔵 Nivel intermedio</h3>
+      <ul class="muted">
+        <li><strong>Introducción de octavas en la mano izquierda.</strong> Esto es vital para proporcionar un <strong>«cimiento» armónico sólido</strong> que <strong>no compita con las frecuencias medias de la voz humana</strong>.</li>
+        <li>En la mano derecha, se debe <strong>ganar fluidez en el uso de inversiones</strong> para <strong>conectar acordes con movimientos mínimos</strong>.</li>
+      </ul>
+      <div class="callout info">
+        <div class="ci">🔗</div>
+        <div>
+          <div class="ct">Criterio de conexión</div>
+          <p class="small" style="margin:0">Movimiento mínimo entre acordes = <strong>voice leading</strong> eficiente: la mano derecha casi no se desplaza porque las notas comunes se mantienen y solo se mueven las necesarias.</p>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn" data-play="lib1">▶ C (I) · cima G</button>
+        <button class="btn" data-play="lib2">▶ G (V) · cima G</button>
+        <button class="btn" data-play="lib3">▶ Am (vi) · cima E</button>
+        <button class="btn" data-play="lib4">▶ F (IV) · cima C</button>
+      </div>
+      <p class="tiny">Observe cuántas notas se mantienen iguales entre un acorde y el siguiente cuando la cima se conserva (C → G comparten G en el techo).</p>
+    </div>
+  </div>
+
+  <div class="tabpanel" id="niv3">
+    <div class="card">
+      <h3>🟣 Nivel avanzado</h3>
+      <ul class="muted">
+        <li>Uso de <strong>«Acordes Abiertos» (1ª y 5ª en la mano izquierda)</strong>. Esta técnica evita <strong>«ensuciar» el sonido (efecto <em>muddy</em>)</strong> en registros graves.</li>
+        <li>En la mano derecha, se aplica el <strong><em>rhythmic syncopation</em> o «jamming»</strong> para crear <strong>texturas variadas sin perder la estructura de la Melodía Fantasma</strong>.</li>
+      </ul>
+      <div class="diagram">
+        <svg viewBox="0 0 620 140" role="img" aria-label="Acorde abierto: primera y quinta en la mano izquierda">
+          <rect x="20" y="25" width="230" height="90" rx="10" fill="#1a1207" stroke="#f59e0b"/>
+          <text x="135" y="52" text-anchor="middle" fill="#ffd28a" font-size="13.5" font-weight="700">LH · acorde abierto</text>
+          <text x="135" y="78" text-anchor="middle" fill="#ffe6bd" font-size="13" font-family="Consolas,monospace">1ª + 5ª</text>
+          <text x="135" y="100" text-anchor="middle" fill="#c9d9ea" font-size="12">evita el efecto muddy</text>
+          <rect x="290" y="25" width="310" height="90" rx="10" fill="#0d1c2e" stroke="#2b6a8c"/>
+          <text x="445" y="52" text-anchor="middle" fill="#7fd4f2" font-size="13.5" font-weight="700">RH · syncopation / jamming</text>
+          <text x="445" y="78" text-anchor="middle" fill="#bfe6fa" font-size="12.5">texturas rítmicas variadas</text>
+          <text x="445" y="100" text-anchor="middle" fill="#7ff0ff" font-size="12.5" font-weight="700">▲ la estructura de la cima no se pierde</text>
+        </svg>
+      </div>
+      <div class="callout warning">
+        <div class="ci">⚠️</div>
+        <div>
+          <div class="ct">Regla del nivel avanzado</div>
+          <p class="small" style="margin:0">La síncopa y el «jamming» añaden textura, <strong>pero nunca sustituyen la estructura de la Melodía Fantasma</strong>: la nota melódica debe seguir coronando el acorde.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>✅ Checklist de Excelencia Pedagógica</h3>
+    <p class="small muted">Marque cada criterio mientras practica. El contador se actualiza automáticamente.</p>
+    <div class="meter"><i id="chkFill"></i></div>
+    <div class="tiny" id="chkCount" style="margin-bottom:10px">0 de 3 criterios verificados</div>
+    <div class="checklist" id="checklist">
+      <div class="chk" data-chk><div class="box">✓</div><div class="txt"><strong>Equilibrio interno (voicing):</strong> ¿La nota superior suena con mayor proyección que las notas internas del acorde?</div></div>
+      <div class="chk" data-chk><div class="box">✓</div><div class="txt"><strong>Postura:</strong> ¿Existe relajación en el carpo al alcanzar las notas de tensión en la mano derecha?</div></div>
+      <div class="chk" data-chk><div class="box">✓</div><div class="txt"><strong>Fundamentación:</strong> ¿La mano izquierda proporciona la base necesaria para el rango de frecuencia del cantante?</div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn ghost" id="chkReset">↺ Reiniciar checklist</button>
+      <button class="btn" id="chkDemo">🔊 Demostrar «cima con mayor proyección»</button>
+    </div>
+    <p class="tiny">La demo reproduce el mismo voicing dos veces: primero con equilibrio neutro y después con la cima resaltada, tal como exige el primer criterio del checklist.</p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="sec-voicing">← Sección 3</button>
+    <button class="btn primary" data-goto="sec-inversiones">Continuar → Sección 5: Inversiones</button>
+  </div>
+</section>
+
+<!-- ==================== SECCIÓN 5 ==================== -->
+<section id="sec-inversiones" class="section">
+  <div class="sec-head">
+    <div class="sec-ico">🔄</div>
+    <div>
+      <div class="eyebrow">Sección 5 · Gestión armónica</div>
+      <h2>Gestión de inversiones y tensiones armónicas</h2>
+      <p>Cuando la melodía se desplaza, el pianista debe <strong>reorganizar el acorde instantáneamente</strong>. Aquí es donde el conocimiento de las inversiones se vuelve estratégico.</p>
+    </div>
+  </div>
+
+  <h3 style="color:#eaf6ff;margin-top:6px">📐 Definiciones técnicas correctas</h3>
+  <div class="grid g2">
+    <div class="card">
+      <h3><span class="chip top">1ª INVERSIÓN</span></h3>
+      <p class="muted">El acorde se dispone con la <strong>tercera en la posición más baja</strong> (en la mano derecha).</p>
+      <p class="muted" style="margin-bottom:0"><strong style="color:#7ff0ff">Cuándo usarla:</strong> cuando la nota melódica requiere que <strong>la raíz suba</strong>.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 380 110" role="img" aria-label="Primera inversión: la tercera queda abajo">
+          <text x="20" y="26" fill="#93aec9" font-size="12">Ejemplo sobre C (I):</text>
+          <rect x="20" y="40" width="80" height="46" rx="8" fill="#0d2233" stroke="#4d9dc4"/><text x="60" y="69" text-anchor="middle" fill="#bfe6fa" font-size="14" font-family="Consolas,monospace">E</text>
+          <rect x="110" y="40" width="80" height="46" rx="8" fill="#0d2233" stroke="#4d9dc4"/><text x="150" y="69" text-anchor="middle" fill="#bfe6fa" font-size="14" font-family="Consolas,monospace">G</text>
+          <rect x="200" y="40" width="80" height="46" rx="8" fill="#00d4ff" stroke="#a9f2ff"/><text x="240" y="69" text-anchor="middle" fill="#04121a" font-size="14" font-weight="700" font-family="Consolas,monospace">C</text>
+          <text x="20" y="104" fill="#ffd28a" font-size="12">▲ abajo: la 3ª (E) · cima: la nota melódica</text>
+        </svg>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="chip top">2ª INVERSIÓN</span></h3>
+      <p class="muted">El acorde se dispone con la <strong>quinta en la posición más baja</strong>.</p>
+      <p class="muted" style="margin-bottom:0"><strong style="color:#7ff0ff">Para qué sirve:</strong> es fundamental para mantener la <strong>conducción de voces suave (<em>voice leading</em>)</strong>.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 380 110" role="img" aria-label="Segunda inversión: la quinta queda abajo">
+          <text x="20" y="26" fill="#93aec9" font-size="12">Ejemplo sobre C (I):</text>
+          <rect x="20" y="40" width="80" height="46" rx="8" fill="#0d2233" stroke="#4d9dc4"/><text x="60" y="69" text-anchor="middle" fill="#bfe6fa" font-size="14" font-family="Consolas,monospace">G</text>
+          <rect x="110" y="40" width="80" height="46" rx="8" fill="#0d2233" stroke="#4d9dc4"/><text x="150" y="69" text-anchor="middle" fill="#bfe6fa" font-size="14" font-family="Consolas,monospace">C</text>
+          <rect x="200" y="40" width="80" height="46" rx="8" fill="#00d4ff" stroke="#a9f2ff"/><text x="240" y="69" text-anchor="middle" fill="#04121a" font-size="14" font-weight="700" font-family="Consolas,monospace">E</text>
+          <text x="20" y="104" fill="#ffd28a" font-size="12">▲ abajo: la 5ª (G) · cima: la nota melódica</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>🎨 El desafío de las notas ajenas al acorde</h3>
+    <p class="muted">Es frecuente que la melodía utilice <strong>notas que no pertenecen a la tríada básica</strong> (C-E-G). Por ejemplo: <strong>una melodía en A sobre un acorde de G mayor (G-B-D)</strong>.</p>
+    <div class="callout example">
+      <div class="ci">💡</div>
+      <div>
+        <div class="ct">Consejo pedagógico</div>
+        <p class="small" style="margin:0"><strong>«No tema a la disonancia; abrázela como color.»</strong></p>
+      </div>
+    </div>
+    <p class="muted">En este caso, el <strong>A funciona como una novena o una nota de tensión</strong>. Para evitar un choque desagradable:</p>
+    <div class="steps">
+      <div class="step"><h4>Retire la nota del acorde más cercana a la nota melódica</h4><p>En este caso, podría <strong>omitir el G o el B en la mano derecha</strong>.</p></div>
+      <div class="step"><h4>Deje que la nota melódica resuene en la parte superior</h4><p>El <strong>A resuena en la cima</strong> del acorde.</p></div>
+      <div class="step"><h4>Resultado perceptivo</h4><p>El oyente percibirá esto como una <strong style="color:#7ff0ff">suspensión elegante que resuelve hacia la estabilidad armónica</strong>.</p></div>
+    </div>
+
+    <div class="lab" style="margin-bottom:0">
+      <div class="lab-title">🔬 Demo sonora: la tensión A sobre G (V)</div>
+      <div class="lab-sub">Compare la sonoridad densa con el voicing corregido</div>
+      <div class="btn-row">
+        <button class="btn amber" data-play="ten1">▶ G-B-D + A en la cima (sonoridad densa)</button>
+        <button class="btn green" data-play="ten2">▶ Omitiendo el G cercano → B-D con A en la cima</button>
+      </div>
+      <div class="readout">
+        <div class="ro lh"><div class="k">LH · raíz</div><div class="v">G2</div></div>
+        <div class="ro"><div class="k">RH · opción densa</div><div class="v">B3 · D4 · G4 · A4</div></div>
+        <div class="ro top"><div class="k">RH · opción recomendada</div><div class="v">B3 · D4 · A4</div></div>
+      </div>
+      <p class="tiny" style="margin-bottom:0">En ambos casos la nota melódica A (9ª / nota de tensión) corona el acorde; la diferencia está en retirar la nota del acorde más cercana a ella.</p>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="sec-niveles">← Sección 4</button>
+    <button class="btn primary" data-goto="sec-repertorio">Continuar → Sección 6: Repertorio</button>
+  </div>
+</section>
+
+<!-- ==================== SECCIÓN 6 ==================== -->
+<section id="sec-repertorio" class="section">
+  <div class="sec-head">
+    <div class="sec-ico">🎼</div>
+    <div>
+      <div class="eyebrow">Sección 6 · Análisis de repertorio</div>
+      <h2>Laboratorio de práctica: tres casos reales</h2>
+      <p>Cómo se aplica la Melodía Fantasma sobre repertorio concreto, con los voicings audibles del documento.</p>
+    </div>
+  </div>
+
+  <details class="acc" open>
+    <summary>🕊️ CASO 1 — «Hallelujah» (Leonard Cohen) <span class="arw">▶</span></summary>
+    <div class="acc-body">
+      <p class="muted">En el <strong>C (I)</strong> inicial, la melodía <strong>se apoya en G</strong>. Al tocar el acorde de <strong>C (C-E-G) con el G arriba</strong>, creamos un <strong style="color:#7ff0ff">«ancla» sonora</strong>.</p>
+      <div class="callout example">
+        <div class="ci">✅</div>
+        <div>
+          <div class="ct">Resultado práctico</div>
+          <p class="small" style="margin:0">Esto permite que el cantante realice <strong>riffs o variaciones melódicas</strong> con la seguridad de que <strong>el piano mantiene la referencia estructural sin estorbar sus adornos</strong>.</p>
+        </div>
+      </div>
+      <div class="flow">
+        <span class="node">Armonía: C (I)</span><span class="arr">→</span>
+        <span class="node">Acorde: C – E – G</span><span class="arr">→</span>
+        <span class="node" style="border-color:#00d4ff;color:#7ff0ff">Cima: G</span><span class="arr">→</span>
+        <span class="node">Ancla para el cantante</span>
+      </div>
+      <div class="btn-row"><button class="btn primary" data-play="hal">▶ Escuchar el ancla: C (I) con G en la cima</button></div>
+    </div>
+  </details>
+
+  <details class="acc" open>
+    <summary>🎸 CASO 2 — «Let It Be» (The Beatles) <span class="arw">▶</span></summary>
+    <div class="acc-body">
+      <p class="muted">Esta pieza demuestra que <strong>la Melodía Fantasma es suficiente para identificar la obra</strong>. El <strong>mapa de notas superiores</strong> sería:</p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Acorde (grado)</th><th>Nota en el tope (cima)</th><th>Voicing resultante</th><th>Escuchar</th></tr></thead>
+          <tbody>
+            <tr><td class="dimcol">C mayor — C (I)</td><td><span class="chip top">G</span></td><td><span class="chip">C4</span> <span class="chip">E4</span> <span class="chip top">G4</span> · LH <span class="chip lh">C3</span></td><td><button class="btn ghost" data-play="lib1">▶</button></td></tr>
+            <tr><td class="dimcol">G mayor — G (V)</td><td><span class="chip top">G</span></td><td><span class="chip">B3</span> <span class="chip">D4</span> <span class="chip top">G4</span> · LH <span class="chip lh">G2</span></td><td><button class="btn ghost" data-play="lib2">▶</button></td></tr>
+            <tr><td class="dimcol">A menor — Am (vi)</td><td><span class="chip top">E</span></td><td><span class="chip">A3</span> <span class="chip">C4</span> <span class="chip top">E4</span> · LH <span class="chip lh">A2</span></td><td><button class="btn ghost" data-play="lib3">▶</button></td></tr>
+            <tr><td class="dimcol">F mayor — F (IV)</td><td><span class="chip top">C</span> <span class="tiny">(o D, según el compás)</span></td><td><span class="chip">F3</span> <span class="chip">A3</span> <span class="chip top">C4</span> · LH <span class="chip lh">F2</span></td><td><button class="btn ghost" data-play="lib4">▶</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info">
+        <div class="ci">🎧</div>
+        <div>
+          <div class="ct">Conclusión del caso</div>
+          <p class="small" style="margin:0"><strong>Incluso sin ritmo, la progresión es inequívoca.</strong></p>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" data-seq="lib1,lib2,lib3,lib4">▶▶ Reproducir la progresión completa C (I) → G (V) → Am (vi) → F (IV)</button>
+      </div>
+    </div>
+  </details>
+
+  <details class="acc" open>
+    <summary>🌍 CASO 3 — «What a Wonderful World» (Louis Armstrong) <span class="arw">▶</span></summary>
+    <div class="acc-body">
+      <p class="muted">Utilice esta canción para observar <strong>cómo los intervalos entre las notas superiores de cada acorde crean la narrativa</strong>.</p>
+      <div class="callout example">
+        <div class="ci">📈</div>
+        <div>
+          <div class="ct">Clave de escucha</div>
+          <p class="small" style="margin:0">El <strong>movimiento de la nota más aguda de un acorde al siguiente</strong> es lo que <strong>guía el oído del espectador a través de la historia</strong>.</p>
+        </div>
+      </div>
+      <div class="diagram">
+        <svg viewBox="0 0 700 160" role="img" aria-label="La línea de notas superiores crea la narrativa">
+          <line x1="40" y1="130" x2="670" y2="130" stroke="#1a3d5c" stroke-width="1.4"/>
+          <line x1="40" y1="100" x2="670" y2="100" stroke="#1a3d5c" stroke-width="1.2" opacity=".7"/>
+          <line x1="40" y1="70" x2="670" y2="70" stroke="#1a3d5c" stroke-width="1.2" opacity=".7"/>
+          <line x1="40" y1="40" x2="670" y2="40" stroke="#1a3d5c" stroke-width="1.2" opacity=".7"/>
+          <path d="M80,70 L240,45 L400,95 L560,60" fill="none" stroke="#00d4ff" stroke-width="3" stroke-linejoin="round"/>
+          <g fill="#00d4ff"><circle cx="80" cy="70" r="9"/><circle cx="240" cy="45" r="9"/><circle cx="400" cy="95" r="9"/><circle cx="560" cy="60" r="9"/></g>
+          <g fill="#93aec9" font-size="12" text-anchor="middle">
+            <text x="80" y="150">acorde 1</text><text x="240" y="150">acorde 2</text><text x="400" y="150">acorde 3</text><text x="560" y="150">acorde 4</text>
+          </g>
+          <text x="350" y="22" text-anchor="middle" fill="#7fd4f2" font-size="13" font-weight="700">LÍNEA DE NOTAS SUPERIORES = NARRATIVA QUE GUÍA EL OÍDO</text>
+        </svg>
+      </div>
+      <p class="tiny">Los intervalos entre las cimas (subidas y bajadas) son el «dibujo» que el oyente sigue, exactamente igual que en la portada animada de este tutorial.</p>
+    </div>
+  </details>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="sec-inversiones">← Sección 5</button>
+    <button class="btn primary" data-goto="sec-errores">Continuar → Sección 7: Errores y FAQ</button>
+  </div>
+</section>
+
+<!-- ==================== SECCIÓN 7 ==================== -->
+<section id="sec-errores" class="section">
+  <div class="sec-head">
+    <div class="sec-ico">🩺</div>
+    <div>
+      <div class="eyebrow">Sección 7 · Diagnóstico y corrección</div>
+      <h2>Errores comunes y mejores prácticas</h2>
+      <p>Tabla de diagnóstico: error del estudiante, etiología (causa) y protocolo de corrección.</p>
+    </div>
+  </div>
+
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Error del estudiante</th><th>Etiología</th><th>Protocolo de corrección</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#ffb4b4">Tocar la melodía nota por nota</strong></td>
+          <td>Inercia del pianista solista.</td>
+          <td>Practique <strong>«pensando» la letra</strong> y tocando <strong>solo los cambios de bloque armónico</strong>.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#ffb4b4">Ignorar la conducción de voces</strong></td>
+          <td>Falta de análisis del <em>lead sheet</em>.</td>
+          <td>Identifique la <strong>nota melódica superior</strong> antes de decidir la <strong>inversión del acorde</strong>.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#ffb4b4">Sonoridad «embarrada»</strong></td>
+          <td>Exceso de notas en el registro grave.</td>
+          <td>Aplique <strong>acordes abiertos (1 y 5)</strong> en la mano izquierda y <strong>limpie el pedal</strong>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid g3">
+    <div class="card"><h3>🚫 Error 1</h3><p class="small muted" style="margin-bottom:0">La «inercia del solista» hace que el pianista reproduzca la melodía completa. El antídoto es mental: <strong>piense la letra</strong> y toque únicamente los <strong>bloques armónicos</strong> en cada cambio.</p></div>
+    <div class="card"><h3>🧭 Error 2</h3><p class="small muted" style="margin-bottom:0">Sin analizar el <em>lead sheet</em> no hay conducción de voces. <strong>Primero</strong> se identifica la nota melódica superior; <strong>después</strong> se decide la inversión.</p></div>
+    <div class="card"><h3>🌫️ Error 3</h3><p class="small muted" style="margin-bottom:0">El sonido «embarrado» nace del registro grave saturado: <strong>acordes abiertos (1ª y 5ª)</strong> en LH y <strong>pedal limpio</strong> en cada cambio de armonía.</p></div>
+  </div>
+
+  <h3 style="color:#eaf6ff;margin-top:22px">❓ FAQ del pianista de acompañamiento</h3>
+
+  <details class="acc">
+    <summary>🦶 ¿Cómo manejar el pedal de resonancia? <span class="arw">▶</span></summary>
+    <div class="acc-body"><p class="muted" style="margin-bottom:0">Debe <strong>limpiarse estrictamente en cada cambio de armonía</strong> para mantener la <strong>claridad de la Melodía Fantasma</strong>.</p></div>
+  </details>
+  <details class="acc">
+    <summary>🤸 ¿Cómo ganar agilidad en las inversiones? <span class="arw">▶</span></summary>
+    <div class="acc-body">
+      <p class="muted">Practique <strong>cadencias (I – IV – V – I)</strong> manteniendo <strong>una nota común en la parte superior</strong>.</p>
+      <div class="flow">
+        <span class="node">C (I)</span><span class="arr">→</span><span class="node">F (IV)</span><span class="arr">→</span><span class="node">G (V)</span><span class="arr">→</span><span class="node">C (I)</span>
+        <span class="tiny" style="width:100%">Con la misma nota en la cima durante todo el recorrido: el movimiento de la mano derecha es mínimo.</span>
+      </div>
+    </div>
+  </details>
+  <details class="acc">
+    <summary>📄 ¿Es aplicable a los Lead Sheets? <span class="arw">▶</span></summary>
+    <div class="acc-body"><p class="muted" style="margin-bottom:0">Es <strong>la técnica principal para leer este formato</strong>, ya que el <em>lead sheet</em> solo nos da <strong>la esencia melódica y el cifrado de acordes</strong>.</p></div>
+  </details>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="sec-repertorio">← Sección 6</button>
+    <button class="btn primary" data-goto="sec-ejercicios">Continuar → Sección 8: Ejercicios</button>
+  </div>
+</section>
+
+<!-- ==================== SECCIÓN 8 ==================== -->
+<section id="sec-ejercicios" class="section">
+  <div class="sec-head">
+    <div class="sec-ico">🏁</div>
+    <div>
+      <div class="eyebrow">Sección 8 · Cierre y aplicación</div>
+      <h2>Conclusión y ejercicios de aplicación técnica</h2>
+      <p>Verificación práctica: identificar el voicing correcto (nota superior) en distintas situaciones.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🎓 Conclusión</h3>
+    <p class="muted">Dominar la Melodía Fantasma <strong>no es una simplificación, sino una sofisticación del acompañamiento</strong>.</p>
+    <p class="muted" style="margin-bottom:0">Su objetivo final es el <strong style="color:#7ff0ff">altruismo musical</strong>: <strong>hacer que el cantante brille</strong> a través de un <strong>soporte armónico inteligente</strong>.</p>
+  </div>
+
+  <h3 style="color:#eaf6ff;margin-top:22px">✍️ Ejercicios: identifique el voicing correcto (nota superior)</h3>
+
+  <div class="card" data-ex>
+    <h4>Ejercicio 1 · C mayor — C (I) · melodía: E</h4>
+    <p class="small muted">¿Cómo dispone el acorde para que la nota melódica E quede en la cima?</p>
+    <div class="btn-row">
+      <button class="btn ghost" data-sol>👁 Ver solución</button>
+      <button class="btn" data-play="ej1">▶ Escuchar</button>
+    </div>
+    <div class="sol callout example" style="display:none">
+      <div class="ci">✅</div>
+      <div>
+        <div class="ct">Solución</div>
+        <p class="small" style="margin:0">Acorde de C con <strong>E en el tope</strong>: <span class="chip">G</span> <span class="chip">C</span> <span class="chip top">E</span> &nbsp;(G-C-E) · LH: raíz C.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-ex>
+    <h4>Ejercicio 2 · G mayor — G (V) · melodía: G</h4>
+    <p class="small muted">La nota melódica coincide con la raíz del acorde. ¿Qué disposición mantiene la cima?</p>
+    <div class="btn-row">
+      <button class="btn ghost" data-sol>👁 Ver solución</button>
+      <button class="btn" data-play="ej2">▶ Escuchar</button>
+    </div>
+    <div class="sol callout example" style="display:none">
+      <div class="ci">✅</div>
+      <div>
+        <div class="ct">Solución</div>
+        <p class="small" style="margin:0">Acorde de G con <strong>G en el tope</strong>: <span class="chip">B</span> <span class="chip">D</span> <span class="chip top">G</span> &nbsp;(B-D-G) · LH: raíz G.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-ex>
+    <h4>Ejercicio 3 · A menor — Am (vi) · melodía: C</h4>
+    <p class="small muted">La melodía pide la tercera del acorde en la cima.</p>
+    <div class="btn-row">
+      <button class="btn ghost" data-sol>👁 Ver solución</button>
+      <button class="btn" data-play="ej3">▶ Escuchar</button>
+    </div>
+    <div class="sol callout example" style="display:none">
+      <div class="ci">✅</div>
+      <div>
+        <div class="ct">Solución</div>
+        <p class="small" style="margin:0">Acorde de Am con <strong>C en el tope</strong>: <span class="chip">E</span> <span class="chip">A</span> <span class="chip top">C</span> &nbsp;(E-A-C) · LH: raíz A.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-ex style="border-color:#7a4bb0;background:linear-gradient(180deg,#150f26,#0f172a)">
+    <h4>🏆 Ejercicio 4 · RETO PROFESIONAL — D mayor (D-F#-A) con melodía en E</h4>
+    <p class="small muted">La nota melódica <strong>no pertenece a la tríada</strong>: E actúa como <strong>9ª</strong>. ¿Cómo se vocea sin perder la base de D?</p>
+    <div class="btn-row">
+      <button class="btn ghost" data-sol>👁 Ver solución</button>
+      <button class="btn" data-play="reto1">▶ Escuchar A-D-E</button>
+      <button class="btn" data-play="reto2">▶ Escuchar D-F#-A-E</button>
+    </div>
+    <div class="sol callout example" style="display:none">
+      <div class="ci">✅</div>
+      <div>
+        <div class="ct">Solución</div>
+        <p class="small" style="margin:0">Voicear como <span class="chip top">A-D-E</span> o <span class="chip top">D-F#-A-E</span>, permitiendo que <strong>la 9ª (E) corone el acorde sin perder la base de D</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="ci">📌</div>
+    <div>
+      <div class="ct">Recordatorio transversal</div>
+      <p class="small" style="margin:0">En <strong>todos</strong> los ejercicios la lógica es idéntica: <strong>1)</strong> identificar la nota melódica del cambio armónico y <strong>2)</strong> disponer el acorde para que esa nota sea la <strong>más aguda</strong> de la mano derecha.</p>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="sec-errores">← Sección 7</button>
+    <button class="btn primary" data-goto="sec-glosario">Continuar → Sección 9: Glosario</button>
+  </div>
+</section>
+
+<!-- ==================== SECCIÓN 9 ==================== -->
+<section id="sec-glosario" class="section">
+  <div class="sec-head">
+    <div class="sec-ico">📚</div>
+    <div>
+      <div class="eyebrow">Sección 9 · Referencia</div>
+      <h2>Glosario técnico, recursos adicionales y prompts para IA</h2>
+      <p>Vocabulario imprescindible del acompañante, fuentes del contenido y preguntas listas para profundizar con IA.</p>
+    </div>
+  </div>
+
+  <h3 style="color:#eaf6ff">📖 Glosario técnico</h3>
+  <div class="grid g2">
+    <div class="card"><h3><span class="chip">VOICING</span></h3><p class="muted" style="margin-bottom:0">Organización específica de las notas de un acorde para <strong>controlar la textura y la melodía superior</strong>.</p></div>
+    <div class="card"><h3><span class="chip">INVERSIÓN</span></h3><p class="muted" style="margin-bottom:0">Reordenamiento de las notas de un acorde donde <strong>la raíz no es la nota más baja de la mano</strong>.</p></div>
+    <div class="card"><h3><span class="chip">ACORDE ABIERTO</span></h3><p class="muted" style="margin-bottom:0">Disposición que utiliza <strong>intervalos amplios (usualmente 1 y 5)</strong> para <strong>clarificar el registro grave</strong>.</p></div>
+    <div class="card"><h3><span class="chip">LEAD SHEET</span></h3><p class="muted" style="margin-bottom:0">Partitura simplificada que contiene <strong>solo la melodía básica, la letra y el cifrado de acordes</strong>.</p></div>
+    <div class="card" style="grid-column:1/-1;border-color:#2b7ea3"><h3><span class="chip top">MELODÍA FANTASMA</span></h3><p class="muted" style="margin-bottom:0">Técnica pedagógica de <strong>sugerir la línea melódica principal situándola en la voz superior de los acordes de acompañamiento</strong>.</p></div>
+  </div>
+
+  <h3 style="color:#eaf6ff;margin-top:22px">🔗 Recursos adicionales</h3>
+  <div class="grid g2">
+    <div class="card">
+      <h3>📌 Fuente original</h3>
+      <p class="muted" style="margin-bottom:0"><strong>Matt Hodge Music</strong></p>
+    </div>
+    <div class="card">
+      <h3>🎬 Referencia audiovisual</h3>
+      <p class="muted" style="margin-bottom:0">«<strong>The SECRET Piano Accompaniment Skill That Makes Singers Sound BEAUTIFUL!</strong>»</p>
+    </div>
+  </div>
+  <p class="tiny">El documento fuente cita estos recursos por su título y autoría; no se incluyen enlaces porque no figuran en el material original.</p>
+
+  <h3 style="color:#eaf6ff;margin-top:22px">🤖 Prompts para profundización con IA</h3>
+  <div class="card" data-prompt>
+    <p class="small" style="font-family:Consolas,'Courier New',monospace;color:#cdf3ff">«Analiza la estructura de [Canción] y dime qué inversiones usar para mantener la Melodía Fantasma en la mano derecha.»</p>
+    <button class="btn ghost" data-copy>📋 Copiar prompt</button>
+  </div>
+  <div class="card" data-prompt>
+    <p class="small" style="font-family:Consolas,'Courier New',monospace;color:#cdf3ff">«Dada una melodía en [Nota] sobre un acorde de [Acorde], ¿qué notas debería omitir para evitar choques sonoros?»</p>
+    <button class="btn ghost" data-copy>📋 Copiar prompt</button>
+  </div>
+  <div class="card" data-prompt>
+    <p class="small" style="font-family:Consolas,'Courier New',monospace;color:#cdf3ff">«Explica ejercicios de independencia de dedos para destacar la nota superior en un acorde de cuatro notas.»</p>
+    <button class="btn ghost" data-copy>📋 Copiar prompt</button>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="sec-ejercicios">← Sección 8</button>
+    <button class="btn primary" data-goto="creditos">★ Ir a Créditos</button>
+  </div>
+</section>
+
+<!-- ==================== CRÉDITOS ==================== -->
+<section id="creditos" class="section">
+  <div class="sec-head">
+    <div class="sec-ico">★</div>
+    <div>
+      <div class="eyebrow">Créditos y autoría</div>
+      <h2>Créditos del tutorial</h2>
+      <p>La misma portada animada de la sección INICIO se reproduce aquí, manteniendo composición, colores y animaciones.</p>
+    </div>
+  </div>
+
+  <div class="cover-holder" id="coverCredits" aria-label="Portada animada (réplica exacta de la sección Inicio)"></div>
+
+  <div class="credits-card">
+    <span class="badge">📘 Tutorial técnico interactivo</span>
+    <h3 style="font-size:clamp(1.2rem,3.6vw,1.8rem);color:#f2fbff;margin:14px 0 2px">Adornos y Conceptos de Ritmo para Piano:<br>El Arte de la Melodía Fantasma</h3>
+    <p class="muted small" style="max-width:70ch;margin:8px auto 0">Piano de acompañamiento · voicing · inversiones · tensiones armónicas · análisis de repertorio</p>
+    <div class="autor">Rubén Sbarsky</div>
+    <div class="rol">Autoría y desarrollo del tutorial</div>
+    <div class="datetime" style="justify-content:center">
+      <div class="dt">📅 Fecha: <b>08/09/2026</b></div>
+      <div class="dt">🕒 Hora: <b>07:14:08</b></div>
+    </div>
+    <div class="callout info" style="text-align:left;max-width:760px;margin:18px auto 0">
+      <div class="ci">🎓</div>
+      <div>
+        <div class="ct">Indicación educativa</div>
+        <p class="small" style="margin:0">Este material tiene <strong>finalidad exclusivamente educativa y divulgativa</strong>: está diseñado para que el estudiante comprenda, escuche y aplique la técnica de la <strong>Melodía Fantasma</strong> al acompañar a un cantante, conservando íntegramente los conceptos, ejemplos, tablas, procedimientos y advertencias del documento original.</p>
+      </div>
+    </div>
+    <div class="latin">Fiat iustitia, ruat caelum.</div>
+  </div>
+
+  <div class="btn-row" style="justify-content:center">
+    <button class="btn primary" data-goto="home">← Volver a INICIO</button>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="fl">📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div class="fl">👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div class="fl">📅 FECHA: 08/09/2026 &nbsp;·&nbsp; Hora: 07:14:08</div>
+  <div class="latin">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+<script>
+/* ==========================================================================
+   0. UTILIDADES MUSICALES
+   ========================================================================== */
+var NAMES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+function isWhite(m){var p=((m%12)+12)%12;return [0,2,4,5,7,9,11].indexOf(p)>=0;}
+function nn(m){return NAMES[((m%12)+12)%12]+(Math.floor(m/12)-1);}
+function keyGeom(start,end,width){
+  var whites=[],m;
+  for(m=start;m<=end;m++){ if(isWhite(m)) whites.push(m); }
+  var ww=width/whites.length, bw=ww*0.62;
+  function idx(x){return whites.indexOf(x);}
+  function xOf(x){ return isWhite(x)? idx(x)*ww : (idx(x-1)+1)*ww - bw/2; }
+  return {whites:whites,ww:ww,bw:bw,idx:idx,xOf:xOf,start:start,end:end,width:width};
+}
+function r2(n){return Math.round(n*100)/100;}
+
+/* ==========================================================================
+   1. SVG DE PORTADA (el MISMO para HOME y CRÉDITOS)
+   ========================================================================== */
+var COVER_SLOTS=[
+  {badge:'C (I)',   lh:48, rh:[60,64,67], top:67, cap:'Hallelujah · Let It Be'},
+  {badge:'G (V)',   lh:43, rh:[59,62,67], top:67, cap:'nota común en la cima'},
+  {badge:'Am (vi)', lh:45, rh:[57,60,64], top:64, cap:'Let It Be'},
+  {badge:'F (IV)',  lh:41, rh:[53,57,60], top:60, cap:'Let It Be · cima C (o D)'}
+];
+
+function buildCover(){
+  var KX0=80, KY=520, KH=240;
+  var g=keyGeom(41,76,1440), WW=g.ww, BW=g.bw, BH=Math.round(KH*0.62);
+  function kx(m){return KX0+g.xOf(m);}
+  function kw(m){return isWhite(m)?WW:BW;}
+  function cx(m){return kx(m)+kw(m)/2;}
+  function yOf(p){return 430-(p-53)*9;}
+  var cols=[320,640,960,1280];
+  var i,j,s='',sl,marks,mk,x,y,w,p;
+
+  s+='<svg class="cv" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" ';
+  s+='aria-label="Portada animada: cuatro acordes de acompañamiento C, G, Am y F; cada columna muestra el voicing con la nota melódica en la cima, unida por la línea de Melodía Fantasma, mientras el teclado ilumina las teclas reales y la voz del solista se representa a la derecha">';
+
+  /* ---- defs ---- */
+  s+='<defs>';
+  s+='<radialGradient id="bgG" cx="50%" cy="38%" r="78%"><stop offset="0%" stop-color="#12233a"/><stop offset="60%" stop-color="#0a1120"/><stop offset="100%" stop-color="#06090f"/></radialGradient>';
+  s+='<pattern id="gridP" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0 H0 V40" fill="none" stroke="#16304d" stroke-width="0.7" opacity="0.55"/></pattern>';
+  s+='<linearGradient id="wkG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f4f8fd"/><stop offset="70%" stop-color="#d9e5f2"/><stop offset="100%" stop-color="#b9c9dc"/></linearGradient>';
+  s+='<linearGradient id="bkG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22374f"/><stop offset="55%" stop-color="#0d1725"/><stop offset="100%" stop-color="#060b13"/></linearGradient>';
+  s+='<linearGradient id="hlTopG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8ff3ff" stop-opacity="0.55"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="1"/></linearGradient>';
+  s+='<linearGradient id="beamG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff" stop-opacity="0"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="0.7"/></linearGradient>';
+  s+='<linearGradient id="eqG" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#00d4ff"/></linearGradient>';
+  s+='<filter id="glowF" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  s+='<filter id="softG" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  s+='</defs>';
+
+  /* ---- fondo ---- */
+  s+='<rect x="0" y="0" width="1600" height="900" rx="18" fill="url(#bgG)"/>';
+  s+='<rect x="0" y="0" width="1600" height="900" rx="18" fill="url(#gridP)"/>';
+  s+='<rect x="14" y="14" width="1572" height="872" rx="14" fill="none" stroke="#1e3a5f" stroke-width="1.6"/>';
+
+  /* ---- panel izquierdo: fotografía → boceto ---- */
+  s+='<rect x="60" y="52" width="392" height="152" rx="13" fill="#0f172a" stroke="#1e3a5f"/>';
+  s+='<text x="80" y="78" class="ptitle">SOLISTA → ACOMPAÑANTE</text>';
+  s+='<g class="denseG">';
+  var dx,dy,n=0;
+  for(dy=0;dy<4;dy++){ for(dx=0;dx<8;dx++){
+    n++;
+    s+='<circle cx="'+(92+dx*15)+'" cy="'+(104+dy*15)+'" r="4" class="dense" opacity="'+(0.35+((n*37)%6)/12)+'" style="animation:dotTwinkle '+(2+((n*13)%9)/4)+'s ease-in-out '+(n*0.07)+'s infinite"/>';
+  }}
+  s+='</g>';
+  s+='<text x="92" y="184" class="pcap">FOTOGRAFÍA · cada nota</text>';
+  s+='<g class="arrowP"><text x="234" y="140" fill="#00d4ff" font-size="30" font-weight="800">→</text></g>';
+  s+='<path class="sketch" pathLength="1" d="M286,158 L318,116 L350,138 L382,100 L420,124"/>';
+  s+='<circle cx="286" cy="158" r="5.5" class="skdot"/><circle cx="350" cy="138" r="5.5" class="skdot"/><circle cx="420" cy="124" r="5.5" class="skdot"/>';
+  s+='<text x="286" y="184" class="pcap" fill="#7fd4f2">BOCETO · líneas esenciales</text>';
+
+  /* ---- panel derecho: voz del solista ---- */
+  s+='<rect x="1148" y="52" width="392" height="152" rx="13" fill="#0f172a" stroke="#4b2b78"/>';
+  s+='<text x="1168" y="78" class="ptitle" fill="#d9b8ff">SOLISTA · VOZ Y RUBATO</text>';
+  var bars=20,bw=11,gap=6.4,bx0=1168,byBase=172,bh=62,kf=['eqA','eqB','eqC'];
+  for(i=0;i<bars;i++){
+    var bx=bx0+i*(bw+gap);
+    s+='<rect class="eqbar" x="'+r2(bx)+'" y="'+(byBase-bh)+'" width="'+bw+'" height="'+bh+'" rx="3" style="animation:'+kf[i%3]+' '+(0.8+((i*7)%11)/10)+'s ease-in-out '+(i*0.06)+'s infinite"/>';
+  }
+  s+='<text x="1168" y="192" class="pcap" fill="#c9a8f5">el cantante «colorea» el boceto</text>';
+
+  /* ---- cabecera central ---- */
+  s+='<text x="800" y="104" text-anchor="middle" class="ttl">MELODÍA FANTASMA</text>';
+  s+='<text x="800" y="140" text-anchor="middle" class="stl">La nota superior del acorde insinúa la melodía · voicing de acompañamiento</text>';
+  s+='<text x="800" y="176" text-anchor="middle" class="prg">Progresión de referencia: C (I) → G (V) → Am (vi) → F (IV)</text>';
+
+  /* ---- pentagrama tenue de la banda ---- */
+  for(i=0;i<5;i++){ s+='<line x1="200" y1="'+(296+i*30)+'" x2="1400" y2="'+(296+i*30)+'" class="staff"/>'; }
+  s+='<text transform="translate(172,470) rotate(-90)" class="sideLbl">GHOST MELODY</text>';
+
+  /* ---- nodos fantasma tenues (traza permanente) ---- */
+  var nodes=[];
+  for(i=0;i<4;i++){ nodes.push({x:cols[i],y:yOf(COVER_SLOTS[i].top)}); }
+  for(i=0;i<4;i++){ s+='<circle cx="'+nodes[i].x+'" cy="'+nodes[i].y+'" r="7" class="ghostDot"/>'; }
+
+  /* ---- traza discontinua completa ---- */
+  s+='<path class="gtrace" d="M'+nodes[0].x+','+nodes[0].y+' L'+nodes[1].x+','+nodes[1].y+' L'+nodes[2].x+','+nodes[2].y+' L'+nodes[3].x+','+nodes[3].y+'"/>';
+  /* ---- segmentos que se dibujan sincronizados con cada acorde ---- */
+  for(i=0;i<3;i++){
+    s+='<path class="gseg g'+(i+1)+'" pathLength="1" d="M'+nodes[i].x+','+nodes[i].y+' L'+nodes[i+1].x+','+nodes[i+1].y+'"/>';
+  }
+  /* ---- anotación de nota común ---- */
+  s+='<text x="480" y="286" text-anchor="middle" class="annot">nota común en la cima (G)</text>';
+
+  /* ---- pulso que recorre la línea fantasma ---- */
+  s+='<circle r="8" fill="#ffffff" filter="url(#glowF)" opacity="0.95">';
+  s+='<animateMotion dur="12s" repeatCount="indefinite" path="M'+nodes[0].x+','+nodes[0].y+' L'+nodes[1].x+','+nodes[1].y+' L'+nodes[2].x+','+nodes[2].y+' L'+nodes[3].x+','+nodes[3].y+'"/>';
+  s+='</circle>';
+
+  /* ---- teclado estático ---- */
+  s+='<g>';
+  for(i=0;i<g.whites.length;i++){
+    var wm=g.whites[i];
+    s+='<rect x="'+r2(kx(wm))+'" y="'+KY+'" width="'+r2(WW-2.4)+'" height="'+KH+'" rx="4" class="wk" stroke="#7e93ad" stroke-width="0.9"/>';
+  }
+  for(m=41;m<=76;m++){
+    if(!isWhite(m)) s+='<rect x="'+r2(kx(m))+'" y="'+KY+'" width="'+r2(BW)+'" height="'+BH+'" rx="3" class="bk" stroke="#33587c" stroke-width="0.8"/>';
+  }
+  s+='</g>';
+  s+='<text x="80" y="500" class="hint">columna = diagrama del voicing · teclas iluminadas = posición real en el teclado</text>';
+
+  /* ---- grupos por acorde (slot) ---- */
+  for(i=0;i<4;i++){
+    sl=COVER_SLOTS[i];
+    var colX=cols[i], yTop=yOf(sl.top);
+    s+='<g class="slot s'+i+'">';
+
+    /* haz de luz sobre la tecla cima */
+    s+='<rect class="beam" x="'+r2(kx(sl.top))+'" y="440" width="'+r2(kw(sl.top))+'" height="80" fill="url(#beamG)"/>';
+
+    /* insignia del acorde */
+    s+='<g transform="translate('+colX+',250)"><rect x="-62" y="-20" width="124" height="40" rx="11" class="badgeR" filter="url(#softG)"/>';
+    s+='<text y="7" text-anchor="middle" class="badgeT">'+sl.badge+'</text></g>';
+
+    /* nodo fantasma con ondas */
+    s+='<g transform="translate('+colX+','+yTop+')">';
+    s+='<circle class="ring" r="15" opacity="0.85"><animate attributeName="r" values="15;52" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.8;0" dur="1.8s" repeatCount="indefinite"/></circle>';
+    s+='<circle class="ring" r="15" opacity="0.6"><animate attributeName="r" values="15;52" dur="1.8s" begin="0.9s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.55;0" dur="1.8s" begin="0.9s" repeatCount="indefinite"/></circle>';
+    s+='<circle r="16" class="nodeC" filter="url(#glowF)"/>';
+    s+='<text y="5.5" text-anchor="middle" class="nodeT">'+nn(sl.top).replace(/\d+/,'')+'</text>';
+    s+='</g>';
+
+    /* pila de voicing (RH) */
+    s+='<line x1="'+colX+'" y1="'+yOf(sl.rh[0])+'" x2="'+colX+'" y2="'+yTop+'" class="stkLine"/>';
+    for(j=0;j<sl.rh.length;j++){
+      p=sl.rh[j]; y=yOf(p); var isTop=(p===sl.top);
+      var rr=isTop?11:8;
+      s+='<path transform="translate('+colX+','+y+')" d="M0,'+(-rr)+' L'+rr+',0 L0,'+rr+' L'+(-rr)+',0 Z" class="'+(isTop?'dmTop':'dm')+'"'+(isTop?' filter="url(#glowF)"':'')+'/>';
+      s+='<text x="'+(colX+20)+'" y="'+(y+5)+'" class="'+(isTop?'nlabelTop':'nlabel')+'">'+nn(p)+(isTop?'  ▲ CIMA':'')+'</text>';
+    }
+    /* línea LH → RH y diamante LH */
+    s+='<line x1="'+colX+'" y1="'+yOf(sl.rh[0])+'" x2="'+colX+'" y2="470" class="stkLine" stroke="#8a6314"/>';
+    s+='<path transform="translate('+colX+',470)" d="M0,-10 L10,0 L0,10 L-10,0 Z" class="dmLH"/>';
+    s+='<text x="'+(colX+20)+'" y="475" class="lhlabel">LH · raíz '+nn(sl.lh)+'</text>';
+    s+='<text x="'+colX+'" y="500" text-anchor="middle" class="hint">'+sl.cap+'</text>';
+
+    /* resaltado de teclas */
+    marks=[{m:sl.lh,c:'lh'}];
+    for(j=0;j<sl.rh.length;j++){ marks.push({m:sl.rh[j],c:(sl.rh[j]===sl.top)?'top':'rh'}); }
+    for(j=0;j<marks.length;j++){
+      mk=marks[j]; x=kx(mk.m); w=kw(mk.m);
+      if(isWhite(mk.m)){
+        var cls=mk.c==='top'?'hlw glowPulse':(mk.c==='lh'?'hlwLH':'hlwMid');
+        s+='<rect x="'+r2(x+1.5)+'" y="'+(KY+BH-10)+'" width="'+r2(w-5)+'" height="'+(KH-BH+8)+'" rx="4" class="'+cls+'"'+(mk.c==='top'?' filter="url(#softG)"':'')+'/>';
+      }
+    }
+    for(j=0;j<marks.length;j++){
+      mk=marks[j];
+      if(!isWhite(mk.m)){
+        x=kx(mk.m); w=kw(mk.m);
+        s+='<rect x="'+r2(x)+'" y="'+KY+'" width="'+r2(w)+'" height="'+BH+'" rx="3" class="'+(mk.c==='lh'?'hlbLH':'hlb')+'"/>';
+      }
+    }
+    /* etiqueta sobre la tecla cima */
+    s+='<text x="'+r2(cx(sl.top))+'" y="'+(KY-12)+'" text-anchor="middle" class="nlabelTop" font-size="14">▲ '+nn(sl.top)+'</text>';
+
+    /* corchetes LH / RH bajo el teclado */
+    var ly=kx(sl.lh), ry1=kx(sl.rh[0]), ry2=kx(sl.rh[sl.rh.length-1])+kw(sl.rh[sl.rh.length-1]);
+    s+='<path class="brkLineLH" d="M'+r2(ly)+',772 v10 h'+r2(kw(sl.lh))+' v-10"/>';
+    s+='<text x="'+r2(ly+kw(sl.lh)/2)+'" y="800" text-anchor="middle" class="brk" fill="#ffd28a">LH</text>';
+    s+='<path class="brkLine" d="M'+r2(ry1)+',772 v10 h'+r2(ry2-ry1)+' v-10"/>';
+    s+='<text x="'+r2((ry1+ry2)/2)+'" y="800" text-anchor="middle" class="brk" fill="#8fd0ee">RH · VOICING</text>';
+
+    s+='</g>';
+  }
+
+  /* ---- pie de la portada ---- */
+  s+='<path class="signal" d="M120,846 C260,826 320,866 460,846 S700,826 840,846 S1080,866 1220,846 S1420,830 1490,846"/>';
+  s+='<text x="800" y="836" text-anchor="middle" class="foot">«El piano se convierte en el escenario, no en el actor principal»</text>';
+  s+='<text x="80" y="880" class="corner">FIG. 1 — VOICING CON MELODÍA FANTASMA · C (I) → G (V) → Am (vi) → F (IV)</text>';
+  s+='<text x="1520" y="880" text-anchor="end" class="corner">SVG ANIMADO 16:9 · TUTORIAL INTERACTIVO</text>';
+
+  s+='</svg>';
+  return s;
+}
+
+function mountCovers(){
+  var html=buildCover();
+  var a=document.getElementById('coverHome'), b=document.getElementById('coverCredits');
+  if(a) a.innerHTML=html;
+  if(b) b.innerHTML=html;
+  applyReducedMotion();
+}
+function applyReducedMotion(){
+  if(!window.matchMedia) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var svgs=document.querySelectorAll('svg.cv');
+    for(var i=0;i<svgs.length;i++){ if(svgs[i].pauseAnimations) svgs[i].pauseAnimations(); }
+  }
+}
+
+/* ==========================================================================
+   2. MINI TECLADO (laboratorio)
+   ========================================================================== */
+function miniPiano(v){
+  var W=780, TY=44, KH=132;
+  var g=keyGeom(41,76,W), WW=g.ww, BW=g.bw, BH=Math.round(KH*0.62);
+  function kx(m){return g.xOf(m);}
+  function kw(m){return isWhite(m)?WW:BW;}
+  var marks=[],i,m,x,w;
+  for(i=0;i<v.lh.length;i++) marks.push({m:v.lh[i],c:'lh'});
+  for(i=0;i<v.rh.length;i++) marks.push({m:v.rh[i],c:(v.rh[i]===v.top)?'top':'rh'});
+
+  var s='<svg viewBox="0 0 '+W+' '+(TY+KH+26)+'" role="img" aria-label="Teclado con las notas del voicing resaltadas">';
+  s+='<defs>';
+  s+='<linearGradient id="wkG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f4f8fd"/><stop offset="70%" stop-color="#d9e5f2"/><stop offset="100%" stop-color="#b9c9dc"/></linearGradient>';
+  s+='<linearGradient id="bkG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#22374f"/><stop offset="55%" stop-color="#0d1725"/><stop offset="100%" stop-color="#060b13"/></linearGradient>';
+  s+='<linearGradient id="hlTopG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8ff3ff" stop-opacity="0.6"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="1"/></linearGradient>';
+  s+='<filter id="softG" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  s+='</defs>';
+
+  /* etiquetas superiores */
+  for(i=0;i<marks.length;i++){
+    m=marks[i].m; x=kx(m); w=kw(m);
+    var cl=marks[i].c==='top'?'mtop':(marks[i].c==='lh'?'mlh':'mrh');
+    var lb=nn(m)+(marks[i].c==='top'?' ▲':(marks[i].c==='lh'?' (LH)':''));
+    s+='<text x="'+r2(x+w/2)+'" y="'+(TY-14)+'" text-anchor="middle" class="mlabel '+cl+'">'+lb+'</text>';
+  }
+  /* teclas blancas */
+  for(i=0;i<g.whites.length;i++){
+    s+='<rect x="'+r2(kx(g.whites[i]))+'" y="'+TY+'" width="'+r2(WW-2)+'" height="'+KH+'" rx="3.5" class="wk" stroke="#7e93ad" stroke-width="0.8"/>';
+  }
+  /* resaltados blancos */
+  for(i=0;i<marks.length;i++){
+    m=marks[i].m; if(!isWhite(m)) continue;
+    var cls=marks[i].c==='top'?'hl-top':(marks[i].c==='lh'?'hl-lh':'hl-rh');
+    s+='<rect x="'+r2(kx(m)+1)+'" y="'+(TY+BH-8)+'" width="'+r2(WW-4)+'" height="'+(KH-BH+6)+'" rx="3.5" class="'+cls+'"'+(marks[i].c==='top'?' filter="url(#softG)"':'')+'/>';
+  }
+  /* teclas negras */
+  for(m=41;m<=76;m++){ if(!isWhite(m)) s+='<rect x="'+r2(kx(m))+'" y="'+TY+'" width="'+r2(BW)+'" height="'+BH+'" rx="2.5" class="bk" stroke="#33587c" stroke-width="0.7"/>'; }
+  /* resaltados negros */
+  for(i=0;i<marks.length;i++){
+    m=marks[i].m; if(isWhite(m)) continue;
+    var cls2=marks[i].c==='top'?'hl-top':(marks[i].c==='lh'?'hl-lh':'hl-rh');
+    s+='<rect x="'+r2(kx(m))+'" y="'+TY+'" width="'+r2(BW)+'" height="'+BH+'" rx="2.5" class="'+cls2+'"/>';
+  }
+  s+='</svg>';
+  return s;
+}
+
+/* ==========================================================================
+   3. AUDIO LOCAL (Web Audio API — sin recursos externos)
+   ========================================================================== */
+var AC=null;
+function actx(){
+  try{
+    if(!AC){ var C=window.AudioContext||window.webkitAudioContext; if(!C) return null; AC=new C(); }
+    if(AC.state==='suspended') AC.resume();
+    return AC;
+  }catch(e){ return null; }
+}
+function mtof(m){ return 440*Math.pow(2,(m-69)/12); }
+function voice(freq,t0,dur,peak){
+  var c=actx(); if(!c) return;
+  var o=c.createOscillator(), o2=c.createOscillator(), g=c.createGain(), g2=c.createGain(), f=c.createBiquadFilter();
+  o.type='triangle'; o.frequency.value=freq;
+  o2.type='sine'; o2.frequency.value=freq*2.001;
+  g2.gain.value=0.22;
+  f.type='lowpass'; f.frequency.value=Math.min(4600,freq*7+800); f.Q.value=0.5;
+  o.connect(f); o2.connect(g2); g2.connect(f); f.connect(g); g.connect(c.destination);
+  g.gain.setValueAtTime(0.0001,t0);
+  g.gain.exponentialRampToValueAtTime(Math.max(0.0002,peak),t0+0.022);
+  g.gain.exponentialRampToValueAtTime(Math.max(0.0002,peak*0.42),t0+0.34);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  o.start(t0); o2.start(t0); o.stop(t0+dur+0.06); o2.stop(t0+dur+0.06);
+}
+function playVoicing(v,opt){
+  opt=opt||{};
+  var c=actx(); if(!c) return false;
+  var t0=c.currentTime+0.05, dur=opt.dur||2.5, boost=opt.boost?2.0:1.0, i;
+  if(opt.only!=='rh'){ for(i=0;i<v.lh.length;i++) voice(mtof(v.lh[i]),t0+i*0.018,dur,0.17); }
+  if(opt.only!=='lh'){ for(i=0;i<v.rh.length;i++){ var isT=(v.rh[i]===v.top); voice(mtof(v.rh[i]),t0+0.05+i*0.032,dur*0.96,(isT?0.235:0.15)*(isT?boost:1)); } }
+  return true;
+}
+function playSequence(list,step,opt){
+  var c=actx(); if(!c) return;
+  var t0=c.currentTime+0.05,i,j,v;
+  for(i=0;i<list.length;i++){
+    v=list[i]; var base=t0+i*step;
+    for(j=0;j<v.lh.length;j++) voice(mtof(v.lh[j]),base+j*0.018,step*1.25,0.17);
+    for(j=0;j<v.rh.length;j++){ var isT=(v.rh[j]===v.top); voice(mtof(v.rh[j]),base+0.05+j*0.03,step*1.2,(isT?0.235:0.15)*(isT&&opt&&opt.boost?2.0:1)); }
+  }
+}
+
+/* ==========================================================================
+   4. PRESETS (todos extraídos del documento)
+   ========================================================================== */
+var PRESETS={
+  hal:{name:'Hallelujah · ancla en C (I)',kind:'CASO 1 · REPERTORIO',lh:[48],rh:[60,64,67],top:67,
+    desc:'En el C (I) inicial, la melodía se apoya en G. Al tocar el acorde de C (C-E-G) con el G arriba, creamos un «ancla» sonora. Esto permite que el cantante realice riffs o variaciones melódicas con la seguridad de que el piano mantiene la referencia estructural sin estorbar sus adornos.'},
+  lib1:{name:'Let It Be · C (I) → cima G',kind:'CASO 2 · MAPA DE NOTAS SUPERIORES',lh:[48],rh:[60,64,67],top:67,
+    desc:'Do mayor — C (I): G en el tope. La cima se mantiene como nota común con el siguiente acorde, de modo que la mano derecha apenas se desplaza.'},
+  lib2:{name:'Let It Be · G (V) → cima G',kind:'CASO 2 · MAPA DE NOTAS SUPERIORES',lh:[43],rh:[59,62,67],top:67,
+    desc:'Sol mayor — G (V): G en el tope. La raíz del acorde pasa a ser también la nota melódica superior; la cima no se mueve respecto al acorde anterior.'},
+  lib3:{name:'Let It Be · Am (vi) → cima E',kind:'CASO 2 · MAPA DE NOTAS SUPERIORES',lh:[45],rh:[57,60,64],top:64,
+    desc:'La menor — Am (vi): E en el tope. La línea fantasma desciende de G a E: ese intervalo es el que guía el oído del espectador.'},
+  lib4:{name:'Let It Be · F (IV) → cima C',kind:'CASO 2 · MAPA DE NOTAS SUPERIORES',lh:[41],rh:[53,57,60],top:60,
+    desc:'Fa mayor — F (IV): C (o D, según el compás) en el tope. Incluso sin ritmo, la progresión es inequívoca.'},
+  ej1:{name:'Ejercicio 1 · C (I) con melodía E → G-C-E',kind:'EJERCICIO RESUELTO',lh:[48],rh:[55,60,64],top:64,
+    desc:'Solución del documento: acorde de C con E en el tope (G-C-E). La nota melódica E corona el voicing y el oyente completa la frase.'},
+  ej2:{name:'Ejercicio 2 · G (V) con melodía G → B-D-G',kind:'EJERCICIO RESUELTO',lh:[43],rh:[59,62,67],top:67,
+    desc:'Solución del documento: acorde de G con G en el tope (B-D-G).'},
+  ej3:{name:'Ejercicio 3 · Am (vi) con melodía C → E-A-C',kind:'EJERCICIO RESUELTO',lh:[45],rh:[52,57,60],top:60,
+    desc:'Solución del documento: acorde de A menor con C en el tope (E-A-C).'},
+  reto1:{name:'Reto · D con melodía E → A-D-E',kind:'RETO PROFESIONAL · 9ª',lh:[50],rh:[57,62,64],top:64,
+    desc:'Acorde de D mayor (D-F#-A) con melodía en E: voiceado como A-D-E, permitiendo que la 9ª (E) corone el acorde sin perder la base de D en la mano izquierda.'},
+  reto2:{name:'Reto · D con melodía E → D-F#-A-E',kind:'RETO PROFESIONAL · 9ª',lh:[50],rh:[62,66,69,76],top:76,
+    desc:'Segunda solución del documento: D-F#-A-E, un voicing más abierto donde la 9ª (E) corona el acorde completo sin perder la base de D.'},
+  ten1:{name:'Tensión densa · G-B-D + A en la cima',kind:'SECCIÓN 5 · NOTAS AJENAS AL ACORDE',lh:[43],rh:[59,62,67,69],top:69,
+    desc:'Melodía en A sobre un acorde de G mayor (G-B-D): el A funciona como novena / nota de tensión. Con todas las notas del acorde presentes, la nota más cercana a la melódica (G) genera un roce áspero.'},
+  ten2:{name:'Tensión resuelta · se omite G → B-D + A',kind:'SECCIÓN 5 · PROTOCOLO DE CORRECCIÓN',lh:[43],rh:[59,62,69],top:69,
+    desc:'Protocolo del documento: retirar la nota del acorde más cercana a la nota melódica (omitir el G o el B en la mano derecha) y dejar que el A resuene en la parte superior. El oyente lo percibe como una suspensión elegante que resuelve hacia la estabilidad armónica.'}
+};
+
+/* ==========================================================================
+   5. LABORATORIO
+   ========================================================================== */
+var labCurrent='lib1';
+function labRender(id){
+  var v=PRESETS[id]; if(!v) return;
+  labCurrent=id;
+  document.getElementById('labTitle').textContent=v.name;
+  document.getElementById('labKind').textContent=v.kind;
+  document.getElementById('labKeys').innerHTML=miniPiano(v);
+  document.getElementById('labDesc').textContent=v.desc;
+  document.getElementById('roLH').textContent=v.lh.map(nn).join(' · ');
+  document.getElementById('roRH').textContent=v.rh.map(nn).join(' · ');
+  document.getElementById('roTop').textContent=nn(v.top)+'  (nota melódica en el techo del acorde)';
+  var chips=document.querySelectorAll('#labChips .pchip');
+  for(var i=0;i<chips.length;i++) chips[i].classList.toggle('active',chips[i].getAttribute('data-set')===id);
+}
+function buildLabChips(){
+  var host=document.getElementById('labChips'); if(!host) return;
+  var order=['hal','lib1','lib2','lib3','lib4','ej1','ej2','ej3','reto1','reto2','ten1','ten2'];
+  var html='';
+  for(var i=0;i<order.length;i++){
+    html+='<button class="pchip" data-set="'+order[i]+'">'+PRESETS[order[i]].name+'</button>';
+  }
+  host.innerHTML=html;
+  host.addEventListener('click',function(e){
+    var b=e.target.closest('[data-set]'); if(!b) return;
+    labRender(b.getAttribute('data-set'));
+  });
+}
+function flashBtn(b){
+  if(!b) return;
+  b.classList.add('playing');
+  setTimeout(function(){b.classList.remove('playing');},900);
+}
+function globalPlay(id,btn,opt){
+  var v=PRESETS[id]; if(!v) return;
+  opt=opt||{};
+  if(typeof opt.boost==='undefined') opt.boost=document.getElementById('labBoost')?document.getElementById('labBoost').checked:true;
+  var ok=playVoicing(v,opt);
+  if(!ok){ var an=document.getElementById('audioNote'); if(an) an.textContent='⚠️ Su navegador no permite generar audio local en esta página; el resto del tutorial sigue siendo plenamente funcional.'; }
+  flashBtn(btn);
+}
+
+/* ==========================================================================
+   6. SPA · NAVEGACIÓN
+   ========================================================================== */
+function showSection(id){
+  var secs=document.querySelectorAll('.section'), found=false, i;
+  for(i=0;i<secs.length;i++){
+    var on=(secs[i].id===id);
+    secs[i].classList.toggle('active',on);
+    if(on) found=true;
+  }
+  if(!found){ id='home'; for(i=0;i<secs.length;i++) secs[i].classList.toggle('active',secs[i].id==='home'); }
+  var btns=document.querySelectorAll('.navbtn');
+  for(i=0;i<btns.length;i++) btns[i].classList.toggle('active',btns[i].getAttribute('data-target')===id);
+  /* reinicia el SVG animado al entrar en HOME o CRÉDITOS (mismo SVG en ambas) */
+  if(id==='home'||id==='creditos'){ mountCovers(); }
+  window.scrollTo({top:0,behavior:'auto'});
+  if(history.replaceState) history.replaceState(null,'','#'+id);
+  updateProgress();
+}
+function initNav(){
+  document.getElementById('nav').addEventListener('click',function(e){
+    var b=e.target.closest('.navbtn'); if(!b) return;
+    showSection(b.getAttribute('data-target'));
+  });
+  document.body.addEventListener('click',function(e){
+    var g=e.target.closest('[data-goto]'); if(!g) return;
+    showSection(g.getAttribute('data-goto'));
+  });
+}
+
+/* ==========================================================================
+   7. PROGRESO · VOLVER ARRIBA
+   ========================================================================== */
+function updateProgress(){
+  var h=document.documentElement, b=document.body;
+  var st=h.scrollTop||b.scrollTop;
+  var sh=(h.scrollHeight||b.scrollHeight)-h.clientHeight;
+  var pct=sh>0?Math.min(100,Math.max(0,(st/sh)*100)):0;
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('toTop').classList.toggle('show',st>260);
+}
+function initScroll(){
+  window.addEventListener('scroll',updateProgress,{passive:true});
+  window.addEventListener('resize',updateProgress);
+  document.getElementById('toTop').addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  updateProgress();
+}
+
+/* ==========================================================================
+   8. TABS · CHECKLIST · EJERCICIOS · COPIAR
+   ========================================================================== */
+function initTabs(){
+  document.querySelectorAll('.tabbtn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=b.getAttribute('data-tab');
+      b.parentNode.querySelectorAll('.tabbtn').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      document.querySelectorAll('.tabpanel').forEach(function(p){p.classList.toggle('active',p.id===t);});
+    });
+  });
+}
+function initChecklist(){
+  var items=document.querySelectorAll('[data-chk]'), fill=document.getElementById('chkFill'), cnt=document.getElementById('chkCount');
+  function upd(){
+    var done=0;
+    items.forEach(function(it){ if(it.classList.contains('done')) done++; });
+    fill.style.width=(done/items.length*100)+'%';
+    cnt.textContent=done+' de '+items.length+' criterios verificados'+(done===items.length?' · ¡equilibrio de acompañamiento comprobado!':'');
+  }
+  items.forEach(function(it){
+    it.addEventListener('click',function(){ it.classList.toggle('done'); upd(); });
+    it.setAttribute('role','checkbox');
+  });
+  document.getElementById('chkReset').addEventListener('click',function(){
+    items.forEach(function(it){it.classList.remove('done');}); upd();
+  });
+  document.getElementById('chkDemo').addEventListener('click',function(e){
+    var v=PRESETS['lib1'], c=actx(); if(!c||!v) return;
+    var t0=c.currentTime+0.05,i;
+    /* 1) equilibrio neutro */
+    for(i=0;i<v.lh.length;i++) voice(mtof(v.lh[i]),t0,1.7,0.17);
+    for(i=0;i<v.rh.length;i++) voice(mtof(v.rh[i]),t0+0.04+i*0.02,1.7,0.17);
+    /* 2) cima resaltada */
+    var t1=t0+2.1;
+    for(i=0;i<v.lh.length;i++) voice(mtof(v.lh[i]),t1,2.2,0.16);
+    for(i=0;i<v.rh.length;i++){ var isT=(v.rh[i]===v.top); voice(mtof(v.rh[i]),t1+0.04+i*0.02,2.2,isT?0.34:0.14); }
+    flashBtn(e.currentTarget);
+  });
+  upd();
+}
+function initExercises(){
+  document.querySelectorAll('[data-ex]').forEach(function(card){
+    var btn=card.querySelector('[data-sol]'), sol=card.querySelector('.sol');
+    if(!btn||!sol) return;
+    btn.addEventListener('click',function(){
+      var open=sol.style.display!=='none';
+      sol.style.display=open?'none':'flex';
+      btn.textContent=open?'👁 Ver solución':'🙈 Ocultar solución';
+    });
+  });
+}
+function initCopy(){
+  document.querySelectorAll('[data-prompt]').forEach(function(card){
+    var btn=card.querySelector('[data-copy]'), txt=card.querySelector('p');
+    if(!btn||!txt) return;
+    btn.addEventListener('click',function(){
+      var val=txt.textContent.trim();
+      function ok(){ btn.textContent='✅ Copiado'; setTimeout(function(){btn.textContent='📋 Copiar prompt';},1600); }
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(val).then(ok).catch(fallback);
+      } else fallback();
+      function fallback(){
+        var ta=document.createElement('textarea'); ta.value=val; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); ok(); }catch(e){ btn.textContent='⚠️ Copie el texto manualmente'; }
+        document.body.removeChild(ta);
+      }
+    });
+  });
+}
+
+/* ==========================================================================
+   9. BOTONES DE AUDIO REPARTIDOS POR EL TUTORIAL
+   ========================================================================== */
+function initAudioButtons(){
+  document.body.addEventListener('click',function(e){
+    var p=e.target.closest('[data-play]');
+    if(p){ globalPlay(p.getAttribute('data-play'),p); return; }
+    var s=e.target.closest('[data-seq]');
+    if(s){
+      var ids=s.getAttribute('data-seq').split(','), list=[], i;
+      for(i=0;i<ids.length;i++){ if(PRESETS[ids[i].trim()]) list.push(PRESETS[ids[i].trim()]); }
+      var boost=document.getElementById('labBoost')?document.getElementById('labBoost').checked:true;
+      if(list.length){ if(playSequence(list,1.15,{boost:boost})!==undefined) flashBtn(s); }
+    }
+  });
+  var lp=document.getElementById('labPlay'), ll=document.getElementById('labPlayLH'), lr=document.getElementById('labPlayRH');
+  if(lp) lp.addEventListener('click',function(){ globalPlay(labCurrent,lp); });
+  if(ll) ll.addEventListener('click',function(){ globalPlay(labCurrent,ll,{only:'lh'}); });
+  if(lr) lr.addEventListener('click',function(){ globalPlay(labCurrent,lr,{only:'rh'}); });
+}
+
+/* ==========================================================================
+   10. ARRANQUE
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded',function(){
+  buildLabChips();
+  labRender('lib1');
+  initNav(); initScroll(); initTabs(); initChecklist(); initExercises(); initCopy(); initAudioButtons();
+  mountCovers();
+  var h=(location.hash||'').replace('#','');
+  if(h&&document.getElementById(h)) showSection(h);
+  if(window.matchMedia) window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',applyReducedMotion);
+});
+</script>
+</body>
+</html>
