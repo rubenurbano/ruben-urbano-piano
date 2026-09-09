@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía Maestra de los Modos Griegos · Tutorial HTML Interactivo</title>
+<style>
+/* ============================ TOKENS ============================ */
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --card2:#0b1223; --border:#1e3a5f;
+  --accent:#00d4ff; --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+  --text:#e2e8f0; --muted:#94a3b8; --soft:#cbd5e1;
+  --mc:#00d4ff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.65;
+  -webkit-text-size-adjust:100%;overflow-x:hidden}
+svg{max-width:100%}
+button{font-family:inherit}
+::selection{background:rgba(0,212,255,.3)}
+
+/* ============================ BARRA DE PROGRESO ============================ */
+#progress{position:fixed;top:0;left:0;height:4px;width:0;z-index:1200;
+  background:linear-gradient(90deg,var(--accent),var(--purple) 55%,var(--amber));
+  box-shadow:0 0 12px rgba(0,212,255,.6);transition:width .08s linear;pointer-events:none}
+
+/* ============================ NAVBAR FIJA ============================ */
+#navbar{position:fixed;top:4px;left:0;right:0;height:58px;z-index:1100;
+  background:rgba(10,14,26,.96);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;padding:0 12px}
+.brand{display:flex;align-items:center;gap:9px;white-space:nowrap;font-weight:800;
+  font-size:.92rem;letter-spacing:.05em;color:#fff;flex:0 0 auto}
+.brand i{width:27px;height:27px;border-radius:8px;display:grid;place-items:center;
+  background:linear-gradient(135deg,rgba(0,212,255,.25),rgba(168,85,247,.25));
+  border:1px solid rgba(0,212,255,.5);color:var(--accent);font-style:normal;font-size:.95rem}
+.brand small{display:block;font-size:.58rem;letter-spacing:.16em;color:var(--muted);font-weight:700}
+.tabs{display:flex;align-items:center;gap:6px;overflow-x:auto;overflow-y:hidden;flex:1 1 auto;
+  scrollbar-width:none;-ms-overflow-style:none;padding:5px 2px;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none;height:0}
+.tab{white-space:nowrap;padding:9px 14px;border:1px solid transparent;border-radius:9px;
+  background:transparent;color:var(--muted);font-size:.83rem;font-weight:700;cursor:pointer;
+  transition:background .2s,color .2s,border-color .2s;flex:0 0 auto;min-height:38px}
+.tab:hover{color:#fff;background:#111c33}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tab[aria-selected="true"]{color:#04121a;background:var(--accent);border-color:var(--accent);
+  font-weight:800;box-shadow:0 0 16px rgba(0,212,255,.35)}
+.tab.credits{border-color:rgba(168,85,247,.6);color:#d8b4fe}
+.tab.credits[aria-selected="true"]{background:var(--purple);border-color:var(--purple);color:#12061f}
+.tab .n{opacity:.6;font-size:.7rem;margin-right:5px}
+
+/* ============================ LAYOUT ============================ */
+main{padding-top:78px;min-height:70vh}
+.wrap{max-width:1180px;margin:0 auto;padding:6px 16px 60px}
+.view{display:none}
+.view.active{display:block;animation:fadeIn .3s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ============================ TIPOGRAFÍA ============================ */
+.kicker{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);
+  font-weight:800;margin:0 0 6px}
+.sec-title{font-size:clamp(1.4rem,4.6vw,2.05rem);line-height:1.2;margin:0 0 6px;font-weight:800}
+.sec-sub{color:var(--muted);margin:0 0 20px;font-size:.95rem;max-width:840px}
+.h3{font-size:1.06rem;margin:0 0 8px;font-weight:800;color:#fff}
+.h4{font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+  font-weight:800;margin:16px 0 8px}
+p{margin:0 0 10px}
+.lead{font-size:1.02rem;color:var(--soft)}
+.hr{height:1px;background:linear-gradient(90deg,var(--border),transparent);margin:20px 0}
+
+/* ============================ CARDS ============================ */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;
+  margin-bottom:16px;position:relative;overflow:hidden}
+.card::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent 70%);opacity:.55}
+.card.mode::after{background:linear-gradient(90deg,var(--mc),transparent 75%);opacity:.9}
+.card-h{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.ico{width:38px;height:38px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;
+  background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.35);color:var(--accent);
+  font-size:1rem;font-weight:800}
+.ico.p{background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.45);color:#d8b4fe}
+.ico.a{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.45);color:var(--amber)}
+.ico.g{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.45);color:var(--green)}
+.ico.r{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.45);color:#fca5a5}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(168px,1fr))}
+.subbox{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
+
+/* ============================ BADGES / CHIPS / TAGS ============================ */
+.badge{display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;
+  border:1px solid rgba(0,212,255,.45);background:rgba(0,212,255,.1);color:var(--accent);
+  font-size:.7rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 8px var(--accent);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+.chip{padding:9px 14px;border-radius:999px;border:1px solid var(--border);background:var(--card2);
+  color:var(--muted);cursor:pointer;font-size:.82rem;font-weight:700;transition:.2s;min-height:38px}
+.chip:hover{border-color:var(--mc);color:#fff}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chip.active{border-color:var(--mc);color:#fff;background:rgba(0,212,255,.14)}
+.tag{display:inline-block;padding:3px 9px;border-radius:6px;font-size:.68rem;font-weight:800;
+  letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);color:var(--muted);
+  background:#0a1224}
+.tag.may{border-color:rgba(245,158,11,.5);color:var(--amber);background:rgba(245,158,11,.09)}
+.tag.men{border-color:rgba(0,212,255,.5);color:var(--accent);background:rgba(0,212,255,.09)}
+.tag.dis{border-color:rgba(239,68,68,.5);color:#fca5a5;background:rgba(239,68,68,.09)}
+
+/* ============================ PÍLDORAS DE NOTAS ============================ */
+.notes-row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.note{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:56px;padding:7px 9px;
+  border-radius:9px;background:#0a1224;border:1px solid var(--border);position:relative}
+.note b{font-size:1rem;color:#fff;font-weight:800}
+.note span{font-size:.64rem;color:var(--accent);font-weight:800;letter-spacing:.08em}
+.note.char{border-color:var(--amber);background:rgba(245,158,11,.12);box-shadow:0 0 14px rgba(245,158,11,.18)}
+.note.char span{color:var(--amber)}
+.note.char b{color:#ffe6b3}
+.note.tonic{border-color:var(--mc);background:rgba(0,212,255,.1)}
+.note.alt::after{content:attr(data-alt);position:absolute;top:-9px;right:-6px;font-size:.62rem;
+  font-weight:900;color:#04121a;background:var(--amber);border-radius:5px;padding:0 4px}
+
+/* ============================ CALLOUTS ============================ */
+.callout{border-left:4px solid var(--accent);background:rgba(0,212,255,.07);border-radius:8px;
+  padding:12px 15px;margin:14px 0}
+.callout .ct{font-size:.7rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;margin-bottom:5px;color:var(--accent)}
+.callout p:last-child{margin-bottom:0}
+.callout.example{border-color:var(--green);background:rgba(34,197,94,.08)}
+.callout.example .ct{color:var(--green)}
+.callout.warning{border-color:var(--amber);background:rgba(245,158,11,.08)}
+.callout.warning .ct{color:var(--amber)}
+.callout.error{border-color:var(--red);background:rgba(239,68,68,.08)}
+.callout.error .ct{color:#fca5a5}
+.callout.magic{border-color:var(--purple);background:rgba(168,85,247,.09)}
+.callout.magic .ct{color:#d8b4fe}
+
+/* ============================ TABLAS ============================ */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);
+  border-radius:10px;background:var(--card2)}
+table{width:100%;border-collapse:collapse;min-width:720px;font-size:.88rem}
+th{background:#101c33;color:var(--accent);text-align:left;padding:11px 12px;
+  border-bottom:1px solid var(--border);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:800;white-space:nowrap}
+td{padding:11px 12px;border-bottom:1px solid #16273f;vertical-align:top;color:var(--soft)}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#111d34}
+td b{color:#fff}
+.mcell{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:#fff}
+.mcell i{width:10px;height:10px;border-radius:3px;background:var(--mc);display:inline-block;
+  box-shadow:0 0 8px var(--mc)}
+.hint{font-size:.78rem;color:var(--muted);margin-top:8px}
+
+/* ============================ PASOS ============================ */
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:10px 0 0}
+ol.steps li{counter-increment:s;position:relative;padding:12px 14px 12px 56px;border:1px solid var(--border);
+  border-radius:10px;margin-bottom:9px;background:var(--card2)}
+ol.steps li::before{content:counter(s);position:absolute;left:13px;top:12px;width:30px;height:30px;
+  border-radius:9px;background:var(--accent);color:#04121a;font-weight:900;display:grid;place-items:center}
+ol.steps.sm li{padding-left:46px}
+ul.clean{margin:8px 0;padding-left:20px}
+ul.clean li{margin-bottom:7px;color:var(--soft)}
+ul.clean li b{color:#fff}
+
+/* ============================ CITA ============================ */
+.quote{border:1px solid rgba(168,85,247,.4);border-left:4px solid var(--purple);
+  background:linear-gradient(90deg,rgba(168,85,247,.14),rgba(15,23,42,0));padding:16px 18px;
+  border-radius:10px;font-size:1.02rem;font-style:italic;color:#f0e4ff;margin:14px 0}
+.quote.big{font-size:clamp(1.05rem,3.4vw,1.35rem);text-align:center;padding:24px 20px}
+
+/* ============================ MÉTRICAS ============================ */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:16px 0}
+.metric{background:var(--card2);border:1px solid var(--border);border-radius:11px;padding:13px 10px;
+  text-align:center;transition:.25s}
+.metric:hover{border-color:var(--accent);transform:translateY(-2px)}
+.metric b{display:block;font-size:1.5rem;color:var(--accent);font-weight:900;line-height:1.15}
+.metric span{font-size:.66rem;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;font-weight:700}
+
+/* ============================ BOTONES ============================ */
+.btn{background:linear-gradient(180deg,#0e2c42,#0a1c2b);border:1px solid var(--accent);color:var(--accent);
+  padding:11px 17px;border-radius:9px;font-weight:800;cursor:pointer;font-size:.86rem;transition:.2s;
+  min-height:42px}
+.btn:hover:not(:disabled){background:var(--accent);color:#04121a;box-shadow:0 0 18px rgba(0,212,255,.4)}
+.btn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.p{border-color:var(--purple);color:#d8b4fe;background:linear-gradient(180deg,#2a1147,#170a29)}
+.btn.p:hover:not(:disabled){background:var(--purple);color:#12061f}
+.btn.g{border-color:var(--green);color:#86efac;background:linear-gradient(180deg,#0f2f22,#0a1c16)}
+.btn.g:hover:not(:disabled){background:var(--green);color:#052012}
+.btn.a{border-color:var(--amber);color:#fcd34d;background:linear-gradient(180deg,#33240c,#1d1407)}
+.btn.a:hover:not(:disabled){background:var(--amber);color:#241703}
+.btn.ghost{border-color:var(--border);color:var(--muted);background:#0b1223}
+.btn.ghost:hover:not(:disabled){border-color:var(--accent);color:#fff;background:#111c33}
+.btn-row{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}
+.btn-sm{padding:9px 13px;font-size:.8rem;min-height:38px}
+
+/* ============================ ACORDEÓN ============================ */
+.acc{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;background:var(--card2)}
+.acc-q{width:100%;text-align:left;background:#101c33;color:#fff;border:0;padding:14px 16px;font-size:.92rem;
+  font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  min-height:48px}
+.acc-q:hover{background:#152742}
+.acc-q .arw{transition:transform .3s;color:var(--accent);font-size:.85rem;flex:0 0 auto}
+.acc.open .acc-q .arw{transform:rotate(180deg)}
+.acc-a{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acc-a-in{padding:14px 16px;border-top:1px solid var(--border);color:var(--soft)}
+
+/* ============================ PORTADA SVG ============================ */
+.cover-box{position:relative;border:1px solid var(--border);border-radius:14px;overflow:hidden;
+  background:#070b14;box-shadow:0 18px 60px rgba(0,0,0,.55)}
+.cover-svg{display:block;width:100%;height:auto;cursor:pointer;touch-action:manipulation}
+.cover-tag{position:absolute;left:10px;bottom:9px;z-index:3;font-size:.6rem;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--muted);background:rgba(10,14,26,.75);border:1px solid var(--border);
+  padding:4px 9px;border-radius:6px;pointer-events:none}
+
+/* ============================ PIANO DEL LABORATORIO ============================ */
+.piano-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);
+  border-radius:11px;background:#05080f;padding:6px}
+.piano{position:relative;display:flex;height:172px;min-width:540px;-webkit-user-select:none;user-select:none}
+.wkey{flex:1 1 0;position:relative;background:linear-gradient(180deg,#f4f7fc,#ccd7e5);
+  border:1px solid #8e9bad;border-top:0;border-radius:0 0 6px 6px;cursor:pointer;
+  transition:background .12s,box-shadow .12s}
+.wkey.inscale{background:linear-gradient(180deg,#e6fbff,#b9ecfb)}
+.wkey.tonic{box-shadow:inset 0 -12px 0 -2px var(--mc)}
+.wkey.char{box-shadow:inset 0 -12px 0 -2px var(--amber)}
+.wkey.now{background:var(--mc);box-shadow:0 0 22px var(--mc)}
+.bkey{position:absolute;top:0;height:62%;background:linear-gradient(180deg,#243049,#05080f);
+  border:1px solid #000;border-radius:0 0 5px 5px;z-index:3;cursor:pointer;
+  transition:background .12s,box-shadow .12s}
+.bkey.inscale{background:linear-gradient(180deg,#2f5a76,#0b1a29)}
+.bkey.tonic{box-shadow:inset 0 -9px 0 -1px var(--mc)}
+.bkey.char{box-shadow:inset 0 -9px 0 -1px var(--amber)}
+.bkey.now{background:var(--mc);box-shadow:0 0 18px var(--mc)}
+.klab{position:absolute;left:0;right:0;bottom:5px;text-align:center;font-size:.62rem;color:#33475e;
+  pointer-events:none;font-weight:700}
+.kdeg{position:absolute;left:0;right:0;bottom:21px;text-align:center;font-size:.64rem;color:#0b3b4d;
+  pointer-events:none;font-weight:900;letter-spacing:.05em;opacity:0;transition:.15s}
+.wkey.inscale .kdeg,.wkey.now .kdeg{opacity:1}
+.bkey .kdeg{color:#dff6ff;bottom:auto;top:38px;font-size:.6rem;opacity:0}
+.bkey.inscale .kdeg,.bkey.now .kdeg{opacity:1}
+.wkey.now .klab,.wkey.now .kdeg{color:#04121a}
+.readout{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;font-size:.85rem;color:var(--muted)}
+.readout b{color:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.72rem;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+.score{font-size:.86rem;color:var(--muted)}
+.score b{color:var(--green);font-size:1.1rem}
+.fb{margin-top:10px;padding:11px 13px;border-radius:9px;border:1px solid var(--border);
+  background:var(--card2);font-size:.88rem;display:none}
+.fb.ok{display:block;border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.09);color:#bbf7d0}
+.fb.no{display:block;border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.09);color:#fecaca}
+
+/* ============================ CLASES DEL SVG DE PORTADA ============================ */
+.cv-title{font:900 62px 'Segoe UI',system-ui,sans-serif;fill:#fff;letter-spacing:2px}
+.cv-kicker{font:800 17px 'Segoe UI',system-ui,sans-serif;fill:#00d4ff;letter-spacing:5px}
+.cv-sub{font:600 17px 'Segoe UI',system-ui,sans-serif;fill:#93a4bd}
+.cv-panel-lab{font:800 12px 'Segoe UI',system-ui,sans-serif;fill:#6f83a0;letter-spacing:2.4px}
+.cv-panel-val{font:700 17px 'Segoe UI',system-ui,sans-serif;fill:#e6eefb}
+.cv-mode-name{font:900 44px 'Segoe UI',system-ui,sans-serif;fill:#00d4ff;letter-spacing:1px}
+.cv-mode-en{font:700 16px 'Segoe UI',system-ui,sans-serif;fill:#93a4bd;letter-spacing:2px}
+.cv-wheel-title{font:800 12px 'Segoe UI',system-ui,sans-serif;fill:#6f83a0;letter-spacing:3px}
+.cv-wheel-mode{font:900 30px 'Segoe UI',system-ui,sans-serif;fill:#fff;letter-spacing:1px}
+.cv-wheel-note{font:900 24px 'Segoe UI',system-ui,sans-serif;fill:#fff}
+.cv-wheel-deg{font:800 15px 'Segoe UI',system-ui,sans-serif;fill:#6f83a0;letter-spacing:1px}
+.cv-wheel-deg.s{fill:#f59e0b}
+.cv-wheel-cur{font:800 14px 'Segoe UI',system-ui,sans-serif;fill:#93a4bd;letter-spacing:.6px}
+.cv-seg{fill:none;stroke-width:9;stroke-linecap:round}
+.cv-seg.t{stroke:#16405e}
+.cv-seg.s{stroke:#7a5410}
+.cv-seg-lab{font:900 15px 'Segoe UI',system-ui,sans-serif;fill:#4d6a8c}
+.cv-seg-lab.s{fill:#c08a2e}
+.cv-node{fill:#0d1a2e;stroke:#2a4a70;stroke-width:2;transform-box:fill-box;transform-origin:center}
+.cv-node.now{animation:nodePop .42s ease}
+@keyframes nodePop{0%{transform:scale(.85)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.cv-needle{transform-box:view-box;transform-origin:430px 430px;
+  transition:transform .85s cubic-bezier(.22,.85,.24,1)}
+.cv-hint{font:700 12px 'Segoe UI',system-ui,sans-serif;fill:#5c7191;letter-spacing:1.4px}
+.cv-chip-t{font:800 16px 'Segoe UI',system-ui,sans-serif;fill:#fff}
+.cv-chip-d{font:800 10px 'Segoe UI',system-ui,sans-serif;fill:#8fa3bf;letter-spacing:1px}
+.cv-kb-w{stroke:#7b8aa0;stroke-width:1.2}
+.cv-kb-b{fill:#080d18;stroke:#2c3d57;stroke-width:1.2}
+.cv-klab{font:800 13px 'Segoe UI',system-ui,sans-serif;fill:#123a4d}
+.cv-frame{stroke-dasharray:220 3400;animation:frameRun 9s linear infinite}
+@keyframes frameRun{to{stroke-dashoffset:-3620}}
+.cv-wave{animation:waveScroll 3.4s linear infinite}
+.cv-wave2{animation:waveScroll 5.6s linear infinite}
+@keyframes waveScroll{to{transform:translateX(-546px)}}
+.cv-playhead{animation:phMove 3.4s linear infinite}
+@keyframes phMove{from{transform:translateX(0)}to{transform:translateX(546px)}}
+.cv-glow{animation:glowPulse 3.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes glowPulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.75;transform:scale(1.06)}}
+.cv-eqbar{transform-box:fill-box;transform-origin:bottom;animation:eq 1.1s ease-in-out infinite alternate}
+@keyframes eq{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+
+/* ============================ CRÉDITOS / FOOTER ============================ */
+.credit-box{text-align:center;padding:26px 18px;background:var(--card);border:1px solid var(--border);
+  border-radius:14px;margin-top:16px}
+.credit-box .nm{font-size:clamp(1.5rem,5vw,2.2rem);font-weight:900;color:#fff}
+.credit-box .rl{font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);font-weight:800}
+.latin{font-style:italic;color:#d8b4fe;letter-spacing:.04em;margin-top:12px;font-size:1rem}
+.stamp{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.stamp span{font-size:.78rem;color:var(--muted);border:1px solid var(--border);background:var(--card2);
+  padding:7px 12px;border-radius:8px}
+.stamp b{color:var(--accent)}
+footer{border-top:1px solid var(--border);background:#070b14;padding:24px 16px 32px;text-align:center;
+  color:var(--muted);font-size:.84rem}
+footer p{margin:5px 0}
+footer .lat{font-size:.86rem}
+#toTop{position:fixed;right:14px;bottom:16px;width:48px;height:48px;border-radius:13px;border:0;
+  background:var(--accent);color:#04121a;font-size:1.25rem;font-weight:900;cursor:pointer;z-index:1000;
+  opacity:0;pointer-events:none;transition:.25s;box-shadow:0 10px 26px rgba(0,212,255,.4)}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{transform:translateY(-3px)}
+.svg-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+
+/* ============================ RESPONSIVE ============================ */
+@media (max-width:820px){
+  .brand small{display:none}
+  .wrap{padding:4px 12px 50px}
+  .card{padding:15px}
+  .piano{height:152px}
+}
+@media (max-width:560px){
+  #navbar{height:54px;padding:0 8px;gap:7px}
+  .brand{font-size:.76rem}
+  .brand i{width:24px;height:24px;font-size:.85rem}
+  main{padding-top:70px}
+  .tab{padding:8px 11px;font-size:.78rem}
+  .tab .n{display:none}
+  .note{min-width:50px;padding:6px 8px}
+  .note b{font-size:.92rem}
+  .piano{height:140px;min-width:520px}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  #toTop{width:44px;height:44px;right:10px;bottom:12px}
+  .btn{padding:10px 14px;font-size:.84rem}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- ==================== NAVBAR ==================== -->
+<nav id="navbar">
+  <div class="brand"><i>♫</i><span>MODOS GRIEGOS<small>Guía Maestra Interactiva</small></span></div>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Secciones del tutorial">
+    <button type="button" class="tab" role="tab" data-target="inicio" aria-selected="true"><span class="n">00</span>Inicio</button>
+    <button type="button" class="tab" role="tab" data-target="fundamentos" aria-selected="false"><span class="n">01</span>Fundamentos</button>
+    <button type="button" class="tab" role="tab" data-target="mayores" aria-selected="false"><span class="n">02</span>Modos Mayores</button>
+    <button type="button" class="tab" role="tab" data-target="menores" aria-selected="false"><span class="n">03</span>Modos Menores</button>
+    <button type="button" class="tab" role="tab" data-target="locrio" aria-selected="false"><span class="n">04</span>Locrio</button>
+    <button type="button" class="tab" role="tab" data-target="tabla" aria-selected="false"><span class="n">05</span>Tabla Maestra</button>
+    <button type="button" class="tab" role="tab" data-target="lab" aria-selected="false"><span class="n">06</span>Laboratorio</button>
+    <button type="button" class="tab" role="tab" data-target="uso" aria-selected="false"><span class="n">07</span>Uso y Práctica</button>
+    <button type="button" class="tab credits" role="tab" data-target="creditos" aria-selected="false"><span class="n">★</span>Créditos</button>
+  </div>
+</nav>
+
+<main>
+<div class="wrap">
+
+<!-- ==================== HOME ==================== -->
+<section class="view active" id="inicio" role="tabpanel">
+  <div class="cover-box">
+    <div id="cover-home"></div>
+    <div class="cover-tag">SVG animado · rueda diatónica + teclado · clic para cambiar de modo</div>
+  </div>
+
+  <div style="margin-top:22px">
+    <span class="badge"><span class="dot"></span>Manual técnico · Armonía modal</span>
+    <h1 class="sec-title" style="font-size:clamp(1.7rem,6vw,2.7rem);margin-top:14px">Guía Maestra de los Modos Griegos</h1>
+    <p class="lead" style="font-size:clamp(1rem,3.2vw,1.2rem);color:#c9d8ea;font-weight:600;margin-bottom:12px">
+      De la Teoría a la Sonoridad Mágica
+    </p>
+    <p>
+      Esta guía ha sido diseñada para transformar tu comprensión técnica de la armonía en una
+      <b style="color:#fff">herramienta creativa de alto nivel</b>. Como especialistas en pedagogía, nuestro
+      objetivo es que dejes de ver las notas como simples puntos en un pentagrama y comiences a percibirlas como
+      <b style="color:var(--accent)">colores vibrantes dentro de un lienzo sonoro</b>.
+    </p>
+
+    <div class="quote big">“Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.”</div>
+
+    <div class="metrics">
+      <div class="metric"><b>7</b><span>Modos griegos</span></div>
+      <div class="metric"><b>3+3+1</b><span>Mayores · Menores · Locrio</span></div>
+      <div class="metric"><b>2</b><span>Tónicas: C(I) y E(I)</span></div>
+      <div class="metric"><b>1</b><span>Laboratorio de piano</span></div>
+      <div class="metric"><b>8</b><span>Secciones navegables</span></div>
+    </div>
+
+    <div class="grid g3">
+      <div class="card" style="margin:0">
+        <div class="card-h"><div class="ico">◎</div><div class="h3" style="margin:0">Qué aprenderás</div></div>
+        <ul class="clean" style="margin:0">
+          <li>El origen y la lógica del <b>punto de partida</b>.</li>
+          <li>La <b>nota característica</b> de cada modo.</li>
+          <li>Cómo usar los modos como <b>colores emocionales</b>.</li>
+        </ul>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="card-h"><div class="ico g">♪</div><div class="h3" style="margin:0">Nomenclatura</div></div>
+        <p style="margin:0;font-size:.9rem;color:var(--soft)">
+          Todo el tutorial usa el <b>sistema americano</b> — <b>A, B, C, D, E, F, G</b> — indicando siempre el grado:
+          <b>C(I), D(II), E(III), F(IV), G(V), A(VI), B(VII)</b>.
+        </p>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="card-h"><div class="ico p">◈</div><div class="h3" style="margin:0">Cómo navegar</div></div>
+        <p style="margin:0;font-size:.9rem;color:var(--soft)">
+          Usa la barra superior (desplazamiento horizontal en móvil). Cada pestaña es una sección independiente:
+          <b>Fundamentos → Mayores → Menores → Locrio → Tabla → Laboratorio → Uso</b>.
+        </p>
+      </div>
+    </div>
+
+    <div class="stamp">
+      <span>📅 Fecha: <b>09/09/2026</b></span>
+      <span>🕒 Hora: <b>12:11:08</b></span>
+      <span>👨‍💻 Autor: <b>Rubén Sbarsky</b></span>
+      <span>🎹 Enfoque: <b>Piano / Armonía</b></span>
+      <span>🔌 <b>Sin dependencias externas</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 01 FUNDAMENTOS ==================== -->
+<section class="view" id="fundamentos" role="tabpanel">
+  <p class="kicker">Sección 01</p>
+  <h2 class="sec-title">Introducción a los Modos Griegos: el origen del color musical</h2>
+  <p class="sec-sub">Antes de memorizar fórmulas, hay que entender <b>por qué</b> existen los modos y qué es lo que cambia realmente entre ellos: el centro de gravedad.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-h"><div class="ico">?</div><div><div class="h3">¿Qué es un modo?</div><span class="tag">Definición</span></div></div>
+      <p>Un modo es una <b>serie de notas organizadas bajo un patrón específico de intervalos</b>. A diferencia de las
+      escalas tradicionales que solemos memorizar de forma aislada, un modo define su identidad por la
+      <b>relación de distancia entre sus sonidos</b> y su <b>centro de gravedad</b>.</p>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="ico a">⌛</div><div><div class="h3">Contexto histórico</div><span class="tag">Origen</span></div></div>
+      <p>La nomenclatura que utilizamos hoy proviene de la <b>antigua Grecia</b>. Estos nombres (<i>jonios, dorios,
+      frigios</i>, etc.) rinden homenaje a las diversas <b>tribus y regiones</b> donde estas sonoridades comenzaron a
+      gestarse, mucho antes de la estandarización de nuestro sistema mayor y menor actual.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div class="ico p">✦</div><div><div class="h3">El fenómeno del punto de partida</div><span class="tag">Concepto clave</span></div></div>
+    <p>La magia de los modos radica en el <b>centro gravitacional</b>. Imagina la escala de <b>C(I) mayor</b>. Si tomas
+    ese mismo inventario de notas, pero decides que <b>D(II)</b> sea tu nota principal y punto de reposo, la estructura
+    de tonos y semitonos se desplaza. Este cambio de perspectiva altera la percepción del oyente, otorgando a cada modo
+    una <b>sonoridad y personalidad única</b>.</p>
+    <div class="h4">Mismo inventario, distinto centro · ejemplo visual</div>
+    <div style="font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:800">Punto de partida en C(I) → Jónico</div>
+    <div class="notes-row" id="shiftA"></div>
+    <div style="font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-top:8px">Punto de partida en D(II) → Dórico</div>
+    <div class="notes-row" id="shiftB"></div>
+    <div class="callout" style="margin-bottom:0">
+      <div class="ct">◆ INFO</div>
+      <p>Las dos filas contienen <b>exactamente las mismas siete notas</b>. Lo único que cambia es cuál de ellas actúa
+      como <b>hogar</b>. Ese desplazamiento recoloca los semitonos y, con ellos, todo el carácter emocional del modo.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div class="ico g">⇄</div><div class="h3">¿Por qué los modos son “similares pero diferentes” a las escalas tradicionales?</div></div>
+    <div class="grid g3">
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">1 · Mismo inventario, distinta jerarquía</div>
+        <p style="margin:0;font-size:.9rem">Utilizan las <b>mismas notas</b> que su escala “madre”, pero cambian el
+        <b>orden de prioridad</b>.</p>
+      </div>
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">2 · Patrones de intervalos únicos</div>
+        <p style="margin:0;font-size:.9rem">Al cambiar el punto de partida, la <b>ubicación de los semitonos</b> varía,
+        creando <b>tensiones distintas</b>.</p>
+      </div>
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">3 · Evocación emocional</div>
+        <p style="margin:0;font-size:.9rem">Cada modo está diseñado para transmitir un <b>“color” específico</b>, desde
+        el brillo extremo hasta la oscuridad total.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout magic">
+    <div class="ct">✦ Transición</div>
+    <p>Una vez comprendido que los modos nacen de un cambio de perspectiva tonal, analicemos el grupo de
+    <b>mayor estabilidad y luz</b>.</p>
+  </div>
+</section>
+
+<!-- ==================== 02 MODOS MAYORES ==================== -->
+<section class="view" id="mayores" role="tabpanel">
+  <p class="kicker">Sección 02</p>
+  <h2 class="sec-title">Los Modos de Carácter Mayor (brillantes y estables)</h2>
+  <p class="sec-sub">Estos modos se construyen sobre una estructura de <b>tercera mayor</b>, proyectando sensaciones de claridad, energía y estabilidad.</p>
+
+  <div class="btn-row" style="gap:8px">
+    <button type="button" class="chip" data-jump="card-ionico">2.1 Jónico</button>
+    <button type="button" class="chip" data-jump="card-lidio">2.2 Lidio</button>
+    <button type="button" class="chip" data-jump="card-mixolidio">2.3 Mixolidio</button>
+    <button type="button" class="chip" data-jump="card-comp-mayor">Comparativa Mayor vs Lidio</button>
+  </div>
+
+  <div class="card mode" id="card-ionico" style="--mc:#00d4ff">
+    <div class="card-h">
+      <div class="ico">I</div>
+      <div style="flex:1">
+        <div class="h3" style="margin:0">2.1 · El Modo Jónico (Ionian)</div>
+        <div style="color:var(--muted);font-size:.86rem">La base de todo · <span class="tag may">Familia mayor</span></div>
+      </div>
+      <button type="button" class="btn btn-sm ghost" data-play="ionico">▶ Escuchar</button>
+    </div>
+    <p>Es el <b>pilar de la música tonal occidental</b> y es exactamente igual a nuestra <b>escala mayor natural</b>.</p>
+    <dl class="kv" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:10px 0">
+      <div class="subbox"><dt class="h4" style="margin:0 0 4px">Construcción</dt><dd style="margin:0;color:#fff;font-weight:700;font-size:.92rem">No requiere alteraciones adicionales sobre la escala mayor.</dd></div>
+      <div class="subbox"><dt class="h4" style="margin:0 0 4px">Nota característica</dt><dd style="margin:0;color:#fff;font-weight:700;font-size:.92rem">Sin alteraciones (es la escala base).</dd></div>
+      <div class="subbox"><dt class="h4" style="margin:0 0 4px">Sensación</dt><dd style="margin:0;color:#fff;font-weight:700;font-size:.92rem">Brillante, estable.</dd></div>
+      <div class="subbox"><dt class="h4" style="margin:0 0 4px">Aplicación</dt><dd style="margin:0;color:#fff;font-weight:700;font-size:.92rem">Himnos, Pop estándar.</dd></div>
+    </dl>
+    <div class="h4">Estructura de notas en C(I)</div>
+    <div class="notes-row" data-notes="ionico-C"></div>
+    <div class="h4">Estructura de notas en E(I)</div>
+    <div class="notes-row" data-notes="ionico-E"></div>
+    <div class="quote">“El modo jónico ofrece una sonoridad estable y resolutiva, funcionando como el centro tonal de referencia por excelencia.”</div>
+  </div>
+
+  <div class="card mode" id="card-lidio" style="--mc:#a855f7">
+    <div class="card-h">
+      <div class="ico p">IV</div>
+      <div style="flex:1">
+        <div class="h3" style="margin:0">2.2 · El Modo Lidio (Lydian)</div>
+        <div style="color:var(--muted);font-size:.86rem">Luz y fantasía · <span class="tag may">Familia mayor</span></div>
+      </div>
+      <button type="button" class="btn btn-sm ghost" data-play="lidio">▶ Escuchar</button>
+    </div>
+    <p>Considerado el <b>modo más brillante</b>, el Lidio añade un matiz de <b>“magia” y espacio</b> a la sonoridad mayor.</p>
+    <div class="grid g2">
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">La transformación</div>
+        <p style="margin:0;font-size:.92rem">Se obtiene <b>subiendo un semitono a la cuarta nota</b> de una escala mayor,
+        convirtiendo la <b>cuarta justa</b> en una <b>cuarta aumentada</b>.</p>
+      </div>
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Nota característica</div>
+        <p style="margin:0;font-size:.92rem">El alma del modo es la <b>cuarta aumentada</b>:
+        <b style="color:var(--amber)">F#(IV)</b> en la tonalidad de C(I) o <b style="color:var(--amber)">A#(IV)</b> en la tonalidad de E(I).</p>
+      </div>
+    </div>
+    <div class="callout example">
+      <div class="ct">✓ Aplicación real</div>
+      <p>Su carácter fantástico lo hace indispensable en el <b>cine de ciencia ficción</b>, siendo el tema principal de
+      <b>Back to the Future (Volver al Futuro)</b> el ejemplo más icónico.</p>
+    </div>
+    <div class="h4">Estructura de notas en C(I)</div>
+    <div class="notes-row" data-notes="lidio-C"></div>
+    <div class="h4">Estructura de notas en E(I)</div>
+    <div class="notes-row" data-notes="lidio-E"></div>
+  </div>
+
+  <div class="card" id="card-comp-mayor">
+    <div class="card-h"><div class="ico a">⇆</div><div><div class="h3">Comparativa: Escala Mayor vs. Modo Lidio</div><span class="tag">Tabla</span></div></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Escala Mayor (Jónico)</th><th>Modo Lidio (4ª aumentada)</th><th>Diferencia</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><b>C(I)</b>, D(II), E(III), <b>F(IV)</b>, G(V), A(VI), B(VII)</td>
+            <td><b>C(I)</b>, D(II), E(III), <b style="color:var(--amber)">F#(IV)</b>, G(V), A(VI), B(VII)</td>
+            <td>4ª justa → <b>4ª aumentada</b> (+1 semitono)</td>
+          </tr>
+          <tr>
+            <td><b>E(I)</b>, F#(II), G#(III), <b>A(IV)</b>, B(V), C#(VI), D#(VII)</td>
+            <td><b>E(I)</b>, F#(II), G#(III), <b style="color:var(--amber)">A#(IV)</b>, B(V), C#(VI), D#(VII)</td>
+            <td>4ª justa → <b>4ª aumentada</b> (+1 semitono)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn btn-sm" data-compare="lidio-C">▶ Comparar Jónico vs Lidio en C(I)</button>
+      <button type="button" class="btn btn-sm ghost" data-compare="lidio-E">▶ Comparar en E(I)</button>
+    </div>
+  </div>
+
+  <div class="card mode" id="card-mixolidio" style="--mc:#f59e0b">
+    <div class="card-h">
+      <div class="ico a">VII</div>
+      <div style="flex:1">
+        <div class="h3" style="margin:0">2.3 · El Modo Mixolidio (Mixolydian)</div>
+        <div style="color:var(--muted);font-size:.86rem">Energía y optimismo · <span class="tag may">Familia mayor</span></div>
+      </div>
+      <button type="button" class="btn btn-sm ghost" data-play="mixolidio">▶ Escuchar</button>
+    </div>
+    <p>Este modo mantiene el brillo, pero con un carácter más <b>relajado, festivo y enérgico</b>, muy común en el <b>rock</b>.</p>
+    <div class="grid g2">
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">La transformación</div>
+        <p style="margin:0;font-size:.92rem">Se forma <b>bajando un semitono a la séptima nota</b> de la escala mayor,
+        transformando la <b>séptima mayor</b> en una <b>séptima menor</b>.</p>
+      </div>
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Nota característica</div>
+        <p style="margin:0;font-size:.92rem">La <b>séptima menor (bVII)</b>:
+        <b style="color:var(--amber)">Bb(VII)</b> en C(I) · <b style="color:var(--amber)">D(VII)</b> en E(I).</p>
+      </div>
+    </div>
+    <div class="h4">Estructura de notas en C(I)</div>
+    <div class="notes-row" data-notes="mixolidio-C"></div>
+    <div class="h4">Estructura de notas en E(I)</div>
+    <div class="notes-row" data-notes="mixolidio-E"></div>
+    <div class="callout example">
+      <div class="ct">✓ Ejemplo práctico</div>
+      <p>En la canción <b>“Clocks” de Coldplay</b>, la progresión destaca el <b>Bb(VII)</b> sobre el acorde de
+      <b>G(V) menor</b>, resaltando esa nota característica del modo.</p>
+    </div>
+    <div class="h4">Pasos para identificar el Modo Mixolidio en el Rock</div>
+    <ol class="steps">
+      <li><b>Localiza el acorde que actúa como centro tonal</b> o “casa”.</li>
+      <li>Busca si existe una <b>séptima menor (bVII)</b> en la melodía o en la armonía.</li>
+      <li>Verifica si la progresión de acordes utiliza un <b>acorde mayor construido sobre ese bVII</b>, otorgando una
+      sensación de optimismo <b>sin la tensión de la séptima mayor</b>.</li>
+    </ol>
+    <div class="callout">
+      <div class="ct">◆ INFO</div>
+      <p style="margin:0">Puedes comprobar estos tres pasos sonoramente en el <b>Laboratorio</b>: selecciona C(I) +
+      Mixolidio y pulsa <b>“Pedal + nota característica”</b> para escuchar el Bb(VII) sobre el centro tonal.</p>
+    </div>
+  </div>
+
+  <div class="callout magic">
+    <div class="ct">✦ Transición</div>
+    <p>Habiendo dominado la claridad de los modos mayores, descendamos hacia las texturas más profundas y
+    <b>agridulces</b> de los modos menores.</p>
+  </div>
+</section>
+
+<!-- ==================== 03 MODOS MENORES ==================== -->
+<section class="view" id="menores" role="tabpanel">
+  <p class="kicker">Sección 03</p>
+  <h2 class="sec-title">Los Modos de Carácter Menor (oscuros y agridulces)</h2>
+  <p class="sec-sub">Estos modos utilizan la <b>tercera menor</b> como base, lo que les confiere una naturaleza melancólica, seria o de introspección.</p>
+
+  <div class="btn-row" style="gap:8px">
+    <button type="button" class="chip" data-jump="card-eolico">3.1 Eólico</button>
+    <button type="button" class="chip" data-jump="card-dorico">3.2 Dórico</button>
+    <button type="button" class="chip" data-jump="card-frigio">3.3 Frigio</button>
+  </div>
+
+  <div class="card mode" id="card-eolico" style="--mc:#38bdf8">
+    <div class="card-h">
+      <div class="ico">VI</div>
+      <div style="flex:1">
+        <div class="h3" style="margin:0">3.1 · El Modo Eólico (Aeolian)</div>
+        <div style="color:var(--muted);font-size:.86rem">La melancolía pura · <span class="tag men">Familia menor</span></div>
+      </div>
+      <button type="button" class="btn btn-sm ghost" data-play="eolico">▶ Escuchar</button>
+    </div>
+    <p>Es la <b>escala menor natural</b>. Representa la <b>sobriedad</b> y la <b>tristeza estándar</b> en la música.</p>
+    <div class="grid g2">
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Construcción</div>
+        <p style="margin:0;font-size:.92rem">Respecto a la escala mayor, bajamos un semitono a la <b>tercera</b>,
+        <b>sexta</b> y <b>séptima</b> notas.</p>
+      </div>
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Nota característica</div>
+        <p style="margin:0;font-size:.92rem"><b style="color:var(--amber)">Ab(VI)</b> en C(I) ·
+        <b style="color:var(--amber)">C(VI)</b> en E(I) — 6ª menor.</p>
+      </div>
+    </div>
+    <div class="h4">Estructura de notas en C(I)</div>
+    <div class="notes-row" data-notes="eolico-C"></div>
+    <div class="h4">Estructura de notas en E(I)</div>
+    <div class="notes-row" data-notes="eolico-E"></div>
+    <div class="callout">
+      <div class="ct">◆ Sensación y aplicación</div>
+      <p style="margin:0"><b>Melancólica, sobria</b> · Baladas, Música Clásica.</p>
+    </div>
+  </div>
+
+  <div class="card mode" id="card-dorico" style="--mc:#22c55e">
+    <div class="card-h">
+      <div class="ico g">VI</div>
+      <div style="flex:1">
+        <div class="h3" style="margin:0">3.2 · El Modo Dórico (Dorian)</div>
+        <div style="color:var(--muted);font-size:.86rem">El equilibrio de la luz y la sombra · <span class="tag men">Familia menor</span></div>
+      </div>
+      <button type="button" class="btn btn-sm ghost" data-play="dorico">▶ Escuchar</button>
+    </div>
+    <p>Es un modo menor que posee un <b>destello de claridad</b>, lo que lo hace sonar <b>“agridulce” y sofisticado</b>.</p>
+    <div class="grid g2">
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Construcción</div>
+        <p style="margin:0;font-size:.92rem">Se forma <b>subiendo un semitono a la sexta nota</b> de una escala menor
+        natural (obteniendo una <b>sexta mayor</b>).</p>
+      </div>
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Nota característica</div>
+        <p style="margin:0;font-size:.92rem">La <b>sexta mayor</b>, como el <b style="color:var(--amber)">A(VI)</b> en
+        C(I) dórico o el <b style="color:var(--amber)">C#(VI)</b> en E(I) dórico.</p>
+      </div>
+    </div>
+    <div class="h4">Sonoridad</div>
+    <p style="font-size:.94rem">La dualidad entre la <b>tercera menor</b> (<b>Eb(III)</b> en C) y la <b>sexta mayor</b>
+    (<b>A(VI)</b> en C) genera una atmósfera <b>elegante y equilibrada</b>.</p>
+    <div class="h4">Estructura de notas en C(I)</div>
+    <div class="notes-row" data-notes="dorico-C"></div>
+    <div class="h4">Estructura de notas en E(I)</div>
+    <div class="notes-row" data-notes="dorico-E"></div>
+    <div class="callout example">
+      <div class="ct">✓ Análisis de “Mad World”</div>
+      <p>Te recomiendo escuchar la versión de <b>Gary Jules</b>. Debido a la transparencia del arreglo de piano, es mucho
+      más sencillo percibir cómo la melodía enfatiza la melancolía de la <b>tercera menor (Eb(III) en C)</b> contrastada
+      con la esperanza momentánea de la <b>sexta mayor (A(VI) en C)</b>.</p>
+    </div>
+    <div class="callout">
+      <div class="ct">◆ Tip de audición</div>
+      <p style="margin:0">Como alumno, entrena tu oído para detectar ese <b>intervalo de 6ª mayor</b>. Es el punto exacto
+      donde la música parece <b>“respirar” o elevarse</b> dentro de un contexto melancólico.</p>
+    </div>
+  </div>
+
+  <div class="card mode" id="card-frigio" style="--mc:#ef4444">
+    <div class="card-h">
+      <div class="ico r">II</div>
+      <div style="flex:1">
+        <div class="h3" style="margin:0">3.3 · El Modo Frigio (Phrygian)</div>
+        <div style="color:var(--muted);font-size:.86rem">Tensión exótica · <span class="tag men">Familia menor</span></div>
+      </div>
+      <button type="button" class="btn btn-sm ghost" data-play="frigio">▶ Escuchar</button>
+    </div>
+    <p>Este modo es conocido por su <b>agresividad</b> y su <b>sabor cultural inconfundible</b>.</p>
+    <div class="grid g2">
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Construcción</div>
+        <p style="margin:0;font-size:.92rem">Se obtiene <b>bajando un semitono a la segunda nota</b> de la escala menor
+        natural (creando una <b>segunda menor</b>).</p>
+      </div>
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Nota característica</div>
+        <p style="margin:0;font-size:.92rem">La <b>segunda menor</b>, como <b style="color:var(--amber)">Db(II)</b> en
+        C(I) o <b style="color:var(--amber)">F(II)</b> en E(I).</p>
+      </div>
+    </div>
+    <div class="callout warning">
+      <div class="ct">⚠ Identidad cultural</div>
+      <p style="margin:0">Es la base del <b>Flamenco</b> y la <b>música árabe</b>. En el <b>Heavy Metal</b> se utiliza
+      para proyectar <b>oscuridad y tensión extrema</b>.</p>
+    </div>
+    <div class="h4">Estructura de notas en C(I)</div>
+    <div class="notes-row" data-notes="frigio-C"></div>
+    <div class="h4">Estructura de notas en E(I)</div>
+    <div class="notes-row" data-notes="frigio-E"></div>
+  </div>
+
+  <div class="callout magic">
+    <div class="ct">✦ Transición</div>
+    <p>Prepárate, pues estamos a punto de entrar en el terreno de la <b>inestabilidad absoluta</b>, donde las reglas de
+    resolución habituales dejan de existir.</p>
+  </div>
+</section>
+
+<!-- ==================== 04 LOCRIO ==================== -->
+<section class="view" id="locrio" role="tabpanel">
+  <p class="kicker">Sección 04</p>
+  <h2 class="sec-title">El Modo Locrio (Locrian): la disonancia extrema</h2>
+  <p class="sec-sub">El modo Locrio es el <b>“paria”</b> de la música occidental debido a su naturaleza altamente inestable y tensa.</p>
+
+  <div class="card mode" style="--mc:#fb7185">
+    <div class="card-h">
+      <div class="ico r">V</div>
+      <div style="flex:1">
+        <div class="h3" style="margin:0">4 · Locrio (Locrian)</div>
+        <div style="color:var(--muted);font-size:.86rem"><span class="tag dis">Inestable · Disonante</span></div>
+      </div>
+      <button type="button" class="btn btn-sm ghost" data-play="locrio">▶ Escuchar</button>
+    </div>
+
+    <div class="callout error">
+      <div class="ct">✖ El desafío teórico</div>
+      <p style="margin:0">Al intentar armonizarlo, el <b>primer acorde que obtenemos es disminuido</b>. Esto significa que
+      el <b>“hogar” de la escala es inestable</b>, lo que impide que el oído sienta una <b>resolución clara</b>.</p>
+    </div>
+
+    <div class="grid g2">
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Construcción técnica</div>
+        <p style="margin:0;font-size:.92rem">Se deriva de la escala menor natural <b>bajando un semitono a la segunda y a
+        la quinta nota</b>.</p>
+      </div>
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Sonoridad</div>
+        <p style="margin:0;font-size:.92rem">Tensa, disonante e inquietante. Se reserva para <b>bandas sonoras de
+        terror</b> o <b>escenas de intriga</b>.</p>
+      </div>
+    </div>
+
+    <div class="h4">Notas clave — C(I) Locrio</div>
+    <div class="notes-row" data-notes="locrio-C"></div>
+    <div class="h4">Notas clave — E(I) Locrio</div>
+    <div class="notes-row" data-notes="locrio-E"></div>
+
+    <div class="callout warning">
+      <div class="ct">⚠ Notas características</div>
+      <p style="margin:0"><b>Db(II)</b> y <b>Gb(V)</b> en C(I) · <b>F(II)</b> y <b>Bb(V)</b> en E(I).</p>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn btn-sm a" data-pedal="locrio">▶ Pedal + notas características</button>
+      <button type="button" class="btn btn-sm ghost" data-chord="locrio">▶ Acorde de I grado (disminuido)</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 05 TABLA MAESTRA ==================== -->
+<section class="view" id="tabla" role="tabpanel">
+  <p class="kicker">Sección 05</p>
+  <h2 class="sec-title">Cuadro comparativo de sonoridades y grados</h2>
+  <p class="sec-sub">Usa esta tabla maestra para seleccionar el <b>color adecuado</b> según la emoción que desees transmitir.</p>
+
+  <div class="btn-row" id="tblFilters" style="gap:8px">
+    <button type="button" class="chip active" data-filter="all">Todos (7)</button>
+    <button type="button" class="chip" data-filter="mayor">Mayores</button>
+    <button type="button" class="chip" data-filter="menor">Menores</button>
+    <button type="button" class="chip" data-filter="locrio">Locrio</button>
+    <button type="button" class="chip" data-filter="cine">Aplicados al cine</button>
+    <button type="button" class="chip" data-filter="rock">Rock / Pop</button>
+  </div>
+
+  <div class="tbl-wrap">
+    <table id="masterTable">
+      <thead>
+        <tr><th>Modo</th><th>Relación base</th><th>Nota característica (en C)</th><th>Sensación / Sonoridad</th><th>Ejemplo de aplicación</th></tr>
+      </thead>
+      <tbody>
+        <tr data-fam="mayor" data-tags="rock" style="--mc:#00d4ff">
+          <td><span class="mcell"><i></i>Jónico</span></td><td>Escala Base</td><td>Sin alteraciones</td>
+          <td>Brillante, estable</td><td>Himnos, Pop Estándar.</td>
+        </tr>
+        <tr data-fam="mayor" data-tags="cine" style="--mc:#a855f7">
+          <td><span class="mcell"><i></i>Lidio</span></td><td>Mayor</td><td><b>F#(IV)</b> (4ª aumentada)</td>
+          <td>Mágica, espacial</td><td>Cine (Ciencia Ficción).</td>
+        </tr>
+        <tr data-fam="mayor" data-tags="rock" style="--mc:#f59e0b">
+          <td><span class="mcell"><i></i>Mixolidio</span></td><td>Mayor</td><td><b>Bb(VII)</b> (7ª menor)</td>
+          <td>Enérgica, optimista</td><td>Rock (<i>Clocks</i> de Coldplay).</td>
+        </tr>
+        <tr data-fam="menor" data-tags="rock" style="--mc:#22c55e">
+          <td><span class="mcell"><i></i>Dórico</span></td><td>Menor Natural</td><td><b>A(VI)</b> (6ª mayor)</td>
+          <td>Agridulce, equilibrio</td><td>Jazz, <i>Mad World</i> (G. Jules).</td>
+        </tr>
+        <tr data-fam="menor" data-tags="" style="--mc:#38bdf8">
+          <td><span class="mcell"><i></i>Eólico</span></td><td>Menor Natural</td><td><b>Ab(VI)</b> (6ª menor)</td>
+          <td>Melancólica, sobria</td><td>Baladas, Música Clásica.</td>
+        </tr>
+        <tr data-fam="menor" data-tags="" style="--mc:#ef4444">
+          <td><span class="mcell"><i></i>Frigio</span></td><td>Menor Natural</td><td><b>Db(II)</b> (2ª menor)</td>
+          <td>Exótica, oscura</td><td>Flamenco, Heavy Metal.</td>
+        </tr>
+        <tr data-fam="locrio" data-tags="cine" style="--mc:#fb7185">
+          <td><span class="mcell"><i></i>Locrio</span></td><td>Menor Natural</td><td><b>Db(II)</b> y <b>Gb(V)</b></td>
+          <td>Tensa, disonante</td><td>Cine de Terror e Intriga.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="hint">Desplaza la tabla horizontalmente en móvil para ver todas las columnas.</p>
+
+  <div class="card">
+    <div class="card-h"><div class="ico p">◉</div><div><div class="h3">Resumen de relaciones tonales</div><span class="tag">Escala madre: C(I) mayor</span></div></div>
+    <p>Como profesor, te recuerdo que <b>todos estos modos pueden nacer de la misma escala madre</b>. Si tomamos la escala
+    de <b>C(I) mayor</b> y cambiamos el punto de partida, obtenemos:</p>
+    <div class="grid g4" id="relationsGrid"></div>
+
+    <div class="h4">Generador interactivo: elige el punto de partida</div>
+    <div class="btn-row" id="relBtns" style="gap:8px"></div>
+    <div class="callout" id="relOut" style="margin-bottom:0">
+      <div class="ct">◆ Resultado</div>
+      <p id="relText" style="margin:0">Pulsa una nota de la escala de C(I) mayor para ver qué modo nace al convertirla en tu centro de gravedad.</p>
+    </div>
+    <div class="btn-row">
+      <button type="button" class="btn btn-sm" id="relPlay">▶ Escuchar el modo resultante</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 06 LABORATORIO ==================== -->
+<section class="view" id="lab" role="tabpanel">
+  <p class="kicker">Sección 06</p>
+  <h2 class="sec-title">Laboratorio interactivo al piano</h2>
+  <p class="sec-sub">Elige una <b>tónica</b> y un <b>modo</b> y escucha su color. Todo el sonido se genera
+  <b>localmente</b> en tu dispositivo (sin Internet): pulsa cualquier botón para activar el audio.</p>
+
+  <div class="card">
+    <div class="card-h"><div class="ico">①</div><div><div class="h3">Tónica de referencia</div><span class="tag">Punto de partida</span></div></div>
+    <div class="btn-row" id="tonicBtns" style="gap:8px;margin-bottom:0">
+      <button type="button" class="chip active" data-tonic="C">C(I)</button>
+      <button type="button" class="chip" data-tonic="E">E(I)</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div class="ico p">②</div><div><div class="h3">Selecciona el modo</div><span class="tag">7 colores</span></div></div>
+    <div class="btn-row" id="modeBtns" style="gap:8px;margin-bottom:0"></div>
+  </div>
+
+  <div class="card mode" id="labCard">
+    <div class="card-h">
+      <div class="ico" id="labIco">I</div>
+      <div style="flex:1">
+        <div class="h3" id="labTitle" style="margin:0">Modo Jónico en C(I)</div>
+        <div id="labSub" style="color:var(--muted);font-size:.86rem">Escala base · Brillante, estable</div>
+      </div>
+      <span class="tag may" id="labFam">Familia mayor</span>
+    </div>
+
+    <div class="grid g2">
+      <div class="subbox"><div class="h4" style="margin-top:0">Construcción</div><p id="labBuild" style="margin:0;font-size:.92rem">—</p></div>
+      <div class="subbox"><div class="h4" style="margin-top:0">Nota característica</div><p id="labChar" style="margin:0;font-size:.92rem">—</p></div>
+      <div class="subbox"><div class="h4" style="margin-top:0">Sensación / Sonoridad</div><p id="labFeel" style="margin:0;font-size:.92rem">—</p></div>
+      <div class="subbox"><div class="h4" style="margin-top:0">Aplicación</div><p id="labApp" style="margin:0;font-size:.92rem">—</p></div>
+    </div>
+
+    <div class="h4">Notas del modo (con su grado)</div>
+    <div class="notes-row" id="labNotes"></div>
+
+    <div class="h4">Teclado — pulsa cualquier tecla para oírla</div>
+    <div class="piano-scroll"><div class="piano" id="labPiano"></div></div>
+    <div class="legend">
+      <span><i style="background:#b9ecfb;border:1px solid #7fb9cc"></i>Nota del modo</span>
+      <span><i style="background:var(--mc)"></i>Tónica / nota sonando</span>
+      <span><i style="background:var(--amber)"></i>Nota característica</span>
+    </div>
+    <div class="readout" id="labReadout">Última nota: <b>—</b></div>
+
+    <!-- Controles justo debajo del teclado -->
+    <div class="btn-row" style="margin-top:12px;margin-bottom:0">
+      <button type="button" class="btn" id="btnScale">▶ Escala ascendente</button>
+      <button type="button" class="btn g" id="btnScaleDown">▶ Escala descendente</button>
+      <button type="button" class="btn p" id="btnChord">▶ Tríada de I grado</button>
+      <button type="button" class="btn a" id="btnPedal">▶ Pedal + nota característica</button>
+      <button type="button" class="btn ghost" id="btnStop">■ Detener</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div class="ico a">⇆</div><div><div class="h3">Comparador con la escala madre (Jónico)</div><span class="tag">La transformación</span></div></div>
+    <p style="font-size:.92rem">Compara el modo seleccionado con la escala mayor de la misma tónica. Las notas marcadas con
+    <b style="color:var(--amber)">▲</b> han <b>subido un semitono</b>; las marcadas con <b style="color:#7dd3fc">▼</b> han
+    <b>bajado un semitono</b>.</p>
+    <div style="font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:800">Jónico (referencia)</div>
+    <div class="notes-row" id="cmpBase"></div>
+    <div style="font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-top:8px" id="cmpLabel">Modo seleccionado</div>
+    <div class="notes-row" id="cmpMode"></div>
+    <div class="callout" style="margin-bottom:0">
+      <div class="ct">◆ Diferencia</div>
+      <p id="cmpText" style="margin:0">—</p>
+    </div>
+    <div class="btn-row" style="margin-bottom:0">
+      <button type="button" class="btn btn-sm" id="cmpPlay">▶ Escuchar Jónico → Modo</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div class="ico g">◐</div><div><div class="h3">Entrenador de oído: ¿qué modo sonó?</div><span class="tag">Ejercicio interactivo</span></div></div>
+    <p style="font-size:.92rem">Se reproducirá la escala de un <b>modo misterioso</b> sobre la tónica activa. Concéntrate en
+    la <b>nota característica</b> y elige el modo correcto.</p>
+    <div class="btn-row">
+      <button type="button" class="btn g" id="earPlay">▶ Reproducir modo misterioso</button>
+      <button type="button" class="btn ghost btn-sm" id="earRepeat">↻ Repetir</button>
+      <button type="button" class="btn ghost btn-sm" id="earReset">Reiniciar marcador</button>
+    </div>
+    <div class="btn-row" id="earBtns" style="gap:8px"></div>
+    <div class="score">Aciertos: <b id="earOk">0</b> · Fallos: <b id="earNo" style="color:#fca5a5">0</b></div>
+    <div class="fb" id="earFb"></div>
+  </div>
+</section>
+
+<!-- ==================== 07 USO Y PRÁCTICA ==================== -->
+<section class="view" id="uso" role="tabpanel">
+  <p class="kicker">Sección 07</p>
+  <h2 class="sec-title">Cómo usar los modos: práctica y autoevaluación</h2>
+  <p class="sec-sub">Todo el material de la guía orientado a la <b>escucha activa</b> y al trabajo frente al instrumento.</p>
+
+  <div class="card">
+    <div class="card-h"><div class="ico p">✦</div><div><div class="h3">Conclusión didáctica</div><span class="tag">Mensaje final del profesor</span></div></div>
+    <div class="quote">
+      Dominar los modos no es un ejercicio de matemáticas, es un <b>ejercicio de escucha</b>. Mi consejo final es que te
+      sientes frente a tu instrumento y toques repetidamente la <b>nota característica</b> de cada modo sobre un
+      <b>pedal</b> o un <b>acorde base</b>. Siente cómo el <b>F#(IV)</b> te eleva en el <b>Lidio</b> o cómo el
+      <b>Db(II)</b> te sumerge en la tensión del <b>Frigio</b>. ¡La magia está en los intervalos!
+    </div>
+    <div class="btn-row" style="margin-bottom:0">
+      <button type="button" class="btn" data-goto="lab">⚙ Ir al Laboratorio</button>
+      <button type="button" class="btn a" id="practiceLyd">▶ F#(IV) sobre pedal en Lidio</button>
+      <button type="button" class="btn ghost" id="practicePhr">▶ Db(II) sobre pedal en Frigio</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div class="ico g">✓</div><div><div class="h3">Protocolos de trabajo incluidos en la guía</div><span class="tag">Recapitulación</span></div></div>
+    <div class="grid g3">
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Identificar el Mixolidio en el rock</div>
+        <ol class="steps sm" style="margin-top:0">
+          <li>Localiza el acorde que actúa como <b>centro tonal</b> o “casa”.</li>
+          <li>Busca una <b>séptima menor (bVII)</b> en la melodía o la armonía.</li>
+          <li>Verifica un <b>acorde mayor sobre ese bVII</b>: optimismo sin la tensión de la 7ª mayor.</li>
+        </ol>
+        <button type="button" class="btn btn-sm ghost" data-goto="mayores" style="margin-top:8px">Ver sección 2.3</button>
+      </div>
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Tip de audición · Dórico</div>
+        <p style="font-size:.9rem">Entrena tu oído para detectar el <b>intervalo de 6ª mayor</b>: es el punto exacto donde
+        la música parece <b>“respirar” o elevarse</b> dentro de un contexto melancólico.</p>
+        <p style="font-size:.9rem">Referencia de escucha: <b>“Mad World”</b>, versión de <b>Gary Jules</b> — el piano
+        transparente deja oír el contraste entre <b>Eb(III)</b> y <b>A(VI)</b> en C(I).</p>
+        <button type="button" class="btn btn-sm ghost" data-goto="menores">Ver sección 3.2</button>
+      </div>
+      <div class="subbox">
+        <div class="h4" style="margin-top:0">Rutina con pedal</div>
+        <p style="font-size:.9rem">Toca <b>repetidamente la nota característica</b> de cada modo sobre un <b>pedal</b> o un
+        <b>acorde base</b>, y compara cómo cambia el color manteniendo la misma tónica.</p>
+        <p style="font-size:.9rem">Herramienta: botón <b>“Pedal + nota característica”</b> del Laboratorio, disponible para
+        los 7 modos en C(I) y E(I).</p>
+        <button type="button" class="btn btn-sm ghost" data-goto="lab">Abrir Laboratorio</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div class="ico a">?</div><div><div class="h3">Autoevaluación rápida</div><span class="tag">Pulsa para ver la respuesta</span></div></div>
+    <div id="quiz"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><div class="ico">≡</div><div><div class="h3">Checklist final del estudiante</div><span class="tag">Verificación</span></div></div>
+    <div class="grid g2">
+      <ul class="clean" style="margin:0">
+        <li>¿Sé explicar qué cambia al <b>mover el punto de partida</b> sobre la misma escala madre?</li>
+        <li>¿Recuerdo la <b>nota característica</b> de los 7 modos en C(I)?</li>
+        <li>¿Distingo de oído la <b>4ª aumentada</b> del Lidio de la <b>4ª justa</b> del Jónico?</li>
+        <li>¿Identifico la <b>b7</b> del Mixolidio en una progresión de rock?</li>
+      </ul>
+      <ul class="clean" style="margin:0">
+        <li>¿Percibo el equilibrio <b>b3 / 6ª mayor</b> del Dórico?</li>
+        <li>¿Reconozco la <b>2ª menor</b> del Frigio y su sabor flamenco / metal?</li>
+        <li>¿Entiendo por qué el <b>Locrio</b> no ofrece resolución (acorde de I disminuido)?</li>
+        <li>¿He practicado cada modo con <b>pedal + nota característica</b>?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CRÉDITOS ==================== -->
+<section class="view" id="creditos" role="tabpanel">
+  <p class="kicker">★ Créditos</p>
+  <h2 class="sec-title">Créditos del tutorial</h2>
+  <p class="sec-sub">La misma portada animada de la HOME, reproducida íntegramente en esta sección.</p>
+
+  <div class="cover-box">
+    <div id="cover-credits"></div>
+    <div class="cover-tag">Mismo SVG animado que en HOME · rueda diatónica + teclado</div>
+  </div>
+
+  <div class="credit-box">
+    <div class="rl">Tutorial HTML educativo e interactivo</div>
+    <div class="nm" style="margin:8px 0 4px">Guía Maestra de los Modos Griegos</div>
+    <div style="color:var(--muted);font-size:.92rem">De la Teoría a la Sonoridad Mágica</div>
+    <div class="hr"></div>
+    <div class="rl">Autor</div>
+    <div class="nm">Rubén Sbarsky</div>
+    <div class="stamp" style="justify-content:center">
+      <span>📅 Fecha: <b>09/09/2026</b></span>
+      <span>🕒 Hora: <b>12:11:08</b></span>
+    </div>
+    <p style="margin-top:16px;font-size:.92rem;color:var(--soft)">
+      Material con <b>indicación exclusivamente educativa y divulgativa</b>: su finalidad es facilitar el estudio y la
+      comprensión auditiva de los modos griegos. Todo el contenido procede del documento fuente
+      <i>“Guía Maestra de los Modos Griegos: De la Teoría a la Sonoridad Mágica”</i>, sin información externa añadida.
+    </p>
+    <div class="latin">Fiat iustitia, ruat caelum.</div>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+  <p>👨‍💻 Créditos: Rubén Sbarsky</p>
+  <p>📅 FECHA: 09/09/2026</p>
+  <p>Hora: 12:11:08</p>
+  <p class="latin">Fiat iustitia, ruat caelum.</p>
+</footer>
+
+<button type="button" id="toTop" aria-label="Volver arriba">↑</button>
+
+<!-- ==================== DEFS GLOBALES DEL SVG ==================== -->
+<svg class="svg-defs" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="d-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0e1a"/><stop offset=".45" stop-color="#0d1626"/><stop offset="1" stop-color="#06090f"/>
+    </linearGradient>
+    <linearGradient id="d-sweep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00d4ff" stop-opacity="0"/><stop offset=".5" stop-color="#00d4ff" stop-opacity="1"/>
+      <stop offset="1" stop-color="#a855f7" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="d-panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#101c33"/><stop offset="1" stop-color="#0a1120"/>
+    </linearGradient>
+    <radialGradient id="d-halo" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#00d4ff" stop-opacity=".30"/><stop offset="1" stop-color="#00d4ff" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="d-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#111f38" stroke-width="1"/>
+    </pattern>
+    <clipPath id="d-clipwave"><rect x="962" y="392" width="546" height="128" rx="9"/></clipPath>
+    <filter id="d-blur" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>
+</svg>
+
+<!-- ==================== PLANTILLA ÚNICA DE PORTADA (HOME + CRÉDITOS) ==================== -->
+<template id="tpl-cover">
+<svg class="cover-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img"
+     aria-label="Portada animada: rueda diatónica de los siete modos griegos sobre la escala madre C(I) mayor, con teclado de piano y osciloscopio">
+  <rect x="0" y="0" width="1600" height="900" fill="url(#d-bg)"/>
+  <rect x="0" y="0" width="1600" height="900" fill="url(#d-grid)" opacity=".55"/>
+  <circle class="cv-glow" cx="430" cy="430" r="300" fill="url(#d-halo)"/>
+  <rect x="14" y="14" width="1572" height="872" rx="18" fill="none" stroke="#1e3a5f" stroke-width="2"/>
+  <rect class="cv-frame" x="14" y="14" width="1572" height="872" rx="18" fill="none" stroke="url(#d-sweep)" stroke-width="3"/>
+
+  <text class="cv-kicker" x="60" y="74">GUÍA MAESTRA · ARMONÍA MODAL</text>
+  <text class="cv-title" x="56" y="136">MODOS GRIEGOS</text>
+  <text class="cv-sub" x="60" y="172">Mismo inventario de notas · distinto centro de gravedad · siete colores</text>
+
+  <text class="cv-wheel-title" x="430" y="212" text-anchor="middle">RUEDA DIATÓNICA · ESCALA MADRE C(I) MAYOR</text>
+  <circle cx="430" cy="430" r="212" fill="none" stroke="#152a47" stroke-width="1.5" stroke-dasharray="5 8"/>
+  <g>
+    <path class="cv-seg t" d="M457.8 254.2 A 178 178 0 0 1 550.1 298.6"/>
+    <path class="cv-seg t" d="M584.8 342.2 A 178 178 0 0 1 607.6 442.0"/>
+    <path class="cv-seg s" d="M595.2 496.3 A 178 178 0 0 1 531.4 576.3"/>
+    <path class="cv-seg t" d="M481.2 600.5 A 178 178 0 0 1 378.8 600.5"/>
+    <path class="cv-seg t" d="M328.6 576.3 A 178 178 0 0 1 264.8 496.3"/>
+    <path class="cv-seg t" d="M252.4 442.0 A 178 178 0 0 1 275.2 342.2"/>
+    <path class="cv-seg s" d="M309.9 298.6 A 178 178 0 0 1 402.2 254.2"/>
+  </g>
+  <g>
+    <text class="cv-seg-lab" x="492.5" y="305" text-anchor="middle">T</text>
+    <text class="cv-seg-lab" x="570.4" y="403" text-anchor="middle">T</text>
+    <text class="cv-seg-lab s" x="542.6" y="525" text-anchor="middle">S</text>
+    <text class="cv-seg-lab" x="430" y="579" text-anchor="middle">T</text>
+    <text class="cv-seg-lab" x="317.4" y="525" text-anchor="middle">T</text>
+    <text class="cv-seg-lab" x="289.6" y="403" text-anchor="middle">T</text>
+    <text class="cv-seg-lab s" x="367.5" y="305" text-anchor="middle">S</text>
+  </g>
+
+  <g class="cv-needle">
+    <path d="M430 430 L416 292 L430 262 L444 292 Z" fill="var(--mc,#00d4ff)" opacity=".85"/>
+    <circle cx="430" cy="430" r="13" fill="#0a0e1a" stroke="var(--mc,#00d4ff)" stroke-width="3"/>
+  </g>
+  <g class="cv-nodes"></g>
+  <text class="cv-wheel-title" x="430" y="368" text-anchor="middle">MODO ACTIVO</text>
+  <text class="cv-wheel-mode" x="430" y="404" text-anchor="middle">LIDIO</text>
+  <text class="cv-wheel-cur" x="430" y="470" text-anchor="middle">Tónica C(I) · suena F#(IV)</text>
+
+  <rect x="930" y="54" width="610" height="606" rx="14" fill="url(#d-panel)" stroke="#1e3a5f" stroke-width="1.5"/>
+  <text class="cv-panel-lab" x="962" y="94">MODO ACTIVO · FICHA TÉCNICA</text>
+  <text class="cv-mode-name" x="962" y="146">LIDIO</text>
+  <text class="cv-mode-en" x="962" y="176">LYDIAN · FAMILIA MAYOR</text>
+  <line x1="962" y1="196" x2="1508" y2="196" stroke="#1e3a5f" stroke-width="1.5"/>
+  <text class="cv-panel-lab" x="962" y="228">TÓNICA</text>
+  <text class="cv-panel-val cv-v-tonic" x="1180" y="228">C(I)</text>
+  <text class="cv-panel-lab" x="962" y="262">NOTA CARACTERÍSTICA</text>
+  <text class="cv-panel-val cv-v-char" x="1180" y="262">F#(IV) · 4ª aumentada</text>
+  <text class="cv-panel-lab" x="962" y="296">SENSACIÓN</text>
+  <text class="cv-panel-val cv-v-feel" x="1180" y="296">Mágica, espacial</text>
+  <text class="cv-panel-lab" x="962" y="330">APLICACIÓN</text>
+  <text class="cv-panel-val cv-v-app" x="1180" y="330">Cine (Ciencia Ficción)</text>
+  <text class="cv-panel-lab" x="962" y="364">RELACIÓN BASE</text>
+  <text class="cv-panel-val cv-v-rel" x="1180" y="364">Mayor · 4ª justa → 4ª aumentada</text>
+
+  <rect x="962" y="392" width="546" height="128" rx="9" fill="#070c16" stroke="#1e3a5f" stroke-width="1.5"/>
+  <g clip-path="url(#d-clipwave)">
+    <g class="cv-wave"><path class="cv-wp" fill="none" stroke="var(--mc,#00d4ff)" stroke-width="3" stroke-linecap="round" opacity=".95"/></g>
+    <g class="cv-wave2"><path class="cv-wp2" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" opacity=".35"/></g>
+    <line class="cv-playhead" x1="962" y1="396" x2="962" y2="516" stroke="#fff" stroke-width="1.5" opacity=".3"/>
+  </g>
+  <text class="cv-panel-lab" x="962" y="540">OSCILOSCOPIO · COLOR DEL MODO</text>
+  <g>
+    <rect class="cv-eqbar" x="1420" y="524" width="8" height="16" rx="3" fill="var(--mc,#00d4ff)" style="animation-delay:0s"/>
+    <rect class="cv-eqbar" x="1436" y="524" width="8" height="16" rx="3" fill="var(--mc,#00d4ff)" style="animation-delay:.18s"/>
+    <rect class="cv-eqbar" x="1452" y="524" width="8" height="16" rx="3" fill="var(--mc,#00d4ff)" style="animation-delay:.36s"/>
+    <rect class="cv-eqbar" x="1468" y="524" width="8" height="16" rx="3" fill="var(--mc,#00d4ff)" style="animation-delay:.54s"/>
+    <rect class="cv-eqbar" x="1484" y="524" width="8" height="16" rx="3" fill="var(--mc,#00d4ff)" style="animation-delay:.72s"/>
+    <rect class="cv-eqbar" x="1500" y="524" width="8" height="16" rx="3" fill="var(--mc,#00d4ff)" style="animation-delay:.9s"/>
+  </g>
+  <g class="cv-chips"></g>
+  <text class="cv-hint" x="962" y="638">Escala madre: C(I) mayor · los 7 modos nacen al cambiar el punto de partida</text>
+
+  <text class="cv-wheel-title" x="100" y="672">TECLADO · C4 → C6 · NOTAS DEL MODO EN SECUENCIA</text>
+  <g class="cv-kb"></g>
+  <text class="cv-hint" x="100" y="876">▸ HAZ CLIC EN LA PORTADA PARA CAMBIAR DE MODO · T = TONO · S = SEMITONO</text>
+</svg>
+</template>
+
+<script>
+(function(){
+"use strict";
+
+/* =====================================================================
+   0 · UTILIDAD ANTIFALLOS: ningún módulo puede romper la navegación
+   ===================================================================== */
+function safe(nombre, fn){
+  try{ fn(); }
+  catch(err){ if(window.console && console.warn) console.warn("[tutorial] fallo en "+nombre+":", err); }
+}
+
+/* =====================================================================
+   1 · DATOS (100 % del documento fuente)
+   ===================================================================== */
+var ROMAN = ["I","II","III","IV","V","VI","VII"];
+var WHEEL_NOTES = ["C","D","E","F","G","A","B"];
+var BASE = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+var SHARP = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+var TONIC_MIDI = {C:60, E:64};
+
+var MODES = [
+  { id:"ionico", name:"JÓNICO", cap:"Jónico", en:"Ionian", fam:"mayor", color:"#00d4ff", wheel:0,
+    rel:"Escala Base · sin alteraciones", relShort:"Escala base",
+    build:"No requiere alteraciones adicionales sobre la escala mayor.",
+    charDeg:[], charLabel:{C:"Sin alteraciones (escala base)", E:"Sin alteraciones (escala base)"},
+    feel:"Brillante, estable", app:"Himnos, Pop estándar.", chord:"Mayor",
+    notes:{ C:["C","D","E","F","G","A","B"], E:["E","F#","G#","A","B","C#","D#"] },
+    pattern:[0,2,4,5,7,9,11] },
+  { id:"lidio", name:"LIDIO", cap:"Lidio", en:"Lydian", fam:"mayor", color:"#a855f7", wheel:3,
+    rel:"Mayor · 4ª justa → 4ª aumentada", relShort:"Mayor",
+    build:"Se obtiene subiendo un semitono a la cuarta nota de una escala mayor (4ª justa → 4ª aumentada).",
+    charDeg:[3], charLabel:{C:"F#(IV) · 4ª aumentada", E:"A#(IV) · 4ª aumentada"},
+    feel:"Mágica, espacial", app:"Cine (Ciencia Ficción) · Back to the Future.", chord:"Mayor",
+    notes:{ C:["C","D","E","F#","G","A","B"], E:["E","F#","G#","A#","B","C#","D#"] },
+    pattern:[0,2,4,6,7,9,11] },
+  { id:"mixolidio", name:"MIXOLIDIO", cap:"Mixolidio", en:"Mixolydian", fam:"mayor", color:"#f59e0b", wheel:4,
+    rel:"Mayor · 7ª mayor → 7ª menor", relShort:"Mayor",
+    build:"Se forma bajando un semitono a la séptima nota de la escala mayor (7ª mayor → 7ª menor).",
+    charDeg:[6], charLabel:{C:"Bb(VII) · 7ª menor", E:"D(VII) · 7ª menor"},
+    feel:"Enérgica, optimista", app:"Rock · “Clocks” de Coldplay.", chord:"Mayor",
+    notes:{ C:["C","D","E","F","G","A","Bb"], E:["E","F#","G#","A","B","C#","D"] },
+    pattern:[0,2,4,5,7,9,10] },
+  { id:"dorico", name:"DÓRICO", cap:"Dórico", en:"Dorian", fam:"menor", color:"#22c55e", wheel:1,
+    rel:"Menor Natural · 6ª menor → 6ª mayor", relShort:"Menor natural",
+    build:"Se forma subiendo un semitono a la sexta nota de una escala menor natural (6ª mayor).",
+    charDeg:[5], charLabel:{C:"A(VI) · 6ª mayor", E:"C#(VI) · 6ª mayor"},
+    feel:"Agridulce, equilibrio", app:"Jazz · “Mad World” (Gary Jules).", chord:"Menor",
+    notes:{ C:["C","D","Eb","F","G","A","Bb"], E:["E","F#","G","A","B","C#","D"] },
+    pattern:[0,2,3,5,7,9,10] },
+  { id:"eolico", name:"EÓLICO", cap:"Eólico", en:"Aeolian", fam:"menor", color:"#38bdf8", wheel:5,
+    rel:"Menor Natural (escala menor natural)", relShort:"Menor natural",
+    build:"Respecto a la escala mayor, bajamos un semitono a la tercera, sexta y séptima notas.",
+    charDeg:[5], charLabel:{C:"Ab(VI) · 6ª menor", E:"C(VI) · 6ª menor"},
+    feel:"Melancólica, sobria", app:"Baladas, Música Clásica.", chord:"Menor",
+    notes:{ C:["C","D","Eb","F","G","Ab","Bb"], E:["E","F#","G","A","B","C","D"] },
+    pattern:[0,2,3,5,7,8,10] },
+  { id:"frigio", name:"FRIGIO", cap:"Frigio", en:"Phrygian", fam:"menor", color:"#ef4444", wheel:2,
+    rel:"Menor Natural · 2ª mayor → 2ª menor", relShort:"Menor natural",
+    build:"Se obtiene bajando un semitono a la segunda nota de la escala menor natural (2ª menor).",
+    charDeg:[1], charLabel:{C:"Db(II) · 2ª menor", E:"F(II) · 2ª menor"},
+    feel:"Exótica, oscura", app:"Flamenco, Heavy Metal.", chord:"Menor",
+    notes:{ C:["C","Db","Eb","F","G","Ab","Bb"], E:["E","F","G","A","B","C","D"] },
+    pattern:[0,1,3,5,7,8,10] },
+  { id:"locrio", name:"LOCRIO", cap:"Locrio", en:"Locrian", fam:"locrio", color:"#fb7185", wheel:6,
+    rel:"Menor Natural · b2 y b5", relShort:"Menor natural",
+    build:"Se deriva de la escala menor natural bajando un semitono a la segunda y a la quinta nota.",
+    charDeg:[1,4], charLabel:{C:"Db(II) y Gb(V)", E:"F(II) y Bb(V)"},
+    feel:"Tensa, disonante", app:"Cine de Terror e Intriga.", chord:"Disminuido",
+    notes:{ C:["C","Db","Eb","F","Gb","Ab","Bb"], E:["E","F","G","A","Bb","C","D"] },
+    pattern:[0,1,3,5,6,8,10] }
+];
+var BY_ID = {};
+MODES.forEach(function(m){ BY_ID[m.id] = m; });
+
+function labelsOf(mode, tonic){
+  var out = [];
+  for(var i=0;i<7;i++){
+    out.push({ name: mode.notes[tonic][i], deg: ROMAN[i], midi: TONIC_MIDI[tonic] + mode.pattern[i] });
+  }
+  return out;
+}
+function charLabel(mode, tonic){ return mode.charLabel[tonic]; }
+function midiName(m){ return SHARP[((m-60)%12+12)%12]; }
+function midiFreq(m){ return 440*Math.pow(2,(m-69)/12); }
+
+/* =====================================================================
+   2 · NAVEGACIÓN SPA  (se registra ANTES que cualquier otra cosa)
+   ===================================================================== */
+var views = Array.prototype.slice.call(document.querySelectorAll(".view"));
+var tabList = document.getElementById("tabs");
+var tabButtons = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+var progressBar = document.getElementById("progress");
+var toTopBtn = document.getElementById("toTop");
+var currentId = "inicio";
+
+function exists(id){ return !!document.getElementById(id); }
+
+function show(id, updateHash){
+  if(!exists(id)) id = "inicio";
+  currentId = id;
+  for(var i=0;i<views.length;i++){
+    if(views[i].id === id) views[i].classList.add("active");
+    else views[i].classList.remove("active");
+  }
+  for(var j=0;j<tabButtons.length;j++){
+    var t = tabButtons[j];
+    var on = (t.getAttribute("data-target") === id);
+    t.classList.toggle("active", on);
+    t.setAttribute("aria-selected", on ? "true" : "false");
+    if(on && t.scrollIntoView){
+      try{ t.scrollIntoView({inline:"center", block:"nearest", behavior:"smooth"}); }catch(e){}
+    }
+  }
+  try{ window.scrollTo(0,0); }catch(e){}
+  updateProgress();
+  if(updateHash !== false){
+    try{ history.replaceState(null, "", "#"+id); }catch(e){}
+  }
+  if(id === "lab"){ setTimeout(function(){ safe("renderLab", renderLab); }, 20); }
+  if(id === "inicio" || id === "creditos"){ restartCoverAnim(); }
+}
+
+function onTabClick(ev){
+  var btn = ev.target;
+  while(btn && btn !== tabList && !(btn.classList && btn.classList.contains("tab"))) btn = btn.parentNode;
+  if(!btn || btn === tabList) return;
+  var id = btn.getAttribute("data-target");
+  if(id){ ev.preventDefault(); show(id); }
+}
+tabList.addEventListener("click", onTabClick);
+tabList.addEventListener("keydown", function(ev){
+  var idx = tabButtons.indexOf(document.activeElement);
+  if(idx < 0) return;
+  if(ev.key === "ArrowRight" || ev.key === "ArrowLeft"){
+    ev.preventDefault();
+    var next = ev.key === "ArrowRight" ? (idx+1) % tabButtons.length : (idx-1+tabButtons.length) % tabButtons.length;
+    tabButtons[next].focus();
+    show(tabButtons[next].getAttribute("data-target"));
+  }
+});
+
+document.addEventListener("click", function(ev){
+  var b = ev.target;
+  while(b && b !== document.body && !b.getAttribute) b = b.parentNode;
+  if(!b || b === document.body) return;
+  var go = b.getAttribute("data-goto");
+  if(go){ ev.preventDefault(); show(go); return; }
+  var jump = b.getAttribute("data-jump");
+  if(jump){
+    ev.preventDefault();
+    var el = document.getElementById(jump);
+    if(el){
+      el.scrollIntoView({behavior:"smooth", block:"start"});
+      el.style.transition = "box-shadow .3s";
+      el.style.boxShadow = "0 0 0 2px var(--accent)";
+      setTimeout(function(){ el.style.boxShadow = "none"; }, 1300);
+    }
+  }
+});
+
+function updateProgress(){
+  var h = document.documentElement.scrollHeight - window.innerHeight;
+  var p = h > 0 ? Math.min(100, (window.pageYOffset / h) * 100) : 0;
+  progressBar.style.width = p + "%";
+  if(window.pageYOffset > 300) toTopBtn.classList.add("show");
+  else toTopBtn.classList.remove("show");
+}
+window.addEventListener("scroll", updateProgress, {passive:true});
+window.addEventListener("resize", updateProgress);
+toTopBtn.addEventListener("click", function(){ window.scrollTo({top:0, behavior:"smooth"}); });
+
+/* =====================================================================
+   3 · AUDIO (Web Audio API · local)
+   ===================================================================== */
+var AC = null, live = [], timers = [];
+function ctx(){
+  try{
+    if(!AC){
+      var Ctor = window.AudioContext || window.webkitAudioContext;
+      if(!Ctor) return null;
+      AC = new Ctor();
+    }
+    if(AC.state === "suspended" && AC.resume) AC.resume();
+    return AC;
+  }catch(e){ return null; }
+}
+function later(fn, ms){ timers.push(setTimeout(fn, ms)); }
+function tone(midi, when, dur, vol, type){
+  var c = ctx(); if(!c) return;
+  vol = (vol === undefined) ? 0.17 : vol;
+  type = type || "triangle";
+  var t0 = c.currentTime + when;
+  var o = c.createOscillator(), o2 = c.createOscillator();
+  var g = c.createGain(), g2 = c.createGain(), f = c.createBiquadFilter();
+  o.type = type; o.frequency.value = midiFreq(midi);
+  o2.type = "sine"; o2.frequency.value = midiFreq(midi)*2;
+  g2.gain.value = 0.22;
+  f.type = "lowpass"; f.frequency.value = 2800;
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.linearRampToValueAtTime(vol, t0+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0009, t0+dur);
+  o.connect(f); o2.connect(g2); g2.connect(f); f.connect(g); g.connect(c.destination);
+  o.start(t0); o2.start(t0); o.stop(t0+dur+0.08); o2.stop(t0+dur+0.08);
+  live.push(o, o2);
+}
+function drone(midi, when, dur, vol){
+  var c = ctx(); if(!c) return;
+  vol = (vol === undefined) ? 0.10 : vol;
+  var t0 = c.currentTime + when;
+  var o = c.createOscillator(), g = c.createGain(), f = c.createBiquadFilter();
+  o.type = "sawtooth"; o.frequency.value = midiFreq(midi);
+  f.type = "lowpass"; f.frequency.value = 700;
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.linearRampToValueAtTime(vol, t0+0.25);
+  g.gain.setValueAtTime(vol, t0+dur-0.4);
+  g.gain.linearRampToValueAtTime(0.0001, t0+dur);
+  o.connect(f); f.connect(g); g.connect(c.destination);
+  o.start(t0); o.stop(t0+dur+0.1); live.push(o);
+}
+function stopAll(){
+  for(var i=0;i<timers.length;i++) clearTimeout(timers[i]);
+  timers = [];
+  var c = ctx();
+  if(c){ for(var j=0;j<live.length;j++){ try{ live[j].stop(c.currentTime); }catch(e){} } }
+  live = [];
+  var nows = document.querySelectorAll(".wkey.now, .bkey.now");
+  for(var k=0;k<nows.length;k++) nows[k].classList.remove("now");
+}
+function playScale(mode, tonic, dir, stepDur){
+  stopAll();
+  var labs = labelsOf(mode, tonic);
+  var seq = (dir === "down") ? labs.slice().reverse() : labs;
+  stepDur = stepDur || 0.42;
+  for(var i=0;i<seq.length;i++){
+    (function(n, idx){
+      tone(n.midi, idx*stepDur, stepDur*1.5, 0.18);
+      later(function(){ flashLabKey(n.midi, n.name, n.deg); }, idx*stepDur*1000);
+    })(seq[i], i);
+  }
+  var last = seq.length*stepDur;
+  tone(seq[0].midi+12, last, 0.9, 0.14);
+  later(function(){ flashLabKey(seq[0].midi+12, seq[0].name, seq[0].deg+"·8va"); }, last*1000);
+  setReadout("Escala "+mode.cap+" en "+tonic+"(I) — "+seq.map(function(n){return n.name+"("+n.deg+")";}).join(" · "));
+}
+function playChord(mode, tonic){
+  stopAll();
+  var labs = labelsOf(mode, tonic), idx = [0,2,4];
+  for(var i=0;i<idx.length;i++){
+    (function(k, j){
+      tone(labs[k].midi, j*0.07, 1.8, 0.15);
+      later(function(){ flashLabKey(labs[k].midi, labs[k].name, labs[k].deg); }, j*70);
+    })(idx[i], i);
+  }
+  tone(labs[0].midi-12, 0, 2.0, 0.10, "sine");
+  setReadout("Tríada de I grado · acorde <b>"+mode.chord.toLowerCase()+"</b> · "+labs[0].name+"("+labs[0].deg+") + "+
+    labs[2].name+"("+labs[2].deg+") + "+labs[4].name+"("+labs[4].deg+")");
+}
+function playPedal(mode, tonic){
+  stopAll();
+  var labs = labelsOf(mode, tonic), dur = 5.4;
+  drone(labs[0].midi-12, 0, dur, 0.11);
+  drone(labs[0].midi, 0, dur, 0.07);
+  if(mode.charDeg.length === 0){
+    for(var i=0;i<labs.length;i++){
+      (function(n, idx){
+        tone(n.midi, 0.4+idx*0.55, 0.6, 0.16);
+        later(function(){ flashLabKey(n.midi, n.name, n.deg); }, (0.4+idx*0.55)*1000);
+      })(labs[i], i);
+    }
+    setReadout("Jónico: sin nota característica — se recorre la escala base sobre el pedal de "+labs[0].name+"("+labs[0].deg+").");
+  }else{
+    for(var d=0; d<mode.charDeg.length; d++){
+      (function(degIdx, block){
+        for(var r=0;r<4;r++){
+          (function(rr){
+            var t = 0.35 + block*2.5 + rr*0.6;
+            tone(labs[degIdx].midi, t, 0.55, 0.19);
+            later(function(){ flashLabKey(labs[degIdx].midi, labs[degIdx].name, labs[degIdx].deg); }, t*1000);
+          })(r);
+        }
+      })(mode.charDeg[d], d);
+    }
+    setReadout("Pedal de "+labs[0].name+"("+labs[0].deg+") + nota característica repetida: <b>"+charLabel(mode,tonic)+"</b>");
+  }
+}
+
+/* =====================================================================
+   4 · PÍLDORAS DE NOTAS DEL CONTENIDO
+   ===================================================================== */
+function pill(n, deg, cls, alt){
+  var d = document.createElement("div");
+  d.className = "note" + (cls ? " " + cls : "");
+  if(alt){ d.classList.add("alt"); d.setAttribute("data-alt", alt); }
+  d.innerHTML = "<b>"+n+"</b><span>"+deg+"</span>";
+  return d;
+}
+function initPills(){
+  var hosts = document.querySelectorAll("[data-notes]");
+  for(var h=0; h<hosts.length; h++){
+    var parts = hosts[h].getAttribute("data-notes").split("-");
+    var mode = BY_ID[parts[0]], tonic = parts[1];
+    var labs = labelsOf(mode, tonic);
+    for(var i=0;i<labs.length;i++){
+      var cls = (mode.charDeg.indexOf(i) > -1) ? "char" : (i === 0 ? "tonic" : "");
+      hosts[h].appendChild(pill(labs[i].name, "("+labs[i].deg+")", cls));
+    }
+  }
+  var A = document.getElementById("shiftA"), B = document.getElementById("shiftB");
+  [["C","I"],["D","II"],["E","III"],["F","IV"],["G","V"],["A","VI"],["B","VII"]]
+    .forEach(function(n){ A.appendChild(pill(n[0], "("+n[1]+")", n[0]==="C" ? "tonic" : "")); });
+  [["D","I"],["E","II"],["F","III"],["G","IV"],["A","V"],["B","VI"],["C","VII"]]
+    .forEach(function(n){ B.appendChild(pill(n[0], "("+n[1]+")", n[0]==="D" ? "tonic" : "")); });
+}
+
+/* =====================================================================
+   5 · RELACIONES TONALES + FILTROS DE TABLA + ACORDEONES
+   ===================================================================== */
+var relMode = "ionico";
+function initRelations(){
+  var grid = document.getElementById("relationsGrid");
+  var btns = document.getElementById("relBtns");
+  var ordered = MODES.slice().sort(function(a,b){ return a.wheel - b.wheel; });
+  ordered.forEach(function(m){
+    var card = document.createElement("div");
+    card.className = "subbox";
+    card.style.textAlign = "center";
+    card.innerHTML = '<div style="font-size:.7rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:800">Iniciando en '+
+      WHEEL_NOTES[m.wheel]+'('+ROMAN[m.wheel]+')</div><div style="font-weight:900;color:'+m.color+';font-size:1.02rem;margin-top:4px">'+m.name+'</div>';
+    grid.appendChild(card);
+
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = WHEEL_NOTES[m.wheel]+"("+ROMAN[m.wheel]+")";
+    b.style.setProperty("--mc", m.color);
+    b.addEventListener("click", function(){
+      var all = btns.querySelectorAll(".chip");
+      for(var i=0;i<all.length;i++) all[i].classList.remove("active");
+      b.classList.add("active");
+      relMode = m.id;
+      var labs = labelsOf(m, "C");
+      document.getElementById("relText").innerHTML =
+        "Iniciando en <b style='color:"+m.color+"'>"+WHEEL_NOTES[m.wheel]+"("+ROMAN[m.wheel]+")</b> sobre la escala madre de C(I) mayor obtenemos el modo <b style='color:"+m.color+"'>"+
+        m.cap+"</b> ("+m.en+"). Notas: "+labs.map(function(n){ return n.name+"("+n.deg+")"; }).join(", ")+".";
+    });
+    btns.appendChild(b);
+  });
+  document.getElementById("relPlay").addEventListener("click", function(){
+    playScale(BY_ID[relMode], "C", "up", 0.4);
+  });
+}
+function initFilters(){
+  var rows = Array.prototype.slice.call(document.querySelectorAll("#masterTable tbody tr"));
+  var chips = document.querySelectorAll("#tblFilters .chip");
+  for(var i=0;i<chips.length;i++){
+    (function(c){
+      c.addEventListener("click", function(){
+        for(var j=0;j<chips.length;j++) chips[j].classList.remove("active");
+        c.classList.add("active");
+        var f = c.getAttribute("data-filter");
+        rows.forEach(function(r){
+          var ok = (f === "all") || (r.getAttribute("data-fam") === f) ||
+                   ((" "+(r.getAttribute("data-tags")||"")+" ").indexOf(" "+f+" ") > -1);
+          r.style.display = ok ? "" : "none";
+        });
+      });
+    })(chips[i]);
+  }
+}
+var QUIZ = [
+  {q:"¿Qué nota define al Modo Lidio en la tonalidad de C(I)?",
+   a:"El <b>F#(IV)</b>: la <b>cuarta aumentada</b>. Se obtiene subiendo un semitono a la cuarta nota de la escala mayor. En E(I) la nota característica es <b>A#(IV)</b>."},
+  {q:"¿Cómo se construye el Modo Mixolidio a partir de la escala mayor?",
+   a:"<b>Bajando un semitono a la séptima nota</b> de la escala mayor: la 7ª mayor se transforma en <b>7ª menor</b>. En C(I): <b>Bb(VII)</b>; en E(I): <b>D(VII)</b>."},
+  {q:"¿Qué modo es la base del Flamenco y de la música árabe, y se usa en el Heavy Metal para proyectar oscuridad?",
+   a:"El <b>Modo Frigio</b>, gracias a su <b>segunda menor</b>: <b>Db(II)</b> en C(I) y <b>F(II)</b> en E(I)."},
+  {q:"¿Por qué el Modo Locrio es tan inestable?",
+   a:"Porque al armonizarlo <b>el primer acorde obtenido es disminuido</b>: el “hogar” de la escala es inestable y el oído no siente una resolución clara. Se deriva de la menor natural <b>bajando un semitono a la segunda y a la quinta nota</b> (en C(I): <b>Db(II)</b> y <b>Gb(V)</b>)."},
+  {q:"Si tomas la escala de C(I) mayor y comienzas en A(VI), ¿qué modo obtienes?",
+   a:"El <b>Modo Eólico</b> (menor natural): A(VI) Eólico. Con tónica C(I) sus notas son C(I), D(II), Eb(III), F(IV), G(V), Ab(VI), Bb(VII)."},
+  {q:"¿Qué canción de Coldplay ejemplifica el Modo Mixolidio y por qué?",
+   a:"<b>“Clocks”</b>: su progresión destaca el <b>Bb(VII)</b> sobre el acorde de <b>G(V) menor</b>, resaltando la nota característica del modo."},
+  {q:"¿Qué versión de “Mad World” recomienda la guía y qué debe escucharse en ella?",
+   a:"La versión de <b>Gary Jules</b>. Por la transparencia del arreglo de piano se percibe cómo la melodía enfatiza la melancolía de la <b>tercera menor (Eb(III) en C)</b> contrastada con la esperanza momentánea de la <b>sexta mayor (A(VI) en C)</b>."},
+  {q:"¿Qué tres modos forman el grupo de carácter mayor y cuál es su rasgo común?",
+   a:"<b>Jónico, Lidio y Mixolidio</b>. Se construyen sobre una estructura de <b>tercera mayor</b>, proyectando claridad, energía y estabilidad."}
+];
+function initQuiz(){
+  var host = document.getElementById("quiz");
+  QUIZ.forEach(function(it, i){
+    var d = document.createElement("div");
+    d.className = "acc";
+    d.innerHTML = '<button type="button" class="acc-q"><span>'+(i+1)+'. '+it.q+'</span><span class="arw">▼</span></button>'+
+                  '<div class="acc-a"><div class="acc-a-in">'+it.a+'</div></div>';
+    host.appendChild(d);
+    var btn = d.querySelector(".acc-q"), panel = d.querySelector(".acc-a");
+    btn.addEventListener("click", function(){
+      var open = d.classList.toggle("open");
+      panel.style.maxHeight = open ? (panel.scrollHeight + "px") : "0px";
+    });
+  });
+}
+
+/* =====================================================================
+   6 · PORTADA SVG ANIMADA (misma plantilla en HOME y CRÉDITOS)
+   ===================================================================== */
+var REDUCED = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+var KB = {x0:100, y0:690, w:93.3333, h:150, bw:56, bh:96};
+var WHITE_PC = [0,2,4,5,7,9,11];
+var KB_KEYS = (function(){
+  var keys = [], whites = [], midi, pc, i;
+  for(midi=60; midi<=84; midi++){
+    pc = (midi-60)%12;
+    if(WHITE_PC.indexOf(pc) > -1){ whites.push(midi); keys.push({midi:midi, type:"w", x:KB.x0+(whites.length-1)*KB.w, w:KB.w}); }
+  }
+  for(midi=60; midi<=84; midi++){
+    pc = (midi-60)%12;
+    if(WHITE_PC.indexOf(pc) === -1){
+      var below = 0;
+      for(i=0;i<whites.length;i++){ if(whites[i] < midi) below++; }
+      keys.push({midi:midi, type:"b", x:KB.x0+below*KB.w-KB.bw/2, w:KB.bw, below:below});
+    }
+  }
+  return keys;
+})();
+function svgEl(tag, attrs){
+  var e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for(var k in attrs) if(attrs.hasOwnProperty(k)) e.setAttribute(k, attrs[k]);
+  return e;
+}
+function wavePath(width, amp, period, ymid){
+  var d = "", steps = 240, i, x, y;
+  for(i=0;i<=steps;i++){
+    x = width*i/steps;
+    y = ymid + amp*Math.sin(2*Math.PI*x/period);
+    d += (i === 0 ? "M" : "L") + x.toFixed(1) + " " + y.toFixed(1);
+  }
+  return d;
+}
+var instances = [];
+function initCover(svg){
+  var inst = {svg:svg, keys:{}, labels:{}, nodes:[], degs:[], chips:[], refs:{}};
+  var cx = 430, cy = 430, R = 178;
+
+  var gNodes = svg.querySelector(".cv-nodes");
+  for(var k=0;k<7;k++){
+    var ang = (-90 + k*360/7) * Math.PI/180;
+    var x = cx + R*Math.cos(ang), y = cy + R*Math.sin(ang);
+    var lx = cx + (R+48)*Math.cos(ang), ly = cy + (R+48)*Math.sin(ang);
+    var halo = svgEl("circle", {cx:x.toFixed(1), cy:y.toFixed(1), r:44, fill:"#00d4ff", opacity:"0", filter:"url(#d-blur)"});
+    var circ = svgEl("circle", {cx:x.toFixed(1), cy:y.toFixed(1), r:30, "class":"cv-node"});
+    var txt  = svgEl("text", {x:x.toFixed(1), y:(y+8).toFixed(1), "class":"cv-wheel-note", "text-anchor":"middle"});
+    txt.textContent = WHEEL_NOTES[k];
+    var deg  = svgEl("text", {x:lx.toFixed(1), y:(ly+5).toFixed(1), "class":"cv-wheel-deg", "text-anchor":"middle"});
+    deg.textContent = ROMAN[k];
+    gNodes.appendChild(halo); gNodes.appendChild(circ); gNodes.appendChild(txt); gNodes.appendChild(deg);
+    inst.nodes.push({circle:circ, halo:halo, text:txt});
+    inst.degs.push(deg);
+  }
+
+  var kb = svg.querySelector(".cv-kb");
+  KB_KEYS.forEach(function(key){
+    if(key.type !== "w") return;
+    var r = svgEl("rect", {x:key.x.toFixed(2), y:KB.y0, width:key.w.toFixed(2), height:KB.h, rx:6,
+      fill:"#e9eff8", "class":"cv-kb-w"});
+    kb.appendChild(r); inst.keys[key.midi] = r;
+  });
+  KB_KEYS.forEach(function(key){
+    if(key.type !== "b") return;
+    var r = svgEl("rect", {x:key.x.toFixed(2), y:KB.y0, width:key.w.toFixed(2), height:KB.bh, rx:4, "class":"cv-kb-b"});
+    kb.appendChild(r); inst.keys[key.midi] = r;
+  });
+  KB_KEYS.forEach(function(key){
+    var y = (key.type === "w") ? KB.y0+KB.h-12 : KB.y0+KB.bh-10;
+    var t = svgEl("text", {x:(key.x+key.w/2).toFixed(2), y:y, "class":"cv-klab", "text-anchor":"middle", opacity:"0"});
+    if(key.type === "b") t.setAttribute("fill", "#dff6ff");
+    kb.appendChild(t); inst.labels[key.midi] = t;
+  });
+
+  var wp = svg.querySelector(".cv-wp");  if(wp)  wp.setAttribute("d", wavePath(1092, 40, 182, 456));
+  var wp2 = svg.querySelector(".cv-wp2"); if(wp2) wp2.setAttribute("d", wavePath(1092, 24, 109.2, 456));
+
+  var gChips = svg.querySelector(".cv-chips");
+  for(var i=0;i<7;i++){
+    var cxp = 962 + i*78.6, cyp = 556;
+    var rect = svgEl("rect", {x:cxp.toFixed(1), y:cyp, width:"72", height:"54", rx:"9", fill:"#0a1224", stroke:"#1e3a5f", "stroke-width":"1.4"});
+    var tn = svgEl("text", {x:(cxp+36).toFixed(1), y:cyp+26, "class":"cv-chip-t", "text-anchor":"middle"});
+    var td = svgEl("text", {x:(cxp+36).toFixed(1), y:cyp+44, "class":"cv-chip-d", "text-anchor":"middle"});
+    gChips.appendChild(rect); gChips.appendChild(tn); gChips.appendChild(td);
+    inst.chips.push({rect:rect, tn:tn, td:td});
+  }
+
+  inst.refs = {
+    needle: svg.querySelector(".cv-needle"),
+    wheelMode: svg.querySelector(".cv-wheel-mode"),
+    wheelCur: svg.querySelector(".cv-wheel-cur"),
+    modeName: svg.querySelector(".cv-mode-name"),
+    modeEn: svg.querySelector(".cv-mode-en"),
+    vTonic: svg.querySelector(".cv-v-tonic"),
+    vChar: svg.querySelector(".cv-v-char"),
+    vFeel: svg.querySelector(".cv-v-feel"),
+    vApp: svg.querySelector(".cv-v-app"),
+    vRel: svg.querySelector(".cv-v-rel")
+  };
+  instances.push(inst);
+}
+function mountCovers(){
+  var tpl = document.getElementById("tpl-cover");
+  ["cover-home","cover-credits"].forEach(function(id){
+    var host = document.getElementById(id);
+    if(!host) return;
+    host.innerHTML = "";
+    host.appendChild(tpl.content.cloneNode(true));
+    initCover(host.querySelector(".cover-svg"));
+  });
+}
+var cvMode = 3, cvStep = 0, cvTimer = null;
+function paintCover(){
+  var mode = MODES[cvMode];
+  var labs = labelsOf(mode, "C");
+  var midis = labs.map(function(l){ return l.midi; });
+  instances.forEach(function(inst){
+    inst.svg.style.setProperty("--mc", mode.color);
+    var r = inst.refs;
+    r.needle.style.transform = "rotate(" + (mode.wheel*360/7).toFixed(3) + "deg)";
+    r.wheelMode.textContent = mode.name;
+    r.modeName.textContent = mode.name;
+    r.modeEn.textContent = mode.en.toUpperCase() + " · FAMILIA " + (mode.fam === "locrio" ? "LOCRIO (INESTABLE)" : mode.fam.toUpperCase());
+    r.vTonic.textContent = "C(I)";
+    r.vChar.textContent = charLabel(mode, "C");
+    r.vFeel.textContent = mode.feel;
+    r.vApp.textContent = mode.app;
+    r.vRel.textContent = mode.rel;
+
+    for(var k=0;k<7;k++){
+      var degIdx = (k - mode.wheel + 7) % 7;
+      var n = inst.nodes[k];
+      var isNow = (degIdx === cvStep), isTonic = (degIdx === 0);
+      n.circle.setAttribute("class", "cv-node" + (isTonic ? " tonic" : "") + (isNow ? " now" : ""));
+      n.circle.setAttribute("stroke", (isNow || isTonic) ? mode.color : "#2a4a70");
+      n.circle.setAttribute("fill", isNow ? mode.color : (isTonic ? "#10243c" : "#0d1a2e"));
+      n.text.setAttribute("fill", isNow ? "#04121a" : "#fff");
+      n.halo.setAttribute("fill", mode.color);
+      n.halo.setAttribute("opacity", isNow ? "0.55" : (isTonic ? "0.22" : "0"));
+      inst.degs[k].textContent = ROMAN[degIdx];
+      var isChar = mode.charDeg.indexOf(degIdx) > -1;
+      inst.degs[k].setAttribute("class", "cv-wheel-deg" + (isChar ? " s" : ""));
+      inst.degs[k].setAttribute("fill", isTonic ? mode.color : (isChar ? "#f59e0b" : "#6f83a0"));
+    }
+    var cur = labs[cvStep] || labs[0];
+    r.wheelCur.textContent = "Tónica C(I) · suena " + cur.name + "(" + cur.deg + ")";
+
+    Object.keys(inst.keys).forEach(function(midiStr){
+      var midi = parseInt(midiStr, 10);
+      var el = inst.keys[midi], lab = inst.labels[midi];
+      var idx = midis.indexOf(midi), isIn = idx > -1, isNow = (idx === cvStep);
+      var isBlack = el.getAttribute("class").indexOf("cv-kb-b") > -1;
+      if(isBlack){
+        el.setAttribute("fill", isNow ? mode.color : (isIn ? "#20415c" : "#080d18"));
+        el.setAttribute("stroke", isNow ? mode.color : (isIn ? mode.color : "#2c3d57"));
+      }else{
+        el.setAttribute("fill", isNow ? mode.color : (isIn ? "#cdeeff" : "#e9eff8"));
+        el.setAttribute("stroke", isNow ? mode.color : "#7b8aa0");
+      }
+      if(lab){
+        if(isIn){
+          lab.textContent = (mode.charDeg.indexOf(idx) > -1 ? "★" : "") + labs[idx].name;
+          lab.setAttribute("opacity", "1");
+          lab.setAttribute("fill", isNow ? "#04121a" : (isBlack ? "#dff6ff" : "#123a4d"));
+        }else{
+          lab.setAttribute("opacity", "0");
+        }
+      }
+    });
+
+    for(var c=0;c<inst.chips.length;c++){
+      var chip = inst.chips[c], isCh = mode.charDeg.indexOf(c) > -1, act = (c === cvStep);
+      chip.tn.textContent = labs[c].name;
+      chip.td.textContent = "(" + labs[c].deg + ")";
+      chip.rect.setAttribute("stroke", isCh ? "#f59e0b" : (act ? mode.color : "#1e3a5f"));
+      chip.rect.setAttribute("fill", act ? mode.color : (isCh ? "#241a08" : "#0a1224"));
+      chip.tn.setAttribute("fill", act ? "#04121a" : (isCh ? "#ffd88a" : "#fff"));
+      chip.td.setAttribute("fill", act ? "#04121a" : "#8fa3bf");
+    }
+  });
+}
+function coverTick(){
+  var mode = MODES[cvMode];
+  cvStep = (cvStep + 1) % (mode.pattern.length + 1);
+  if(cvStep === 0) cvMode = (cvMode + 1) % MODES.length;
+  paintCover();
+}
+function startCover(){
+  paintCover();
+  if(REDUCED) return;
+  if(cvTimer) clearInterval(cvTimer);
+  cvTimer = setInterval(coverTick, 430);
+}
+function restartCoverAnim(){
+  paintCover();
+  if(REDUCED) return;
+  if(cvTimer) clearInterval(cvTimer);
+  cvTimer = setInterval(coverTick, 430);
+}
+document.addEventListener("click", function(ev){
+  var t = ev.target;
+  while(t && t !== document){
+    if(t.classList && t.classList.contains("cover-svg")){ cvMode = (cvMode+1) % MODES.length; cvStep = 0; paintCover(); return; }
+    t = t.parentNode;
+  }
+});
+
+/* =====================================================================
+   7 · LABORATORIO (teclado + controles justo debajo)
+   ===================================================================== */
+var labTonic = "C", labMode = "ionico", labKeys = {};
+var labPiano = document.getElementById("labPiano");
+
+function buildLabPiano(){
+  labPiano.innerHTML = "";
+  labKeys = {};
+  var whites = KB_KEYS.filter(function(k){ return k.type === "w"; });
+  var totalW = whites.length * KB.w;
+  whites.forEach(function(k){
+    var d = document.createElement("div");
+    d.className = "wkey";
+    d.innerHTML = '<span class="kdeg"></span><span class="klab"></span>';
+    d.addEventListener("pointerdown", function(ev){ ev.preventDefault(); hitKey(k.midi); });
+    d.addEventListener("click", function(ev){ ev.preventDefault(); });
+    labPiano.appendChild(d);
+    labKeys[k.midi] = d;
+  });
+  KB_KEYS.filter(function(k){ return k.type === "b"; }).forEach(function(k){
+    var d = document.createElement("div");
+    d.className = "bkey";
+    d.innerHTML = '<span class="kdeg"></span>';
+    d.style.left = "calc(" + (((k.x-KB.x0)/totalW)*100).toFixed(3) + "% + 2px)";
+    d.style.width = "calc(" + ((KB.bw/totalW)*100).toFixed(3) + "% - 4px)";
+    d.addEventListener("pointerdown", function(ev){ ev.preventDefault(); hitKey(k.midi); });
+    d.addEventListener("click", function(ev){ ev.preventDefault(); });
+    labPiano.appendChild(d);
+    labKeys[k.midi] = d;
+  });
+}
+function setReadout(html){ document.getElementById("labReadout").innerHTML = "Última nota: " + html; }
+function hitKey(midi){
+  tone(midi, 0, 0.7, 0.18);
+  var k = labKeys[midi];
+  if(k){ k.classList.add("now"); setTimeout(function(){ k.classList.remove("now"); }, 260); }
+  var mode = BY_ID[labMode], labs = labelsOf(mode, labTonic), hit = null;
+  for(var i=0;i<labs.length;i++) if(labs[i].midi === midi) hit = labs[i];
+  setReadout(hit ? ("<b>"+hit.name+"("+hit.deg+")</b> del modo "+mode.cap+" en "+labTonic+"(I)")
+                 : ("<b>"+midiName(midi)+"</b> — fuera del modo "+mode.cap+" en "+labTonic+"(I)"));
+}
+function flashLabKey(midi, name, deg){
+  var k = labKeys[midi];
+  if(k){ k.classList.add("now"); later(function(){ k.classList.remove("now"); }, 230); }
+  if(name) setReadout("Sonando: <b>"+name+(deg ? "("+deg+")" : "")+"</b>");
+}
+function buildModeButtons(){
+  var host = document.getElementById("modeBtns");
+  host.innerHTML = "";
+  MODES.forEach(function(m){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = m.cap;
+    b.setAttribute("data-mode", m.id);
+    b.style.setProperty("--mc", m.color);
+    b.addEventListener("click", function(){ labMode = m.id; renderLab(); playScale(m, labTonic, "up", 0.4); });
+    host.appendChild(b);
+  });
+  var ear = document.getElementById("earBtns");
+  ear.innerHTML = "";
+  MODES.forEach(function(m){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = m.cap;
+    b.style.setProperty("--mc", m.color);
+    b.addEventListener("click", function(){ answerEar(m.id); });
+    ear.appendChild(b);
+  });
+}
+function renderLab(){
+  var mode = BY_ID[labMode];
+  document.getElementById("labCard").style.setProperty("--mc", mode.color);
+  var mb = document.querySelectorAll("#modeBtns .chip");
+  for(var i=0;i<mb.length;i++) mb[i].classList.toggle("active", mb[i].getAttribute("data-mode") === labMode);
+  var tb = document.querySelectorAll("#tonicBtns .chip");
+  for(var j=0;j<tb.length;j++) tb[j].classList.toggle("active", tb[j].getAttribute("data-tonic") === labTonic);
+
+  document.getElementById("labTitle").textContent = "Modo " + mode.cap + " en " + labTonic + "(I)";
+  document.getElementById("labSub").textContent = mode.en + " · " + mode.relShort + " · " + mode.feel;
+  var fam = document.getElementById("labFam");
+  fam.className = "tag " + (mode.fam === "mayor" ? "may" : (mode.fam === "menor" ? "men" : "dis"));
+  fam.textContent = mode.fam === "mayor" ? "Familia mayor" : (mode.fam === "menor" ? "Familia menor" : "Locrio · inestable");
+  document.getElementById("labIco").textContent = ROMAN[mode.wheel];
+  document.getElementById("labBuild").textContent = mode.build;
+  document.getElementById("labChar").textContent = charLabel(mode, labTonic);
+  document.getElementById("labFeel").textContent = mode.feel;
+  document.getElementById("labApp").textContent = mode.app;
+
+  var labs = labelsOf(mode, labTonic);
+  var host = document.getElementById("labNotes");
+  host.innerHTML = "";
+  for(var n=0;n<labs.length;n++){
+    host.appendChild(pill(labs[n].name, "("+labs[n].deg+")",
+      (mode.charDeg.indexOf(n) > -1) ? "char" : (n === 0 ? "tonic" : "")));
+  }
+
+  Object.keys(labKeys).forEach(function(midiStr){
+    var midi = parseInt(midiStr, 10);
+    var k = labKeys[midi];
+    var idx = -1;
+    for(var q=0;q<labs.length;q++) if(labs[q].midi === midi) idx = q;
+    k.classList.remove("inscale","tonic","char","now");
+    var deg = k.querySelector(".kdeg"), lab = k.querySelector(".klab");
+    if(idx > -1){
+      k.classList.add("inscale");
+      if(idx === 0) k.classList.add("tonic");
+      if(mode.charDeg.indexOf(idx) > -1) k.classList.add("char");
+      if(deg) deg.textContent = ROMAN[idx];
+      if(lab) lab.textContent = labs[idx].name;
+    }else{
+      if(deg) deg.textContent = "";
+      if(lab) lab.textContent = midiName(midi);
+    }
+  });
+  setReadout("Modo <b>"+mode.cap+"</b> en "+labTonic+"(I) — tónica "+labs[0].name+"("+labs[0].deg+
+    "), nota característica: <b>"+charLabel(mode,labTonic)+"</b>");
+  renderComparator();
+}
+function renderComparator(){
+  var mode = BY_ID[labMode], tonic = labTonic;
+  var base = labelsOf(BY_ID["ionico"], tonic), mod = labelsOf(mode, tonic);
+  var hb = document.getElementById("cmpBase"), hm = document.getElementById("cmpMode");
+  hb.innerHTML = ""; hm.innerHTML = "";
+  document.getElementById("cmpLabel").textContent = "Modo " + mode.cap + " en " + tonic + "(I)";
+  var diffs = [];
+  for(var i=0;i<7;i++){
+    hb.appendChild(pill(base[i].name, "("+base[i].deg+")", i === 0 ? "tonic" : ""));
+    var d = mod[i].midi - base[i].midi, alt = null, cls = "";
+    if(d > 0){ alt = "▲"; cls = "char"; diffs.push(base[i].deg+": "+base[i].name+" → "+mod[i].name+" (sube "+d+" semitono"+(d>1?"s":"")+")"); }
+    else if(d < 0){ alt = "▼"; diffs.push(base[i].deg+": "+base[i].name+" → "+mod[i].name+" (baja "+Math.abs(d)+" semitono"+(Math.abs(d)>1?"s":"")+")"); }
+    if(mode.charDeg.indexOf(i) > -1) cls = "char";
+    var p = pill(mod[i].name, "("+mod[i].deg+")", cls, alt);
+    if(i === 0) p.classList.add("tonic");
+    hm.appendChild(p);
+  }
+  document.getElementById("cmpText").innerHTML = diffs.length
+    ? diffs.join(" · ") + " — <b>" + mode.build + "</b>"
+    : "Sin diferencias: el modo <b>Jónico</b> es exactamente la escala mayor natural (no requiere alteraciones).";
+}
+var earTarget = null, earOk = 0, earNo = 0;
+function answerEar(id){
+  var fb = document.getElementById("earFb");
+  if(!earTarget){ fb.className = "fb no"; fb.textContent = "Pulsa primero “Reproducir modo misterioso”."; return; }
+  var t = BY_ID[earTarget], g = BY_ID[id];
+  if(id === earTarget){
+    earOk++; fb.className = "fb ok";
+    fb.innerHTML = "✔ <b>Correcto: "+t.cap+"</b> ("+t.en+"). Nota característica en "+labTonic+"(I): <b>"+
+      charLabel(t,labTonic)+"</b> — "+t.feel+".";
+  }else{
+    earNo++; fb.className = "fb no";
+    fb.innerHTML = "✖ Elegiste <b>"+g.cap+"</b>; el modo sonado era <b>"+t.cap+"</b>. Su nota característica en "+labTonic+
+      "(I) es <b>"+charLabel(t,labTonic)+"</b> ("+t.build+")";
+    playScale(t, labTonic, "up", 0.42);
+  }
+  document.getElementById("earOk").textContent = earOk;
+  document.getElementById("earNo").textContent = earNo;
+  earTarget = null;
+}
+function initLab(){
+  buildLabPiano();
+  buildModeButtons();
+  var tb = document.querySelectorAll("#tonicBtns .chip");
+  for(var i=0;i<tb.length;i++){
+    (function(b){
+      b.addEventListener("click", function(){ labTonic = b.getAttribute("data-tonic"); renderLab(); });
+    })(tb[i]);
+  }
+  document.getElementById("btnScale").addEventListener("click", function(){ playScale(BY_ID[labMode], labTonic, "up", 0.42); });
+  document.getElementById("btnScaleDown").addEventListener("click", function(){ playScale(BY_ID[labMode], labTonic, "down", 0.42); });
+  document.getElementById("btnChord").addEventListener("click", function(){ playChord(BY_ID[labMode], labTonic); });
+  document.getElementById("btnPedal").addEventListener("click", function(){ playPedal(BY_ID[labMode], labTonic); });
+  document.getElementById("btnStop").addEventListener("click", function(){ stopAll(); setReadout("Audio detenido."); });
+  document.getElementById("cmpPlay").addEventListener("click", function(){
+    stopAll();
+    var tonic = labTonic;
+    var a = labelsOf(BY_ID["ionico"], tonic), b = labelsOf(BY_ID[labMode], tonic);
+    for(var i=0;i<a.length;i++){
+      (function(n, idx){ tone(n.midi, idx*0.32, 0.5, 0.16); later(function(){ flashLabKey(n.midi, n.name, n.deg); }, idx*320); })(a[i], i);
+    }
+    var off = a.length*0.32;
+    for(var j=0;j<b.length;j++){
+      (function(n, idx){ var t = off+0.5+idx*0.32; tone(n.midi, t, 0.5, 0.16); later(function(){ flashLabKey(n.midi, n.name, n.deg); }, t*1000); })(b[j], j);
+    }
+    setReadout("Comparación: Jónico → "+BY_ID[labMode].cap+" en "+tonic+"(I)");
+  });
+  document.getElementById("earPlay").addEventListener("click", function(){
+    earTarget = MODES[Math.floor(Math.random()*MODES.length)].id;
+    var fb = document.getElementById("earFb"); fb.className = "fb"; fb.textContent = "";
+    playScale(BY_ID[earTarget], labTonic, "up", 0.45);
+  });
+  document.getElementById("earRepeat").addEventListener("click", function(){
+    if(earTarget) playScale(BY_ID[earTarget], labTonic, "up", 0.45);
+  });
+  document.getElementById("earReset").addEventListener("click", function(){
+    earOk = 0; earNo = 0; earTarget = null;
+    document.getElementById("earOk").textContent = "0";
+    document.getElementById("earNo").textContent = "0";
+    var fb = document.getElementById("earFb"); fb.className = "fb"; fb.textContent = "";
+  });
+  document.getElementById("practiceLyd").addEventListener("click", function(){
+    labMode = "lidio"; labTonic = "C"; show("lab");
+    setTimeout(function(){ renderLab(); playPedal(BY_ID["lidio"], "C"); }, 80);
+  });
+  document.getElementById("practicePhr").addEventListener("click", function(){
+    labMode = "frigio"; labTonic = "C"; show("lab");
+    setTimeout(function(){ renderLab(); playPedal(BY_ID["frigio"], "C"); }, 80);
+  });
+  var cmp = document.querySelectorAll("[data-compare]");
+  for(var c=0;c<cmp.length;c++){
+    (function(btn){
+      btn.addEventListener("click", function(){
+        var v = btn.getAttribute("data-compare");
+        labMode = "lidio"; labTonic = (v.indexOf("-E") > -1) ? "E" : "C";
+        show("lab");
+        setTimeout(function(){
+          renderLab(); stopAll();
+          var tonic = labTonic;
+          var a = labelsOf(BY_ID["ionico"], tonic), b = labelsOf(BY_ID["lidio"], tonic);
+          for(var i=0;i<a.length;i++){
+            (function(n, idx){ tone(n.midi, idx*0.32, 0.45, 0.16); later(function(){ flashLabKey(n.midi, n.name, n.deg); }, idx*320); })(a[i], i);
+          }
+          var t1 = a.length*0.32 + 0.3, t2 = t1 + 0.75;
+          tone(a[3].midi, t1, 0.6, 0.17);
+          later(function(){ flashLabKey(a[3].midi, a[3].name, a[3].deg); }, t1*1000);
+          tone(b[3].midi, t2, 0.95, 0.19);
+          later(function(){ flashLabKey(b[3].midi, b[3].name, b[3].deg); }, t2*1000);
+          setReadout("Diferencia: "+a[3].name+"(IV) justa → <b>"+b[3].name+"(IV) aumentada</b>");
+        }, 80);
+      });
+    })(cmp[c]);
+  }
+  var plays = document.querySelectorAll("[data-play]");
+  for(var p=0;p<plays.length;p++){
+    (function(btn){
+      btn.addEventListener("click", function(){ playScale(BY_ID[btn.getAttribute("data-play")], "C", "up", 0.4); });
+    })(plays[p]);
+  }
+  var peds = document.querySelectorAll("[data-pedal]");
+  for(var q=0;q<peds.length;q++){
+    (function(btn){
+      btn.addEventListener("click", function(){ labMode = btn.getAttribute("data-pedal"); labTonic = "C"; renderLab(); playPedal(BY_ID[labMode], labTonic); });
+    })(peds[q]);
+  }
+  var chs = document.querySelectorAll("[data-chord]");
+  for(var z=0;z<chs.length;z++){
+    (function(btn){
+      btn.addEventListener("click", function(){ labMode = btn.getAttribute("data-chord"); labTonic = "C"; renderLab(); playChord(BY_ID[labMode], labTonic); });
+    })(chs[z]);
+  }
+  renderLab();
+}
+
+/* =====================================================================
+   8 · ARRANQUE (la navegación ya está activa desde el paso 2)
+   ===================================================================== */
+safe("pills", initPills);
+safe("relations", initRelations);
+safe("filters", initFilters);
+safe("quiz", initQuiz);
+safe("cover", function(){ mountCovers(); startCover(); });
+safe("lab", initLab);
+safe("route", function(){
+  var h = (location.hash || "").replace("#","");
+  show((h && exists(h)) ? h : "inicio", false);
+  updateProgress();
+});
+window.addEventListener("hashchange", function(){
+  var h = (location.hash || "").replace("#","");
+  if(h && exists(h)) show(h, false);
+});
+updateProgress();
+
+})();
+</script>
+</body>
+</html>
