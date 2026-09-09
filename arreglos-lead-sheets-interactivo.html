@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Arreglos de Piano con Lead Sheets · Tutorial Interactivo | Rubén Sbarsky</title>
+<style>
+/* ============================================================
+   TUTORIAL HTML PROFESIONAL — DARK UI TÉCNICO
+   Paleta obligatoria · Sin recursos externos · 100% autónomo
+   ============================================================ */
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --card2:#12203a; --border:#1e3a5f;
+  --accent:#00d4ff; --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+  --text:#e2e8f0; --muted:#94a3b8; --dim:#64748b;
+  --nav-h:58px; --bar-h:4px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65;font-size:16px;overflow-x:hidden;
+}
+img,svg{max-width:100%}
+a{color:var(--accent)}
+::selection{background:rgba(0,212,255,.3)}
+
+/* ---------- Barra de progreso ---------- */
+#progressWrap{position:fixed;top:0;left:0;right:0;height:var(--bar-h);background:#0b1220;z-index:1300}
+#progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--purple));box-shadow:0 0 12px rgba(0,212,255,.7);transition:width .12s linear}
+
+/* ---------- Navbar fija ---------- */
+#navbar{position:fixed;top:var(--bar-h);left:0;right:0;height:var(--nav-h);z-index:1200;
+  background:rgba(10,14,26,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:0 10px}
+.brand{display:flex;align-items:center;gap:9px;flex:0 0 auto;padding-left:4px}
+.brand .bicon{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+  background:linear-gradient(135deg,rgba(0,212,255,.22),rgba(168,85,247,.22));border:1px solid var(--border);font-size:15px}
+.brand b{font-size:13px;letter-spacing:1.4px;color:var(--text);white-space:nowrap}
+.brand small{display:block;font-size:9.5px;letter-spacing:1.6px;color:var(--dim)}
+#navScroll{flex:1 1 auto;display:flex;align-items:center;gap:6px;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:thin;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;padding:4px 2px}
+#navScroll::-webkit-scrollbar{height:4px}
+#navScroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.nav-btn{flex:0 0 auto;border:1px solid transparent;background:transparent;color:var(--muted);
+  font-family:inherit;font-size:12.5px;font-weight:600;letter-spacing:.9px;padding:9px 13px;border-radius:9px;
+  cursor:pointer;white-space:nowrap;transition:all .2s ease;min-height:40px}
+.nav-btn:hover{color:var(--text);background:rgba(30,58,95,.5)}
+.nav-btn.active{color:var(--accent);background:rgba(0,212,255,.11);border-color:rgba(0,212,255,.45);
+  box-shadow:0 0 16px rgba(0,212,255,.15) inset}
+.nav-btn.credits{color:#cbd5e1;border-color:var(--border);background:rgba(168,85,247,.1)}
+.nav-btn.credits.active{color:var(--purple);border-color:rgba(168,85,247,.55);background:rgba(168,85,247,.16)}
+
+/* ---------- Layout ---------- */
+main{max-width:1200px;margin:0 auto;padding:calc(var(--nav-h) + var(--bar-h) + 22px) 16px 70px}
+.view{display:none}
+.view.active{display:block;animation:fadeIn .35s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---------- Cards / componentes ---------- */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card.tight{padding:16px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(285px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+
+.sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.sec-icon{flex:0 0 52px;height:52px;border-radius:12px;display:grid;place-items:center;font-size:24px;
+  background:linear-gradient(135deg,rgba(0,212,255,.16),rgba(168,85,247,.14));border:1px solid var(--border)}
+.eyebrow{font-size:11px;letter-spacing:2.4px;color:var(--accent);font-weight:700;text-transform:uppercase}
+.sec-head h2{font-size:clamp(21px,3.4vw,30px);line-height:1.25;margin:3px 0 4px;letter-spacing:-.2px}
+.sec-head p{color:var(--muted);font-size:14.5px;max-width:80ch}
+h3{font-size:18px;margin:4px 0 8px;letter-spacing:-.1px}
+h4{font-size:15.5px;margin:0 0 6px}
+p{margin-bottom:10px}
+p:last-child{margin-bottom:0}
+ul,ol{margin:6px 0 10px 20px}
+li{margin-bottom:6px}
+strong{color:#fff}
+em{color:#cbd5e1}
+.mono{font-family:Consolas,'Courier New',monospace}
+
+.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(30,58,95,.55);border:1px solid var(--border);
+  color:#cbd5e1;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;letter-spacing:.5px;margin:3px 4px 3px 0}
+.chip.acc{color:var(--accent);border-color:rgba(0,212,255,.45);background:rgba(0,212,255,.1)}
+.chip.grn{color:var(--green);border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.1)}
+.chip.amb{color:var(--amber);border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.1)}
+.chip.pur{color:var(--purple);border-color:rgba(168,85,247,.45);background:rgba(168,85,247,.1)}
+.chip.red{color:var(--red);border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.1)}
+
+.badge{display:inline-block;font-size:10.5px;letter-spacing:2px;font-weight:800;text-transform:uppercase;
+  padding:6px 12px;border-radius:999px;border:1px solid rgba(0,212,255,.45);color:var(--accent);background:rgba(0,212,255,.09)}
+
+/* Callouts */
+.callout{border:1px solid var(--border);border-left-width:5px;border-radius:10px;padding:15px 17px;margin:14px 0;background:var(--card)}
+.callout .ct{font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:8px}
+.callout.info{border-left-color:var(--accent);background:linear-gradient(90deg,rgba(0,212,255,.09),rgba(15,23,42,.35))}
+.callout.info .ct{color:var(--accent)}
+.callout.example{border-left-color:var(--green);background:linear-gradient(90deg,rgba(34,197,94,.09),rgba(15,23,42,.35))}
+.callout.example .ct{color:var(--green)}
+.callout.warning{border-left-color:var(--amber);background:linear-gradient(90deg,rgba(245,158,11,.09),rgba(15,23,42,.35))}
+.callout.warning .ct{color:var(--amber)}
+.callout.error{border-left-color:var(--red);background:linear-gradient(90deg,rgba(239,68,68,.09),rgba(15,23,42,.35))}
+.callout.error .ct{color:var(--red)}
+.callout.purple{border-left-color:var(--purple);background:linear-gradient(90deg,rgba(168,85,247,.09),rgba(15,23,42,.35))}
+.callout.purple .ct{color:var(--purple)}
+
+/* Pasos numerados */
+.paso{display:flex;gap:14px;align-items:flex-start;padding:16px;border:1px solid var(--border);border-radius:12px;background:var(--card);margin-bottom:14px}
+.pnum{flex:0 0 46px;height:46px;border-radius:11px;display:grid;place-items:center;font-weight:800;font-size:15px;
+  background:rgba(0,212,255,.12);color:var(--accent);border:1px solid rgba(0,212,255,.35);letter-spacing:.5px}
+.paso.green .pnum{background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.35)}
+.paso.amber .pnum{background:rgba(245,158,11,.12);color:var(--amber);border-color:rgba(245,158,11,.35)}
+.paso.purple .pnum{background:rgba(168,85,247,.12);color:var(--purple);border-color:rgba(168,85,247,.35)}
+.paso .pbody{flex:1 1 auto;min-width:0}
+.paso .ptag{font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim);font-weight:700}
+
+/* Botones */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;cursor:pointer;
+  font-family:inherit;font-size:13.5px;font-weight:700;letter-spacing:.6px;padding:11px 16px;min-height:44px;
+  border:1px solid var(--border);background:var(--card2);color:var(--text);transition:all .18s ease;text-decoration:none}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.primary{background:linear-gradient(135deg,rgba(0,212,255,.24),rgba(0,212,255,.1));border-color:rgba(0,212,255,.55);color:#bdf3ff}
+.btn.green{background:rgba(34,197,94,.14);border-color:rgba(34,197,94,.5);color:#bbf7d0}
+.btn.purple{background:rgba(168,85,247,.14);border-color:rgba(168,85,247,.5);color:#e9d5ff}
+.btn.amber{background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.5);color:#fde68a}
+.btn.ghost{background:transparent}
+.btn[aria-pressed="true"]{box-shadow:0 0 0 2px rgba(0,212,255,.35) inset}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-row{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0}
+
+/* Tablas */
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:12px 0}
+table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+thead th{background:var(--card2);font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:rgba(18,32,58,.35)}
+td.bad{color:#fca5a5}
+td.good{color:#86efac}
+
+/* Acordeón */
+details{border:1px solid var(--border);border-radius:10px;background:var(--card);margin-bottom:10px;overflow:hidden}
+summary{cursor:pointer;list-style:none;padding:14px 16px;font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:10px;color:#dbeafe}
+summary::-webkit-details-marker{display:none}
+summary .chev{margin-left:auto;transition:transform .25s ease;color:var(--accent);font-size:13px}
+details[open] summary .chev{transform:rotate(90deg)}
+details[open] summary{border-bottom:1px solid var(--border);background:rgba(0,212,255,.05)}
+.dbody{padding:14px 16px;color:var(--muted);font-size:14.5px}
+.dbody strong{color:var(--text)}
+
+/* ---------- Portada / SVG ---------- */
+.cover-frame{position:relative;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#080c16;
+  box-shadow:0 22px 60px rgba(0,0,0,.55)}
+.cover-strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;
+  padding:8px 12px;background:linear-gradient(90deg,rgba(0,212,255,.1),rgba(168,85,247,.08));border-bottom:1px solid var(--border)}
+.cover-strip .s{font-size:11px;letter-spacing:1.6px;font-weight:700;color:#cbd5e1;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+svg.cover{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#0a0e1a}
+
+/* ---------- HOME ---------- */
+.hero-title{font-size:clamp(27px,5.4vw,50px);line-height:1.1;letter-spacing:-1px;margin:16px 0 8px}
+.hero-title span{background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{font-size:clamp(15px,2.4vw,19px);color:#cbd5e1;max-width:86ch;margin-bottom:12px}
+.hero-desc{color:var(--muted);max-width:92ch;font-size:15.5px}
+.byline{font-size:12.5px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-weight:700;margin-bottom:6px}
+.quote{border:1px solid rgba(0,212,255,.35);border-left:5px solid var(--accent);border-radius:12px;padding:18px 20px;
+  background:linear-gradient(90deg,rgba(0,212,255,.09),rgba(15,23,42,.2));margin:16px 0}
+.quote p{font-size:clamp(16px,2.6vw,20px);font-style:italic;color:#e8f7ff;line-height:1.5}
+.quote.alt{border-color:rgba(168,85,247,.35);border-left-color:var(--purple);background:linear-gradient(90deg,rgba(168,85,247,.09),rgba(15,23,42,.2))}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 15px}
+.metric .mk{font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--dim);font-weight:700}
+.metric .mv{font-size:19px;font-weight:800;color:var(--accent);margin-top:3px;line-height:1.25}
+.metric .mv.sm{font-size:14.5px;font-weight:700;color:#dbeafe}
+.dtline{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.dtbox{flex:1 1 190px;border:1px solid var(--border);border-radius:11px;background:var(--card);padding:12px 14px;display:flex;align-items:center;gap:11px}
+.dtbox .di{font-size:19px}
+.dtbox .dl{font-size:10.5px;letter-spacing:1.6px;color:var(--dim);text-transform:uppercase;font-weight:700}
+.dtbox .dv{font-size:17px;font-weight:800;color:var(--text);font-family:Consolas,monospace}
+
+/* ---------- Teclado interactivo ---------- */
+.tool{border:1px solid var(--border);border-radius:12px;background:linear-gradient(180deg,#0d1526,#0b1120);padding:15px;margin:14px 0}
+.tool-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.tool-head h4{font-size:14px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent)}
+.kb-hint{font-size:11px;color:var(--dim);letter-spacing:.6px}
+.kb-scroll{overflow-x:auto;overflow-y:hidden;padding-bottom:8px;-webkit-overflow-scrolling:touch;border-radius:10px}
+.kb{position:relative;display:flex;height:154px;min-width:660px;background:#070b14;border:1px solid var(--border);border-radius:10px;padding:0}
+.kb .wk{position:relative;flex:1 1 0;height:100%;background:linear-gradient(180deg,#f6f8fc,#dde4ef);
+  border:1px solid #7d8ba3;border-top:none;border-radius:0 0 6px 6px;transition:background .18s,box-shadow .18s}
+.kb .bk{position:absolute;top:0;height:60%;width:3.448%;transform:translateX(-50%);z-index:3;
+  background:linear-gradient(180deg,#22304c,#080d18);border:1px solid #05080f;border-top:none;border-radius:0 0 5px 5px;
+  transition:background .18s,box-shadow .18s}
+.kname{position:absolute;top:7px;left:0;right:0;text-align:center;font-size:10px;font-weight:800;color:#334155;
+  font-family:Consolas,monospace;opacity:.75;letter-spacing:.4px}
+.kfing{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:10.5px;font-weight:800;color:#fff;
+  background:rgba(10,14,26,.8);border-radius:999px;padding:2px 7px;display:none;white-space:nowrap}
+.kb .bk .kname{color:#94a3b8;top:auto;bottom:6px;font-size:9px}
+.kb .bk .kfing{bottom:auto;top:38px;font-size:9px;padding:1px 5px}
+.wk.on,.bk.on{box-shadow:0 0 18px rgba(0,212,255,.45)}
+.wk.on .kfing,.bk.on .kfing{display:block}
+.wk.on-mel,.bk.on-mel{background:linear-gradient(180deg,#a5f3fc,#00d4ff)}
+.wk.on-harm,.bk.on-harm{background:linear-gradient(180deg,#bbf7d0,#22c55e)}
+.wk.on-bass,.bk.on-bass{background:linear-gradient(180deg,#fde68a,#f59e0b)}
+.wk.on-fill,.bk.on-fill{background:linear-gradient(180deg,#e9d5ff,#a855f7)}
+.wk.on-bad,.bk.on-bad{background:linear-gradient(180deg,#fecaca,#ef4444)}
+.on-mel .kfing,.on-harm .kfing,.on-bass .kfing,.on-fill .kfing,.on-bad .kfing{background:rgba(10,14,26,.85)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.legend span{font-size:11.5px;display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+/* Panel de movimiento / paso */
+.panel{border:1px solid var(--border);border-radius:12px;background:var(--card);padding:16px;margin-top:14px}
+.mv-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:9px}
+.mv-num{font-size:11px;font-weight:800;letter-spacing:1.6px;color:#0a0e1a;background:var(--accent);padding:5px 11px;border-radius:999px}
+.mv-zone{font-size:11px;font-weight:800;letter-spacing:1.6px;color:var(--amber);border:1px solid rgba(245,158,11,.4);
+  background:rgba(245,158,11,.1);padding:5px 11px;border-radius:999px;text-transform:uppercase}
+.mv-title{font-size:17.5px;margin-bottom:8px;color:#fff}
+.mv-q{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)}
+.mv-q b{display:block;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.mv-q p{color:var(--muted);font-size:14.5px}
+.mv-src{margin-top:12px;padding:11px 13px;border-left:3px solid var(--purple);background:rgba(168,85,247,.08);border-radius:8px;
+  font-size:13.5px;color:#e9d5ff}
+.mv-src b{color:var(--purple);letter-spacing:.8px;font-size:11px;text-transform:uppercase}
+
+/* Stepper */
+.stepper{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;
+  border:1px solid var(--border);border-radius:12px;background:#0b1120;padding:13px;margin-top:12px}
+.stepper .sbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.stepper .slider-row{flex:1 1 240px;min-width:200px;display:flex;align-items:center;gap:11px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:999px;background:#16233c;outline:none;border:1px solid var(--border)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;
+  background:var(--accent);cursor:pointer;border:3px solid #0a0e1a;box-shadow:0 0 12px rgba(0,212,255,.7)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:3px solid #0a0e1a}
+.step-ind{text-align:center;font-size:12.5px;letter-spacing:1.4px;color:var(--muted);font-weight:700;text-transform:uppercase}
+.step-ind b{color:var(--accent);font-size:14px}
+
+/* Checklist */
+.check{display:flex;gap:11px;align-items:flex-start;padding:13px;border:1px solid var(--border);border-radius:10px;
+  background:var(--card);cursor:pointer;margin-bottom:9px;transition:all .2s}
+.check:hover{border-color:rgba(0,212,255,.45)}
+.check input{width:22px;height:22px;flex:0 0 22px;accent-color:var(--green);margin-top:2px;cursor:pointer}
+.check.done{border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.07)}
+.check span{font-size:14.5px;color:var(--muted)}
+.check.done span{color:#bbf7d0}
+.meter{height:9px;border-radius:999px;background:#16233c;border:1px solid var(--border);overflow:hidden;margin:10px 0}
+.meter i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--accent));transition:width .35s ease}
+
+/* Subdivisión 3/4 */
+.subdiv{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:12px 0}
+.cell{border:1px solid var(--border);border-radius:10px;background:#0b1120;padding:14px 4px;text-align:center;
+  font-weight:800;font-size:17px;color:var(--dim);transition:all .09s ease;font-family:Consolas,monospace}
+.cell.beat{color:#94a3b8}
+.cell.hit{background:rgba(0,212,255,.2);border-color:var(--accent);color:#fff;transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,212,255,.25)}
+.cell.hit.beat{background:rgba(245,158,11,.22);border-color:var(--amber)}
+
+/* Mano (Fase I) */
+.hand-wrap{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.finger{cursor:pointer;transition:opacity .2s}
+.finger rect{transition:filter .2s}
+.finger:hover rect{filter:brightness(1.35)}
+.hand-info{border:1px solid var(--border);border-radius:10px;background:#0b1120;padding:13px 15px;font-size:14.5px;color:var(--muted);min-height:78px}
+.hand-info b{color:var(--accent)}
+
+/* Diagrama de estructura */
+.flowmap{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;justify-content:center;margin:12px 0}
+.fnode{flex:1 1 190px;border:1px solid var(--border);border-radius:12px;background:var(--card);padding:14px;text-align:center;position:relative}
+.fnode h5{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.fnode p{font-size:13.5px;color:var(--muted)}
+.farrow{display:grid;place-items:center;font-size:22px;color:var(--purple);flex:0 0 26px}
+
+/* Footer */
+footer{border-top:1px solid var(--border);background:#080c16;padding:26px 16px 34px;text-align:center;margin-top:20px}
+footer .fline{font-size:13.5px;color:var(--muted);margin-bottom:6px}
+footer .fmotto{margin-top:12px;font-style:italic;color:var(--purple);letter-spacing:1.2px;font-size:14px}
+
+/* Botones flotantes */
+.floaters{position:fixed;right:14px;bottom:16px;z-index:1250;display:flex;flex-direction:column;gap:9px}
+.fab{width:48px;height:48px;border-radius:13px;border:1px solid var(--border);background:rgba(15,23,42,.95);
+  color:var(--accent);font-size:19px;cursor:pointer;display:grid;place-items:center;transition:all .2s;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.fab:hover{border-color:var(--accent);transform:translateY(-2px)}
+#toTop{opacity:0;pointer-events:none;transform:translateY(14px)}
+#toTop.show{opacity:1;pointer-events:auto;transform:none}
+#soundBtn.off{color:var(--dim)}
+
+/* Créditos */
+.credit-box{text-align:center;padding:22px 18px}
+.credit-box .cname{font-size:clamp(24px,4.4vw,36px);font-weight:800;letter-spacing:-.5px;
+  background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+.credit-box .crole{font-size:12px;letter-spacing:2.6px;text-transform:uppercase;color:var(--dim);font-weight:700;margin-top:4px}
+.stamp{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:16px}
+.stamp div{border:1px solid var(--border);border-radius:10px;background:var(--card);padding:10px 16px;font-family:Consolas,monospace;font-size:14px;color:#cbd5e1}
+
+/* Reduced motion */
+.reduce-motion *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important;scroll-behavior:auto!important}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.05s!important}
+  html{scroll-behavior:auto}
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width:900px){
+  .brand small{display:none}
+  .sec-head{gap:11px}
+  .sec-icon{flex-basis:44px;height:44px;font-size:20px}
+}
+@media (max-width:680px){
+  body{font-size:15.4px}
+  main{padding-left:11px;padding-right:11px}
+  .card{padding:15px}
+  .brand b{font-size:11.5px}
+  .nav-btn{font-size:11.6px;padding:8px 10px;min-height:38px}
+  .kb{height:132px;min-width:600px}
+  .subdiv{grid-template-columns:repeat(3,1fr)}
+  .paso{padding:13px;gap:11px}
+  .pnum{flex-basis:40px;height:40px;font-size:13.5px}
+  .stepper{padding:11px}
+  .btn{flex:1 1 auto;min-width:130px}
+  th,td{padding:10px 11px;font-size:13.2px}
+  .floaters{right:10px;bottom:12px}
+  .fab{width:44px;height:44px}
+}
+@media (max-width:400px){
+  .kb{min-width:560px;height:124px}
+  .hero-title{font-size:25px}
+}
+</style>
+</head>
+<body id="top">
+
+<!-- ===================== SVG ÚNICO DE PORTADA (SÍMBOLO REUTILIZABLE) ===================== -->
+<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+<symbol id="coverArt" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="cvrBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0e1729"/><stop offset="0.5" stop-color="#0a0e1a"/><stop offset="1" stop-color="#0b1325"/>
+    </linearGradient>
+    <pattern id="cvrGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#111f38" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="bmA" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#f59e0b" stop-opacity="0.55"/><stop offset="1" stop-color="#f59e0b" stop-opacity="0"/></linearGradient>
+    <linearGradient id="bmG" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#22c55e" stop-opacity="0.55"/><stop offset="1" stop-color="#22c55e" stop-opacity="0"/></linearGradient>
+    <linearGradient id="bmC" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#00d4ff" stop-opacity="0.55"/><stop offset="1" stop-color="#00d4ff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="bmP" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#a855f7" stop-opacity="0.55"/><stop offset="1" stop-color="#a855f7" stop-opacity="0"/></linearGradient>
+    <radialGradient id="cvrGlow" cx="0.5" cy="0.42" r="0.62">
+      <stop offset="0" stop-color="#00d4ff" stop-opacity="0.12"/><stop offset="1" stop-color="#00d4ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#cvrBg)"/>
+  <rect width="1600" height="900" fill="url(#cvrGrid)" opacity="0.5"/>
+  <rect width="1600" height="900" fill="url(#cvrGlow)"/>
+
+  <!-- ===== Encabezado ===== -->
+  <text x="100" y="72" font-size="56" font-weight="800" letter-spacing="5" fill="#f1f5f9" font-family="Segoe UI,system-ui,sans-serif">LEAD SHEET</text>
+  <text x="100" y="120" font-size="26" font-weight="700" letter-spacing="4" fill="#00d4ff" font-family="Segoe UI,system-ui,sans-serif">ARREGLOS DE PIANO EN 5 FASES</text>
+  <text x="100" y="156" font-size="17" letter-spacing="1.2" fill="#94a3b8" font-family="Segoe UI,system-ui,sans-serif">De una sonoridad pobre (clunky) a un arreglo profesional con fluidez y profundidad</text>
+
+  <!-- ===== Widget Concepto 5-1-5 ===== -->
+  <text x="1310" y="52" font-size="16" font-weight="800" letter-spacing="3" text-anchor="middle" fill="#a855f7" font-family="Segoe UI,system-ui,sans-serif">CONCEPTO 5-1-5</text>
+  <path d="M1200,130 Q1255,72 1310,86 Q1365,72 1420,130" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="7 7" opacity="0.55"/>
+  <circle r="7" fill="#e9d5ff">
+    <animateMotion path="M1200,130 Q1255,72 1310,86 Q1365,72 1420,130" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="1200" cy="130" r="24" fill="#12203a" stroke="#a855f7" stroke-width="2">
+    <animate attributeName="r" values="24;29;24;24" keyTimes="0;0.08;0.2;1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <text x="1200" y="137" font-size="19" font-weight="800" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI,system-ui,sans-serif">5</text>
+  <text x="1200" y="176" font-size="14" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace">B (V)</text>
+  <circle cx="1310" cy="86" r="24" fill="#12203a" stroke="#00d4ff" stroke-width="2">
+    <animate attributeName="r" values="24;24;29;24;24" keyTimes="0;0.4;0.48;0.6;1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <text x="1310" y="93" font-size="19" font-weight="800" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI,system-ui,sans-serif">1</text>
+  <text x="1310" y="52" font-size="14" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace"> </text>
+  <text x="1310" y="132" font-size="14" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace">E (I)</text>
+  <circle cx="1420" cy="130" r="24" fill="#12203a" stroke="#a855f7" stroke-width="2">
+    <animate attributeName="r" values="24;24;29;24" keyTimes="0;0.82;0.9;1" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <text x="1420" y="137" font-size="19" font-weight="800" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI,system-ui,sans-serif">5</text>
+  <text x="1420" y="176" font-size="14" text-anchor="middle" fill="#94a3b8" font-family="Consolas,monospace">B (V)</text>
+
+  <!-- ===== Cinta de proceso (flujo de transformación) ===== -->
+  <line x1="117" y1="223" x2="1483" y2="223" stroke="#1e3a5f" stroke-width="2" opacity="0.6"/>
+  <circle r="7" fill="#00d4ff" opacity="0.9">
+    <animateMotion path="M117,223 L1483,223" dur="8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.35;1;0.35" dur="1.14s" repeatCount="indefinite"/>
+  </circle>
+<rect x="117.5" y="196" width="165" height="54" rx="10" fill="#0f172a" stroke="#1e3a5f" stroke-width="1.6"><animate attributeName="fill" values="#123047;#0f172a;#0f172a;#0f172a;#0f172a;#0f172a;#0f172a" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/><animate attributeName="stroke" values="#00d4ff;#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><text x="200.0" y="230" font-size="17" font-weight="700" letter-spacing="1.2" text-anchor="middle" fill="#cbd5e1">LEAD SHEET</text><rect x="317.5" y="196" width="165" height="54" rx="10" fill="#0f172a" stroke="#1e3a5f" stroke-width="1.6"><animate attributeName="fill" values="#0f172a;#123047;#0f172a;#0f172a;#0f172a;#0f172a;#0f172a" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/><animate attributeName="stroke" values="#1e3a5f;#00d4ff;#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><text x="400.0" y="230" font-size="17" font-weight="700" letter-spacing="1.2" text-anchor="middle" fill="#cbd5e1">FASE I</text><rect x="517.5" y="196" width="165" height="54" rx="10" fill="#0f172a" stroke="#1e3a5f" stroke-width="1.6"><animate attributeName="fill" values="#0f172a;#0f172a;#123047;#0f172a;#0f172a;#0f172a;#0f172a" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/><animate attributeName="stroke" values="#1e3a5f;#1e3a5f;#00d4ff;#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><text x="600.0" y="230" font-size="17" font-weight="700" letter-spacing="1.2" text-anchor="middle" fill="#cbd5e1">FASE II</text><rect x="717.5" y="196" width="165" height="54" rx="10" fill="#0f172a" stroke="#1e3a5f" stroke-width="1.6"><animate attributeName="fill" values="#0f172a;#0f172a;#0f172a;#123047;#0f172a;#0f172a;#0f172a" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/><animate attributeName="stroke" values="#1e3a5f;#1e3a5f;#1e3a5f;#00d4ff;#1e3a5f;#1e3a5f;#1e3a5f" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><text x="800.0" y="230" font-size="17" font-weight="700" letter-spacing="1.2" text-anchor="middle" fill="#cbd5e1">FASE III</text><rect x="917.5" y="196" width="165" height="54" rx="10" fill="#0f172a" stroke="#1e3a5f" stroke-width="1.6"><animate attributeName="fill" values="#0f172a;#0f172a;#0f172a;#0f172a;#123047;#0f172a;#0f172a" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/><animate attributeName="stroke" values="#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f;#00d4ff;#1e3a5f;#1e3a5f" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><text x="1000.0" y="230" font-size="17" font-weight="700" letter-spacing="1.2" text-anchor="middle" fill="#cbd5e1">FASE IV</text><rect x="1117.5" y="196" width="165" height="54" rx="10" fill="#0f172a" stroke="#1e3a5f" stroke-width="1.6"><animate attributeName="fill" values="#0f172a;#0f172a;#0f172a;#0f172a;#0f172a;#123047;#0f172a" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/><animate attributeName="stroke" values="#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f;#00d4ff;#1e3a5f" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><text x="1200.0" y="230" font-size="17" font-weight="700" letter-spacing="1.2" text-anchor="middle" fill="#cbd5e1">FASE V</text><rect x="1317.5" y="196" width="165" height="54" rx="10" fill="#0f172a" stroke="#1e3a5f" stroke-width="1.6"><animate attributeName="fill" values="#0f172a;#0f172a;#0f172a;#0f172a;#0f172a;#0f172a;#123047" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/><animate attributeName="stroke" values="#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f;#1e3a5f;#00d4ff" keyTimes="0;0.1429;0.2857;0.4286;0.5714;0.7143;0.8571" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><text x="1400.0" y="230" font-size="17" font-weight="700" letter-spacing="1.2" text-anchor="middle" fill="#cbd5e1">ARREGLO</text>
+
+  <!-- ===== Lead sheet: cifrado + pentagrama + melodía ===== -->
+  <text x="110" y="286" font-size="15" letter-spacing="2.4" font-weight="700" fill="#64748b" font-family="Segoe UI,system-ui,sans-serif">MELODÍA + CIFRADO ARMÓNICO · E MINOR · 3/4</text>
+<text x="240" y="296" font-size="24" font-weight="700" text-anchor="middle" fill="#5b6b85" font-family="Consolas,monospace">E min (I)<animate attributeName="fill" values="#f59e0b;#5b6b85;#5b6b85;#5b6b85" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></text><text x="500" y="296" font-size="24" font-weight="700" text-anchor="middle" fill="#5b6b85" font-family="Consolas,monospace">A (IV)<animate attributeName="fill" values="#5b6b85;#f59e0b;#5b6b85;#5b6b85" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></text><text x="760" y="296" font-size="24" font-weight="700" text-anchor="middle" fill="#5b6b85" font-family="Consolas,monospace">B (V)<animate attributeName="fill" values="#5b6b85;#5b6b85;#f59e0b;#5b6b85" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></text><text x="1020" y="296" font-size="24" font-weight="700" text-anchor="middle" fill="#5b6b85" font-family="Consolas,monospace">E min (I)<animate attributeName="fill" values="#5b6b85;#5b6b85;#5b6b85;#f59e0b" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></text>
+  <g stroke="#33507a" stroke-width="1.6">
+    <line x1="110" y1="340" x2="1150" y2="340"/><line x1="110" y1="368" x2="1150" y2="368"/>
+    <line x1="110" y1="396" x2="1150" y2="396"/><line x1="110" y1="424" x2="1150" y2="424"/>
+    <line x1="110" y1="452" x2="1150" y2="452"/>
+  </g>
+  <g stroke="#33507a" stroke-width="2.4">
+    <line x1="110" y1="340" x2="110" y2="452"/><line x1="370" y1="340" x2="370" y2="452"/>
+    <line x1="630" y1="340" x2="630" y2="452"/><line x1="890" y1="340" x2="890" y2="452"/>
+    <line x1="1150" y1="340" x2="1150" y2="452"/>
+  </g>
+  <path d="M160 396 L232 396 L304 354 L424 354 L496 368 L568 396 L688 410 L760 396 L832 410 L952 396 L1024 354 L1096 396"
+        fill="none" stroke="#a855f7" stroke-width="2" opacity="0.5" pathLength="1000" stroke-dasharray="1000" stroke-dashoffset="1000">
+    <animate attributeName="stroke-dashoffset" values="1000;0" dur="8s" repeatCount="indefinite"/>
+  </path>
+<g opacity="0.16"><line x1="170" y1="396" x2="170" y2="350" stroke="#00d4ff" stroke-width="3"/><ellipse cx="160" cy="396" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 160 396)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.0437;0.0557;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="242" y1="396" x2="242" y2="350" stroke="#00d4ff" stroke-width="3"/><ellipse cx="232" cy="396" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 232 396)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.1212;0.1332;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="314" y1="354" x2="314" y2="308" stroke="#00d4ff" stroke-width="3"/><ellipse cx="304" cy="354" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 304 354)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.1987;0.2107;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="434" y1="354" x2="434" y2="308" stroke="#00d4ff" stroke-width="3"/><ellipse cx="424" cy="354" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 424 354)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.2762;0.2882;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="506" y1="368" x2="506" y2="322" stroke="#00d4ff" stroke-width="3"/><ellipse cx="496" cy="368" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 496 368)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.3538;0.3658;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="578" y1="396" x2="578" y2="350" stroke="#00d4ff" stroke-width="3"/><ellipse cx="568" cy="396" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 568 396)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.4313;0.4433;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="698" y1="410" x2="698" y2="364" stroke="#00d4ff" stroke-width="3"/><ellipse cx="688" cy="410" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 688 410)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.5087;0.5207;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="770" y1="396" x2="770" y2="350" stroke="#00d4ff" stroke-width="3"/><ellipse cx="760" cy="396" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 760 396)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.5862;0.5982;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="842" y1="410" x2="842" y2="364" stroke="#00d4ff" stroke-width="3"/><ellipse cx="832" cy="410" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 832 410)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.6637;0.6757;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="962" y1="396" x2="962" y2="350" stroke="#00d4ff" stroke-width="3"/><ellipse cx="952" cy="396" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 952 396)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.7412;0.7532;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="1034" y1="354" x2="1034" y2="308" stroke="#00d4ff" stroke-width="3"/><ellipse cx="1024" cy="354" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 1024 354)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.8187;0.8307;0.965;1" dur="8s" repeatCount="indefinite"/></g><g opacity="0.16"><line x1="1106" y1="396" x2="1106" y2="350" stroke="#00d4ff" stroke-width="3"/><ellipse cx="1096" cy="396" rx="11.5" ry="8.4" fill="#00d4ff" transform="rotate(-18 1096 396)"/><animate attributeName="opacity" values="0.16;0.16;1;1;0.45" keyTimes="0;0.8962;0.9082;0.965;1" dur="8s" repeatCount="indefinite"/></g>
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0,0;1040,0" dur="8s" repeatCount="indefinite"/>
+    <line x1="110" y1="300" x2="110" y2="470" stroke="#00d4ff" stroke-width="3" opacity="0.85"/>
+    <path d="M102,296 L118,296 L110,308 Z" fill="#00d4ff"/>
+  </g>
+
+  <!-- ===== Mano derecha: digitación ===== -->
+  <text x="1350" y="286" font-size="15" letter-spacing="2.2" font-weight="700" text-anchor="middle" fill="#64748b" font-family="Segoe UI,system-ui,sans-serif">MANO DERECHA · DIGITACIÓN</text>
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0,0;0,-7;0,0" dur="4s" repeatCount="indefinite"/>
+    <rect x="1216" y="398" width="268" height="56" rx="18" fill="#12203a" stroke="#1e3a5f" stroke-width="2"/>
+    <rect x="1226" y="345" width="40" height="62" rx="15" fill="#16233c" stroke="#22c55e" stroke-width="2">
+      <animate attributeName="fill" values="#16233c;#1d4a33" keyTimes="0;0.5" calcMode="discrete" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="1278" y="310" width="40" height="97" rx="15" fill="#16233c" stroke="#22c55e" stroke-width="2">
+      <animate attributeName="fill" values="#16233c;#1d4a33" keyTimes="0;0.5" calcMode="discrete" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="1330" y="300" width="40" height="107" rx="15" fill="#16233c" stroke="#22c55e" stroke-width="2">
+      <animate attributeName="fill" values="#16233c;#1d4a33" keyTimes="0;0.5" calcMode="discrete" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="1382" y="308" width="40" height="99" rx="15" fill="#0e3b4a" stroke="#00d4ff" stroke-width="2">
+      <animate attributeName="fill" values="#0e3b4a;#16233c" keyTimes="0;0.5" calcMode="discrete" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="1434" y="330" width="40" height="77" rx="15" fill="#0e3b4a" stroke="#00d4ff" stroke-width="2">
+      <animate attributeName="fill" values="#0e3b4a;#16233c" keyTimes="0;0.5" calcMode="discrete" dur="4s" repeatCount="indefinite"/>
+    </rect>
+    <g font-size="19" font-weight="800" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI,system-ui,sans-serif">
+      <text x="1246" y="398">1</text><text x="1298" y="398">2</text><text x="1350" y="398">3</text>
+      <text x="1402" y="398">4</text><text x="1454" y="398">5</text>
+    </g>
+    <text x="1285" y="474" font-size="13" letter-spacing="1.2" text-anchor="middle" fill="#22c55e" font-family="Segoe UI,system-ui,sans-serif">1·2·3 ARMONÍA</text>
+    <text x="1428" y="474" font-size="13" letter-spacing="1.2" text-anchor="middle" fill="#00d4ff" font-family="Segoe UI,system-ui,sans-serif">4·5 MELODÍA</text>
+  </g>
+
+  <!-- ===== Haces de luz sobre las teclas activas ===== -->
+<rect x="100.00" y="466" width="45.78" height="116" fill="url(#bmA)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="0s" repeatCount="indefinite"/></rect><rect x="437.93" y="466" width="45.78" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="0s" repeatCount="indefinite"/></rect><rect x="534.48" y="466" width="45.78" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="0s" repeatCount="indefinite"/></rect><rect x="631.03" y="466" width="45.78" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="0s" repeatCount="indefinite"/></rect><rect x="968.97" y="466" width="45.78" height="116" fill="url(#bmC)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="0s" repeatCount="indefinite"/></rect><rect x="244.83" y="466" width="45.78" height="116" fill="url(#bmA)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="2s" repeatCount="indefinite"/></rect><rect x="582.76" y="466" width="45.78" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="2s" repeatCount="indefinite"/></rect><rect x="713.59" y="466" width="28.00" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="2s" repeatCount="indefinite"/></rect><rect x="775.86" y="466" width="45.78" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="2s" repeatCount="indefinite"/></rect><rect x="968.97" y="466" width="45.78" height="116" fill="url(#bmC)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="2s" repeatCount="indefinite"/></rect><rect x="293.10" y="466" width="45.78" height="116" fill="url(#bmA)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="4s" repeatCount="indefinite"/></rect><rect x="631.03" y="466" width="45.78" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="4s" repeatCount="indefinite"/></rect><rect x="727.59" y="466" width="45.78" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="4s" repeatCount="indefinite"/></rect><rect x="858.41" y="466" width="28.00" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="4s" repeatCount="indefinite"/></rect><rect x="920.69" y="466" width="45.78" height="116" fill="url(#bmC)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="4s" repeatCount="indefinite"/></rect><rect x="100.00" y="466" width="45.78" height="116" fill="url(#bmA)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="6s" repeatCount="indefinite"/></rect><rect x="437.93" y="466" width="45.78" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="6s" repeatCount="indefinite"/></rect><rect x="534.48" y="466" width="45.78" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="6s" repeatCount="indefinite"/></rect><rect x="631.03" y="466" width="45.78" height="116" fill="url(#bmG)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="6s" repeatCount="indefinite"/></rect><rect x="968.97" y="466" width="45.78" height="116" fill="url(#bmP)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="6s" repeatCount="indefinite"/></rect><rect x="1113.79" y="466" width="45.78" height="116" fill="url(#bmP)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="6s" repeatCount="indefinite"/></rect><rect x="1306.90" y="466" width="45.78" height="116" fill="url(#bmP)" opacity="0"><animate attributeName="opacity" values="0;0.95;0.8;0" keyTimes="0;0.12;0.65;1" dur="2s" begin="6s" repeatCount="indefinite"/></rect>
+
+  <!-- ===== Teclado del piano (E2 → E6) ===== -->
+  <text x="100" y="562" font-size="15" letter-spacing="2.4" font-weight="700" fill="#64748b" font-family="Segoe UI,system-ui,sans-serif">EJECUCIÓN SIMULTÁNEA · BAJO (LH) + ACORDE INTERNO + MELODÍA (MD) + FILL 5-1-5</text>
+<rect x="100.00" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#f59e0b;#e6edf7;#e6edf7;#f59e0b" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="148.28" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="196.55" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="244.83" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#e6edf7;#f59e0b;#e6edf7;#e6edf7" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="293.10" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#e6edf7;#e6edf7;#f59e0b;#e6edf7" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="341.38" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="389.66" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="437.93" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#22c55e;#e6edf7;#e6edf7;#22c55e" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="486.21" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="534.48" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#22c55e;#e6edf7;#e6edf7;#22c55e" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="582.76" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#e6edf7;#22c55e;#e6edf7;#e6edf7" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="631.03" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#22c55e;#e6edf7;#22c55e;#22c55e" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="679.31" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="727.59" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#e6edf7;#e6edf7;#22c55e;#e6edf7" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="775.86" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#e6edf7;#22c55e;#e6edf7;#e6edf7" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="824.14" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="872.41" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="920.69" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#e6edf7;#e6edf7;#00d4ff;#e6edf7" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="968.97" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#00d4ff;#00d4ff;#e6edf7;#a855f7" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="1017.24" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="1065.52" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="1113.79" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#e6edf7;#e6edf7;#e6edf7;#a855f7" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="1162.07" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="1210.34" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="1258.62" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="1306.90" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"><animate attributeName="fill" values="#e6edf7;#e6edf7;#e6edf7;#a855f7" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="1355.17" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="1403.45" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect><rect x="1451.72" y="580" width="45.78" height="210" rx="5" fill="#e6edf7" stroke="#0a0e1a" stroke-width="1.6"></rect>
+<rect x="182.55" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="230.83" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="279.10" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="375.66" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="423.93" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="520.48" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="568.76" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="617.03" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="713.59" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"><animate attributeName="fill" values="#0d1526;#22c55e;#0d1526;#0d1526" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="761.86" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="858.41" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"><animate attributeName="fill" values="#0d1526;#0d1526;#22c55e;#0d1526" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></rect><rect x="906.69" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="954.97" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="1051.52" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="1099.79" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="1196.34" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="1244.62" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="1292.90" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="1389.45" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect><rect x="1437.72" y="580" width="28.00" height="130" rx="4" fill="#0d1526" stroke="#1e3a5f" stroke-width="1.4"></rect>
+<text x="122.9" y="780.0" font-size="13" font-family="Consolas,monospace" fill="#64748b" text-anchor="middle">E2</text><text x="364.3" y="780.0" font-size="13" font-family="Consolas,monospace" fill="#64748b" text-anchor="middle">C3</text><text x="702.2" y="780.0" font-size="13" font-family="Consolas,monospace" fill="#64748b" text-anchor="middle">C4</text><text x="1040.1" y="780.0" font-size="13" font-family="Consolas,monospace" fill="#64748b" text-anchor="middle">C5</text><text x="1378.1" y="780.0" font-size="13" font-family="Consolas,monospace" fill="#64748b" text-anchor="middle">C6</text><text x="1329.8" y="780.0" font-size="13" font-family="Consolas,monospace" fill="#64748b" text-anchor="middle">B5</text>
+
+  <!-- ===== Fila inferior: root notes + salida de audio ===== -->
+  <circle cx="118" cy="842" r="8" fill="#f59e0b">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="6;9;6" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <text x="140" y="849" font-size="18" letter-spacing="1.6" font-weight="700" fill="#94a3b8" font-family="Segoe UI,system-ui,sans-serif">E MINOR · SCARBOROUGH FAIR · COMPÁS 3/4</text>
+  <text x="620" y="849" font-size="15" letter-spacing="1.4" fill="#64748b" font-family="Segoe UI,system-ui,sans-serif">LH · ROOT NOTES:</text>
+  <g font-family="Consolas,monospace" font-size="16" font-weight="700">
+    <circle cx="800" cy="843" r="7" fill="#f59e0b"><animate attributeName="opacity" values="1;0.25;0.25;0.25" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></circle>
+    <text x="816" y="849" fill="#f59e0b">E2 (I)</text>
+    <circle cx="905" cy="843" r="7" fill="#f59e0b"><animate attributeName="opacity" values="0.25;1;0.25;0.25" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></circle>
+    <text x="921" y="849" fill="#f59e0b">A2 (IV)</text>
+    <circle cx="1020" cy="843" r="7" fill="#f59e0b"><animate attributeName="opacity" values="0.25;0.25;1;0.25" keyTimes="0;0.25;0.5;0.75" calcMode="discrete" dur="8s" repeatCount="indefinite"/></circle>
+    <text x="1036" y="849" fill="#f59e0b">B2 (V)</text>
+  </g>
+  <text x="1315" y="806" font-size="13" letter-spacing="2" text-anchor="middle" fill="#475569" font-family="Segoe UI,system-ui,sans-serif">SALIDA · FLOW</text>
+<rect x="1170" y="854" width="14" height="16" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="16;30;20;16" dur="1.22s" repeatCount="indefinite"/><animate attributeName="y" values="854;840;850;854" dur="1.22s" repeatCount="indefinite"/></rect><rect x="1196" y="860" width="14" height="10" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="10;56;14;10" dur="0.99s" repeatCount="indefinite"/><animate attributeName="y" values="860;814;856;860" dur="0.99s" repeatCount="indefinite"/></rect><rect x="1222" y="860" width="14" height="10" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="10;56;14;10" dur="0.73s" repeatCount="indefinite"/><animate attributeName="y" values="860;814;856;860" dur="0.73s" repeatCount="indefinite"/></rect><rect x="1248" y="854" width="14" height="16" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="16;44;14;16" dur="0.89s" repeatCount="indefinite"/><animate attributeName="y" values="854;826;856;854" dur="0.89s" repeatCount="indefinite"/></rect><rect x="1274" y="848" width="14" height="22" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="22;44;14;22" dur="1.36s" repeatCount="indefinite"/><animate attributeName="y" values="848;826;856;848" dur="1.36s" repeatCount="indefinite"/></rect><rect x="1300" y="860" width="14" height="10" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="10;30;26;10" dur="1.2s" repeatCount="indefinite"/><animate attributeName="y" values="860;840;844;860" dur="1.2s" repeatCount="indefinite"/></rect><rect x="1326" y="860" width="14" height="10" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="10;56;26;10" dur="1.02s" repeatCount="indefinite"/><animate attributeName="y" values="860;814;844;860" dur="1.02s" repeatCount="indefinite"/></rect><rect x="1352" y="860" width="14" height="10" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="10;30;26;10" dur="1.39s" repeatCount="indefinite"/><animate attributeName="y" values="860;840;844;860" dur="1.39s" repeatCount="indefinite"/></rect><rect x="1378" y="854" width="14" height="16" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="16;44;14;16" dur="1.13s" repeatCount="indefinite"/><animate attributeName="y" values="854;826;856;854" dur="1.13s" repeatCount="indefinite"/></rect><rect x="1404" y="848" width="14" height="22" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="22;44;26;22" dur="1.35s" repeatCount="indefinite"/><animate attributeName="y" values="848;826;844;848" dur="1.35s" repeatCount="indefinite"/></rect><rect x="1430" y="860" width="14" height="10" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="10;30;26;10" dur="1.16s" repeatCount="indefinite"/><animate attributeName="y" values="860;840;844;860" dur="1.16s" repeatCount="indefinite"/></rect><rect x="1456" y="860" width="14" height="10" rx="3" fill="#00d4ff" opacity="0.7"><animate attributeName="height" values="10;44;14;10" dur="1.14s" repeatCount="indefinite"/><animate attributeName="y" values="860;826;856;860" dur="1.14s" repeatCount="indefinite"/></rect>
+
+  <!-- ===== Marco ===== -->
+  <rect x="3" y="3" width="1594" height="894" rx="20" fill="none" stroke="#1e3a5f" stroke-width="2.5"/>
+  <rect x="4" y="4" width="280" height="3" fill="#00d4ff" opacity="0.9">
+    <animate attributeName="x" values="4;1314;4" dur="12s" repeatCount="indefinite"/>
+  </rect>
+</symbol>
+</svg>
+
+<!-- ===================== BARRA DE PROGRESO ===================== -->
+<div id="progressWrap"><div id="progressBar"></div></div>
+
+<!-- ===================== NAVBAR FIJA ===================== -->
+<nav id="navbar" aria-label="Navegación del tutorial">
+  <div class="brand">
+    <div class="bicon">🎹</div>
+    <div><b>LEAD SHEETS</b><small>PIANO · 5 FASES</small></div>
+  </div>
+  <div id="navScroll">
+    <button class="nav-btn active" data-target="home">INICIO</button>
+    <button class="nav-btn" data-target="concepto">CONCEPTO</button>
+    <button class="nav-btn" data-target="fase1">FASE I · CIMIENTO</button>
+    <button class="nav-btn" data-target="fase2">FASE II · ARMONÍA</button>
+    <button class="nav-btn" data-target="fase3">FASE III · RITMO</button>
+    <button class="nav-btn" data-target="fase4">FASE IV · FILLS</button>
+    <button class="nav-btn" data-target="fase5">FASE V · ESTRUCTURA</button>
+    <button class="nav-btn" data-target="resumen">RESUMEN</button>
+    <button class="nav-btn" data-target="ejercicio">EJERCICIO</button>
+    <button class="nav-btn" data-target="glosario">GLOSARIO</button>
+    <button class="nav-btn credits" data-target="creditos">★ CRÉDITOS</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- =========================================================
+     HOME
+     ========================================================= -->
+<section class="view active" id="home" aria-label="Inicio">
+  <div class="cover-frame">
+    <div class="cover-strip">
+      <span class="s"><span class="pulse-dot"></span> Tutorial interactivo · Piano contemporáneo</span>
+      <span class="s">📅 08/09/2026 &nbsp;·&nbsp; 🕒 16:29:08</span>
+    </div>
+    <svg class="cover" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img"
+         aria-label="Portada animada: lead sheet en E minor con pentagrama, cifrado E min (I), A (IV), B (V), teclado de piano que ilumina bajo, armonía interna, melodía y fill 5-1-5, mano derecha con digitación 4-5 para melodía y 1-2-3 para armonía, y flujo de las cinco fases hasta el arreglo final.">
+      <use href="#coverArt" xlink:href="#coverArt" width="1600" height="900"></use>
+    </svg>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <span class="badge">Manual técnico · Arreglos de piano</span>
+    <h1 class="hero-title">Arreglos de Piano con <span>Lead Sheets</span></h1>
+    <p class="hero-sub">De una sonoridad “pobre” o torpe (<em>clunky</em>) a un arreglo profesional con fluidez y profundidad: un proceso repetible y pedagógicamente estructurado en <strong>5 fases</strong> y <strong>10 pasos</strong>.</p>
+    <p class="byline">por Rubén Sbarsky</p>
+    <p class="hero-desc">En la práctica del piano contemporáneo, la capacidad de interpretar una <strong>lead sheet</strong> es la línea divisoria entre el ejecutante que meramente reproduce notas y el músico que construye una arquitectura sonora con identidad propia. Este tutorial convierte ese documento “incompleto” en una decisión tras otra: melodía asegurada con los dedos 4 y 5, <em>root notes</em> estables en la mano izquierda, armonía integrada dentro de la mano derecha, movimiento rítmico en los huecos, brillo con el concepto 5-1-5 y una estructura con intro y outro.</p>
+
+    <div class="quote">
+      <p>“Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.”</p>
+    </div>
+    <div class="quote alt">
+      <p>“Una lead sheet es <strong>‘incompleta’ por diseño</strong>: ofrece la melodía y el cifrado armónico, pero delega en usted la responsabilidad de decidir el ritmo, el registro y la estructura.”</p>
+    </div>
+
+    <div class="grid g4" style="margin-top:16px">
+      <div class="metric"><div class="mk">Fases del proceso</div><div class="mv">5</div></div>
+      <div class="metric"><div class="mk">Pasos numerados</div><div class="mv">10</div></div>
+      <div class="metric"><div class="mk">Tonalidad del ejemplo</div><div class="mv sm">E minor</div></div>
+      <div class="metric"><div class="mk">Compás de la checklist</div><div class="mv sm">3/4</div></div>
+      <div class="metric"><div class="mk">Mano derecha</div><div class="mv sm">4-5 melodía · 1-2-3 armonía</div></div>
+      <div class="metric"><div class="mk">Mano izquierda</div><div class="mv sm">Root notes estables</div></div>
+      <div class="metric"><div class="mk">Concepto de fill</div><div class="mv sm">5-1-5 (Quinta · Tónica · Quinta)</div></div>
+      <div class="metric"><div class="mk">Ejercicio de culminación</div><div class="mv sm">Scarborough Fair</div></div>
+    </div>
+
+    <div class="dtline">
+      <div class="dtbox"><div class="di">📅</div><div><div class="dl">Fecha</div><div class="dv">08/09/2026</div></div></div>
+      <div class="dtbox"><div class="di">🕒</div><div><div class="dl">Hora</div><div class="dv">16:29:08</div></div></div>
+      <div class="dtbox"><div class="di">👨‍💻</div><div><div class="dl">Créditos</div><div class="dv" style="font-size:14.5px">Rubén Sbarsky</div></div></div>
+      <div class="dtbox"><div class="di">🎓</div><div><div class="dl">Uso</div><div class="dv" style="font-size:14.5px">Educativo y divulgativo</div></div></div>
+    </div>
+
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn primary" data-goto="concepto">▶ Comenzar el tutorial</button>
+      <button class="btn green" data-goto="ejercicio">🎹 Ir al ejercicio práctico</button>
+      <button class="btn purple" data-goto="creditos">★ Ver créditos</button>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     CONCEPTO
+     ========================================================= -->
+<section class="view" id="concepto" aria-label="Introducción al concepto de lead sheet">
+  <div class="sec-head">
+    <div class="sec-icon">📄</div>
+    <div>
+      <div class="eyebrow">Capítulo 0</div>
+      <h2>Introducción al Concepto de Lead Sheet</h2>
+      <p>Por qué este documento “incompleto” es, en realidad, una liberación estratégica para el pianista.</p>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>🎯 La línea divisoria</h3>
+      <p>En la práctica del piano contemporáneo, la capacidad de interpretar una <strong>lead sheet</strong> es la línea divisoria entre el ejecutante que <em>meramente reproduce notas</em> y el músico que <strong>construye una arquitectura sonora con identidad propia</strong>.</p>
+    </div>
+    <div class="card">
+      <h3>🩼 La partitura completa como muleta</h3>
+      <p>La partitura completa, aunque útil en el aprendizaje clásico, a menudo se convierte en una <strong>muleta que limita la libertad del intérprete</strong>.</p>
+    </div>
+    <div class="card">
+      <h3>🔓 Una liberación estratégica</h3>
+      <p>Dominar las lead sheets no es solo una ventaja técnica; es una <strong>liberación estratégica</strong> que le permite deshacerse de la dependencia de arreglos ajenos para <strong>proyectar su propia voz</strong>.</p>
+    </div>
+    <div class="card">
+      <h3>🎚️ Qué delega en usted</h3>
+      <p>Una lead sheet es <strong>“incompleta” por diseño</strong>: ofrece la <strong>melodía</strong> y el <strong>cifrado armónico</strong>, pero delega en usted la responsabilidad de decidir el <strong>ritmo</strong>, el <strong>registro</strong> y la <strong>estructura</strong>.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="ct">ℹ️ INFO · Definición operativa</div>
+    <p><strong>Lead sheet</strong> = melodía + cifrado armónico. Todo lo demás (ritmo, registro, estructura, rellenos, intro y outro) es <strong>responsabilidad del arreglista</strong>. Por eso el 99% de los pianistas fallan: abordan este documento de <strong>forma aleatoria</strong>.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Documento</th><th>Qué entrega ya resuelto</th><th>Qué delega en usted</th><th>Efecto sobre el intérprete</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Partitura completa</strong></td>
+          <td>Prácticamente todo está escrito.</td>
+          <td>Casi nada: queda poco por decidir.</td>
+          <td class="bad">Útil en el aprendizaje clásico, pero suele volverse una <em>muleta</em> que limita la libertad.</td>
+        </tr>
+        <tr>
+          <td><strong>Lead sheet</strong></td>
+          <td>Melodía y cifrado armónico.</td>
+          <td>Ritmo, registro y estructura.</td>
+          <td class="good">Liberación estratégica: permite proyectar su propia voz sin depender de arreglos ajenos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>🧭 Qué ofrece este tutorial</h3>
+      <p>Un <strong>proceso repetible y pedagógicamente estructurado</strong> para transformar una sonoridad “pobre” o torpe (<em>clunky</em>) en un <strong>arreglo profesional con fluidez y profundidad</strong>.</p>
+    </div>
+    <div class="card">
+      <h3>🏆 Lector de notas vs. arreglista</h3>
+      <p>La maestría en este proceso es lo que diferencia a un <em>lector de notas</em> de un <strong>verdadero arreglista</strong> capaz de enfrentar con éxito una <strong>sesión de estudio</strong>, un <strong>concierto</strong> o su propia <strong>práctica personal</strong>.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🗺️ Mapa del proceso (5 fases)</h3>
+    <div class="flowmap">
+      <div class="fnode"><h5>Fase I</h5><p>Cimentación: la melodía (dedos 4-5) y el bajo con <em>root notes</em>.</p></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><h5>Fase II</h5><p>Armonización de la mano derecha: dos notas del acorde bajo la melodía.</p></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><h5>Fase III</h5><p>Ritmo y manejo de espacios (“the gaps”): arpegios de relleno.</p></div>
+    </div>
+    <div class="flowmap">
+      <div class="fnode"><h5>Fase IV</h5><p>Creatividad y rellenos (<em>fills</em>): el concepto 5-1-5.</p></div>
+      <div class="farrow">→</div>
+      <div class="fnode"><h5>Fase V</h5><p>Estructura: intro (“vibe”) y outro con cierre circular.</p></div>
+      <div class="farrow">→</div>
+      <div class="fnode" style="border-color:rgba(168,85,247,.5)"><h5 style="color:var(--purple)">Resultado</h5><p>Arreglo profesional con fluidez, profundidad e identidad propia.</p></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn primary" data-goto="fase1">Ir a Fase I →</button>
+      <button class="btn ghost" data-goto="resumen">Ver resumen ejecutivo</button>
+      <button class="btn ghost" data-goto="glosario">Glosario y recursos</button>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     FASE I
+     ========================================================= -->
+<section class="view" id="fase1" aria-label="Fase I: Cimentación">
+  <div class="sec-head">
+    <div class="sec-icon">🧱</div>
+    <div>
+      <div class="eyebrow">Fase I</div>
+      <h2>Cimentación — La Melodía y el Bajo (Root Notes)</h2>
+      <p>La estructura debe ser inamovible antes de intentar cualquier adorno.</p>
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="ct">⚠️ Exigencia docente</div>
+    <p>Como docente, mi primera exigencia es siempre la misma: <strong>la estructura debe ser inamovible antes de intentar cualquier adorno</strong>. Un arreglo sin cimientos sólidos es una construcción <strong>condenada al colapso</strong>.</p>
+  </div>
+
+  <div class="paso">
+    <div class="pnum">01</div>
+    <div class="pbody">
+      <div class="ptag">Paso 1 · Mano derecha</div>
+      <h3>La Melodía Crítica</h3>
+      <p>Su objetivo primordial es <strong>asegurar la melodía</strong>, pues es el <strong>hilo conductor que la audiencia reconoce</strong>. Para ello, debe utilizar <strong>exclusivamente los dedos 4 y 5 de la mano derecha</strong>.</p>
+      <p>Esta restricción es <strong>deliberada y estratégica</strong>: al reservar los dedos más externos para la melodía, dejamos libre el resto de la mano (<strong>dedos 1, 2 y 3</strong>) para la futura <strong>densificación armónica</strong>.</p>
+      <div>
+        <span class="chip acc">Dedo 4 → melodía</span>
+        <span class="chip acc">Dedo 5 → melodía</span>
+        <span class="chip grn">Dedos 1 · 2 · 3 → reservados para armonía</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="paso green">
+    <div class="pnum">02</div>
+    <div class="pbody">
+      <div class="ptag">Paso 2 · Mano izquierda</div>
+      <h3>El Rol del Bajo</h3>
+      <p>Su mano izquierda debe asumir el papel del <strong>“bajista de la banda”</strong>. En esta fase, limítese a tocar las <strong>notas fundamentales (<em>root notes</em>)</strong> de cada acorde.</p>
+      <p><strong>No buscamos complejidad, sino estabilidad.</strong></p>
+      <div>
+        <span class="chip amb">LH = ancla</span>
+        <span class="chip amb">Solo root notes</span>
+        <span class="chip red">Sin adornos en esta fase</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="ct">ℹ️ Regla de notación</div>
+    <p>Siempre identifique la <strong>función del acorde respecto a la tonalidad</strong>. Por ejemplo, en el contexto de <strong>E minor</strong>, la tónica es <span class="mono">E(I)</span> y el cuarto grado es <span class="mono">A(IV)</span>.</p>
+    <p style="margin-top:8px">Todo el tutorial utiliza el <strong>sistema americano</strong> (A, B, C, D, E, F, G) acompañado del <strong>grado de la escala</strong> (I, II, III, IV, V, VI, VII).</p>
+  </div>
+
+  <div class="card">
+    <h3>🎹 Referencia de grados en el contexto del tutorial (E minor)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Grado</th><th>I</th><th>II</th><th>III</th><th>IV</th><th>V</th><th>VI</th><th>VII</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Nota</strong></td><td class="mono">E(I)</td><td class="mono">F#(II)</td><td class="mono">G(III)</td><td class="mono">A(IV)</td><td class="mono">B(V)</td><td class="mono">C(VI) / C#(VI#)</td><td class="mono">D(VII)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--muted);font-size:14px">El documento fuente emplea expresamente <span class="mono">E(I)</span>, <span class="mono">A(IV)</span> y <span class="mono">C#(VI#)</span> (sexta elevada, usada para armonizar el acorde de <span class="mono">A(IV)</span> cuando la melodía presenta una nota ajena).</p>
+  </div>
+
+  <div class="callout warning">
+    <div class="ct">🏗️ Analogía de la construcción</div>
+    <p>Piense en la melodía y el bajo como los <strong>cimientos y las paredes maestras</strong> de una casa. Es un <strong>error de principiante</strong> intentar colocar el tejado (los rellenos y <em>fills</em>) antes de que la estructura básica sea <strong>“roca sólida”</strong>.</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="card" style="border-color:rgba(34,197,94,.45)">
+      <h3 style="color:var(--green)">✅ Ejemplo correcto</h3>
+      <p><strong>Dedo 5</strong> sosteniendo la nota <span class="mono">B</span> mientras la izquierda toca un <span class="mono">E(I)</span> <strong>profundo</strong>.</p>
+      <div class="kb-scroll"><div id="kbOk"></div></div>
+      <div class="btn-row">
+        <button class="btn green" id="playOk">▶ Escuchar</button>
+        <button class="btn ghost" id="clearOk">Limpiar</button>
+      </div>
+    </div>
+    <div class="card" style="border-color:rgba(239,68,68,.45)">
+      <h3 style="color:var(--red)">❌ Ejemplo incorrecto</h3>
+      <p>Usar el <strong>pulgar (dedo 1)</strong> para la melodía, <strong>bloqueando mecánicamente</strong> la posibilidad de añadir armonía interna.</p>
+      <div class="kb-scroll"><div id="kbBad"></div></div>
+      <div class="btn-row">
+        <button class="btn" id="playBad" style="border-color:rgba(239,68,68,.5);color:#fecaca">▶ Escuchar</button>
+        <button class="btn ghost" id="clearBad">Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tool-head">
+      <h4>🖐️ Herramienta interactiva · digitación de la mano derecha</h4>
+      <span class="kb-hint">Pulse cada dedo para ver su función</span>
+    </div>
+    <div class="grid g2">
+      <div>
+        <svg viewBox="0 0 340 240" role="img" aria-label="Diagrama interactivo de la mano derecha con los cinco dedos y su función">
+          <rect x="30" y="140" width="280" height="70" rx="22" fill="#12203a" stroke="#1e3a5f" stroke-width="2"/>
+          <g class="finger" data-f="1"><rect x="44" y="96" width="40" height="64" rx="14" fill="#1d4a33" stroke="#22c55e" stroke-width="2"/></g>
+          <g class="finger" data-f="2"><rect x="96" y="44" width="40" height="116" rx="14" fill="#1d4a33" stroke="#22c55e" stroke-width="2"/></g>
+          <g class="finger" data-f="3"><rect x="148" y="30" width="40" height="130" rx="14" fill="#1d4a33" stroke="#22c55e" stroke-width="2"/></g>
+          <g class="finger" data-f="4"><rect x="200" y="40" width="40" height="120" rx="14" fill="#0e3b4a" stroke="#00d4ff" stroke-width="2"/></g>
+          <g class="finger" data-f="5"><rect x="252" y="70" width="40" height="90" rx="14" fill="#0e3b4a" stroke="#00d4ff" stroke-width="2"/></g>
+          <g font-size="19" font-weight="800" text-anchor="middle" fill="#e2e8f0" pointer-events="none">
+            <text x="64" y="152">1</text><text x="116" y="152">2</text><text x="168" y="152">3</text><text x="220" y="152">4</text><text x="272" y="152">5</text>
+          </g>
+          <text x="95" y="228" font-size="12.5" letter-spacing="1" text-anchor="middle" fill="#22c55e" font-weight="700">1·2·3 ARMONÍA</text>
+          <text x="252" y="228" font-size="12.5" letter-spacing="1" text-anchor="middle" fill="#00d4ff" font-weight="700">4·5 MELODÍA</text>
+        </svg>
+      </div>
+      <div>
+        <div class="hand-info" id="handInfo">Seleccione un dedo del diagrama para conocer su función dentro del arreglo.</div>
+        <div style="margin-top:12px">
+          <span class="chip acc">4 · 5 = melodía crítica</span>
+          <span class="chip grn">1 · 2 · 3 = densificación armónica</span>
+          <span class="chip amb">LH = root notes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="concepto">← Capítulo 0</button>
+    <button class="btn primary" data-goto="fase2">Fase II: Armonización →</button>
+  </div>
+</section>
+
+<!-- =========================================================
+     FASE II
+     ========================================================= -->
+<section class="view" id="fase2" aria-label="Fase II: Armonización de la mano derecha">
+  <div class="sec-head">
+    <div class="sec-icon">🎼</div>
+    <div>
+      <div class="eyebrow">Fase II</div>
+      <h2>La Armonización de la Mano Derecha</h2>
+      <p>El secreto del sonido rico no es separar las manos, sino integrar los acordes dentro de la mano derecha.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="ct">ℹ️ Punto de partida</div>
+    <p>Ahora que ha asegurado el <strong>esqueleto</strong> de la pieza, ha ganado el derecho a explorar su <strong>corazón armónico</strong>. El secreto del sonido rico y profesional <strong>no es separar las manos</strong>, sino <strong>integrar los acordes dentro de la mano derecha</strong> para lograr un <strong>flujo indivisible</strong>.</p>
+  </div>
+
+  <div class="paso">
+    <div class="pnum">03</div>
+    <div class="pbody">
+      <div class="ptag">Paso 3 · Mano derecha</div>
+      <h3>El Relleno Armónico</h3>
+      <p>Utilizando los <strong>dedos 1, 2 o 3</strong> que quedaron disponibles, añada <strong>dos notas del acorde justo debajo de la melodía</strong>.</p>
+      <p>Por ejemplo, si toca un <span class="mono">E(I)</span> minor, su <strong>dedo 5 mantiene la melodía</strong> mientras su <strong>pulgar e índice añaden la tercera y la quinta</strong> del acorde.</p>
+      <div>
+        <span class="chip acc">Melodía (dedo 5) arriba</span>
+        <span class="chip grn">3ª del acorde debajo</span>
+        <span class="chip grn">5ª del acorde debajo</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="paso amber">
+    <div class="pnum">04</div>
+    <div class="pbody">
+      <div class="ptag">Paso 4 · Sincronización armónica</div>
+      <h3>El Momento del Cambio</h3>
+      <p>Siga esta <strong>fórmula</strong>:</p>
+      <div class="callout purple" style="margin:10px 0">
+        <p class="mono" style="font-size:15.5px;color:#e9d5ff"><strong>El acorde se refresca o cambia</strong> → al inicio de cada compás <strong>O</strong> en cada nuevo símbolo de cifrado.<br>
+        <strong>El resto del tiempo</strong> → la melodía fluye sobre esa base armónica.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tool-head">
+      <h4>🔬 Explorador de voicings · mano derecha integrada</h4>
+      <span class="kb-hint">Melodía con dedo 5 + dos notas del acorde con dedos 1-2 · LH en root note</span>
+    </div>
+    <div class="btn-row" id="voicingChords">
+      <button class="btn primary" data-chord="em" aria-pressed="true">E min (I)</button>
+      <button class="btn" data-chord="a4" aria-pressed="false">A (IV)</button>
+    </div>
+    <div class="btn-row" id="voicingTypes">
+      <button class="btn green" data-type="35" aria-pressed="true">3ª + 5ª</button>
+      <button class="btn" data-type="37" aria-pressed="false">3ª + 7ª</button>
+    </div>
+    <div class="kb-scroll"><div id="kbVoicing"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:#00d4ff"></i> Melodía (dedos 4-5)</span>
+      <span><i class="sw" style="background:#22c55e"></i> Armonía interna (dedos 1-2-3)</span>
+      <span><i class="sw" style="background:#f59e0b"></i> Root note · mano izquierda</span>
+    </div>
+    <div class="panel" id="voicingInfo"></div>
+    <div class="btn-row">
+      <button class="btn primary" id="voicingPlay">▶ Escuchar el voicing</button>
+      <button class="btn ghost" id="voicingArp">🎵 Tocarlo arpegiado</button>
+    </div>
+  </div>
+
+  <div class="callout example">
+    <div class="ct">💡 Resolución de problemas · La invitación creativa</div>
+    <p>En ocasiones, la melodía presentará <strong>notas que no pertenecen estrictamente al acorde</strong>, como ocurre en <strong>Scarborough Fair</strong> cuando aparece una nota <span class="mono">B</span> sobre un acorde de <span class="mono">A(IV)</span>.</p>
+    <p style="margin-top:8px">Lejos de ser un error, esto es una <strong>invitación a la toma de decisiones creativa</strong>. Su labor como arreglista es <strong>hacer que funcione</strong>: mantenga la nota ajena en la melodía y busque <strong>dos notas del acorde de A(IV)</strong> (como <span class="mono">C#(VI#)</span> y <span class="mono">E(I)</span>) para armonizar por debajo.</p>
+    <p style="margin-top:8px">Esta técnica <strong>evita un sonido torpe</strong> y otorga al arreglo un <strong>flow profesional</strong>.</p>
+  </div>
+
+  <div class="card" style="border-color:rgba(34,197,94,.4)">
+    <div class="tool-head">
+      <h4 style="color:var(--green)">🧪 Caso práctico · nota B (melodía) sobre A(IV)</h4>
+      <span class="kb-hint">La nota ajena se conserva, la armonía se adapta</span>
+    </div>
+    <div class="kb-scroll"><div id="kbAlien"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:#00d4ff"></i> Nota ajena conservada en la melodía (B, dedo 5)</span>
+      <span><i class="sw" style="background:#22c55e"></i> C#(VI#) + E(I) del acorde de A(IV)</span>
+      <span><i class="sw" style="background:#f59e0b"></i> A(IV) en el bajo</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn green" id="alienPlay">▶ Escuchar el resultado</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="fase1">← Fase I</button>
+    <button class="btn primary" data-goto="fase3">Fase III: Ritmo y espacios →</button>
+  </div>
+</section>
+
+<!-- =========================================================
+     FASE III
+     ========================================================= -->
+<section class="view" id="fase3" aria-label="Fase III: Ritmo y manejo de espacios">
+  <div class="sec-head">
+    <div class="sec-icon">⏱️</div>
+    <div>
+      <div class="eyebrow">Fase III</div>
+      <h2>Ritmo y Manejo de Espacios (“The Gaps”)</h2>
+      <p>La verdadera maestría consiste en saber qué hacer cuando la melodía “se detiene”.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="ct">ℹ️ Principio</div>
+    <p>El ritmo <strong>no debe ser una imposición metronómica</strong>, sino una <strong>respuesta orgánica a la melodía</strong>. La verdadera maestría consiste en saber <strong>qué hacer cuando la melodía “se detiene”</strong>.</p>
+  </div>
+
+  <div class="paso">
+    <div class="pnum">05</div>
+    <div class="pbody">
+      <div class="ptag">Paso 5 · Análisis</div>
+      <h3>Identificar los Huecos (Gaps)</h3>
+      <p>Localice los <strong>silencios</strong> o las <strong>notas largas</strong> de la melodía. Estos espacios son sus <strong>ventanas de oportunidad para generar movimiento</strong>.</p>
+    </div>
+  </div>
+
+  <div class="paso green">
+    <div class="pnum">06</div>
+    <div class="pbody">
+      <div class="ptag">Paso 6 · Ejecución</div>
+      <h3>Arpegios de Relleno</h3>
+      <p>En esos huecos, utilice los <strong>dedos 1 y 2 (pulgar e índice)</strong> para crear <strong>subdivisiones rítmicas</strong>.</p>
+      <p><strong>No se trata de tocar notas nuevas</strong>, sino de <strong>arpegiar rítmicamente las notas del acorde que ya tiene posicionadas bajo su mano</strong>.</p>
+      <div>
+        <span class="chip grn">Dedo 1 (pulgar)</span>
+        <span class="chip grn">Dedo 2 (índice)</span>
+        <span class="chip acc">Mismas notas del acorde</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tool-head">
+      <h4>🥁 Simulador de subdivisión · compás 3/4</h4>
+      <span class="kb-hint">“1 y 2 y 3 y” — pulso constante + movimiento en la subdivisión</span>
+    </div>
+    <div class="subdiv" id="subdiv">
+      <div class="cell beat" data-i="0">1</div>
+      <div class="cell" data-i="1">y</div>
+      <div class="cell beat" data-i="2">2</div>
+      <div class="cell" data-i="3">y</div>
+      <div class="cell beat" data-i="4">3</div>
+      <div class="cell" data-i="5">y</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn primary" id="subPlay">▶ Iniciar pulso</button>
+      <button class="btn ghost" id="subStop">■ Detener</button>
+      <button class="btn purple" id="gapDemo">🎹 Demo: hueco + arpegio de relleno</button>
+    </div>
+    <p style="color:var(--muted);font-size:14px;margin-top:8px">En la demo, la melodía sostiene una nota larga (el <strong>hueco</strong>) mientras los <strong>dedos 1 y 2</strong> arpegian las notas del acorde ya posicionadas: exactamente el mecanismo del <strong>Paso 6</strong>.</p>
+    <div class="kb-scroll" style="margin-top:10px"><div id="kbGap"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="tool-head">
+      <h4>✅ Lista de verificación de maestría rítmica (compás 3/4)</h4>
+      <span class="kb-hint" id="checkCount">0 de 3 completados</span>
+    </div>
+    <div class="meter"><i id="checkBar"></i></div>
+    <label class="check"><input type="checkbox" data-chk><span>¿Siento el pulso de <strong>1, 2, 3</strong> de forma constante?</span></label>
+    <label class="check"><input type="checkbox" data-chk><span>¿Estoy añadiendo movimiento en la <strong>subdivisión</strong> (el “y” de: <span class="mono">1 y 2 y 3 y</span>)?</span></label>
+    <label class="check"><input type="checkbox" data-chk><span>¿La <strong>mano izquierda</strong> se mantiene estable como un <strong>ancla</strong> sin perderse en adornos innecesarios?</span></label>
+    <div class="btn-row">
+      <button class="btn green" id="chkAll">Marcar todo</button>
+      <button class="btn ghost" id="chkNone">Reiniciar</button>
+    </div>
+  </div>
+
+  <div class="callout example">
+    <div class="ct">💡 Consejo de experto</div>
+    <p>Le animo a practicar la <strong>“improvisación rítmica”</strong>. No se limite a un patrón estricto; <strong>juegue con cómo divide el tiempo</strong> en los huecos de la melodía para que el arreglo <strong>respire</strong>.</p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="fase2">← Fase II</button>
+    <button class="btn primary" data-goto="fase4">Fase IV: Creatividad y fills →</button>
+  </div>
+</section>
+
+<!-- =========================================================
+     FASE IV
+     ========================================================= -->
+<section class="view" id="fase4" aria-label="Fase IV: Creatividad y rellenos">
+  <div class="sec-head">
+    <div class="sec-icon">✨</div>
+    <div>
+      <div class="eyebrow">Fase IV</div>
+      <h2>Creatividad y Rellenos (Fills)</h2>
+      <p>Si el ritmo proporciona el movimiento, los fills proporcionan el brillo.</p>
+    </div>
+  </div>
+
+  <div class="callout warning">
+    <div class="ct">🧂 Analogía de las especias</div>
+    <p>Recuerde nuestra analogía: los rellenos son como las <strong>especias en la cocina</strong>; <strong>esenciales para realzar el sabor</strong>, pero <strong>desastrosos si opacan el ingrediente principal (la melodía)</strong>.</p>
+  </div>
+
+  <div class="paso purple">
+    <div class="pnum">07</div>
+    <div class="pbody">
+      <div class="ptag">Paso 7 · Registro agudo</div>
+      <h3>El Concepto 5-1-5</h3>
+      <p>Para crear <strong>destellos en el registro agudo</strong>, utilice este concepto de <strong>“forma” o patrón</strong>: toque la <strong>Quinta</strong>, la <strong>Tónica</strong> y la <strong>Quinta superior</strong> del acorde actual.</p>
+      <p>Es una <strong>estructura abierta y brillante</strong> que llena el espacio <strong>sin saturar</strong>.</p>
+      <div>
+        <span class="chip pur">5 · Quinta</span>
+        <span class="chip acc">1 · Tónica</span>
+        <span class="chip pur">5 · Quinta superior</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="paso">
+    <div class="pnum">08</div>
+    <div class="pbody">
+      <div class="ptag">Paso 8 · Mentalidad</div>
+      <h3>Improvisación Conceptual</h3>
+      <p><strong>Evite memorizar frases fijas (<em>licks</em>)</strong>. Use el concepto 5-1-5 como una <strong>herramienta elástica</strong>: puede <strong>subir, bajar o variar el orden</strong> según la emoción que desee transmitir en ese momento exacto.</p>
+      <p>Esta mentalidad asegura que su arreglo <strong>nunca suene mecánico</strong>, permitiéndole <strong>reaccionar a su sensibilidad diaria</strong> cada vez que se sienta al piano.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="tool-head">
+      <h4>🌟 Laboratorio 5-1-5 · destellos en el registro agudo</h4>
+      <span class="kb-hint">Elija acorde y orden: la herramienta es elástica</span>
+    </div>
+    <div class="btn-row" id="fillChords">
+      <button class="btn purple" data-fill="em" aria-pressed="true">E min (I) → B-E-B</button>
+      <button class="btn" data-fill="a4" aria-pressed="false">A (IV) → E-A-E</button>
+      <button class="btn" data-fill="b5" aria-pressed="false">B (V) → F#-B-F#</button>
+    </div>
+    <div class="btn-row" id="fillOrders">
+      <button class="btn primary" data-order="up" aria-pressed="true">↑ Subir (5-1-5)</button>
+      <button class="btn" data-order="down" aria-pressed="false">↓ Bajar (5-1-5 invertido)</button>
+      <button class="btn" data-order="var" aria-pressed="false">↔ Variar el orden (1-5-1)</button>
+    </div>
+    <div class="kb-scroll"><div id="kbFill"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:#a855f7"></i> Fill 5-1-5 (registro agudo)</span>
+      <span><i class="sw" style="background:#f59e0b"></i> Root note de referencia (LH)</span>
+    </div>
+    <div class="panel" id="fillInfo"></div>
+    <div class="btn-row">
+      <button class="btn purple" id="fillPlay">▶ Escuchar el destello</button>
+      <button class="btn ghost" id="fillSlow">🐢 Versión lenta</button>
+    </div>
+  </div>
+
+  <div class="callout error">
+    <div class="ct">⛔ Límite del fill</div>
+    <p>El fill <strong>realza</strong>, nunca <strong>sustituye</strong>. Si el destello tapa la melodía, se ha convertido en el error que la Fase IV busca evitar: <strong>priorizar el relleno sobre la melodía</strong>.</p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="fase3">← Fase III</button>
+    <button class="btn primary" data-goto="fase5">Fase V: Intro y Outro →</button>
+  </div>
+</section>
+
+<!-- =========================================================
+     FASE V
+     ========================================================= -->
+<section class="view" id="fase5" aria-label="Fase V: Estructura, intro y outro">
+  <div class="sec-head">
+    <div class="sec-icon">🎬</div>
+    <div>
+      <div class="eyebrow">Fase V</div>
+      <h2>Estructura — Intro y Outro</h2>
+      <p>Un arreglo de alto nivel no debe “irrumpir por la puerta”: debe presentarse con elegancia y retirarse con propósito.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="ct">ℹ️ Narrativa</div>
+    <p>Un arreglo de alto nivel <strong>no debe “irrumpir por la puerta” de forma abrupta</strong>; debe ser <strong>presentado con elegancia</strong> y <strong>retirarse con propósito</strong>. Esto transforma una pieza técnica en una <strong>historia con narrativa</strong>.</p>
+  </div>
+
+  <div class="paso purple">
+    <div class="pnum">09</div>
+    <div class="pbody">
+      <div class="ptag">Paso 9 · Apertura</div>
+      <h3>Crear el “Vibe” (Intro)</h3>
+      <p><strong>No necesita inventar material nuevo.</strong> Utilice un <strong>riff basado en el concepto 5-1-5</strong> en un <strong>registro distinto (más agudo)</strong> para establecer la <strong>atmósfera</strong> antes de que entre la melodía.</p>
+    </div>
+  </div>
+
+  <div class="paso green">
+    <div class="pnum">10</div>
+    <div class="pbody">
+      <div class="ptag">Paso 10 · Cierre</div>
+      <h3>El Cierre Cohesivo (Outro)</h3>
+      <p>Para dotar al arreglo de <strong>unidad</strong>, <strong>reutilice el motivo de la introducción al final</strong>. Esto genera una sensación de <strong>cierre circular</strong>, <strong>“acostando” la canción con suavidad y coherencia</strong>.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🧭 Arquitectura del arreglo</h3>
+    <div class="flowmap">
+      <div class="fnode" style="border-color:rgba(168,85,247,.5)">
+        <h5 style="color:var(--purple)">Intro · “Vibe”</h5>
+        <p>Riff 5-1-5 en registro más agudo. No hay material nuevo: se reutiliza el concepto de la Fase IV.</p>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fnode">
+        <h5>Cuerpo · Fases I-IV</h5>
+        <p>Melodía con dedos 4-5, root notes en LH, armonía interna en MD, movimiento en los huecos y fills puntuales.</p>
+      </div>
+      <div class="farrow">→</div>
+      <div class="fnode" style="border-color:rgba(34,197,94,.5)">
+        <h5 style="color:var(--green)">Outro · Cierre circular</h5>
+        <p>Se reutiliza el motivo de la introducción: la canción se “acuesta” con suavidad y coherencia.</p>
+      </div>
+    </div>
+    <p style="text-align:center;color:var(--purple);font-size:13.5px;letter-spacing:1px">↺ Outro = mismo motivo de la Intro → sensación de cierre circular</p>
+  </div>
+
+  <div class="card">
+    <div class="tool-head">
+      <h4>🎧 Intro y Outro · el mismo motivo 5-1-5 en registro agudo</h4>
+      <span class="kb-hint">E(I) en registro agudo: E5 · B5 · E6</span>
+    </div>
+    <div class="kb-scroll"><div id="kbIntro"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:#a855f7"></i> Motivo de intro / outro (registro agudo)</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn purple" id="introPlay">▶ Intro (establecer el “vibe”)</button>
+      <button class="btn green" id="outroPlay">▶ Outro (cierre circular, más suave)</button>
+    </div>
+    <p style="color:var(--muted);font-size:14px;margin-top:6px">Compare ambas ejecuciones: el <strong>material es el mismo</strong>; cambia la intención (presentar con elegancia / retirarse con propósito).</p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="fase4">← Fase IV</button>
+    <button class="btn primary" data-goto="resumen">Resumen y errores →</button>
+  </div>
+</section>
+
+<!-- =========================================================
+     RESUMEN
+     ========================================================= -->
+<section class="view" id="resumen" aria-label="Resumen, errores y práctica">
+  <div class="sec-head">
+    <div class="sec-icon">📊</div>
+    <div>
+      <div class="eyebrow">Capítulo 6</div>
+      <h2>Resumen, Errores y Práctica</h2>
+      <p>Resumen ejecutivo de la transformación, preguntas frecuentes y errores comunes.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📋 Resumen Ejecutivo: La Transformación del Arreglista</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Elemento</th><th>Estado Inicial (Pobre)</th><th>Estado Arreglado (Profesional)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Mano Derecha</strong></td>
+            <td class="bad">Dedos aleatorios; acorde separado</td>
+            <td class="good">Dedos 4-5 para melodía; 1-2-3 para armonía</td>
+          </tr>
+          <tr>
+            <td><strong>Mano Izquierda</strong></td>
+            <td class="bad">Patrones erráticos</td>
+            <td class="good">Root notes sólidas y estables</td>
+          </tr>
+          <tr>
+            <td><strong>Espacios</strong></td>
+            <td class="bad">Silencio muerto</td>
+            <td class="good">Movimiento rítmico en las subdivisiones</td>
+          </tr>
+          <tr>
+            <td><strong>Estructura</strong></td>
+            <td class="bad">Inicio y fin abruptos</td>
+            <td class="good">Intro y Outro que reutilizan material temático</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>❓ Preguntas Frecuentes (FAQ)</h3>
+    <details>
+      <summary>¿Por qué es obligatorio usar los dedos 4 y 5 para la melodía? <span class="chev">▶</span></summary>
+      <div class="dbody">
+        <p>Es una cuestión de <strong>economía de espacio</strong>. Al entrenar la <strong>independencia de los dedos 4 y 5</strong> para la línea melódica, se <strong>“libera” el resto de la mano</strong> para rellenar la armonía <strong>sin que los dedos choquen entre sí</strong>.</p>
+      </div>
+    </details>
+    <details>
+      <summary>¿Cómo elijo qué dos notas poner bajo la melodía? <span class="chev">▶</span></summary>
+      <div class="dbody">
+        <p>La regla general es buscar la <strong>3ª y la 7ª</strong>, o la <strong>3ª y la 5ª</strong> del acorde.</p>
+        <p>Lo más importante es que las notas elegidas <strong>definan claramente la sonoridad del acorde</strong> (mayor, menor o dominante).</p>
+        <p style="margin-top:8px">Puede comprobarlo en el <strong>Explorador de voicings</strong> de la Fase II, que alterna entre <span class="mono">3ª + 5ª</span> y <span class="mono">3ª + 7ª</span>.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <h3>⛔ Errores Comunes</h3>
+    <div class="grid g3">
+      <div class="callout error" style="margin:0">
+        <div class="ct">Error 1</div>
+        <p><strong>Priorizar el relleno sobre la melodía:</strong> si la melodía no es clara y proyectada, el arreglo <strong>pierde su propósito</strong>.</p>
+      </div>
+      <div class="callout error" style="margin:0">
+        <div class="ct">Error 2</div>
+        <p><strong>Inestabilidad rítmica en la mano izquierda:</strong> la izquierda debe ser el cimiento. Si intenta hacer <em>fills</em> con ambas manos a la vez, <strong>perderá el pulso</strong>.</p>
+      </div>
+      <div class="callout error" style="margin:0">
+        <div class="ct">Error 3</div>
+        <p><strong>Ejecución mecánica:</strong> tocar siempre el mismo patrón en los huecos. Recuerde que <strong>el ritmo también se improvisa</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🧭 Ruta de práctica sugerida por el tutorial</h3>
+    <ol>
+      <li>Asegure <strong>melodía (dedos 4-5)</strong> + <strong>root notes (LH)</strong> hasta que sea “roca sólida”.</li>
+      <li>Añada <strong>dos notas del acorde</strong> debajo de la melodía con los dedos disponibles.</li>
+      <li>Refresque el acorde <strong>al inicio de cada compás o con cada nuevo símbolo de cifrado</strong>.</li>
+      <li>Detecte los <strong>huecos</strong> y llénelos con <strong>arpegios rítmicos</strong> (dedos 1 y 2) sobre las notas ya posicionadas.</li>
+      <li>Incorpore <strong>destellos 5-1-5</strong> sin tapar la melodía.</li>
+      <li>Cierre la forma con <strong>intro y outro</strong> que reutilizan el mismo motivo.</li>
+    </ol>
+    <div class="btn-row">
+      <button class="btn primary" data-goto="ejercicio">🎹 Ir al ejercicio práctico (Scarborough Fair)</button>
+      <button class="btn ghost" data-goto="glosario">Glosario y recursos</button>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     EJERCICIO
+     ========================================================= -->
+<section class="view" id="ejercicio" aria-label="Ejercicio práctico Scarborough Fair">
+  <div class="sec-head">
+    <div class="sec-icon">🎹</div>
+    <div>
+      <div class="eyebrow">Culminación</div>
+      <h2>Ejercicio Práctico: Scarborough Fair</h2>
+      <p>Aplique secuencialmente los 5 pasos sobre los primeros compases en <strong>E minor</strong>.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <div class="ct">ℹ️ Cómo usar este tablero paso a paso</div>
+    <p>El teclado muestra <strong>exactamente</strong> las notas de cada paso, con su <strong>función</strong> (melodía, armonía interna, bajo, fill) y su <strong>dedo</strong>. Avance <strong>un paso cada vez</strong> con los controles situados <strong>justo debajo del teclado</strong>, lea la explicación y, si lo desea, escuche el resultado.</p>
+  </div>
+
+  <div class="tool" style="padding:16px">
+    <div class="tool-head">
+      <h4>🎼 Tablero del ejercicio · E minor · Scarborough Fair</h4>
+      <span class="kb-hint" id="exHint">Deslice el teclado horizontalmente en móvil</span>
+    </div>
+
+    <div class="kb-scroll"><div id="kbExercise"></div></div>
+    <div class="legend">
+      <span><i class="sw" style="background:#00d4ff"></i> Melodía (dedos 4-5)</span>
+      <span><i class="sw" style="background:#22c55e"></i> Armonía interna (dedos 1-2-3)</span>
+      <span><i class="sw" style="background:#f59e0b"></i> Bajo · root note (LH)</span>
+      <span><i class="sw" style="background:#a855f7"></i> Fill 5-1-5</span>
+    </div>
+
+    <!-- Controles justo debajo del teclado -->
+    <div class="stepper">
+      <div class="sbtns">
+        <button class="btn" id="exReset">⟲ Reiniciar</button>
+        <button class="btn" id="exPrev">◀ Anterior</button>
+        <button class="btn primary" id="exNext">Siguiente ▶</button>
+        <button class="btn purple" id="exPlay">🔊 Escuchar paso</button>
+      </div>
+      <div class="slider-row">
+        <input type="range" id="exSlider" min="0" max="5" step="1" value="0" aria-label="Seleccionar paso del ejercicio">
+      </div>
+      <div class="step-ind"><b id="exInd">PASO 0 de 5</b><br><span id="exZone">LEAD SHEET CRUDA</span></div>
+    </div>
+  </div>
+
+  <div class="panel" id="exPanel"></div>
+
+  <div class="card">
+    <h3>📑 Los 5 pasos del ejercicio (texto original)</h3>
+    <p style="color:var(--muted)">Aplique secuencialmente los 5 pasos sobre los primeros compases en <strong>E minor</strong>. Pulse cualquiera para saltar directamente a ese paso del tablero.</p>
+    <div id="exList"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn ghost" data-goto="resumen">← Resumen</button>
+    <button class="btn primary" data-goto="glosario">Glosario y recursos →</button>
+  </div>
+</section>
+
+<!-- =========================================================
+     GLOSARIO
+     ========================================================= -->
+<section class="view" id="glosario" aria-label="Glosario y recursos">
+  <div class="sec-head">
+    <div class="sec-icon">📖</div>
+    <div>
+      <div class="eyebrow">Apéndice</div>
+      <h2>Glosario y Recursos</h2>
+      <p>Vocabulario esencial del tutorial y fuente original del contenido.</p>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3><span class="chip acc">Término</span> Lead Sheet</h3>
+      <p>Partitura simplificada que contiene <strong>solo la melodía y el cifrado armónico</strong>.</p>
+    </div>
+    <div class="card">
+      <h3><span class="chip amb">Término</span> Root Note</h3>
+      <p>La <strong>nota fundamental</strong> que da nombre y base al acorde.</p>
+    </div>
+    <div class="card">
+      <h3><span class="chip grn">Término</span> Subdivisión</h3>
+      <p>La <strong>división interna del pulso</strong>, contada habitualmente como <span class="mono">“1 y 2 y 3 y”</span> para mantener el <strong>swing</strong> y el <strong>flow</strong>.</p>
+    </div>
+    <div class="card">
+      <h3><span class="chip pur">Término</span> Arpegio</h3>
+      <p><strong>Ejecución sucesiva de las notas de un acorde</strong>, utilizada aquí para <strong>rellenar silencios melódicos</strong>.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔤 Nota de nomenclatura utilizada en el tutorial</h3>
+    <p>Se emplea exclusivamente el <strong>sistema americano de notas</strong>: <span class="mono">A, B, C, D, E, F, G</span>, indicando siempre que corresponde el <strong>grado de la escala</strong>: <span class="mono">I, II, III, IV, V, VI, VII</span>.</p>
+    <p>Ejemplos del documento fuente: <span class="mono">E(I)</span> (tónica en E minor), <span class="mono">A(IV)</span> (cuarto grado), <span class="mono">C#(VI#)</span> (sexta elevada empleada para armonizar bajo una nota ajena), <span class="mono">B(V)</span> (quinta).</p>
+  </div>
+
+  <div class="card">
+    <h3>🔗 Recursos</h3>
+    <div class="callout info" style="margin:0">
+      <div class="ct">🎬 Video original</div>
+      <p><strong>“99% of Pianists Play Lead Sheets WRONG (Here’s the Fix)”</strong></p>
+      <p style="margin-top:6px">Enlace: <a href="https://www.youtube.com/watch?v=f-B9X0E7_mQ" target="_blank" rel="noopener noreferrer">https://www.youtube.com/watch?v=f-B9X0E7_mQ</a></p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🧾 Índice rápido del tutorial</h3>
+    <div class="btn-row">
+      <button class="btn ghost" data-goto="home">Inicio</button>
+      <button class="btn ghost" data-goto="concepto">0 · Concepto de Lead Sheet</button>
+      <button class="btn ghost" data-goto="fase1">I · Cimentación</button>
+      <button class="btn ghost" data-goto="fase2">II · Armonización MD</button>
+      <button class="btn ghost" data-goto="fase3">III · Ritmo y gaps</button>
+      <button class="btn ghost" data-goto="fase4">IV · Fills 5-1-5</button>
+      <button class="btn ghost" data-goto="fase5">V · Intro y Outro</button>
+      <button class="btn ghost" data-goto="resumen">6 · Resumen y errores</button>
+      <button class="btn ghost" data-goto="ejercicio">Ejercicio Scarborough Fair</button>
+      <button class="btn ghost" data-goto="creditos">Créditos</button>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     CRÉDITOS
+     ========================================================= -->
+<section class="view" id="creditos" aria-label="Créditos">
+  <div class="cover-frame">
+    <div class="cover-strip">
+      <span class="s"><span class="pulse-dot"></span> Créditos · misma portada animada</span>
+      <span class="s">📅 08/09/2026 &nbsp;·&nbsp; 🕒 16:29:08</span>
+    </div>
+    <svg class="cover" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img"
+         aria-label="Portada animada del tutorial: lead sheet en E minor, teclado con bajo, armonía interna, melodía y fill 5-1-5, digitación de la mano derecha y flujo de las cinco fases.">
+      <use href="#coverArt" xlink:href="#coverArt" width="1600" height="900"></use>
+    </svg>
+  </div>
+
+  <div class="card credit-box" style="margin-top:16px">
+    <div class="eyebrow">Tutorial interactivo</div>
+    <h2 style="font-size:clamp(22px,4vw,32px);margin:8px 0 4px">Arreglos de Piano con Lead Sheets</h2>
+    <p style="color:var(--muted);max-width:80ch;margin:0 auto 14px">De una sonoridad “pobre” o torpe (<em>clunky</em>) a un arreglo profesional con fluidez y profundidad · 5 fases · 10 pasos · Ejercicio de culminación: Scarborough Fair en E minor.</p>
+    <div class="cname">Rubén Sbarsky</div>
+    <div class="crole">Autoría · Diseño didáctico · Créditos</div>
+
+    <div class="stamp">
+      <div>📅 FECHA: 08/09/2026</div>
+      <div>🕒 HORA: 16:29:08</div>
+      <div>🎹 Tonalidad: E minor</div>
+      <div>🧭 Fases: 5 · Pasos: 10</div>
+    </div>
+
+    <div class="callout info" style="text-align:left;margin-top:18px">
+      <div class="ct">🎓 Indicación educativa</div>
+      <p>Este tutorial tiene una finalidad <strong>exclusivamente educativa y divulgativa</strong>. Todo el contenido técnico procede del documento fuente <em>“Arreglos de Piano con Lead Sheets”</em> de Rubén Sbarsky: se ha <strong>preservado íntegramente</strong> su información (conceptos, definiciones, pasos, ejemplos, advertencias, tabla resumen, FAQ, errores comunes, ejercicio práctico, glosario y recursos) y se ha <strong>transformado su presentación</strong> en tarjetas, pasos numerados, tablas, diagramas y herramientas interactivas para mejorar la comprensión, <strong>sin alterar el significado</strong>.</p>
+      <p style="margin-top:8px">Nomenclatura musical empleada: <strong>sistema americano</strong> (A, B, C, D, E, F, G) con indicación del <strong>grado de la escala</strong> (I, II, III, IV, V, VI, VII).</p>
+      <p style="margin-top:8px">Recurso citado por el documento fuente: <strong>Video original</strong> “99% of Pianists Play Lead Sheets WRONG (Here’s the Fix)” — <a href="https://www.youtube.com/watch?v=f-B9X0E7_mQ" target="_blank" rel="noopener noreferrer">https://www.youtube.com/watch?v=f-B9X0E7_mQ</a></p>
+    </div>
+
+    <p class="fmotto" style="margin-top:16px;font-size:17px">Fiat iustitia, ruat caelum.</p>
+
+    <div class="btn-row" style="justify-content:center;margin-top:14px">
+      <button class="btn primary" data-goto="home">← Volver al inicio</button>
+      <button class="btn ghost" data-goto="ejercicio">Ir al ejercicio práctico</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="fline">📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div class="fline">👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div class="fline">📅 FECHA: 08/09/2026</div>
+  <div class="fline">Hora: 16:29:08</div>
+  <div class="fmotto">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<div class="floaters">
+  <button class="fab" id="soundBtn" title="Activar / silenciar el audio de las demos" aria-label="Activar o silenciar audio">🔊</button>
+  <button class="fab" id="toTop" title="Volver arriba" aria-label="Volver arriba">↑</button>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   DATOS GLOBALES
+   ========================================================= */
+var KB_NOTES=['E2','F2','G2','A2','B2','C3','D3','E3','F3','G3','A3','B3','C4','D4','E4','F4','G4','A4','B4',
+              'C5','D5','E5','F5','G5','A5','B5','C6','D6','E6'];
+var HAS_SHARP={C:1,D:1,F:1,G:1,A:1};
+var SEMI={C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
+
+/* =========================================================
+   AUDIO (Web Audio API — 100% local, sin recursos externos)
+   ========================================================= */
+var Sound=(function(){
+  var ctx=null,on=true;
+  function ac(){
+    if(!ctx){
+      var AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC) return null;
+      try{ ctx=new AC(); }catch(e){ return null; }
+    }
+    if(ctx.state==='suspended'){ try{ ctx.resume(); }catch(e){} }
+    return ctx;
+  }
+  function freq(n){
+    var m=/^([A-G]#?)(-?\d)$/.exec(n); if(!m) return 440;
+    var midi=(parseInt(m[2],10)+1)*12+SEMI[m[1]];
+    return 440*Math.pow(2,(midi-69)/12);
+  }
+  function tone(name,delay,dur,vol,type){
+    if(!on||!name) return;
+    var c=ac(); if(!c) return;
+    delay=delay||0; dur=dur||0.55; vol=vol||0.17;
+    var t=c.currentTime+delay;
+    var o=c.createOscillator(),g=c.createGain(),f=c.createBiquadFilter();
+    o.type=type||'triangle'; o.frequency.setValueAtTime(freq(name),t);
+    f.type='lowpass'; f.frequency.setValueAtTime(3200,t);
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(vol,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+    o.connect(f); f.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t+dur+0.06);
+  }
+  function chord(names,delay,dur){ (names||[]).forEach(function(n){ tone(n,delay,dur,0.12); }); }
+  function seq(list,step,dur){ step=step||0.32; dur=dur||0.5; list.forEach(function(n,i){ tone(n,i*step,dur); }); }
+  function click(accent){
+    if(!on) return; var c=ac(); if(!c) return;
+    var t=c.currentTime,o=c.createOscillator(),g=c.createGain();
+    o.type='square'; o.frequency.setValueAtTime(accent?1500:950,t);
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(accent?0.06:0.035,t+0.004);
+    g.gain.exponentialRampToValueAtTime(0.0004,t+0.06);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+0.08);
+  }
+  return {
+    tone:tone, chord:chord, seq:seq, click:click,
+    toggle:function(){ on=!on; if(on) ac(); return on; },
+    isOn:function(){ return on; }
+  };
+})();
+
+/* =========================================================
+   TECLADO REUTILIZABLE  (buildKeyboard / renderMarks)
+   ========================================================= */
+function buildKeyboard(host){
+  host.innerHTML=''; host.classList.add('kb');
+  var N=KB_NOTES.length, map={};
+  KB_NOTES.forEach(function(note,i){
+    var k=document.createElement('div');
+    k.className='wk'; k.dataset.note=note;
+    k.innerHTML='<span class="kname"></span><span class="kfing"></span>';
+    host.appendChild(k); map[note]=k;
+  });
+  KB_NOTES.forEach(function(note,i){
+    var pc=note[0], oc=note.slice(1);
+    if(!HAS_SHARP[pc]) return;
+    var bn=pc+'#'+oc;
+    var b=document.createElement('div');
+    b.className='bk'; b.dataset.note=bn;
+    b.style.left=((i+1)*100/N)+'%';
+    b.innerHTML='<span class="kname"></span><span class="kfing"></span>';
+    host.appendChild(b); map[bn]=b;
+  });
+  function wrap(){ return host.parentElement; }
+  return {
+    host:host, map:map,
+    clear:function(){
+      Object.keys(map).forEach(function(k){
+        var e=map[k];
+        e.classList.remove('on','on-mel','on-harm','on-bass','on-fill','on-bad');
+        e.querySelector('.kname').textContent='';
+        e.querySelector('.kfing').textContent='';
+      });
+    },
+    mark:function(note,role,finger,showName){
+      var e=map[note]; if(!e) return;
+      e.classList.add('on','on-'+(role||'mel'));
+      e.querySelector('.kname').textContent=(showName===false)?'':note;
+      e.querySelector('.kfing').textContent=finger?('dedo '+finger):'';
+    },
+    render:function(marks){
+      this.clear();
+      (marks||[]).forEach(function(m){ this.mark(m.n,m.r,m.f,m.name); },this);
+    },
+    center:function(note){
+      var e=note?map[note]:null; if(!e) return;
+      var w=wrap(); if(!w||w.scrollWidth<=w.clientWidth) return;
+      w.scrollLeft=e.offsetLeft-(w.clientWidth/2)+(e.offsetWidth/2);
+    },
+    pulse:function(note){
+      var e=map[note]; if(!e) return;
+      e.style.transition='none'; e.style.transform='translateY(-4px)';
+      setTimeout(function(){ e.style.transition='transform .18s'; e.style.transform=''; },60);
+    }
+  };
+}
+function renderMarks(kb,marks){ kb.render(marks); }
+
+/* =========================================================
+   NAVEGACIÓN SPA + PROGRESO + VOLVER ARRIBA
+   ========================================================= */
+var views=Array.prototype.slice.call(document.querySelectorAll('.view'));
+var navBtns=Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
+var navScroll=document.getElementById('navScroll');
+var progressBar=document.getElementById('progressBar');
+var toTop=document.getElementById('toTop');
+
+function validId(id){
+  for(var i=0;i<views.length;i++){ if(views[i].id===id) return true; }
+  return false;
+}
+function go(id,push){
+  if(!validId(id)) id='home';
+  views.forEach(function(v){ v.classList.toggle('active', v.id===id); });
+  navBtns.forEach(function(b){
+    var on=b.dataset.target===id;
+    b.classList.toggle('active',on);
+    b.setAttribute('aria-current',on?'page':'false');
+    if(on){
+      var target=b.offsetLeft-(navScroll.clientWidth/2)+(b.offsetWidth/2);
+      try{ navScroll.scrollTo({left:target,behavior:'smooth'}); }catch(e){ navScroll.scrollLeft=target; }
+    }
+  });
+  window.scrollTo(0,0);
+  if(push!==false){ try{ history.replaceState(null,'','#'+id); }catch(e){ location.hash='#'+id; } }
+  resumeArt();
+  updateProgress();
+  document.dispatchEvent(new CustomEvent('view:shown',{detail:{id:id}}));
+}
+function updateProgress(){
+  var de=document.documentElement;
+  var max=de.scrollHeight-de.clientHeight;
+  var p=max>0?(de.scrollTop||document.body.scrollTop)/max:0;
+  progressBar.style.width=(Math.max(0,Math.min(1,p))*100).toFixed(2)+'%';
+  toTop.classList.toggle('show',(de.scrollTop||document.body.scrollTop)>380);
+}
+navBtns.forEach(function(b){
+  b.addEventListener('click',function(){ go(b.dataset.target,true); });
+});
+Array.prototype.slice.call(document.querySelectorAll('[data-goto]')).forEach(function(b){
+  b.addEventListener('click',function(){ go(b.dataset.target,true); });
+});
+window.addEventListener('hashchange',function(){ go(location.hash.replace('#','')||'home',false); });
+window.addEventListener('scroll',updateProgress,{passive:true});
+window.addEventListener('resize',updateProgress);
+toTop.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+
+/* Sonido global */
+var soundBtn=document.getElementById('soundBtn');
+soundBtn.addEventListener('click',function(){
+  var on=Sound.toggle();
+  soundBtn.textContent=on?'🔊':'🔇';
+  soundBtn.classList.toggle('off',!on);
+  soundBtn.title=on?'Audio activado':'Audio silenciado';
+  if(on) Sound.tone('E5',0,0.35,0.12);
+});
+
+/* prefers-reduced-motion + reanudación del SVG en CRÉDITOS */
+var mq=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null;
+function resumeArt(){
+  var reduce=!!(mq&&mq.matches);
+  document.documentElement.classList.toggle('reduce-motion',reduce);
+  Array.prototype.slice.call(document.querySelectorAll('svg')).forEach(function(s){
+    try{ if(reduce){ if(s.pauseAnimations) s.pauseAnimations(); }
+         else { if(s.unpauseAnimations) s.unpauseAnimations(); } }catch(e){}
+  });
+}
+if(mq){ if(mq.addEventListener) mq.addEventListener('change',resumeArt); else if(mq.addListener) mq.addListener(resumeArt); }
+
+/* =========================================================
+   FASE I · Mano derecha interactiva + ejemplos
+   ========================================================= */
+var FINGER_INFO={
+  '1':'<b>Dedo 1 (pulgar)</b> — Queda libre tras reservar 4 y 5 para la melodía. Se utiliza para la <b>densificación armónica</b> (Fase II: añade la 3ª o la 5ª bajo la melodía) y, junto al dedo 2, para los <b>arpegios de relleno</b> en los huecos (Fase III).',
+  '2':'<b>Dedo 2 (índice)</b> — Disponible para el <b>relleno armónico</b> debajo de la melodía y para <b>arpegiar rítmicamente</b> las notas del acorde ya posicionadas cuando la melodía se detiene.',
+  '3':'<b>Dedo 3 (medio)</b> — Disponible para la <b>densificación armónica</b>: tercera nota del acorde bajo la melodía cuando el voicing lo requiera.',
+  '4':'<b>Dedo 4 (anular)</b> — <b>Reservado para la melodía crítica</b>. Junto al dedo 5 sostiene el hilo conductor que la audiencia reconoce, sin bloquear el resto de la mano.',
+  '5':'<b>Dedo 5 (meñique)</b> — <b>Reservado para la melodía crítica</b>. Ejemplo correcto del documento: dedo 5 sosteniendo la nota <b>B</b> mientras la izquierda toca un <b>E(I)</b> profundo.'
+};
+var handInfo=document.getElementById('handInfo');
+Array.prototype.slice.call(document.querySelectorAll('.finger')).forEach(function(g){
+  g.addEventListener('click',function(){
+    handInfo.innerHTML=FINGER_INFO[g.dataset.f]||'';
+  });
+});
+
+var kbOk=buildKeyboard(document.getElementById('kbOk'));
+var kbBad=buildKeyboard(document.getElementById('kbBad'));
+var OK_MARKS=[{n:'B4',r:'mel',f:'5'},{n:'E2',r:'bass',f:'LH'}];
+var BAD_MARKS=[{n:'B4',r:'bad',f:'1'},{n:'E2',r:'bass',f:'LH'}];
+renderMarks(kbOk,OK_MARKS); kbOk.center('B4');
+renderMarks(kbBad,BAD_MARKS); kbBad.center('B4');
+document.getElementById('playOk').addEventListener('click',function(){
+  renderMarks(kbOk,OK_MARKS); Sound.tone('E2',0,1.5,0.16); Sound.tone('B4',0.05,1.4,0.17);
+});
+document.getElementById('clearOk').addEventListener('click',function(){ kbOk.clear(); });
+document.getElementById('playBad').addEventListener('click',function(){
+  renderMarks(kbBad,BAD_MARKS); Sound.tone('B4',0,0.6,0.17);
+});
+document.getElementById('clearBad').addEventListener('click',function(){ kbBad.clear(); });
+
+/* =========================================================
+   FASE II · Explorador de voicings
+   ========================================================= */
+var VOIC={
+  em:{ label:'E min (I)', bass:'E2', mel:'B4', root:'E(I)',
+       v35:[{n:'G3',f:'1',d:'3ª menor del acorde: G(III)'},{n:'B3',f:'2',d:'5ª justa del acorde: B(V)'}],
+       v37:[{n:'G3',f:'1',d:'3ª menor del acorde: G(III)'},{n:'D4',f:'2',d:'7ª menor del acorde: D(VII)'}] },
+  a4:{ label:'A (IV)', bass:'A2', mel:'B4', root:'A(IV)',
+       v35:[{n:'C#4',f:'1',d:'3ª mayor del acorde: C#(VI#)'},{n:'E4',f:'2',d:'5ª justa / tónica: E(I)'}],
+       v37:[{n:'C#4',f:'1',d:'3ª mayor del acorde: C#(VI#)'},{n:'G4',f:'2',d:'7ª menor del acorde: G(III)'}] }
+};
+var kbV=buildKeyboard(document.getElementById('kbVoicing'));
+var vState={chord:'em',type:'35'};
+function voicingMarks(){
+  var v=VOICING_SAFE(); return v;
+}
+function VOICING_SAFE(){
+  var v=VOIC[vState.chord], inner=(vState.type==='35')?v.v35:v.v37;
+  var marks=[{n:v.bass,r:'bass',f:'LH'}];
+  inner.forEach(function(o){ marks.push({n:o.n,r:'harm',f:o.f}); });
+  marks.push({n:v.mel,r:'mel',f:'5'});
+  return {v:v,inner:inner,marks:marks};
+}
+function drawVoicing(){
+  var d=VOICING_SAFE(), v=d.v;
+  renderMarks(kbV,d.marks); kbV.center(v.bass);
+  var html='<div class="mv-head"><span class="mv-num">'+v.label+'</span>'
+    +'<span class="mv-zone">Mano derecha integrada + LH</span></div>'
+    +'<h4 class="mv-title">Melodía con dedo 5 · dos notas del acorde con dedos 1 y 2 · root note en la izquierda</h4>'
+    +'<div><span class="chip acc">Melodía: '+v.mel+' (dedo 5)</span>'
+    +'<span class="chip grn">'+d.inner[0].n+' (dedo '+d.inner[0].f+') — '+d.inner[0].d+'</span>'
+    +'<span class="chip grn">'+d.inner[1].n+' (dedo '+d.inner[1].f+') — '+d.inner[1].d+'</span>'
+    +'<span class="chip amb">Bajo: '+v.bass+' — root note de '+v.root+'</span></div>'
+    +'<div class="mv-q"><b>¿Qué ocurre?</b><p>El acorde queda <strong>dentro de la mano derecha</strong>: el dedo 5 sostiene la melodía y los dedos disponibles añaden dos notas del acorde justo debajo. La izquierda se limita a la <strong>root note</strong>.</p></div>'
+    +'<div class="mv-q"><b>¿Por qué es importante?</b><p>Integrar los acordes en la mano derecha produce un <strong>flujo indivisible</strong> y el sonido rico y profesional del arreglo, en lugar de separar las manos. Las dos notas elegidas ('+(vState.type==='35'?'3ª y 5ª':'3ª y 7ª')+') <strong>definen claramente la sonoridad del acorde</strong>.</p></div>';
+  document.getElementById('voicingInfo').innerHTML=html;
+}
+function pressGroup(sel,attr,val){
+  Array.prototype.slice.call(document.querySelectorAll(sel)).forEach(function(b){
+    var on=b.dataset[attr]===val;
+    b.setAttribute('aria-pressed',on?'true':'false');
+    b.classList.toggle('primary',on&&sel==='#voicingTypes');
+    if(sel==='#voicingChords'){ b.classList.toggle('primary',on); }
+  });
+}
+Array.prototype.slice.call(document.querySelectorAll('#voicingChords .btn')).forEach(function(b){
+  b.addEventListener('click',function(){ vState.chord=b.dataset.chord; pressGroup('#voicingChords .btn','chord',vState.chord); drawVoicing(); });
+});
+Array.prototype.slice.call(document.querySelectorAll('#voicingTypes .btn')).forEach(function(b){
+  b.addEventListener('click',function(){ vState.type=b.dataset.type; pressGroup('#voicingTypes .btn','type',vState.type); drawVoicing(); });
+});
+document.getElementById('voicingPlay').addEventListener('click',function(){
+  var d=VOICING_SAFE(); Sound.tone(d.v.bass,0,1.6,0.15);
+  Sound.chord([d.inner[0].n,d.inner[1].n,d.v.mel],0.06,1.5);
+  d.marks.forEach(function(m){ kbV.pulse(m.n); });
+});
+document.getElementById('voicingArp').addEventListener('click',function(){
+  var d=VOICING_SAFE();
+  Sound.tone(d.v.bass,0,2.0,0.15);
+  Sound.seq([d.inner[0].n,d.inner[1].n,d.v.mel,d.inner[1].n,d.inner[0].n,d.v.mel],0.26,0.4);
+});
+drawVoicing();
+
+/* Caso “nota ajena”: B sobre A(IV) */
+var kbA=buildKeyboard(document.getElementById('kbAlien'));
+var ALIEN=[{n:'A2',r:'bass',f:'LH'},{n:'C#4',r:'harm',f:'1'},{n:'E4',r:'harm',f:'2'},{n:'B4',r:'mel',f:'5'}];
+renderMarks(kbA,ALIEN); kbA.center('C#4');
+document.getElementById('alienPlay').addEventListener('click',function(){
+  Sound.tone('A2',0,1.7,0.15); Sound.chord(['C#4','E4','B4'],0.07,1.5);
+  ALIEN.forEach(function(m){ kbA.pulse(m.n); });
+});
+
+/* =========================================================
+   FASE III · Subdivisión 3/4 + checklist
+   ========================================================= */
+var cells=Array.prototype.slice.call(document.querySelectorAll('#subdiv .cell'));
+var subTimer=null,subIdx=0;
+function subTick(){
+  cells.forEach(function(c){ c.classList.remove('hit'); });
+  var c=cells[subIdx]; if(c) c.classList.add('hit');
+  Sound.click(c&&c.classList.contains('beat'));
+  subIdx=(subIdx+1)%cells.length;
+}
+function subStart(){
+  if(subTimer) return; subIdx=0; subTick(); subTimer=setInterval(subTick,270);
+  document.getElementById('subPlay').textContent='❚❚ Sonando…';
+}
+function subStop(){
+  if(subTimer){ clearInterval(subTimer); subTimer=null; }
+  cells.forEach(function(c){ c.classList.remove('hit'); });
+  document.getElementById('subPlay').textContent='▶ Iniciar pulso';
+}
+document.getElementById('subPlay').addEventListener('click',function(){ subTimer?subStop():subStart(); });
+document.getElementById('subStop').addEventListener('click',subStop);
+
+var kbGap=buildKeyboard(document.getElementById('kbGap'));
+var GAP_MARKS=[{n:'A2',r:'bass',f:'LH'},{n:'B4',r:'mel',f:'5'},{n:'A3',r:'harm',f:'1'},{n:'E4',r:'harm',f:'2'},{n:'C#4',r:'harm',f:''}];
+renderMarks(kbGap,GAP_MARKS); kbGap.center('A3');
+document.getElementById('gapDemo').addEventListener('click',function(){
+  renderMarks(kbGap,GAP_MARKS);
+  Sound.tone('A2',0,2.6,0.15);          /* LH: root note estable  */
+  Sound.tone('B4',0.02,2.4,0.16);       /* melodía: nota larga = hueco */
+  /* dedos 1 y 2: arpegio en la subdivisión sobre notas ya posicionadas */
+  var arp=['A3','E4','A3','E4','A3','E4','A3','E4'];
+  arp.forEach(function(n,i){ Sound.tone(n,0.3+i*0.27,0.35,0.1); });
+  ['A3','E4','C#4'].forEach(function(n){ kbGap.pulse(n); });
+});
+
+var chks=Array.prototype.slice.call(document.querySelectorAll('[data-chk]'));
+function chkUpdate(){
+  var done=chks.filter(function(c){ return c.checked; }).length;
+  document.getElementById('checkCount').textContent=done+' de '+chks.length+' completados';
+  document.getElementById('checkBar').style.width=(done/chks.length*100)+'%';
+  chks.forEach(function(c){ c.closest('.check').classList.toggle('done',c.checked); });
+}
+chks.forEach(function(c){ c.addEventListener('change',chkUpdate); });
+document.getElementById('chkAll').addEventListener('click',function(){ chks.forEach(function(c){ c.checked=true; }); chkUpdate(); });
+document.getElementById('chkNone').addEventListener('click',function(){ chks.forEach(function(c){ c.checked=false; }); chkUpdate(); });
+chkUpdate();
+
+/* =========================================================
+   FASE IV · Laboratorio 5-1-5
+   ========================================================= */
+var FILLS={
+  em:{label:'E min (I)',bass:'E2',q:'B4',t:'E5',q2:'B5',deg:['B (V)','E (I)','B (V)']},
+  a4:{label:'A (IV)',bass:'A2',q:'E5',t:'A5',q2:'E6',deg:['E (I)','A (IV)','E (I)']},
+  b5:{label:'B (V)',bass:'B2',q:'F#4',t:'B4',q2:'F#5',deg:['F# (II)','B (V)','F# (II)']}
+};
+var kbF=buildKeyboard(document.getElementById('kbFill'));
+var fState={chord:'em',order:'up'};
+function fillNotes(){
+  var f=FILLS[fState.chord];
+  if(fState.order==='up') return [f.q,f.t,f.q2];
+  if(fState.order==='down') return [f.q2,f.t,f.q];
+  return [f.t,f.q2,f.t];
+}
+function drawFill(){
+  var f=FILLS[fState.chord],notes=fillNotes();
+  var marks=[{n:f.bass,r:'bass',f:'LH'}];
+  notes.forEach(function(n,i){ marks.push({n:n,r:'fill',f:''}); });
+  renderMarks(kbF,marks); kbF.center(notes[0]);
+  var order=(fState.order==='up')?'↑ Subir (5-1-5)':(fState.order==='down')?'↓ Bajar (5-1-5 invertido)':'↔ Variar el orden (1-5-1)';
+  document.getElementById('fillInfo').innerHTML=
+    '<div class="mv-head"><span class="mv-num">5-1-5</span><span class="mv-zone">'+f.label+' · '+order+'</span></div>'
+   +'<h4 class="mv-title">Secuencia: '+notes.join(' · ')+'</h4>'
+   +'<div><span class="chip pur">Quinta: '+f.q+' — '+f.deg[0]+'</span>'
+   +'<span class="chip acc">Tónica: '+f.t+' — '+f.deg[1]+'</span>'
+   +'<span class="chip pur">Quinta superior: '+f.q2+' — '+f.deg[2]+'</span></div>'
+   +'<div class="mv-q"><b>¿Qué ocurre?</b><p>Se toca la <strong>Quinta, la Tónica y la Quinta superior</strong> del acorde actual en el <strong>registro agudo</strong>: una estructura <strong>abierta y brillante</strong> que llena el espacio <strong>sin saturar</strong>.</p></div>'
+   +'<div class="mv-q"><b>¿Por qué es importante?</b><p>Usado como <strong>concepto elástico</strong> —no como lick memorizado— permite <strong>subir, bajar o variar el orden</strong> según la emoción del momento, de modo que el arreglo <strong>nunca suene mecánico</strong>.</p></div>';
+}
+Array.prototype.slice.call(document.querySelectorAll('#fillChords .btn')).forEach(function(b){
+  b.addEventListener('click',function(){
+    fState.chord=b.dataset.fill;
+    Array.prototype.slice.call(document.querySelectorAll('#fillChords .btn')).forEach(function(x){
+      x.setAttribute('aria-pressed',x===b?'true':'false'); x.classList.toggle('purple',x===b);
+    });
+    drawFill();
+  });
+});
+Array.prototype.slice.call(document.querySelectorAll('#fillOrders .btn')).forEach(function(b){
+  b.addEventListener('click',function(){
+    fState.order=b.dataset.order;
+    Array.prototype.slice.call(document.querySelectorAll('#fillOrders .btn')).forEach(function(x){
+      var on=(x===b); x.setAttribute('aria-pressed',on?'true':'false'); x.classList.toggle('primary',on);
+    });
+    drawFill();
+  });
+});
+document.getElementById('fillPlay').addEventListener('click',function(){
+  var f=FILLS[fState.chord]; Sound.tone(f.bass,0,1.6,0.13);
+  Sound.seq(fillNotes(),0.24,0.42);
+  fillNotes().forEach(function(n){ kbF.pulse(n); });
+});
+document.getElementById('fillSlow').addEventListener('click',function(){
+  var f=FILLS[fState.chord]; Sound.tone(f.bass,0,2.8,0.13);
+  Sound.seq(fillNotes(),0.55,0.85);
+});
+drawFill();
+
+/* =========================================================
+   FASE V · Intro / Outro
+   ========================================================= */
+var kbI=buildKeyboard(document.getElementById('kbIntro'));
+var INTRO=[{n:'E5',r:'fill',f:'1'},{n:'B5',r:'fill',f:'5'},{n:'E6',r:'fill',f:'5'}];
+renderMarks(kbI,INTRO); kbI.center('E5');
+document.getElementById('introPlay').addEventListener('click',function(){
+  renderMarks(kbI,INTRO);
+  Sound.seq(['E5','B5','E6','B5'],0.28,0.5);
+  INTRO.forEach(function(m){ kbI.pulse(m.n); });
+});
+document.getElementById('outroPlay').addEventListener('click',function(){
+  renderMarks(kbI,INTRO);
+  Sound.tone('E2',0,3.2,0.12);
+  Sound.seq(['E5','B5','E6'],0.5,1.1);
+  INTRO.forEach(function(m){ kbI.pulse(m.n); });
+});
+
+/* =========================================================
+   EJERCICIO PRÁCTICO · Stepper paso a paso
+   ========================================================= */
+var EX_STEPS=[
+  {
+    n:'POSICIÓN 0', zone:'LEAD SHEET CRUDA',
+    title:'Punto de partida: melodía + cifrado armónico',
+    marks:[{n:'B4',r:'mel',f:''},{n:'E2',r:'bass',f:''}],
+    chips:['Cifrado: E min (I) · A (IV)','Melodía inicial: B-B-E'],
+    what:'Sobre el papel solo existen la <strong>melodía</strong> y el <strong>cifrado armónico</strong> de los primeros compases en <strong>E minor</strong>: nada más está decidido todavía.',
+    why:'La lead sheet es <strong>“incompleta” por diseño</strong>: delega en usted el <strong>ritmo</strong>, el <strong>registro</strong> y la <strong>estructura</strong>. Antes de adornar, la estructura debe quedar <strong>inamovible</strong>.',
+    src:'Aplique secuencialmente los 5 pasos sobre los primeros compases en E minor.',
+    play:{bass:['E2'],rest:['B4','B4','E5']}
+  },
+  {
+    n:'PASO 1', zone:'MANO DERECHA · MELODÍA',
+    title:'Melodía inicial B-B-E usando solo los dedos 4 y 5',
+    marks:[{n:'B4',r:'mel',f:'4·5'},{n:'E5',r:'mel',f:'5'}],
+    chips:['B4 (dedo 4)','B4 (dedo 5)','E5 (dedo 5)','Restricción deliberada'],
+    what:'Se toca la <strong>melodía inicial (B-B-E)</strong> utilizando <strong>exclusivamente los dedos 4 y 5</strong> de la mano derecha.',
+    why:'La melodía es el <strong>hilo conductor que la audiencia reconoce</strong>. Reservar los dedos más externos deja libres los <strong>dedos 1, 2 y 3</strong> para la futura <strong>densificación armónica</strong>.',
+    src:'1. Toque la melodía inicial (B-B-E) usando solo los dedos 4 y 5.',
+    play:{bass:[],rest:['B4','B4','E5']}
+  },
+  {
+    n:'PASO 2', zone:'MANO IZQUIERDA · BAJO',
+    title:'Sostener una nota E(I) en el bajo',
+    marks:[{n:'B4',r:'mel',f:'4·5'},{n:'E5',r:'mel',f:'5'},{n:'E2',r:'bass',f:'LH'}],
+    chips:['E2 = root note de E(I)','LH = “bajista de la banda”','Estabilidad, no complejidad'],
+    what:'La mano izquierda <strong>sostiene la nota E(I)</strong> en el registro grave: la <strong>root note</strong> del acorde.',
+    why:'La izquierda asume el papel del <strong>bajista de la banda</strong>. En esta fase <strong>no se busca complejidad, sino estabilidad</strong>: es el cimiento sobre el que se apoyará todo lo demás.',
+    src:'2. Sostenga una nota E(I) en el bajo.',
+    play:{bass:['E2'],rest:['B4','B4','E5']}
+  },
+  {
+    n:'PASO 3', zone:'MANO DERECHA · ARMONÍA INTERNA',
+    title:'Añadir G y B del acorde de E minor con los dedos 1 y 2 debajo de la melodía',
+    marks:[{n:'E2',r:'bass',f:'LH'},{n:'G3',r:'harm',f:'1'},{n:'B3',r:'harm',f:'2'},{n:'B4',r:'mel',f:'4·5'},{n:'E5',r:'mel',f:'5'}],
+    chips:['G3 = 3ª de E min (I)','B3 = 5ª de E min (I)','Dedos 1 y 2 bajo la melodía'],
+    what:'Debajo de la melodía se añaden las notas <strong>G</strong> y <strong>B</strong> del acorde de <strong>E minor</strong>, usando los dedos <strong>1 y 2</strong> que quedaron disponibles.',
+    why:'Este es el <strong>relleno armónico</strong> de la Fase II: integrar el acorde <strong>dentro de la mano derecha</strong> produce un <strong>flujo indivisible</strong> y el sonido rico y profesional, en lugar de separar las manos.',
+    src:'3. Añada las notas G y B del acorde de E minor con los dedos 1 y 2 debajo de su melodía.',
+    play:{bass:['E2'],rest:['G3','B3','B4','E5']}
+  },
+  {
+    n:'PASO 4', zone:'AMBAS MANOS · COMPÁS DE A(IV)',
+    title:'Identificar el hueco melódico y realizar un arpegio suave con pulgar e índice (dedos 1 y 2)',
+    marks:[{n:'A2',r:'bass',f:'LH'},{n:'A3',r:'harm',f:'1'},{n:'C#4',r:'harm',f:''},{n:'E4',r:'harm',f:'2'},{n:'B4',r:'mel',f:'5'}],
+    chips:['A(IV) en el bajo: A2','C#(VI#) + E(I) bajo la melodía','B4 = nota ajena conservada','Arpegio en la subdivisión'],
+    what:'En el compás de <strong>A(IV)</strong> la melodía presenta una <strong>nota B que no pertenece al acorde</strong>. Se conserva en la melodía y se armoniza por debajo con <strong>C#(VI#)</strong> y <strong>E(I)</strong>; en el <strong>hueco melódico</strong> los dedos <strong>1 y 2</strong> realizan un <strong>arpegio suave</strong> sobre esas mismas notas.',
+    why:'Lejos de ser un error, la nota ajena es una <strong>invitación a la toma de decisiones creativa</strong>: esta técnica <strong>evita un sonido torpe</strong> y otorga al arreglo un <strong>flow profesional</strong>. El arpegio no añade notas nuevas: <strong>subdivide rítmicamente</strong> lo que la mano ya tiene posicionado.',
+    src:'4. En el compás de A(IV), identifique el hueco melódico y realice un arpegio suave con el pulgar e índice (dedos 1 y 2).',
+    play:{bass:['A2'],rest:['A3','E4','C#4','B4','A3','E4']}
+  },
+  {
+    n:'PASO 5', zone:'REGISTRO AGUDO · FILL 5-1-5',
+    title:'Finalizar la frase con un destello 5-1-5 (B-E-B) en el registro agudo',
+    marks:[{n:'E2',r:'bass',f:'LH'},{n:'B4',r:'fill',f:'5'},{n:'E5',r:'fill',f:'1'},{n:'B5',r:'fill',f:'5'}],
+    chips:['B4 = Quinta (V)','E5 = Tónica (I)','B5 = Quinta superior','Estructura abierta y brillante'],
+    what:'La frase se cierra con el patrón <strong>5-1-5</strong>: <strong>B - E - B</strong> en el <strong>registro agudo</strong>, sobre la armonía de <strong>E(I)</strong> que la izquierda sostiene.',
+    why:'Es una <strong>estructura abierta y brillante</strong> que <strong>llena el espacio sin saturar</strong>. Como herramienta elástica (no como lick memorizado), puede <strong>subir, bajar o variar el orden</strong>, de modo que el arreglo <strong>nunca suene mecánico</strong>.',
+    src:'5. Finalice la frase con un destello 5-1-5 (B-E-B) en el registro agudo.',
+    play:{bass:['E2'],rest:['B4','E5','B5']}
+  }
+];
+
+var kbEx=buildKeyboard(document.getElementById('kbExercise'));
+var exPanel=document.getElementById('exPanel');
+var exSlider=document.getElementById('exSlider');
+var exInd=document.getElementById('exInd');
+var exZone=document.getElementById('exZone');
+var exIdx=0;
+
+function renderStep(){
+  var s=EX_STEPS[exIdx];
+  renderMarks(kbEx,s.marks);
+  kbEx.center(s.marks[0].n);
+  exSlider.value=exIdx;
+  exInd.textContent=s.n+' · '+exIdx+' de '+(EX_STEPS.length-1);
+  exZone.textContent=s.zone;
+  var chips=s.chips.map(function(c){ return '<span class="chip">'+c+'</span>'; }).join('');
+  exPanel.innerHTML=
+    '<div class="mv-head"><span class="mv-num">'+s.n+'</span><span class="mv-zone">'+s.zone+'</span></div>'
+   +'<h4 class="mv-title">'+s.title+'</h4>'
+   +'<div>'+chips+'</div>'
+   +'<div class="mv-q"><b>¿Qué ocurre?</b><p>'+s.what+'</p></div>'
+   +'<div class="mv-q"><b>¿Por qué es importante?</b><p>'+s.why+'</p></div>'
+   +'<div class="mv-src"><b>Instrucción original del ejercicio</b><br>“'+s.src+'”</div>';
+  document.getElementById('exPrev').disabled=(exIdx===0);
+  document.getElementById('exNext').disabled=(exIdx===EX_STEPS.length-1);
+}
+function exPlay(){
+  var s=EX_STEPS[exIdx],t=0;
+  (s.play.bass||[]).forEach(function(n){ Sound.tone(n,t,2.4,0.15); });
+  (s.play.rest||[]).forEach(function(n,i){ Sound.tone(n,0.08+i*0.34,0.5,0.16); kbEx.pulse(n); });
+}
+document.getElementById('exNext').addEventListener('click',function(){ if(exIdx<EX_STEPS.length-1){ exIdx++; renderStep(); } });
+document.getElementById('exPrev').addEventListener('click',function(){ if(exIdx>0){ exIdx--; renderStep(); } });
+document.getElementById('exReset').addEventListener('click',function(){ exIdx=0; renderStep(); });
+document.getElementById('exPlay').addEventListener('click',exPlay);
+exSlider.addEventListener('input',function(){ exIdx=parseInt(exSlider.value,10)||0; renderStep(); });
+
+var exList=document.getElementById('exList');
+EX_STEPS.forEach(function(s,i){
+  var d=document.createElement('div');
+  d.className='paso'+(i===0?'':' purple');
+  d.style.cursor='pointer';
+  d.innerHTML='<div class="pnum">'+(i===0?'LS':i)+'</div><div class="pbody">'
+    +'<div class="ptag">'+s.n+' — '+s.zone+'</div><h4 style="margin-bottom:4px">'+s.title+'</h4>'
+    +'<p style="color:var(--muted);font-size:14px;margin:0">“'+s.src+'”</p></div>';
+  d.addEventListener('click',function(){ exIdx=i; renderStep(); window.scrollTo({top:0,behavior:'smooth'}); });
+  exList.appendChild(d);
+});
+renderStep();
+
+/* =========================================================
+   ARRANQUE
+   ========================================================= */
+var initial=(location.hash||'').replace('#','');
+go(validId(initial)?initial:'home',false);
+resumeArt();
+updateProgress();
+document.addEventListener('view:shown',function(e){
+  if(e.detail.id==='creditos'||e.detail.id==='home'){ resumeArt(); }
+  if(e.detail.id==='ejercicio'){ setTimeout(function(){ renderStep(); },60); }
+});
+window.addEventListener('load',function(){ resumeArt(); updateProgress(); });
+
+})();
+</script>
+</body>
+</html>
