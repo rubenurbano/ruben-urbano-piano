@@ -1,0 +1,3196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>McCartney Walk Down — Tutorial Maestro para Piano</title>
+  <style>
+    /* ==========================================================================
+       VARIABLES Y PALETA DARK UI TÉCNICA OBLIGATORIA
+       ========================================================================== */
+    :root {
+      --bg-main: #0a0e1a;
+      --card-bg: #0f172a;
+      --card-alt: #131d36;
+      --border-color: #1e3a5f;
+      --border-glow: rgba(0, 212, 255, 0.25);
+      --accent-primary: #00d4ff;
+      --accent-hover: #38bdf8;
+      --green: #22c55e;
+      --green-glow: rgba(34, 197, 94, 0.2);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.2);
+      --red: #ef4444;
+      --red-glow: rgba(239, 68, 68, 0.2);
+      --purple: #a855f7;
+      --purple-glow: rgba(168, 85, 247, 0.2);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --radius: 10px;
+      --radius-sm: 6px;
+      --font-stack: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --mono-stack: 'SF Mono', Consolas, 'Courier New', monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-stack);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* BARRA DE PROGRESO DE LECTURA */
+    #progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(15, 23, 42, 0.8);
+      z-index: 1000;
+    }
+    #reading-progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-primary), var(--green));
+      box-shadow: 0 0 10px var(--accent-primary);
+      transition: width 0.1s ease;
+    }
+
+    /* NAVBAR FIJA CON SCROLL HORIZONTAL RESPONSIVE */
+    header.site-header {
+      position: sticky;
+      top: 4px;
+      z-index: 900;
+      background: rgba(10, 14, 26, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      gap: 1rem;
+    }
+    .brand-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--accent-primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .brand-badge svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--accent-primary);
+    }
+    nav.spa-nav {
+      display: flex;
+      gap: 0.35rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-color) transparent;
+      padding: 0.25rem 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    nav.spa-nav::-webkit-scrollbar {
+      height: 4px;
+    }
+    nav.spa-nav::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    .nav-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.8rem;
+      font-size: 0.85rem;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .nav-btn:hover {
+      color: var(--text-main);
+      background: rgba(30, 58, 95, 0.4);
+      border-color: var(--border-color);
+    }
+    .nav-btn.active {
+      color: #0a0e1a;
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 12px rgba(0, 212, 255, 0.4);
+    }
+    .nav-btn.btn-credits {
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+    .nav-btn.btn-credits.active {
+      background: var(--purple);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+    }
+
+    /* CONTENEDOR PRINCIPAL SPA */
+    main.spa-main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    /* SECCIONES SPA */
+    .spa-section {
+      display: none;
+      animation: fadeIn 0.3s ease forwards;
+    }
+    .spa-section.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ESTILO DE PORTADA Y CABECERAS */
+    .hero-container {
+      margin-bottom: 2rem;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid var(--accent-primary);
+      color: var(--accent-primary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      margin: 1.25rem 0 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .hero-title {
+      font-size: clamp(2rem, 4.5vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent-primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    .hero-subtitle {
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+    .hero-author {
+      font-size: 0.95rem;
+      color: var(--amber);
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+    .hero-quote {
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0.9), rgba(30, 58, 95, 0.4));
+      border-left: 4px solid var(--accent-primary);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 1.1rem 1.4rem;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: #e2e8f0;
+      margin: 1.25rem 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0 2rem;
+    }
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1rem;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .metric-card:hover {
+      border-color: var(--accent-primary);
+    }
+    .metric-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--accent-primary);
+      line-height: 1.2;
+    }
+    .metric-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 0.25rem;
+    }
+
+    /* COMPONENTES EDITORIALES Y CARDS TÉCNICAS */
+    .section-header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-icon {
+      font-size: 1.5rem;
+      color: var(--accent-primary);
+    }
+    .section-header h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.35rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-title span.number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 212, 255, 0.15);
+      color: var(--accent-primary);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* CALLOUTS OBLIGATORIOS */
+    .callout {
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      margin: 1.25rem 0;
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      border: 1px solid transparent;
+      font-size: 0.95rem;
+    }
+    .callout-icon {
+      font-weight: 800;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .callout-info {
+      background: rgba(0, 212, 255, 0.08);
+      border-color: var(--accent-primary);
+      color: #e0f2fe;
+    }
+    .callout-info .callout-icon { color: var(--accent-primary); }
+    .callout-ejemplo {
+      background: rgba(34, 197, 94, 0.08);
+      border-color: var(--green);
+      color: #dcfce7;
+    }
+    .callout-ejemplo .callout-icon { color: var(--green); }
+    .callout-advertencia {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: var(--amber);
+      color: #fef3c7;
+    }
+    .callout-advertencia .callout-icon { color: var(--amber); }
+    .callout-error {
+      background: rgba(239, 68, 68, 0.08);
+      border-color: var(--red);
+      color: #fee2e2;
+    }
+    .callout-error .callout-icon { color: var(--red); }
+
+    /* TABLAS Y FORMULAS */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.25rem 0;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+    table.tech-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+    table.tech-table th {
+      background: #131d36;
+      color: var(--accent-primary);
+      padding: 0.85rem 1rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-color);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    table.tech-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(30, 58, 95, 0.5);
+      color: #cbd5e1;
+    }
+    table.tech-table tr:last-child td {
+      border-bottom: none;
+    }
+    table.tech-table tr:hover td {
+      background: rgba(30, 58, 95, 0.2);
+    }
+
+    .chord-pill {
+      display: inline-block;
+      background: rgba(0, 212, 255, 0.15);
+      border: 1px solid var(--accent-primary);
+      color: #ffffff;
+      font-family: var(--mono-stack);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .bass-pill {
+      display: inline-block;
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid var(--purple);
+      color: #f3e8ff;
+      font-family: var(--mono-stack);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .formula-box {
+      background: #070c18;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--purple);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-family: var(--mono-stack);
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      overflow-x: auto;
+    }
+
+    /* STEPPER Y CONTROL DEL VISUALIZADOR INTERACTIVO */
+    .stepper-workspace {
+      background: #080d1a;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+    .piano-board-container {
+      width: 100%;
+      background: #0b1122;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .piano-keys-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 780px;
+      height: 170px;
+      margin: 0 auto;
+      background: #060911;
+      padding: 8px;
+      border-radius: 8px;
+      border: 2px solid #1a2942;
+      display: flex;
+      user-select: none;
+    }
+    .white-keys-layer {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      gap: 3px;
+    }
+    .w-key {
+      flex: 1;
+      height: 100%;
+      background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 85%, #cbd5e1 100%);
+      border-radius: 0 0 5px 5px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #334155;
+      box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2), 0 2px 5px rgba(0,0,0,0.5);
+      transition: all 0.1s ease;
+      position: relative;
+      z-index: 1;
+    }
+    .w-key:hover {
+      background: #ffffff;
+      color: #0f172a;
+    }
+    .w-key.active-bass {
+      background: linear-gradient(180deg, #00d4ff 0%, #0284c7 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 16px var(--accent-primary) !important;
+      transform: translateY(2px);
+    }
+    .w-key.active-chord {
+      background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 16px var(--amber) !important;
+      transform: translateY(2px);
+    }
+
+    .black-keys-layer {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      height: 60%;
+      pointer-events: none;
+    }
+    .b-key {
+      position: absolute;
+      width: 4.8%;
+      height: 100%;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border-radius: 0 0 4px 4px;
+      cursor: pointer;
+      pointer-events: auto;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 5px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #94a3b8;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.8), inset 0 -1px 2px rgba(255,255,255,0.1);
+      transition: all 0.1s ease;
+    }
+    .b-key:hover {
+      background: #334155;
+      color: #ffffff;
+    }
+    .b-key.active-bass {
+      background: linear-gradient(180deg, #00d4ff 0%, #0369a1 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 16px var(--accent-primary) !important;
+      transform: translateY(2px);
+    }
+    .b-key.active-chord {
+      background: linear-gradient(180deg, #f59e0b 0%, #b45309 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 16px var(--amber) !important;
+      transform: translateY(2px);
+    }
+
+    /* REQUISITO: TODO EL CONTROL JUSTO DEBAJO DEL TABLERO */
+    .stepper-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .stepper-btns-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .step-btn {
+      background: var(--card-alt);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.6rem 1.1rem;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }
+    .step-btn:hover:not(:disabled) {
+      background: var(--accent-primary);
+      color: #0a0e1a;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    }
+    .step-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .step-btn.btn-play {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .step-btn.btn-play:hover {
+      background: var(--green);
+      color: #0a0e1a;
+    }
+    .stepper-slider-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+    }
+    .stepper-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 8px;
+      border-radius: 4px;
+      background: #1e3a5f;
+      outline: none;
+      transition: background 0.2s;
+    }
+    .stepper-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-primary);
+      border: 2px solid #ffffff;
+    }
+    .stepper-slider::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent-primary);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-primary);
+      border: 2px solid #ffffff;
+    }
+    .step-indicator-badge {
+      background: #131d36;
+      border: 1px solid var(--border-color);
+      color: var(--accent-primary);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* PANEL DE DESARROLLO DEL MOVIMIENTO */
+    .movement-card {
+      background: #0b1325;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--accent-primary);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+    .movement-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(30, 58, 95, 0.5);
+      padding-bottom: 0.65rem;
+      margin-bottom: 0.85rem;
+    }
+    .movement-color {
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      color: var(--accent-primary);
+    }
+    .movement-chord-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+    .movement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .movement-field {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(30, 58, 95, 0.4);
+    }
+    .field-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+    .field-val {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+    .explanation-block {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .explanation-q {
+      font-weight: 700;
+      color: var(--accent-primary);
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+    }
+    .explanation-a {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* PRESET SELECTOR */
+    .preset-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .preset-btn {
+      background: #131d36;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover {
+      border-color: var(--accent-primary);
+      color: var(--text-main);
+    }
+    .preset-btn.active {
+      background: rgba(0, 212, 255, 0.15);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    /* FOOTER */
+    footer.site-footer {
+      background: #070a14;
+      border-top: 1px solid var(--border-color);
+      padding: 2.5rem 1rem;
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .footer-latin {
+      font-style: italic;
+      color: var(--accent-primary);
+      font-size: 1rem;
+      letter-spacing: 1px;
+      margin-top: 0.5rem;
+    }
+
+    /* BOTÓN VOLVER ARRIBA */
+    #back-to-top {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--card-bg);
+      color: var(--accent-primary);
+      border: 1px solid var(--accent-primary);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      z-index: 800;
+      transition: all 0.2s ease;
+    }
+    #back-to-top:hover {
+      background: var(--accent-primary);
+      color: #0a0e1a;
+      transform: translateY(-3px);
+    }
+
+    /* SVG 16:9 CONTAINER */
+    .svg-hero-wrapper {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 8px 30px rgba(0, 212, 255, 0.15);
+      background: #070a14;
+      position: relative;
+    }
+    .svg-hero-wrapper svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* ACCESIBILIDAD Y REDUCED MOTION */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* RESPONSIVE: SAMSUNG GALAXY A02s Y PANTALLAS PEQUEÑAS */
+    @media (max-width: 480px) {
+      .hero-title { font-size: 1.75rem; }
+      .hero-subtitle { font-size: 1rem; }
+      .piano-keys-wrapper { height: 130px; }
+      .w-key { font-size: 0.65rem; padding-bottom: 4px; }
+      .b-key { font-size: 0.55rem; width: 5%; }
+      .stepper-btns-row { justify-content: center; }
+      .step-btn { flex: 1; justify-content: center; min-width: 90px; }
+      .movement-grid { grid-template-columns: 1fr; }
+      .nav-btn { padding: 0.4rem 0.6rem; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE PROGRESO DE LECTURA DINÁMICA -->
+  <div id="progress-container">
+    <div id="reading-progress"></div>
+  </div>
+
+  <!-- NAVBAR FIJA SPA CON SCROLL HORIZONTAL -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="#home" class="brand-badge" onclick="navigateTo('home'); return false;">
+        <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+        <span>McCartney Walk Down</span>
+      </a>
+      <nav class="spa-nav" id="main-nav">
+        <button class="nav-btn active" onclick="navigateTo('home')">🏠 Inicio</button>
+        <button class="nav-btn" onclick="navigateTo('fundamentos')">1. Fundamentos</button>
+        <button class="nav-btn" onclick="navigateTo('diatonico-cromatico')">2. Diatónico & Cromático</button>
+        <button class="nav-btn" onclick="navigateTo('formulas-modos')">3. Fórmulas & Modos</button>
+        <button class="nav-btn" onclick="navigateTo('arreglo-piano')">4. Arreglo & Piano</button>
+        <button class="nav-btn" onclick="navigateTo('analisis-practica')">5. Análisis & Práctica</button>
+        <button class="nav-btn" onclick="navigateTo('avanzado')">6. Conceptos Avanzados</button>
+        <button class="nav-btn" onclick="navigateTo('maestra-proyecto')">7. Guía Maestra & Proyecto</button>
+        <button class="nav-btn" onclick="navigateTo('laboratorio')">🎹 Laboratorio Interactivo</button>
+        <button class="nav-btn btn-credits" onclick="navigateTo('creditos')">⭐ Créditos</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL SPA -->
+  <main class="spa-main">
+
+    <!-- ==========================================================================
+         PESTAÑA HOME: SVG ANIMADO BIEN ARRIBA + PORTADA TÉCNICA
+         ========================================================================== -->
+    <section id="sec-home" class="spa-section active">
+      <div class="hero-container">
+
+        <!-- SVG ANIMADO 16:9 BIEN ARRIBA (REQUISITO EXPLÍCITO DE VISIBILIDAD INMEDIATA) -->
+        <div class="svg-hero-wrapper" id="home-svg-box">
+          <svg id="master-animated-svg" viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <!-- Gradientes técnicos -->
+              <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#070a14" />
+                <stop offset="50%" stop-color="#0b132b" />
+                <stop offset="100%" stop-color="#0a0e1a" />
+              </linearGradient>
+              <linearGradient id="laserGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00d4ff" />
+                <stop offset="50%" stop-color="#a855f7" />
+                <stop offset="100%" stop-color="#22c55e" />
+              </linearGradient>
+              <linearGradient id="pulseCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.8" />
+                <stop offset="100%" stop-color="#00d4ff" stop-opacity="0" />
+              </linearGradient>
+
+              <!-- Filtro de resplandor Glow -->
+              <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Fondo con gradiente y cuadrícula técnica -->
+            <rect width="960" height="540" fill="url(#bgGrad)" />
+
+            <!-- Rejilla técnica de fondo -->
+            <g opacity="0.12" stroke="#00d4ff" stroke-width="1">
+              <line x1="60" y1="0" x2="60" y2="540" />
+              <line x1="180" y1="0" x2="180" y2="540" />
+              <line x1="300" y1="0" x2="300" y2="540" />
+              <line x1="420" y1="0" x2="420" y2="540" />
+              <line x1="540" y1="0" x2="540" y2="540" />
+              <line x1="660" y1="0" x2="660" y2="540" />
+              <line x1="780" y1="0" x2="780" y2="540" />
+              <line x1="900" y1="0" x2="900" y2="540" />
+              <line x1="0" y1="100" x2="960" y2="100" />
+              <line x1="0" y1="200" x2="960" y2="200" />
+              <line x1="0" y1="300" x2="960" y2="300" />
+              <line x1="0" y1="400" x2="960" y2="400" />
+            </g>
+
+            <!-- Pentagrama estilizado de fondo con ondas -->
+            <g stroke="#1e3a5f" stroke-width="1.5" opacity="0.6">
+              <line x1="50" y1="130" x2="910" y2="130" />
+              <line x1="50" y1="150" x2="910" y2="150" />
+              <line x1="50" y1="170" x2="910" y2="170" />
+              <line x1="50" y1="190" x2="910" y2="190" />
+              <line x1="50" y1="210" x2="910" y2="210" />
+            </g>
+
+            <!-- ONDA ARMÓNICA OSCILANTE EN MOVIMIENTO (ANIMADA) -->
+            <path d="M 50 170 Q 200 70, 350 170 T 650 170 T 910 170" fill="none" stroke="#a855f7" stroke-width="2" opacity="0.4" stroke-dasharray="8 6">
+              <animate attributeName="stroke-dashoffset" from="0" to="200" dur="8s" repeatCount="indefinite" />
+            </path>
+
+            <!-- LÍNEA DE BAJO CAMINANTE: WALK DOWN DINÁMICO C -> B -> Bb -> A -> G -> F -> E -->
+            <!-- Trayectoria base de la línea de bajo -->
+            <path id="bassWalkPath" d="M 120 150 L 240 200 L 360 250 L 480 300 L 600 350 L 720 400 L 840 450" fill="none" stroke="url(#laserGrad)" stroke-width="5" filter="url(#glow)">
+              <animate attributeName="stroke-dasharray" values="10, 800; 800, 0; 10, 800" dur="7s" repeatCount="indefinite" />
+            </path>
+
+            <!-- Viga o haz de luz recorriendo la línea de bajo continuamente -->
+            <circle r="10" fill="#00d4ff" filter="url(#glow)">
+              <animateMotion path="M 120 150 L 240 200 L 360 250 L 480 300 L 600 350 L 720 400 L 840 450" dur="4.5s" repeatCount="indefinite" />
+            </circle>
+
+            <!-- NODOS DE LAS NOTAS DEL BAJO CON PULSO Y ETIQUETA TÉCNICA -->
+            <!-- C (I) -->
+            <g transform="translate(120, 150)">
+              <circle r="18" fill="#0f172a" stroke="#00d4ff" stroke-width="3" filter="url(#glow)">
+                <animate attributeName="r" values="16; 22; 16" dur="3s" repeatCount="indefinite" />
+              </circle>
+              <text y="5" text-anchor="middle" fill="#00d4ff" font-family="'SF Mono', monospace" font-size="14" font-weight="bold">C</text>
+              <rect x="-35" y="-55" width="70" height="24" rx="4" fill="#0f172a" stroke="#1e3a5f" />
+              <text x="0" y="-39" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="bold">C (I)</text>
+            </g>
+
+            <!-- B (VII) -->
+            <g transform="translate(240, 200)">
+              <circle r="17" fill="#0f172a" stroke="#00d4ff" stroke-width="3" filter="url(#glow)">
+                <animate attributeName="r" values="15; 21; 15" dur="3s" begin="0.6s" repeatCount="indefinite" />
+              </circle>
+              <text y="5" text-anchor="middle" fill="#00d4ff" font-family="'SF Mono', monospace" font-size="14" font-weight="bold">B</text>
+              <rect x="-40" y="-55" width="80" height="24" rx="4" fill="#0f172a" stroke="#1e3a5f" />
+              <text x="0" y="-39" text-anchor="middle" fill="#f59e0b" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="bold">G/B (V/III)</text>
+            </g>
+
+            <!-- Bb (♭VII) Cromático -->
+            <g transform="translate(360, 250)">
+              <circle r="17" fill="#0f172a" stroke="#ef4444" stroke-width="3" filter="url(#glow)">
+                <animate attributeName="r" values="15; 22; 15" dur="3s" begin="1.2s" repeatCount="indefinite" />
+              </circle>
+              <text y="5" text-anchor="middle" fill="#ef4444" font-family="'SF Mono', monospace" font-size="13" font-weight="bold">B♭</text>
+              <rect x="-42" y="-55" width="84" height="24" rx="4" fill="#0f172a" stroke="#ef4444" />
+              <text x="0" y="-39" text-anchor="middle" fill="#ef4444" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="bold">Cromático</text>
+            </g>
+
+            <!-- A (VI) -->
+            <g transform="translate(480, 300)">
+              <circle r="17" fill="#0f172a" stroke="#00d4ff" stroke-width="3" filter="url(#glow)">
+                <animate attributeName="r" values="15; 21; 15" dur="3s" begin="1.8s" repeatCount="indefinite" />
+              </circle>
+              <text y="5" text-anchor="middle" fill="#00d4ff" font-family="'SF Mono', monospace" font-size="14" font-weight="bold">A</text>
+              <rect x="-40" y="-55" width="80" height="24" rx="4" fill="#0f172a" stroke="#1e3a5f" />
+              <text x="0" y="-39" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="bold">Am (VI)</text>
+            </g>
+
+            <!-- G (V) -->
+            <g transform="translate(600, 350)">
+              <circle r="17" fill="#0f172a" stroke="#00d4ff" stroke-width="3" filter="url(#glow)">
+                <animate attributeName="r" values="15; 21; 15" dur="3s" begin="2.4s" repeatCount="indefinite" />
+              </circle>
+              <text y="5" text-anchor="middle" fill="#00d4ff" font-family="'SF Mono', monospace" font-size="14" font-weight="bold">G</text>
+              <rect x="-45" y="-55" width="90" height="24" rx="4" fill="#0f172a" stroke="#1e3a5f" />
+              <text x="0" y="-39" text-anchor="middle" fill="#f59e0b" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="bold">Am/G (VI/V)</text>
+            </g>
+
+            <!-- F (IV) -->
+            <g transform="translate(720, 400)">
+              <circle r="17" fill="#0f172a" stroke="#00d4ff" stroke-width="3" filter="url(#glow)">
+                <animate attributeName="r" values="15; 21; 15" dur="3s" begin="3.0s" repeatCount="indefinite" />
+              </circle>
+              <text y="5" text-anchor="middle" fill="#00d4ff" font-family="'SF Mono', monospace" font-size="14" font-weight="bold">F</text>
+              <rect x="-35" y="-55" width="70" height="24" rx="4" fill="#0f172a" stroke="#1e3a5f" />
+              <text x="0" y="-39" text-anchor="middle" fill="#ffffff" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="bold">F (IV)</text>
+            </g>
+
+            <!-- E (III) -->
+            <g transform="translate(840, 450)">
+              <circle r="17" fill="#0f172a" stroke="#22c55e" stroke-width="3" filter="url(#glow)">
+                <animate attributeName="r" values="15; 22; 15" dur="3s" begin="3.6s" repeatCount="indefinite" />
+              </circle>
+              <text y="5" text-anchor="middle" fill="#22c55e" font-family="'SF Mono', monospace" font-size="14" font-weight="bold">E</text>
+              <rect x="-40" y="-55" width="80" height="24" rx="4" fill="#0f172a" stroke="#22c55e" />
+              <text x="0" y="-39" text-anchor="middle" fill="#22c55e" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="bold">C/E (I/III)</text>
+            </g>
+
+            <!-- TECLADO DE PIANO VECTORIAL INTEGRADO EN LA BASE -->
+            <g transform="translate(100, 485)" opacity="0.85">
+              <!-- Teclas blancas -->
+              <rect x="0" y="0" width="36" height="42" rx="2" fill="#e2e8f0" stroke="#0f172a" />
+              <rect x="38" y="0" width="36" height="42" rx="2" fill="#e2e8f0" stroke="#0f172a" />
+              <rect x="76" y="0" width="36" height="42" rx="2" fill="#e2e8f0" stroke="#0f172a" />
+              <rect x="114" y="0" width="36" height="42" rx="2" fill="#e2e8f0" stroke="#0f172a" />
+              <rect x="152" y="0" width="36" height="42" rx="2" fill="#e2e8f0" stroke="#0f172a" />
+              <rect x="190" y="0" width="36" height="42" rx="2" fill="#e2e8f0" stroke="#0f172a" />
+              <rect x="228" y="0" width="36" height="42" rx="2" fill="#e2e8f0" stroke="#0f172a" />
+              <!-- Teclas negras -->
+              <rect x="24" y="0" width="22" height="26" rx="2" fill="#0f172a" />
+              <rect x="64" y="0" width="22" height="26" rx="2" fill="#0f172a" />
+              <rect x="138" y="0" width="22" height="26" rx="2" fill="#0f172a" />
+              <rect x="178" y="0" width="22" height="26" rx="2" fill="#0f172a" />
+              <rect x="216" y="0" width="22" height="26" rx="2" fill="#0f172a" />
+            </g>
+
+            <!-- BARRAS ECUALIZADORAS DINÁMICAS (LADO DERECHO INFERIOR) -->
+            <g transform="translate(680, 490)">
+              <rect x="0" y="0" width="6" height="28" fill="#00d4ff">
+                <animate attributeName="height" values="10;32;14;30;10" dur="1.2s" repeatCount="indefinite" />
+                <animate attributeName="y" values="22;0;18;2;22" dur="1.2s" repeatCount="indefinite" />
+              </rect>
+              <rect x="12" y="0" width="6" height="28" fill="#22c55e">
+                <animate attributeName="height" values="28;8;34;12;28" dur="1.5s" repeatCount="indefinite" />
+                <animate attributeName="y" values="4;24;-2;20;4" dur="1.5s" repeatCount="indefinite" />
+              </rect>
+              <rect x="24" y="0" width="6" height="28" fill="#f59e0b">
+                <animate attributeName="height" values="14;30;8;26;14" dur="1.1s" repeatCount="indefinite" />
+                <animate attributeName="y" values="18;2;24;6;18" dur="1.1s" repeatCount="indefinite" />
+              </rect>
+              <rect x="36" y="0" width="6" height="28" fill="#a855f7">
+                <animate attributeName="height" values="32;12;28;6;32" dur="1.4s" repeatCount="indefinite" />
+                <animate attributeName="y" values="0;20;4;26;0" dur="1.4s" repeatCount="indefinite" />
+              </rect>
+              <rect x="48" y="0" width="6" height="28" fill="#00d4ff">
+                <animate attributeName="height" values="18;34;16;28;18" dur="1.3s" repeatCount="indefinite" />
+                <animate attributeName="y" values="14;-2;16;4;14" dur="1.3s" repeatCount="indefinite" />
+              </rect>
+            </g>
+
+            <!-- TÍTULO TÉCNICO INTERNO DEL SVG -->
+            <text x="50" y="55" fill="#00d4ff" font-family="'SF Mono', monospace" font-size="14" font-weight="bold" letter-spacing="2">[SISTEMA ARMÓNICO: CONDUCCIÓN HORIZONTAL]</text>
+            <text x="50" y="80" fill="#ffffff" font-family="'Segoe UI', sans-serif" font-size="24" font-weight="900" letter-spacing="1">McCARTNEY WALK DOWN — VECTOR ENGINE</text>
+            <text x="910" y="55" text-anchor="end" fill="#a855f7" font-family="'SF Mono', monospace" font-size="12" font-weight="bold">BASS MELODY DECAY: C → E</text>
+          </svg>
+        </div>
+
+        <div class="hero-badge">Manual Técnico y Didáctico de Piano &middot; Armonía Moderna</div>
+        <h1 class="hero-title">McCartney Walk Down</h1>
+        <p class="hero-subtitle">Tutorial muy completo para entenderlo, analizarlo y utilizarlo en el piano</p>
+        <p class="hero-author">Contenido Original y Didáctica por Rubén Urbano &middot; Edición e Interfaz Técnica Dark UI</p>
+
+        <!-- CITA OBLIGATORIA DE LA ESPECIFICACIÓN -->
+        <blockquote class="hero-quote">
+          "Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."
+        </blockquote>
+
+        <!-- MÉTRICAS INFORMATIVAS OBLIGATORIAS -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value">78</div>
+            <div class="metric-label">Módulos de Aprendizaje</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">5</div>
+            <div class="metric-label">Fórmulas Maestras</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">100%</div>
+            <div class="metric-label">Práctico para Piano</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">09/09/2026</div>
+            <div class="metric-label">Fecha del Sistema</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">17:51:08</div>
+            <div class="metric-label">Hora de Compilación</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🚀 Bienvenida al Tutorial Maestro</div>
+          <p>Bienvenido a la guía integral sobre el <strong>McCartney Walk Down</strong>. A través de este entorno técnico educativo interactivo, transformarás la manera en que concibes la relación entre acordes y líneas de bajo al piano. Deja atrás el pensamiento estático vertical y domina la conducción melódica horizontal que inmortalizó Paul McCartney y la composición moderna.</p>
+          <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="step-btn" onclick="navigateTo('fundamentos')">Comenzar con 1. Fundamentos &rarr;</button>
+            <button class="step-btn btn-play" onclick="navigateTo('laboratorio')">Abrir Laboratorio Interactivo 🎹</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         MÓDULO 1: FUNDAMENTOS (SECCIONES 1 A 8)
+         ========================================================================== -->
+    <section id="sec-fundamentos" class="spa-section">
+      <div class="section-header">
+        <span class="section-icon">📘</span>
+        <h2>Módulo 1: Fundamentos del Walk Down</h2>
+      </div>
+
+      <!-- 1. INTRODUCCIÓN -->
+      <div class="card">
+        <div class="card-title"><span class="number">1</span> 1. INTRODUCCIÓN</div>
+        <p>El llamado <strong>McCartney Walk Down</strong> no es una técnica académica con una definición oficial única. Es un nombre informal utilizado para describir un recurso muy característico de <strong>Paul McCartney</strong>: construir líneas de bajo que descienden de manera melódica mientras la armonía cambia.</p>
+        
+        <div class="callout callout-info">
+          <span class="callout-icon">💡</span>
+          <div>
+            <strong>La idea esencial es:</strong><br>
+            <em>"El bajo no tiene por qué limitarse a tocar las fundamentales de los acordes. Puede convertirse en una auténtica melodía."</em>
+          </div>
+        </div>
+
+        <p>El ejemplo más sencillo es:</p>
+        <div class="formula-box">
+          C &rarr; G/B &rarr; Am
+        </div>
+        <p>El bajo hace:</p>
+        <div class="formula-box">
+          C &rarr; B &rarr; A
+        </div>
+        <p>En tonalidad de C major:</p>
+        <div class="formula-box">
+          C(I) &rarr; B(VII) &rarr; A(VI)
+        </div>
+        <p>Ese pequeño movimiento transforma completamente la sensación de la progresión.</p>
+      </div>
+
+      <!-- 2. LA IDEA FUNDAMENTAL -->
+      <div class="card">
+        <div class="card-title"><span class="number">2</span> 2. LA IDEA FUNDAMENTAL</div>
+        <p>Un principiante suele pensar:</p>
+        <div class="formula-box">C &rarr; G &rarr; Am</div>
+        <p>y simplemente ve: <strong>ACORDE &rarr; ACORDE &rarr; ACORDE</strong>.</p>
+        <p>Pero podemos pensar de otra manera. Queremos que el bajo haga:</p>
+        <div class="formula-box">C &rarr; B &rarr; A</div>
+        <p>Entonces buscamos acordes que permitan ese movimiento. Una solución es:</p>
+        <div class="formula-box">C &rarr; G/B &rarr; Am</div>
+        <p>Tenemos:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.75rem;">
+          <li><strong>ARMONÍA:</strong> C &rarr; G &rarr; Am</li>
+          <li><strong>BAJO:</strong> C &rarr; B &rarr; A</li>
+        </ul>
+        <p>Esta diferencia entre el acorde y la nota del bajo es la esencia del recurso.</p>
+      </div>
+
+      <!-- 3. ¿QUÉ SIGNIFICA G/B? -->
+      <div class="card">
+        <div class="card-title"><span class="number">3</span> 3. ¿QUÉ SIGNIFICA G/B?</div>
+        <div class="callout callout-info">
+          <span class="callout-icon">ℹ️</span>
+          <div><strong>G/B significa:</strong> Acorde de G con B en el bajo.</div>
+        </div>
+        <p>El acorde de G contiene: <code>G – B – D</code></p>
+        <p>En posición fundamental: <code>G – B – D</code></p>
+        <p>Pero podemos poner B abajo: <code>B – D – G</code>. Eso es una inversión.</p>
+        <p>Por eso, <strong>G/B</strong> significa en nomenclatura internacional: <em>G chord over B bass</em>. Es decir: <strong>"acorde de G sobre un bajo de B"</strong>.</p>
+      </div>
+
+      <!-- 4. LAS INVERSIONES -->
+      <div class="card">
+        <div class="card-title"><span class="number">4</span> 4. LAS INVERSIONES</div>
+        <p>Una tríada mayor tiene tres posiciones básicas. Tomando como ejemplo <strong>G major</strong> (<code>G – B – D</code>):</p>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Disposición</th>
+                <th>Notas (Grave &rarr; Agudo)</th>
+                <th>Bajo</th>
+                <th>Cifrado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Posición fundamental</strong></td>
+                <td>G – B – D</td>
+                <td>Fundamental G</td>
+                <td><span class="chord-pill">G</span></td>
+              </tr>
+              <tr>
+                <td><strong>Primera inversión</strong></td>
+                <td>B – D – G</td>
+                <td>Tercera B</td>
+                <td><span class="chord-pill">G/B</span></td>
+              </tr>
+              <tr>
+                <td><strong>Segunda inversión</strong></td>
+                <td>D – G – B</td>
+                <td>Quinta D</td>
+                <td><span class="chord-pill">G/D</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Las inversiones son una de las principales herramientas que permiten construir líneas de bajo suaves.</p>
+      </div>
+
+      <!-- 5. EL EJEMPLO FUNDAMENTAL -->
+      <div class="card">
+        <div class="card-title"><span class="number">5</span> 5. EL EJEMPLO FUNDAMENTAL</div>
+        <p>Tonalidad: <strong>C major</strong></p>
+        <p>Escala: <code>C(I) – D(II) – E(III) – F(IV) – G(V) – A(VI) – B(VII)</code></p>
+        <div class="formula-box">
+          Progresión: C &rarr; G/B &rarr; Am &rarr; Am/G<br>
+          Bajo: C &rarr; B &rarr; A &rarr; G<br>
+          En grados: C(I) &rarr; B(VII) &rarr; A(VI) &rarr; G(V)
+        </div>
+        <div class="callout callout-ejemplo">
+          <span class="callout-icon">🎹</span>
+          <div>
+            <strong>Ahora toca en el piano:</strong><br>
+            <strong>MANO IZQUIERDA:</strong> C &rarr; B &rarr; A &rarr; G<br>
+            <strong>MANO DERECHA:</strong> C-E-G &rarr; B-D-G &rarr; A-C-E &rarr; G-C-E<br>
+            <em>Escucha solamente la mano izquierda: el bajo parece estar caminando. De ahí el concepto de WALK DOWN.</em>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. ¿POR QUÉ SUENA TAN BIEN? -->
+      <div class="card">
+        <div class="card-title"><span class="number">6</span> 6. ¿POR QUÉ SUENA TAN BIEN?</div>
+        <p>Porque el oído humano reconoce fácilmente los movimientos melódicos conjuntos.</p>
+        <div class="grid-2">
+          <div class="movement-field">
+            <div class="field-label">Línea con Saltos Disjuntos</div>
+            <div class="field-val" style="color: var(--amber);">C &rarr; G &rarr; A</div>
+            <p style="font-size: 0.85rem; margin-top: 0.25rem;">El bajo salta una quinta descendente o cuarta ascendente. Menos conexión vocal.</p>
+          </div>
+          <div class="movement-field">
+            <div class="field-label">Línea de Movimiento Conjunto</div>
+            <div class="field-val" style="color: var(--green);">C &rarr; B &rarr; A</div>
+            <p style="font-size: 0.85rem; margin-top: 0.25rem;">Movimiento por segundas diatónicas continuas. Máxima fluidez vocal.</p>
+          </div>
+        </div>
+        <p style="margin-top: 1rem;">El segundo movimiento resulta más fluido. La armonía cambia, pero el bajo conecta los acordes.</p>
+      </div>
+
+      <!-- 7. EL BAJO COMO MELODÍA -->
+      <div class="card">
+        <div class="card-title"><span class="number">7</span> 7. EL BAJO COMO MELODÍA</div>
+        <p>Esta es probablemente la idea más importante de todo el tutorial. Un bajista puede limitarse a tocar:</p>
+        <div class="formula-box">C &rarr; G &rarr; A &rarr; F</div>
+        <p>Pero también puede construir:</p>
+        <div class="formula-box">C &rarr; B &rarr; A &rarr; G &rarr; F &rarr; E &rarr; D...</div>
+        <p>La segunda posibilidad convierte el bajo en una línea melódica. Esto es muy característico de McCartney. Su bajo muchas veces no funciona únicamente como soporte armónico. Funciona como: <strong>una segunda melodía</strong>.</p>
+      </div>
+
+      <!-- 8. BAJO VERTICAL Y BAJO HORIZONTAL -->
+      <div class="card">
+        <div class="card-title"><span class="number">8</span> 8. BAJO VERTICAL Y BAJO HORIZONTAL</div>
+        <p>Hay dos formas de pensar:</p>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Enfoque</th>
+                <th>Pregunta Guía</th>
+                <th>Comportamiento</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Pensamiento vertical</strong></td>
+                <td>"¿Qué nota pertenece al acorde?"</td>
+                <td>Toca tónicas estáticas: C | G | Am | F</td>
+              </tr>
+              <tr>
+                <td><strong>Pensamiento horizontal</strong></td>
+                <td>"¿Qué línea puede hacer el bajo?"</td>
+                <td>Conduce una melodía: C &rarr; B &rarr; A &rarr; G &rarr; F</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>El pensamiento horizontal es fundamental para comprender este recurso. La música no ocurre solamente verticalmente. También ocurre horizontalmente.</p>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         MÓDULO 2: DIATÓNICO & CROMÁTICO (SECCIONES 9 A 18)
+         ========================================================================== -->
+    <section id="sec-diatonico-cromatico" class="spa-section">
+      <div class="section-header">
+        <span class="section-icon">🔀</span>
+        <h2>Módulo 2: Conducción Diatónica vs Cromática</h2>
+      </div>
+
+      <!-- 9. WALK DOWN DIATÓNICO -->
+      <div class="card">
+        <div class="card-title"><span class="number">9</span> 9. WALK DOWN DIATÓNICO</div>
+        <p>Un walk down diatónico utiliza exclusivamente las notas pertenecientes a la tonalidad. En <strong>C major</strong>:</p>
+        <div class="formula-box">C(I) &rarr; B(VII) &rarr; A(VI) &rarr; G(V)</div>
+        <p>Observa que una misma línea de bajo puede admitir distintas vestiduras armónicas:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li>Armonización 1: <code>C &rarr; G/B &rarr; Am &rarr; Am/G</code></li>
+          <li>Armonización 2: <code>C &rarr; C/B &rarr; Am &rarr; G</code></li>
+          <li>Armonización 3: <code>C &rarr; E/B &rarr; Am &rarr; G</code></li>
+        </ul>
+        <div class="callout callout-info">
+          <span class="callout-icon">📌</span>
+          <div><strong>Regla de oro:</strong> Una misma línea de bajo puede tener diferentes armonizaciones.</div>
+        </div>
+      </div>
+
+      <!-- 10. OTRO EJEMPLO DIATÓNICO -->
+      <div class="card">
+        <div class="card-title"><span class="number">10</span> 10. OTRO EJEMPLO: DESCENSO IV &rarr; III &rarr; II &rarr; I</div>
+        <p>En C major:</p>
+        <div class="formula-box">
+          Progresión: F &rarr; C/E &rarr; Dm &rarr; C<br>
+          Bajo: F &rarr; E &rarr; D &rarr; C<br>
+          Grados: F(IV) &rarr; E(III) &rarr; D(II) &rarr; C(I)
+        </div>
+        <p>Aquí tenemos un descenso <strong>IV &rarr; III &rarr; II &rarr; I</strong>. Es una de las líneas descendentes más útiles y bellas para aprender.</p>
+      </div>
+
+      <!-- 11. OTRO EJEMPLO DIATÓNICO -->
+      <div class="card">
+        <div class="card-title"><span class="number">11</span> 11. OTRO EJEMPLO: DESCENSO V &rarr; IV &rarr; III &rarr; I</div>
+        <p>Progresión:</p>
+        <div class="formula-box">
+          G &rarr; G/F &rarr; C/E &rarr; C<br>
+          Bajo: G &rarr; F &rarr; E &rarr; C<br>
+          Grados: G(V) &rarr; F(IV) &rarr; E(III) &rarr; C(I)
+        </div>
+        <p>Observa que <strong>G/F</strong> significa acorde de G con F en el bajo. El acorde sigue siendo G, pero el bajo está creando movimiento activo hacia E.</p>
+      </div>
+
+      <!-- 12. EL ERROR MÁS IMPORTANTE QUE DEBES EVITAR -->
+      <div class="card">
+        <div class="card-title"><span class="number">12</span> 12. EL ERROR MÁS IMPORTANTE QUE DEBES EVITAR</div>
+        <div class="callout callout-error">
+          <span class="callout-icon">⚠️</span>
+          <div>
+            <strong>Error común:</strong> No debes pensar jamás que <em>"McCartney Walk Down = slash chords"</em>.
+          </div>
+        </div>
+        <p>Los slash chords son una herramienta técnica frecuente, pero el concepto más profundo es: <strong>crear una línea de bajo melódica que conecte acontecimientos armónicos</strong>.</p>
+        <p>Puedes conseguirlo mediante múltiples recursos:</p>
+        <div class="metrics-grid" style="margin-top: 1rem;">
+          <div class="metric-card"><div class="metric-label" style="color:var(--accent-primary);">Inversiones</div></div>
+          <div class="metric-card"><div class="metric-label" style="color:var(--accent-primary);">Slash Chords</div></div>
+          <div class="metric-card"><div class="metric-label" style="color:var(--accent-primary);">Notas de Paso</div></div>
+          <div class="metric-card"><div class="metric-label" style="color:var(--accent-primary);">Cromatismo</div></div>
+          <div class="metric-card"><div class="metric-label" style="color:var(--accent-primary);">Acordes de Paso</div></div>
+          <div class="metric-card"><div class="metric-label" style="color:var(--accent-primary);">Dominantes Secundarios</div></div>
+          <div class="metric-card"><div class="metric-label" style="color:var(--accent-primary);">Anticipaciones</div></div>
+          <div class="metric-card"><div class="metric-label" style="color:var(--accent-primary);">Notas de Aproximación</div></div>
+        </div>
+      </div>
+
+      <!-- 13. NOTA DE PASO -->
+      <div class="card">
+        <div class="card-title"><span class="number">13</span> 13. NOTA DE PASO</div>
+        <p>Una <strong>nota de paso</strong> conecta dos notas estructurales.</p>
+        <div class="formula-box">C &rarr; B &rarr; A</div>
+        <p>El B puede funcionar simplemente como nota de paso en el bajo sin soporte de acorde nuevo. No necesitas convertir B obligatoriamente en un acorde completo. No tienes que armonizar absolutamente cada nota que toca el bajo.</p>
+      </div>
+
+      <!-- 14. ACORDE DE PASO -->
+      <div class="card">
+        <div class="card-title"><span class="number">14</span> 14. ACORDE DE PASO</div>
+        <p>También puedes convertir la nota de paso en parte integral de un acorde nuevo:</p>
+        <div class="formula-box">
+          C &rarr; G/B &rarr; Am<br>
+          Bajo: C &rarr; B &rarr; A
+        </div>
+        <p>Aquí B no solamente es una nota de paso melódica; es la nota del bajo estructurada del acorde <code>G/B</code>.</p>
+      </div>
+
+      <!-- 15. NO TODAS LAS NOTAS NECESITAN UN ACORDE -->
+      <div class="card">
+        <div class="card-title"><span class="number">15</span> 15. NO TODAS LAS NOTAS NECESITAN UN ACORDE</div>
+        <p>Supongamos que quieres la línea descendente: <code>C &rarr; B &rarr; A &rarr; G &rarr; F</code></p>
+        <p>No tienes que hacer: <em>C &rarr; acorde sobre B &rarr; acorde sobre A &rarr; acorde sobre G &rarr; acorde sobre F</em>.</p>
+        <p>Puedes estructurar:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li>Acorde <strong>C</strong></li>
+          <li><strong>B</strong> como nota melódica de paso</li>
+          <li>Acorde <strong>Am</strong></li>
+          <li><strong>G</strong> como nota melódica de paso</li>
+          <li>Acorde <strong>F</strong></li>
+        </ul>
+        <p>El resultado sonoro puede ser mucho más orgánico, ágil y natural.</p>
+      </div>
+
+      <!-- 16. WALK DOWN CROMÁTICO -->
+      <div class="card">
+        <div class="card-title"><span class="number">16</span> 16. WALK DOWN CROMÁTICO</div>
+        <p>Ahora introducimos notas que no pertenecen a la armadura de la tonalidad:</p>
+        <div class="formula-box">
+          Línea: C &rarr; B &rarr; Bb &rarr; A<br>
+          En grados: C(I) &rarr; B(VII) &rarr; Bb(♭VII) &rarr; A(VI)
+        </div>
+        <p>El <strong>Bb</strong> no pertenece a C major diatónico, pero funciona de manera impecable como nota cromática de paso hacia A. Una posible armonización:</p>
+        <div class="formula-box">C &rarr; G/B &rarr; Bb &rarr; F/A</div>
+        <p>La línea <code>C &rarr; B &rarr; Bb &rarr; A</code> transmite una sensación mucho más intensa y nostálgica que la versión estrictamente diatónica.</p>
+      </div>
+
+      <!-- 17. ¿POR QUÉ UTILIZAR CROMATISMO? -->
+      <div class="card">
+        <div class="card-title"><span class="number">17</span> 17. ¿POR QUÉ UTILIZAR CROMATISMO?</div>
+        <p>El cromatismo introduce <strong>tensión por semitono</strong>. Compara:</p>
+        <div class="grid-2">
+          <div class="movement-field">
+            <div class="field-label">Diatónico</div>
+            <div class="field-val">C &rarr; B &rarr; A</div>
+            <p style="font-size: 0.85rem; margin-top: 0.35rem;">Transición natural sin alteración forzada.</p>
+          </div>
+          <div class="movement-field">
+            <div class="field-label">Cromático</div>
+            <div class="field-val" style="color: var(--purple);">C &rarr; B &rarr; Bb &rarr; A</div>
+            <p style="font-size: 0.85rem; margin-top: 0.35rem;">El oído experimenta una caída gravitatoria inevitable: Bb empuja magnéticamente hacia A.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 18. DIATÓNICO VS CROMÁTICO -->
+      <div class="card">
+        <div class="card-title"><span class="number">18</span> 18. DIATÓNICO VS CROMÁTICO (COMPARATIVA)</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Línea Típica</th>
+                <th>Sensación Auditiva</th>
+                <th>Uso Recomendado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Diatónico</strong></td>
+                <td>C &rarr; B &rarr; A &rarr; G</td>
+                <td>Natural, estable, clara, cantable, pastoral.</td>
+                <td>Baladas folk, estribillos luminosos, pop clásico.</td>
+              </tr>
+              <tr>
+                <td><strong>Cromático</strong></td>
+                <td>C &rarr; B &rarr; Bb &rarr; A</td>
+                <td>Tensa, sofisticada, dramática, teatral, densa.</td>
+                <td>Puentes dramáticos, giros de verso melancólicos, jazz-pop.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>No significa que el cromatismo sea superior: son paletas expresivas diferentes que debes alternar con criterio.</p>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         MÓDULO 3: FÓRMULAS & MODOS (SECCIONES 19 A 28)
+         ========================================================================== -->
+    <section id="sec-formulas-modos" class="spa-section">
+      <div class="section-header">
+        <span class="section-icon">📐</span>
+        <h2>Módulo 3: Fórmulas Maestras y Modo Menor</h2>
+      </div>
+
+      <!-- 19. LA LÍNEA DE BAJO COMO OBJETIVO -->
+      <div class="card">
+        <div class="card-title"><span class="number">19</span> 19. LA LÍNEA DE BAJO COMO OBJETIVO</div>
+        <p>Una manera sumamente poderosa de componer es comenzar por la línea del bajo. En lugar de pensar <em>"Voy a utilizar C, Am, F y G"</em>, visualiza:</p>
+        <div class="formula-box">"Quiero que el bajo cante: C &rarr; B &rarr; A &rarr; G &rarr; F"</div>
+        <p>Después buscas los acordes que armonicen esa trayectoria. Invertimos el flujo habitual:</p>
+        <div class="grid-2" style="margin-top: 0.75rem;">
+          <div class="movement-field" style="border-left: 4px solid var(--red);">
+            <div class="field-label">Método Tradicional</div>
+            <div class="field-val">ACORDES &rarr; BAJO</div>
+          </div>
+          <div class="movement-field" style="border-left: 4px solid var(--green);">
+            <div class="field-label">Método McCartney</div>
+            <div class="field-val">BAJO &rarr; ACORDES</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 20. MÉTODO PARA CREAR UN WALK DOWN -->
+      <div class="card">
+        <div class="card-title"><span class="number">20</span> 20. MÉTODO DE 7 PASOS PARA CREAR UN WALK DOWN</div>
+        <ol style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <li><strong>Paso 1:</strong> Elige un acorde inicial (Ejemplo: <code>C</code>).</li>
+          <li><strong>Paso 2:</strong> Elige un acorde destino (Ejemplo: <code>Am</code>).</li>
+          <li><strong>Paso 3:</strong> Mira las fundamentales: <code>C &rarr; A</code>.</li>
+          <li><strong>Paso 4:</strong> Busca una nota intermedia por movimiento conjunto: <code>C &rarr; B &rarr; A</code>.</li>
+          <li><strong>Paso 5:</strong> Busca un acorde que tenga B en el bajo: <code>G/B</code>.</li>
+          <li><strong>Paso 6:</strong> Toca en el piano la progresión resultante: <code>C &rarr; G/B &rarr; Am</code>.</li>
+          <li><strong>Paso 7:</strong> Escucha el bajo: <code>C &rarr; B &rarr; A</code>. ¡Ya tienes tu primer walk down!</li>
+        </ol>
+      </div>
+
+      <!-- 21. EXTENDER EL WALK DOWN -->
+      <div class="card">
+        <div class="card-title"><span class="number">21</span> 21. EXTENDER EL WALK DOWN HASTA LA SUBDOMINANTE</div>
+        <p>Ahora extendemos la línea hacia el cuarto grado:</p>
+        <div class="formula-box">
+          Línea deseada: C &rarr; B &rarr; A &rarr; G &rarr; F<br>
+          Armonización: C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F<br>
+          Bajo: C &rarr; B &rarr; A &rarr; G &rarr; F<br>
+          Grados: I &rarr; VII &rarr; VI &rarr; V &rarr; IV
+        </div>
+        <p>Esta es una de las progresiones insignes del cancionero anglosajón y base indispensable de cualquier pianista moderno.</p>
+      </div>
+
+      <!-- 22. CONTINUAR HASTA LA TÓNICA -->
+      <div class="card">
+        <div class="card-title"><span class="number">22</span> 22. CONTINUAR HASTA LA RESOLUCIÓN EN TÓNICA</div>
+        <p>Podemos extender la frase completa a través de un ciclo de 8 a 9 compases:</p>
+        <div class="formula-box">
+          C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F &rarr; C/E &rarr; Dm &rarr; G &rarr; C<br>
+          Bajo: C &rarr; B &rarr; A &rarr; G &rarr; F &rarr; E &rarr; D &rarr; G &rarr; C<br>
+          Grados: I &rarr; VII &rarr; VI &rarr; V &rarr; IV &rarr; III &rarr; II &rarr; V &rarr; I
+        </div>
+        <p>Esta progresión es una auténtica escuela magistral de conducción de voces para el bajo.</p>
+      </div>
+
+      <!-- 23. LA FÓRMULA I -> VII -> VI -->
+      <div class="card">
+        <div class="card-title"><span class="number">23</span> 23. LA FÓRMULA I &rarr; VII &rarr; VI EN CUATRO TONALIDADES</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Tonalidad</th>
+                <th>Progresión Cifrada</th>
+                <th>Bajo Melódico</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>En C:</strong></td>
+                <td>C(I) &rarr; G/B(V/III) &rarr; Am(VI)</td>
+                <td><code>C &rarr; B &rarr; A</code></td>
+              </tr>
+              <tr>
+                <td><strong>En G:</strong></td>
+                <td>G(I) &rarr; D/F#(V/III) &rarr; Em(VI)</td>
+                <td><code>G &rarr; F# &rarr; E</code></td>
+              </tr>
+              <tr>
+                <td><strong>En D:</strong></td>
+                <td>D(I) &rarr; A/C#(V/III) &rarr; Bm(VI)</td>
+                <td><code>D &rarr; C# &rarr; B</code></td>
+              </tr>
+              <tr>
+                <td><strong>En A:</strong></td>
+                <td>A(I) &rarr; E/G#(V/III) &rarr; F#m(VI)</td>
+                <td><code>A &rarr; G# &rarr; F#</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Esta fórmula debe convertirse en un reflejo neuromuscular automático en tus dedos.</p>
+      </div>
+
+      <!-- 24. LA FÓRMULA IV -> III -> II -> I -->
+      <div class="card">
+        <div class="card-title"><span class="number">24</span> 24. LA FÓRMULA IV &rarr; III &rarr; II &rarr; I</div>
+        <p>En C major:</p>
+        <div class="formula-box">
+          F(IV) &rarr; C/E(I/III) &rarr; Dm(II) &rarr; C(I)<br>
+          Bajo: F &rarr; E &rarr; D &rarr; C
+        </div>
+        <p>Es un recurso extraordinariamente polivalente que puedes emplear para:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li>Finales de canciones (cadencias suaves)</li>
+          <li>Transiciones entre estrofa y puente</li>
+          <li>Introducciones instrumentales introspectivas</li>
+          <li>Acompañamientos de melodías vocales descendentes</li>
+        </ul>
+      </div>
+
+      <!-- 25. LA FÓRMULA V -> IV -->
+      <div class="card">
+        <div class="card-title"><span class="number">25</span> 25. LA FÓRMULA V &rarr; IV</div>
+        <p>En C major:</p>
+        <div class="formula-box">
+          G(V) &rarr; G/F(V/IV) &rarr; F(IV)<br>
+          Bajo: G &rarr; F
+        </div>
+        <p>Puedes continuar el descenso orgánico hacia la tónica:</p>
+        <div class="formula-box">
+          G &rarr; G/F &rarr; C/E &rarr; C<br>
+          Bajo: G &rarr; F &rarr; E &rarr; C
+        </div>
+      </div>
+
+      <!-- 26. MODO MENOR -->
+      <div class="card">
+        <div class="card-title"><span class="number">26</span> 26. EL WALK DOWN EN TONALIDADES MENORES</div>
+        <p>El walk down funciona con igual o mayor dramatismo en tonalidades menores:</p>
+        <div class="formula-box">
+          Am &rarr; Am/G &rarr; F &rarr; E<br>
+          Bajo: A &rarr; G &rarr; F &rarr; E<br>
+          En grados de A natural minor: A(I) &rarr; G(VII) &rarr; F(VI) &rarr; E(V)
+        </div>
+        <div class="callout callout-advertencia">
+          <span class="callout-icon">💡</span>
+          <div>
+            <strong>Cuestión armónica crucial:</strong><br>
+            Si utilizas <strong>E major</strong>, sus notas son <code>E – G# – B</code>. El <strong>G#</strong> no pertenece a A natural minor, pero sí pertenece a <strong>A harmonic minor</strong>. Por eso, <code>Am &rarr; Am/G &rarr; F &rarr; E</code> produce una poderosa tensión que reclama volver a Am.
+          </div>
+        </div>
+      </div>
+
+      <!-- 27. DOMINANTE Y RESOLUCIÓN -->
+      <div class="card">
+        <div class="card-title"><span class="number">27</span> 27. DOMINANTE Y RESOLUCIÓN</div>
+        <p>La progresión completa:</p>
+        <div class="formula-box">
+          Am &rarr; Am/G &rarr; F &rarr; E &rarr; Am<br>
+          Bajo: A &rarr; G &rarr; F &rarr; E &rarr; A
+        </div>
+        <p>El descenso culmina en E, el cual ejerce función de dominante de A minor. Luego, <code>E &rarr; Am</code> genera la resolución definitiva.</p>
+        <div class="callout callout-info">
+          <span class="callout-icon">🎯</span>
+          <div>
+            <strong>Trayectoria arquetípica:</strong><br>
+            DESCENSO &rarr; TENSIÓN &rarr; RESOLUCIÓN
+          </div>
+        </div>
+      </div>
+
+      <!-- 28. DOMINANTES SECUNDARIOS -->
+      <div class="card">
+        <div class="card-title"><span class="number">28</span> 28. DOMINANTES SECUNDARIOS</div>
+        <p>Podemos sofisticar el recurso aún más. En C major:</p>
+        <div class="formula-box">
+          A7 &rarr; Dm
+        </div>
+        <p>A7 es el dominante secundario de Dm (cifrado analítico: <strong>V/ii</strong>). Las notas de A7 son <code>A – C# – E – G</code>.</p>
+        <p>El C# no pertenece a C major, pero encaja perfectamente porque A7 actúa como fuerza tractora hacia Dm. Esto permite combinar:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li>Bajo descendente</li>
+          <li>Cromatismo intenso</li>
+          <li>Dominantes secundarios resolutivos</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         MÓDULO 4: ARREGLO & PIANO (SECCIONES 29 A 42)
+         ========================================================================== -->
+    <section id="sec-arreglo-piano" class="spa-section">
+      <div class="section-header">
+        <span class="section-icon">🎹</span>
+        <h2>Módulo 4: Técnicas de Piano y Arreglo</h2>
+      </div>
+
+      <!-- 29. EL BAJO Y LA MELODÍA VOCAL -->
+      <div class="card">
+        <div class="card-title"><span class="number">29</span> 29. EL BAJO Y LA MELODÍA VOCAL</div>
+        <p>Supongamos que la melodía vocal sostiene una nota estática: <strong>E</strong>, mientras el bajo desciende activamente:</p>
+        <div class="formula-box">C &rarr; B &rarr; A &rarr; G</div>
+        <p>La relación interválica entre las dos voces muta en cada pulso:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li>Sobre C: E es la 3ª mayor</li>
+          <li>Sobre B: E es la 4ª (sus)</li>
+          <li>Sobre A: E es la 5ª justa</li>
+          <li>Sobre G: E es la 6ª mayor</li>
+        </ul>
+        <p>Esto engendra una riqueza armónica deslumbrante aun cuando la voz cantante permanezca quieta.</p>
+      </div>
+
+      <!-- 30. NOTA PEDAL -->
+      <div class="card">
+        <div class="card-title"><span class="number">30</span> 30. LA NOTA PEDAL EN LA MANO DERECHA</div>
+        <p>Puedes mantener una nota superior fija mientras el bajo se mueve en el registro grave:</p>
+        <div class="formula-box">
+          MANO DERECHA: Nota fija E (o díada G-E)<br>
+          MANO IZQUIERDA: C &rarr; B &rarr; A &rarr; G
+        </div>
+        <p>El resultado es un hipnótico contraste entre estatismo agudo y movimiento en el registro grave.</p>
+      </div>
+
+      <!-- 31. EL WALK DOWN COMO POLIFONÍA -->
+      <div class="card">
+        <div class="card-title"><span class="number">31</span> 31. EL WALK DOWN COMO POLIFONÍA</div>
+        <p>Al articular simultáneamente:</p>
+        <div class="formula-box">
+          MELODÍA + CONTRAMELODÍA + BAJO + ARMONÍA
+        </div>
+        <p>estás componiendo de manera casi polifónica (estilo contrapuntístico). El bajo deja de ser un simple acompañamiento y se eleva a la categoría de voz independiente.</p>
+      </div>
+
+      <!-- 32. PIANO: MANO IZQUIERDA -->
+      <div class="card">
+        <div class="card-title"><span class="number">32</span> 32. PIANO: TÉCNICA DE MANO IZQUIERDA</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Mano</th>
+                <th>Notas Ejecutadas</th>
+                <th>Función</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Mano Izquierda</strong></td>
+                <td>C &rarr; B &rarr; A &rarr; G (octava 2)</td>
+                <td>Línea motriz melódica limpia</td>
+              </tr>
+              <tr>
+                <td><strong>Mano Derecha</strong></td>
+                <td>C-E-G | B-D-G | C-E-A | C-E-A</td>
+                <td>Soporte armónico conciso</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>No necesitas abarrotar el teclado: deja espacio acústico para que la mano izquierda respire.</p>
+      </div>
+
+      <!-- 33. VOICINGS CERRADOS -->
+      <div class="card">
+        <div class="card-title"><span class="number">33</span> 33. VOICINGS CERRADOS</div>
+        <p>Para lograr una conducción de voces suave (voice leading) sin saltos bruscos:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li><strong>C:</strong> C-E-G</li>
+          <li><strong>G/B:</strong> B-D-G</li>
+          <li><strong>Am:</strong> A-C-E (o C-E-A)</li>
+          <li><strong>Am/G:</strong> G-C-E</li>
+        </ul>
+        <p>La mano derecha se desplaza apenas por semitonos o mantiene notas comunes, logrando máxima elegancia tímbrica.</p>
+      </div>
+
+      <!-- 34. VOICINGS ABIERTOS -->
+      <div class="card">
+        <div class="card-title"><span class="number">34</span> 34. VOICINGS ABIERTOS Y REGISTRO</div>
+        <p>Puedes espaciar las notas (por ejemplo, <code>C – G – E</code>). Sin embargo, respeta la ley acústica universal:</p>
+        <div class="callout callout-advertencia">
+          <span class="callout-icon">⚠️</span>
+          <div>
+            <strong>Regla de oro del registro:</strong><br>
+            <em>"Cuanto más grave sea el registro, más cuidado debes tener con la densidad de las notas."</em><br>
+            Los acordes con intervalos cerrados en la primera o segunda octava suenan oscuros, ásperos y embarrados acústicamente.
+          </div>
+        </div>
+      </div>
+
+      <!-- 35. BAJO + 3ª + 7ª -->
+      <div class="card">
+        <div class="card-title"><span class="number">35</span> 35. ARREGLO MODERNO: BAJO + 3ª + 7ª</div>
+        <p>Para arreglos modernos o con matiz jazzístico, reduce los acordes a sus notas guía indispensables:</p>
+        <p>Por ejemplo, <strong>G7</strong> puede expresarse sin tónica ni quinta en el registro medio:</p>
+        <div class="formula-box">
+          Mano Izquierda: B (el bajo de paso)<br>
+          Mano Derecha: F + B (séptima y tercera)
+        </div>
+        <p>El cerebro humano reconstruye automáticamente la cualidad funcional del acorde sin sobrecargar el espectro sonoro.</p>
+      </div>
+
+      <!-- 36. EXTENSIONES -->
+      <div class="card">
+        <div class="card-title"><span class="number">36</span> 36. EXTENSIONES ARMÓNICAS</div>
+        <p>Tras dominar las tríadas básicas, experimenta con colores avanzados: <code>maj7, m7, 7, 6, 9, add9, sus2, sus4, 11</code>.</p>
+        <div class="formula-box">
+          Cmaj7 &rarr; G/B &rarr; Am7 &rarr; Am7/G &rarr; Fmaj7<br>
+          Bajo: C &rarr; B &rarr; A &rarr; G &rarr; F
+        </div>
+        <p>Las extensiones alteran el matiz emocional, pero la línea del bajo continúa gobernando la coherencia global.</p>
+      </div>
+
+      <!-- 37. RITMO -->
+      <div class="card">
+        <div class="card-title"><span class="number">37</span> 37. EL FACTOR RÍTMICO</div>
+        <p>Un walk down no depende exclusivamente de las alturas o pitch. Una misma sucesión <code>C – B – A – G</code> cobra vida según su articulación métrica:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li><strong>Patrón métrico constante:</strong> <code>C – B – A – G</code> (negras regulares)</li>
+          <li><strong>Patrón sincopado:</strong> <code>C —— B A —— G</code></li>
+          <li><strong>Patrón con apoyatura:</strong> <code>C B B A —— G</code></li>
+        </ul>
+        <div class="formula-box">FÓRMULA INTEGRAL: ALTURA + RITMO + ARMONÍA</div>
+      </div>
+
+      <!-- 38. ANTICIPACIÓN -->
+      <div class="card">
+        <div class="card-title"><span class="number">38</span> 38. ANTICIPACIÓN DEL BAJO</div>
+        <p>El bajo puede adelantarse al pulso armónico. Por ejemplo, mientras la mano derecha aún sostiene el acorde <code>C</code>, el bajo pulsa <strong>A</strong> una corchea antes de que caiga el acorde <code>Am</code>.</p>
+        <p>Esta sutil anticipación genera una magnética sensación de aceleración y expectativa.</p>
+      </div>
+
+      <!-- 39. NOTAS DE APROXIMACIÓN -->
+      <div class="card">
+        <div class="card-title"><span class="number">39</span> 39. NOTAS DE APROXIMACIÓN</div>
+        <p>Puedes aproximarte a la nota objetivo por semitono inferior o superior:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li>Para llegar a <strong>A</strong>: <code>Bb &rarr; A</code> (o <code>G# &rarr; A</code>)</li>
+          <li>Para llegar a <strong>C</strong>: <code>Db &rarr; C</code></li>
+          <li>Para llegar a <strong>E</strong>: <code>F &rarr; E</code></li>
+        </ul>
+      </div>
+
+      <!-- 40. CUÁNDO USAR UN SLASH CHORD -->
+      <div class="card">
+        <div class="card-title"><span class="number">40</span> 40. CUÁNDO USAR UN SLASH CHORD</div>
+        <div class="callout callout-info">
+          <span class="callout-icon">✔️</span>
+          <div>
+            <strong>Utiliza un slash chord cuando desees:</strong>
+            <ul style="margin-left: 1rem; margin-top: 0.25rem;">
+              <li>Controlar la trayectoria exacta del bajo milimétricamente.</li>
+              <li>Conectar suavemente dos acordes distantes.</li>
+              <li>Evitar un salto melódico brusco e inconexo.</li>
+              <li>Retener notas comunes en las voces superiores.</li>
+              <li>Obtener el color emocional de una inversión determinada.</li>
+            </ul>
+          </div>
+        </div>
+        <p><em>No lo utilices jamás por mero esnobismo notacional o para fingir complejidad artificial.</em></p>
+      </div>
+
+      <!-- 41. DEMASIADOS ACORDES -->
+      <div class="card">
+        <div class="card-title"><span class="number">41</span> 41. EL PELIGRO DE SATURAR DE ACORDES</div>
+        <p>Un tropiezo común es asumir que cuantos más acordes se encadenen, mejor será la música. Puedes terminar con:</p>
+        <div class="formula-box">
+          C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F &rarr; C/E &rarr; Dm &rarr; D/F# &rarr; G &rarr; G/F &rarr; C/E...
+        </div>
+        <p>Puede sonar virtuoso, pero a menudo satura y asfixia al oyente. <strong>La música necesita respirar. Utiliza el movimiento solo cuando cumpla una misión expresiva real.</strong></p>
+      </div>
+
+      <!-- 42. ECONOMÍA -->
+      <div class="card">
+        <div class="card-title"><span class="number">42</span> 42. EL PRINCIPIO DE ECONOMÍA</div>
+        <div class="callout callout-ejemplo">
+          <span class="callout-icon">✨</span>
+          <div>
+            <strong>Máxima de oro para arregladores:</strong><br>
+            <em>"No añadas una nota solamente porque tienes la capacidad técnica de añadirla."</em><br>
+            Si la transición <code>C &rarr; G/B &rarr; Am</code> ya cumple su cometido expresivo a la perfección, preserva esa pureza. La economía de medios suele ser la cumbre de la maestría musical.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         MÓDULO 5: ANÁLISIS & PRÁCTICA (SECCIONES 43 A 53)
+         ========================================================================== -->
+    <section id="sec-analisis-practica" class="spa-section">
+      <div class="section-header">
+        <span class="section-icon">🔍</span>
+        <h2>Módulo 5: Metodología de Análisis y Entrenamiento Diario</h2>
+      </div>
+
+      <!-- 43. ANÁLISIS DE UNA PROGRESIÓN -->
+      <div class="card">
+        <div class="card-title"><span class="number">43</span> 43. ANÁLISIS EXHAUSTIVO DE UNA PROGRESIÓN</div>
+        <p>Desglosemos minuciosamente la secuencia emblemática:</p>
+        <div class="formula-box">C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Acorde</th>
+                <th>Fundamental</th>
+                <th>Nota del Bajo</th>
+                <th>Grado del Bajo</th>
+                <th>Efecto Acústico</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>C</strong></td>
+                <td>C</td>
+                <td>C</td>
+                <td>I</td>
+                <td>Estabilidad de tónica</td>
+              </tr>
+              <tr>
+                <td><strong>G/B</strong></td>
+                <td>G</td>
+                <td>B</td>
+                <td>VII</td>
+                <td>Sensible que empuja suavemente hacia el relativo menor</td>
+              </tr>
+              <tr>
+                <td><strong>Am</strong></td>
+                <td>A</td>
+                <td>A</td>
+                <td>VI</td>
+                <td>Punto focal menor emotivo</td>
+              </tr>
+              <tr>
+                <td><strong>Am/G</strong></td>
+                <td>A</td>
+                <td>G</td>
+                <td>V</td>
+                <td>Séptima en el bajo que debilita el reposo menor</td>
+              </tr>
+              <tr>
+                <td><strong>F</strong></td>
+                <td>F</td>
+                <td>F</td>
+                <td>IV</td>
+                <td>Apertura subdominante luminosa y abierta</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 44. DOS MAPAS -->
+      <div class="card">
+        <div class="card-title"><span class="number">44</span> 44. LOS DOS MAPAS (ARMÓNICO Y DEL BAJO)</div>
+        <p>Al analizar cualquier canción, acostúmbrate a graficar simultáneamente los dos niveles:</p>
+        <div class="table-container">
+          <table class="tech-table">
+            <tbody>
+              <tr>
+                <td><strong>MAPA ARMÓNICO:</strong></td>
+                <td><code>C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F</code></td>
+              </tr>
+              <tr>
+                <td><strong>MAPA DEL BAJO:</strong></td>
+                <td><code>C &rarr; B &rarr; A &rarr; G &rarr; F</code></td>
+              </tr>
+              <tr>
+                <td><strong>GRADOS DEL BAJO:</strong></td>
+                <td><code>I &rarr; VII &rarr; VI &rarr; V &rarr; IV</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Esta doble lectura disipará cualquier confusión al instante.</p>
+      </div>
+
+      <!-- 45. ANÁLISIS AUDITIVO -->
+      <div class="card">
+        <div class="card-title"><span class="number">45</span> 45. PROTOCOLO DE ANÁLISIS AUDITIVO</div>
+        <p>Cuando escuches música de McCartney o de cualquier gran compositor, no preguntes precipitadamente <em>"¿Cuál es el acorde?"</em>. Aplica este orden:</p>
+        <ol style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.5rem;">
+          <li>1. ¿Qué está cantando el bajo?</li>
+          <li>2. ¿El bajo está descendiendo melódicamente?</li>
+          <li>3. ¿Se mueve por grados conjuntos o por saltos?</li>
+          <li>4. ¿Hay cromatismo interpuesto?</li>
+          <li>5. ¿Qué acordes o voces superiores visten esa línea?</li>
+        </ol>
+      </div>
+
+      <!-- 46. EJERCICIO DE OÍDO -->
+      <div class="card">
+        <div class="card-title"><span class="number">46</span> 46. EJERCICIO DE ENTRENAMIENTO AUDITIVO</div>
+        <p>Práctica recomendada al teclado:</p>
+        <ol style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.4rem;">
+          <li>1. Toca <code>C &rarr; G/B &rarr; Am</code>.</li>
+          <li>2. Toca únicamente el bajo: <code>C &rarr; B &rarr; A</code> y canta las notas con tu propia voz.</li>
+          <li>3. Toca la versión estática con saltos: <code>C &rarr; G &rarr; Am</code> y escucha el salto <code>C &rarr; G &rarr; A</code>.</li>
+          <li>4. Contrasta la vibración corporal de ambas resoluciones.</li>
+        </ol>
+      </div>
+
+      <!-- 47. EJERCICIO DE TRANSPOSICIÓN -->
+      <div class="card">
+        <div class="card-title"><span class="number">47</span> 47. ENTRENAMIENTO DE TRANSPOSICIÓN TOTAL</div>
+        <p>Toca la célula arquetípica en seis tonalidades esenciales:</p>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Tonalidad</th>
+                <th>Progresión</th>
+                <th>Bajo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>C major</td><td>C &rarr; G/B &rarr; Am</td><td>C &rarr; B &rarr; A</td></tr>
+              <tr><td>G major</td><td>G &rarr; D/F# &rarr; Em</td><td>G &rarr; F# &rarr; E</td></tr>
+              <tr><td>D major</td><td>D &rarr; A/C# &rarr; Bm</td><td>D &rarr; C# &rarr; B</td></tr>
+              <tr><td>A major</td><td>A &rarr; E/G# &rarr; F#m</td><td>A &rarr; G# &rarr; F#</td></tr>
+              <tr><td>E major</td><td>E &rarr; B/D# &rarr; C#m</td><td>E &rarr; D# &rarr; C#</td></tr>
+              <tr><td>F major</td><td>F &rarr; C/E &rarr; Dm</td><td>F &rarr; E &rarr; D</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 48. EJERCICIO DE 15 MINUTOS -->
+      <div class="card">
+        <div class="card-title"><span class="number">48</span> 48. RUTINA DIARIA DE 15 MINUTOS AL PIANO</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Tiempo</th>
+                <th>Actividad</th>
+                <th>Objetivo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Min 1–3</strong></td>
+                <td>Escalas mayores verbalizando grados: <code>C(I), D(II)... B(VII)</code></td>
+                <td>Fijación teórica</td>
+              </tr>
+              <tr>
+                <td><strong>Min 4–6</strong></td>
+                <td>Ejecutar fórmula <code>I &rarr; V/III &rarr; vi</code> en varios tonos</td>
+                <td>Memoria muscular</td>
+              </tr>
+              <tr>
+                <td><strong>Min 7–9</strong></td>
+                <td>Ejecutar fórmula <code>IV &rarr; I/III &rarr; ii &rarr; I</code></td>
+                <td>Fluidez en subdominante</td>
+              </tr>
+              <tr>
+                <td><strong>Min 10–12</strong></td>
+                <td>Improvisar libremente líneas de bajo descendentes con mano izquierda</td>
+                <td>Oído melódico</td>
+              </tr>
+              <tr>
+                <td><strong>Min 13–15</strong></td>
+                <td>Elegir una línea improvisada y armonizarla con la derecha</td>
+                <td>Composición real</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 49. EJERCICIO: COMPONER DESDE EL BAJO -->
+      <div class="card">
+        <div class="card-title"><span class="number">49</span> 49. EJERCICIO: COMPONER DESDE EL BAJO</div>
+        <p>Escribe sobre un papel o pentagrama en blanco: <code>C &rarr; B &rarr; A &rarr; G &rarr; F</code></p>
+        <p>No coloques ningún acorde todavía. Explora al menos tres vestiduras armónicas diferentes sobre esa misma raíz melódica. Descubrirás el infinito abanico de texturas que residen en una sola escala.</p>
+      </div>
+
+      <!-- 50. EJERCICIO CROMÁTICO -->
+      <div class="card">
+        <div class="card-title"><span class="number">50</span> 50. EJERCICIO DE EXPANSIÓN CROMÁTICA</div>
+        <p>Practica la elongación de la cascada cromática paso a paso:</p>
+        <ul style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.5rem;">
+          <li>Nivel 1: <code>C &rarr; B &rarr; Bb &rarr; A</code></li>
+          <li>Nivel 2: <code>C &rarr; B &rarr; Bb &rarr; A &rarr; Ab &rarr; G</code></li>
+          <li>Nivel 3: <code>C &rarr; B &rarr; Bb &rarr; A &rarr; Ab &rarr; G &rarr; F#</code></li>
+        </ul>
+        <p>Aprende primero a asimilar la sonoridad de la línea antes de buscarle soporte de acordes completos.</p>
+      </div>
+
+      <!-- 51. EJERCICIO DE INDEPENDENCIA -->
+      <div class="card">
+        <div class="card-title"><span class="number">51</span> 51. INDEPENDENCIA CONTRAPUNTÍSTICA DE MANOS</div>
+        <p>Prueba esta combinación contrapuntística:</p>
+        <div class="formula-box">
+          MANO IZQUIERDA (desciende): C &rarr; B &rarr; A &rarr; G<br>
+          MANO DERECHA (asciende): E &rarr; E &rarr; F &rarr; G
+        </div>
+        <p>Desarrollarás independencia motriz y pensamiento polifónico genuino.</p>
+      </div>
+
+      <!-- 52. BAJO + CONTRAMELODÍA -->
+      <div class="card">
+        <div class="card-title"><span class="number">52</span> 52. BAJO + CONTRAMELODÍA</div>
+        <p>En arreglos orquestales o pop maduro, las voces operan en direcciones complementarias:</p>
+        <div class="callout callout-info">
+          <span class="callout-icon">🎼</span>
+          <div>
+            <strong>Movimiento multidireccional:</strong><br>
+            El bajo <strong>desciende</strong> &middot; La voz principal <strong>asciende</strong> &middot; La contramelodía <strong>permanece o flota en síncopa</strong>. El arreglo adquiere una profundidad casi tridimensional.
+          </div>
+        </div>
+      </div>
+
+      <!-- 53. EVITAR CONFLICTOS DE REGISTRO -->
+      <div class="card">
+        <div class="card-title"><span class="number">53</span> 53. CONFIGURACIÓN ÓPTIMA DE REGISTROS</div>
+        <p>Distribución recomendada en el teclado de 88 notas para evitar empastamiento:</p>
+        <div class="formula-box">
+          MANO IZQUIERDA (Grave limpio): C2 &rarr; B1 &rarr; A1 &rarr; G1<br>
+          MANO DERECHA (Registro medio cantarín): C4-E4-G4 | B3-D4-G4 | C4-E4-A4
+        </div>
+        <p>El intervalo de separación entre el bajo y el cuerpo de acordes garantiza claridad sonora cristalina.</p>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         MÓDULO 6: CONCEPTOS AVANZADOS (SECCIONES 54 A 66)
+         ========================================================================== -->
+    <section id="sec-avanzado" class="spa-section">
+      <div class="section-header">
+        <span class="section-icon">🚀</span>
+        <h2>Módulo 6: Conceptos Avanzados y Recursos Estilísticos</h2>
+      </div>
+
+      <!-- 54. LINE CLICHÉ -->
+      <div class="card">
+        <div class="card-title"><span class="number">54</span> 54. EL LINE CLICHÉ</div>
+        <p>Existe otro recurso muy emparentado llamado <strong>LINE CLICHÉ</strong>. Aquí una voz, usualmente una voz interior o superior, desciende o asciende por semitonos mientras la base o nombre del acorde permanece reconocible:</p>
+        <div class="formula-box">
+          Am &rarr; Am(maj7) &rarr; Am7 &rarr; Am6<br>
+          Voz interior cromática: A &rarr; G# &rarr; G &rarr; F#
+        </div>
+        <p>Aunque no es estrictamente un McCartney Walk Down en el bajo, responde a la idéntica filosofía estética: <em>una línea melódica gobierna la evolución armónica</em>.</p>
+      </div>
+
+      <!-- 55. WALK DOWN Y LINE CLICHÉ -->
+      <div class="card">
+        <div class="card-title"><span class="number">55</span> 55. DIFERENCIA: WALK DOWN VS LINE CLICHÉ</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Recurso</th>
+                <th>Ubicación de la Línea</th>
+                <th>Efecto Perceptivo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Walk Down</strong></td>
+                <td>En la voz más grave (BAJO)</td>
+                <td>Reorienta el centro de gravedad armónico y las inversiones.</td>
+              </tr>
+              <tr>
+                <td><strong>Line Cliché</strong></td>
+                <td>En voz interior o superior</td>
+                <td>Modifica el color interno sin cambiar la nota raíz del bajo.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 56. DOMINANTES SECUNDARIOS + WALK DOWN -->
+      <div class="card">
+        <div class="card-title"><span class="number">56</span> 56. DOMINANTES SECUNDARIOS + WALK DOWN CROMÁTICO</div>
+        <p>Imagina la siguiente cadena:</p>
+        <div class="formula-box">
+          C &rarr; B &rarr; Bb &rarr; A &rarr; Dm
+        </div>
+        <p>Al llegar a A, lo transformamos en <strong>A7</strong>. A7 ejerce de dominante secundario (<code>V/ii</code>) empujando con vehemencia hacia <strong>Dm</strong>. La tensión cromática se sublima en una resolución funcional perfecta.</p>
+      </div>
+
+      <!-- 57. EL WALK DOWN NO TIENE QUE SER COMPLETAMENTE DESCENDENTE -->
+      <div class="card">
+        <div class="card-title"><span class="number">57</span> 57. EL CONTORNO MELÓDICO: DESCENDER Y RESPIRAR</div>
+        <p>Una línea no tiene la obligación dogmática de descender ciegamente como una roca. Puede modular su perfil:</p>
+        <div class="formula-box">
+          C &rarr; B &rarr; A &rarr; G &rarr; C &rarr; B &rarr; A
+        </div>
+        <p>Desciende, remonta una octava o cuarta, y reanuda el curso. Lo que cuenta es el <strong>sentido de dirección</strong> y arco narrativo.</p>
+      </div>
+
+      <!-- 58. EL RITMO PUEDE ROMPER LA SIMETRÍA -->
+      <div class="card">
+        <div class="card-title"><span class="number">58</span> 58. FRASEO RÍTMICO ASIMÉTRICO</div>
+        <p>Tocar todas las notas del bajo en redondas o blancas exactas puede volverse mecánico. Aplica fraseo humano:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li><strong>C:</strong> Nota larga, peso de reposo inicial</li>
+          <li><strong>B:</strong> Nota corta de paso en pulso débil</li>
+          <li><strong>A:</strong> Nota corta de enlace</li>
+          <li><strong>G:</strong> Nota larga de anclaje</li>
+        </ul>
+        <p>El fraseo otorga aire y dinamismo orgánico al bajo.</p>
+      </div>
+
+      <!-- 59. EL SILENCIO TAMBIÉN FORMA PARTE DEL WALK DOWN -->
+      <div class="card">
+        <div class="card-title"><span class="number">59</span> 59. EL SILENCIO ACTIVO</div>
+        <p>No tienes que saturar cada milisegundo de audio:</p>
+        <div class="formula-box">
+          C —— B —— [SILENCIO] —— A —— G
+        </div>
+        <p>El silencio inesperado suspende la gravedad y multiplica el anhelo del oyente por escuchar la siguiente nota de resolución.</p>
+      </div>
+
+      <!-- 60. WALK DOWN COMO TRANSICIÓN -->
+      <div class="card">
+        <div class="card-title"><span class="number">60</span> 60. EL WALK DOWN COMO PUENTE / TRANSICIÓN</div>
+        <div class="formula-box">
+          FINAL DEL VERSO &rarr; [Walk Down Descendente] &rarr; IMPACTO DEL ESTRIBILLO
+        </div>
+        <p>La línea descendente actúa como un tobogán melódico que transporta al oyente directamente hacia la explosión emotiva del coro.</p>
+      </div>
+
+      <!-- 61. WALK DOWN COMO FINAL -->
+      <div class="card">
+        <div class="card-title"><span class="number">61</span> 61. EL WALK DOWN COMO OUTRO / FINAL DE OBRA</div>
+        <p>Para construir una despedida majestuosa e imborrable:</p>
+        <div class="formula-box">
+          C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F &rarr; C/E &rarr; Dm &rarr; G &rarr; C
+        </div>
+        <p>La sensación de recorrido completo, regreso al hogar y cierre definitivo es insuperable.</p>
+      </div>
+
+      <!-- 62. WALK DOWN COMO INTRODUCCIÓN -->
+      <div class="card">
+        <div class="card-title"><span class="number">62</span> 62. EL WALK DOWN COMO INTRODUCCIÓN</div>
+        <p>Comenzar la pieza a piano solo con <code>C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F</code> establece un micro-relato previo a la entrada de la voz lírica. El oyente queda cautivado antes del primer verso.</p>
+      </div>
+
+      <!-- 63. WALK DOWN COMO MOTIVO RECURRENTE -->
+      <div class="card">
+        <div class="card-title"><span class="number">63</span> 63. EL WALK DOWN COMO MOTIVO DE IDENTIDAD</div>
+        <p>La línea <code>C &rarr; B &rarr; A &rarr; G</code> puede convertirse en el leitmotiv de una canción:</p>
+        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+          <li>Presentada suavemente en la estrofa</li>
+          <li>Invertida o cromatizada en el puente</li>
+          <li>Tocada en octavas masivas en el clímax</li>
+        </ul>
+      </div>
+
+      <!-- 64. INVERSIÓN DEL CONCEPTO: LÍNEAS ASCENDENTES -->
+      <div class="card">
+        <div class="card-title"><span class="number">64</span> 64. INVERSIÓN DEL CONCEPTO: EL WALK UP</div>
+        <p>El mismo principio rige en sentido contrario:</p>
+        <div class="formula-box">
+          G &rarr; A &rarr; B &rarr; C
+        </div>
+        <p>No es un "walk down", por supuesto, pero valida el axioma esencial: <strong>diseñar líneas de bajo melódicas coherentes que conecten puntos estructurales</strong>.</p>
+      </div>
+
+      <!-- 65. EL OBJETIVO NO ES SONAR "A BEATLES" -->
+      <div class="card">
+        <div class="card-title"><span class="number">65</span> 65. EL PROPÓSITO: APRENDER UNA FORMA DE PENSAR</div>
+        <p>Estudiar a Paul McCartney no consiste en replicar fórmulas nostálgicas de los años 60. El propósito es adquirir una mentalidad musical superior. En lugar de limitarte a preguntar:</p>
+        <div class="callout callout-error">
+          <span class="callout-icon">❌</span>
+          <div><em>"¿Qué acorde puedo poner ahora?"</em></div>
+        </div>
+        <p>pregúntate siempre:</p>
+        <div class="callout callout-ejemplo">
+          <span class="callout-icon">✔️</span>
+          <div>
+            <strong>"¿Qué melodía quiero que cante el bajo?"</strong><br>
+            y a continuación: <strong>"¿Qué armonía puede enriquecer y sostener esa línea?"</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- 66. EL PRINCIPIO DE ECONOMÍA MELÓDICA -->
+      <div class="card">
+        <div class="card-title"><span class="number">66</span> 66. EL PRINCIPIO DE ECONOMÍA MELÓDICA</div>
+        <p>Si entre <code>C</code> y <code>Am</code> insertas <code>G/B</code>, logras una conexión exquisita. Pero una vez lograda, no satures agregando tensiones innecesarias. <strong>La función primordial del recurso es conectar con gracia, no rellenar por ansiedad.</strong></p>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         MÓDULO 7: GUÍA MAESTRA & PROYECTO (SECCIONES 67 A 78)
+         ========================================================================== -->
+    <section id="sec-maestra-proyecto" class="spa-section">
+      <div class="section-header">
+        <span class="section-icon">🏆</span>
+        <h2>Módulo 7: Guía Maestra, Tablas y Proyecto Final</h2>
+      </div>
+
+      <!-- 67. CÓMO CONSTRUIR TU PROPIO WALK DOWN -->
+      <div class="card">
+        <div class="card-title"><span class="number">67</span> 67. PROCEDIMIENTO MAESTRO EN 15 PASOS</div>
+        <div class="grid-2">
+          <ol style="margin-left: 1.25rem; font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.35rem;">
+            <li>1. Elige una tonalidad de partida.</li>
+            <li>2. Escribe los grados del I al VII.</li>
+            <li>3. Elige un acorde inicial estructural.</li>
+            <li>4. Elige un acorde de destino.</li>
+            <li>5. Decide la nota de bajo que deseas.</li>
+            <li>6. Busca notas diatónicas intermedias.</li>
+            <li>7. Prueba inversiones (slash chords).</li>
+            <li>8. Añade cromatismo solo si aporta dramatismo real.</li>
+          </ol>
+          <ol start="9" style="margin-left: 1.25rem; font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.35rem;">
+            <li>9. Busca posibles acordes de paso.</li>
+            <li>10. Comprueba la función armónica de llegada.</li>
+            <li>11. Comprueba el registro en el teclado.</li>
+            <li>12. Modela el ritmo y la síncopa.</li>
+            <li>13. Diseña la melodía superior.</li>
+            <li>14. Elimina cualquier nota que sobrecargue.</li>
+            <li>15. Transpón la progresión a otras tonalidades.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- 68. PLANTILLA MAESTRA -->
+      <div class="card">
+        <div class="card-title"><span class="number">68</span> 68. PLANTILLA MAESTRA EN CASCADA</div>
+        <div class="formula-box">
+          ACORDE INICIAL  &rarr;  C<br>
+          &darr;<br>
+          NOTA DE BAJO    &rarr;  C<br>
+          &darr;<br>
+          NOTA INTERMEDIA &rarr;  B<br>
+          &darr;<br>
+          POSIBLE INVERSIÓN &rarr; G/B<br>
+          &darr;<br>
+          NOTA DE DESTINO &rarr;  A<br>
+          &darr;<br>
+          ACORDE DESTINO  &rarr;  Am<br><br>
+          RESULTADO FINAL: C &rarr; G/B &rarr; Am
+        </div>
+      </div>
+
+      <!-- 69. TABLA DE REFERENCIA -->
+      <div class="card">
+        <div class="card-title"><span class="number">69</span> 69. TABLA DE REFERENCIA EN 8 TONALIDADES (I &rarr; V/III &rarr; vi)</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Tonalidad</th>
+                <th>Fórmula Cifrada</th>
+                <th>Conducción del Bajo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>C</strong></td><td>C(I) &rarr; G/B(V/III) &rarr; Am(VI)</td><td><code>C &rarr; B &rarr; A</code></td></tr>
+              <tr><td><strong>G</strong></td><td>G(I) &rarr; D/F#(V/III) &rarr; Em(VI)</td><td><code>G &rarr; F# &rarr; E</code></td></tr>
+              <tr><td><strong>D</strong></td><td>D(I) &rarr; A/C#(V/III) &rarr; Bm(VI)</td><td><code>D &rarr; C# &rarr; B</code></td></tr>
+              <tr><td><strong>A</strong></td><td>A(I) &rarr; E/G#(V/III) &rarr; F#m(VI)</td><td><code>A &rarr; G# &rarr; F#</code></td></tr>
+              <tr><td><strong>E</strong></td><td>E(I) &rarr; B/D#(V/III) &rarr; C#m(VI)</td><td><code>E &rarr; D# &rarr; C#</code></td></tr>
+              <tr><td><strong>F</strong></td><td>F(I) &rarr; C/E(V/III) &rarr; Dm(VI)</td><td><code>F &rarr; E &rarr; D</code></td></tr>
+              <tr><td><strong>Bb</strong></td><td>Bb(I) &rarr; F/A(V/III) &rarr; Gm(VI)</td><td><code>Bb &rarr; A &rarr; G</code></td></tr>
+              <tr><td><strong>Eb</strong></td><td>Eb(I) &rarr; Bb/D(V/III) &rarr; Cm(VI)</td><td><code>Eb &rarr; D &rarr; C</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 70. TABLA DE DESCENSOS -->
+      <div class="card">
+        <div class="card-title"><span class="number">70</span> 70. TABLA MAESTRA DE LOS 5 DESCENSOS ARQUETÍPICOS</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr>
+                <th>Estructura</th>
+                <th>Fórmula de Grados</th>
+                <th>Ejemplo en C</th>
+                <th>Carácter Musical</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Descenso 1</strong></td>
+                <td>1 &rarr; 7 &rarr; 6</td>
+                <td><code>C &rarr; B &rarr; A</code></td>
+                <td>La célula básica indispensable</td>
+              </tr>
+              <tr>
+                <td><strong>Descenso 2</strong></td>
+                <td>4 &rarr; 3 &rarr; 2 &rarr; 1</td>
+                <td><code>F &rarr; E &rarr; D &rarr; C</code></td>
+                <td>Resolución cadencial perfecta</td>
+              </tr>
+              <tr>
+                <td><strong>Descenso 3</strong></td>
+                <td>5 &rarr; 4 &rarr; 3</td>
+                <td><code>G &rarr; F &rarr; E</code></td>
+                <td>Apertura hacia el centro modal</td>
+              </tr>
+              <tr>
+                <td><strong>Descenso 4</strong></td>
+                <td>6 &rarr; 5 &rarr; 4 &rarr; 3</td>
+                <td><code>A &rarr; G &rarr; F &rarr; E</code></td>
+                <td>Tensión del modo menor hacia la dominante</td>
+              </tr>
+              <tr>
+                <td><strong>Descenso 5</strong></td>
+                <td>1 &rarr; 7 &rarr; 6 &rarr; 5 &rarr; 4</td>
+                <td><code>C &rarr; B &rarr; A &rarr; G &rarr; F</code></td>
+                <td>La gran caída épica hacia la subdominante</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 71. PROYECTO FINAL -->
+      <div class="card">
+        <div class="card-title"><span class="number">71</span> 71. PROYECTO FINAL INTEGRADOR: COMPOSICIÓN DE 8 COMPASES</div>
+        <p>Aplica todos los conocimientos creando una progresión completa de ocho compases en <strong>C major</strong>:</p>
+        <div class="formula-box">
+          Línea del bajo: C &rarr; B &rarr; A &rarr; G &rarr; F &rarr; E &rarr; D &rarr; G &rarr; C<br>
+          Armonización base: C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F &rarr; C/E &rarr; Dm &rarr; G &rarr; C
+        </div>
+        <p><strong>Desafíos de desarrollo para el estudiante:</strong></p>
+        <ol style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.5rem;">
+          <li>1. Modifica voicings abiertos en mano derecha.</li>
+          <li>2. Añade 7mas en puntos estratégicos (ej. <code>Am7</code> o <code>Fmaj7</code>).</li>
+          <li>3. Integra una nota pedal aguda (sostén <code>E</code> o <code>G</code>).</li>
+          <li>4. Introduce síncopas y ritmo asimétrico.</li>
+          <li>5. Inserta un semitono cromático (ej. <code>Bb</code> entre B y A).</li>
+          <li>6. Compón una melodía vocal sencilla superior.</li>
+          <li>7. Traza una pequeña contramelodía.</li>
+          <li>8. Transpón toda la obra a <strong>G major</strong>.</li>
+          <li>9. Transpón toda la obra a <strong>D major</strong>.</li>
+          <li>10. Grábate al piano y evalúa la fluidez del bajo.</li>
+        </ol>
+      </div>
+
+      <!-- 72. PRUEBA DE COMPRENSIÓN -->
+      <div class="card">
+        <div class="card-title"><span class="number">72</span> 72. PRUEBA DE COMPRENSIÓN Y AUTOEVALUACIÓN</div>
+        <p>Si has asimilado auténticamente el recurso, debes ser capaz de superar estos 10 desafíos sin consultar tablas de ayuda:</p>
+        <div class="grid-2" style="margin-top: 0.75rem;">
+          <ul style="margin-left: 1.25rem; font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.35rem;">
+            <li>1. Elegir cualquier tonalidad al azar.</li>
+            <li>2. Tocar el acorde I.</li>
+            <li>3. Descender el bajo melódicamente hacia el VI.</li>
+            <li>4. Encontrar un acorde armónico para la nota intermedia.</li>
+            <li>5. Continuar el descenso hacia el IV.</li>
+          </ul>
+          <ul style="margin-left: 1.25rem; font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.35rem;">
+            <li>6. Resolver suavemente de vuelta hacia el I.</li>
+            <li>7. Introducir una nota cromática de paso eficaz.</li>
+            <li>8. Sostener una nota pedal en la mano derecha.</li>
+            <li>9. Cantar la línea del bajo mientras tocas los acordes.</li>
+            <li>10. Transportar todo el proceso a un tono con sostenidos y otro con bemoles.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 73. LOS SIETE PRINCIPIOS QUE DEBES RECORDAR -->
+      <div class="card">
+        <div class="card-title"><span class="number">73</span> 73. LOS SIETE PRINCIPIOS QUE DEBES RECORDAR</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr><th>#</th><th>Principio Fundamental</th><th>Significado Práctico</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>1</strong></td><td>El bajo puede ser una melodía</td><td>No te limites a pegar tónicas de raíz.</td></tr>
+              <tr><td><strong>2</strong></td><td>Las inversiones permiten movimientos suaves</td><td>Los slash chords disuelven los saltos toscos.</td></tr>
+              <tr><td><strong>3</strong></td><td>Las notas de paso conectan objetivos</td><td>Un puente melódico une dos acordes estructurales.</td></tr>
+              <tr><td><strong>4</strong></td><td>El cromatismo puede aumentar la tensión</td><td>Los semitonos añaden atracción gravitatoria irresistible.</td></tr>
+              <tr><td><strong>5</strong></td><td>La armonía puede construirse alrededor del bajo</td><td>El bajo manda; los acordes visten su marcha.</td></tr>
+              <tr><td><strong>6</strong></td><td>El ritmo del bajo es tan importante como sus notas</td><td>El fraseo da vida y dinamismo.</td></tr>
+              <tr><td><strong>7</strong></td><td>Melodía, bajo y armonía deben trabajar juntos</td><td>Polifonía y cooperación de registros en el piano.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 74. LA GRAN TRANSFORMACIÓN MENTAL -->
+      <div class="card">
+        <div class="card-title"><span class="number">74</span> 74. LA GRAN TRANSFORMACIÓN MENTAL</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr><th>Nivel</th><th>Paradigma Mental</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>El principiante piensa:</strong></td><td><code>ACORDE &rarr; ACORDE &rarr; ACORDE</code></td></tr>
+              <tr><td><strong>El músico empieza a pensar:</strong></td><td><code>BAJO &rarr; ACORDE &rarr; BAJO &rarr; ACORDE</code></td></tr>
+              <tr><td><strong>El arreglista maestro concibe:</strong></td><td><code>MELODÍA + BAJO + ARMONÍA + CONDUCCIÓN DE VOCES + RITMO</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 75. RESUMEN DEFINITIVO -->
+      <div class="card">
+        <div class="card-title"><span class="number">75</span> 75. RESUMEN DEFINITIVO</div>
+        <p>El ejemplo fundamental: <code>C &rarr; G/B &rarr; Am</code> produce el bajo <code>C &rarr; B &rarr; A</code> (<code>C(I) &rarr; B(VII) &rarr; A(VI)</code>).</p>
+        <p>Al extenderlo: <code>C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F</code> produce el bajo <code>C &rarr; B &rarr; A &rarr; G &rarr; F</code> (<code>I &rarr; VII &rarr; VI &rarr; V &rarr; IV</code>).</p>
+        <p>Y una progresión completa puede abarcar: <code>C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F &rarr; C/E &rarr; Dm &rarr; G &rarr; C</code>.</p>
+        <div class="callout callout-info">
+          <span class="callout-icon">💡</span>
+          <div>
+            Lo verdaderamente importante no es memorizar esta progresión aislada. Es asimilar el principio eterno: <strong>EL BAJO PUEDE SER UNA MELODÍA</strong>. Cuando arregles una canción, no preguntes únicamente qué acorde viene después. Pregunta también: <strong>"¿Qué quiero que cante el bajo?"</strong> y construye la armonía alrededor de esa melodía.
+          </div>
+        </div>
+      </div>
+
+      <!-- 76. HOJA DE REFERENCIA RÁPIDA -->
+      <div class="card">
+        <div class="card-title"><span class="number">76</span> 76. HOJA DE REFERENCIA RÁPIDA (FÓRMULAS 1 A 5)</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <thead>
+              <tr><th>Fórmula</th><th>Estructura</th><th>Bajo</th><th>Ejemplo</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Fórmula 1</strong></td><td>I &rarr; V/III &rarr; vi</td><td>1 &rarr; 7 &rarr; 6</td><td><code>C(I) &rarr; G/B(V/III) &rarr; Am(VI)</code></td></tr>
+              <tr><td><strong>Fórmula 2</strong></td><td>IV &rarr; I/III &rarr; ii &rarr; I</td><td>4 &rarr; 3 &rarr; 2 &rarr; 1</td><td><code>F(IV) &rarr; C/E(I/III) &rarr; Dm(II) &rarr; C(I)</code></td></tr>
+              <tr><td><strong>Fórmula 3</strong></td><td>V &rarr; V/IV &rarr; IV</td><td>5 &rarr; 4</td><td><code>G(V) &rarr; G/F(V/IV) &rarr; F(IV)</code></td></tr>
+              <tr><td><strong>Fórmula 4</strong></td><td>I &rarr; V/III &rarr; vi &rarr; vi/V &rarr; IV</td><td>1 &rarr; 7 &rarr; 6 &rarr; 5 &rarr; 4</td><td><code>C &rarr; G/B &rarr; Am &rarr; Am/G &rarr; F</code></td></tr>
+              <tr><td><strong>Fórmula 5</strong></td><td>Descenso cromático</td><td>1 &rarr; 7 &rarr; ♭7 &rarr; 6</td><td><code>C &rarr; B &rarr; Bb &rarr; A</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 77. NOTACIÓN -->
+      <div class="card">
+        <div class="card-title"><span class="number">77</span> 77. NOTACIÓN Y CONVENCIONES UTILIZADAS</div>
+        <ul style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.35rem;">
+          <li><code>I, II, III, IV, V, VI, VII</code>: Grados de la escala tonal.</li>
+          <li>Ejemplo en C major: <code>C(I) – D(II) – E(III) – F(IV) – G(V) – A(VI) – B(VII)</code>.</li>
+          <li>Inversiones: <code>G/B</code> = acorde de G con B en el bajo.</li>
+          <li>Alteraciones: <code>♭VII</code> = séptimo grado rebajado un semitono.</li>
+          <li>Dominantes secundarios: <code>V/ii</code> = acorde dominante construido sobre el segundo grado.</li>
+        </ul>
+      </div>
+
+      <!-- 78. CONCLUSIÓN -->
+      <div class="card" style="border-color: var(--accent-primary);">
+        <div class="card-title"><span class="number">78</span> 78. CONCLUSIÓN FINAL</div>
+        <p>La mejor manera de aprender el McCartney Walk Down no es memorizar una lista estática de acordes. Es entrenar tres facultades simultáneamente: <strong>1. EL OÍDO, 2. EL BAJO, 3. LA ARMONÍA.</strong></p>
+        <p>Cuando escuches música, separa mentalmente: <em>MELODÍA, BAJO, ACORDES y CONTRAMELODÍAS</em>, y cuestiona qué está haciendo cada voz. Cuando empieces a percibir el bajo como una melodía soberana, descubrirás el secreto de por qué progresiones aparentemente sencillas tienen una riqueza emotiva inagotable.</p>
+        <div class="callout callout-info" style="font-size: 1.05rem; text-align: center; justify-content: center; font-weight: bold;">
+          "NO HAGAS QUE EL BAJO SIMPLEMENTE SOSTENGA LOS ACORDES. HAZ QUE EL BAJO TENGA ALGO QUE DECIR."
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         LABORATORIO INTERACTIVO CON STEPPER DE AJEDREZ / MÚSICA (PIANO BOARD)
+         ========================================================================== -->
+    <section id="sec-laboratorio" class="spa-section">
+      <div class="section-header">
+        <span class="section-icon">🎹</span>
+        <h2>Laboratorio Interactivo: Stepper Paso a Paso</h2>
+      </div>
+
+      <p style="margin-bottom: 1.25rem;">Selecciona una progresión del repertorio y explora el avance <strong>paso a paso</strong>. Cada paso muestra la posición en el teclado (resaltando en cyan el bajo y en ámbar las notas del acorde), emite sonido sintetizado de piano mediante Web Audio API autónomo y explica la trascendencia del movimiento en el panel inferior.</p>
+
+      <!-- PRESETS DE PROGRESIONES -->
+      <div class="preset-selector" id="progression-presets">
+        <button class="preset-btn active" onclick="loadProgression(0)">1. Ejemplo Fundamental (C &rarr; Am/G)</button>
+        <button class="preset-btn" onclick="loadProgression(1)">2. Descenso a Subdominante (hasta F)</button>
+        <button class="preset-btn" onclick="loadProgression(2)">3. Progresión Maestra Completa (a Tónica)</button>
+        <button class="preset-btn" onclick="loadProgression(3)">4. Descenso Cromático (con Bb)</button>
+        <button class="preset-btn" onclick="loadProgression(4)">5. Menor con Dominante (Am &rarr; E &rarr; Am)</button>
+        <button class="preset-btn" onclick="loadProgression(5)">6. Descenso IV &rarr; I (F &rarr; C)</button>
+      </div>
+
+      <div class="stepper-workspace">
+        
+        <!-- TECLADO DE PIANO INTERACTIVO (TABLERO 2 OCTAVAS C3 - B4) -->
+        <div class="piano-board-container" id="piano-board">
+          <div class="piano-keys-wrapper" id="keys-wrapper">
+            
+            <!-- CAPA DE TECLAS BLANCAS (14 TECLAS: C3 A B4) -->
+            <div class="white-keys-layer">
+              <div class="w-key" data-note="C3" onclick="triggerKeyClick('C3')"><span>C3</span></div>
+              <div class="w-key" data-note="D3" onclick="triggerKeyClick('D3')"><span>D3</span></div>
+              <div class="w-key" data-note="E3" onclick="triggerKeyClick('E3')"><span>E3</span></div>
+              <div class="w-key" data-note="F3" onclick="triggerKeyClick('F3')"><span>F3</span></div>
+              <div class="w-key" data-note="G3" onclick="triggerKeyClick('G3')"><span>G3</span></div>
+              <div class="w-key" data-note="A3" onclick="triggerKeyClick('A3')"><span>A3</span></div>
+              <div class="w-key" data-note="B3" onclick="triggerKeyClick('B3')"><span>B3</span></div>
+              
+              <div class="w-key" data-note="C4" onclick="triggerKeyClick('C4')"><span>C4</span></div>
+              <div class="w-key" data-note="D4" onclick="triggerKeyClick('D4')"><span>D4</span></div>
+              <div class="w-key" data-note="E4" onclick="triggerKeyClick('E4')"><span>E4</span></div>
+              <div class="w-key" data-note="F4" onclick="triggerKeyClick('F4')"><span>F4</span></div>
+              <div class="w-key" data-note="G4" onclick="triggerKeyClick('G4')"><span>G4</span></div>
+              <div class="w-key" data-note="A4" onclick="triggerKeyClick('A4')"><span>A4</span></div>
+              <div class="w-key" data-note="B4" onclick="triggerKeyClick('B4')"><span>B4</span></div>
+            </div>
+
+            <!-- CAPA DE TECLAS NEGRAS (10 TECLAS POSICIONADAS EXACTAMENTE) -->
+            <div class="black-keys-layer">
+              <!-- Octava 3 -->
+              <div class="b-key" style="left: 4.8%;" data-note="C#3" onclick="triggerKeyClick('C#3')"><span>C#3</span></div>
+              <div class="b-key" style="left: 12.0%;" data-note="D#3" onclick="triggerKeyClick('D#3')"><span>D#3</span></div>
+              <div class="b-key" style="left: 26.2%;" data-note="F#3" onclick="triggerKeyClick('F#3')"><span>F#3</span></div>
+              <div class="b-key" style="left: 33.4%;" data-note="G#3" onclick="triggerKeyClick('G#3')"><span>G#3</span></div>
+              <div class="b-key" style="left: 40.5%;" data-note="A#3" onclick="triggerKeyClick('A#3')"><span>A#3</span></div>
+              
+              <!-- Octava 4 -->
+              <div class="b-key" style="left: 54.8%;" data-note="C#4" onclick="triggerKeyClick('C#4')"><span>C#4</span></div>
+              <div class="b-key" style="left: 62.0%;" data-note="D#4" onclick="triggerKeyClick('D#4')"><span>D#4</span></div>
+              <div class="b-key" style="left: 76.2%;" data-note="F#4" onclick="triggerKeyClick('F#4')"><span>F#4</span></div>
+              <div class="b-key" style="left: 83.4%;" data-note="G#4" onclick="triggerKeyClick('G#4')"><span>G#4</span></div>
+              <div class="b-key" style="left: 90.5%;" data-note="A#4" onclick="triggerKeyClick('A#4')"><span>A#4</span></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- REGLA OBLIGATORIA: TODO EL CONTROL JUSTO DEBAJO DEL TABLERO -->
+        <div class="stepper-controls">
+          <div class="stepper-btns-row">
+            <div class="btn-group">
+              <button class="step-btn" id="btn-reset" onclick="resetStep()">⏮ Reset</button>
+              <button class="step-btn" id="btn-prev" onclick="prevStep()">◀ Anterior</button>
+              <button class="step-btn" id="btn-next" onclick="nextStep()">Siguiente ▶</button>
+              <button class="step-btn btn-play" id="btn-play" onclick="togglePlay()">▶ Reproducir Todo</button>
+            </div>
+            <div class="step-indicator-badge" id="step-badge">
+              Movimiento 1 de 4 — C
+            </div>
+          </div>
+
+          <div class="stepper-slider-container">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">0</span>
+            <input type="range" class="stepper-slider" id="step-slider" min="0" max="3" value="0" oninput="onSliderMove(this.value)">
+            <span style="font-size: 0.8rem; color: var(--text-muted);" id="slider-max-lbl">3</span>
+          </div>
+        </div>
+
+        <!-- PANEL DE DESARROLLO DE LA JUGADA / MOVIMIENTO -->
+        <div class="movement-card" id="movement-panel">
+          <div class="movement-header">
+            <span class="movement-color" id="move-color-badge">MOVIMIENTO 1 — BLANCAS / TÓNICA</span>
+            <span class="movement-chord-name" id="move-chord-title">C (Do Mayor)</span>
+          </div>
+
+          <div class="movement-grid">
+            <div class="movement-field">
+              <div class="field-label">Bajo (Mano Izquierda)</div>
+              <div class="field-val" id="move-bass-val" style="color: var(--accent-primary);">Nota C3 &middot; Grado I</div>
+            </div>
+            <div class="movement-field">
+              <div class="field-label">Acorde (Mano Derecha)</div>
+              <div class="field-val" id="move-chord-val" style="color: var(--amber);">C4 – E4 – G4</div>
+            </div>
+            <div class="movement-field">
+              <div class="field-label">Desplazamiento del Bajo</div>
+              <div class="field-val" id="move-from-to">Posición Inicial &rarr; C</div>
+            </div>
+          </div>
+
+          <div class="explanation-block">
+            <div class="explanation-q">¿Qué ocurre en este movimiento?</div>
+            <div class="explanation-a" id="move-what-desc">
+              El bajo establece la tónica firme en C, mientras la mano derecha presenta la tríada fundamental de C major.
+            </div>
+          </div>
+
+          <div class="explanation-block" style="margin-top: 0.5rem;">
+            <div class="explanation-q">¿Por qué es importante para el aprendizaje?</div>
+            <div class="explanation-a" id="move-why-desc">
+              Define el centro gravitacional de partida. Toda la tensión melódica posterior cobrará sentido en relación a esta estabilidad inicial.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         PESTAÑA CRÉDITOS: MISMO SVG ANIMADO DE HOME + REQUISITOS OBLIGATORIOS
+         ========================================================================== -->
+    <section id="sec-creditos" class="spa-section">
+      <div class="section-header">
+        <span class="section-icon">⭐</span>
+        <h2>Créditos del Proyecto & Declaración Editorial</h2>
+      </div>
+
+      <!-- MISMO SVG ANIMADO DE HOME OBLIGATORIO -->
+      <div class="svg-hero-wrapper" id="credits-svg-box" style="margin-bottom: 2rem;">
+        <!-- Se clona o re-renderiza exactamente el mismo SVG animado con su motor vectorial -->
+        <svg viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg">
+          <use href="#bgGrad" />
+          <!-- Duplicación exacta de estructura para garantizar render autónomo sin web dependencies -->
+          <rect width="960" height="540" fill="#070a14" />
+          <g opacity="0.12" stroke="#00d4ff" stroke-width="1">
+            <line x1="60" y1="0" x2="60" y2="540" /><line x1="180" y1="0" x2="180" y2="540" />
+            <line x1="300" y1="0" x2="300" y2="540" /><line x1="420" y1="0" x2="420" y2="540" />
+            <line x1="540" y1="0" x2="540" y2="540" /><line x1="660" y1="0" x2="660" y2="540" />
+            <line x1="780" y1="0" x2="780" y2="540" /><line x1="900" y1="0" x2="900" y2="540" />
+          </g>
+          <g stroke="#1e3a5f" stroke-width="1.5" opacity="0.6">
+            <line x1="50" y1="130" x2="910" y2="130" />
+            <line x1="50" y1="150" x2="910" y2="150" />
+            <line x1="50" y1="170" x2="910" y2="170" />
+            <line x1="50" y1="190" x2="910" y2="190" />
+            <line x1="50" y1="210" x2="910" y2="210" />
+          </g>
+          <path d="M 120 150 L 240 200 L 360 250 L 480 300 L 600 350 L 720 400 L 840 450" fill="none" stroke="#00d4ff" stroke-width="5">
+            <animate attributeName="stroke-dasharray" values="10, 800; 800, 0; 10, 800" dur="7s" repeatCount="indefinite" />
+          </path>
+          <circle r="10" fill="#a855f7">
+            <animateMotion path="M 120 150 L 240 200 L 360 250 L 480 300 L 600 350 L 720 400 L 840 450" dur="4.5s" repeatCount="indefinite" />
+          </circle>
+          <g transform="translate(120, 150)"><circle r="18" fill="#0f172a" stroke="#00d4ff" stroke-width="3"/><text y="5" text-anchor="middle" fill="#00d4ff" font-family="monospace" font-size="14" font-weight="bold">C</text></g>
+          <g transform="translate(240, 200)"><circle r="17" fill="#0f172a" stroke="#00d4ff" stroke-width="3"/><text y="5" text-anchor="middle" fill="#00d4ff" font-family="monospace" font-size="14" font-weight="bold">B</text></g>
+          <g transform="translate(360, 250)"><circle r="17" fill="#0f172a" stroke="#ef4444" stroke-width="3"/><text y="5" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="13" font-weight="bold">B♭</text></g>
+          <g transform="translate(480, 300)"><circle r="17" fill="#0f172a" stroke="#00d4ff" stroke-width="3"/><text y="5" text-anchor="middle" fill="#00d4ff" font-family="monospace" font-size="14" font-weight="bold">A</text></g>
+          <g transform="translate(600, 350)"><circle r="17" fill="#0f172a" stroke="#00d4ff" stroke-width="3"/><text y="5" text-anchor="middle" fill="#00d4ff" font-family="monospace" font-size="14" font-weight="bold">G</text></g>
+          <g transform="translate(720, 400)"><circle r="17" fill="#0f172a" stroke="#00d4ff" stroke-width="3"/><text y="5" text-anchor="middle" fill="#00d4ff" font-family="monospace" font-size="14" font-weight="bold">F</text></g>
+          <g transform="translate(840, 450)"><circle r="17" fill="#0f172a" stroke="#22c55e" stroke-width="3"/><text y="5" text-anchor="middle" fill="#22c55e" font-family="monospace" font-size="14" font-weight="bold">E</text></g>
+          <text x="50" y="55" fill="#00d4ff" font-family="monospace" font-size="14" font-weight="bold">[SISTEMA ARMÓNICO RE-INICIADO]</text>
+          <text x="50" y="80" fill="#ffffff" font-family="sans-serif" font-size="24" font-weight="900">McCARTNEY WALK DOWN — CRÉDITOS</text>
+        </svg>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📜 Ficha Técnica y Atribución</div>
+        <div class="table-container">
+          <table class="tech-table">
+            <tbody>
+              <tr>
+                <td><strong>Título de la Obra:</strong></td>
+                <td>McCartney Walk Down — Tutorial Maestro para Piano</td>
+              </tr>
+              <tr>
+                <td><strong>Autor del Contenido Original:</strong></td>
+                <td>Rubén Urbano</td>
+              </tr>
+              <tr>
+                <td><strong>👨‍💻 Créditos de Realización Técnica:</strong></td>
+                <td><strong style="color: var(--accent-primary);">Rubén Sbarsky</strong></td>
+              </tr>
+              <tr>
+                <td><strong>📅 FECHA:</strong></td>
+                <td><strong>09/09/2026</strong></td>
+              </tr>
+              <tr>
+                <td><strong>⏰ HORA:</strong></td>
+                <td><strong>17:51:08</strong></td>
+              </tr>
+              <tr>
+                <td><strong>Propósito Didáctico:</strong></td>
+                <td>📚 Tutorial solo con fines Educativos y Divulgación</td>
+              </tr>
+              <tr>
+                <td><strong>Lema Editorial:</strong></td>
+                <td><strong style="color: var(--accent-primary); font-style: italic;">Fiat iustitia, ruat caelum.</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTÓN FLOTANTE PARA VOLVER ARRIBA -->
+  <button id="back-to-top" onclick="scrollToTop()" title="Volver arriba">▲</button>
+
+  <!-- FOOTER TÉCNICO OBLIGATORIO -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div>📚 Tutorial solo con fines Educativos y Divulgación</div>
+      <div>👨‍💻 Créditos: <strong>Rubén Sbarsky</strong></div>
+      <div>📅 FECHA: <strong>09/09/2026</strong> &nbsp;|&nbsp; Hora: <strong>17:51:08</strong></div>
+      <div class="footer-latin">Fiat iustitia, ruat caelum.</div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       JAVASCRIPT VANILLA AUTÓNOMO: SPA + WEB AUDIO + STEPPER
+       ========================================================================== -->
+  <script>
+    /* --------------------------------------------------------------------------
+       1. NAVEGACIÓN SPA ROBUSTA
+       -------------------------------------------------------------------------- */
+    const sections = {
+      'home': document.getElementById('sec-home'),
+      'fundamentos': document.getElementById('sec-fundamentos'),
+      'diatonico-cromatico': document.getElementById('sec-diatonico-cromatico'),
+      'formulas-modos': document.getElementById('sec-formulas-modos'),
+      'arreglo-piano': document.getElementById('sec-arreglo-piano'),
+      'analisis-practica': document.getElementById('sec-analisis-practica'),
+      'avanzado': document.getElementById('sec-avanzado'),
+      'maestra-proyecto': document.getElementById('sec-maestra-proyecto'),
+      'laboratorio': document.getElementById('sec-laboratorio'),
+      'creditos': document.getElementById('sec-creditos')
+    };
+
+    function navigateTo(targetId) {
+      // Ocultar todas las secciones
+      Object.keys(sections).forEach(id => {
+        if (sections[id]) {
+          sections[id].classList.remove('active');
+        }
+      });
+
+      // Mostrar únicamente la seleccionada
+      if (sections[targetId]) {
+        sections[targetId].classList.add('active');
+      }
+
+      // Actualizar botones de navegación
+      const navButtons = document.querySelectorAll('.nav-btn');
+      navButtons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${targetId}'`)) {
+          btn.classList.add('active');
+        }
+      });
+
+      // Subir suavemente al tope
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Si se entra al laboratorio, renderizar paso actual
+      if (targetId === 'laboratorio') {
+        renderCurrentStep();
+      }
+    }
+
+    // Scroll progress bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+      document.getElementById('reading-progress').style.width = scrolled + '%';
+
+      // Botón volver arriba
+      const btt = document.getElementById('back-to-top');
+      if (winScroll > 350) {
+        btt.style.display = 'flex';
+      } else {
+        btt.style.display = 'none';
+      }
+    });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* --------------------------------------------------------------------------
+       2. SINTETIZADOR WEB AUDIO API NATIVO (100% OFFLINE)
+       -------------------------------------------------------------------------- */
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    const NOTE_FREQS = {
+      'C3': 130.81, 'C#3': 138.59, 'D3': 146.83, 'D#3': 155.56,
+      'E3': 164.81, 'F3': 174.61, 'F#3': 185.00, 'G3': 196.00,
+      'G#3': 207.65, 'A3': 220.00, 'A#3': 233.08, 'B3': 246.94,
+      'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+      'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
+      'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88
+    };
+
+    function playTone(freq, duration = 0.8, type = 'triangle', gainFactor = 0.25) {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+      gain.gain.setValueAtTime(gainFactor, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    }
+
+    function playChordNotes(bassNote, chordNotes) {
+      // Tocar bajo profundo
+      if (bassNote && NOTE_FREQS[bassNote]) {
+        playTone(NOTE_FREQS[bassNote], 1.2, 'sine', 0.4);
+      }
+      // Tocar notas del voicing de la mano derecha
+      if (Array.isArray(chordNotes)) {
+        chordNotes.forEach((n, idx) => {
+          if (NOTE_FREQS[n]) {
+            setTimeout(() => {
+              playTone(NOTE_FREQS[n], 0.9, 'triangle', 0.18);
+            }, idx * 15);
+          }
+        });
+      }
+    }
+
+    function triggerKeyClick(noteName) {
+      if (NOTE_FREQS[noteName]) {
+        playTone(NOTE_FREQS[noteName], 0.7, 'triangle', 0.3);
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       3. DATASETS Y MOTOR STEPPER (ESPECIFICACIÓN ESTÁNDAR)
+       -------------------------------------------------------------------------- */
+    const PROGRESSIONS = [
+      {
+        name: "1. Ejemplo Fundamental (C → G/B → Am → Am/G)",
+        steps: [
+          {
+            color: "BLANCAS",
+            chord: "C (Do Mayor)",
+            bassNote: "C3",
+            bassGrade: "I",
+            chordNotes: ["C4", "E4", "G4"],
+            fromTo: "Inicio → C",
+            what: "El peón armónico del bajo afirma la tónica en C. La mano derecha expone la tríada básica C-E-G.",
+            why: "Establece el punto de referencia tonal C(I) desde el cual se medirá la distancia y tensión de la bajada."
+          },
+          {
+            color: "BLANCAS",
+            chord: "G/B (Sol Mayor con Bajo en Si)",
+            bassNote: "B3",
+            bassGrade: "VII",
+            chordNotes: ["B3", "D4", "G4"],
+            fromTo: "C3 → B3",
+            what: "El bajo desciende un semitono diatónico de C a B. La armonía invierte el acorde G mayor (primera inversión).",
+            why: "Evita el salto brusco a la fundamental de G. B actúa como sensible hacia el relativo menor Am."
+          },
+          {
+            color: "NEGRAS / RESPUESTA",
+            chord: "Am (La Menor)",
+            bassNote: "A3",
+            bassGrade: "VI",
+            chordNotes: ["C4", "E4", "A4"],
+            fromTo: "B3 → A3",
+            what: "El bajo continúa su paso conjunto descendente de B a A. La mano derecha articula la tríada menor Am.",
+            why: "Alcanza el relativo menor Am(VI) con fluidez melódica absoluta en la voz más grave."
+          },
+          {
+            color: "BLANCAS / RETORNO",
+            chord: "Am/G (La Menor con Bajo en Sol)",
+            bassNote: "G3",
+            bassGrade: "V",
+            chordNotes: ["C4", "E4", "A4"],
+            fromTo: "A3 → G3",
+            what: "El bajo da un paso más hacia G (la 7ma del acorde Am). La mano derecha retiene el voicing de Am.",
+            why: "Desestabiliza el acorde menor introduciendo la 7ª en el bajo, demandando movimiento hacia la subdominante F."
+          }
+        ]
+      },
+      {
+        name: "2. Descenso hasta Subdominante (C → G/B → Am → Am/G → F)",
+        steps: [
+          {
+            color: "BLANCAS",
+            chord: "C (Do Mayor)",
+            bassNote: "C3",
+            bassGrade: "I",
+            chordNotes: ["C4", "E4", "G4"],
+            fromTo: "Inicio → C",
+            what: "Apertura en tónica estable con tríada C-E-G.",
+            why: "Punto de partida del ciclo de 5 notas."
+          },
+          {
+            color: "BLANCAS",
+            chord: "G/B (Sol con Bajo en Si)",
+            bassNote: "B3",
+            bassGrade: "VII",
+            chordNotes: ["B3", "D4", "G4"],
+            fromTo: "C3 → B3",
+            what: "Primera estación de paso: inversión G/B.",
+            why: "Movimiento de segunda menor descendente."
+          },
+          {
+            color: "BLANCAS",
+            chord: "Am (La Menor)",
+            bassNote: "A3",
+            bassGrade: "VI",
+            chordNotes: ["C4", "E4", "A4"],
+            fromTo: "B3 → A3",
+            what: "Llegada al grado vi menor.",
+            why: "Conecta la tensión del VII hacia la estabilidad melancólica del VI."
+          },
+          {
+            color: "BLANCAS",
+            chord: "Am/G (La Menor con Bajo en Sol)",
+            bassNote: "G3",
+            bassGrade: "V",
+            chordNotes: ["C4", "E4", "A4"],
+            fromTo: "A3 → G3",
+            what: "Paso de séptima en el bajo hacia el V grado.",
+            why: "Abre el camino directo hacia el semitono de F."
+          },
+          {
+            color: "NEGRAS / RESOLUCIÓN",
+            chord: "F (Fa Mayor)",
+            bassNote: "F3",
+            bassGrade: "IV",
+            chordNotes: ["C4", "F4", "A4"],
+            fromTo: "G3 → F3",
+            what: "El bajo culmina su carrera en F3. La mano derecha abre la subdominante F.",
+            why: "Completa la gran caída 1-7-6-5-4, aportando una sensación de desahogo y amplitud."
+          }
+        ]
+      },
+      {
+        name: "3. Progresión Maestra Completa (C → G/B → Am → Am/G → F → C/E → Dm → G → C)",
+        steps: [
+          { color: "BLANCAS", chord: "C", bassNote: "C3", bassGrade: "I", chordNotes: ["C4","E4","G4"], fromTo: "Inicio → C", what: "Tónica inicial.", why: "Reposo." },
+          { color: "BLANCAS", chord: "G/B", bassNote: "B3", bassGrade: "VII", chordNotes: ["B3","D4","G4"], fromTo: "C3 → B3", what: "Inversión sobre B.", why: "Paso al VI." },
+          { color: "BLANCAS", chord: "Am", bassNote: "A3", bassGrade: "VI", chordNotes: ["C4","E4","A4"], fromTo: "B3 → A3", what: "Relativo menor.", why: "Punto intermedio." },
+          { color: "BLANCAS", chord: "Am/G", bassNote: "G3", bassGrade: "V", chordNotes: ["C4","E4","A4"], fromTo: "A3 → G3", what: "Séptima en bajo.", why: "Puente a F." },
+          { color: "BLANCAS", chord: "F", bassNote: "F3", bassGrade: "IV", chordNotes: ["C4","F4","A4"], fromTo: "G3 → F3", what: "Subdominante IV.", why: "Llega a la mitad de la frase." },
+          { color: "BLANCAS", chord: "C/E", bassNote: "E3", bassGrade: "III", chordNotes: ["C4","E4","G4"], fromTo: "F3 → E3", what: "Primera inversión de C sobre E.", why: "Conecta el IV con el II." },
+          { color: "BLANCAS", chord: "Dm", bassNote: "D3", bassGrade: "II", chordNotes: ["D4","F4","A4"], fromTo: "E3 → D3", what: "Acorde supertónico Dm.", why: "Prepara la cadencia perfecta." },
+          { color: "BLANCAS", chord: "G", bassNote: "G3", bassGrade: "V", chordNotes: ["B3","D4","G4"], fromTo: "D3 → G3", what: "Dominante G.", why: "Tensión final de cadencia." },
+          { color: "BLANCAS / RESOLUCIÓN", chord: "C", bassNote: "C3", bassGrade: "I", chordNotes: ["C4","E4","G4"], fromTo: "G3 → C3", what: "Retorno a la tónica final.", why: "Cierre definitivo del gran viaje de 8 compases." }
+        ]
+      },
+      {
+        name: "4. Descenso Cromático (C → G/B → Bb → F/A)",
+        steps: [
+          { color: "BLANCAS", chord: "C", bassNote: "C3", bassGrade: "I", chordNotes: ["C4","E4","G4"], fromTo: "Inicio → C", what: "Punto de partida.", why: "Tónica pura." },
+          { color: "BLANCAS", chord: "G/B", bassNote: "B3", bassGrade: "VII", chordNotes: ["B3","D4","G4"], fromTo: "C3 → B3", what: "Bajo en B diatónico.", why: "Primer paso descendente." },
+          { color: "BLANCAS / CROMATISMO", chord: "Bb (Si Bemol de Paso)", bassNote: "A#3", bassGrade: "♭VII", chordNotes: ["D4","F4","A#4"], fromTo: "B3 → Bb3", what: "Inserción del semitono cromático Bb (nota ajena a C major).", why: "Produce una gravitación magnética irresistible hacia A." },
+          { color: "BLANCAS / LLEGADA", chord: "F/A (Fa con Bajo en La)", bassNote: "A3", bassGrade: "VI", chordNotes: ["C4","F4","A4"], fromTo: "Bb3 → A3", what: "Resolución del semitono en el bajo A con acorde F/A.", why: "Culmina la tensión cromática de forma deslumbrante." }
+        ]
+      },
+      {
+        name: "5. Menor con Dominante (Am → Am/G → F → E → Am)",
+        steps: [
+          { color: "NEGRAS", chord: "Am", bassNote: "A3", bassGrade: "I (Menor)", chordNotes: ["C4","E4","A4"], fromTo: "Inicio → A", what: "Centro modal de A menor.", why: "Estabilidad dramática menor." },
+          { color: "NEGRAS", chord: "Am/G", bassNote: "G3", bassGrade: "VII (Natural)", chordNotes: ["C4","E4","A4"], fromTo: "A3 → G3", what: "Paso de séptima en bajo.", why: "Conduce hacia F." },
+          { color: "NEGRAS", chord: "F", bassNote: "F3", bassGrade: "VI", chordNotes: ["C4","F4","A4"], fromTo: "G3 → F3", what: "Sexto grado F.", why: "Prepara la caída al dominante." },
+          { color: "BLANCAS / TENSIÓN", chord: "E (Mi Mayor)", bassNote: "E3", bassGrade: "V (Dominante)", chordNotes: ["B3","E4","G#4"], fromTo: "F3 → E3", what: "El bajo cae en E; el acorde es E mayor con G# (menor armónica).", why: "Máxima tensión armónica que reclama volver a Am." },
+          { color: "NEGRAS / RESOLUCIÓN", chord: "Am", bassNote: "A3", bassGrade: "I", chordNotes: ["C4","E4","A4"], fromTo: "E3 → A3", what: "Resolución cadencial en Am.", why: "Cierra la trayectoria: Descenso → Tensión → Resolución." }
+        ]
+      },
+      {
+        name: "6. Descenso IV → I (F → C/E → Dm → C)",
+        steps: [
+          { color: "BLANCAS", chord: "F", bassNote: "F3", bassGrade: "IV", chordNotes: ["C4","F4","A4"], fromTo: "Inicio → F", what: "Inicio en la subdominante F.", why: "Color abierto y pastoral." },
+          { color: "BLANCAS", chord: "C/E", bassNote: "E3", bassGrade: "III", chordNotes: ["C4","E4","G4"], fromTo: "F3 → E3", what: "Bajo en E con acorde C/E.", why: "Enlace conjunto por segunda menor." },
+          { color: "BLANCAS", chord: "Dm", bassNote: "D3", bassGrade: "II", chordNotes: ["D4","F4","A4"], fromTo: "E3 → D3", what: "Bajo en D con acorde Dm.", why: "Paso penúltimo hacia la tónica." },
+          { color: "BLANCAS / RESOLUCIÓN", chord: "C", bassNote: "C3", bassGrade: "I", chordNotes: ["C4","E4","G4"], fromTo: "D3 → C3", what: "Llegada al reposo de C.", why: "Cierre cadencial suave sin dominante activo." }
+        ]
+      }
+    ];
+
+    let currentProgIndex = 0;
+    let currentStepIndex = 0;
+    let isPlaying = false;
+    let playTimer = null;
+
+    function loadProgression(index) {
+      currentProgIndex = index;
+      currentStepIndex = 0;
+      stopPlay();
+
+      // Actualizar botones preset
+      const presetBtns = document.querySelectorAll('.preset-btn');
+      presetBtns.forEach((b, i) => {
+        b.classList.toggle('active', i === index);
+      });
+
+      // Actualizar slider max
+      const slider = document.getElementById('step-slider');
+      const maxSteps = PROGRESSIONS[index].steps.length - 1;
+      slider.max = maxSteps;
+      slider.value = 0;
+      document.getElementById('slider-max-lbl').innerText = maxSteps;
+
+      renderCurrentStep();
+    }
+
+    function renderCurrentStep() {
+      const prog = PROGRESSIONS[currentProgIndex];
+      const step = prog.steps[currentStepIndex];
+      const total = prog.steps.length;
+
+      // Actualizar controles e indicador
+      document.getElementById('step-slider').value = currentStepIndex;
+      document.getElementById('btn-prev').disabled = (currentStepIndex === 0);
+      document.getElementById('btn-next').disabled = (currentStepIndex === total - 1);
+      document.getElementById('step-badge').innerText = `Movimiento ${currentStepIndex + 1} de ${total} — ${step.chord}`;
+
+      // Actualizar Panel de Desarrollo del Movimiento
+      document.getElementById('move-color-badge').innerText = `MOVIMIENTO ${currentStepIndex + 1} — ${step.color}`;
+      document.getElementById('move-chord-title').innerText = step.chord;
+      document.getElementById('move-bass-val').innerText = `Nota ${step.bassNote} · Grado ${step.bassGrade}`;
+      document.getElementById('move-chord-val').innerText = step.chordNotes.join(' – ');
+      document.getElementById('move-from-to').innerText = step.fromTo;
+      document.getElementById('move-what-desc').innerText = step.what;
+      document.getElementById('move-why-desc').innerText = step.why;
+
+      // Actualizar Teclado (Luces de teclas)
+      clearKeyHighlights();
+      highlightKey(step.bassNote, 'active-bass');
+      if (Array.isArray(step.chordNotes)) {
+        step.chordNotes.forEach(n => highlightKey(n, 'active-chord'));
+      }
+
+      // Tocar sonido
+      playChordNotes(step.bassNote, step.chordNotes);
+    }
+
+    function clearKeyHighlights() {
+      const keys = document.querySelectorAll('.w-key, .b-key');
+      keys.forEach(k => {
+        k.classList.remove('active-bass', 'active-chord');
+      });
+    }
+
+    function highlightKey(noteName, className) {
+      if (!noteName) return;
+      const keyElem = document.querySelector(`[data-note="${noteName}"]`);
+      if (keyElem) {
+        keyElem.classList.add(className);
+      }
+    }
+
+    function nextStep() {
+      const prog = PROGRESSIONS[currentProgIndex];
+      if (currentStepIndex < prog.steps.length - 1) {
+        currentStepIndex++;
+        renderCurrentStep();
+      } else {
+        stopPlay();
+      }
+    }
+
+    function prevStep() {
+      if (currentStepIndex > 0) {
+        currentStepIndex--;
+        renderCurrentStep();
+      }
+    }
+
+    function resetStep() {
+      currentStepIndex = 0;
+      stopPlay();
+      renderCurrentStep();
+    }
+
+    function onSliderMove(val) {
+      currentStepIndex = parseInt(val, 10);
+      stopPlay();
+      renderCurrentStep();
+    }
+
+    function togglePlay() {
+      if (isPlaying) {
+        stopPlay();
+      } else {
+        startPlay();
+      }
+    }
+
+    function startPlay() {
+      isPlaying = true;
+      const btn = document.getElementById('btn-play');
+      btn.innerText = "⏸ Pausar";
+      btn.style.background = "var(--amber)";
+      btn.style.color = "#0a0e1a";
+
+      playTimer = setInterval(() => {
+        const prog = PROGRESSIONS[currentProgIndex];
+        if (currentStepIndex < prog.steps.length - 1) {
+          nextStep();
+        } else {
+          stopPlay();
+        }
+      }, 1600);
+    }
+
+    function stopPlay() {
+      isPlaying = false;
+      if (playTimer) {
+        clearInterval(playTimer);
+        playTimer = null;
+      }
+      const btn = document.getElementById('btn-play');
+      if (btn) {
+        btn.innerText = "▶ Reproducir Todo";
+        btn.style.background = "rgba(34, 197, 94, 0.15)";
+        btn.style.color = "var(--green)";
+      }
+    }
+
+    // Inicialización al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProgression(0);
+    });
+  </script>
+</body>
+</html>
