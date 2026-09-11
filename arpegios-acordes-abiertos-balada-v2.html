@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arpegios y Acordes Abiertos para Piano de Balada · Tutorial Interactivo</title>
+<style>
+/* ============================================================
+   PALETA Y BASE  (Dark UI técnico)
+   ============================================================ */
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --card2:#111d33;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --txt:#dbe7f5;
+  --txt-dim:#8aa4c0;
+  --radius:12px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--txt);
+  font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size:16px;
+  line-height:1.65;
+  -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(900px 500px at 15% -5%, rgba(0,212,255,.08), transparent 60%),
+    radial-gradient(800px 500px at 90% 10%, rgba(168,85,247,.07), transparent 60%);
+}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em}
+p{margin:0 0 1em}
+a{color:var(--accent)}
+::selection{background:rgba(0,212,255,.3)}
+
+/* ============================================================
+   BARRA DE PROGRESO + NAVBAR FIJA
+   ============================================================ */
+#progress{
+  position:fixed;top:0;left:0;height:4px;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--purple));
+  box-shadow:0 0 12px rgba(0,212,255,.8);
+  z-index:1000;transition:width .1s linear;
+}
+#navbar{
+  position:fixed;top:4px;left:0;right:0;z-index:999;
+  background:rgba(10,14,26,.94);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(8px);
+}
+.nav-inner{
+  display:flex;align-items:center;gap:8px;
+  overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding:8px 12px;scrollbar-width:thin;
+}
+.nav-inner::-webkit-scrollbar{height:5px}
+.nav-inner::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.nav-brand{
+  flex:0 0 auto;display:flex;align-items:center;gap:8px;
+  font-weight:700;font-size:14px;color:var(--accent);
+  letter-spacing:.5px;padding:6px 10px;border-right:1px solid var(--border);
+  margin-right:4px;white-space:nowrap;
+}
+.nav-brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:blink 2.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.nav-btn{
+  flex:0 0 auto;background:transparent;border:1px solid transparent;
+  color:var(--txt-dim);font-family:inherit;font-size:14.5px;font-weight:600;
+  padding:9px 14px;border-radius:8px;cursor:pointer;white-space:nowrap;
+  min-height:42px;transition:all .2s;
+}
+.nav-btn:hover{color:var(--txt);background:rgba(30,58,95,.5)}
+.nav-btn.active{
+  color:#04121a;background:var(--accent);
+  box-shadow:0 0 16px rgba(0,212,255,.45);
+}
+.nav-btn.credits-btn{border-color:var(--purple);color:#d8b4fe}
+.nav-btn.credits-btn.active{background:var(--purple);color:#fff;box-shadow:0 0 16px rgba(168,85,247,.5)}
+.nav-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+main{position:relative;z-index:1;padding:88px 16px 40px;max-width:1180px;margin:0 auto}
+.view{display:none}
+.view.active{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ============================================================
+   COMPONENTES GENERALES
+   ============================================================ */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;margin-bottom:18px;
+  position:relative;overflow:hidden;
+}
+.card.tight{padding:15px}
+.card-glow::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.7;
+}
+.sec-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:6px}
+.sec-ico{
+  flex:0 0 auto;width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  background:linear-gradient(135deg,rgba(0,212,255,.18),rgba(168,85,247,.14));
+  border:1px solid var(--border);
+}
+.sec-head h2{font-size:clamp(1.35rem,3.6vw,1.9rem);color:#eaf6ff;margin:0}
+.sec-head p{color:var(--txt-dim);margin:4px 0 0;font-size:15px}
+h3.sub{
+  font-size:1.12rem;color:var(--accent);margin:26px 0 12px;
+  padding-left:12px;border-left:3px solid var(--accent);
+}
+h4.mini{font-size:1rem;color:#cfe6ff;margin:16px 0 8px}
+.badge{
+  display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:1.2px;
+  text-transform:uppercase;padding:5px 12px;border-radius:999px;
+  border:1px solid var(--border);background:rgba(0,212,255,.08);color:var(--accent);
+}
+.badge.g{background:rgba(34,197,94,.12);color:#86efac;border-color:rgba(34,197,94,.4)}
+.badge.a{background:rgba(245,158,11,.12);color:#fcd34d;border-color:rgba(245,158,11,.4)}
+.badge.r{background:rgba(239,68,68,.12);color:#fca5a5;border-color:rgba(239,68,68,.4)}
+.badge.p{background:rgba(168,85,247,.14);color:#d8b4fe;border-color:rgba(168,85,247,.4)}
+.chip{
+  display:inline-flex;flex-direction:column;align-items:center;gap:2px;
+  padding:8px 12px;border-radius:10px;border:1px solid var(--border);
+  background:var(--card2);font-size:14px;cursor:pointer;transition:.18s;min-width:74px;
+}
+.chip:hover{border-color:var(--accent);transform:translateY(-2px)}
+.chip b{color:#eaf6ff;font-size:16px}
+.chip span{color:var(--txt-dim);font-size:11.5px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+
+/* Callouts */
+.callout{
+  border-radius:10px;padding:14px 16px 14px 18px;margin:14px 0;
+  border-left:4px solid var(--accent);background:rgba(0,212,255,.06);
+}
+.callout .ct{font-weight:700;font-size:12.5px;letter-spacing:1.4px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.callout.info{border-color:var(--accent);background:rgba(0,212,255,.07)}
+.callout.info .ct{color:var(--accent)}
+.callout.ok{border-color:var(--green);background:rgba(34,197,94,.08)}
+.callout.ok .ct{color:var(--green)}
+.callout.warn{border-color:var(--amber);background:rgba(245,158,11,.08)}
+.callout.warn .ct{color:var(--amber)}
+.callout.err{border-color:var(--red);background:rgba(239,68,68,.08)}
+.callout.err .ct{color:var(--red)}
+.callout p:last-child{margin-bottom:0}
+
+/* Pasos numerados */
+.steps{counter-reset:st;margin:14px 0;padding:0;list-style:none}
+.steps>li{
+  counter-increment:st;position:relative;padding:12px 14px 12px 56px;
+  border:1px solid var(--border);border-radius:10px;background:var(--card2);margin-bottom:10px;
+}
+.steps>li::before{
+  content:counter(st);position:absolute;left:12px;top:12px;
+  width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,212,255,.15);border:1px solid var(--accent);color:var(--accent);font-weight:700;font-size:15px;
+}
+
+/* Botones */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(180deg,#12324c,#0d2135);
+  border:1px solid var(--border);color:var(--txt);
+  font-family:inherit;font-size:14.5px;font-weight:600;
+  padding:11px 16px;border-radius:9px;cursor:pointer;min-height:44px;
+  transition:.18s;
+}
+.btn:hover{border-color:var(--accent);color:#fff;transform:translateY(-1px)}
+.btn:active{transform:translateY(1px)}
+.btn.pri{background:linear-gradient(180deg,#00d4ff,#0090b8);color:#04121a;border-color:#00d4ff}
+.btn.pri:hover{box-shadow:0 0 18px rgba(0,212,255,.5);color:#04121a}
+.btn.grn{background:linear-gradient(180deg,#22c55e,#15803d);color:#04140a;border-color:#22c55e}
+.btn.red{background:linear-gradient(180deg,#ef4444,#991b1b);color:#fff;border-color:#ef4444}
+.btn.pur{background:linear-gradient(180deg,#a855f7,#6b21a8);color:#fff;border-color:#a855f7}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* Slider */
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:26px;background:transparent;cursor:pointer;
+}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:4px;background:#1e3a5f}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);margin-top:-8px;box-shadow:0 0 10px rgba(0,212,255,.7);border:2px solid #04121a}
+input[type=range]::-moz-range-track{height:6px;border-radius:4px;background:#1e3a5f}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border:2px solid #04121a;border-radius:50%;background:var(--accent)}
+
+/* Tablas */
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:14.5px}
+th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:#12233c;color:var(--accent);font-size:12.5px;letter-spacing:1px;text-transform:uppercase;position:sticky;top:0}
+tbody tr{transition:.15s;cursor:pointer}
+tbody tr:hover{background:rgba(0,212,255,.07)}
+tbody tr.sel{background:rgba(0,212,255,.13)}
+td.lh{color:#fcd34d;font-weight:600;white-space:nowrap}
+td.rh{color:#7dd3fc;font-weight:600;white-space:nowrap}
+td.ac{color:#eaf6ff;font-weight:700;white-space:nowrap}
+
+/* Acordeón */
+.acc{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;background:var(--card2)}
+.acc>button{
+  width:100%;background:transparent;border:0;color:var(--txt);font-family:inherit;
+  font-size:15.5px;font-weight:600;text-align:left;padding:14px 16px;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:48px;
+}
+.acc>button:hover{background:rgba(0,212,255,.06)}
+.acc>button .ar{transition:.25s;color:var(--accent);flex:0 0 auto}
+.acc.open>button .ar{transform:rotate(90deg)}
+.acc .body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acc .body-in{padding:0 16px 16px}
+
+/* Tabs internas */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{
+  background:var(--card2);border:1px solid var(--border);color:var(--txt-dim);
+  padding:10px 16px;border-radius:9px;cursor:pointer;font-family:inherit;font-weight:600;font-size:14.5px;min-height:44px;
+}
+.tab.active{background:rgba(0,212,255,.14);border-color:var(--accent);color:var(--accent)}
+.tabpane{display:none}
+.tabpane.active{display:block;animation:fadeIn .3s}
+
+/* ============================================================
+   PORTADA / HOME
+   ============================================================ */
+.cover-box{
+  border:1px solid var(--border);border-radius:14px;overflow:hidden;
+  background:#070b14;box-shadow:0 18px 50px rgba(0,0,0,.6),0 0 0 1px rgba(0,212,255,.08) inset;
+  margin-bottom:22px;
+}
+.cover-svg{display:block;width:100%;height:auto}
+.home-title{font-size:clamp(1.6rem,5.2vw,2.7rem);color:#f2fbff;margin:14px 0 6px;letter-spacing:-.4px}
+.home-sub{font-size:clamp(1rem,2.8vw,1.22rem);color:var(--accent);margin:0 0 14px;font-weight:600}
+.home-desc{color:var(--txt-dim);font-size:16px;max-width:900px}
+.quote{
+  border-left:4px solid var(--purple);background:linear-gradient(90deg,rgba(168,85,247,.12),rgba(15,23,42,.2));
+  padding:18px 20px;border-radius:10px;margin:20px 0;font-size:clamp(1rem,2.6vw,1.2rem);font-style:italic;color:#e9d5ff;
+}
+.quote small{display:block;margin-top:8px;font-style:normal;color:var(--txt-dim);font-size:13px;letter-spacing:1px}
+.metric{
+  background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;
+}
+.metric .v{font-size:1.7rem;font-weight:800;color:var(--accent);line-height:1.1}
+.metric .l{font-size:12px;color:var(--txt-dim);text-transform:uppercase;letter-spacing:.9px;margin-top:5px}
+.dt-box{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.dt-pill{
+  border:1px solid var(--border);background:var(--card2);border-radius:999px;padding:9px 18px;
+  font-size:14px;color:var(--txt-dim);display:flex;align-items:center;gap:8px;
+}
+.dt-pill b{color:#eaf6ff}
+
+/* ============================================================
+   PIANO INTERACTIVO
+   ============================================================ */
+.kb-shell{border:1px solid var(--border);border-radius:12px;background:#070b14;padding:12px;overflow:hidden}
+.kb-legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;font-size:13px;color:var(--txt-dim)}
+.kb-legend i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px}
+.kb-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.kb{position:relative;display:flex;min-width:760px;height:150px;user-select:none;touch-action:manipulation}
+.kw{
+  flex:1 1 0;position:relative;background:linear-gradient(180deg,#f4f8fb,#cfd9e3);
+  border:1px solid #7c8b9c;border-radius:0 0 6px 6px;cursor:pointer;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;
+  transition:background .12s, transform .08s, box-shadow .12s;
+}
+.kw span{font-size:10.5px;color:#42536b;font-weight:700;pointer-events:none}
+.kw:active,.kw.k-on{background:linear-gradient(180deg,#bff3ff,#7fd7ee);transform:translateY(2px)}
+.kw.k-lh{background:linear-gradient(180deg,#ffe6b0,#f0b95c);box-shadow:0 0 14px rgba(245,158,11,.7) inset}
+.kw.k-rh{background:linear-gradient(180deg,#c8f6ff,#6fd6f2);box-shadow:0 0 14px rgba(0,212,255,.7) inset}
+.kw.k-lh.k-rh{background:linear-gradient(180deg,#dffbe6,#93e0b0)}
+.kw.k-err{background:linear-gradient(180deg,#ffc9c9,#f08080);box-shadow:0 0 14px rgba(239,68,68,.8) inset}
+.kw.k-ok{background:linear-gradient(180deg,#c9f7d6,#77dd96);box-shadow:0 0 14px rgba(34,197,94,.8) inset}
+.kb-blacks{position:absolute;inset:0;pointer-events:none}
+.kbk{
+  position:absolute;top:0;height:60%;background:linear-gradient(180deg,#22303f,#0a1018);
+  border:1px solid #05080d;border-radius:0 0 5px 5px;cursor:pointer;pointer-events:auto;
+  box-shadow:0 3px 6px rgba(0,0,0,.6);transition:background .12s,transform .08s;
+}
+.kbk:active,.kbk.k-on{background:linear-gradient(180deg,#2ea6c9,#0d5f7a);transform:translateY(2px)}
+.kbk.k-lh{background:linear-gradient(180deg,#d99a2b,#8a5c10)}
+.kbk.k-rh{background:linear-gradient(180deg,#1aa7d0,#0a5c78)}
+.kbk.k-err{background:linear-gradient(180deg,#e04b4b,#7d1616)}
+.kbk.k-ok{background:linear-gradient(180deg,#3fbb66,#166234)}
+.kb-hint{font-size:12px;color:var(--txt-dim);margin-top:6px;display:none}
+/* Controles SIEMPRE justo debajo del teclado */
+.kb-controls{
+  margin-top:12px;border-top:1px solid var(--border);padding-top:14px;
+  background:rgba(10,14,26,.55);border-radius:0 0 10px 10px;
+}
+.ctl-line{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+.ctl-line:last-child{margin-bottom:0}
+.indic{
+  background:#12233c;border:1px solid var(--border);border-radius:8px;padding:8px 14px;
+  font-size:14px;color:var(--accent);font-weight:700;letter-spacing:.4px;white-space:nowrap;
+}
+.tempo-box{display:flex;align-items:center;gap:10px;flex:1 1 220px;min-width:200px}
+.tempo-box label{font-size:13px;color:var(--txt-dim);white-space:nowrap}
+.tempo-box output{font-size:14px;color:var(--amber);font-weight:700;min-width:74px}
+
+/* Panel de desarrollo */
+.panel{
+  border:1px solid var(--border);border-left:4px solid var(--accent);
+  background:var(--card2);border-radius:10px;padding:16px;margin-top:14px;
+}
+.panel .pt{font-size:12.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--accent);font-weight:700}
+.panel h4{margin:6px 0 10px;font-size:1.25rem;color:#eaf6ff}
+.hand-row{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0}
+.hand-box{flex:1 1 240px;border:1px solid var(--border);border-radius:10px;padding:12px;background:#0c1526}
+.hand-box.lh{border-color:rgba(245,158,11,.5)}
+.hand-box.rh{border-color:rgba(0,212,255,.5)}
+.hand-box .hb-t{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.hand-box.lh .hb-t{color:var(--amber)}
+.hand-box.rh .hb-t{color:var(--accent)}
+.note-pills{display:flex;flex-wrap:wrap;gap:8px}
+.np{
+  border-radius:8px;padding:7px 11px;font-weight:700;font-size:14.5px;
+  border:1px solid var(--border);background:#12233c;color:#eaf6ff;
+}
+.np.amber{border-color:rgba(245,158,11,.55);background:rgba(245,158,11,.12);color:#fcd34d}
+.np.cyan{border-color:rgba(0,212,255,.55);background:rgba(0,212,255,.12);color:#7dd3fc}
+.np.red{border-color:rgba(239,68,68,.55);background:rgba(239,68,68,.14);color:#fca5a5}
+.np.green{border-color:rgba(34,197,94,.55);background:rgba(34,197,94,.14);color:#86efac}
+.np small{display:block;font-weight:600;font-size:11px;opacity:.75}
+.combo-line{
+  font-family:'Consolas','Courier New',monospace;font-size:14.5px;
+  background:#08111f;border:1px dashed var(--border);border-radius:8px;padding:11px 13px;color:#cfe6ff;overflow-x:auto;
+}
+
+/* Timeline rítmica */
+.timeline{display:flex;gap:8px;align-items:stretch;margin:14px 0;flex-wrap:wrap}
+.tl-slot{
+  flex:1 1 120px;min-width:110px;border:1px solid var(--border);border-radius:10px;
+  background:#0c1526;padding:12px;text-align:center;transition:.15s;
+}
+.tl-slot .bt{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--txt-dim)}
+.tl-slot .ev{font-size:15px;font-weight:700;color:#eaf6ff;margin-top:6px}
+.tl-slot .fg{font-size:12px;color:var(--amber);margin-top:4px}
+.tl-slot.on{border-color:var(--accent);background:rgba(0,212,255,.14);box-shadow:0 0 18px rgba(0,212,255,.35);transform:translateY(-3px)}
+.tl-slot.sus{border-color:var(--purple)}
+.tl-slot.sus .fg{color:#d8b4fe}
+
+/* Manos / digitación */
+.hand-diag{display:flex;gap:10px;justify-content:center;margin:12px 0}
+.finger{
+  width:44px;height:76px;border-radius:20px 20px 8px 8px;border:1px solid var(--border);
+  background:linear-gradient(180deg,#1b2b44,#0e1a2c);display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;padding-top:8px;font-size:12px;color:var(--txt-dim);
+}
+.finger b{font-size:19px;color:var(--accent)}
+.finger.p5 b{color:#fcd34d}.finger.p2 b{color:#7dd3fc}.finger.p1 b{color:#86efac}
+.finger.sm{height:60px;width:38px}
+
+/* Compases */
+.measure{
+  border:1px solid var(--border);border-radius:10px;background:var(--card2);padding:14px;margin-bottom:12px;
+}
+.measure .mh{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.measure .mh b{color:#eaf6ff;font-size:15.5px}
+.beat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:8px}
+.beat-cell{border:1px dashed var(--border);border-radius:8px;padding:10px;background:#0b1424;font-size:14px}
+.beat-cell .bc-t{font-size:11.5px;letter-spacing:1px;text-transform:uppercase;color:var(--purple);font-weight:700;margin-bottom:5px}
+
+/* Metrónomo */
+.metro{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.pendulum{width:110px;height:110px;flex:0 0 auto;position:relative}
+.pend-arm{
+  position:absolute;left:50%;bottom:12px;width:5px;height:82px;margin-left:-2.5px;
+  background:linear-gradient(180deg,var(--accent),#0b3b52);border-radius:3px;
+  transform-origin:bottom center;transform:rotate(0deg);
+}
+.pend-arm.swing{animation:swing var(--swing,1s) ease-in-out infinite alternate}
+@keyframes swing{from{transform:rotate(-26deg)}to{transform:rotate(26deg)}}
+.pend-base{position:absolute;left:50%;bottom:4px;width:44px;height:12px;margin-left:-22px;border-radius:6px;background:#1e3a5f}
+.beat-dots{display:flex;gap:10px}
+.bd{
+  width:38px;height:38px;border-radius:50%;border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--txt-dim);background:#0c1526;
+}
+.bd.hit{border-color:var(--accent);color:#04121a;background:var(--accent);box-shadow:0 0 18px rgba(0,212,255,.7)}
+.bd.hit.acc{background:var(--amber);border-color:var(--amber);box-shadow:0 0 18px rgba(245,158,11,.7)}
+
+/* Pedal */
+.pedal-vis{width:74px;height:110px;border:1px solid var(--border);border-radius:10px;background:#0c1526;position:relative;overflow:hidden;flex:0 0 auto}
+.pedal-bar{position:absolute;left:50%;width:26px;height:52px;margin-left:-13px;top:14px;border-radius:6px;background:linear-gradient(180deg,#c9a227,#7a5f10);transition:transform .2s}
+.pedal-vis.down .pedal-bar{transform:translateY(26px)}
+.pedal-vis.down{box-shadow:0 0 20px rgba(245,158,11,.35) inset}
+
+/* Footer */
+footer{
+  position:relative;z-index:1;margin-top:30px;border-top:1px solid var(--border);
+  background:#070b14;padding:26px 16px 40px;text-align:center;color:var(--txt-dim);font-size:14.5px;
+}
+footer .fl{margin:5px 0}
+footer .lat{margin-top:14px;font-style:italic;color:#d8b4fe;letter-spacing:1px}
+
+/* Volver arriba */
+#toTop{
+  position:fixed;right:16px;bottom:18px;z-index:998;width:50px;height:50px;border-radius:50%;
+  background:linear-gradient(180deg,#00d4ff,#0080a8);border:0;color:#04121a;font-size:22px;font-weight:800;
+  cursor:pointer;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 6px 20px rgba(0,212,255,.45);
+}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{transform:translateY(-3px)}
+
+/* Créditos */
+.credit-card{text-align:center;padding:26px 20px}
+.credit-card .who{font-size:clamp(1.5rem,5vw,2.2rem);color:#eaf6ff;font-weight:800;margin:10px 0 4px}
+.credit-card .role{color:var(--accent);letter-spacing:2px;text-transform:uppercase;font-size:12.5px;font-weight:700}
+.latin{font-style:italic;color:#d8b4fe;font-size:1.1rem;margin-top:16px;letter-spacing:.6px}
+
+/* ============================================================
+   ANIMACIONES DEL SVG DE PORTADA
+   ============================================================ */
+.cv-t-title{font:800 52px 'Segoe UI',system-ui,sans-serif;fill:#eef9ff;letter-spacing:.5px}
+.cv-t-sub{font:600 23px 'Segoe UI',system-ui,sans-serif;fill:#7dd3fc}
+.cv-t-h{font:800 25px 'Segoe UI',system-ui,sans-serif;fill:#eaf6ff;letter-spacing:1px}
+.cv-t-s{font:400 17px 'Segoe UI',system-ui,sans-serif;fill:#8aa4c0}
+.cv-t-n{font:800 21px 'Segoe UI',system-ui,sans-serif;fill:#04121a}
+.cv-t-l{font:700 17px 'Segoe UI',system-ui,sans-serif;fill:#cfe6ff}
+.cv-t-mini{font:700 14px 'Segoe UI',system-ui,sans-serif;fill:#8aa4c0;letter-spacing:1.6px}
+.cv-t-key{font:700 13px 'Segoe UI',system-ui,sans-serif;fill:#42536b}
+.cv-t-lab{font:700 15px 'Segoe UI',system-ui,sans-serif}
+.cv-breathe{animation:cvBreathe 7s ease-in-out infinite}
+@keyframes cvBreathe{0%,100%{opacity:.22}50%{opacity:.45}}
+.cv-blink{animation:cvBlink 2.2s ease-in-out infinite}
+@keyframes cvBlink{0%,100%{opacity:1}50%{opacity:.2}}
+.cv-dash{stroke-dasharray:14 12;animation:cvDash 1.6s linear infinite}
+@keyframes cvDash{to{stroke-dashoffset:-52}}
+.cv-dash2{stroke-dasharray:8 14;animation:cvDash2 3.4s linear infinite}
+@keyframes cvDash2{to{stroke-dashoffset:-88}}
+.cv-wave{stroke-dasharray:220 40;animation:cvWave 4s linear infinite}
+@keyframes cvWave{to{stroke-dashoffset:-520}}
+
+.cv-key{transform-box:fill-box;transform-origin:top center}
+@keyframes cvP1{0%{transform:translateY(0)}3%{transform:translateY(10px)}11%{transform:translateY(10px)}15%,100%{transform:translateY(0)}}
+@keyframes cvP2{0%,11%{transform:translateY(0)}14%{transform:translateY(10px)}22%{transform:translateY(10px)}26%,100%{transform:translateY(0)}}
+@keyframes cvP3{0%,24%{transform:translateY(0)}27%{transform:translateY(10px)}35%{transform:translateY(10px)}39%,100%{transform:translateY(0)}}
+@keyframes cvP4{0%,49%{transform:translateY(0)}52%{transform:translateY(10px)}60%{transform:translateY(10px)}64%,100%{transform:translateY(0)}}
+@keyframes cvP5{0%,61%{transform:translateY(0)}64%{transform:translateY(10px)}72%{transform:translateY(10px)}76%,100%{transform:translateY(0)}}
+@keyframes cvP6{0%,74%{transform:translateY(0)}77%{transform:translateY(10px)}85%{transform:translateY(10px)}89%,100%{transform:translateY(0)}}
+.cv-k1{animation:cvP1 4s ease-in-out infinite}
+.cv-k2{animation:cvP2 4s ease-in-out infinite}
+.cv-k3{animation:cvP3 4s ease-in-out infinite}
+.cv-k4{animation:cvP4 4s ease-in-out infinite}
+.cv-k5{animation:cvP5 4s ease-in-out infinite}
+.cv-k6{animation:cvP6 4s ease-in-out infinite}
+@keyframes cvL1{0%{opacity:.9}3%{opacity:1;fill:#ffd98a}12%{fill:#ffd98a}18%,100%{opacity:.9;fill:#f2f6fa}}
+@keyframes cvL2{0%,12%{fill:#f2f6fa}15%{fill:#ffd98a}23%{fill:#ffd98a}28%,100%{fill:#f2f6fa}}
+.cv-f1{animation:cvL1 4s linear infinite}
+.cv-f2{animation:cvL2 4s linear infinite}
+.cv-f3{animation:cvL3 4s linear infinite}
+@keyframes cvL3{0%,25%{fill:#f2f6fa}28%{fill:#ffd98a}36%{fill:#ffd98a}41%,100%{fill:#f2f6fa}}
+.cv-f4{animation:cvL4 4s linear infinite}
+@keyframes cvL4{0%,50%{fill:#f2f6fa}53%{fill:#ffd98a}61%{fill:#ffd98a}66%,100%{fill:#f2f6fa}}
+.cv-f5{animation:cvL5 4s linear infinite}
+@keyframes cvL5{0%,62%{fill:#f2f6fa}65%{fill:#ffd98a}73%{fill:#ffd98a}78%,100%{fill:#f2f6fa}}
+.cv-f6{animation:cvL6 4s linear infinite}
+@keyframes cvL6{0%,75%{fill:#f2f6fa}78%{fill:#ffd98a}86%{fill:#ffd98a}91%,100%{fill:#f2f6fa}}
+@keyframes cvHold1{0%{opacity:0}3%{opacity:.75}46%{opacity:.75}50%,100%{opacity:0}}
+@keyframes cvHold2{0%,50%{opacity:0}53%{opacity:.75}96%{opacity:.75}100%{opacity:0}}
+.cv-hold1{animation:cvHold1 4s linear infinite}
+.cv-hold2{animation:cvHold2 4s linear infinite}
+@keyframes cvLab1{0%,2%{opacity:0}6%{opacity:1}44%{opacity:1}48%,100%{opacity:0}}
+@keyframes cvLab2{0%,50%{opacity:0}54%{opacity:1}94%{opacity:1}100%{opacity:0}}
+.cv-lab1{animation:cvLab1 4s linear infinite}
+.cv-lab2{animation:cvLab2 4s linear infinite}
+@keyframes cvBeat{0%{r:13;opacity:1}12%{r:17;opacity:.5}30%,100%{r:13;opacity:.28}}
+.cv-b1{animation:cvBeat 4s linear infinite}
+.cv-b2{animation:cvBeat 4s linear 1s infinite}
+.cv-b3{animation:cvBeat 4s linear 2s infinite}
+.cv-b4{animation:cvBeat 4s linear 3s infinite}
+@keyframes cvBass{0%{opacity:.25}6%{opacity:1}25%{opacity:1}35%,100%{opacity:.25}}
+.cv-bass{animation:cvBass 4s linear infinite}
+@keyframes cvPulseNode{0%,100%{opacity:.55}50%{opacity:1}}
+.cv-node{animation:cvPulseNode 3s ease-in-out infinite}
+@keyframes cvArrow{0%,100%{opacity:.5}50%{opacity:1}}
+.cv-arrow{animation:cvArrow 2.6s ease-in-out infinite}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:760px){
+  main{padding:82px 11px 30px}
+  .card{padding:15px}
+  .sec-ico{width:42px;height:42px;font-size:20px}
+  .kb-hint{display:block}
+  .kb{height:132px}
+  .metric .v{font-size:1.4rem}
+  .hand-diag{flex-wrap:wrap}
+  .finger{width:38px;height:66px}
+}
+@media (max-width:420px){
+  body{font-size:15.5px}
+  .nav-btn{font-size:13.5px;padding:9px 11px}
+  .np{font-size:13.5px;padding:6px 9px}
+  .combo-line{font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.05s!important}
+  html{scroll-behavior:auto}
+  .cv-key,.cv-hold1,.cv-hold2,.cv-lab1,.cv-lab2,.cv-bass,.cv-b1,.cv-b2,.cv-b3,.cv-b4,
+  .cv-dash,.cv-dash2,.cv-wave,.cv-breathe,.cv-blink,.cv-node,.cv-arrow{animation:none!important}
+  .pend-arm.swing{animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav id="navbar" aria-label="Navegación principal">
+  <div class="nav-inner" id="navInner">
+    <div class="nav-brand"><span class="dot"></span>PIANO · BALADA</div>
+    <button class="nav-btn active" data-view="home">🏠 Inicio</button>
+    <button class="nav-btn" data-view="fundamentos">1 · Fundamentos</button>
+    <button class="nav-btn" data-view="errores">2 · Errores LH</button>
+    <button class="nav-btn" data-view="posiciones">3 · Las 8 Posiciones</button>
+    <button class="nav-btn" data-view="tecnica">4 · Técnica y Arpegio</button>
+    <button class="nav-btn" data-view="cancion">5 · Balada "Al Final"</button>
+    <button class="nav-btn" data-view="tabla">6 · Tabla Resumen</button>
+    <button class="nav-btn" data-view="practica">7 · Práctica y Fuentes</button>
+    <button class="nav-btn credits-btn" data-view="creditos">★ Créditos</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================ HOME ============================ -->
+<section id="home" class="view active" aria-label="Inicio">
+  <div class="cover-box" id="cover-home"></div>
+
+  <span class="badge">Tutorial interactivo · Nivel principiante a intermedio</span>
+  <h1 class="home-title">Arpegios y Acordes Abiertos para Piano de Balada</h1>
+  <p class="home-sub">Open voicings + arpegios coordinados entre ambas manos · Tonalidad de trabajo: C(I) mayor</p>
+  <p class="home-desc">
+    Tutorial paso a paso para piano de balada. Aprenderás a transformar el sonido rígido y pesado de los acordes
+    básicos en un acompañamiento <strong>fluido, amplio y profesional</strong> para baladas, utilizando
+    <strong>acordes abiertos (open voicings)</strong> y <strong>arpegios coordinados entre ambas manos</strong>.
+    Todo el material está pensado para ejecutarse directamente sobre el teclado, con posiciones concretas,
+    digitación, dinámica rítmica en compás de 4/4 y aplicación real a una canción.
+  </p>
+
+  <div class="quote">
+    "Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."
+    <small>PRINCIPIO DIDÁCTICO DE ESTE TUTORIAL</small>
+  </div>
+
+  <div class="grid g4" style="margin-top:18px">
+    <div class="metric"><div class="v">8</div><div class="l">Posiciones paso a paso</div></div>
+    <div class="metric"><div class="v">9</div><div class="l">Acordes en tabla resumen</div></div>
+    <div class="metric"><div class="v">4/4</div><div class="l">Compás · 2 tiempos/acorde</div></div>
+    <div class="metric"><div class="v">55–60</div><div class="l">BPM de estudio</div></div>
+    <div class="metric"><div class="v">7</div><div class="l">Notas de la escala C(I)</div></div>
+    <div class="metric"><div class="v">2</div><div class="l">Errores críticos de LH</div></div>
+    <div class="metric"><div class="v">5·2·1</div><div class="l">Digitación mano izquierda</div></div>
+    <div class="metric"><div class="v">1</div><div class="l">Balada aplicada: "Al Final"</div></div>
+  </div>
+
+  <div class="dt-box">
+    <div class="dt-pill">📅 Fecha: <b>10/09/2026</b></div>
+    <div class="dt-pill">🕒 Hora: <b>11:59:08</b></div>
+    <div class="dt-pill">👨‍💻 Autor: <b>Rubén Sbarsky</b></div>
+    <div class="dt-pill">🎹 Tonalidad: <b>C(I) mayor</b></div>
+  </div>
+
+  <div class="card card-glow" style="margin-top:20px">
+    <h3 class="sub" style="margin-top:0">Contenido del tutorial</h3>
+    <div class="grid g2">
+      <ul class="steps">
+        <li><strong>Fundamentos y tonalidad</strong> — escala diatónica de C(I), acorde cerrado vs. abierto y la regla de la 2.ª inversión.</li>
+        <li><strong>Errores críticos en la mano izquierda</strong> — la fórmula ciega "1 - 5 - 8" y el choque disonante en C(I)/E(III).</li>
+        <li><strong>Las 8 posiciones (escala descendente)</strong> — construcción paso a paso con piano interactivo.</li>
+        <li><strong>Técnica y coordinación del arpegio</strong> — digitación y dinámica del movimiento en 4/4.</li>
+      </ul>
+      <ul class="steps">
+        <li><strong>Aplicación práctica a "Al Final"</strong> — estrofa y coro, compás por compás, con embellecimientos.</li>
+        <li><strong>Tabla resumen de posiciones</strong> — las 9 configuraciones de LH y RH, reproducibles al tacto.</li>
+        <li><strong>Consejos de práctica y adornos finales</strong> — tempo lento, pedal de sustain y adorno melódico superior.</li>
+        <li><strong>Créditos</strong> — autoría, fecha, hora y finalidad educativa.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 1. FUNDAMENTOS ============================ -->
+<section id="fundamentos" class="view" aria-label="Fundamentos y tonalidad">
+  <div class="card card-glow">
+    <div class="sec-head">
+      <div class="sec-ico">🎼</div>
+      <div>
+        <h2>1 · Conceptos fundamentales y tonalidad de trabajo</h2>
+        <p>La base teórica imprescindible antes de abrir los acordes.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub">1.1 · Tonalidad base: escala diatónica de C(I) mayor</h3>
+  <div class="card">
+    <p>Trabajaremos sobre la <strong>escala diatónica de C(I) mayor</strong>, la cual contiene las siguientes 7 notas.
+    Pulsa cada grado para escucharlo en el teclado:</p>
+    <div class="grid g4" id="scaleChips" style="gap:10px"></div>
+    <div class="callout info" style="margin-top:16px">
+      <div class="ct">ℹ️ INFO — Nomenclatura</div>
+      <p>Todo el tutorial utiliza el <strong>sistema americano</strong> de notas (A, B, C, D, E, F, G) indicando siempre el
+      <strong>grado de la escala</strong>: C(I), D(II), E(III), F(IV), G(V), A(VI), B(VII).</p>
+    </div>
+  </div>
+
+  <h3 class="sub">1.2 · Acorde cerrado vs. acorde abierto</h3>
+  <div class="grid g2">
+    <div class="card">
+      <span class="badge a">Close voicing</span>
+      <h4 class="mini">Acorde Cerrado</h4>
+      <p>Ocurre cuando las notas que componen el acorde se agrupan en su <strong>posición más cercana posible dentro de una sola octava</strong>.</p>
+      <div class="callout ok">
+        <div class="ct">✅ EJEMPLO</div>
+        <p>C(I) mayor en posición fundamental = <strong>C(I) - E(III) - G(V)</strong>.<br>
+        Entre la nota más baja C(I) y la nota más alta G(V), <strong>no cabe ninguna otra nota perteneciente a la tríada</strong>.</p>
+      </div>
+      <p style="color:var(--txt-dim);margin-bottom:0">Este sonido suele <strong>saturar el registro medio</strong> si se toca con ambas manos en bloque.</p>
+      <svg viewBox="0 0 300 130" style="width:100%;height:auto;margin-top:12px" role="img" aria-label="Diagrama de acorde cerrado: notas agrupadas dentro de una octava">
+        <rect x="8" y="8" width="284" height="114" rx="10" fill="#0c1526" stroke="#1e3a5f"/>
+        <text x="24" y="34" class="cv-t-mini">UNA OCTAVA · NOTAS JUNTAS</text>
+        <circle cx="90" cy="60" r="17" fill="#f59e0b"/><text x="90" y="66" text-anchor="middle" class="cv-t-n" style="font-size:15px">C</text>
+        <circle cx="130" cy="72" r="17" fill="#f59e0b"/><text x="130" y="78" text-anchor="middle" class="cv-t-n" style="font-size:15px">E</text>
+        <circle cx="170" cy="84" r="17" fill="#f59e0b"/><text x="170" y="90" text-anchor="middle" class="cv-t-n" style="font-size:15px">G</text>
+        <path d="M90 60 L130 72 L170 84" stroke="#f59e0b" stroke-width="2" fill="none" opacity=".55"/>
+        <text x="205" y="80" class="cv-t-l" style="fill:#fcd34d">I - III - V</text>
+        <text x="24" y="112" class="cv-t-s" style="font-size:15px">Sonido compacto, denso y rígido</text>
+      </svg>
+    </div>
+
+    <div class="card">
+      <span class="badge">Open voicing</span>
+      <h4 class="mini">Acorde Abierto</h4>
+      <p>Consiste en <strong>separar deliberadamente los extremos del acorde</strong> retirando la nota central de la mano derecha
+      para reubicarla en la mano izquierda (en el bajo) o en otra octava.</p>
+      <div class="callout info">
+        <div class="ct">ℹ️ RESULTADO</div>
+        <p>Esto "abre" el <strong>espacio acústico</strong> entre las notas graves y agudas, logrando un sonido
+        <strong>cristalino, elegante y con espacio para la melodía vocal</strong>.</p>
+      </div>
+      <svg viewBox="0 0 300 130" style="width:100%;height:auto;margin-top:12px" role="img" aria-label="Diagrama de acorde abierto: bajo en la izquierda y bicordio separado en la derecha">
+        <rect x="8" y="8" width="284" height="114" rx="10" fill="#0c1526" stroke="#1e3a5f"/>
+        <text x="24" y="34" class="cv-t-mini">ESPACIO ABIERTO ENTRE MANOS</text>
+        <circle cx="60" cy="98" r="17" fill="#f59e0b"/><text x="60" y="104" text-anchor="middle" class="cv-t-n" style="font-size:15px">C</text>
+        <text x="60" y="128" text-anchor="middle" class="cv-t-mini" style="font-size:12px">LH</text>
+        <circle cx="180" cy="70" r="17" fill="#00d4ff"/><text x="180" y="76" text-anchor="middle" class="cv-t-n" style="font-size:15px">G</text>
+        <circle cx="248" cy="52" r="17" fill="#00d4ff"/><text x="248" y="58" text-anchor="middle" class="cv-t-n" style="font-size:15px">E</text>
+        <text x="214" y="98" text-anchor="middle" class="cv-t-mini" style="font-size:12px">RH</text>
+        <path d="M60 98 Q120 96 180 70 T248 52" stroke="#a855f7" stroke-width="2" fill="none" stroke-dasharray="6 6" opacity=".8"/>
+        <text x="98" y="56" class="cv-t-l" style="fill:#7dd3fc">Bicordio G - E</text>
+      </svg>
+    </div>
+  </div>
+
+  <h3 class="sub">1.3 · La regla de la 2.ª inversión para acordes con bajo en la tónica</h3>
+  <div class="card">
+    <p>Para abrir acordes que mantienen su <strong>bajo natural en la mano izquierda</strong>, usamos la
+    <strong>2.ª inversión en la mano derecha</strong>:</p>
+    <ul class="steps">
+      <li><strong>Tomemos C(I) mayor en 2.ª inversión:</strong> <span class="np cyan" style="display:inline-block;padding:3px 9px">G(V) - C(I) - E(III)</span></li>
+      <li><strong>La nota del centro es la tónica C(I).</strong></li>
+      <li><strong>Retiramos la nota central C(I) de la mano derecha:</strong> nos queda el intervalo abierto <span class="np cyan" style="display:inline-block;padding:3px 9px">G(V) - E(III)</span></li>
+      <li><strong>La nota que retiramos, C(I), se coloca en la mano izquierda</strong> como bajo fundamental.</li>
+      <li><strong>Resultado:</strong> Mano Izquierda toca <span class="np amber" style="display:inline-block;padding:3px 9px">C(I)</span> y Mano Derecha toca <span class="np cyan" style="display:inline-block;padding:3px 9px">G(V) - E(III)</span></li>
+    </ul>
+    <div class="callout info">
+      <div class="ct">🔁 DEMOSTRACIÓN ANIMADA</div>
+      <p>Observa el proceso completo con sonido: la nota central viaja de la mano derecha al bajo de la mano izquierda.</p>
+      <div class="btn-row" style="margin-top:10px">
+        <button class="btn pri" id="demoRule">▶ Ver y escuchar la regla</button>
+        <span class="indic" id="demoRuleState">Listo</span>
+      </div>
+    </div>
+    <div id="kb-rule" class="kb-shell" style="margin-top:14px"></div>
+  </div>
+</section>
+
+<!-- ============================ 2. ERRORES ============================ -->
+<section id="errores" class="view" aria-label="Errores críticos de la mano izquierda">
+  <div class="card card-glow">
+    <div class="sec-head">
+      <div class="sec-ico">⚠️</div>
+      <div>
+        <h2>2 · Errores críticos a evitar en la mano izquierda (LH)</h2>
+        <p>Muchos tecladistas cometen fallos al intentar arpegiar acordes con bajo cambiado (acordes invertidos) debido a la <strong>memoria muscular mecánica</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub">2.1 · El error de la fórmula ciega "1 - 5 - 8"</h3>
+  <div class="card">
+    <div class="callout ok">
+      <div class="ct">✅ CUANDO FUNCIONA</div>
+      <p>En acordes con <strong>bajo en la tónica</strong> (como C(I) mayor), la mano izquierda toca
+      <strong>Tónica - Quinta - Octava</strong>: C(I) - G(V) - C(I). <strong>Esto funciona perfectamente.</strong></p>
+    </div>
+    <div class="callout err">
+      <div class="ct">⛔ ERROR — G(V) con bajo en B(VII)</div>
+      <p>Sin embargo, al tocar <strong>G(V) con bajo en B(VII)</strong> (cifrado <strong>G(V)/B(VII)</strong>), el error habitual es aplicar
+      esa misma <strong>fórmula ciega</strong> sobre B(VII) y tocar:</p>
+      <p style="font-size:1.15rem"><span class="np red">B(VII)</span> <span class="np red">F#(IV#)</span> <span class="np red">B(VII)</span></p>
+      <p><strong>¡Esto es un choque grave!</strong> La nota <strong>F#(IV#)</strong> no pertenece ni a la escala de C(I) mayor
+      ni al acorde de G(V) mayor (formado por <strong>G(V) - B(VII) - D(II)</strong>).</p>
+    </div>
+    <div class="callout info">
+      <div class="ct">🛠️ SOLUCIÓN CORRECTA</div>
+      <p>Construir la mano izquierda usando <strong>exclusivamente notas del acorde de G(V)</strong>:
+      <span class="np green">B(VII)</span> <span class="np green">G(V)</span> <span class="np green">B(VII)</span></p>
+    </div>
+    <div class="btn-row">
+      <button class="btn red" data-cmp="e1">🔊 Escuchar el ERROR (B - F# - B)</button>
+      <button class="btn grn" data-cmp="c1">🔊 Escuchar la SOLUCIÓN (B - G - B)</button>
+    </div>
+    <div id="kb-err1" class="kb-shell" style="margin-top:14px"></div>
+  </div>
+
+  <h3 class="sub">2.2 · Choque disonante en C(I) con bajo en E(III) — cifrado C(I)/E(III)</h3>
+  <div class="card">
+    <div class="callout err">
+      <div class="ct">⛔ ERROR — Quinta justa sobre el bajo E(III)</div>
+      <p>Si el bajo está en <strong>E(III)</strong> y aplicas una <strong>quinta justa</strong> en la mano izquierda, tocarías
+      <span class="np red">E(III)</span> <span class="np red">B(VII)</span> <span class="np red">E(III)</span>.</p>
+      <p>La nota <strong>B(VII)</strong> genera una <strong>disonancia áspera e indeseada</strong> contra la identidad del acorde de C(I) mayor.</p>
+    </div>
+    <div class="callout info">
+      <div class="ct">🛠️ SOLUCIÓN CORRECTA</div>
+      <p>La mano izquierda debe contener <strong>solo notas de C(I)</strong>:
+      <span class="np green">E(III)</span> <span class="np green">C(I)</span> <span class="np green">E(III)</span></p>
+    </div>
+    <div class="btn-row">
+      <button class="btn red" data-cmp="e2">🔊 Escuchar el ERROR (E - B - E)</button>
+      <button class="btn grn" data-cmp="c2">🔊 Escuchar la SOLUCIÓN (E - C - E)</button>
+    </div>
+    <div id="kb-err2" class="kb-shell" style="margin-top:14px"></div>
+  </div>
+
+  <div class="card">
+    <h4 class="mini">🧠 Principio general que se deduce de ambos errores</h4>
+    <p style="margin-bottom:0">La mano izquierda <strong>nunca arpegia una fórmula fija sobre el bajo</strong>: arpegia
+    <strong>notas que pertenezcan al acorde real</strong> que se está tocando. Cuando el bajo cambia (acorde invertido o con bajo alterado),
+    las notas intermedias deben reconstruirse desde el contenido del acorde, no desde la memoria mecánica del "1 - 5 - 8".</p>
+  </div>
+</section>
+
+<!-- ============================ 3. POSICIONES ============================ -->
+<section id="posiciones" class="view" aria-label="Las 8 posiciones">
+  <div class="card card-glow">
+    <div class="sec-head">
+      <div class="sec-ico">🎹</div>
+      <div>
+        <h2>3 · Paso a paso: construcción de los acordes abiertos (escala descendente)</h2>
+        <p>Aprenderemos las <strong>8 posiciones fundamentales</strong> descendiendo paso a paso a lo largo de la escala de C(I) mayor.</p>
+      </div>
+    </div>
+    <div class="callout info">
+      <div class="ct">📉 LÍNEA DE BAJO DESCENDENTE</div>
+      <p>El bajo camina por grados conjuntos descendentes:
+      <strong>C(I) → B(VII) → A(VI) → G(V) → F(IV) → E(III) → D(II) → C(I)</strong>.
+      Cada paso del recorrido es una de las 8 posiciones.</p>
+    </div>
+    <div id="bassLine" class="btn-row" style="justify-content:center;gap:6px"></div>
+  </div>
+
+  <div class="card">
+    <div class="ctl-line" style="justify-content:space-between">
+      <span class="badge p">Laboratorio paso a paso</span>
+      <span class="indic" id="posIndicator">Posición 1 de 8</span>
+    </div>
+    <div id="kb-main" class="kb-shell"></div>
+
+    <!-- CONTROLES JUSTO DEBAJO DEL TECLADO -->
+    <div class="kb-controls">
+      <div class="ctl-line">
+        <button class="btn" id="posPrev">⏮ Anterior</button>
+        <button class="btn pri" id="posNext">Siguiente ⏭</button>
+        <button class="btn" id="posReset">↺ Reset</button>
+        <button class="btn grn" id="posPlay">🔊 Escuchar arpegio</button>
+        <button class="btn pur" id="posPlayAll">🎬 Recorrido descendente completo</button>
+      </div>
+      <div class="ctl-line">
+        <input type="range" id="posSlider" min="0" max="7" step="1" value="0" aria-label="Seleccionar posición">
+      </div>
+      <div class="ctl-line">
+        <div class="tempo-box">
+          <label for="bpm1">Tempo:</label>
+          <input type="range" id="bpm1" min="40" max="120" step="1" value="60" aria-label="Tempo en BPM">
+          <output id="bpm1out">60 BPM</output>
+        </div>
+        <button class="btn" data-bpm="55" data-target="bpm1">55</button>
+        <button class="btn" data-bpm="60" data-target="bpm1">60</button>
+      </div>
+    </div>
+
+    <div class="panel" id="posPanel"></div>
+  </div>
+
+  <div class="card">
+    <h4 class="mini">📋 Las 8 posiciones en detalle (texto completo del método)</h4>
+    <div id="accPos"></div>
+  </div>
+</section>
+
+<!-- ============================ 4. TÉCNICA ============================ -->
+<section id="tecnica" class="view" aria-label="Técnica y coordinación del arpegio">
+  <div class="card card-glow">
+    <div class="sec-head">
+      <div class="sec-ico">🖐️</div>
+      <div>
+        <h2>4 · Técnica y coordinación del arpegio</h2>
+        <p>Digitación recomendada y dinámica del movimiento en compás de 4/4 (2 tiempos por acorde).</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub">4.1 · Digitación recomendada</h3>
+  <div class="grid g2">
+    <div class="card">
+      <span class="badge a">Mano Izquierda (LH)</span>
+      <div class="hand-diag">
+        <div class="finger p5"><b>5</b><span>Meñique</span></div>
+        <div class="finger p2"><b>2</b><span>Índice</span></div>
+        <div class="finger p1"><b>1</b><span>Pulgar</span></div>
+      </div>
+      <ul class="steps">
+        <li><strong>Dedo 5 (Meñique):</strong> Primera nota (Bajo grave).</li>
+        <li><strong>Dedo 2 (Índice):</strong> Segunda nota (Quinta o Sexta del acorde).</li>
+        <li><strong>Dedo 1 (Pulgar):</strong> Tercera nota (Octava superior del bajo).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="badge">Mano Derecha (RH)</span>
+      <div class="hand-diag">
+        <div class="finger p1"><b>1</b><span>Pulgar</span></div>
+        <div class="finger p5"><b>4/5</b><span>Anular o Meñique</span></div>
+      </div>
+      <ul class="steps">
+        <li><strong>Dedo 1 (Pulgar):</strong> Nota inferior del bicordio.</li>
+        <li><strong>Dedo 4 o 5 (Anular o Meñique):</strong> Nota superior del bicordio.</li>
+      </ul>
+      <div class="callout info">
+        <div class="ct">ℹ️ INFO</div>
+        <p>La mano derecha pulsa solo <strong>dos notas (bicordio abierto)</strong> —o tres en los embellecimientos del coro—
+        y las <strong>mantiene presionadas</strong> mientras la izquierda arpegia.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sub">4.2 · Dinámica del movimiento en compás de 4/4 (2 tiempos por acorde)</h3>
+  <div class="card">
+    <div class="timeline" id="tl4">
+      <div class="tl-slot" data-i="0"><div class="bt">Tiempo 1</div><div class="ev">LH grave + RH bicordio</div><div class="fg">Dedo 5 (LH) · Dedo 1 y 4/5 (RH)</div></div>
+      <div class="tl-slot" data-i="1"><div class="bt">Contratiempo del 1</div><div class="ev">LH nota intermedia</div><div class="fg">Dedo 2 (LH)</div></div>
+      <div class="tl-slot" data-i="2"><div class="bt">Tiempo 2</div><div class="ev">LH nota alta</div><div class="fg">Dedo 1 (LH) · octava superior del bajo</div></div>
+      <div class="tl-slot sus" data-i="3"><div class="bt">Durante todo el acorde</div><div class="ev">RH mantiene presionado</div><div class="fg">Cuerpo armónico sostenido</div></div>
+    </div>
+    <ol class="steps">
+      <li><strong>Tiempo 1:</strong> La mano izquierda toca su nota grave (Dedo 5) <strong>exactamente al mismo tiempo</strong> que la mano derecha presiona su bicordio abierto.</li>
+      <li><strong>Contratiempo del 1:</strong> La mano izquierda toca su nota intermedia (Dedo 2).</li>
+      <li><strong>Tiempo 2:</strong> La mano izquierda completa el arpegio tocando su nota alta (Dedo 1).</li>
+      <li>La mano derecha <strong>mantiene presionadas sus notas</strong> para dar cuerpo armónico sostenido.</li>
+    </ol>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn pri" id="tlPlay">▶ Reproducir el patrón rítmico (C(I))</button>
+      <div class="tempo-box" style="flex:0 1 260px">
+        <label for="bpm2">Tempo:</label>
+        <input type="range" id="bpm2" min="40" max="120" step="1" value="60">
+        <output id="bpm2out">60 BPM</output>
+      </div>
+    </div>
+    <div class="callout warn" style="margin-bottom:0">
+      <div class="ct">⚠️ ADVERTENCIA</div>
+      <p>La sincronía del <strong>Tiempo 1</strong> es crítica: bajo grave y bicordio deben sonar
+      <strong>exactamente juntos</strong>. Si la mano derecha entra desfasada, el acompañamiento pierde su carácter de balada.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 5. CANCIÓN ============================ -->
+<section id="cancion" class="view" aria-label="Aplicación práctica a una balada">
+  <div class="card card-glow">
+    <div class="sec-head">
+      <div class="sec-ico">🎶</div>
+      <div>
+        <h2>5 · Aplicación práctica a una canción de balada ("Al Final")</h2>
+        <p>Acompañamiento completo de estrofa y coro, compás por compás, con embellecimientos y técnicas avanzadas.</p>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-tab="verso">5.1 · Estrofa (Verse)</button>
+      <button class="tab" data-tab="coro">5.2 · Coro (Chorus)</button>
+    </div>
+
+    <!-- ESTROFA -->
+    <div class="tabpane active" id="tab-verso">
+      <div class="callout info">
+        <div class="ct">🎼 PROGRESIÓN ARMÓNICA DE LA ESTROFA</div>
+        <p class="combo-line" style="margin:0">| C(I) (2T) | G(V)/B(VII) (2T) | A(VI)m (2T) | G(V) (2T) | F(IV) (4T) | G(V)sus4 (2T) - G(V) (2T) |</p>
+      </div>
+      <h4 class="mini">Ejecución compás por compás</h4>
+
+      <div class="measure">
+        <div class="mh"><b>Compás 1</b><span class="badge">C(I) 2T + G(V)/B(VII) 2T</span>
+          <button class="btn pri" data-play="v1">▶ Tocar compás 1</button></div>
+        <div class="beat-grid">
+          <div class="beat-cell"><div class="bc-t">Tiempos 1 y 2 · C(I) mayor</div>
+            LH arpegia: <strong>C(I) → G(V) → C(I)</strong><br>RH sostiene: <strong>G(V) y E(III)</strong></div>
+          <div class="beat-cell"><div class="bc-t">Tiempos 3 y 4 · G(V)/B(VII)</div>
+            LH arpegia: <strong>B(VII) → G(V) → B(VII)</strong><br>RH sostiene: <strong>G(V) y D(II)</strong></div>
+        </div>
+      </div>
+
+      <div class="measure">
+        <div class="mh"><b>Compás 2</b><span class="badge">A(VI)m 2T + G(V) 2T</span>
+          <button class="btn pri" data-play="v2">▶ Tocar compás 2</button></div>
+        <div class="beat-grid">
+          <div class="beat-cell"><div class="bc-t">Tiempos 1 y 2 · A(VI)m</div>
+            LH arpegia: <strong>A(VI) → E(III) → A(VI)</strong><br>RH sostiene: <strong>E(III) y C(I)</strong></div>
+          <div class="beat-cell"><div class="bc-t">Tiempos 3 y 4 · G(V) mayor</div>
+            LH arpegia: <strong>G(V) → D(II) → G(V)</strong><br>RH sostiene: <strong>D(II) y B(VII)</strong></div>
+        </div>
+      </div>
+
+      <div class="measure">
+        <div class="mh"><b>Compás 3</b><span class="badge">F(IV) 4T · con adorno rítmico</span>
+          <button class="btn pri" data-play="v3">▶ Tocar compás 3</button></div>
+        <div class="beat-grid">
+          <div class="beat-cell"><div class="bc-t">Tiempos 1 y 2 · F(IV) mayor</div>
+            LH arpegia: <strong>F(IV) → C(I) → F(IV)</strong><br>mientras RH sostiene <strong>C(I) y A(VI)</strong>.</div>
+          <div class="beat-cell"><div class="bc-t">Tiempos 3 y 4 · Relleno melódico</div>
+            LH realiza un <strong>relleno melódico ascendente</strong> tocando las notas <strong>G(V) y A(VI)</strong>
+            para conectar con el siguiente compás.</div>
+        </div>
+      </div>
+
+      <div class="measure">
+        <div class="mh"><b>Compás 4</b><span class="badge">G(V)sus4 2T → G(V) 2T</span>
+          <button class="btn pri" data-play="v4">▶ Tocar compás 4</button></div>
+        <div class="beat-grid">
+          <div class="beat-cell"><div class="bc-t">Tiempos 1 y 2 · G(V)sus4</div>
+            LH toca: <strong>Octavas de G(V)</strong> (G(V) grave y G(V) agudo).<br>
+            RH toca: <strong>C(I) - D(II) - G(V)</strong>.</div>
+          <div class="beat-cell"><div class="bc-t">Tiempos 3 y 4 · Resolución a G(V) mayor</div>
+            LH mantiene: <strong>Octavas de G(V)</strong>.<br>
+            RH cambia <strong>únicamente la nota C(I) por la nota B(VII)</strong>, formando <strong>B(VII) - D(II) - G(V)</strong>.</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn pur" data-play="vfull">🎬 Tocar la estrofa completa</button>
+        <div class="tempo-box" style="flex:0 1 260px">
+          <label for="bpm3">Tempo:</label>
+          <input type="range" id="bpm3" min="40" max="120" step="1" value="60">
+          <output id="bpm3out">60 BPM</output>
+        </div>
+      </div>
+      <div id="kb-song" class="kb-shell" style="margin-top:14px"></div>
+    </div>
+
+    <!-- CORO -->
+    <div class="tabpane" id="tab-coro">
+      <div class="callout info">
+        <div class="ct">🎼 PROGRESIÓN ARMÓNICA DEL CORO</div>
+        <p class="combo-line" style="margin:0">| C(I) | G(V)/B(VII) | F(IV)/A(VI) | C(I)/E(III) | F(IV) | C(I)/E(III) | D(II)m | G(V)sus4 - G(V) |</p>
+      </div>
+      <h4 class="mini">Embellecimientos y técnicas avanzadas aplicadas al coro</h4>
+
+      <div class="acc open">
+        <button type="button" aria-expanded="true"><span>1 · Reemplazo armónico por F(IV)/A(VI)</span><span class="ar">▶</span></button>
+        <div class="body"><div class="body-in">
+          <p>En lugar de repetir A(VI)m, tocamos <strong>F(IV) con bajo en A(VI)</strong>.</p>
+          <div class="hand-row">
+            <div class="hand-box lh"><div class="hb-t">Mano Izquierda</div>
+              <div class="note-pills"><span class="np amber">A(VI)</span><span class="np amber">F(IV)</span><span class="np amber">A(VI)</span></div></div>
+            <div class="hand-box rh"><div class="hb-t">Mano Derecha</div>
+              <div class="note-pills"><span class="np cyan">F(IV)</span><span class="np cyan">G(V)</span><span class="np cyan">C(I)</span></div></div>
+          </div>
+          <p>Tocamos F(IV) y C(I), <strong>agregando la nota G(V) en el medio</strong> (F(IV) - G(V) - C(I)).
+          Esto aporta una <strong>novena agregada</strong> que brinda <strong>calidez cinematográfica</strong>.</p>
+          <button class="btn grn" data-play="c_fa">🔊 Escuchar F(IV)/A(VI) enriquecido</button>
+        </div></div>
+      </div>
+
+      <div class="acc">
+        <button type="button" aria-expanded="false"><span>2 · C(I)/E(III) enriquecido</span><span class="ar">▶</span></button>
+        <div class="body"><div class="body-in">
+          <div class="hand-row">
+            <div class="hand-box lh"><div class="hb-t">Mano Izquierda</div>
+              <div class="note-pills"><span class="np amber">E(III)</span><span class="np amber">C(I)</span><span class="np amber">E(III)</span></div></div>
+            <div class="hand-box rh"><div class="hb-t">Mano Derecha</div>
+              <div class="note-pills"><span class="np cyan">C(I)</span><span class="np cyan">D(II)</span><span class="np cyan">G(V)</span></div></div>
+          </div>
+          <p>Agregamos la nota <strong>D(II)</strong> entre C(I) y G(V) formando <strong>C(I) - D(II) - G(V)</strong>.</p>
+          <button class="btn grn" data-play="c_ce">🔊 Escuchar C(I)/E(III) enriquecido</button>
+        </div></div>
+      </div>
+
+      <div class="acc">
+        <button type="button" aria-expanded="false"><span>3 · Transición por nota pedal fija entre F(IV) y C(I)/E(III)</span><span class="ar">▶</span></button>
+        <div class="body"><div class="body-in">
+          <ul class="steps">
+            <li>Al pasar de <strong>F(IV)</strong> a <strong>C(I)/E(III)</strong>, mantén la nota <strong>C(I) fija en la mano derecha</strong>.</li>
+            <li>En la mano izquierda, simplemente <strong>desciende las octavas de F(IV) a las octavas de E(III)</strong>,
+            creando una <strong>conducción de voces sumamente suave</strong>.</li>
+          </ul>
+          <div class="callout ok">
+            <div class="ct">✅ RESULTADO</div>
+            <p>La nota pedal <strong>C(I)</strong> actúa como eje común: el oído percibe un cambio armónico fluido, sin saltos.</p>
+          </div>
+          <button class="btn grn" data-play="c_pedal">🔊 Escuchar F(IV) → C(I)/E(III) con pedal de C(I)</button>
+        </div></div>
+      </div>
+
+      <div class="acc">
+        <button type="button" aria-expanded="false"><span>4 · Cierre del coro</span><span class="ar">▶</span></button>
+        <div class="body"><div class="body-in">
+          <div class="hand-row">
+            <div class="hand-box lh"><div class="hb-t">D(II)m · Mano Izquierda</div>
+              <div class="note-pills"><span class="np amber">D(II)</span><span class="np amber">A(VI)</span><span class="np amber">D(II)</span></div></div>
+            <div class="hand-box rh"><div class="hb-t">D(II)m · Mano Derecha</div>
+              <div class="note-pills"><span class="np cyan">A(VI)</span><span class="np cyan">F(IV)</span></div></div>
+          </div>
+          <p><strong>Cadencia final:</strong> G(V)sus4 resolviendo a G(V) mayor para <strong>reiniciar la balada</strong>.</p>
+          <button class="btn grn" data-play="c_cierre">🔊 Escuchar D(II)m → G(V)sus4 → G(V)</button>
+        </div></div>
+      </div>
+
+      <div class="btn-row" style="margin-top:14px">
+        <button class="btn pur" data-play="cfull">🎬 Tocar el coro completo</button>
+        <div class="tempo-box" style="flex:0 1 260px">
+          <label for="bpm4">Tempo:</label>
+          <input type="range" id="bpm4" min="40" max="120" step="1" value="60">
+          <output id="bpm4out">60 BPM</output>
+        </div>
+      </div>
+      <div id="kb-coro" class="kb-shell" style="margin-top:14px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 6. TABLA ============================ -->
+<section id="tabla" class="view" aria-label="Tabla resumen de posiciones">
+  <div class="card card-glow">
+    <div class="sec-head">
+      <div class="sec-ico">📊</div>
+      <div>
+        <h2>6 · Tabla resumen de posiciones</h2>
+        <p>Las 9 configuraciones completas de Mano Izquierda (LH) y Mano Derecha (RH).</p>
+      </div>
+    </div>
+    <p style="color:var(--txt-dim)">Pulsa cualquier fila para <strong>resaltarla en el teclado y escuchar su arpegio</strong>.</p>
+    <div class="table-wrap">
+      <table id="tblPos">
+        <thead><tr><th>Acorde</th><th>Mano Izquierda (LH)</th><th>Mano Derecha (RH)</th><th>Acción</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="kb-table" class="kb-shell" style="margin-top:16px"></div>
+    <div class="kb-controls">
+      <div class="ctl-line">
+        <button class="btn pri" id="tblPlay">🔊 Escuchar fila seleccionada</button>
+        <button class="btn pur" id="tblPlayAll">🎬 Recorrer toda la tabla</button>
+        <div class="tempo-box" style="flex:0 1 260px">
+          <label for="bpm5">Tempo:</label>
+          <input type="range" id="bpm5" min="40" max="120" step="1" value="60">
+          <output id="bpm5out">60 BPM</output>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ 7. PRÁCTICA ============================ -->
+<section id="practica" class="view" aria-label="Consejos de práctica y adornos finales">
+  <div class="card card-glow">
+    <div class="sec-head">
+      <div class="sec-ico">🧭</div>
+      <div>
+        <h2>7 · Consejos de práctica y adornos finales</h2>
+        <p>Tres pilares para consolidar el acompañamiento y darle acabado profesional.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge">Consejo 1</span>
+    <h4 class="mini">Estudio a tempo lento</h4>
+    <p>Usa un <strong>metrónomo a 55 o 60 BPM</strong>. Marca primero los acordes <strong>en bloque a 2 tiempos</strong>
+    para consolidar la posición de los dedos <strong>antes</strong> de ejecutar el arpegio continuo.</p>
+    <div class="metro">
+      <div class="pendulum"><div class="pend-arm" id="pendArm"></div><div class="pend-base"></div></div>
+      <div>
+        <div class="beat-dots" id="metDots">
+          <div class="bd">1</div><div class="bd">2</div><div class="bd">3</div><div class="bd">4</div>
+        </div>
+        <div class="ctl-line" style="margin-top:12px">
+          <button class="btn pri" id="metBtn">▶ Iniciar metrónomo</button>
+          <div class="tempo-box" style="flex:0 1 250px">
+            <label for="metBpm">BPM:</label>
+            <input type="range" id="metBpm" min="40" max="120" step="1" value="60">
+            <output id="metBpmOut">60 BPM</output>
+          </div>
+          <button class="btn" data-met="55">55</button>
+          <button class="btn" data-met="60">60</button>
+        </div>
+        <div class="ctl-line">
+          <button class="btn" id="metBlock">🎹 Acordes en bloque (2 tiempos)</button>
+          <button class="btn" id="metArp">🎹 Arpegio continuo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge a">Consejo 2</span>
+    <h4 class="mini">Coordinación del pedal de sustain</h4>
+    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+      <div class="pedal-vis" id="pedalVis"><div class="pedal-bar"></div></div>
+      <div style="flex:1 1 260px">
+        <p><strong>Limpia y renueva el pedal exactamente en el Tiempo 1 de cada cambio de acorde</strong>,
+        justo al pulsar la nota grave con el <strong>Dedo 5 de la mano izquierda</strong>.
+        Así evitarás que se mezclen las armonías.</p>
+        <button class="btn pri" id="pedalDemo">▶ Demo: cambio de acorde + pedal</button>
+      </div>
+    </div>
+    <div class="callout warn" style="margin-bottom:0">
+      <div class="ct">⚠️ ADVERTENCIA</div>
+      <p>Si el pedal no se renueva en el Tiempo 1, las armonías anteriores se <strong>mezclan</strong> con la nueva
+      y el acompañamiento pierde claridad, volviéndose turbio.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge p">Consejo 3</span>
+    <h4 class="mini">El adorno melódico superior</h4>
+    <p>Una vez que domines la fluidez rítmica, puedes <strong>pulsar la nota superior de la mano derecha</strong>
+    (por ejemplo, el <strong>E(III) agudo en C(I)</strong> o el <strong>D(II) en G(V)/B(VII)</strong>)
+    <strong>justo después de que la mano izquierda termine su arpegio</strong>.
+    Esto añade un <strong>eco melódico delicado y muy profesional</strong>.</p>
+    <div class="btn-row">
+      <button class="btn grn" id="adorno1">🔊 Adorno sobre C(I) — eco de E(III)</button>
+      <button class="btn grn" id="adorno2">🔊 Adorno sobre G(V)/B(VII) — eco de D(II)</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4 class="mini">📚 Fuentes del documento original</h4>
+    <p style="margin-bottom:8px">Videografía de referencia citada en el material fuente:</p>
+    <div class="callout info" style="margin-bottom:0">
+      <div class="ct">🔗 ENLACE</div>
+      <p style="margin:0">
+        <strong>Tutorial en vídeo — Arpegios y acordes abiertos para piano de balada</strong><br>
+        <a href="https://youtube.com/watch?v=qSitj20ohoY&amp;is=Bg-ck574zRgVke9B" target="_blank" rel="noopener noreferrer">
+          https://youtube.com/watch?v=qSitj20ohoY&amp;is=Bg-ck574zRgVke9B
+        </a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CRÉDITOS ============================ -->
+<section id="creditos" class="view" aria-label="Créditos">
+  <div class="cover-box" id="cover-credits"></div>
+  <div class="card credit-card card-glow">
+    <span class="badge p">Créditos y autoría</span>
+    <div class="who">Rubén Sbarsky</div>
+    <div class="role">Autor del método · Arreglos y didáctica para piano de balada</div>
+    <h2 style="margin-top:18px;font-size:clamp(1.2rem,4vw,1.7rem);color:#eaf6ff">
+      Arpegios y Acordes Abiertos para Piano de Balada
+    </h2>
+    <p style="color:var(--txt-dim);max-width:760px;margin:0 auto">
+      Tutorial interactivo, educativo y autónomo · Tonalidad de trabajo C(I) mayor ·
+      Nomenclatura americana con grados de la escala · Nivel principiante a intermedio.
+    </p>
+    <div class="dt-box" style="justify-content:center">
+      <div class="dt-pill">📅 FECHA: <b>10/09/2026</b></div>
+      <div class="dt-pill">🕒 Hora: <b>11:59:08</b></div>
+      <div class="dt-pill">🎹 Versión: <b>2</b></div>
+    </div>
+    <div class="callout info" style="max-width:760px;margin:20px auto 0;text-align:left">
+      <div class="ct">🎓 INDICACIÓN EDUCATIVA</div>
+      <p>Este material tiene una finalidad <strong>exclusivamente educativa y divulgativa</strong>.
+      Está diseñado para que el estudiante comprenda, escuche y reproduzca cada posición sobre el teclado,
+      avanzando paso a paso desde el concepto de acorde cerrado hasta el acompañamiento completo de una balada.</p>
+    </div>
+    <div class="latin">Fiat iustitia, ruat caelum.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="fl">📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div class="fl">👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div class="fl">📅 FECHA: 10/09/2026</div>
+  <div class="fl">Hora: 11:59:08</div>
+  <div class="lat">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+<script>
+"use strict";
+/* ============================================================
+   0. UTILIDADES MUSICALES
+   ============================================================ */
+var PCN={0:'C',1:'C#',2:'D',3:'D#',4:'E',5:'F',6:'F#',7:'G',8:'G#',9:'A',10:'A#',11:'B'};
+var DEG={0:'I',2:'II',4:'III',5:'IV',7:'V',9:'VI',11:'VII'};
+function nName(m){return PCN[((m%12)+12)%12]+(Math.floor(m/12)-1);}
+function nDeg(m){
+  var pc=((m%12)+12)%12;
+  if(pc===6) return 'F#(IV#)';
+  if(DEG[pc]) return PCN[pc]+'('+DEG[pc]+')';
+  return PCN[pc]+'(—)';
+}
+function nLabel(m){return nDeg(m)+' · '+nName(m);}
+function freq(m){return 440*Math.pow(2,(m-69)/12);}
+
+/* ============================================================
+   1. MOTOR DE AUDIO (Web Audio API · sin recursos externos)
+   ============================================================ */
+var AC=null, MASTER=null;
+function ac(){
+  if(!AC){
+    var Ctx=window.AudioContext||window.webkitAudioContext;
+    if(!Ctx) return null;
+    AC=new Ctx();
+    MASTER=AC.createGain(); MASTER.gain.value=0.85;
+    var lp=AC.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=5200;
+    MASTER.connect(lp); lp.connect(AC.destination);
+  }
+  if(AC.state==='suspended') AC.resume();
+  return AC;
+}
+function noteOn(midi,t,dur,vol){
+  var c=ac(); if(!c) return;
+  vol=(vol==null?0.22:vol);
+  var f=freq(midi);
+  var g=c.createGain();
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.linearRampToValueAtTime(vol,t+0.014);
+  g.gain.exponentialRampToValueAtTime(0.0009,t+Math.max(0.15,dur));
+  var o1=c.createOscillator(); o1.type='triangle'; o1.frequency.value=f;
+  var o2=c.createOscillator(); o2.type='sine'; o2.frequency.value=f*2.0;
+  var o3=c.createOscillator(); o3.type='sine'; o3.frequency.value=f*3.01;
+  var g2=c.createGain(); g2.gain.value=0.28;
+  var g3=c.createGain(); g3.gain.value=0.08;
+  o1.connect(g); o2.connect(g2); g2.connect(g); o3.connect(g3); g3.connect(g);
+  g.connect(MASTER);
+  o1.start(t); o2.start(t); o3.start(t);
+  o1.stop(t+dur+0.08); o2.stop(t+dur+0.08); o3.stop(t+dur+0.08);
+}
+function clickOn(t,accent){
+  var c=ac(); if(!c) return;
+  var o=c.createOscillator(), g=c.createGain();
+  o.type='square'; o.frequency.value=accent?1600:1050;
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.linearRampToValueAtTime(accent?0.20:0.11,t+0.004);
+  g.gain.exponentialRampToValueAtTime(0.0008,t+0.06);
+  o.connect(g); g.connect(MASTER); o.start(t); o.stop(t+0.09);
+}
+
+/* ============================================================
+   2. DATOS: LAS 9 POSICIONES / ACORDES DEL MÉTODO
+   ============================================================ */
+var CH={
+  C:   {nombre:'C(I) mayor (Abierto)',        cif:'C(I)',        lh:[48,55,60], rh:[67,76],
+        lhn:['C(I)','G(V)','C(I)'],           rhn:['G(V)','E(III)']},
+  GB:  {nombre:'G(V) con bajo en B(VII)',     cif:'G(V)/B(VII)', lh:[47,55,59], rh:[67,74],
+        lhn:['B(VII)','G(V)','B(VII)'],       rhn:['G(V)','D(II)']},
+  Am:  {nombre:'A(VI) menor (Abierto)',       cif:'A(VI)m',      lh:[45,52,57], rh:[64,72],
+        lhn:['A(VI)','E(III)','A(VI)'],       rhn:['E(III)','C(I)']},
+  G:   {nombre:'G(V) mayor (Abierto)',        cif:'G(V)',        lh:[43,50,55], rh:[62,71],
+        lhn:['G(V)','D(II)','G(V)'],          rhn:['D(II)','B(VII)']},
+  F:   {nombre:'F(IV) mayor (Abierto)',       cif:'F(IV)',       lh:[41,48,53], rh:[60,69],
+        lhn:['F(IV)','C(I)','F(IV)'],         rhn:['C(I)','A(VI)']},
+  CE:  {nombre:'C(I) con bajo en E(III)',     cif:'C(I)/E(III)', lh:[40,48,52], rh:[60,67],
+        lhn:['E(III)','C(I)','E(III)'],       rhn:['C(I)','G(V)']},
+  Dm:  {nombre:'D(II) menor (Abierto)',       cif:'D(II)m',      lh:[38,45,50], rh:[69,77],
+        lhn:['D(II)','A(VI)','D(II)'],        rhn:['A(VI)','F(IV)']},
+  FA:  {nombre:'F(IV) con bajo en A(VI)',     cif:'F(IV)/A(VI)', lh:[45,53,57], rh:[65,67,72],
+        lhn:['A(VI)','F(IV)','A(VI)'],        rhn:['F(IV)','G(V)','C(I)']},
+  Gs4: {nombre:'G(V)sus4',                    cif:'G(V)sus4',    lh:[43,55,43], rh:[60,62,67],
+        lhn:['G(V)','G(V) (octava)','G(V)'],  rhn:['C(I)','D(II)','G(V)']},
+  Gres:{nombre:'G(V) mayor (resolución sus4)',cif:'G(V)',        lh:[43,55,43], rh:[59,62,67],
+        lhn:['G(V)','G(V) (octava)','G(V)'],  rhn:['B(VII)','D(II)','G(V)']},
+  CEr: {nombre:'C(I)/E(III) enriquecido',     cif:'C(I)/E(III)', lh:[40,48,52], rh:[60,62,67],
+        lhn:['E(III)','C(I)','E(III)'],       rhn:['C(I)','D(II)','G(V)']}
+};
+
+var POS=[
+ {n:1,id:'C',titulo:'PASO 1 · Acorde de C(I) mayor (Abierto)',
+  rhT:'Coloca la 2.ª inversión de C(I) mayor: G(V) - C(I) - E(III). Retira la nota central C(I). Te queda el bicordio G(V) y E(III).',
+  lhT:'Toma el C(I) que retiraste y construye el arpegio C(I) - G(V) - C(I).',
+  combo:'LH: C(I) - G(V) - C(I) | RH: G(V) - E(III).',
+  regla:'Regla de la 2.ª inversión: la nota central retirada (C(I)) viaja al bajo de la mano izquierda.'},
+ {n:2,id:'GB',titulo:'PASO 2 · Acorde de G(V) con bajo en B(VII) [G(V)/B(VII)]',
+  extra:'* Reemplaza al acorde disminuido de B(VII) (B(VII) - D(II) - F(IV)) subiendo F(IV) a G(V) para obtener una sonoridad dulce de balada.',
+  rhT:'Coloca la posición fundamental de G(V) mayor: G(V) - B(VII) - D(II). Retira la nota central B(VII). Te queda el bicordio G(V) y D(II).',
+  lhT:'El B(VII) retirado va al bajo. Tocamos B(VII) - G(V) - B(VII).',
+  combo:'LH: B(VII) - G(V) - B(VII) | RH: G(V) - D(II).',
+  regla:'Atención: NO aplicar la fórmula ciega 1-5-8 sobre B(VII) (daría B - F# - B, choque grave).'},
+ {n:3,id:'Am',titulo:'PASO 3 · Acorde de A(VI) menor [A(VI)m] (Abierto)',
+  rhT:'Coloca la 2.ª inversión de A(VI)m: E(III) - A(VI) - C(I). Retira la nota central A(VI). Te queda el bicordio E(III) y C(I).',
+  lhT:'El A(VI) retirado va al bajo. Tocamos A(VI) - E(III) - A(VI).',
+  combo:'LH: A(VI) - E(III) - A(VI) | RH: E(III) - C(I).',
+  regla:'El bajo desciende un grado: B(VII) → A(VI).'},
+ {n:4,id:'G',titulo:'PASO 4 · Acorde de G(V) mayor (Abierto)',
+  rhT:'Coloca la 2.ª inversión de G(V) mayor: D(II) - G(V) - B(VII). Retira la nota central G(V). Te queda el bicordio D(II) y B(VII).',
+  lhT:'El G(V) retirado va al bajo. Tocamos G(V) - D(II) - G(V).',
+  combo:'LH: G(V) - D(II) - G(V) | RH: D(II) - B(VII).',
+  regla:'Aquí el bajo sí es la tónica del acorde (G), por lo que la fórmula 1-5-8 es legítima.'},
+ {n:5,id:'F',titulo:'PASO 5 · Acorde de F(IV) mayor (Abierto)',
+  rhT:'Coloca la 2.ª inversión de F(IV) mayor: C(I) - F(IV) - A(VI). Retira la nota central F(IV). Te queda el bicordio C(I) y A(VI).',
+  lhT:'El F(IV) retirado va al bajo. Tocamos F(IV) - C(I) - F(IV).',
+  combo:'LH: F(IV) - C(I) - F(IV) | RH: C(I) - A(VI).',
+  regla:'El bajo continúa descendiendo: G(V) → F(IV).'},
+ {n:6,id:'CE',titulo:'PASO 6 · Acorde de C(I) con bajo en E(III) [C(I)/E(III)]',
+  rhT:'Coloca la posición fundamental de C(I) mayor: C(I) - E(III) - G(V). Retira la nota central E(III). Te queda el bicordio C(I) y G(V).',
+  lhT:'El E(III) retirado va al bajo. Tocamos E(III) - C(I) - E(III).',
+  combo:'LH: E(III) - C(I) - E(III) | RH: C(I) - G(V).',
+  regla:'Atención: NO tocar E - B - E. La nota B(VII) choca contra la identidad de C(I) mayor.'},
+ {n:7,id:'Dm',titulo:'PASO 7 · Acorde de D(II) menor [D(II)m] (Abierto)',
+  rhT:'Coloca la 2.ª inversión de D(II)m: A(VI) - D(II) - F(IV). Retira la nota central D(II). Te queda el bicordio A(VI) y F(IV).',
+  lhT:'El D(II) retirado va al bajo. Tocamos D(II) - A(VI) - D(II).',
+  combo:'LH: D(II) - A(VI) - D(II) | RH: A(VI) - F(IV).',
+  regla:'Último grado del descenso antes de resolver.'},
+ {n:8,id:'C',titulo:'PASO 8 · Resolución en C(I) mayor',
+  rhT:'Regresamos a la posición abierta del Paso 1.',
+  lhT:'La mano izquierda retoma el arpegio C(I) - G(V) - C(I).',
+  combo:'LH: C(I) - G(V) - C(I) | RH: G(V) - E(III).',
+  regla:'El descenso D(II) → C(I) cierra el recorrido y resuelve en la tónica.'}
+];
+
+/* ============================================================
+   3. TECLADOS INTERACTIVOS
+   ============================================================ */
+var KBS={};
+function buildKeyboard(hostId,opts){
+  opts=opts||{};
+  var host=document.getElementById(hostId);
+  if(!host) return null;
+  var START=opts.start||36, END=opts.end||84;
+  var legend=opts.legend===false?'':
+   '<div class="kb-legend">'+
+   '<span><i style="background:linear-gradient(180deg,#ffe6b0,#f0b95c)"></i>Mano Izquierda (LH)</span>'+
+   '<span><i style="background:linear-gradient(180deg,#c8f6ff,#6fd6f2)"></i>Mano Derecha (RH)</span>'+
+   '<span><i style="background:linear-gradient(180deg,#ffc9c9,#f08080)"></i>Error / disonancia</span>'+
+   '<span><i style="background:linear-gradient(180deg,#c9f7d6,#77dd96)"></i>Solución correcta</span>'+
+   '<span>Pulsa cualquier tecla para escucharla</span></div>';
+  var html='<div class="kb-scroll"><div class="kb"><div class="kb-blacks"></div></div></div>'+
+           '<div class="kb-hint">↔ Desliza el teclado horizontalmente para ver todas las octavas</div>'+legend;
+  host.innerHTML=html;
+  var kb=host.querySelector('.kb'), bl=host.querySelector('.kb-blacks');
+  var whites=[],m;
+  for(m=START;m<=END;m++){ if([0,2,4,5,7,9,11].indexOf(((m%12)+12)%12)>=0) whites.push(m); }
+  var wPct=100/whites.length;
+  whites.forEach(function(mm,i){
+    var d=document.createElement('div');
+    d.className='kw'; d.dataset.midi=mm; d.title=nLabel(mm);
+    d.setAttribute('role','button'); d.setAttribute('aria-label',nLabel(mm));
+    d.innerHTML='<span>'+nName(mm)+'</span>';
+    kb.insertBefore(d,bl);
+  });
+  var bw=wPct*0.62;
+  whites.forEach(function(mm,i){
+    var pc=((mm%12)+12)%12;
+    if([0,2,7,9].indexOf(pc)>=0 && i<whites.length-1){
+      var b=document.createElement('div');
+      b.className='kbk'; b.dataset.midi=(mm+1); b.title=nLabel(mm+1);
+      b.setAttribute('role','button'); b.setAttribute('aria-label',nLabel(mm+1));
+      b.style.width=bw+'%';
+      b.style.left=((i+1)*wPct-bw/2)+'%';
+      bl.appendChild(b);
+    }
+  });
+  var api={
+    host:host, kb:kb,
+    el:function(midi){ return kb.querySelector('[data-midi="'+midi+'"]'); },
+    clear:function(){ Array.prototype.forEach.call(kb.querySelectorAll('[data-midi]'),function(e){
+      e.classList.remove('k-lh','k-rh','k-err','k-ok','k-on'); }); },
+    mark:function(list,cls){ var self=this; (list||[]).forEach(function(mm){ var e=self.el(mm); if(e) e.classList.add(cls); }); },
+    flash:function(midi,ms){ var e=this.el(midi); if(!e) return; e.classList.add('k-on');
+      setTimeout(function(){ e.classList.remove('k-on'); }, ms||170); },
+    show:function(ch,mode){
+      this.clear();
+      this.mark(ch.lh,'lh'); this.mark(ch.rh,'rh');
+      if(mode==='err'){ this.clear(); this.mark(ch.lh,'err'); this.mark(ch.rh,'rh'); }
+      if(mode==='ok'){ this.clear(); this.mark(ch.lh,'ok'); this.mark(ch.rh,'rh'); }
+    }
+  };
+  kb.addEventListener('pointerdown',function(ev){
+    var t=ev.target.closest('[data-midi]'); if(!t) return;
+    var mm=parseInt(t.dataset.midi,10);
+    var c=ac(); if(c) noteOn(mm,c.currentTime,1.1,0.24);
+    api.flash(mm,180);
+  });
+  KBS[hostId]=api;
+  return api;
+}
+
+/* ============================================================
+   4. GENERADOR DE EVENTOS Y REPRODUCTOR
+   ============================================================ */
+function chordEvents(ch,startBeat,beats,volScale){
+  var ev=[],t=startBeat,end=startBeat+beats,vs=volScale||1;
+  while(t<end-0.001){
+    ev.push({beat:t,midi:ch.lh[0],dur:1.85,vol:0.26*vs,hand:'lh'});
+    ch.rh.forEach(function(mm,i){ ev.push({beat:t,midi:mm,dur:1.95,vol:(i===0?0.20:0.17)*vs,hand:'rh'}); });
+    ev.push({beat:t+0.5,midi:ch.lh[1],dur:1.45,vol:0.23*vs,hand:'lh'});
+    ev.push({beat:t+1.0,midi:ch.lh[2],dur:1.65,vol:0.23*vs,hand:'lh'});
+    t+=2;
+  }
+  return ev;
+}
+function playEvents(evs,bpm,kb,onEv){
+  var c=ac(); if(!c||!evs.length) return 0;
+  var spb=60/bpm, t0=c.currentTime+0.12, last=0;
+  evs.forEach(function(e){
+    var when=t0+e.beat*spb;
+    noteOn(e.midi,when,e.dur*spb,e.vol);
+    var d=Math.max(0,(when-c.currentTime)*1000);
+    setTimeout(function(){ if(kb) kb.flash(e.midi,180); if(onEv) onEv(e); },d);
+    last=Math.max(last,e.beat+e.dur*0.6);
+  });
+  return last*spb*1000;
+}
+
+/* ============================================================
+   5. SVG DE PORTADA (idéntico en HOME y CRÉDITOS)
+   ============================================================ */
+function coverSVG(u){
+  var s='';
+  /* --- teclado inferior: 18 teclas blancas --- */
+  var KX=200,KW=1200,KY=662,KH=186,NW=18,w=KW/NW;
+  var pressMap={0:'cv-k1 cv-f1',4:'cv-k2 cv-f2',7:'cv-k3 cv-f3',6:'cv-k4 cv-f4',11:'cv-k5 cv-f5',13:'cv-k6 cv-f6'};
+  var names=['C','D','E','F','G','A','B','C','D','E','F','G','A','B','C','D','E','F'];
+  var keys='';
+  for(var i=0;i<NW;i++){
+    var x=KX+i*w;
+    keys+='<rect class="cv-key '+(pressMap[i]||'')+'" x="'+x.toFixed(2)+'" y="'+KY+'" width="'+(w-3).toFixed(2)+'" height="'+KH+'" rx="7" fill="#f2f6fa" stroke="#8fa3b8" stroke-width="1.5"/>';
+    keys+='<text x="'+(x+w/2).toFixed(2)+'" y="'+(KY+KH-14)+'" text-anchor="middle" class="cv-t-key">'+names[i]+'</text>';
+  }
+  var blacks='';
+  var bIdx=[0,1,3,4,5,7,8,10,11,12,14,15,17];
+  bIdx.forEach(function(k){
+    if(k>=NW-1) return;
+    var bx=KX+(k+1)*w-0.31*w;
+    blacks+='<rect x="'+bx.toFixed(2)+'" y="'+KY+'" width="'+(0.62*w).toFixed(2)+'" height="'+(KH*0.6).toFixed(2)+'" rx="5" fill="#101a28" stroke="#05080d"/>';
+  });
+  /* overlays de mano derecha (sostenidos) */
+  var holds='';
+  function ov(idx,cls){
+    var x=KX+idx*w;
+    return '<rect class="'+cls+'" x="'+x.toFixed(2)+'" y="'+KY+'" width="'+(w-3).toFixed(2)+'" height="'+KH+'" rx="7" fill="#00d4ff" opacity="0" style="mix-blend-mode:screen"/>';
+  }
+  holds+=ov(11,'cv-hold1')+ov(16,'cv-hold1')+ov(11,'cv-hold2')+ov(15,'cv-hold2');
+  /* etiquetas de línea de bajo descendente */
+  var bass=['C(I)','B(VII)','A(VI)','G(V)','F(IV)','E(III)','D(II)','C(I)'],bassG='';
+  for(var b=0;b<8;b++){
+    var bx2=380+b*118, by2=556+b*5.5;
+    bassG+='<line x1="'+bx2+'" y1="'+by2+'" x2="'+(bx2+118)+'" y2="'+(by2+5.5)+'" stroke="#1e3a5f" stroke-width="2"/>';
+  }
+  for(b=0;b<8;b++){
+    var cx2=380+b*118, cy2=556+b*5.5;
+    bassG+='<g class="cv-bass" style="animation-delay:'+(b*0.5)+'s">';
+    bassG+='<circle cx="'+cx2+'" cy="'+cy2+'" r="15" fill="#0f172a" stroke="#a855f7" stroke-width="2.5"/>';
+    bassG+='<circle cx="'+cx2+'" cy="'+cy2+'" r="6" fill="#a855f7"/>';
+    bassG+='<text x="'+cx2+'" y="'+(cy2-24)+'" text-anchor="middle" class="cv-t-l" style="fill:#d8b4fe;font-size:15px">'+bass[b]+'</text>';
+    bassG+='<text x="'+cx2+'" y="'+(cy2+34)+'" text-anchor="middle" class="cv-t-mini" style="font-size:12px">PASO '+(b+1)+'</text>';
+    bassG+='</g>';
+  }
+  /* notas ascendentes */
+  var risers='';
+  var notes=[{g:'♪',p:'M300 640 C 260 520, 340 430, 300 320',d:'7s',b:'0s',c:'#00d4ff'},
+             {g:'♫',p:'M1300 640 C 1360 520, 1260 430, 1320 320',d:'8.5s',b:'1.2s',c:'#a855f7'},
+             {g:'♩',p:'M760 650 C 720 560, 820 480, 770 380',d:'9.5s',b:'2.4s',c:'#22c55e'},
+             {g:'♪',p:'M1080 650 C 1140 560, 1020 480, 1090 380',d:'8s',b:'3.6s',c:'#f59e0b'}];
+  notes.forEach(function(nn){
+    risers+='<text font-size="34" fill="'+nn.c+'" opacity="0">'+nn.g+
+      '<animateMotion path="'+nn.p+'" dur="'+nn.d+'" begin="'+nn.b+'" repeatCount="indefinite"/>'+
+      '<animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.15;0.7;1" dur="'+nn.d+'" begin="'+nn.b+'" repeatCount="indefinite"/>'+
+      '</text>';
+  });
+
+  s+='<svg viewBox="0 0 1600 900" class="cover-svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Portada animada: transformación de un acorde cerrado en acorde abierto sobre un teclado de piano, con arpegio C(I) - G(V) - C(I) en la mano izquierda y bicordio G(V) - E(III) en la derecha">';
+  s+='<defs>';
+  s+='<linearGradient id="bg'+u+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a0e1a"/><stop offset=".5" stop-color="#101c31"/><stop offset="1" stop-color="#080c16"/></linearGradient>';
+  s+='<radialGradient id="gl'+u+'"><stop offset="0" stop-color="#00d4ff" stop-opacity=".5"/><stop offset="1" stop-color="#00d4ff" stop-opacity="0"/></radialGradient>';
+  s+='<radialGradient id="gl2'+u+'"><stop offset="0" stop-color="#a855f7" stop-opacity=".45"/><stop offset="1" stop-color="#a855f7" stop-opacity="0"/></radialGradient>';
+  s+='<pattern id="gr'+u+'" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#1e3a5f" stroke-width="1" opacity=".35"/></pattern>';
+  s+='<filter id="bl'+u+'" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="9"/></filter>';
+  s+='</defs>';
+  s+='<rect width="1600" height="900" fill="url(#bg'+u+')"/>';
+  s+='<rect width="1600" height="900" fill="url(#gr'+u+')"/>';
+  s+='<ellipse cx="430" cy="380" rx="420" ry="240" fill="url(#gl2'+u+')" class="cv-breathe"/>';
+  s+='<ellipse cx="1180" cy="380" rx="440" ry="250" fill="url(#gl'+u+')" class="cv-breathe"/>';
+
+  /* --- cabecera --- */
+  s+='<rect x="60" y="40" width="356" height="42" rx="21" fill="#0f172a" stroke="#1e3a5f"/>';
+  s+='<circle cx="88" cy="61" r="7" fill="#00d4ff" class="cv-blink"/>';
+  s+='<text x="106" y="68" class="cv-t-mini">TUTORIAL INTERACTIVO · PIANO DE BALADA</text>';
+  s+='<text x="60" y="140" class="cv-t-title">ARPEGIOS Y ACORDES ABIERTOS</text>';
+  s+='<text x="60" y="180" class="cv-t-sub">Open voicings + arpegios coordinados · Tonalidad C(I) mayor</text>';
+  /* compás 4/4 */
+  s+='<text x="1540" y="60" text-anchor="end" class="cv-t-mini">COMPÁS 4/4 · 2 TIEMPOS POR ACORDE</text>';
+  for(var q=0;q<4;q++){
+    s+='<circle class="cv-b'+(q+1)+'" cx="'+(1300+q*80)+'" cy="100" r="13" fill="#0f172a" stroke="#00d4ff" stroke-width="2.5"/>';
+    s+='<text x="'+(1300+q*80)+'" y="106" text-anchor="middle" class="cv-t-n" style="font-size:14px;fill:#7dd3fc">'+(q+1)+'</text>';
+  }
+  /* onda sonora */
+  s+='<path class="cv-wave" d="M60 620 Q 130 585 200 620 T 340 620 T 480 620 T 620 620 T 760 620 T 900 620 T 1040 620 T 1180 620 T 1320 620 T 1460 620 T 1600 620" fill="none" stroke="#00d4ff" stroke-width="3" opacity=".55"/>';
+  s+='<path class="cv-dash2" d="M60 634 Q 150 664 240 634 T 420 634 T 600 634 T 780 634 T 960 634 T 1140 634 T 1320 634 T 1500 634" fill="none" stroke="#a855f7" stroke-width="2" opacity=".4"/>';
+
+  /* --- panel izquierdo: acorde cerrado (2ª inversión) --- */
+  s+='<rect x="80" y="222" width="440" height="290" rx="16" fill="#0f172a" stroke="#1e3a5f" stroke-width="2" opacity=".95"/>';
+  s+='<text x="106" y="262" class="cv-t-h">ACORDE CERRADO</text>';
+  s+='<text x="106" y="290" class="cv-t-s">2.ª inversión en la mano derecha</text>';
+  var stack=[{y:336,t:'G(V)',s:'quinta'},{y:396,t:'C(I)',s:'nota central'},{y:456,t:'E(III)',s:'tercera'}];
+  s+='<path d="M160 320 L160 472" stroke="#f59e0b" stroke-width="3" opacity=".7"/>';
+  s+='<path d="M152 320 L168 320 M152 472 L168 472" stroke="#f59e0b" stroke-width="3" opacity=".7"/>';
+  s+='<text x="118" y="400" text-anchor="middle" class="cv-t-mini" style="fill:#fcd34d" transform="rotate(-90 118 400)">1 OCTAVA</text>';
+  stack.forEach(function(nn,k){
+    var isC=(k===1);
+    s+='<circle cx="238" cy="'+nn.y+'" r="30" fill="'+(isC?'#f59e0b':'#24425f')+'" stroke="'+(isC?'#fcd34d':'#3f6d99')+'" stroke-width="2.5" class="'+(isC?'cv-node':'')+'"/>';
+    s+='<text x="238" y="'+(nn.y+7)+'" text-anchor="middle" class="cv-t-n" style="font-size:19px;'+(isC?'':'fill:#cfe6ff')+'">'+nn.t.split('(')[0]+'</text>';
+    s+='<text x="286" y="'+(nn.y-2)+'" class="cv-t-l">'+nn.t+'</text>';
+    s+='<text x="286" y="'+(nn.y+18)+'" class="cv-t-mini">'+nn.s+'</text>';
+  });
+  s+='<text x="106" y="494" class="cv-t-s">G(V) - C(I) - E(III) · sonido compacto</text>';
+
+  /* --- flecha central + nota que viaja --- */
+  s+='<g class="cv-arrow">';
+  s+='<path d="M560 400 L700 400" stroke="#00d4ff" stroke-width="5" fill="none" class="cv-dash"/>';
+  s+='<path d="M694 384 L724 400 L694 416 Z" fill="#00d4ff"/>';
+  s+='</g>';
+  s+='<text x="642" y="368" text-anchor="middle" class="cv-t-mini" style="fill:#7dd3fc">RETIRAR C(I)</text>';
+  s+='<text x="642" y="440" text-anchor="middle" class="cv-t-mini" style="fill:#7dd3fc">Y ABRIR</text>';
+  s+='<g><circle r="26" fill="#f59e0b" stroke="#fff3d1" stroke-width="2" filter="url(#bl'+u+')" opacity=".9"/>';
+  s+='<circle r="24" fill="#f59e0b"/>';
+  s+='<text y="7" text-anchor="middle" class="cv-t-n" style="font-size:18px">C</text>';
+  s+='<animateMotion path="M238 396 C 480 396, 620 560, 940 470" dur="8s" repeatCount="indefinite" calcMode="spline" keyPoints="0;1;1" keyTimes="0;0.6;1" keySplines="0.4 0 0.2 1;0 0 1 1"/>';
+  s+='<animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.07;0.56;0.66;1" dur="8s" repeatCount="indefinite"/>';
+  s+='</g>';
+
+  /* --- panel derecho: acorde abierto --- */
+  s+='<rect x="900" y="222" width="620" height="290" rx="16" fill="#0f172a" stroke="#1e3a5f" stroke-width="2" opacity=".95"/>';
+  s+='<text x="926" y="262" class="cv-t-h">ACORDE ABIERTO</text>';
+  s+='<text x="926" y="290" class="cv-t-s">Open voicing · espacio para la melodía vocal</text>';
+  /* bajo LH */
+  s+='<circle cx="980" cy="452" r="34" fill="#f59e0b" stroke="#fcd34d" stroke-width="3"/>';
+  s+='<text x="980" y="460" text-anchor="middle" class="cv-t-n" style="font-size:21px">C</text>';
+  s+='<text x="980" y="506" text-anchor="middle" class="cv-t-l" style="fill:#fcd34d">LH · bajo</text>';
+  /* bicordio RH */
+  s+='<circle cx="1250" cy="392" r="32" fill="#00d4ff" stroke="#bff0ff" stroke-width="3"/>';
+  s+='<text x="1250" y="400" text-anchor="middle" class="cv-t-n" style="font-size:20px">G</text>';
+  s+='<text x="1250" y="442" text-anchor="middle" class="cv-t-l" style="fill:#7dd3fc">RH · G(V)</text>';
+  s+='<circle cx="1440" cy="330" r="32" fill="#00d4ff" stroke="#bff0ff" stroke-width="3"/>';
+  s+='<text x="1440" y="338" text-anchor="middle" class="cv-t-n" style="font-size:20px">E</text>';
+  s+='<text x="1440" y="380" text-anchor="middle" class="cv-t-l" style="fill:#7dd3fc">RH · E(III)</text>';
+  s+='<path d="M980 452 Q 1120 470 1250 392 T 1440 330" stroke="#22c55e" stroke-width="2.5" fill="none" stroke-dasharray="7 7" opacity=".75" class="cv-dash2"/>';
+  s+='<text x="1150" y="300" text-anchor="middle" class="cv-t-mini" style="fill:#86efac">ESPACIO ACÚSTICO ABIERTO</text>';
+
+  /* --- línea de bajo descendente --- */
+  s+='<text x="80" y="562" class="cv-t-mini" style="fill:#d8b4fe">LÍNEA DE BAJO DESCENDENTE</text>';
+  s+=bassG;
+  /* --- notas ascendentes --- */
+  s+=risers;
+  /* --- teclado --- */
+  s+='<rect x="'+(KX-16)+'" y="'+(KY-16)+'" width="'+(KW+32)+'" height="'+(KH+32)+'" rx="14" fill="#0b1220" stroke="#1e3a5f" stroke-width="2"/>';
+  s+=keys+blacks+holds;
+  /* etiquetas LH / RH bajo el teclado */
+  s+='<rect x="'+(KX-16)+'" y="'+(KY+KH+26)+'" width="470" height="44" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-opacity=".55"/>';
+  s+='<text x="'+(KX+6)+'" y="'+(KY+KH+54)+'" class="cv-t-lab" style="fill:#fcd34d">LH: C(I) → G(V) → C(I)  ·  dedos 5 - 2 - 1</text>';
+  s+='<rect x="'+(KX+500)+'" y="'+(KY+KH+26)+'" width="430" height="44" rx="10" fill="#0f172a" stroke="#00d4ff" stroke-opacity=".55"/>';
+  s+='<text x="'+(KX+522)+'" y="'+(KY+KH+54)+'" class="cv-t-lab" style="fill:#7dd3fc">RH: G(V) — E(III)  ·  sostenido</text>';
+  s+='<text x="1524" y="'+(KY+KH+54)+'" text-anchor="end" class="cv-t-mini">RUBÉN SBARSKY · 10/09/2026 · 11:59:08</text>';
+  s+='</svg>';
+  return s;
+}
+function injectCovers(){
+  var h=document.getElementById('cover-home'), c=document.getElementById('cover-credits');
+  if(h) h.innerHTML=coverSVG('a');
+  if(c) c.innerHTML=coverSVG('b');
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    document.querySelectorAll('.cover-svg').forEach(function(sv){ if(sv.pauseAnimations) sv.pauseAnimations(); });
+  }
+}
+
+/* ============================================================
+   6. NAVEGACIÓN SPA + PROGRESO + VOLVER ARRIBA
+   ============================================================ */
+var VIEWS=['home','fundamentos','errores','posiciones','tecnica','cancion','tabla','practica','creditos'];
+function showView(id,push){
+  if(VIEWS.indexOf(id)<0) id='home';
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('active', v.id===id); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.view===id); });
+  var act=document.querySelector('.nav-btn[data-view="'+id+'"]');
+  if(act && act.scrollIntoView) act.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'auto'});
+  if(push!==false && history.replaceState) history.replaceState(null,'','#'+id);
+  updateProgress();
+  if(id==='posiciones') setTimeout(function(){ renderPos(posIndex); },30);
+}
+document.getElementById('navInner').addEventListener('click',function(e){
+  var b=e.target.closest('.nav-btn'); if(!b) return; showView(b.dataset.view);
+});
+function updateProgress(){
+  var h=document.documentElement.scrollHeight-window.innerHeight;
+  var p=h>0?(window.scrollY/h)*100:0;
+  document.getElementById('progress').style.width=Math.min(100,Math.max(0,p))+'%';
+  document.getElementById('toTop').classList.toggle('show',window.scrollY>320);
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+window.addEventListener('resize',updateProgress);
+document.getElementById('toTop').addEventListener('click',function(){
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* ============================================================
+   7. ACORDEONES Y TABS
+   ============================================================ */
+document.addEventListener('click',function(e){
+  var hb=e.target.closest('.acc > button');
+  if(hb){
+    var acc=hb.parentElement, body=acc.querySelector('.body');
+    var open=acc.classList.toggle('open');
+    hb.setAttribute('aria-expanded',open?'true':'false');
+    body.style.maxHeight=open?(body.scrollHeight+40)+'px':'0px';
+  }
+  var tb=e.target.closest('.tab');
+  if(tb){
+    var card=tb.closest('.card');
+    card.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+    tb.classList.add('active');
+    card.querySelectorAll('.tabpane').forEach(function(p){p.classList.remove('active');});
+    var pane=card.querySelector('#tab-'+tb.dataset.tab);
+    if(pane) pane.classList.add('active');
+  }
+});
+function openAllAcc(){
+  document.querySelectorAll('.acc').forEach(function(a){
+    if(a.classList.contains('open')){
+      var b=a.querySelector('.body'); b.style.maxHeight=(b.scrollHeight+40)+'px';
+    }
+  });
+}
+
+/* ============================================================
+   8. SECCIÓN 1 — ESCALA + REGLA 2.ª INVERSIÓN
+   ============================================================ */
+var SCALE=[{m:60,t:'C(I)',d:'Grado I (Tónica)'},{m:62,t:'D(II)',d:'Grado II (Segunda)'},
+           {m:64,t:'E(III)',d:'Grado III (Tercera)'},{m:65,t:'F(IV)',d:'Grado IV (Cuarta)'},
+           {m:67,t:'G(V)',d:'Grado V (Quinta)'},{m:69,t:'A(VI)',d:'Grado VI (Sexta)'},
+           {m:71,t:'B(VII)',d:'Grado VII (Séptima)'}];
+(function(){
+  var box=document.getElementById('scaleChips'); if(!box) return;
+  box.innerHTML=SCALE.map(function(n,i){
+    return '<button class="chip" type="button" data-m="'+n.m+'" title="'+n.d+'"><b>'+n.t+'</b><span>'+nName(n.m)+' · '+n.d+'</span></button>';
+  }).join('')+
+  '<button class="chip" type="button" data-scale="1" style="min-width:130px"><b>▶ Escala</b><span>ascendente completa</span></button>';
+  box.addEventListener('click',function(e){
+    var b=e.target.closest('.chip'); if(!b) return; var c=ac(); if(!c) return;
+    if(b.dataset.scale){
+      SCALE.concat([{m:72}]).forEach(function(n,i){ noteOn(n.m,c.currentTime+i*0.28,0.7,0.22); });
+    } else {
+      noteOn(parseInt(b.dataset.m,10),c.currentTime,1.2,0.24);
+    }
+  });
+})();
+
+/* Regla 2.ª inversión — demo animada */
+(function(){
+  var kb=buildKeyboard('kb-rule',{start:48,end:79,legend:true});
+  var btn=document.getElementById('demoRule'), st=document.getElementById('demoRuleState');
+  if(!btn||!kb) return;
+  var seq=[
+    {t:0,    act:function(){ kb.clear(); kb.mark([67,72,76],'rh'); st.textContent='RH: 2.ª inversión G(V) - C(I) - E(III)'; }, notes:[67,72,76]},
+    {t:1400, act:function(){ kb.clear(); kb.mark([67,72,76],'rh'); kb.mark([72],'err'); st.textContent='La nota central es la tónica C(I)'; }, notes:[]},
+    {t:2800, act:function(){ kb.clear(); kb.mark([67,76],'rh'); st.textContent='Retiramos C(I) → queda el bicordio G(V) - E(III)'; }, notes:[67,76]},
+    {t:4200, act:function(){ kb.clear(); kb.mark([48],'lh'); kb.mark([67,76],'rh'); st.textContent='C(I) viaja al bajo de la LH · LH: C(I) | RH: G(V) - E(III)'; }, notes:[48,67,76]}
+  ];
+  btn.addEventListener('click',function(){
+    var c=ac(); if(!c) return; btn.disabled=true;
+    seq.forEach(function(s){
+      setTimeout(function(){
+        s.act();
+        if(s.notes.length) s.notes.forEach(function(m,i){ noteOn(m,c.currentTime+i*0.045,2.2,0.2); kb.flash(m,220); });
+      },s.t);
+    });
+    setTimeout(function(){ btn.disabled=false; st.textContent='Regla completada · pulsa para repetir'; },6200);
+  });
+})();
+
+/* ============================================================
+   9. SECCIÓN 2 — ERRORES
+   ============================================================ */
+(function(){
+  var kb1=buildKeyboard('kb-err1',{start:40,end:76});
+  var kb2=buildKeyboard('kb-err2',{start:36,end:72});
+  var DEMOS={
+    e1:{kb:kb1,bad:[47,54,59],rh:[67,74],mode:'err'},
+    c1:{kb:kb1,good:[47,55,59],rh:[67,74],mode:'ok'},
+    e2:{kb:kb2,bad:[40,47,52],rh:[60,67],mode:'err'},
+    c2:{kb:kb2,good:[40,48,52],rh:[60,67],mode:'ok'}
+  };
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-cmp]'); if(!b) return;
+    var d=DEMOS[b.dataset.cmp]; if(!d||!d.kb) return;
+    var c=ac(); if(!c) return;
+    var lh=d.bad||d.good;
+    d.kb.clear();
+    d.kb.mark(lh,d.mode==='err'?'err':'ok');
+    d.kb.mark(d.rh,'rh');
+    lh.forEach(function(m,i){ noteOn(m,c.currentTime+i*0.16,1.5,0.22); d.kb.flash(m,200); });
+    setTimeout(function(){ d.rh.forEach(function(m){ noteOn(m,c.currentTime,2.0,0.18); d.kb.flash(m,200); }); },560);
+  });
+  if(kb1){ kb1.clear(); kb1.mark([47,55,59],'ok'); kb1.mark([67,74],'rh'); }
+  if(kb2){ kb2.clear(); kb2.mark([40,48,52],'ok'); kb2.mark([60,67],'rh'); }
+})();
+
+/* ============================================================
+   10. SECCIÓN 3 — STEPPER DE LAS 8 POSICIONES
+   ============================================================ */
+var posIndex=0, kbMain=null;
+(function(){
+  var bl=document.getElementById('bassLine');
+  if(bl){
+    var bassN=['C(I)','B(VII)','A(VI)','G(V)','F(IV)','E(III)','D(II)','C(I)'];
+    bl.innerHTML=bassN.map(function(n,i){
+      return '<span class="np '+(i%2?'cyan':'amber')+'" data-bass="'+i+'" style="cursor:pointer">Paso '+(i+1)+' · '+n+'</span>';
+    }).join('');
+    bl.addEventListener('click',function(e){
+      var s=e.target.closest('[data-bass]'); if(!s) return;
+      setPos(parseInt(s.dataset.bass,10));
+    });
+  }
+
+  kbMain=buildKeyboard('kb-main',{start:36,end:84});
+  var slider=document.getElementById('posSlider'), ind=document.getElementById('posIndicator');
+  var bpm=document.getElementById('bpm1'), bpmOut=document.getElementById('bpm1out');
+
+  /* acordeones con el texto completo de los 8 pasos */
+  var acc=document.getElementById('accPos');
+  if(acc){
+    acc.innerHTML=POS.map(function(p,i){
+      var ch=CH[p.id];
+      return '<div class="acc'+(i===0?' open':'')+'"><button type="button" aria-expanded="'+(i===0)+'"><span>'+p.titulo+'</span><span class="ar">▶</span></button>'+
+      '<div class="body"><div class="body-in">'+
+      (p.extra?'<div class="callout warn"><div class="ct">⚠️ NOTA DEL MÉTODO</div><p style="margin:0">'+p.extra+'</p></div>':'')+
+      '<div class="hand-row">'+
+        '<div class="hand-box rh"><div class="hb-t">Mano Derecha (RH)</div><p style="font-size:14.5px">'+p.rhT+'</p><div class="note-pills">'+ch.rh.map(function(n,k){return '<span class="np cyan">'+n+'<small>'+nName(ch.rh[k])+'</small></span>';}).join('')+'</div></div>'+
+        '<div class="hand-box lh"><div class="hb-t">Mano Izquierda (LH)</div><p style="font-size:14.5px">'+p.lhT+'</p><div class="note-pills">'+ch.lh.map(function(n,k){return '<span class="np amber">'+n+'<small>'+nName(ch.lh[k])+'</small></span>';}).join('')+'</div></div>'+
+      '</div>'+
+      '<div class="combo-line">Combinación: '+p.combo+'</div>'+
+      '<div class="callout info" style="margin-bottom:0"><div class="ct">💡 CLAVE</div><p style="margin:0">'+p.regla+'</p></div>'+
+      '<div class="btn-row" style="margin-top:12px"><button class="btn pri" data-goto="'+i+'">🎹 Cargar en el laboratorio</button></div>'+
+      '</div></div></div>';
+    }).join('');
+    acc.addEventListener('click',function(e){
+      var g=e.target.closest('[data-goto]'); if(!g) return; setPos(parseInt(g.dataset.goto,10));
+      document.getElementById('kb-main').scrollIntoView({behavior:'smooth',block:'center'});
+    });
+  }
+
+  function renderPos(i){
+    posIndex=Math.max(0,Math.min(POS.length-1,i));
+    var p=POS[posIndex], ch=CH[p.id];
+    if(slider) slider.value=posIndex;
+    if(ind) ind.textContent='Posición '+(posIndex+1)+' de '+POS.length+' · '+ch.cif;
+    if(kbMain){ kbMain.clear(); kbMain.mark(ch.lh,'lh'); kbMain.mark(ch.rh,'rh'); }
+    var panel=document.getElementById('posPanel');
+    if(panel){
+      panel.innerHTML=
+        '<div class="pt">'+p.titulo+'</div>'+
+        '<h4>'+ch.nombre+' &nbsp;<span class="badge">'+ch.cif+'</span></h4>'+
+        (p.extra?'<div class="callout warn"><div class="ct">⚠️ NOTA DEL MÉTODO</div><p style="margin:0">'+p.extra+'</p></div>':'')+
+        '<div class="hand-row">'+
+          '<div class="hand-box rh"><div class="hb-t">Mano Derecha (RH)</div><p style="font-size:14.5px;margin-bottom:10px">'+p.rhT+'</p>'+
+            '<div class="note-pills">'+ch.rh.map(function(n,k){return '<span class="np cyan">'+n+'<small>'+nName(ch.rh[k])+' · dedo '+(k===0?'1':'4/5')+'</small></span>';}).join('')+'</div></div>'+
+          '<div class="hand-box lh"><div class="hb-t">Mano Izquierda (LH)</div><p style="font-size:14.5px;margin-bottom:10px">'+p.lhT+'</p>'+
+            '<div class="note-pills">'+ch.lh.map(function(n,k){return '<span class="np amber">'+n+'<small>'+nName(ch.lh[k])+' · dedo '+[5,2,1][k]+'</small></span>';}).join('')+'</div></div>'+
+        '</div>'+
+        '<div class="combo-line">Combinación: '+p.combo+'</div>'+
+        '<div class="callout info" style="margin-bottom:0"><div class="ct">💡 CLAVE</div><p style="margin:0">'+p.regla+'</p></div>';
+    }
+  }
+  window.renderPos=renderPos;
+  function setPos(i){ renderPos(i); }
+  window.setPos=setPos;
+
+  document.getElementById('posPrev').addEventListener('click',function(){ setPos(posIndex-1); });
+  document.getElementById('posNext').addEventListener('click',function(){ setPos(posIndex+1); });
+  document.getElementById('posReset').addEventListener('click',function(){ setPos(0); });
+  slider.addEventListener('input',function(){ setPos(parseInt(slider.value,10)); });
+  bpm.addEventListener('input',function(){ bpmOut.textContent=bpm.value+' BPM'; });
+  document.querySelectorAll('[data-bpm]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=document.getElementById(b.dataset.target); if(!t) return;
+      t.value=b.dataset.bpm; t.dispatchEvent(new Event('input'));
+    });
+  });
+  document.getElementById('posPlay').addEventListener('click',function(){
+    var p=POS[posIndex]; playEvents(chordEvents(CH[p.id],0,2),parseInt(bpm.value,10),kbMain);
+  });
+  document.getElementById('posPlayAll').addEventListener('click',function(){
+    var c=ac(); if(!c) return; var ev=[],bt=parseInt(bpm.value,10);
+    POS.forEach(function(p,i){ ev=ev.concat(chordEvents(CH[p.id],i*2,2)); });
+    playEvents(ev,bt,kbMain);
+    var idx=0;
+    (function step(){ renderPos(idx); idx++; if(idx<POS.length) setTimeout(step,2*(60/bt)*1000); })();
+  });
+  renderPos(0);
+})();
+
+/* ============================================================
+   11. SECCIÓN 4 — TIMELINE RÍTMICA
+   ============================================================ */
+(function(){
+  var bpm=document.getElementById('bpm2'), out=document.getElementById('bpm2out');
+  if(!bpm) return;
+  bpm.addEventListener('input',function(){ out.textContent=bpm.value+' BPM'; });
+  var slots=document.querySelectorAll('#tl4 .tl-slot');
+  document.getElementById('tlPlay').addEventListener('click',function(){
+    var bt=parseInt(bpm.value,10), spb=60/bt, c=ac(); if(!c) return;
+    var ch=CH.C, t0=c.currentTime+0.1;
+    slots.forEach(function(s){s.classList.remove('on');});
+    function light(i,ms){ setTimeout(function(){ slots.forEach(function(s){s.classList.remove('on');}); if(slots[i]) slots[i].classList.add('on'); },ms); }
+    /* Tiempo 1: LH grave + RH bicordio */
+    noteOn(ch.lh[0],t0,spb*1.9,0.27);
+    ch.rh.forEach(function(m,i){ noteOn(m,t0,spb*2.0,i===0?0.20:0.17); });
+    light(0,100); light(3,140);
+    /* Contratiempo: LH intermedia */
+    noteOn(ch.lh[1],t0+spb*0.5,spb*1.4,0.24); light(1,spb*500);
+    /* Tiempo 2: LH alta */
+    noteOn(ch.lh[2],t0+spb*1.0,spb*1.7,0.24); light(2,spb*1000);
+    setTimeout(function(){ slots.forEach(function(s){s.classList.remove('on');}); },spb*2200);
+  });
+})();
+
+/* ============================================================
+   12. SECCIÓN 5 — REPRODUCTOR DE LA BALADA
+   ============================================================ */
+(function(){
+  var kbS=buildKeyboard('kb-song',{start:36,end:84});
+  var kbC=buildKeyboard('kb-coro',{start:36,end:84});
+  function bpmOf(id){ var e=document.getElementById(id); return e?parseInt(e.value,10):60; }
+  ['bpm3','bpm4'].forEach(function(id){
+    var e=document.getElementById(id),o=document.getElementById(id+'out');
+    if(e&&o) e.addEventListener('input',function(){ o.textContent=e.value+' BPM'; });
+  });
+
+  function fillMeasure(chId,beats){
+    return chordEvents(CH[chId],0,beats);
+  }
+  function shift(evs,b){ return evs.map(function(e){ var x={}; for(var k in e) x[k]=e[k]; x.beat=e.beat+b; return x; }); }
+  function concat(){ var out=[]; Array.prototype.forEach.call(arguments,function(a){ out=out.concat(a); }); return out; }
+
+  /* --- Estrofa --- */
+  var V1=concat(shift(fillMeasure('C',2),0), shift(fillMeasure('GB',2),2));
+  var V2=concat(shift(fillMeasure('Am',2),0), shift(fillMeasure('G',2),2));
+  var V3=concat(shift(fillMeasure('F',2),0),
+    /* tiempos 3 y 4: relleno melódico ascendente LH G(V) y A(VI) */
+    [{beat:2,midi:CH.F.rh[0],dur:1.95,vol:.20,hand:'rh'},{beat:2,midi:CH.F.rh[1],dur:1.95,vol:.17,hand:'rh'},
+     {beat:2,midi:55,dur:1.3,vol:.23,hand:'lh'},{beat:2.5,midi:57,dur:1.5,vol:.24,hand:'lh'}]);
+  var V4=concat(shift(chordEvents(CH.Gs4,0,2),0), shift(chordEvents(CH.Gres,0,2),2));
+  var VFULL=concat(shift(V1,0),shift(V2,4),shift(V3,8),shift(V4,12));
+
+  /* --- Coro --- */
+  var CFULL=concat(
+    shift(fillMeasure('C',4),0),
+    shift(fillMeasure('GB',4),4),
+    shift(fillMeasure('FA',4),8),
+    shift(chordEvents(CH.CEr,0,4),12),
+    shift(fillMeasure('F',4),16),
+    shift(chordEvents(CH.CEr,0,4),20),
+    shift(fillMeasure('Dm',4),24),
+    shift(chordEvents(CH.Gs4,0,2),28),
+    shift(chordEvents(CH.Gres,0,2),30)
+  );
+
+  var SEQ={v1:{e:V1,k:kbS},v2:{e:V2,k:kbS},v3:{e:V3,k:kbS},v4:{e:V4,k:kbS},vfull:{e:VFULL,k:kbS,bpm:'bpm3'},
+           cfull:{e:CFULL,k:kbC,bpm:'bpm4'},
+           c_fa:{e:fillMeasure('FA',2),k:kbC},
+           c_ce:{e:chordEvents(CH.CEr,0,2),k:kbC},
+           c_pedal:{e:concat(shift(fillMeasure('F',2),0),shift(chordEvents(CH.CE,0,2),2)),k:kbC},
+           c_cierre:{e:concat(shift(fillMeasure('Dm',2),0),shift(chordEvents(CH.Gs4,0,2),2),shift(chordEvents(CH.Gres,0,2),4)),k:kbC}};
+
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-play]'); if(!b) return;
+    var s=SEQ[b.dataset.play]; if(!s) return;
+    var bt=bpmOf(s.bpm || (s.k===kbC?'bpm4':'bpm3'));
+    if(s.k) s.k.clear();
+    playEvents(s.e,bt,s.k);
+  });
+})();
+
+/* ============================================================
+   13. SECCIÓN 6 — TABLA RESUMEN INTERACTIVA
+   ============================================================ */
+(function(){
+  var ROWS=[
+    {ac:'C(I)',       id:'C'},
+    {ac:'G(V)/B(VII)',id:'GB'},
+    {ac:'A(VI)m',     id:'Am'},
+    {ac:'G(V)',       id:'G'},
+    {ac:'F(IV)',      id:'F'},
+    {ac:'C(I)/E(III)',id:'CE'},
+    {ac:'D(II)m',     id:'Dm'},
+    {ac:'F(IV)/A(VI)',id:'FA'},
+    {ac:'G(V)sus4',   id:'Gs4'}
+  ];
+  var tb=document.querySelector('#tblPos tbody'); if(!tb) return;
+  tb.innerHTML=ROWS.map(function(r,i){
+    var ch=CH[r.id];
+    return '<tr data-row="'+i+'"><td class="ac">'+r.ac+'</td>'+
+      '<td class="lh">'+ch.lhn.join(' - ')+'</td>'+
+      '<td class="rh">'+ch.rhn.join(' - ')+'</td>'+
+      '<td><button class="btn" data-tblplay="'+i+'" style="padding:7px 12px;min-height:38px">🔊 Tocar</button></td></tr>';
+  }).join('');
+  var kbT=buildKeyboard('kb-table',{start:36,end:84});
+  var sel=0;
+  function select(i){
+    sel=Math.max(0,Math.min(ROWS.length-1,i));
+    tb.querySelectorAll('tr').forEach(function(tr,k){ tr.classList.toggle('sel',k===sel); });
+    var ch=CH[ROWS[sel].id];
+    if(kbT){ kbT.clear(); kbT.mark(ch.lh,'lh'); kbT.mark(ch.rh,'rh'); }
+  }
+  tb.addEventListener('click',function(e){
+    if(e.target.closest('[data-tblplay]')) return;
+    var tr=e.target.closest('tr'); if(!tr) return; select(parseInt(tr.dataset.row,10));
+  });
+  var bpm=document.getElementById('bpm5'), out=document.getElementById('bpm5out');
+  bpm.addEventListener('input',function(){ out.textContent=bpm.value+' BPM'; });
+  document.getElementById('tblPlay').addEventListener('click',function(){
+    playEvents(chordEvents(CH[ROWS[sel].id],0,2),parseInt(bpm.value,10),kbT);
+  });
+  document.getElementById('tblPlayAll').addEventListener('click',function(){
+    var c=ac(); if(!c) return; var ev=[],bt=parseInt(bpm.value,10);
+    ROWS.forEach(function(r,i){ ev=ev.concat(chordEvents(CH[r.id],i*2,2)); });
+    playEvents(ev,bt,kbT);
+    var i=0; (function step(){ select(i); i++; if(i<ROWS.length) setTimeout(step,2*(60/bt)*1000); })();
+  });
+  tb.addEventListener('click',function(e){
+    var b=e.target.closest('[data-tblplay]'); if(!b) return;
+    select(parseInt(b.dataset.tblplay,10));
+    playEvents(chordEvents(CH[ROWS[sel].id],0,2),parseInt(bpm.value,10),kbT);
+  });
+  select(0);
+})();
+
+/* ============================================================
+   14. SECCIÓN 7 — METRÓNOMO, PEDAL Y ADORNOS
+   ============================================================ */
+(function(){
+  var metBpmEl=document.getElementById('metBpm'), metOut=document.getElementById('metBpmOut');
+  var metBtn=document.getElementById('metBtn'), arm=document.getElementById('pendArm');
+  var dots=document.querySelectorAll('#metDots .bd');
+  var running=false,timer=null,nextT=0,beatI=0,bpm=60;
+  if(metBpmEl){
+    metBpmEl.addEventListener('input',function(){
+      bpm=parseInt(metBpmEl.value,10); metOut.textContent=bpm+' BPM';
+      arm.style.setProperty('--swing',(60/bpm)+'s');
+    });
+    arm.style.setProperty('--swing','1s');
+  }
+  document.querySelectorAll('[data-met]').forEach(function(b){
+    b.addEventListener('click',function(){ metBpmEl.value=b.dataset.met; metBpmEl.dispatchEvent(new Event('input')); });
+  });
+  function pulse(i){
+    dots.forEach(function(d,k){ d.classList.remove('hit','acc'); if(k===i){ d.classList.add('hit'); if(i===0) d.classList.add('acc'); } });
+  }
+  function sched(){
+    var c=ac(); if(!c) return;
+    var spb=60/bpm;
+    while(nextT < c.currentTime+0.15){
+      clickOn(nextT, beatI%4===0);
+      (function(k,t){ setTimeout(function(){ pulse(k); },Math.max(0,(t-c.currentTime)*1000)); })(beatI%4,nextT);
+      nextT+=spb; beatI++;
+    }
+  }
+  function start(){
+    var c=ac(); if(!c) return;
+    running=true; beatI=0; nextT=c.currentTime+0.06;
+    timer=setInterval(sched,25);
+    arm.classList.add('swing');
+    metBtn.textContent='⏸ Detener metrónomo'; metBtn.classList.remove('pri'); metBtn.classList.add('red');
+  }
+  function stop(){
+    running=false; clearInterval(timer); timer=null;
+    arm.classList.remove('swing');
+    dots.forEach(function(d){d.classList.remove('hit','acc');});
+    metBtn.textContent='▶ Iniciar metrónomo'; metBtn.classList.add('pri'); metBtn.classList.remove('red');
+  }
+  if(metBtn) metBtn.addEventListener('click',function(){ running?stop():start(); });
+
+  /* Acordes en bloque / arpegio continuo sobre el metrónomo */
+  var kbRef=KBS['kb-main'];
+  function loopPattern(block){
+    var c=ac(); if(!c||!kbRef) return;
+    var bt=parseInt(metBpmEl.value,10), spb=60/bt, ch=CH.C, t0=c.currentTime+0.08;
+    for(var r=0;r<4;r++){
+      var base=t0+r*2*spb;
+      ch.rh.forEach(function(m,i){ noteOn(m,base,spb*2.0,i===0?0.19:0.16); kbRef.flash(m,200); });
+      noteOn(ch.lh[0],base,spb*1.9,0.25); kbRef.flash(ch.lh[0],200);
+      if(block){
+        noteOn(ch.lh[1],base,spb*1.9,0.20);
+        noteOn(ch.lh[2],base,spb*1.9,0.20);
+        kbRef.flash(ch.lh[1],200); kbRef.flash(ch.lh[2],200);
+      } else {
+        noteOn(ch.lh[1],base+spb*0.5,spb*1.4,0.22);
+        noteOn(ch.lh[2],base+spb*1.0,spb*1.6,0.22);
+        setTimeout((function(a,b2){return function(){kbRef.flash(a,180);kbRef.flash(b2,180);};})(ch.lh[1],ch.lh[2]),spb*500);
+      }
+    }
+    kbRef.clear(); kbRef.mark(ch.lh,'lh'); kbRef.mark(ch.rh,'rh');
+  }
+  var mb=document.getElementById('metBlock'); if(mb) mb.addEventListener('click',function(){ loopPattern(true); });
+  var ma=document.getElementById('metArp'); if(ma) ma.addEventListener('click',function(){ loopPattern(false); });
+
+  /* Pedal de sustain */
+  var pv=document.getElementById('pedalVis'), pd=document.getElementById('pedalDemo');
+  if(pd) pd.addEventListener('click',function(){
+    var c=ac(); if(!c) return;
+    var seq=['C','GB','Am','G'], bt=60, spb=60/bt;
+    seq.forEach(function(id,i){
+      var ch=CH[id], t=c.currentTime+0.1+i*2*spb;
+      if(pv){ setTimeout(function(){ pv.classList.remove('down'); },Math.max(0,(t-c.currentTime)*1000));
+              setTimeout(function(){ pv.classList.add('down'); },Math.max(0,(t-c.currentTime)*1000)+70); }
+      ch.rh.forEach(function(m,k){ noteOn(m,t,spb*2.0,k===0?0.19:0.16); });
+      noteOn(ch.lh[0],t,spb*1.9,0.26);
+      noteOn(ch.lh[1],t+spb*0.5,spb*1.4,0.22);
+      noteOn(ch.lh[2],t+spb*1.0,spb*1.6,0.22);
+    });
+    setTimeout(function(){ if(pv) pv.classList.remove('down'); },(seq.length*2*spb+0.4)*1000);
+  });
+
+  /* Adorno melódico superior */
+  function adorno(chId,topMidi){
+    var c=ac(); if(!c) return;
+    var ch=CH[chId], spb=60/60, t=c.currentTime+0.1, kb=KBS['kb-main'];
+    chordEvents(ch,0,2).forEach(function(e){ noteOn(e.midi,t+e.beat*spb,e.dur*spb,e.vol); });
+    /* eco de la nota superior justo después de que la LH termina su arpegio */
+    noteOn(topMidi,t+spb*1.6,spb*1.4,0.16);
+    noteOn(topMidi,t+spb*2.1,spb*1.2,0.11);
+    if(kb){ kb.clear(); kb.mark(ch.lh,'lh'); kb.mark(ch.rh,'rh');
+      setTimeout(function(){ kb.flash(topMidi,260); },(spb*1.6)*1000);
+      setTimeout(function(){ kb.flash(topMidi,260); },(spb*2.1)*1000);
+    }
+  }
+  var a1=document.getElementById('adorno1'); if(a1) a1.addEventListener('click',function(){ adorno('C',76); });
+  var a2=document.getElementById('adorno2'); if(a2) a2.addEventListener('click',function(){ adorno('GB',74); });
+})();
+
+/* ============================================================
+   15. ARRANQUE
+   ============================================================ */
+(function init(){
+  injectCovers();
+  openAllAcc();
+  var h=(location.hash||'').replace('#','');
+  showView(VIEWS.indexOf(h)>=0?h:'home',false);
+  updateProgress();
+  /* desbloqueo de audio en el primer gesto */
+  var unlock=function(){ ac(); document.removeEventListener('pointerdown',unlock); document.removeEventListener('keydown',unlock); };
+  document.addEventListener('pointerdown',unlock);
+  document.addEventListener('keydown',unlock);
+  /* navegación con teclado */
+  document.addEventListener('keydown',function(e){
+    if(e.target.tagName==='INPUT') return;
+    var sec=document.querySelector('.view.active'); if(!sec||sec.id!=='posiciones') return;
+    if(e.key==='ArrowRight'&&window.setPos) window.setPos(posIndex+1);
+    if(e.key==='ArrowLeft'&&window.setPos) window.setPos(posIndex-1);
+  });
+})();
+</script>
+</body>
+</html>
