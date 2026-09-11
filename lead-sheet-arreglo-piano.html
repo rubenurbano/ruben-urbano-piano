@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>De la Lead Sheet al Arreglo de Piano · Tutorial Interactivo</title>
+<style>
+/* ============ RESET / BASE ============ */
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --border:#1e3a5f; --accent:#00d4ff;
+  --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+  --text:#e2e8f0; --muted:#94a3b8; --dim:#64748b;
+}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.68;font-size:16px;-webkit-text-size-adjust:100%;
+  background-image:radial-gradient(circle at 12% -5%,rgba(0,212,255,.07),transparent 45%),
+                   radial-gradient(circle at 88% 8%,rgba(168,85,247,.06),transparent 45%);
+  background-attachment:fixed;
+}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em}
+p{margin:0 0 1em}
+a{color:var(--accent)}
+.wrap{max-width:1220px;margin:0 auto;padding:0 18px}
+
+/* ============ PROGRESS BAR ============ */
+#progress{position:fixed;top:0;left:0;height:4px;width:0;z-index:90;
+  background:linear-gradient(90deg,#00d4ff,#a855f7,#22c55e);
+  box-shadow:0 0 12px rgba(0,212,255,.7);transition:width .1s linear}
+
+/* ============ NAVBAR ============ */
+header#nav{position:fixed;top:4px;left:0;right:0;z-index:80;
+  background:rgba(10,14,26,.96);border-bottom:1px solid var(--border);
+  box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.navrow{display:flex;align-items:center;gap:16px;padding:9px 16px;max-width:1400px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.brand .bico{width:38px;height:38px;border-radius:9px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#0b2b3d,#0f172a);border:1px solid var(--border);
+  font-size:19px;color:var(--accent);box-shadow:0 0 14px rgba(0,212,255,.25)}
+.brand b{font-size:15px;letter-spacing:.4px;color:#dff1ff;display:block;line-height:1.15}
+.brand span{font-size:11px;color:var(--dim);letter-spacing:1.4px;text-transform:uppercase}
+.navscroll{display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;flex:1 1 auto;
+  scrollbar-width:thin;scrollbar-color:#1e3a5f transparent;padding-bottom:3px;
+  -webkit-overflow-scrolling:touch}
+.navscroll::-webkit-scrollbar{height:5px}
+.navscroll::-webkit-scrollbar-thumb{background:#1e3a5f;border-radius:4px}
+.navbtn{white-space:nowrap;flex:0 0 auto;min-height:42px;padding:9px 14px;border-radius:9px;
+  border:1px solid transparent;background:transparent;color:var(--muted);
+  font-family:inherit;font-size:13.5px;font-weight:600;letter-spacing:.3px;cursor:pointer;
+  transition:background .2s,color .2s,border-color .2s,transform .15s}
+.navbtn:hover{color:#dff1ff;background:rgba(0,212,255,.08)}
+.navbtn.active{color:#bff3ff;background:rgba(0,212,255,.14);border-color:rgba(0,212,255,.45);
+  box-shadow:0 0 14px rgba(0,212,255,.18) inset}
+.navbtn.cred{color:#e6d5ff}
+.navbtn.cred.active{background:rgba(168,85,247,.16);border-color:rgba(168,85,247,.5);color:#f0e4ff}
+
+/* ============ PAGES / SPA ============ */
+main{padding-top:112px;padding-bottom:40px;min-height:70vh}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ============ SECTION HEADER ============ */
+.shead{display:flex;align-items:center;gap:14px;margin:8px 0 20px;padding-bottom:14px;
+  border-bottom:1px solid var(--border)}
+.shead .ico{width:50px;height:50px;flex:0 0 50px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#0c2436,#0f172a);border:1px solid var(--border);
+  font-size:23px;color:var(--accent);box-shadow:0 0 18px rgba(0,212,255,.16)}
+.shead h2{font-size:clamp(21px,3.6vw,29px);color:#eaf6ff;margin:0}
+.shead p{margin:2px 0 0;font-size:13.5px;color:var(--muted)}
+.subhead{font-size:clamp(17px,2.7vw,21px);color:#bfe9ff;margin:28px 0 12px;
+  padding-left:12px;border-left:3px solid var(--accent)}
+.subhead2{font-size:16.5px;color:#9fd8ee;margin:20px 0 8px;font-weight:700}
+
+/* ============ CARDS / GRIDS ============ */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:18px;
+  box-shadow:0 6px 22px rgba(0,0,0,.28)}
+.card.tinted{background:linear-gradient(160deg,#0f1d33,#0f172a)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.mini{background:#0b1220;border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.mini h4{margin:0 0 6px;font-size:15px;color:#bfe9ff}
+.mini p{margin:0;font-size:14px;color:var(--muted)}
+
+/* ============ BADGES / CHIPS ============ */
+.badge{display:inline-block;padding:5px 12px;border-radius:999px;font-size:11.5px;font-weight:700;
+  letter-spacing:1.4px;text-transform:uppercase;border:1px solid rgba(0,212,255,.4);
+  color:#9fe8ff;background:rgba(0,212,255,.1)}
+.badge.p{border-color:rgba(168,85,247,.45);color:#dcbcff;background:rgba(168,85,247,.12)}
+.badge.g{border-color:rgba(34,197,94,.45);color:#a7f3c4;background:rgba(34,197,94,.1)}
+.badge.a{border-color:rgba(245,158,11,.45);color:#fcd9a0;background:rgba(245,158,11,.1)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:999px;
+  border:1px solid var(--border);background:#0b1220;color:var(--muted);font-size:13px;
+  cursor:pointer;font-family:inherit;transition:.2s;min-height:38px}
+.chip:hover{color:#dff1ff;border-color:rgba(0,212,255,.45)}
+.chip.active{background:rgba(0,212,255,.15);border-color:var(--accent);color:#bff3ff}
+.chiprow{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}
+
+/* ============ TABLES ============ */
+.tblwrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;margin:14px 0;-webkit-overflow-scrolling:touch}
+table.tbl{width:100%;border-collapse:collapse;font-size:14.3px;min-width:480px}
+table.tbl th{background:#0b1a2b;color:#9fe8ff;text-align:left;padding:11px 13px;font-size:12.5px;
+  letter-spacing:.8px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap}
+table.tbl td{padding:11px 13px;border-bottom:1px solid rgba(30,58,95,.5);color:var(--text);vertical-align:top}
+table.tbl tr:last-child td{border-bottom:none}
+table.tbl tr:nth-child(even) td{background:rgba(11,18,32,.5)}
+table.tbl td b{color:#cfe9ff}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:14px 16px 14px 18px;margin:16px 0;border:1px solid;
+  border-left-width:4px;font-size:14.6px}
+.callout .ct{display:block;font-weight:800;letter-spacing:1.1px;font-size:11.6px;
+  text-transform:uppercase;margin-bottom:5px}
+.callout p:last-child{margin-bottom:0}
+.callout.info{border-color:rgba(0,212,255,.4);border-left-color:var(--accent);background:rgba(0,212,255,.07)}
+.callout.info .ct{color:var(--accent)}
+.callout.example{border-color:rgba(34,197,94,.4);border-left-color:var(--green);background:rgba(34,197,94,.07)}
+.callout.example .ct{color:var(--green)}
+.callout.warn{border-color:rgba(245,158,11,.4);border-left-color:var(--amber);background:rgba(245,158,11,.07)}
+.callout.warn .ct{color:var(--amber)}
+.callout.error{border-color:rgba(239,68,68,.4);border-left-color:var(--red);background:rgba(239,68,68,.07)}
+.callout.error .ct{color:var(--red)}
+
+/* ============ CODE BLOCKS ============ */
+pre.code{background:#070b14;border:1px solid var(--border);border-left:3px solid var(--accent);
+  border-radius:8px;padding:14px 16px;overflow-x:auto;margin:12px 0;
+  font-family:'Consolas','Courier New',monospace;font-size:13.2px;line-height:1.75;color:#c9e7ff}
+code.inl{background:#0b1a2b;border:1px solid var(--border);border-radius:5px;padding:1px 6px;
+  font-family:'Consolas','Courier New',monospace;font-size:13px;color:#9fe8ff}
+
+/* ============ STEPS ============ */
+.steps{counter-reset:st;margin:14px 0}
+.stepn{position:relative;padding:12px 14px 12px 54px;margin-bottom:10px;background:#0b1220;
+  border:1px solid var(--border);border-radius:10px}
+.stepn::before{counter-increment:st;content:counter(st);position:absolute;left:12px;top:12px;
+  width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-weight:800;
+  font-size:14px;color:#06121c;background:linear-gradient(145deg,#5ce1ff,#00a9cc)}
+.stepn b{color:#dff1ff}
+.stepn p{margin:2px 0 0;font-size:14.3px;color:var(--muted)}
+
+/* ============ LISTS ============ */
+ul.tick{list-style:none;padding:0;margin:10px 0}
+ul.tick li{position:relative;padding:7px 0 7px 28px;border-bottom:1px dashed rgba(30,58,95,.55);font-size:14.6px}
+ul.tick li:last-child{border-bottom:none}
+ul.tick li::before{content:'▸';position:absolute;left:6px;top:7px;color:var(--accent);font-size:15px}
+ul.dot{margin:8px 0 8px 20px;padding:0}
+ul.dot li{margin-bottom:5px;font-size:14.6px}
+
+/* ============ QUOTE ============ */
+.quote{margin:22px 0;padding:22px 24px;border-radius:12px;background:linear-gradient(140deg,#0d1f33,#0f172a);
+  border:1px solid var(--border);border-left:4px solid var(--purple);position:relative}
+.quote p{font-size:clamp(16px,2.4vw,20px);font-style:italic;color:#e8dcff;margin:0}
+.quote small{display:block;margin-top:8px;color:var(--dim);font-size:12.5px;letter-spacing:1px;text-transform:uppercase}
+
+/* ============ HOME ============ */
+.portada{margin:0 0 22px;border-radius:14px;overflow:hidden;border:1px solid var(--border);
+  background:#070b14;box-shadow:0 14px 50px rgba(0,0,0,.55)}
+.portada svg{display:block;width:100%;height:auto}
+.home-head{text-align:center;padding:6px 0 10px}
+.badge-top{display:inline-block;padding:7px 16px;border-radius:999px;border:1px solid rgba(0,212,255,.45);
+  background:rgba(0,212,255,.09);color:#9fe8ff;font-size:11.8px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:16px}
+h1.big{font-size:clamp(27px,5.6vw,50px);margin:0 0 10px;color:#f2fbff;letter-spacing:-.4px}
+h1.big em{font-style:normal;color:var(--accent);text-shadow:0 0 26px rgba(0,212,255,.4)}
+p.sub{font-size:clamp(15px,2.5vw,19px);color:#a9c4de;margin:0 auto 18px;max-width:820px}
+p.desc{font-size:15.4px;color:var(--muted);max-width:900px;margin:0 auto 10px;text-align:left}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:24px 0}
+@media(max-width:900px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:15px 12px;
+  transition:transform .2s,border-color .2s}
+.metric:hover{transform:translateY(-3px);border-color:rgba(0,212,255,.5)}
+.metric b{display:block;font-size:26px;color:var(--accent);font-weight:800;line-height:1.1}
+.metric span{font-size:11.8px;color:var(--muted);letter-spacing:.6px;text-transform:uppercase}
+.datetime{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 6px}
+.dt{background:#0b1220;border:1px solid var(--border);border-radius:9px;padding:9px 16px;font-size:14px;color:#cfe9ff}
+.toc{text-align:left;margin-top:26px}
+.tocgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:9px;margin-top:12px}
+.tocitem{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:#0b1220;
+  border:1px solid var(--border);border-radius:9px;cursor:pointer;font-family:inherit;
+  color:var(--muted);font-size:13.4px;text-align:left;transition:.2s;width:100%}
+.tocitem:hover{border-color:rgba(0,212,255,.5);color:#dff1ff;background:#0d1830}
+.tocitem i{font-style:normal;color:var(--accent);font-weight:800;flex:0 0 auto;font-size:12px;padding-top:1px}
+
+/* ============ FLOW DIAGRAM ============ */
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin:16px 0}
+.fbox{flex:1 1 170px;background:#0b1220;border:1px solid var(--border);border-radius:10px;padding:14px;position:relative}
+.fbox b{display:block;color:#9fe8ff;font-size:14.5px;margin-bottom:5px;letter-spacing:.6px}
+.fbox span{font-size:13px;color:var(--muted)}
+.farrow{align-self:center;color:var(--accent);font-size:20px}
+@media(max-width:620px){.farrow{transform:rotate(90deg);width:100%;text-align:center}}
+
+/* ============ PIANO INTERACTIVO ============ */
+.piano-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin:18px 0}
+.piano-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.piano-top h4{margin:0;font-size:15.5px;color:#bfe9ff}
+.pscroll{overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.piano{position:relative;display:flex;height:172px;min-width:520px;user-select:none;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.5))}
+.pw{flex:1 1 0;position:relative;background:linear-gradient(180deg,#f7fbff,#d3dfef);
+  border:1px solid #26456a;border-top:none;border-radius:0 0 7px 7px;cursor:pointer;
+  transition:background .18s,transform .12s}
+.pw:active{transform:translateY(2px)}
+.pw .kl{position:absolute;bottom:7px;left:0;right:0;text-align:center;font-size:10.5px;
+  color:#40628a;font-weight:700;pointer-events:none}
+.pb{position:absolute;top:0;height:61%;background:linear-gradient(180deg,#22314d,#080d18);
+  border:1px solid #04070d;border-top:none;border-radius:0 0 6px 6px;cursor:pointer;z-index:3;
+  transition:background .18s,transform .12s}
+.pb:active{transform:translateY(2px)}
+.pw.on{background:linear-gradient(180deg,#a5f2ff,#00d4ff)}
+.pb.on{background:linear-gradient(180deg,#5ce1ff,#0090b8)}
+.pw.mel{background:linear-gradient(180deg,#dcc0fb,#a855f7)}
+.pb.mel{background:linear-gradient(180deg,#c99bf5,#7c2fd1)}
+.pctrl{margin-top:14px;border-top:1px solid var(--border);padding-top:14px}
+.pctrl .clab{font-size:11.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.pbtns{display:flex;flex-wrap:wrap;gap:8px}
+.pbtn{padding:9px 13px;min-height:40px;border-radius:9px;border:1px solid var(--border);
+  background:#0b1220;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;
+  cursor:pointer;transition:.2s}
+.pbtn:hover{color:#dff1ff;border-color:rgba(0,212,255,.5)}
+.pbtn.active{background:rgba(0,212,255,.15);border-color:var(--accent);color:#bff3ff}
+.pbtn.snd{margin-left:auto}
+.preadout{margin-top:13px;background:#070b14;border:1px solid var(--border);border-left:3px solid var(--purple);
+  border-radius:8px;padding:12px 14px;font-size:14.3px;color:#d8ecff;min-height:52px}
+.preadout b{color:#9fe8ff}
+.preadout .nt{font-family:'Consolas','Courier New',monospace;color:#e6d5ff}
+
+/* ============ STEPPER (10 NIVELES) ============ */
+.stepper{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin:16px 0}
+.stpanel{background:#0b1220;border:1px solid var(--border);border-radius:10px;padding:18px;min-height:210px}
+.stpanel h4{margin:0 0 4px;color:#9fe8ff;font-size:17px}
+.stpanel .lvl{font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim)}
+.stctrl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.stctrl .btn{padding:10px 16px;min-height:42px;border-radius:9px;border:1px solid var(--border);
+  background:#0d1830;color:#cfe9ff;font-family:inherit;font-size:13.6px;font-weight:700;cursor:pointer;transition:.2s}
+.stctrl .btn:hover:not(:disabled){border-color:var(--accent);background:rgba(0,212,255,.14)}
+.stctrl .btn:disabled{opacity:.35;cursor:not-allowed}
+.stctrl input[type=range]{flex:1 1 180px;min-width:140px;accent-color:#00d4ff;height:32px}
+.stind{font-size:13.4px;color:var(--muted);white-space:nowrap}
+.stind b{color:var(--accent)}
+
+/* ============ TABS ============ */
+.tabrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tabbtn{padding:10px 15px;min-height:42px;border-radius:9px;border:1px solid var(--border);
+  background:#0b1220;color:var(--muted);font-family:inherit;font-size:13.4px;font-weight:700;cursor:pointer;transition:.2s}
+.tabbtn.active{background:rgba(0,212,255,.15);border-color:var(--accent);color:#bff3ff}
+.tabpanel{display:none;animation:fadeIn .3s}
+.tabpanel.active{display:block}
+
+/* ============ ACCORDION ============ */
+details.acc{background:#0b1220;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
+details.acc summary{padding:14px 16px;cursor:pointer;font-weight:600;font-size:14.6px;color:#cfe9ff;
+  list-style:none;display:flex;gap:11px;align-items:flex-start}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary .mk{color:var(--accent);flex:0 0 auto;font-weight:800;transition:transform .2s}
+details.acc[open] summary .mk{transform:rotate(90deg)}
+details.acc .accb{padding:0 16px 15px 44px;font-size:14.4px;color:var(--muted);border-top:1px solid rgba(30,58,95,.6)}
+details.acc .accb p{margin:12px 0 0}
+.solbtn{margin-top:10px;padding:9px 14px;min-height:40px;border-radius:8px;border:1px solid rgba(34,197,94,.45);
+  background:rgba(34,197,94,.1);color:#a7f3c4;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.sol{display:none;margin-top:12px;padding:12px 14px;background:rgba(34,197,94,.07);
+  border:1px solid rgba(34,197,94,.3);border-radius:8px;font-size:14.2px;color:#d3f5e0}
+.sol.show{display:block;animation:fadeIn .3s}
+
+/* ============ ERRORES ============ */
+.errgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:760px){.errgrid{grid-template-columns:1fr}}
+.err{background:#0b1220;border:1px solid var(--border);border-left:3px solid var(--red);
+  border-radius:10px;padding:14px 16px}
+.err .eh{display:flex;gap:10px;align-items:flex-start}
+.err .en{flex:0 0 auto;font-size:11px;font-weight:800;color:#ffb4b4;background:rgba(239,68,68,.14);
+  border:1px solid rgba(239,68,68,.35);border-radius:6px;padding:2px 7px;margin-top:2px}
+.err h4{margin:0;font-size:14.6px;color:#ffd9d9}
+.err p{margin:8px 0 0;font-size:13.6px;color:var(--muted)}
+.err p b{color:#fcd9a0}
+.err.hide{display:none}
+
+/* ============ CHECKLIST ============ */
+.cklist{counter-reset:ck}
+.ckitem{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:#0b1220;
+  border:1px solid var(--border);border-radius:9px;margin-bottom:9px;cursor:pointer;transition:.2s}
+.ckitem:hover{border-color:rgba(0,212,255,.45)}
+.ckitem input{width:21px;height:21px;flex:0 0 21px;margin-top:2px;accent-color:#22c55e;cursor:pointer}
+.ckitem span{font-size:14.5px;color:var(--text)}
+.ckitem.done{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.4)}
+.ckitem.done span{color:#c8f5da}
+.ckbar{height:9px;background:#0b1220;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:10px 0}
+.ckbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#22c55e,#00d4ff);transition:width .35s}
+
+/* ============ GLOSARIO ============ */
+.searchrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.searchrow input{flex:1 1 240px;min-height:44px;padding:11px 14px;border-radius:9px;
+  border:1px solid var(--border);background:#0b1220;color:var(--text);font-family:inherit;font-size:14.5px}
+.searchrow input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,.13)}
+.glgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(max-width:760px){.glgrid{grid-template-columns:1fr}}
+.gl{background:#0b1220;border:1px solid var(--border);border-radius:10px;padding:14px 16px;border-top:3px solid var(--purple)}
+.gl b{color:#dcbcff;font-size:15px}
+.gl p{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.gl.hide{display:none}
+.gl .ex{display:block;margin-top:7px;font-size:13.2px;color:#9fd8ee;font-style:italic}
+
+/* ============ COMPÁS ============ */
+.mcard{background:#0b1220;border:1px solid var(--border);border-radius:11px;padding:18px}
+.mrow{display:grid;grid-template-columns:170px 1fr;gap:10px;padding:9px 0;border-bottom:1px dashed rgba(30,58,95,.6);font-size:14.3px}
+.mrow:last-child{border-bottom:none}
+.mrow b{color:#9fe8ff;font-size:12.6px;letter-spacing:.8px;text-transform:uppercase}
+.mrow span{color:var(--text);font-family:'Consolas','Courier New',monospace;font-size:13.4px}
+.mrow.why span{font-family:'Segoe UI',system-ui,sans-serif;font-size:14.3px;color:var(--muted)}
+@media(max-width:620px){.mrow{grid-template-columns:1fr;gap:3px}}
+
+/* ============ CRÉDITOS ============ */
+.credbox{text-align:center;background:linear-gradient(160deg,#131a33,#0f172a);border:1px solid var(--border);
+  border-radius:14px;padding:28px 22px;margin-top:18px}
+.credbox .who{font-size:clamp(24px,4.4vw,36px);color:#f0e4ff;margin:8px 0 4px;font-weight:800;letter-spacing:.4px}
+.credbox .lat{font-style:italic;color:#c9b6ee;font-size:17px;margin-top:16px;letter-spacing:.6px}
+.credmeta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:16px}
+
+/* ============ FOOTER ============ */
+footer{border-top:1px solid var(--border);background:#080c16;margin-top:30px;padding:26px 18px 34px;text-align:center}
+footer p{margin:5px 0;font-size:14px;color:var(--muted)}
+footer .lat{font-style:italic;color:#b79ce0;margin-top:12px;letter-spacing:.7px}
+
+/* ============ BACK TO TOP ============ */
+#toTop{position:fixed;right:16px;bottom:18px;width:50px;height:50px;border-radius:13px;z-index:85;
+  border:1px solid rgba(0,212,255,.45);background:rgba(13,24,48,.95);color:var(--accent);
+  font-size:21px;cursor:pointer;opacity:0;pointer-events:none;transition:.25s;
+  box-shadow:0 8px 24px rgba(0,0,0,.5)}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{background:rgba(0,212,255,.18)}
+
+/* ============ SVG PORTADA ANIM ============ */
+.pv-wk rect.kf{transition:fill .22s ease}
+.pv-wk,.pv-bk{transition:transform .12s ease}
+.pv-wk.on{transform:translateY(6px)}
+.pv-bk.on{transform:translateY(4px)}
+.pv-wk.on rect.kf{fill:#7fe9ff}
+.pv-bk.on rect.kf{fill:#00d4ff}
+.pv-wk.mel rect.kf{fill:#c99bf5}
+.pv-bk.mel rect.kf{fill:#a855f7}
+.pv-wk.on.mel rect.kf{fill:#a855f7}
+.pv-chord rect{transition:fill .3s,stroke .3s}
+.pv-chord text{transition:fill .3s}
+.pv-chord.active rect{fill:#0c2c40;stroke:#00d4ff}
+.pv-chord.active text{fill:#8ef0ff}
+.pv-mnotes .pv-note{opacity:.2;transition:opacity .45s ease}
+.pv-mnotes.active .pv-note{opacity:1;animation:pvpop .5s cubic-bezier(.2,1.5,.4,1) backwards}
+.pv-mnotes.active .pv-note:nth-of-type(1){animation-delay:.05s}
+.pv-mnotes.active .pv-note:nth-of-type(2){animation-delay:.22s}
+.pv-mnotes.active .pv-note:nth-of-type(3){animation-delay:.39s}
+.pv-mnotes.active .pv-note:nth-of-type(4){animation-delay:.56s}
+@keyframes pvpop{from{opacity:0;transform:translateY(-14px) scale(.6)}to{opacity:1;transform:none}}
+.pv-play{transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.cyc-node circle{transition:fill .3s,stroke .3s}
+.cyc-node text{transition:fill .3s}
+.cyc-node.active circle{fill:#0c2c40;stroke:#00d4ff}
+.cyc-node.active text{fill:#8ef0ff}
+.pv-wave{animation:pvwave 4.5s linear infinite}
+@keyframes pvwave{from{transform:translateX(0)}to{transform:translateX(-130px)}}
+.pv-chev{animation:pvchev 1.8s ease-in-out infinite}
+.pv-chev:nth-of-type(2){animation-delay:.3s}
+.pv-chev:nth-of-type(3){animation-delay:.6s}
+@keyframes pvchev{0%,100%{opacity:.25}50%{opacity:1}}
+.pv-glow{animation:pvglow 5s ease-in-out infinite}
+@keyframes pvglow{0%,100%{opacity:.35}50%{opacity:.75}}
+.pv-scan{animation:pvscan 7s linear infinite}
+@keyframes pvscan{0%{opacity:0}8%{opacity:.5}92%{opacity:.5}100%{opacity:0}}
+
+@media(max-width:760px){
+  main{padding-top:132px}
+  .navrow{flex-direction:column;align-items:stretch;gap:8px;padding:8px 12px}
+  .card{padding:16px}
+  body{font-size:15.4px}
+  .piano{height:140px}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .pv-wave,.pv-chev,.pv-glow,.pv-scan,.pv-mnotes.active .pv-note{animation:none !important}
+  .page.active{animation:none}
+  *{transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<header id="nav">
+  <div class="navrow">
+    <div class="brand">
+      <div class="bico">♫</div>
+      <div><b>LEAD SHEET → PIANO</b><span>Manual de arreglos</span></div>
+    </div>
+    <nav class="navscroll" id="navscroll" aria-label="Navegación del tutorial"></nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ==================== HOME ==================== -->
+<section id="home" class="page active">
+  <div class="wrap">
+    <div class="portada" id="portada-home" aria-label="Portada animada: lead sheet transformándose en arreglo de piano"></div>
+
+    <div class="home-head">
+      <span class="badge-top">Manual técnico · Arreglos de piano · Notación americana</span>
+      <h1 class="big">De la <em>Lead Sheet</em> al Arreglo de Piano</h1>
+      <p class="sub">Cómo transformar melodía + acordes en un arreglo completo, musical y tocable</p>
+
+      <p class="desc">Una <b>lead sheet</b> es el esqueleto de una canción: una línea de melodía y, encima de ella, símbolos de acordes (<code class="inl">Cmaj7</code>, <code class="inl">Dm7</code>, <code class="inl">G7</code>…). No indica qué debe tocar la mano izquierda, ni qué voicing usar, ni cómo debe respirar la música. <b>Todo eso es trabajo del arreglista.</b></p>
+      <p class="desc">Esta guía te enseña exactamente ese trabajo: el proceso de pensamiento, paso a paso, que convierte una lead sheet en un arreglo de piano completo. No es un libro de teoría musical en abstracto — es un <b>manual de decisiones</b>. Cada vez que aparezca una decisión de arreglo, se explica siguiendo el esquema:</p>
+      <div class="flow" style="max-width:960px;margin-left:auto;margin-right:auto">
+        <div class="fbox"><b>QUÉ es</b><span>Definición del recurso</span></div>
+        <div class="farrow">→</div>
+        <div class="fbox"><b>CÓMO se hace</b><span>Construcción práctica</span></div>
+        <div class="farrow">→</div>
+        <div class="fbox"><b>POR QUÉ funciona</b><span>Razón audible</span></div>
+        <div class="farrow">→</div>
+        <div class="fbox"><b>CUÁNDO conviene</b><span>Contexto de uso</span></div>
+        <div class="farrow">→</div>
+        <div class="fbox"><b>CUÁNDO NO</b><span>Contraindicaciones</span></div>
+      </div>
+      <p class="desc" style="margin-top:14px">Al final de esta guía, ante cualquier lead sheet nueva, sabrás <b>qué mirar primero</b>, <b>qué preguntas hacerte</b> y <b>en qué orden construir el arreglo</b>.</p>
+
+      <div class="callout info" style="text-align:left;max-width:900px;margin:20px auto">
+        <span class="ct">Info · Notación utilizada</span>
+        <p>En toda la guía se usa <b>notación americana</b> (<code class="inl">A, B, C, D, E, F, G</code>) acompañada del <b>grado romano</b> de la escala cuando es relevante. Ejemplo: <code class="inl">E(III)</code> significa «la nota E, que es el tercer grado de la tonalidad actual».</p>
+      </div>
+
+      <div class="quote">
+        <p>«Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.»</p>
+        <small>Principio didáctico de este manual</small>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><b>26</b><span>Capítulos integrados</span></div>
+        <div class="metric"><b>11</b><span>Estilos de arreglo</span></div>
+        <div class="metric"><b>50</b><span>Errores diagnosticados</span></div>
+        <div class="metric"><b>10</b><span>Niveles progresivos</span></div>
+        <div class="metric"><b>10</b><span>Texturas de piano</span></div>
+        <div class="metric"><b>22</b><span>Términos de glosario</span></div>
+        <div class="metric"><b>7</b><span>Ejercicios con solución</span></div>
+        <div class="metric"><b>4</b><span>Compases analizados</span></div>
+      </div>
+
+      <div class="datetime">
+        <div class="dt">📅 FECHA: 09/09/2026</div>
+        <div class="dt">🕐 HORA: 12:11:08</div>
+        <div class="dt">👨‍💻 Rubén Sbarsky</div>
+      </div>
+
+      <div class="card toc">
+        <h3 style="color:#bfe9ff;font-size:18px;margin-bottom:4px">📑 Tabla de contenidos de la guía</h3>
+        <p style="color:var(--muted);font-size:14px;margin-bottom:6px">Los 26 capítulos originales del documento, agrupados en las secciones navegables de este tutorial. Pulsa cualquiera para ir directamente.</p>
+        <div class="tocgrid" id="tocgrid"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 1 FUNDAMENTOS ==================== -->
+<section id="fundamentos" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">◈</div>
+      <div><h2>Fundamentos: qué es arreglar y cómo piensa un arreglista</h2>
+      <p>Capítulos 1 · 2 · 3 — Introducción, naturaleza del arreglo y ciclo mental</p></div>
+    </div>
+
+    <h3 class="subhead">1. Introducción</h3>
+    <div class="card">
+      <p>Una <b>lead sheet</b> es el esqueleto de una canción: una línea de melodía y, encima de ella, símbolos de acordes (<code class="inl">Cmaj7</code>, <code class="inl">Dm7</code>, <code class="inl">G7</code>…). <b>No indica</b> qué debe tocar la mano izquierda, ni qué voicing usar, ni cómo debe respirar la música. Todo eso es trabajo del arreglista.</p>
+      <p>Esta guía enseña exactamente ese trabajo: el <b>proceso de pensamiento, paso a paso</b>, que convierte una lead sheet en un arreglo de piano completo. No es un libro de teoría musical en abstracto — es un <b>manual de decisiones</b>. Cada decisión de arreglo se explica con el esquema:</p>
+      <div class="chiprow">
+        <span class="chip active" style="cursor:default">QUÉ es</span>
+        <span class="chip active" style="cursor:default">CÓMO se hace</span>
+        <span class="chip active" style="cursor:default">POR QUÉ funciona</span>
+        <span class="chip active" style="cursor:default">CUÁNDO conviene</span>
+        <span class="chip active" style="cursor:default">CUÁNDO NO conviene</span>
+      </div>
+      <p style="margin-bottom:0">Al final de la guía, ante cualquier lead sheet nueva, sabrás <b>qué mirar primero</b>, <b>qué preguntas hacerte</b> y <b>en qué orden construir el arreglo</b>.</p>
+    </div>
+
+    <h3 class="subhead">2. Qué es realmente arreglar una lead sheet</h3>
+    <div class="card">
+      <p>Arreglar <b>no es</b> «poner un acorde bonito debajo de cada nota de la melodía». Arreglar es tomar una <b>serie de decisiones encadenadas</b>:</p>
+      <div class="grid g2">
+        <div class="mini"><h4>① Bajo</h4><p>¿Qué nota va en el bajo en cada momento?</p></div>
+        <div class="mini"><h4>② Inversión / voicing</h4><p>¿Qué posición del acorde se acerca mejor a la melodía?</p></div>
+        <div class="mini"><h4>③ Mano izquierda</h4><p>¿Qué debe tocar mientras la derecha sostiene la melodía?</p></div>
+        <div class="mini"><h4>④ Densidad</h4><p>¿Cuánta densidad de notas necesita este momento de la canción?</p></div>
+        <div class="mini"><h4>⑤ Contraste de secciones</h4><p>¿Cómo hago que la sección B suene distinta de la A sin cambiar la armonía?</p></div>
+        <div class="mini"><h4>⑥ Respiración</h4><p>¿Cómo entro, cómo salgo, cómo respiro entre frases?</p></div>
+      </div>
+      <p style="margin-top:14px">Una misma lead sheet puede convertirse en <b>cien arreglos distintos</b>, todos «correctos». Lo que separa un arreglo mediocre de uno excelente no es la teoría que conoces, sino <b>la calidad de las decisiones</b> que tomas con esa teoría.</p>
+      <div class="callout example">
+        <span class="ct">Regla de oro que sostiene toda la guía</span>
+        <p><b>La melodía manda.</b> Todo lo demás —bajo, voicing, densidad, ritmo— existe para <b>servirla</b>, nunca para competir con ella.</p>
+      </div>
+    </div>
+
+    <h3 class="subhead">3. Cómo piensa un arreglista</h3>
+    <div class="card">
+      <p>Antes de entrar en técnica, interioriza el <b>ciclo mental</b> que vas a repetir constantemente:</p>
+      <div class="flow">
+        <div class="fbox"><b>1 · ESCUCHAR</b><span>melodía + acorde</span></div>
+        <div class="farrow">→</div>
+        <div class="fbox"><b>2 · ANALIZAR</b><span>tonalidad, función, tensión</span></div>
+        <div class="farrow">→</div>
+        <div class="fbox"><b>3 · DECIDIR</b><span>bajo, voicing, textura</span></div>
+        <div class="farrow">→</div>
+        <div class="fbox"><b>4 · JUSTIFICAR</b><span>¿por qué esta y no otra?</span></div>
+      </div>
+      <p>Un arreglista profesional <b>nunca coloca una nota «porque sí»</b>. Ejemplo de razonamiento real:</p>
+      <div class="callout info">
+        <span class="ct">Ejemplo de razonamiento</span>
+        <p>«La melodía tiene <b>E(III)</b> mientras el acorde es <b>C(I)</b>. Si toco C-E-G en posición fundamental en la mano derecha, la melodía (E) queda enterrada en medio del acorde. Mejor coloco el voicing de forma que <b>E(III) sea la nota más aguda</b>, y dejo que la mano izquierda cubra <b>C(I)</b> y <b>G(V)</b> en un registro grave. Así la melodía se oye clara y el acorde la sostiene sin taparla.»</p>
+      </div>
+      <p style="margin-bottom:0">Este tipo de razonamiento —<b>observar, comparar opciones, elegir por una razón audible</b>— es lo que vas a practicar en cada capítulo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 2 LEAD SHEET ==================== -->
+<section id="leadsheet" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">▤</div>
+      <div><h2>La lead sheet: anatomía, tonalidad y grados</h2>
+      <p>Capítulos 4 · 5 — Qué contiene el documento y cómo situarlo tonalmente</p></div>
+    </div>
+
+    <h3 class="subhead">4. Anatomía de una lead sheet</h3>
+    <div class="card">
+      <p>Una lead sheet típica contiene los siguientes elementos. Observa la diferencia entre <b>lo que da</b> y <b>lo que NO da</b>: ahí está exactamente tu trabajo.</p>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Elemento</th><th>Qué información da</th><th>Qué NO da</th></tr></thead>
+          <tbody>
+            <tr><td><b>Pentagrama con la melodía</b></td><td>Notas, ritmo, fraseo</td><td>Armonización, mano izquierda</td></tr>
+            <tr><td><b>Símbolos de acordes</b></td><td>Armonía vertical en cada momento</td><td>Voicing, inversión, textura</td></tr>
+            <tr><td><b>Indicación de compás</b> (ej. 4/4)</td><td>Métrica</td><td>Acentuación real, subdivisión de estilo</td></tr>
+            <tr><td><b>Tempo y estilo</b> (ej. «Ballad, ♩=72»)</td><td>Carácter general</td><td>Dinámica interna, rubato</td></tr>
+            <tr><td><b>Estructura</b> (Intro-A-B-A-Outro)</td><td>Forma general</td><td>Cómo variar cada sección</td></tr>
+            <tr><td><b>Letra</b> (si existe)</td><td>Fraseo natural, respiración</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info">
+        <span class="ct">Info · Primer paso siempre</span>
+        <p>Lo primero que debes hacer siempre al recibir una lead sheet es una <b>lectura de reconocimiento</b>: tonalidad, forma, densidad armónica (¿cambia de acorde cada compás o cada dos tiempos?) y el «carácter» general que sugiere el estilo indicado.</p>
+      </div>
+    </div>
+
+    <h3 class="subhead">5. Tonalidad y grados de la escala</h3>
+    <div class="card">
+      <p><b>Qué es:</b> la tonalidad es el <b>centro gravitacional</b> de la pieza — la nota y escala respecto a la cual todas las demás notas y acordes cobran sentido funcional.</p>
+      <h4 class="subhead2">Cómo se determina</h4>
+      <div class="steps">
+        <div class="stepn"><b>Mira la armadura</b><p>Si hay partitura, o bien los acordes usados.</p></div>
+        <div class="stepn"><b>Busca el acorde de reposo</b><p>Normalmente el primero y/o el último (la tónica).</p></div>
+        <div class="stepn"><b>Verifica la escala</b><p>¿Los acordes encajan en una escala mayor o menor diatónica?</p></div>
+      </div>
+
+      <h4 class="subhead2">Ejemplo en C major</h4>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Grado</th><th>Nota</th><th>Acorde diatónico</th><th>Función</th></tr></thead>
+          <tbody>
+            <tr><td><b>I</b></td><td>C</td><td>Cmaj7</td><td>Tónica</td></tr>
+            <tr><td><b>II</b></td><td>D</td><td>Dm7</td><td>Predominante</td></tr>
+            <tr><td><b>III</b></td><td>E</td><td>Em7</td><td>Tónica (débil)</td></tr>
+            <tr><td><b>IV</b></td><td>F</td><td>Fmaj7</td><td>Predominante</td></tr>
+            <tr><td><b>V</b></td><td>G</td><td>G7</td><td>Dominante</td></tr>
+            <tr><td><b>VI</b></td><td>A</td><td>Am7</td><td>Tónica (relativa menor)</td></tr>
+            <tr><td><b>VII</b></td><td>B</td><td>Bm7♭5</td><td>Dominante (débil)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="subhead2">Ejemplo en G major (una alteración, F# en vez de F)</h4>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Grado</th><th>Nota</th><th>Acorde diatónico</th></tr></thead>
+          <tbody>
+            <tr><td><b>I</b></td><td>G</td><td>Gmaj7</td></tr>
+            <tr><td><b>II</b></td><td>A</td><td>Am7</td></tr>
+            <tr><td><b>III</b></td><td>B</td><td>Bm7</td></tr>
+            <tr><td><b>IV</b></td><td>C</td><td>Cmaj7</td></tr>
+            <tr><td><b>V</b></td><td>D</td><td>D7</td></tr>
+            <tr><td><b>VI</b></td><td>E</td><td>Em7</td></tr>
+            <tr><td><b>VII</b></td><td>F#</td><td>F#m7♭5</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout example">
+        <span class="ct">Ejemplo · Grados sobre el teclado</span>
+        <p>Pulsa cualquier tecla para ver su nombre y su grado en <b>C major</b>, o usa los botones inferiores (situados justo debajo del teclado) para ver la escala completa y los siete acordes diatónicos.</p>
+      </div>
+      <div class="piano-card">
+        <div class="piano-top">
+          <h4>🎹 Teclado interactivo · Tonalidad de C major</h4>
+          <span class="badge g">Grados I – VII</span>
+        </div>
+        <div class="pscroll"><div id="piano-ton"></div></div>
+      </div>
+
+      <h4 class="subhead2">Por qué importa</h4>
+      <p>Sin saber la tonalidad <b>no puedes saber la función de un acorde</b>, y sin función no puedes decidir voicing, tensión ni resolución. <b>Todo el resto del método depende de este primer paso.</b></p>
+      <h4 class="subhead2">Cuándo se complica</h4>
+      <ul class="tick">
+        <li><b>Modulaciones:</b> cambios de tonalidad dentro de la pieza.</li>
+        <li><b>Tonalidades menores:</b> con sus tres formas — natural, armónica y melódica.</li>
+        <li><b>Préstamos modales.</b></li>
+      </ul>
+      <div class="callout warn">
+        <span class="ct">Advertencia</span>
+        <p>Estos casos complicados se tratan en los capítulos de <b>tensiones</b> y <b>sustituciones</b>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 3 ANÁLISIS ==================== -->
+<section id="analisis" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">♪</div>
+      <div><h2>Análisis de la melodía y de la armonía</h2>
+      <p>Capítulos 6 · 7 — Leer la melodía como una historia y clasificar funciones armónicas</p></div>
+    </div>
+
+    <h3 class="subhead">6. Análisis de la melodía</h3>
+    <div class="card">
+      <p>Antes de armonizar nada, hay que <b>«leer» la melodía como una historia</b> con puntos de tensión y de reposo.</p>
+      <h4 class="subhead2">Qué identificar</h4>
+      <div class="grid g2">
+        <div class="mini"><h4>Notas estructurales</h4><p>Las notas largas, acentuadas o que caen en tiempos fuertes — normalmente son <b>chord tones</b> (notas del acorde).</p></div>
+        <div class="mini"><h4>Notas de paso (passing tones)</h4><p>Unen dos notas del acorde por <b>grado conjunto</b>, sin acentuar.</p></div>
+        <div class="mini"><h4>Notas de aproximación (approach tones)</h4><p>Notas cortas justo antes de una nota estructural, a distancia de <b>semitono o tono</b>.</p></div>
+        <div class="mini"><h4>Notas de tensión</h4><p>Notas que no pertenecen al acorde y crean fricción intencionada (<b>9, 11, 13, alteraciones</b>).</p></div>
+        <div class="mini"><h4>Puntos de reposo</h4><p>Finales de frase, notas largas — suelen coincidir con la <b>tónica</b> o con chord tones estables.</p></div>
+        <div class="mini"><h4>Motivos</h4><p>Pequeños patrones melódicos que se <b>repiten o transforman</b>.</p></div>
+      </div>
+      <div class="callout info">
+        <span class="ct">Info · Por qué importa</span>
+        <p>Saber qué notas son «importantes» te dice <b>dónde el voicing debe apoyar con firmeza</b> (chord tones) y <b>dónde puede quedar más libre</b> (notas de paso, que no necesitan una reasignación armónica constante).</p>
+      </div>
+      <div class="callout example">
+        <span class="ct">Ejemplo</span>
+        <p>Melodía <code class="inl">C(I) – D(II) – E(III) – G(V)</code> sobre acorde <code class="inl">C(I)</code>:</p>
+        <p style="margin-bottom:0">• <b>C(I)</b>, <b>E(III)</b> y <b>G(V)</b> → chord tones, notas estructurales.<br>• <b>D(II)</b> → nota de paso entre C y E, no necesita tratamiento especial.</p>
+      </div>
+    </div>
+
+    <h3 class="subhead">7. Análisis armónico y funciones</h3>
+    <div class="card">
+      <p><b>Qué es una función armónica:</b> el «papel» que cumple un acorde dentro del <b>relato tonal</b>. Las tres funciones básicas:</p>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Función</th><th>Grados típicos</th><th>Sensación</th></tr></thead>
+          <tbody>
+            <tr><td><b>Tónica</b></td><td>I, VI, (III)</td><td>Reposo, estabilidad</td></tr>
+            <tr><td><b>Predominante</b></td><td>II, IV</td><td>Preparación, movimiento hacia la dominante</td></tr>
+            <tr><td><b>Dominante</b></td><td>V, VII</td><td>Tensión que pide resolver a la tónica</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4 class="subhead2">Cómo se analiza</h4>
+      <div class="steps">
+        <div class="stepn"><b>Grado romano</b><p>Para cada acorde de la lead sheet, identifica su grado romano.</p></div>
+        <div class="stepn"><b>Clasificación funcional</b><p>Clasifícalo en una de las tres funciones (T / PD / D).</p></div>
+        <div class="stepn"><b>Observa la secuencia</b><p>La mayoría de la música tonal se mueve en ciclos <b>T → PD → D → T</b> (tónica → predominante → dominante → tónica).</p></div>
+      </div>
+      <div class="callout example">
+        <span class="ct">Ejemplo</span>
+        <p><code class="inl">C(I) – Am(VI) – Dm(II) – G7(V7) – C(I)</code> → Tónica – Tónica – Predominante – Dominante – Tónica.</p>
+        <p style="margin-bottom:0">Es una <b>cadencia clásica ii-V-I</b> precedida de un movimiento <b>I-VI</b>.</p>
+      </div>
+
+      <h4 class="subhead2">Cadencias más comunes</h4>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Cadencia</th><th>Movimiento</th><th>Sensación</th></tr></thead>
+          <tbody>
+            <tr><td><b>Auténtica perfecta</b></td><td>V(7) → I</td><td>Final fuerte y conclusivo</td></tr>
+            <tr><td><b>Auténtica imperfecta</b></td><td>V → I (con inversión o nota distinta en melodía)</td><td>Final más suave</td></tr>
+            <tr><td><b>Plagal</b></td><td>IV → I</td><td>Final «amén», suave</td></tr>
+            <tr><td><b>Rota (deceptive)</b></td><td>V → VI</td><td>Sorpresa, evita el cierre</td></tr>
+            <tr><td><b>Semicadencia</b></td><td>Cualquiera → V</td><td>Queda «en el aire», pide continuación</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info">
+        <span class="ct">Info · Por qué importa</span>
+        <p style="margin-bottom:0">Conocer la función te dice si un acorde <b>«quiere moverse»</b> (dominante) o <b>«puede quedarse quieto»</b> (tónica), lo cual afecta directamente a cuánta tensión, qué voicing y qué movimiento de bajo conviene.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 4 INVERSIONES Y BAJO ==================== -->
+<section id="bajo" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">⇅</div>
+      <div><h2>Inversiones y el bajo</h2>
+      <p>Capítulos 8 · 9 — Reordenar el acorde y decidir la base armónica y rítmica</p></div>
+    </div>
+
+    <h3 class="subhead">8. Inversiones</h3>
+    <div class="card">
+      <p><b>Qué es:</b> una inversión es tocar un acorde con <b>una nota distinta de la fundamental en el bajo</b>. Si <code class="inl">C</code> en posición fundamental es C-E-G, su primera inversión es <b>E-G-C</b> (con E en el bajo) y su segunda inversión es <b>G-C-E</b> (con G en el bajo).</p>
+      <div class="grid g2">
+        <div class="mini"><h4>Cómo se construye</h4><p>Se reordenan las mismas notas del acorde, cambiando cuál queda más grave.</p></div>
+        <div class="mini"><h4>Cómo se toca</h4><p>La mano izquierda o la nota más grave de la mano derecha determina qué inversión estás usando.</p></div>
+      </div>
+      <h4 class="subhead2">Cuándo conviene</h4>
+      <ul class="tick">
+        <li>Cuando quieres <b>suavizar el movimiento del bajo</b> (líneas de bajo por grado conjunto en vez de saltos).</li>
+        <li>Cuando la fundamental en el bajo sonaría <b>«demasiado pesada»</b> para el momento musical.</li>
+        <li>Para <b>acercar una nota concreta del acorde a la melodía</b>.</li>
+      </ul>
+      <h4 class="subhead2">Cuándo NO conviene</h4>
+      <ul class="tick">
+        <li>En <b>finales importantes</b>, donde el bajo en fundamental da más peso y conclusión.</li>
+        <li>Cuando el bajo en inversión crea una <b>línea confusa o ambigua armónicamente</b>.</li>
+      </ul>
+      <div class="callout example">
+        <span class="ct">Ejemplo · Progresión C(I) – F(IV) – G(V) – C(I)</span>
+        <p>• Con todas las fundamentales en el bajo: <code class="inl">C – F – G – C</code> (saltos grandes, sólido pero «cuadrado»).</p>
+        <p style="margin-bottom:0">• Usando 1ª inversión en el F: <code class="inl">C – F/A – G – C</code> → el bajo se mueve <b>C-A-G-C</b>, más suave y conectado por grados cercanos.</p>
+      </div>
+    </div>
+
+    <h3 class="subhead">9. El bajo</h3>
+    <div class="card">
+      <p><b>Qué decide el bajo:</b> el bajo es la <b>base armónica y rítmica</b> del arreglo. Define claramente la fundamental (o una nota alternativa deliberada) y da <b>impulso rítmico</b>.</p>
+      <h4 class="subhead2">Opciones principales</h4>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Tipo de bajo</th><th>Qué es</th><th>Cuándo usarlo</th></tr></thead>
+          <tbody>
+            <tr><td><b>Fundamental simple</b></td><td>La raíz del acorde, sola, en negras/redondas</td><td>Baladas, texturas simples, principiantes</td></tr>
+            <tr><td><b>Bajo alternado (stride)</b></td><td>Fundamental y quinta alternadas rítmicamente</td><td>Ragtime, swing, gospel</td></tr>
+            <tr><td><b>Bajo pedal</b></td><td>Una nota fija sostenida bajo varios acordes cambiantes</td><td>Crear tensión, secciones de transición, finales</td></tr>
+            <tr><td><b>Walking bass</b></td><td>Línea de bajo en corcheas/negras que conecta acordes por grado conjunto o arpegio</td><td>Jazz, blues, swing</td></tr>
+            <tr><td><b>Bajo de aproximación</b></td><td>Nota cromática o diatónica justo antes del siguiente acorde</td><td>Dar impulso hacia el siguiente cambio armónico</td></tr>
+            <tr><td><b>Movimiento conjunto (inversiones)</b></td><td>Bajo que se mueve por grados cercanos usando inversiones</td><td>Suavizar progresiones, voice leading fluido</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info">
+        <span class="ct">Info · Por qué importa</span>
+        <p style="margin-bottom:0">El oyente identifica la armonía <b>principalmente por el bajo</b>. Un bajo bien construido puede sostener un voicing simple en la mano derecha; un bajo torpe hace que hasta un voicing sofisticado suene confuso.</p>
+      </div>
+      <div class="callout example">
+        <span class="ct">Ejemplo · Bajo pedal</span>
+        <p style="margin-bottom:0">Sobre <code class="inl">C(I) – Dm7(II) – G7(V7)</code>, mantener <b>G(V) sostenido</b> en el bajo bajo los tres acordes crea tensión que «empuja» hacia la resolución final en <b>C</b>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 5 VOICE LEADING Y VOICINGS ==================== -->
+<section id="voicings" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">✦</div>
+      <div><h2>Voice leading y voicings</h2>
+      <p>Capítulos 10 · 11 — Mover las voces con suavidad y disponer las notas del acorde</p></div>
+    </div>
+
+    <h3 class="subhead">10. Voice leading</h3>
+    <div class="card">
+      <p><b>Qué es:</b> la conducción de las voces (notas individuales) de un acorde al siguiente, buscando el <b>movimiento más suave y natural posible</b> entre acordes.</p>
+      <h4 class="subhead2">Principios</h4>
+      <ul class="tick">
+        <li><b>Notas comunes:</b> si una nota existe en ambos acordes, <b>mantenla en la misma voz</b> (no la muevas).</li>
+        <li><b>Movimiento mínimo:</b> mueve el resto de voces al <b>grado más cercano disponible</b>, no a saltos grandes.</li>
+        <li><b>Resolución de la tercera y la séptima:</b> en acordes dominantes, la tercera suele <b>subir por semitono</b> y la séptima suele <b>bajar por grado conjunto</b> hacia la tónica siguiente.</li>
+      </ul>
+
+      <h4 class="subhead2">Ejemplo — MAL voicing vs MEJOR voicing</h4>
+      <p>Progresión: <code class="inl">Cmaj7(Imaj7) → G7(V7)</code></p>
+      <div class="grid g2">
+        <div class="mini" style="border-left:3px solid var(--red)">
+          <h4 style="color:#ffb4b4">✗ MAL (saltos innecesarios)</h4>
+          <pre class="code" style="margin-top:6px">Mano derecha:
+C-E-G-B  →  G-B-D-F</pre>
+          <p style="margin-bottom:0">Todas las voces saltan a la vez — suena «torpe», como si fueran dos acordes desconectados.</p>
+        </div>
+        <div class="mini" style="border-left:3px solid var(--green)">
+          <h4 style="color:#a7f3c4">✓ MEJOR (voice leading suave)</h4>
+          <pre class="code" style="margin-top:6px">Mano derecha:
+C-E-G-B  →  B-D-F-G</pre>
+          <p style="margin-bottom:0">La nota <b>B</b> es común a ambos acordes (B es la 7ª de C y la 3ª de G7) y <b>se mantiene fija</b>; las demás voces se mueven al vecino más cercano.</p>
+        </div>
+      </div>
+      <div class="callout warn">
+        <span class="ct">Advertencia · Errores habituales</span>
+        <p style="margin-bottom:0">Mover todas las voces en la misma dirección y a la misma distancia (<b>movimiento paralelo excesivo</b>, especialmente en quintas y octavas paralelas, que suena hueco); <b>saltos grandes en voces internas</b> que no aportan nada auditivo.</p>
+      </div>
+    </div>
+
+    <h3 class="subhead">11. Voicings</h3>
+    <div class="card">
+      <p><b>Qué es un voicing:</b> la disposición concreta de las notas de un acorde — qué nota va abajo, cuál arriba, qué tan abiertas o cerradas están entre sí.</p>
+      <h4 class="subhead2">Tipos principales</h4>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Voicing</th><th>Descripción</th><th>Uso típico</th></tr></thead>
+          <tbody>
+            <tr><td><b>Triada simple</b></td><td>Fundamental-3ª-5ª</td><td>Pop simple, principiantes</td></tr>
+            <tr><td><b>Cerrado (close position)</b></td><td>Notas lo más juntas posible</td><td>Sonido denso, registro medio</td></tr>
+            <tr><td><b>Abierto (open position)</b></td><td>Notas separadas, alguna una octava más</td><td>Sonido amplio, orquestal</td></tr>
+            <tr><td><b>Shell voicing</b></td><td>Solo fundamental + 3ª + 7ª (sin 5ª)</td><td>Jazz, cuando el bajo ya cubre la fundamental</td></tr>
+            <tr><td><b>Rootless voicing</b></td><td>Sin fundamental, solo 3ª-5ª/tensión-7ª-9ª…</td><td>Jazz avanzado, cuando otro instrumento/mano cubre el bajo</td></tr>
+            <tr><td><b>Drop voicing</b></td><td>Se toma un voicing cerrado y se «deja caer» una voz interna una octava</td><td>Sonido más orquestal, típico de arreglos de jazz/big band</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="subhead2">Ejemplo — Cmaj7 en cuatro inversiones</h4>
+      <pre class="code">Posición fundamental:  C - E - G - B
+1ª inversión:          E - G - B - C
+2ª inversión:          G - B - C - E
+3ª inversión:          B - C - E - G</pre>
+      <p>Cada una cambia: <b>qué nota queda en el bajo</b>, cuán «alta» o «grave» suena la sonoridad general, y <b>qué nota del acorde queda más cerca de la melodía</b>.</p>
+
+      <div class="callout example">
+        <span class="ct">Ejemplo interactivo · Pulsa los botones situados justo debajo del teclado</span>
+        <p style="margin-bottom:0">Cada botón muestra un voicing sobre el teclado y lo reproduce. Observa qué nota queda en el bajo en cada inversión y cómo se mantiene la nota común <b>B</b> entre <code class="inl">Cmaj7</code> y <code class="inl">G7</code>.</p>
+      </div>
+      <div class="piano-card">
+        <div class="piano-top">
+          <h4>🎹 Teclado interactivo · Inversiones, shells y tensiones</h4>
+          <span class="badge">Voicings</span>
+        </div>
+        <div class="pscroll"><div id="piano-voi"></div></div>
+      </div>
+
+      <h4 class="subhead2">Cómo elegir el voicing según la melodía</h4>
+      <p>Identifica <b>qué nota tiene la melodía</b> en ese momento y elige el voicing/inversión que deje esa nota como <b>la voz más aguda del acorde</b> (o muy cerca de ella), evitando que otra nota del voicing quede por encima y «tape» la melodía.</p>
+      <h4 class="subhead2">Cuándo usar shell / rootless</h4>
+      <p style="margin-bottom:0">Cuando la mano izquierda o el bajo <b>ya está cubriendo la fundamental</b> — así evitas doblar innecesariamente y dejas sitio para tensiones.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 6 MELODÍA + ARMONÍA / TENSIONES ==================== -->
+<section id="melodia" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">♯</div>
+      <div><h2>Melodía + armonía: clasificación de notas y tensiones</h2>
+      <p>Capítulos 12 · 13 — Qué papel cumple cada nota y qué color añades encima de la 7ª</p></div>
+    </div>
+
+    <h3 class="subhead">12. Melodía + armonía: clasificación de notas</h3>
+    <div class="card">
+      <p>Cada nota de la melodía se relaciona con el acorde que suena debajo de una de estas formas:</p>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Categoría</th><th>Definición</th><th>Tratamiento</th></tr></thead>
+          <tbody>
+            <tr><td><b>Chord tone</b></td><td>Nota que pertenece al acorde</td><td>Se apoya directamente, es «segura»</td></tr>
+            <tr><td><b>Scale tone</b></td><td>Nota de la escala pero no del acorde</td><td>Suave, casi no genera fricción</td></tr>
+            <tr><td><b>Tension</b></td><td>Nota de tensión intencionada (9, 11, 13…)</td><td>Añade color, requiere cuidado en el voicing</td></tr>
+            <tr><td><b>Passing tone</b></td><td>Conecta dos chord tones por grado conjunto</td><td>No requiere resolución especial</td></tr>
+            <tr><td><b>Neighbor tone</b></td><td>Se aleja un grado y vuelve a la nota original</td><td>Decorativa</td></tr>
+            <tr><td><b>Approach tone</b></td><td>Nota corta justo antes de una nota importante</td><td>Da impulso rítmico</td></tr>
+            <tr><td><b>Suspension</b></td><td>Nota retenida de un acorde anterior que choca con el nuevo acorde, y luego resuelve</td><td>Genera tensión-resolución clara</td></tr>
+            <tr><td><b>Anticipation</b></td><td>Nota del acorde siguiente que suena antes de tiempo</td><td>Da fluidez rítmica</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info">
+        <span class="ct">Info · Por qué importa</span>
+        <p style="margin-bottom:0">Si la melodía tiene una nota de tensión (por ejemplo, la 9ª) y tú armonizas con un voicing que no la contempla, puede sonar como un <b>«error»</b> en vez de una <b>elección de color</b>. Clasificar la nota primero te dice si el voicing debe <b>incluirla explícitamente</b> o dejarla como <b>adorno pasajero</b>.</p>
+      </div>
+    </div>
+
+    <h3 class="subhead">13. Tensiones</h3>
+    <div class="card">
+      <p><b>Qué son:</b> notas añadidas por encima de la séptima (<b>9, 11, 13</b>) que enriquecen el acorde <b>sin cambiar su función básica</b>, más las tensiones alteradas (<b>♭9, ♯9, ♯11, ♭13</b>) que añaden color más marcado o disonante.</p>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Tensión</th><th>Función / color</th><th>Suele usarse sobre</th><th>Estabilidad</th></tr></thead>
+          <tbody>
+            <tr><td><b>9</b></td><td>Color suave, «abre» el acorde</td><td>Cualquier acorde mayor, menor o dominante</td><td>Muy estable</td></tr>
+            <tr><td><b>11</b></td><td>Puede chocar con la 3ª mayor (mejor en acordes menores o sus7)</td><td>m7, sus</td><td>Estable en menor</td></tr>
+            <tr><td><b>13</b></td><td>Color cálido, sustituye a menudo a la 6ª</td><td>Dominantes, mayores</td><td>Estable</td></tr>
+            <tr><td><b>♭9</b></td><td>Tensión fuerte, sonido «oscuro»</td><td>Dominantes (especialmente hacia menor)</td><td>Inestable, pide resolución</td></tr>
+            <tr><td><b>♯9</b></td><td>Sonido «bluesy», ambigüedad mayor/menor</td><td>Dominantes</td><td>Inestable</td></tr>
+            <tr><td><b>♯11</b></td><td>Color lidio, brillante</td><td>Mayores, dominantes</td><td>Semi-estable, típico de jazz/cine</td></tr>
+            <tr><td><b>♭13</b></td><td>Oscurece el dominante</td><td>Dominantes antes de resolver a menor</td><td>Inestable</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="grid g2">
+        <div class="mini" style="border-left:3px solid var(--green)">
+          <h4 style="color:#a7f3c4">Cuándo usarlas</h4>
+          <p style="margin-bottom:0">Cuando quieres más color sin cambiar la función; en dominantes antes de una resolución fuerte (las tensiones alteradas aumentan la sensación de «tirón» hacia la tónica); en estilos jazz, gospel, R&amp;B, cine.</p>
+        </div>
+        <div class="mini" style="border-left:3px solid var(--red)">
+          <h4 style="color:#ffb4b4">Cuándo evitarlas</h4>
+          <p style="margin-bottom:0">En música muy simple o infantil donde el color extra puede sonar «fuera de lugar»; cuando la melodía ya ocupa esa nota de forma clara y añadir la tensión en el voicing crea un choque de octava o segunda muy cercano (a menos que sea el efecto buscado).</p>
+        </div>
+      </div>
+      <div class="callout example">
+        <span class="ct">Ejemplo</span>
+        <p style="margin-bottom:0"><code class="inl">G7(V7)</code> resolviendo a <code class="inl">Cm(i)</code> (tonalidad menor) — usar <code class="inl">G7♭9</code> <b>intensifica el tirón</b> hacia la resolución menor, porque el ♭9 (<b>Ab</b>) es también parte de la escala de C menor.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 7 MANOS Y TEXTURAS ==================== -->
+<section id="manos" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">✋</div>
+      <div><h2>Mano izquierda, mano derecha y texturas</h2>
+      <p>Capítulos 14 · 15 — Reparto entre manos y diez texturas de acompañamiento</p></div>
+    </div>
+
+    <h3 class="subhead">14. Mano izquierda y mano derecha</h3>
+    <div class="card">
+      <h4 class="subhead2">Principio general de reparto</h4>
+      <div class="grid g2">
+        <div class="mini"><h4>Mano izquierda</h4><p>Normalmente cubre el <b>bajo</b> y, opcionalmente, parte baja del acorde (quinta, o shell voicing).</p></div>
+        <div class="mini"><h4>Mano derecha</h4><p>Normalmente sostiene la <b>melodía en la voz más aguda</b>, con el resto del acorde debajo, en un registro que no compita con el bajo ni tape la melodía.</p>
+      </div>
+      <h4 class="subhead2">Cómo evitar que el acompañamiento tape la melodía</h4>
+      <ul class="tick">
+        <li>Deja que la melodía sea <b>siempre la nota más aguda</b> de la textura (o casi).</li>
+        <li><b>No dobles la melodía</b> en un registro muy cercano con otra voz — genera «batido» y confusión.</li>
+        <li>Si necesitas más densidad, añádela <b>por debajo</b> de la melodía, no por encima.</li>
+        <li><b>Controla el registro:</b> acordes muy graves y muy densos a la vez generan un sonido «embarrado» (<i>muddy</i>); abre el voicing o sube el registro.</li>
+      </ul>
+      <div class="callout example">
+        <span class="ct">Ejemplo de reparto (acorde Cmaj7, melodía en E)</span>
+        <pre class="code" style="margin-bottom:0">Mano derecha:  E(III) - G(V) - B(VII)   [melodía arriba, apoyada por 5ª y 7ª]
+Mano izquierda: C(I) - G(V)              [fundamental + quinta, registro grave]</pre>
+      </div>
+    </div>
+
+    <h3 class="subhead">15. Patrones de acompañamiento y texturas</h3>
+    <div class="card">
+      <p><b>Diez texturas de piano</b>, con cuándo usarlas:</p>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Textura</th><th>Descripción</th><th>Cuándo usar</th></tr></thead>
+          <tbody>
+            <tr><td><b>1. Melodía + acordes</b></td><td>Bloques de acorde simples bajo la melodía</td><td>Principiante, himnos, pop simple</td></tr>
+            <tr><td><b>2. Melodía + bajo</b></td><td>Solo línea de bajo, sin relleno armónico</td><td>Texturas minimalistas, versos suaves</td></tr>
+            <tr><td><b>3. Melodía + bajo + acordes</b></td><td>Textura completa estándar</td><td>La más común en baladas y pop</td></tr>
+            <tr><td><b>4. Arpegios</b></td><td>El acorde se toca nota a nota en patrón ascendente/descendente</td><td>Baladas, texturas etéreas, cine</td></tr>
+            <tr><td><b>5. Broken chords</b></td><td>Notas del acorde alternadas en un patrón rítmico (no estrictamente ascendente)</td><td>Pop, folk, acompañamientos fluidos</td></tr>
+            <tr><td><b>6. Stride</b></td><td>Bajo alternado (fundamental/quinta) + acordes en tiempos débiles</td><td>Ragtime, swing, gospel</td></tr>
+            <tr><td><b>7. Walking bass</b></td><td>Línea de bajo en movimiento constante (corcheas/negras)</td><td>Jazz, blues</td></tr>
+            <tr><td><b>8. Contrapuntístico</b></td><td>Una segunda línea melódica independiente en la mano izquierda</td><td>Clásico, barroco, arreglos sofisticados</td></tr>
+            <tr><td><b>9. Voicings densos</b></td><td>Acordes con muchas notas, registro amplio</td><td>Clímax, secciones cinematográficas</td></tr>
+            <tr><td><b>10. Minimalista</b></td><td>Muy pocas notas, mucho espacio/silencio</td><td>Introducciones, momentos íntimos</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info">
+        <span class="ct">Info · Cómo elegir</span>
+        <p style="margin-bottom:0">La textura debe reflejar la <b>energía de la sección</b>. <b>Versos</b> → texturas 2, 3 o 10. <b>Estribillos</b> → texturas 1, 5, 6 o 9. <b>Puentes/transiciones</b> → arpegios o contrapunto para dar contraste.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 8 EXPRESIÓN Y FORMA ==================== -->
+<section id="expresion" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">〰</div>
+      <div><h2>Ritmo, dinámica, expresión y forma musical</h2>
+      <p>Capítulos 16 · 17 — Dar vida al arreglo y construir la narrativa de la pieza</p></div>
+    </div>
+
+    <h3 class="subhead">16. Ritmo, dinámica y expresión</h3>
+    <div class="card">
+      <p>Un arreglo técnicamente correcto puede sonar <b>plano</b> si no tiene vida. Herramientas expresivas:</p>
+      <div class="grid g2">
+        <div class="mini"><h4>Dinámica</h4><p>(piano, mezzoforte, forte…) Controla la intensidad general; debe <b>crecer y decrecer con la forma</b> de la canción.</p></div>
+        <div class="mini"><h4>Articulación</h4><p><b>Legato</b> conecta las notas para un sonido fluido; <b>staccato</b> las separa para dar ligereza o percusión.</p></div>
+        <div class="mini"><h4>Pedal</h4><p>Sostiene la resonancia; útil para conectar armonías, pero <b>debe cambiarse con cada cambio de acorde</b> para evitar que se mezclen armonías incompatibles.</p></div>
+        <div class="mini"><h4>Rubato</h4><p>Pequeñas libertades de tempo (acelerar/frenar) para dar expresividad, <b>típico en baladas</b>.</p></div>
+        <div class="mini"><h4>Acentos</h4><p>Resaltan una nota o tiempo concreto para dar <b>carácter rítmico</b>.</p></div>
+        <div class="mini"><h4>Crescendo / diminuendo</h4><p>Construyen y liberan tensión a lo largo de una <b>frase o sección</b>.</p></div>
+        <div class="mini"><h4>Silencios y respiración</h4><p>Dejar espacio es tan expresivo como llenarlo; una frase necesita <b>«respirar»</b> igual que una voz cantada.</p></div>
+      </div>
+      <div class="callout info">
+        <span class="ct">Info · Por qué importa</span>
+        <p style="margin-bottom:0">Estas herramientas son las que transforman «una sucesión correcta de acordes» en algo que se siente como <b>música con intención</b>.</p>
+      </div>
+    </div>
+
+    <h3 class="subhead">17. Forma musical: intro, transiciones, interludios, finales</h3>
+    <div class="card">
+      <div class="grid g2">
+        <div class="mini"><h4>Introducciones</h4><p>Anticipan el carácter de la pieza. Pueden usar: los <b>últimos acordes de la progresión</b> (para crear expectativa circular), un <b>fragmento de la melodía sin letra</b>, o solo el <b>patrón rítmico/armónico de acompañamiento</b> antes de que entre la melodía.</p></div>
+        <div class="mini"><h4>Transiciones</h4><p>Pequeños puentes de <b>1-2 compases</b> entre secciones, útiles para cambiar de textura (ej. de «minimalista» a «densa») sin que el cambio sea brusco.</p></div>
+        <div class="mini"><h4>Interludios</h4><p>Secciones instrumentales entre estrofas o antes de un puente; buen lugar para <b>desarrollar variaciones de la melodía</b> o mostrar una textura distinta (por ejemplo, contrapuntística).</p></div>
+        <div class="mini"><h4>Finales</h4><p>Pueden ser <b>conclusivos</b> (cadencia V-I fuerte, acorde final sostenido) o <b>abiertos</b> (acorde de tónica en voicing suave, dejando resonar el pedal, o incluso terminando en una tensión no resuelta para un efecto «en suspenso»).</p></div>
+      </div>
+      <div class="callout example">
+        <span class="ct">Ejemplo · Cómo variar cada sección sin cambiar la armonía</span>
+        <p>Ajusta estos cinco parámetros: <b>densidad</b> (número de notas), <b>registro</b> (más agudo/grave), <b>dinámica</b>, <b>patrón rítmico</b> y <b>voicing</b>.</p>
+        <p style="margin-bottom:0">La progresión armónica puede repetirse idéntica en el verso y el estribillo, pero si cambias estos cinco parámetros, sonarán como <b>secciones completamente distintas</b>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 9 ESTILOS ==================== -->
+<section id="estilos" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">🎚</div>
+      <div><h2>Arreglos por estilo</h2>
+      <p>Capítulo 18 — La misma progresión tratada en once estilos diferentes</p></div>
+    </div>
+
+    <div class="card">
+      <p>Tomamos la misma progresión base:</p>
+      <pre class="code">Acordes:  C(I) – Am(VI) – F(IV) – G(V)
+Melodía:  E(III) – C(I) – A(VI) – G(V)</pre>
+      <p>y mostramos cómo cambia el tratamiento según el estilo.</p>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Estilo</th><th>Bajo</th><th>Textura</th><th>Rasgo característico</th></tr></thead>
+          <tbody>
+            <tr><td><b>Pop</b></td><td>Fundamental simple o broken chords</td><td>Melodía + bajo + acordes</td><td>Voicings simples, ritmo directo en corcheas</td></tr>
+            <tr><td><b>Rock</b></td><td>Octavas en el bajo, marcado</td><td>Acordes de bloque, ritmo percusivo</td><td>Fuerza rítmica, menos tensiones</td></tr>
+            <tr><td><b>Ballad</b></td><td>Arpegios lentos</td><td>Minimalista a densa según la sección</td><td>Rubato, pedal generoso</td></tr>
+            <tr><td><b>Jazz</b></td><td>Walking bass o shell + bajo</td><td>Rootless voicings, tensiones</td><td>Reharmonización con ii-V, tensiones alteradas</td></tr>
+            <tr><td><b>Blues</b></td><td>Bajo shuffle (patrón swing)</td><td>Acordes con 7ª dominante en todos los grados</td><td>Blue notes, fraseo shuffle</td></tr>
+            <tr><td><b>Gospel</b></td><td>Stride, bajo alternado</td><td>Acordes densos con 9ª/13ª</td><td>Movimiento cromático interno, mucho pedal</td></tr>
+            <tr><td><b>Bossa Nova</b></td><td>Bajo sincopado en patrón característico</td><td>Acordes sincopados, ligeros</td><td>Ritmo brasileño, voicings de jazz suavizados</td></tr>
+            <tr><td><b>Latin</b></td><td>Bajo con patrón tumbao/montuno adaptado</td><td>Acordes rítmicos repetitivos</td><td>Síncopa constante</td></tr>
+            <tr><td><b>Classical</b></td><td>Bajo Alberti o contrapuntístico</td><td>Contrapunto, arpegios clásicos</td><td>Voice leading estricto, ornamentación</td></tr>
+            <tr><td><b>Cinematic</b></td><td>Bajo pedal sostenido</td><td>Voicings densos y abiertos</td><td>Dinámicas extremas, mucho espacio y clímax</td></tr>
+            <tr><td><b>Soul / R&amp;B</b></td><td>Bajo sincopado con adornos</td><td>Acordes extendidos (9, 11, 13)</td><td>Groove, adornos melódicos (riffs)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout example">
+        <span class="ct">Idea central</span>
+        <p style="margin-bottom:0">La armonía puede ser <b>idéntica</b>; lo que define el estilo es la combinación de <b>bajo + textura + ritmo + densidad de tensiones</b>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 10 NIVELES ==================== -->
+<section id="niveles" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">▲</div>
+      <div><h2>Ejemplo progresivo: 10 niveles sobre la misma lead sheet</h2>
+      <p>Capítulo 19 — Cómo se construye el arreglo por capas, decisión a decisión</p></div>
+    </div>
+
+    <div class="card">
+      <h4 class="subhead2" style="margin-top:0">Lead sheet base</h4>
+      <pre class="code">Melodía:  C(I) – D(II) – E(III) – G(V)
+Acordes:  C(I) – G(V) – Am(VI) – F(IV)</pre>
+      <p style="margin-bottom:0;color:var(--muted);font-size:14.3px">Usa los controles situados debajo del panel para recorrer los diez niveles uno a uno: cada nivel añade <b>una</b> capa de decisión sobre el anterior.</p>
+    </div>
+
+    <div class="stepper">
+      <div class="stpanel" id="lvpanel"></div>
+      <div class="stctrl">
+        <button class="btn" id="lvprev">◀ Anterior</button>
+        <button class="btn" id="lvnext">Siguiente ▶</button>
+        <button class="btn" id="lvreset">↺ Reset</button>
+        <input type="range" id="lvrange" min="1" max="10" step="1" value="1" aria-label="Selector de nivel">
+        <span class="stind" id="lvind"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 11 COMPÁS A COMPÁS ==================== -->
+<section id="compas" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">𝄼</div>
+      <div><h2>Arreglo completo compás a compás</h2>
+      <p>Capítulo 20 — «Camino de Vuelta»: cada decisión justificada</p></div>
+    </div>
+
+    <div class="card tinted">
+      <h4 class="subhead2" style="margin-top:0">Lead sheet ficticia — «Camino de Vuelta»</h4>
+      <div class="grid g2">
+        <div class="mini"><h4>Tonalidad</h4><p>C major</p></div>
+        <div class="mini"><h4>Compás</h4><p>4/4</p></div>
+        <div class="mini"><h4>Tempo</h4><p>Ballad, ♩=76</p></div>
+        <div class="mini"><h4>Estructura</h4><p>Intro (2c) – A (4c) – B (4c) – A' (4c) – Final (2c)</p></div>
+      </div>
+      <h4 class="subhead2">Progresión y melodía (sección A)</h4>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Compás</th><th>Melodía</th><th>Acorde</th><th>Grado</th></tr></thead>
+          <tbody>
+            <tr><td><b>1</b></td><td>E(III) – G(V) – A(VI) – G(V)</td><td>Cmaj7</td><td>Imaj7</td></tr>
+            <tr><td><b>2</b></td><td>F(IV) – E(III) – D(II)</td><td>Am7</td><td>vi7</td></tr>
+            <tr><td><b>3</b></td><td>D(II) – F(IV) – E(III)</td><td>Dm7</td><td>ii7</td></tr>
+            <tr><td><b>4</b></td><td>E(III) – D(II) – C(I)</td><td>G7</td><td>V7</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3 class="subhead">Desglose compás a compás</h3>
+    <div class="tabrow" id="mtabs"></div>
+    <div id="mpanels"></div>
+
+    <div class="callout info">
+      <span class="ct">Info · El proceso que debes repetir</span>
+      <p style="margin-bottom:0">Este proceso —<b>analizar función, decidir bajo, elegir voicing en relación a la melodía, justificar cada elección</b>— es exactamente el que debes repetir con <b>cualquier lead sheet nueva</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 12 ERRORES ==================== -->
+<section id="errores" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">⚠</div>
+      <div><h2>50 errores frecuentes de principiante</h2>
+      <p>Capítulo 21 — Agrupados por categoría, cada uno con diagnóstico y corrección</p></div>
+    </div>
+    <div class="card">
+      <p style="margin-bottom:6px">Filtra por categoría para estudiar un bloque concreto. Cada tarjeta indica el <b>error</b> y su <b>consecuencia y/o corrección</b>.</p>
+      <div class="chiprow" id="errchips"></div>
+      <p class="stind" id="errcount" style="margin:0 0 14px"></p>
+      <div class="errgrid" id="errgrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 13 EJERCICIOS ==================== -->
+<section id="ejercicios" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">✎</div>
+      <div><h2>Ejercicios progresivos</h2>
+      <p>Capítulo 22 — Siete ejercicios del análisis al arreglo completo, con solución orientativa</p></div>
+    </div>
+    <div class="card">
+      <p style="color:var(--muted);font-size:14.4px">Abre cada ejercicio, intenta resolverlo por tu cuenta y después pulsa <b>«Ver solución orientativa»</b>. Algunos ejercicios no tienen solución única: se indica cómo autoevaluarlos.</p>
+      <div id="exlist"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 14 CHECKLIST Y TABLAS ==================== -->
+<section id="referencia" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">☰</div>
+      <div><h2>Checklist rápida de análisis y tablas de referencia</h2>
+      <p>Capítulos 23 · 24 — Las diez preguntas clave y todas las tablas de consulta</p></div>
+    </div>
+
+    <h3 class="subhead">23. Checklist rápida de análisis</h3>
+    <div class="card">
+      <p>Ante cualquier lead sheet nueva, <b>responde en orden</b>. Marca cada pregunta a medida que la tengas resuelta:</p>
+      <div class="ckbar"><i id="ckfill"></i></div>
+      <p class="stind" id="ckcount" style="margin:0 0 14px"></p>
+      <div class="cklist" id="cklist"></div>
+    </div>
+
+    <h3 class="subhead">24. Tablas de referencia</h3>
+
+    <div class="card">
+      <h4 class="subhead2" style="margin-top:0">Escalas mayores (armadura y notas)</h4>
+      <div class="tblwrap">
+        <table class="tbl">
+          <thead><tr><th>Tonalidad</th><th>Notas</th></tr></thead>
+          <tbody>
+            <tr><td><b>C major</b></td><td>C D E F G A B</td></tr>
+            <tr><td><b>G major</b></td><td>G A B C D E F#</td></tr>
+            <tr><td><b>D major</b></td><td>D E F# G A B C#</td></tr>
+            <tr><td><b>F major</b></td><td>F G A B♭ C D E</td></tr>
+            <tr><td><b>B♭ major</b></td><td>B♭ C D E♭ F G A</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card">
+        <h4 class="subhead2" style="margin-top:0">Acordes diatónicos (mayor, grados I–VII)</h4>
+        <div class="tblwrap">
+          <table class="tbl">
+            <thead><tr><th>Grado</th><th>Calidad</th><th>Función</th></tr></thead>
+            <tbody>
+              <tr><td><b>I</b></td><td>Mayor 7 (maj7)</td><td>Tónica</td></tr>
+              <tr><td><b>II</b></td><td>menor 7 (m7)</td><td>Predominante</td></tr>
+              <tr><td><b>III</b></td><td>menor 7 (m7)</td><td>Tónica débil</td></tr>
+              <tr><td><b>IV</b></td><td>Mayor 7 (maj7)</td><td>Predominante</td></tr>
+              <tr><td><b>V</b></td><td>Dominante 7 (7)</td><td>Dominante</td></tr>
+              <tr><td><b>VI</b></td><td>menor 7 (m7)</td><td>Tónica relativa</td></tr>
+              <tr><td><b>VII</b></td><td>semidisminuido (m7♭5)</td><td>Dominante débil</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="subhead2" style="margin-top:0">Intervalos básicos</h4>
+        <div class="tblwrap">
+          <table class="tbl">
+            <thead><tr><th>Nombre</th><th>Semitonos</th></tr></thead>
+            <tbody>
+              <tr><td>2ª menor</td><td>1</td></tr>
+              <tr><td>2ª mayor</td><td>2</td></tr>
+              <tr><td>3ª menor</td><td>3</td></tr>
+              <tr><td>3ª mayor</td><td>4</td></tr>
+              <tr><td>4ª justa</td><td>5</td></tr>
+              <tr><td>5ª justa</td><td>7</td></tr>
+              <tr><td>6ª mayor</td><td>9</td></tr>
+              <tr><td>7ª menor</td><td>10</td></tr>
+              <tr><td>7ª mayor</td><td>11</td></tr>
+              <tr><td>Octava</td><td>12</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid g2">
+      <div class="card">
+        <h4 class="subhead2" style="margin-top:0">Tensiones por tipo de acorde</h4>
+        <div class="tblwrap">
+          <table class="tbl">
+            <thead><tr><th>Acorde base</th><th>Tensiones disponibles habituales</th></tr></thead>
+            <tbody>
+              <tr><td><b>Mayor 7</b></td><td>9, ♯11, 13</td></tr>
+              <tr><td><b>menor 7</b></td><td>9, 11, 13</td></tr>
+              <tr><td><b>Dominante 7</b></td><td>9, ♭9, ♯9, ♯11, 13, ♭13</td></tr>
+              <tr><td><b>semidisminuido</b></td><td>9, 11, ♭13</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h4 class="subhead2" style="margin-top:0">Cadencias</h4>
+        <div class="tblwrap">
+          <table class="tbl">
+            <thead><tr><th>Tipo</th><th>Movimiento</th></tr></thead>
+            <tbody>
+              <tr><td><b>Auténtica</b></td><td>V(7) → I</td></tr>
+              <tr><td><b>Plagal</b></td><td>IV → I</td></tr>
+              <tr><td><b>Rota</b></td><td>V → VI</td></tr>
+              <tr><td><b>Semicadencia</b></td><td>X → V</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 15 GLOSARIO ==================== -->
+<section id="glosario" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">🔎</div>
+      <div><h2>Glosario</h2>
+      <p>Capítulo 25 — 22 términos esenciales del arreglista, con ejemplo</p></div>
+    </div>
+    <div class="card">
+      <div class="searchrow">
+        <input type="search" id="glsearch" placeholder="Buscar término o definición… (ej. voicing, pedal, stride)" aria-label="Buscar en el glosario">
+        <span class="stind" id="glcount"></span>
+      </div>
+      <div class="glgrid" id="glgrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 16 MÉTODO ==================== -->
+<section id="metodo" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico">∞</div>
+      <div><h2>Resumen del método completo</h2>
+      <p>Capítulo 26 — El ciclo de diez pasos que se repite con cualquier lead sheet</p></div>
+    </div>
+    <div class="card">
+      <p>Cuando te enfrentes a <b>cualquier lead sheet nueva</b>, repite este ciclo:</p>
+      <div class="steps" id="methodsteps"></div>
+      <div class="quote">
+        <p>«Cuando veo una lead sheet, sé exactamente qué debo analizar, qué decisiones debo tomar y en qué orden debo construir el arreglo.»</p>
+        <small>Ese es el objetivo cumplido de esta guía</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CRÉDITOS ==================== -->
+<section id="creditos" class="page">
+  <div class="wrap">
+    <div class="shead">
+      <div class="ico" style="color:var(--purple);box-shadow:0 0 18px rgba(168,85,247,.2)">★</div>
+      <div><h2>Créditos</h2><p>Autoría, fecha y finalidad del material</p></div>
+    </div>
+
+    <div class="portada" id="portada-cred" aria-label="Portada animada del tutorial"></div>
+
+    <div class="credbox">
+      <span class="badge p">Tutorial interactivo · Documento educativo</span>
+      <h3 style="font-size:clamp(20px,3.6vw,28px);color:#eaf6ff;margin:16px 0 4px">De la Lead Sheet al Arreglo de Piano</h3>
+      <p style="color:#a9c4de;margin:0 0 6px;font-size:15px">Cómo transformar melodía + acordes en un arreglo completo, musical y tocable</p>
+      <div class="who">Rubén Sbarsky</div>
+      <div class="credmeta">
+        <div class="dt">📅 FECHA: 09/09/2026</div>
+        <div class="dt">🕐 HORA: 12:11:08</div>
+      </div>
+      <div class="callout info" style="text-align:left;margin-top:22px">
+        <span class="ct">Indicación educativa</span>
+        <p style="margin-bottom:0">📚 Este tutorial tiene <b>exclusivamente fines educativos y de divulgación</b>. Todo el contenido procede del documento fuente proporcionado («La Guía Definitiva: De la Lead Sheet al Arreglo de Piano») y se presenta transformado en una interfaz interactiva para facilitar el estudio. Notación americana: <code class="inl">A, B, C, D, E, F, G</code> con grados romanos <code class="inl">I – VII</code>.</p>
+      </div>
+      <p class="lat">Fiat iustitia, ruat caelum.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+  <p>👨‍💻 Créditos: Rubén Sbarsky</p>
+  <p>📅 FECHA: 09/09/2026</p>
+  <p>Hora: 12:11:08</p>
+  <p class="lat">Fiat iustitia, ruat caelum.</p>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+<script>
+"use strict";
+/* =========================================================
+   DATOS MUSICALES COMPARTIDOS (portada animada)
+   ========================================================= */
+var PV_BARS=[110,455,800,1145,1490];
+var PV=[
+ {sym:'Cmaj7',deg:'(I)',func:'Tónica',bass:'C(I)',voicing:'E(III) · G(V) · B(VII)',
+  keys:['C4','E4','G4','B4'],bassKey:'C4',melKey:'E4',mel:['E4','G4','A4','G4'],
+  rhythm:'Negra + negra + dos corcheas',compas:'COMPÁS 1'},
+ {sym:'Am7',deg:'(VI)',func:'Tónica (relativa menor)',bass:'A(VI)',voicing:'C(I) · E(III) · G(V)',
+  keys:['A4','C5','E5','G5'],bassKey:'A4',melKey:'F4',mel:['F4','E4','D4'],
+  rhythm:'Corchea-corchea-negra-negra',compas:'COMPÁS 2'},
+ {sym:'Dm7',deg:'(II)',func:'Predominante',bass:'D(II)',voicing:'F(IV) · A(VI) · C(I)',
+  keys:['D4','F4','A4','C5'],bassKey:'D4',melKey:'D4',mel:['D4','F4','E4'],
+  rhythm:'Negra-negra-negra',compas:'COMPÁS 3'},
+ {sym:'G7',deg:'(V)',func:'Dominante',bass:'G(V)',voicing:'B(VII) · D(II) · F(♭VII) + 13ª E(III)',
+  keys:['G4','B4','D5','F5'],bassKey:'G4',melKey:'E4',mel:['E4','D4','C4'],
+  rhythm:'Negra con puntillo + corchea + negra',compas:'COMPÁS 4'}
+];
+var NY={C4:486,D4:476,E4:466,F4:456,G4:446,A4:436,B4:426,C5:416,D5:406,E5:396,F5:386};
+var CYCLE=['ESCUCHAR','ANALIZAR','DECIDIR','JUSTIFICAR'];
+var CYCLE_POS=[[1310,48],[1422,160],[1310,272],[1198,160]];
+
+/* =========================================================
+   CONSTRUCTOR DEL SVG DE PORTADA (idéntico en HOME y CRÉDITOS)
+   ========================================================= */
+function wavePath(amp){
+  var d='',x,y;
+  for(x=-160;x<=1560;x+=8){
+    y=(Math.sin(x/20.7)*amp*0.65 + Math.sin(x/9.3+1.1)*amp*0.35).toFixed(1);
+    d+=(x===-160?'M':'L')+x+' '+y+' ';
+  }
+  return d;
+}
+function buildPortada(uid){
+  var u=uid;
+  var s='';
+  s+='<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block">';
+  s+='<defs>';
+  s+='<linearGradient id="'+u+'bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a0e1a"/><stop offset=".55" stop-color="#0c1526"/><stop offset="1" stop-color="#0a1120"/></linearGradient>';
+  s+='<radialGradient id="'+u+'gl" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#00d4ff" stop-opacity=".30"/><stop offset="1" stop-color="#00d4ff" stop-opacity="0"/></radialGradient>';
+  s+='<radialGradient id="'+u+'gl2" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#a855f7" stop-opacity=".26"/><stop offset="1" stop-color="#a855f7" stop-opacity="0"/></radialGradient>';
+  s+='<pattern id="'+u+'grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0v40" fill="none" stroke="#13253d" stroke-width="1"/></pattern>';
+  s+='<linearGradient id="'+u+'wk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8fbff"/><stop offset="1" stop-color="#cfdaea"/></linearGradient>';
+  s+='<linearGradient id="'+u+'bk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#26374f"/><stop offset="1" stop-color="#080d17"/></linearGradient>';
+  s+='<clipPath id="'+u+'wc"><rect x="110" y="784" width="1380" height="52" rx="10"/></clipPath>';
+  s+='</defs>';
+
+  /* fondo */
+  s+='<rect width="1600" height="900" fill="url(#'+u+'bg)"/>';
+  s+='<rect width="1600" height="900" fill="url(#'+u+'grid)" opacity=".55"/>';
+  s+='<ellipse class="pv-glow" cx="330" cy="180" rx="420" ry="260" fill="url(#'+u+'gl)"/>';
+  s+='<ellipse class="pv-glow" cx="1330" cy="620" rx="460" ry="300" fill="url(#'+u+'gl2)" style="animation-delay:1.6s"/>';
+  s+='<rect x="1" y="1" width="1598" height="898" rx="16" fill="none" stroke="#1e3a5f" stroke-width="2"/>';
+  s+='<rect class="pv-scan" x="1" y="1" width="1598" height="898" rx="16" fill="none" stroke="#00d4ff" stroke-width="1.4"/>';
+
+  /* cabecera */
+  s+='<rect x="70" y="48" width="452" height="38" rx="19" fill="rgba(0,212,255,.08)" stroke="#1e3a5f"/>';
+  s+='<circle cx="92" cy="67" r="5" fill="#00d4ff"><animate attributeName="opacity" values="1;.25;1" dur="2.2s" repeatCount="indefinite"/></circle>';
+  s+='<text x="108" y="73" font-family="Segoe UI,system-ui,sans-serif" font-size="15" letter-spacing="2.4" fill="#9fe8ff" font-weight="700">MANUAL TÉCNICO · ARREGLOS DE PIANO</text>';
+  s+='<text x="70" y="150" font-family="Segoe UI,system-ui,sans-serif" font-size="56" font-weight="800" fill="#f2fbff" letter-spacing="-1">DE LA <tspan fill="#00d4ff">LEAD SHEET</tspan></text>';
+  s+='<text x="70" y="208" font-family="Segoe UI,system-ui,sans-serif" font-size="56" font-weight="800" fill="#f2fbff" letter-spacing="-1">AL ARREGLO DE PIANO</text>';
+  s+='<text x="70" y="248" font-family="Segoe UI,system-ui,sans-serif" font-size="21" fill="#9db6d2">Melodía + acordes → arreglo completo, musical y tocable</text>';
+  s+='<text x="70" y="278" font-family="Segoe UI,system-ui,sans-serif" font-size="15" fill="#5f7d9e" letter-spacing="1.2">NOTACIÓN AMERICANA  A · B · C · D · E · F · G   +   GRADOS  I – VII</text>';
+
+  /* ciclo mental del arreglista */
+  s+='<g>';
+  s+='<circle cx="1310" cy="160" r="112" fill="none" stroke="#1e3a5f" stroke-width="1.6" stroke-dasharray="5 9"/>';
+  s+='<g><animateTransform attributeName="transform" type="rotate" from="0 1310 160" to="360 1310 160" dur="11s" repeatCount="indefinite"/>';
+  s+='<circle cx="1310" cy="48" r="7" fill="#00d4ff"/><circle cx="1310" cy="48" r="15" fill="#00d4ff" opacity=".18"/>';
+  s+='<path d="M1310 48 A112 112 0 0 1 1422 160" fill="none" stroke="#00d4ff" stroke-width="3" opacity=".55" stroke-linecap="round"/>';
+  s+='</g>';
+  s+='<text x="1310" y="152" text-anchor="middle" font-family="Segoe UI,system-ui,sans-serif" font-size="13" fill="#7b98b8" letter-spacing="1.6">CICLO</text>';
+  s+='<text x="1310" y="172" text-anchor="middle" font-family="Segoe UI,system-ui,sans-serif" font-size="13" fill="#7b98b8" letter-spacing="1.6">MENTAL</text>';
+  for(var c=0;c<4;c++){
+    s+='<g class="cyc-node" data-step="'+c+'">';
+    s+='<circle cx="'+CYCLE_POS[c][0]+'" cy="'+CYCLE_POS[c][1]+'" r="38" fill="#0b1424" stroke="#1e3a5f" stroke-width="1.6"/>';
+    s+='<text x="'+CYCLE_POS[c][0]+'" y="'+(CYCLE_POS[c][1]+4)+'" text-anchor="middle" font-family="Segoe UI,system-ui,sans-serif" font-size="9.6" font-weight="700" letter-spacing=".6" fill="#8fa8c8">'+CYCLE[c]+'</text>';
+    s+='</g>';
+  }
+  s+='</g>';
+
+  /* panel partitura */
+  s+='<rect x="70" y="300" width="1460" height="212" rx="14" fill="#0f172a" stroke="#1e3a5f"/>';
+  s+='<text x="94" y="330" font-family="Segoe UI,system-ui,sans-serif" font-size="15" letter-spacing="1.5" fill="#7b98b8">LEAD SHEET · «CAMINO DE VUELTA» · C MAJOR · 4/4 · BALLAD ♩=76</text>';
+  s+='<text x="1506" y="330" text-anchor="end" font-family="Segoe UI,system-ui,sans-serif" font-size="13" letter-spacing="1.2" fill="#4f6d8e">MELODÍA + SÍMBOLOS DE ACORDES</text>';
+  for(var l=0;l<5;l++){
+    s+='<line x1="110" y1="'+(386+l*20)+'" x2="1490" y2="'+(386+l*20)+'" stroke="#2a4a70" stroke-width="1.4"/>';
+  }
+  for(var b=0;b<5;b++){
+    s+='<line x1="'+PV_BARS[b]+'" y1="386" x2="'+PV_BARS[b]+'" y2="466" stroke="#3d628c" stroke-width="'+(b===0||b===4?3:1.6)+'"/>';
+  }
+  /* símbolos de acorde */
+  for(var i=0;i<4;i++){
+    var cxm=Math.round((PV_BARS[i]+PV_BARS[i+1])/2);
+    s+='<g class="pv-chord" data-step="'+i+'">';
+    s+='<rect x="'+(cxm-74)+'" y="346" width="148" height="30" rx="9" fill="#0b1424" stroke="#1e3a5f"/>';
+    s+='<text x="'+cxm+'" y="367" text-anchor="middle" font-family="Segoe UI,system-ui,sans-serif" font-size="17" font-weight="700" fill="#b9d6ee">'+PV[i].sym+' '+PV[i].deg+'</text>';
+    s+='</g>';
+  }
+  /* notas de la melodía por compás */
+  for(var m=0;m<4;m++){
+    var x0=PV_BARS[m], w=PV_BARS[m+1]-PV_BARS[m], n=PV[m].mel.length, notes='';
+    for(var k=0;k<n;k++){
+      var nm=PV[m].mel[k], xx=Math.round(x0+w*(k+1)/(n+1)), yy=NY[nm], led='';
+      if(yy>=476){ led+='<rect x="'+(xx-15)+'" y="476" width="30" height="2" fill="#8fb6d8"/>'; }
+      if(yy>=486){ led+='<rect x="'+(xx-15)+'" y="486" width="30" height="2" fill="#8fb6d8"/>'; }
+      notes+='<g class="pv-note">'+led+'<rect x="'+(xx+8)+'" y="'+(yy-36)+'" width="2.6" height="36" fill="#eaf6ff"/>'
+           +'<ellipse cx="'+xx+'" cy="'+yy+'" rx="9.6" ry="7.2" transform="rotate(-18 '+xx+' '+yy+')" fill="#eaf6ff"/></g>';
+    }
+    s+='<g class="pv-mnotes" data-step="'+m+'">'+notes+'</g>';
+  }
+  /* playhead */
+  s+='<g class="pv-play"><rect x="108" y="340" width="3.4" height="136" fill="#00d4ff" opacity=".95"/><rect x="100" y="340" width="20" height="136" fill="#00d4ff" opacity=".10"/></g>';
+  s+='<text x="94" y="498" font-family="Segoe UI,system-ui,sans-serif" font-size="14.5" fill="#8fa8c8" data-pv-info="">FUNCIÓN: Tónica · RITMO: Negra + negra + dos corcheas</text>';
+
+  /* conectores animados */
+  for(var q=0;q<3;q++){
+    var cxp=[300,800,1300][q];
+    s+='<path class="pv-chev" d="M'+(cxp-13)+' 520 L'+cxp+' 534 L'+(cxp+13)+' 520" fill="none" stroke="#00d4ff" stroke-width="2.6" stroke-linecap="round"/>';
+    s+='<circle r="4" fill="#a855f7"><animateMotion path="M'+cxp+' 512 L'+cxp+' 546" dur="1.9s" begin="'+(q*0.45)+'s" repeatCount="indefinite"/></circle>';
+  }
+
+  /* panel teclado */
+  s+='<rect x="70" y="546" width="1460" height="300" rx="14" fill="#0f172a" stroke="#1e3a5f"/>';
+  s+='<text x="94" y="578" font-family="Segoe UI,system-ui,sans-serif" font-size="14.5" font-weight="700" letter-spacing="1.2" fill="#9fe8ff" data-pv-bass="">BAJO (MI): C(I)</text>';
+  s+='<text x="1506" y="578" text-anchor="end" font-family="Segoe UI,system-ui,sans-serif" font-size="14.5" font-weight="700" letter-spacing="1.2" fill="#dcbcff" data-pv-voi="">VOICING (MD): E(III) · G(V) · B(VII)</text>';
+
+  /* teclado */
+  var kx0=110, wk=92, ky=592, kh=168, bw=56, bh=102;
+  var wn=['C','D','E','F','G','A','B'];
+  for(var wi=0;wi<15;wi++){
+    var oct=4+Math.floor(wi/7), nn=wn[wi%7]+oct, kx=kx0+wi*wk;
+    s+='<g class="pv-wk" data-key="'+nn+'"><rect class="kf" x="'+kx+'" y="'+ky+'" width="'+(wk-3)+'" height="'+kh+'" rx="5" fill="url(#'+u+'wk)" stroke="#33557c"/>';
+    s+='<text x="'+(kx+(wk-3)/2)+'" y="'+(ky+kh-13)+'" text-anchor="middle" font-family="Segoe UI,system-ui,sans-serif" font-size="12.5" font-weight="700" fill="#5b7ea4">'+nn+'</text></g>';
+  }
+  var bIdx=[0,1,3,4,5,7,8,10,11,12], bNm=['C#','D#','F#','G#','A#','C#','D#','F#','G#','A#'];
+  for(var bi=0;bi<bIdx.length;bi++){
+    var bo=4+Math.floor(bIdx[bi]/7), bn=bNm[bi]+bo, bx=kx0+(bIdx[bi]+1)*wk-bw/2-1.5;
+    s+='<g class="pv-bk" data-key="'+bn+'"><rect class="kf" x="'+bx.toFixed(1)+'" y="'+ky+'" width="'+bw+'" height="'+bh+'" rx="4" fill="url(#'+u+'bk)" stroke="#04070d"/></g>';
+  }
+  /* onda armónica */
+  s+='<text x="110" y="779" font-family="Segoe UI,system-ui,sans-serif" font-size="12" letter-spacing="1.6" fill="#4f6d8e">ONDA ARMÓNICA · TEXTURA DEL ARREGLO</text>';
+  s+='<g clip-path="url(#'+u+'wc)"><rect x="110" y="784" width="1380" height="52" rx="10" fill="#070b14"/>';
+  s+='<g transform="translate(110,810)"><g class="pv-wave"><path class="pv-wavepath" d="" fill="none" stroke="#00d4ff" stroke-width="2.4" opacity=".9"/></g></g>';
+  s+='<g transform="translate(110,810)"><g class="pv-wave" style="animation-duration:7s;animation-direction:reverse"><path class="pv-wavepath2" d="" fill="none" stroke="#a855f7" stroke-width="1.8" opacity=".5"/></g></g></g>';
+  s+='<text x="800" y="874" text-anchor="middle" font-family="Segoe UI,system-ui,sans-serif" font-size="14" letter-spacing="1.6" fill="#46627f">ESCUCHAR → ANALIZAR → DECIDIR → JUSTIFICAR   ·   LA MELODÍA MANDA</text>';
+  s+='</svg>';
+  return s;
+}
+
+/* =========================================================
+   INYECCIÓN DEL MISMO SVG EN HOME Y CRÉDITOS + SECUENCIADOR
+   ========================================================= */
+var pvReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function injectPortadas(){
+  var hosts=[['portada-home','pvh'],['portada-cred','pvc']];
+  for(var i=0;i<hosts.length;i++){
+    var el=document.getElementById(hosts[i][0]);
+    if(el && !el.getAttribute('data-ready')){ el.innerHTML=buildPortada(hosts[i][1]); el.setAttribute('data-ready','1'); }
+  }
+}
+function pvSet(step){
+  var m=PV[step], i, els;
+  els=document.querySelectorAll('.pv-wk,.pv-bk');
+  for(i=0;i<els.length;i++){
+    var key=els[i].getAttribute('data-key');
+    var isOn=(m.keys.indexOf(key)>=0||m.bassKey===key);
+    els[i].classList.toggle('on',isOn);
+    els[i].classList.toggle('mel',m.melKey===key);
+  }
+  els=document.querySelectorAll('.pv-chord');
+  for(i=0;i<els.length;i++){ els[i].classList.toggle('active', +els[i].getAttribute('data-step')===step); }
+  els=document.querySelectorAll('.pv-mnotes');
+  for(i=0;i<els.length;i++){ els[i].classList.toggle('active', +els[i].getAttribute('data-step')===step); }
+  els=document.querySelectorAll('.cyc-node');
+  for(i=0;i<els.length;i++){ els[i].classList.toggle('active', +els[i].getAttribute('data-step')===step); }
+  var dx=PV_BARS[step]-PV_BARS[0];
+  els=document.querySelectorAll('.pv-play');
+  for(i=0;i<els.length;i++){
+    els[i].style.transform='translateX('+dx+'px)';
+    els[i].setAttribute('transform','translate('+dx+',0)');
+    if(els[i].style.transform!=='') els[i].removeAttribute('transform');
+  }
+  els=document.querySelectorAll('[data-pv-bass]');
+  for(i=0;i<els.length;i++){ els[i].textContent='BAJO (MI): '+m.bass+'  ·  '+m.compas; }
+  els=document.querySelectorAll('[data-pv-voi]');
+  for(i=0;i<els.length;i++){ els[i].textContent='VOICING (MD): '+m.voicing; }
+  els=document.querySelectorAll('[data-pv-info]');
+  for(i=0;i<els.length;i++){ els[i].textContent='FUNCIÓN: '+m.func+'   ·   RITMO: '+m.rhythm; }
+  var amp=[15,11,13,18][step];
+  els=document.querySelectorAll('.pv-wavepath');
+  for(i=0;i<els.length;i++){ els[i].setAttribute('d',wavePath(amp)); }
+  els=document.querySelectorAll('.pv-wavepath2');
+  for(i=0;i<els.length;i++){ els[i].setAttribute('d',wavePath(amp*0.62)); }
+}
+var pvStep=0, pvTimer=null;
+function pvStart(){
+  if(pvReduced){ pvSet(0); return; }
+  if(pvTimer) return;
+  pvSet(pvStep);
+  pvTimer=setInterval(function(){ pvStep=(pvStep+1)%PV.length; pvSet(pvStep); },2000);
+}
+function pvRestart(){
+  pvStep=0; pvSet(0);
+  var svgs=document.querySelectorAll('.portada svg');
+  for(var i=0;i<svgs.length;i++){
+    try{ svgs[i].unpauseAnimations(); svgs[i].setCurrentTime(0); }catch(e){}
+    if(pvReduced){ try{ svgs[i].pauseAnimations(); }catch(e2){} }
+  }
+}
+
+/* =========================================================
+   NAVEGACIÓN SPA
+   ========================================================= */
+var SECTIONS=[
+ {id:'home',label:'◈ INICIO',t:'Portada'},
+ {id:'fundamentos',label:'1 · FUNDAMENTOS',t:'Introducción · Qué es arreglar · Cómo piensa un arreglista'},
+ {id:'leadsheet',label:'2 · LEAD SHEET',t:'Anatomía · Tonalidad y grados de la escala'},
+ {id:'analisis',label:'3 · ANÁLISIS',t:'Análisis de la melodía · Análisis armónico y funciones'},
+ {id:'bajo',label:'4 · INVERSIONES Y BAJO',t:'Inversiones · El bajo'},
+ {id:'voicings',label:'5 · VOICE LEADING Y VOICINGS',t:'Voice leading · Voicings'},
+ {id:'melodia',label:'6 · MELODÍA Y TENSIONES',t:'Clasificación de notas · Tensiones'},
+ {id:'manos',label:'7 · MANOS Y TEXTURAS',t:'Mano izquierda y mano derecha · Patrones de acompañamiento y texturas'},
+ {id:'expresion',label:'8 · EXPRESIÓN Y FORMA',t:'Ritmo, dinámica y expresión · Forma musical'},
+ {id:'estilos',label:'9 · ESTILOS',t:'Arreglos por estilo'},
+ {id:'niveles',label:'10 · 10 NIVELES',t:'Ejemplo progresivo: 10 niveles sobre la misma lead sheet'},
+ {id:'compas',label:'11 · COMPÁS A COMPÁS',t:'Arreglo completo compás a compás'},
+ {id:'errores',label:'12 · 50 ERRORES',t:'50 errores frecuentes de principiante'},
+ {id:'ejercicios',label:'13 · EJERCICIOS',t:'Ejercicios progresivos'},
+ {id:'referencia',label:'14 · CHECKLIST Y TABLAS',t:'Checklist rápida de análisis · Tablas de referencia'},
+ {id:'glosario',label:'15 · GLOSARIO',t:'Glosario'},
+ {id:'metodo',label:'16 · MÉTODO',t:'Resumen del método completo'},
+ {id:'creditos',label:'★ CRÉDITOS',t:'Créditos',cred:true}
+];
+var TOC=[
+ ['1','Introducción','fundamentos'],['2','Qué es realmente arreglar una lead sheet','fundamentos'],
+ ['3','Cómo piensa un arreglista','fundamentos'],['4','Anatomía de una lead sheet','leadsheet'],
+ ['5','Tonalidad y grados de la escala','leadsheet'],['6','Análisis de la melodía','analisis'],
+ ['7','Análisis armónico y funciones','analisis'],['8','Inversiones','bajo'],
+ ['9','El bajo','bajo'],['10','Voice leading','voicings'],['11','Voicings','voicings'],
+ ['12','Melodía + armonía: clasificación de notas','melodia'],['13','Tensiones','melodia'],
+ ['14','Mano izquierda y mano derecha','manos'],['15','Patrones de acompañamiento y texturas','manos'],
+ ['16','Ritmo, dinámica y expresión','expresion'],['17','Forma musical: intro, transiciones, interludios, finales','expresion'],
+ ['18','Arreglos por estilo','estilos'],['19','Ejemplo progresivo: 10 niveles','niveles'],
+ ['20','Arreglo completo compás a compás','compas'],['21','50 errores frecuentes de principiante','errores'],
+ ['22','Ejercicios progresivos','ejercicios'],['23','Checklist rápida de análisis','referencia'],
+ ['24','Tablas de referencia','referencia'],['25','Glosario','glosario'],['26','Resumen del método completo','metodo']
+];
+
+function buildNav(){
+  var nav=document.getElementById('navscroll'), h='';
+  for(var i=0;i<SECTIONS.length;i++){
+    h+='<button class="navbtn'+(SECTIONS[i].cred?' cred':'')+'" data-go="'+SECTIONS[i].id+'">'+SECTIONS[i].label+'</button>';
+  }
+  nav.innerHTML=h;
+  nav.addEventListener('click',function(e){
+    var b=e.target.closest('.navbtn'); if(b) showSection(b.getAttribute('data-go'));
+  });
+  var tg=document.getElementById('tocgrid'), th='';
+  for(var j=0;j<TOC.length;j++){
+    th+='<button class="tocitem" data-go="'+TOC[j][2]+'"><i>'+TOC[j][0]+'.</i><span>'+TOC[j][1]+'</span></button>';
+  }
+  tg.innerHTML=th;
+  tg.addEventListener('click',function(e){
+    var b=e.target.closest('.tocitem'); if(b) showSection(b.getAttribute('data-go'));
+  });
+}
+function showSection(id){
+  var pages=document.querySelectorAll('.page');
+  for(var i=0;i<pages.length;i++){ pages[i].classList.toggle('active', pages[i].id===id); }
+  var btns=document.querySelectorAll('.navbtn');
+  for(var k=0;k<btns.length;k++){
+    var on=btns[k].getAttribute('data-go')===id;
+    btns[k].classList.toggle('active',on);
+    if(on){
+      try{ btns[k].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}); }catch(e){}
+    }
+  }
+  window.scrollTo({top:0,behavior:pvReduced?'auto':'smooth'});
+  if(id==='home'||id==='creditos'){ pvRestart(); pvStart(); }
+  updateProgress();
+}
+
+/* =========================================================
+   PROGRESO + VOLVER ARRIBA
+   ========================================================= */
+function updateProgress(){
+  var h=document.documentElement, dh=h.scrollHeight-h.clientHeight;
+  var p=dh>0?(h.scrollTop||document.body.scrollTop)/dh*100:0;
+  document.getElementById('progress').style.width=Math.min(100,Math.max(0,p))+'%';
+  document.getElementById('toTop').classList.toggle('show',(h.scrollTop||document.body.scrollTop)>280);
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+window.addEventListener('resize',updateProgress);
+
+/* =========================================================
+   AUDIO LOCAL (WebAudio, sin recursos externos)
+   ========================================================= */
+var AC=null;
+function actx(){
+  if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ AC=null; } }
+  if(AC && AC.state==='suspended'){ try{AC.resume();}catch(e2){} }
+  return AC;
+}
+var SEMI={C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
+function midiOf(n){ var m=/^([A-G]#?)(\d)$/.exec(n); if(!m) return 60; return (parseInt(m[2],10)+1)*12+SEMI[m[1]]; }
+function freqOf(n){ return 440*Math.pow(2,(midiOf(n)-69)/12); }
+function tone(n,delay,dur){
+  var c=actx(); if(!c) return;
+  var t0=c.currentTime+(delay||0), o=c.createOscillator(), g=c.createGain(), f=c.createBiquadFilter();
+  o.type='triangle'; o.frequency.value=freqOf(n);
+  f.type='lowpass'; f.frequency.value=3200;
+  g.gain.setValueAtTime(0.0001,t0);
+  g.gain.exponentialRampToValueAtTime(0.22,t0+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+(dur||1.1));
+  o.connect(f); f.connect(g); g.connect(c.destination);
+  o.start(t0); o.stop(t0+(dur||1.1)+0.05);
+}
+
+/* =========================================================
+   TECLADOS INTERACTIVOS (función genérica reutilizable)
+   ========================================================= */
+var DEG={C:'I',D:'II',E:'III',F:'IV',G:'V',A:'VI',B:'VII'};
+function noteLabel(n,withDeg){
+  var base=n.replace(/\d/g,'');
+  if(withDeg && DEG[base]) return n+' → '+base+'('+DEG[base]+')';
+  return n;
+}
+function createPiano(hostId,cfg){
+  var host=document.getElementById(hostId); if(!host) return;
+  var oct=cfg.startOct||4, nOct=cfg.octaves||2;
+  var wNames=['C','D','E','F','G','A','B'];
+  var bAfter={0:'C#',1:'D#',3:'F#',4:'G#',5:'A#'};
+  var whites=[],i,o;
+  for(i=0;i<nOct*7+1;i++){ o=oct+Math.floor(i/7); whites.push(wNames[i%7]+o); }
+  var wCount=whites.length, wPct=100/wCount, bwPct=wPct*0.62;
+  var html='<div class="piano">';
+  for(i=0;i<wCount;i++){
+    html+='<div class="pw" data-key="'+whites[i]+'" tabindex="0" role="button" aria-label="Tecla '+whites[i]+'"><span class="kl">'+whites[i]+'</span></div>';
+  }
+  for(i=0;i<wCount-1;i++){
+    var oi=i%7;
+    if(bAfter[oi]!==undefined){
+      o=oct+Math.floor(i/7);
+      var nm=bAfter[oi]+o, left=(i+1)*wPct-bwPct/2;
+      html+='<div class="pb" data-key="'+nm+'" style="left:'+left.toFixed(4)+'%;width:'+bwPct.toFixed(4)+'%" tabindex="0" role="button" aria-label="Tecla '+nm+'"></div>';
+    }
+  }
+  html+='</div>';
+  /* CONTROLES SIEMPRE JUSTO DEBAJO DEL TECLADO */
+  html+='<div class="pctrl">';
+  html+='<div class="clab">Controles · voicings y ejemplos (debajo del teclado)</div>';
+  html+='<div class="pbtns">';
+  for(i=0;i<cfg.presets.length;i++){
+    html+='<button class="pbtn" data-p="'+i+'">'+cfg.presets[i].label+'</button>';
+  }
+  html+='<button class="pbtn snd" data-snd="1">🔊 Sonido: ON</button>';
+  html+='</div>';
+  html+='<div class="preadout" data-readout>Pulsa una tecla o un ejemplo para ver las notas y su grado.</div>';
+  html+='</div>';
+  host.innerHTML=html;
+
+  var soundOn=true, ro=host.querySelector('[data-readout]'), seqT=[];
+  function clearT(){ for(var t=0;t<seqT.length;t++){ clearTimeout(seqT[t]); } seqT=[]; }
+  function clearKeys(){
+    var ks=host.querySelectorAll('.pw,.pb');
+    for(var t=0;t<ks.length;t++){ ks[t].classList.remove('on'); ks[t].classList.remove('mel'); }
+  }
+  function markKeys(list,cls){
+    for(var t=0;t<list.length;t++){
+      var el=host.querySelector('[data-key="'+list[t]+'"]');
+      if(el) el.classList.add(cls||'on');
+    }
+  }
+  function playList(list,stagger){
+    if(!soundOn) return;
+    for(var t=0;t<list.length;t++){ tone(list[t], t*(stagger===undefined?0.09:stagger), 1.2); }
+  }
+  host.querySelectorAll('.pw,.pb').forEach(function(k){
+    function act(){
+      clearKeys(); k.classList.add('on');
+      ro.innerHTML='<b>Tecla pulsada:</b> <span class="nt">'+noteLabel(k.getAttribute('data-key'),cfg.degrees)+'</span>';
+      if(soundOn) tone(k.getAttribute('data-key'),0,1.3);
+    }
+    k.addEventListener('click',act);
+    k.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
+  });
+  host.querySelectorAll('.pbtn[data-p]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      clearT(); clearKeys();
+      host.querySelectorAll('.pbtn[data-p]').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var p=cfg.presets[+btn.getAttribute('data-p')];
+      if(p.seq){
+        markKeys(p.seq[0].notes); playList(p.seq[0].notes);
+        ro.innerHTML='<b>'+p.label+'</b> — <span class="nt">'+p.seq[0].info+'</span><br>'+p.note;
+        seqT.push(setTimeout(function(){
+          clearKeys(); markKeys(p.seq[1].notes); playList(p.seq[1].notes);
+          ro.innerHTML='<b>'+p.label+'</b> — <span class="nt">'+p.seq[1].info+'</span><br>'+p.note;
+        },1500));
+      }else{
+        markKeys(p.notes); if(p.mel) markKeys(p.mel,'mel');
+        playList(p.notes);
+        ro.innerHTML='<b>'+p.label+'</b> — <span class="nt">'+p.info+'</span>'+(p.note?'<br>'+p.note:'');
+      }
+    });
+  });
+  var sndBtn=host.querySelector('.pbtn.snd');
+  sndBtn.addEventListener('click',function(){
+    soundOn=!soundOn; sndBtn.textContent=soundOn?'🔊 Sonido: ON':'🔇 Sonido: OFF';
+    sndBtn.classList.toggle('active',soundOn);
+  });
+  return {host:host};
+}
+
+var PRESETS_TON=[
+ {label:'Escala C major',notes:['C4','D4','E4','F4','G4','A4','B4','C5'],info:'C(I) · D(II) · E(III) · F(IV) · G(V) · A(VI) · B(VII)',note:'La escala diatónica de referencia: sin ella no hay grados ni funciones.'},
+ {label:'I · Cmaj7 (Tónica)',notes:['C4','E4','G4','B4'],info:'Cmaj7 — Reposo, estabilidad'},
+ {label:'II · Dm7 (Predominante)',notes:['D4','F4','A4','C5'],info:'Dm7 — Preparación hacia la dominante'},
+ {label:'III · Em7 (Tónica débil)',notes:['E4','G4','B4','D5'],info:'Em7 — Tónica débil'},
+ {label:'IV · Fmaj7 (Predominante)',notes:['F4','A4','C5','E5'],info:'Fmaj7 — Predominante'},
+ {label:'V · G7 (Dominante)',notes:['G4','B4','D5','F5'],info:'G7 — Tensión que pide resolver a la tónica'},
+ {label:'VI · Am7 (Tónica relativa)',notes:['A4','C5','E5','G5'],info:'Am7 — Tónica (relativa menor)'},
+ {label:'VII · Bm7♭5 (Dominante débil)',notes:['B4','D5','F5','A5'],info:'Bm7♭5 — Dominante débil'}
+];
+var PRESETS_VOI=[
+ {label:'Cmaj7 · Fundamental',notes:['C4','E4','G4','B4'],info:'C(I) - E(III) - G(V) - B(VII)',note:'Posición fundamental: C en el bajo.'},
+ {label:'Cmaj7 · 1ª inversión',notes:['E4','G4','B4','C5'],info:'E - G - B - C',note:'E queda en el bajo.'},
+ {label:'Cmaj7 · 2ª inversión',notes:['G4','B4','C5','E5'],info:'G - B - C - E',note:'G queda en el bajo.'},
+ {label:'Cmaj7 · 3ª inversión',notes:['B4','C5','E5','G5'],info:'B - C - E - G',note:'B (la 7ª) queda en el bajo.'},
+ {label:'Shell voicing G7 (1·3·7)',notes:['G4','B4','F5'],info:'G - B - F (sin 5ª)',note:'Shell voicing: solo fundamental + 3ª + 7ª. Úsalo cuando el bajo ya cubre la fundamental.'},
+ {label:'G7(13) · tensión de la melodía',notes:['G4','B4','E5','F5'],info:'G7 con 13ª (E)',note:'E(III) como 13ª añadida: coincide con la primera nota de la melodía del compás 4.'},
+ {label:'Voice leading: Cmaj7 → G7',seq:[{notes:['C4','E4','G4','B4'],info:'Cmaj7 → C - E - G - B'},{notes:['G4','B4','D5','F5'],info:'G7 → B - D - F - G'}],note:'B se mantiene (nota común: 7ª de C y 3ª de G7); el resto se mueve al vecino más cercano.'},
+ {label:'Am7 (VI)',notes:['A4','C5','E5','G5'],info:'A - C - E - G'},
+ {label:'Dm7 (II)',notes:['D4','F4','A4','C5'],info:'D - F - A - C'},
+ {label:'Fmaj7 (IV)',notes:['F4','A4','C5','E5'],info:'F - A - C - E'}
+];
+
+/* =========================================================
+   10 NIVELES PROGRESIVOS (stepper)
+   ========================================================= */
+var LEVELS=[
+ {t:'Nivel 1 — Melodía + acordes básicos',
+  code:'RH: C - D - E - G      (melodía sola)\nLH: C-E-G | G-B-D | A-C-E | F-A-C   (triadas en posición fundamental)',
+  why:'Punto de partida neutro, sin decisiones de voicing todavía.'},
+ {t:'Nivel 2 — Añadir bajo',
+  code:'LH bajo: C — G — A — F   (fundamentales, una por compás)\nRH: acordes de la mano derecha + melodía',
+  why:'Separar el bajo de los acordes da más claridad y espacio de registro.'},
+ {t:'Nivel 3 — Elegir inversiones',
+  code:'Bajo: C — G — A — F  →  se mantiene,\npero el acorde de G usa 1ª inversión (B en el acorde) para acercarse a C',
+  why:'Suaviza el movimiento de las voces internas entre C y G.'},
+ {t:'Nivel 4 — Mejorar voice leading',
+  code:'C(I): C-E-G  →  G(V): B-D-G\n(la nota G se mantiene común, B se mueve solo un semitono desde C...)',
+  why:'Buscamos la nota común y el movimiento mínimo entre cada par de acordes.'},
+ {t:'Nivel 5 — Añadir patrones de acompañamiento',
+  code:'LH: patrón de broken chords en corcheas en vez de bloques estáticos',
+  why:'Da movimiento rítmico sin cambiar la armonía.'},
+ {t:'Nivel 6 — Añadir séptimas',
+  code:'C(I) → Cmaj7  |  G(V) → G7\nAm(VI) → Am7  |  F(IV) → Fmaj7',
+  why:'Las séptimas añaden color sin alterar la función, y preparan el oído para tensiones.'},
+ {t:'Nivel 7 — Añadir tensiones',
+  code:'G7 → G7(9)   |   Fmaj7 → Fmaj7(♯11)',
+  why:'Sobre el V se añade la 9 para suavizar; sobre el IV se prueba el ♯11 para un color más «cinematográfico».'},
+ {t:'Nivel 8 — Crear movimiento interno',
+  code:'Dentro de cada compás, una voz interna se mueve por grado conjunto\n(ej. G-F#-G) mientras el resto del acorde se sostiene',
+  why:'Añade vida sin cambiar la armonía general — un recurso muy usado en baladas de piano.'},
+ {t:'Nivel 9 — Crear variaciones rítmicas',
+  code:'El patrón de acompañamiento cambia de corcheas regulares\na un patrón sincopado',
+  why:'Evita la monotonía si la sección se repite.'},
+ {t:'Nivel 10 — Arreglo completo',
+  code:'Se combinan: bajo con movimiento propio, voicings con tensiones,\nvoice leading cuidado, patrón rítmico variado,\ndinámica creciente hacia el último acorde.',
+  why:'Este es el resultado de aplicar, en capas, todas las decisiones anteriores — no una técnica aislada, sino su suma.'}
+];
+var lvCur=1;
+function lvRender(){
+  var L=LEVELS[lvCur-1];
+  document.getElementById('lvpanel').innerHTML=
+    '<div class="lvl">Capa de decisión '+lvCur+' de 10</div><h4>'+L.t+'</h4>'+
+    '<pre class="code">'+L.code.replace(/</g,'&lt;')+'</pre>'+
+    '<div class="callout example" style="margin-bottom:0"><span class="ct">Por qué</span><p style="margin-bottom:0">'+L.why+'</p></div>';
+  document.getElementById('lvrange').value=lvCur;
+  document.getElementById('lvind').innerHTML='Nivel <b>'+lvCur+'</b> de 10';
+  document.getElementById('lvprev').disabled=(lvCur===1);
+  document.getElementById('lvnext').disabled=(lvCur===10);
+}
+function lvInit(){
+  document.getElementById('lvprev').addEventListener('click',function(){ if(lvCur>1){lvCur--;lvRender();} });
+  document.getElementById('lvnext').addEventListener('click',function(){ if(lvCur<10){lvCur++;lvRender();} });
+  document.getElementById('lvreset').addEventListener('click',function(){ lvCur=1; lvRender(); });
+  document.getElementById('lvrange').addEventListener('input',function(){ lvCur=+this.value; lvRender(); });
+  lvRender();
+}
+
+/* =========================================================
+   COMPÁS A COMPÁS (tabs)
+   ========================================================= */
+var MEAS=[
+ {n:1,ch:'Cmaj7 (Imaj7)',fu:'Tónica',mel:'E(III) – G(V) – A(VI) – G(V)',bajo:'C(I), sostenido',
+  lh:'C(I) – G(V)',rh:'E(III) – G(V) – B(VII) – E(III)  [voicing con B como color, melodía arriba]',
+  voi:'Shell + melodía (fundamental grave, 3ª-7ª-melodía en la derecha)',rit:'Negra + negra + dos corcheas',
+  why:'La melodía empieza en E(III), un chord tone estable — perfecto para abrir con un voicing simple. Se elige B(VII) en vez de C(I) doblada porque añade color de maj7 sin ensuciar el registro agudo donde está la melodía.'},
+ {n:2,ch:'Am7 (vi7)',fu:'Tónica (relativa menor)',mel:'F(IV) – E(III) – D(II)',bajo:'A(VI)',
+  lh:'A(VI) – E(VII de Am, la 5ª)',rh:'C(I) – E(III) – G(V) [notas del acorde] con F(IV) y D(II) como notas de paso melódicas',
+  voi:'Triada con 7ª añadida, registro medio',rit:'Corchea-corchea-negra-negra',
+  why:'F(IV) en la melodía es una nota de tensión sobre Am7 (es la 11ª/6ª según cómo se mire) — se trata como nota de paso hacia E(III), que sí es chord tone, así que no necesita reflejarse explícitamente en el voicing.'},
+ {n:3,ch:'Dm7 (ii7)',fu:'Predominante',mel:'D(II) – F(IV) – E(III)',bajo:'D(II)',
+  lh:'D(II) – A(V de Dm)',rh:'F(IV) – A(VI) – C(I) [triada Dm con 7ª], con E(III) como aproximación cromática/diatónica hacia el siguiente compás',
+  voi:'Voicing abierto, preparando el movimiento hacia el V',rit:'Negra-negra-negra',
+  why:'Al ser función predominante, el voicing se abre ligeramente (más «aire») para dar sensación de que la música se está preparando para algo — en este caso, la dominante del compás 4.'},
+ {n:4,ch:'G7 (V7)',fu:'Dominante',mel:'E(III) – D(II) – C(I)',bajo:'G(V)',
+  lh:'G(V) – F(♭VII, la séptima de G7)',rh:'B(VII) – D(II) – F(♭VII) con E(III) como 13ª añadida sobre G7 al inicio del compás',
+  voi:'G7(13) resolviendo hacia Cmaj7 del compás 1 si se repite la sección',rit:'Negra con puntillo + corchea + negra',
+  why:'Al ser el dominante que cierra la frase, se añade la tensión 13 (E) porque coincide exactamente con la primera nota de la melodía — un ejemplo perfecto de cómo la nota de la melodía puede sugerir directamente qué tensión usar en el voicing.'}
+];
+function measInit(){
+  var tabs='',panels='';
+  for(var i=0;i<MEAS.length;i++){
+    var m=MEAS[i];
+    tabs+='<button class="tabbtn'+(i===0?' active':'')+'" data-m="'+i+'">Compás '+m.n+' · '+m.ch+'</button>';
+    panels+='<div class="tabpanel'+(i===0?' active':'')+'" data-mp="'+i+'"><div class="mcard">'+
+      '<span class="badge'+(m.fu.indexOf('Dominante')===0?' a':(m.fu.indexOf('Predominante')===0?' p':' g'))+'">Función: '+m.fu+'</span>'+
+      '<h4 style="margin:12px 0 6px;color:#eaf6ff;font-size:18px">Compás '+m.n+' — '+m.ch+'</h4>'+
+      '<div class="mrow"><b>Melodía</b><span>'+m.mel+'</span></div>'+
+      '<div class="mrow"><b>Bajo (LH)</b><span>'+m.bajo+'</span></div>'+
+      '<div class="mrow"><b>Mano izquierda</b><span>'+m.lh+'</span></div>'+
+      '<div class="mrow"><b>Mano derecha</b><span>'+m.rh+'</span></div>'+
+      '<div class="mrow"><b>Voicing</b><span>'+m.voi+'</span></div>'+
+      '<div class="mrow"><b>Ritmo</b><span>'+m.rit+'</span></div>'+
+      '<div class="mrow why"><b>Razonamiento</b><span>'+m.why+'</span></div>'+
+      '</div></div>';
+  }
+  var t=document.getElementById('mtabs'), p=document.getElementById('mpanels');
+  t.innerHTML=tabs; p.innerHTML=panels;
+  t.addEventListener('click',function(e){
+    var b=e.target.closest('.tabbtn'); if(!b) return;
+    var idx=b.getAttribute('data-m');
+    t.querySelectorAll('.tabbtn').forEach(function(x){ x.classList.toggle('active',x===b); });
+    p.querySelectorAll('.tabpanel').forEach(function(x){ x.classList.toggle('active',x.getAttribute('data-mp')===idx); });
+  });
+}
+
+/* =========================================================
+   50 ERRORES
+   ========================================================= */
+var ERRCATS=[
+ {c:'A',n:'Errores de bajo'},{c:'B',n:'Errores de voicing'},{c:'C',n:'Errores de voice leading'},
+ {c:'D',n:'Errores de melodía/armonía'},{c:'E',n:'Errores de tensión'},{c:'F',n:'Errores de textura y densidad'},
+ {c:'G',n:'Errores rítmicos'},{c:'H',n:'Errores de forma'},{c:'I',n:'Errores de dinámica y expresión'},
+ {c:'J',n:'Errores conceptuales generales'}
+];
+var ERRORS=[
+ ['A','Bajo siempre en fundamental sin variación','suena rígido. Corrección: usa inversiones y movimiento conjunto.'],
+ ['A','Saltos de octava innecesarios en el bajo','rompe la fluidez. Corrección: prioriza el grado más cercano disponible.'],
+ ['A','Bajo y mano derecha tocando la misma nota en registro cercano','genera confusión sonora. Corrección: separa los registros con al menos una octava de distancia clara.'],
+ ['A','Ignorar el bajo pedal como recurso','pierdes tensión disponible. Corrección: prueba sostener una nota fija bajo acordes cambiantes en transiciones.'],
+ ['A','Walking bass sin dirección melódica','suena aleatorio. Corrección: dirige el bajo hacia la fundamental del siguiente acorde por grado conjunto o cromatismo.'],
+ ['B','Doblar la melodía exacta en la mano izquierda a distancia de segunda','crea batido/disonancia no intencionada.'],
+ ['B','Voicings siempre en posición fundamental','suena «de manual», sin fluidez.'],
+ ['B','Ignorar dónde está la melodía al elegir el voicing','la melodía queda tapada por una nota del acorde por encima.'],
+ ['B','Usar siempre triadas simples en estilos que piden color (jazz, gospel)','suena plano para el estilo.'],
+ ['B','Amontonar demasiadas notas en el registro grave-medio','sonido «embarrado» (muddy).'],
+ ['B','No abrir el voicing cuando el registro lo pide','falta de amplitud sonora en climas.'],
+ ['B','Usar voicings idénticos en toda la pieza','monotonía tímbrica.'],
+ ['B','Ignorar el shell voicing cuando el bajo ya cubre la fundamental','redundancia innecesaria.'],
+ ['C','Mover todas las voces en la misma dirección (movimiento paralelo excesivo)','pierde independencia de voces.'],
+ ['C','Quintas y octavas paralelas entre voces exteriores','sonido hueco, poco idiomático en estilos tonales clásicos.'],
+ ['C','No aprovechar notas comunes entre acordes consecutivos','movimiento innecesariamente brusco.'],
+ ['C','Saltos grandes en voces internas sin razón melódica','descoordinación auditiva.'],
+ ['C','No resolver la séptima de un dominante hacia abajo','pierde la lógica de tensión-resolución esperada.'],
+ ['D','Armonizar cada nota de la melodía con un cambio de acorde','sobrecarga armónica, pierde fluidez.'],
+ ['D','Tratar notas de paso como si necesitaran su propio acorde','complica innecesariamente.'],
+ ['D','Ignorar las tensiones que la melodía ya sugiere','se pierde una oportunidad de color coherente.'],
+ ['D','Chocar la melodía con una nota adyacente del voicing (segunda menor sin intención)','suena a error, no a color.'],
+ ['E','Usar ♭9 y ♯9 juntas sin criterio','sonido caótico salvo que se busque expresamente.'],
+ ['E','Añadir 11 natural sobre acordes mayores','choca con la 3ª mayor; mejor usar ♯11 o evitarla.'],
+ ['E','Abusar de tensiones en estilos simples (pop infantil, himnos)','descontextualiza el arreglo.'],
+ ['E','No resolver las tensiones alteradas','dejan una sensación de «inacabado» no intencionada.'],
+ ['F','Misma densidad de principio a fin','la pieza no respira ni construye clímax.'],
+ ['F','Empezar la introducción ya con textura densa','no deja margen de crecimiento.'],
+ ['F','No variar la textura entre verso y estribillo','las secciones suenan iguales.'],
+ ['F','Ignorar el silencio como herramienta expresiva','todo suena «lleno», sin contraste.'],
+ ['G','Acompañamiento rítmicamente idéntico durante toda la pieza','monotonía.'],
+ ['G','Ritmo del acompañamiento que no encaja con el estilo indicado (ej. corcheas rectas en una bossa)','desalineación estilística.'],
+ ['G','No sincronizar el bajo con los acentos naturales de la melodía','pérdida de cohesión.'],
+ ['H','No crear una introducción diferenciada','la pieza «empieza de golpe» sin contexto.'],
+ ['H','Finales abruptos sin preparación','falta de cierre satisfactorio.'],
+ ['H','Repetir una sección de forma idéntica sin variación','aburre al oyente en la repetición.'],
+ ['H','No usar interludios para dar respiro entre secciones vocales','la forma se siente plana.'],
+ ['I','Tocar todo al mismo volumen','falta de narrativa musical.'],
+ ['I','Uso del pedal sin cambiarlo en cada cambio de acorde','mezcla armonías, suena sucio.'],
+ ['I','Ignorar el rubato en baladas','suena mecánico.'],
+ ['I','No marcar los acentos que la letra o la melodía piden','pierde naturalidad expresiva.'],
+ ['J','Memorizar «recetas» de acordes sin entender la función','no se adapta a lead sheets nuevas.'],
+ ['J','Pensar que más notas = mejor arreglo','la densidad no es sinónimo de calidad.'],
+ ['J','No escuchar referencias del estilo antes de arreglar','el resultado suena genérico.'],
+ ['J','Ignorar el registro del instrumento/voz que canta la melodía','el arreglo no encaja con el rango real.'],
+ ['J','No revisar el arreglo tocándolo de principio a fin','pasan errores de voice leading desapercibidos.'],
+ ['J','Copiar un arreglo ajeno nota por nota sin entender el porqué','no genera aprendizaje transferible.'],
+ ['J','No adaptar el arreglo a las limitaciones técnicas propias','un arreglo «sobre el papel» pero irreproducible en la práctica.'],
+ ['J','Ignorar la respiración de la letra/melodía al decidir dónde poner silencios','arreglo que «atropella» la frase vocal.'],
+ ['J','No justificar ninguna decisión','sin razonamiento, no hay método replicable; solo suerte.']
+];
+function errInit(){
+  var chips='<button class="chip active" data-f="ALL">Todos ('+ERRORS.length+')</button>';
+  for(var i=0;i<ERRCATS.length;i++){
+    var cnt=ERRORS.filter(function(e){return e[0]===ERRCATS[i].c;}).length;
+    chips+='<button class="chip" data-f="'+ERRCATS[i].c+'">'+ERRCATS[i].c+' · '+ERRCATS[i].n+' ('+cnt+')</button>';
+  }
+  document.getElementById('errchips').innerHTML=chips;
+  var counts={};
+  var h='';
+  for(var j=0;j<ERRORS.length;j++){
+    var e=ERRORS[j]; counts[e[0]]=(counts[e[0]]||0)+1;
+    h+='<article class="err" data-cat="'+e[0]+'"><div class="eh"><span class="en">'+e[0]+counts[e[0]]+'</span><h4>'+e[1]+'</h4></div>'+
+       '<p><b>Diagnóstico / corrección:</b> '+e[2]+'</p></article>';
+  }
+  var grid=document.getElementById('errgrid'); grid.innerHTML=h;
+  function applyFilter(f){
+    var n=0;
+    grid.querySelectorAll('.err').forEach(function(el){
+      var show=(f==='ALL'||el.getAttribute('data-cat')===f);
+      el.classList.toggle('hide',!show); if(show) n++;
+    });
+    document.getElementById('errcount').innerHTML='Mostrando <b>'+n+'</b> de '+ERRORS.length+' errores';
+  }
+  document.getElementById('errchips').addEventListener('click',function(ev){
+    var b=ev.target.closest('.chip'); if(!b) return;
+    this.querySelectorAll('.chip').forEach(function(x){ x.classList.toggle('active',x===b); });
+    applyFilter(b.getAttribute('data-f'));
+  });
+  applyFilter('ALL');
+}
+
+/* =========================================================
+   EJERCICIOS
+   ========================================================= */
+var EXS=[
+ {lv:'Nivel análisis',t:'1. Tonalidad, grados y función',
+  q:'Toma una canción sencilla que conozcas y anota su tonalidad, grados romanos de cada acorde y función (T/PD/D).',
+  s:'Verifica que la mayoría de los acordes encajen en la escala diatónica de la tonalidad detectada; si no, puede haber un préstamo modal o modulación.'},
+ {lv:'Nivel inversiones',t:'2. Suavizar el bajo con inversiones',
+  q:'Toma la progresión C(I) – F(IV) – G(V) – C(I) y reescríbela usando al menos una inversión que suavice el bajo.',
+  s:'C – F/A – G – C (bajo: C-A-G-C, movimiento por grado conjunto entre F/A y G).'},
+ {lv:'Nivel voice leading',t:'3. Nota común entre dos acordes',
+  q:'Con Cmaj7 → G7, escribe dos voicings en la mano derecha que compartan al menos una nota común.',
+  s:'Cmaj7 (C-E-G-B) → G7 (B-D-F-G): B se mantiene común.'},
+ {lv:'Nivel bajo',t:'4. Walking bass',
+  q:'Escribe un walking bass de 4 notas por compás para Dm7 – G7 – Cmaj7.',
+  s:'Dm7: D-F-A-B (aprox. cromática) / G7: G-B-D-F / Cmaj7: C.'},
+ {lv:'Nivel tensiones',t:'5. Elegir la tensión según la melodía',
+  q:'Sobre G7, decide qué tensión usarías si la melodía tiene un E natural, y cuál si tiene un A♭.',
+  s:'E natural → 13; A♭ → ♭9 (si resuelve hacia un centro menor).'},
+ {lv:'Nivel estilo',t:'6. Misma progresión, dos estilos',
+  q:'Toma la progresión C(I) – Am(VI) – F(IV) – G(V) y arréglala primero como balada (arpegios lentos) y después como gospel (stride + tensiones).',
+  s:'Sin solución única — evalúa si el bajo, la textura y la densidad de tensiones cambian claramente entre ambas versiones.'},
+ {lv:'Nivel arreglo completo',t:'7. Cuatro compases completos',
+  q:'Elige 4 compases de una lead sheet real y complétalos siguiendo el formato de la sección «Arreglo completo compás a compás» (melodía, acorde, grado, bajo, LH, RH, voicing, ritmo, razonamiento).',
+  s:'Autoevaluación: cada compás debe indicar función armónica, bajo decidido, voicing que deje la melodía como voz más aguda, ritmo coherente con el estilo y un razonamiento que justifique cada elección.'}
+];
+function exInit(){
+  var h='';
+  for(var i=0;i<EXS.length;i++){
+    h+='<details class="acc"><summary><span class="mk">▸</span><span><span class="badge">'+EXS[i].lv+'</span><br>'+EXS[i].t+'</span></summary>'+
+       '<div class="accb"><p><b>Enunciado:</b> '+EXS[i].q+'</p>'+
+       '<button class="solbtn" data-s="'+i+'">Ver solución orientativa</button>'+
+       '<div class="sol" id="sol'+i+'"><b>Solución orientativa:</b> '+EXS[i].s+'</div></div></details>';
+  }
+  var list=document.getElementById('exlist'); list.innerHTML=h;
+  list.addEventListener('click',function(e){
+    var b=e.target.closest('.solbtn'); if(!b) return;
+    var box=document.getElementById('sol'+b.getAttribute('data-s'));
+    box.classList.toggle('show');
+    b.textContent=box.classList.contains('show')?'Ocultar solución':'Ver solución orientativa';
+  });
+}
+
+/* =========================================================
+   CHECKLIST
+   ========================================================= */
+var CKS=[
+ '¿Cuál es la tonalidad?',
+ '¿Qué función tiene cada acorde (T / PD / D)?',
+ '¿Qué notas de la melodía son estructurales y cuáles son de paso/aproximación?',
+ '¿Cuál es la nota superior (melodía) en cada acorde?',
+ '¿Qué voicing deja la melodía como voz más aguda sin taparla?',
+ '¿Qué tipo de bajo conviene (fundamental, pedal, walking, alternado)?',
+ '¿Qué textura pide esta sección (minimalista, densa, arpegiada...)?',
+ '¿Qué registro evita que el arreglo suene «embarrado» o «vacío»?',
+ '¿Qué ritmo de acompañamiento encaja con el estilo indicado?',
+ '¿Dónde debe subir o bajar la densidad para que la forma tenga arco narrativo?'
+];
+function ckInit(){
+  var h='';
+  for(var i=0;i<CKS.length;i++){
+    h+='<label class="ckitem"><input type="checkbox" data-ck="'+i+'"><span><b>'+(i+1)+'.</b> '+CKS[i]+'</span></label>';
+  }
+  var list=document.getElementById('cklist'); list.innerHTML=h;
+  function upd(){
+    var done=list.querySelectorAll('input:checked').length;
+    document.getElementById('ckfill').style.width=(done/CKS.length*100)+'%';
+    document.getElementById('ckcount').innerHTML='Preguntas resueltas: <b>'+done+'</b> / '+CKS.length;
+    list.querySelectorAll('.ckitem').forEach(function(it){
+      it.classList.toggle('done', it.querySelector('input').checked);
+    });
+  }
+  list.addEventListener('change',upd); upd();
+}
+
+/* =========================================================
+   GLOSARIO
+   ========================================================= */
+var GLOS=[
+ ['Voicing','la disposición concreta de las notas de un acorde (qué nota abajo, qué nota arriba).','C-E-G-B vs. E-G-B-C.'],
+ ['Inversión','un acorde con una nota distinta de la fundamental en el bajo.','C/E.'],
+ ['Voice leading','la forma en que cada voz se mueve de un acorde al siguiente, buscando fluidez.','mantener una nota común entre dos acordes.'],
+ ['Tensión','nota añadida por encima de la séptima que da color sin cambiar la función.','la 9 en Cmaj9.'],
+ ['Resolución','el movimiento de una nota o acorde inestable hacia uno estable.','la 7ª de G7 (F) resolviendo a E en Cmaj7.'],
+ ['Nota guía (guide tone)','la 3ª y la 7ª de un acorde, las que definen su calidad (mayor/menor/dominante).','en G7, las notas guía son B y F.'],
+ ['Nota pedal','una nota sostenida en el bajo mientras la armonía de encima cambia.','G sostenido bajo C, Dm7, G7.'],
+ ['Slash chord','un acorde escrito con una nota de bajo distinta, notado como Acorde/Bajo.','C/E.'],
+ ['Sustitución','reemplazar un acorde por otro con función similar.','sustituir G7 por D♭7 (sustituto tritonal).'],
+ ['Acorde secundario / dominante secundario','un dominante que resuelve a un grado que no es la tónica principal.','D7 (V7/V) resolviendo a G en tonalidad de C.'],
+ ['Préstamo modal','tomar un acorde de la tonalidad paralela (mayor/menor) para dar color.','usar Fm en tonalidad de C mayor (prestado de C menor).'],
+ ['Passing chord','acorde de paso entre dos acordes principales, normalmente cromático.','C – C#dim – Dm.'],
+ ['Approach chord','acorde que se aproxima al siguiente por semitono o grado conjunto para dar impulso.',''],
+ ['Bloque armónico (block chords)','técnica de tocar acordes completos y densos que se mueven junto con la melodía.',''],
+ ['Stride','estilo de mano izquierda donde el bajo y el acorde se alternan rítmicamente (típico de ragtime/swing).',''],
+ ['Arpegio','las notas de un acorde tocadas una a una en vez de simultáneamente.',''],
+ ['Shell voicing','voicing reducido a solo fundamental, 3ª y 7ª.',''],
+ ['Rootless voicing','voicing sin la nota fundamental, usado cuando el bajo ya la cubre.',''],
+ ['Drop voicing','un voicing cerrado al que se le baja una voz interna una octava para abrirlo.',''],
+ ['Chord tone','nota que pertenece literalmente al acorde sonando.',''],
+ ['Passing tone','nota de la melodía que conecta dos chord tones por grado conjunto, sin acentuar.',''],
+ ['Walking bass','línea de bajo en movimiento constante (normalmente corcheas o negras) que conecta armónicamente los acordes.','']
+];
+function glInit(){
+  var h='';
+  for(var i=0;i<GLOS.length;i++){
+    h+='<div class="gl"><b>'+GLOS[i][0]+'</b><p>→ '+GLOS[i][1]+(GLOS[i][2]?'<span class="ex">Ejemplo: '+GLOS[i][2]+'</span>':'')+'</p></div>';
+  }
+  var grid=document.getElementById('glgrid'); grid.innerHTML=h;
+  var inp=document.getElementById('glsearch');
+  function filt(){
+    var q=inp.value.trim().toLowerCase(), n=0;
+    grid.querySelectorAll('.gl').forEach(function(el){
+      var hit=(q===''||el.textContent.toLowerCase().indexOf(q)>=0);
+      el.classList.toggle('hide',!hit); if(hit) n++;
+    });
+    document.getElementById('glcount').innerHTML='<b>'+n+'</b> / '+GLOS.length+' términos';
+  }
+  inp.addEventListener('input',filt); filt();
+}
+
+/* =========================================================
+   MÉTODO COMPLETO
+   ========================================================= */
+var METHOD=[
+ ['Analiza','tonalidad, forma, función de cada acorde, y qué notas de la melodía son estructurales.'],
+ ['Decide el bajo','¿fundamental, inversión, pedal, walking, alternado? Según el estilo y la función armónica de cada compás.'],
+ ['Elige el voicing','siempre en relación a dónde está la melodía; que la melodía quede libre y arriba.'],
+ ['Cuida el voice leading','busca notas comunes y movimiento mínimo entre acordes consecutivos.'],
+ ['Decide la textura','según la energía de la sección (minimalista, densa, arpegiada, contrapuntística…).'],
+ ['Añade tensiones con criterio','coherentes con la melodía y con el estilo, no por decoración vacía.'],
+ ['Da forma','introducción, variación entre secciones, interludios y final que cierren la narrativa.'],
+ ['Añade expresión','dinámica, articulación, pedal y rubato para que suene humano.'],
+ ['Revisa tocando de principio a fin','corrige choques, saltos torpes y monotonía.'],
+ ['Justifica cada decisión','si no puedes explicar por qué elegiste ese voicing o ese bajo, vuelve a analizarlo.']
+];
+function methodInit(){
+  var h='';
+  for(var i=0;i<METHOD.length;i++){
+    h+='<div class="stepn"><b>'+METHOD[i][0]+'</b><p>'+METHOD[i][1]+'</p></div>';
+  }
+  document.getElementById('methodsteps').innerHTML=h;
+}
+
+/* =========================================================
+   ARRANQUE
+   ========================================================= */
+document.addEventListener('DOMContentLoaded',function(){
+  buildNav();
+  injectPortadas();
+  pvSet(0);
+  pvStart();
+  createPiano('piano-ton',{startOct:4,octaves:2,degrees:true,presets:PRESETS_TON});
+  createPiano('piano-voi',{startOct:4,octaves:2,degrees:true,presets:PRESETS_VOI});
+  lvInit(); measInit(); errInit(); exInit(); ckInit(); glInit(); methodInit();
+
+  document.getElementById('toTop').addEventListener('click',function(){
+    window.scrollTo({top:0,behavior:pvReduced?'auto':'smooth'});
+  });
+  updateProgress();
+
+  /* navegación por teclado (flechas ← → sobre la navbar) */
+  document.addEventListener('keydown',function(e){
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+    var cur=-1;
+    for(var i=0;i<SECTIONS.length;i++){ if(document.getElementById(SECTIONS[i].id).classList.contains('active')) cur=i; }
+    if(e.key==='ArrowRight'&&cur<SECTIONS.length-1){ showSection(SECTIONS[cur+1].id); }
+    if(e.key==='ArrowLeft'&&cur>0){ showSection(SECTIONS[cur-1].id); }
+  });
+});
+</script>
+</body>
+</html>
