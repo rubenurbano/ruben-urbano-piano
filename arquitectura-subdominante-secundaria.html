@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Tutorial interactivo: La Arquitectura de la Subdominante Secundaria, por Rubén Sbarsky. Armonía aplicada al piano, cadenas IV/IV, progresiones y ejercicios.">
+<title>La Arquitectura de la Subdominante Secundaria · Tutorial Interactivo</title>
+<style>
+/* ============================================================
+   PALETA Y BASE — Dark UI técnico
+   ============================================================ */
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --card2:#0c1425;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --txt:#e7eefc;
+  --muted:#94a6c8;
+  --dim:#64748b;
+  --radius:12px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{
+  margin:0;background:var(--bg);color:var(--txt);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.65;overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(900px 500px at 12% -5%, rgba(0,212,255,.10), transparent 60%),
+    radial-gradient(800px 500px at 92% 8%, rgba(168,85,247,.09), transparent 60%),
+    linear-gradient(180deg, rgba(30,58,95,.16), transparent 40%);
+}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .45em;font-weight:700;letter-spacing:.2px;}
+p{margin:0 0 1em;}
+a{color:var(--accent);}
+strong{color:#fff;}
+ul,ol{margin:0 0 1em;padding-left:1.25em;}
+li{margin-bottom:.4em;}
+code,.mono{font-family:'Consolas','Courier New',monospace;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px;}
+
+/* ============================================================
+   BARRA DE PROGRESO
+   ============================================================ */
+#progressWrap{position:fixed;top:0;left:0;right:0;height:4px;background:#0b1222;z-index:120;}
+#progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--purple) 60%,var(--green));box-shadow:0 0 12px rgba(0,212,255,.7);transition:width .12s linear;}
+
+/* ============================================================
+   NAVBAR FIJA
+   ============================================================ */
+#navbar{
+  position:fixed;top:4px;left:0;right:0;z-index:110;
+  background:rgba(10,14,26,.94);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:0 12px;height:60px;}
+.brand{display:flex;align-items:center;gap:9px;flex:0 0 auto;padding-right:10px;border-right:1px solid var(--border);}
+.brand-mark{width:30px;height:30px;flex:0 0 auto;}
+.brand-txt{font-size:12px;font-weight:700;letter-spacing:1.2px;color:var(--accent);white-space:nowrap;text-transform:uppercase;}
+.brand-txt small{display:block;color:var(--muted);font-weight:600;letter-spacing:.4px;font-size:10px;}
+.nav-scroll{display:flex;align-items:center;gap:6px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;flex:1 1 auto;padding:4px 2px;}
+.nav-scroll::-webkit-scrollbar{display:none;}
+.nav-btn{
+  flex:0 0 auto;background:transparent;border:1px solid transparent;color:var(--muted);
+  font-family:inherit;font-size:12.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;
+  padding:9px 13px;border-radius:9px;cursor:pointer;white-space:nowrap;transition:.18s;
+}
+.nav-btn:hover{color:var(--txt);background:rgba(30,58,95,.45);}
+.nav-btn.active{color:var(--accent);background:rgba(0,212,255,.10);border-color:rgba(0,212,255,.45);box-shadow:0 0 14px rgba(0,212,255,.18) inset;}
+.nav-btn.credits{color:var(--amber);}
+.nav-btn.credits.active{color:#0a0e1a;background:var(--amber);border-color:var(--amber);}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+main{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:82px 16px 40px;}
+.view{display:none;}
+.view.active{display:block;animation:viewIn .42s ease both;}
+@keyframes viewIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+.sec-head{margin:26px 0 18px;padding-bottom:14px;border-bottom:1px solid var(--border);position:relative;}
+.sec-head::after{content:"";position:absolute;left:0;bottom:-1px;width:120px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.kicker .ic{width:22px;height:22px;display:inline-block;}
+.sec-head h2{font-size:clamp(22px,4.4vw,32px);margin:0 0 6px;}
+.sec-head p.lead{color:var(--muted);margin:0;font-size:15px;max-width:80ch;}
+
+.grid{display:grid;gap:16px;}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr));}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr));}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr));}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden;}
+.card.soft{background:linear-gradient(180deg,var(--card),var(--card2));}
+.card h3{font-size:17px;margin-top:0;display:flex;align-items:center;gap:9px;}
+.card h4{font-size:14.5px;color:var(--accent);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.8px;}
+.tag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid var(--border);color:var(--muted);background:#0b1222;}
+.tag.acc{color:var(--accent);border-color:rgba(0,212,255,.45);background:rgba(0,212,255,.09);}
+.tag.grn{color:var(--green);border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.09);}
+.tag.amb{color:var(--amber);border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.09);}
+.tag.pur{color:var(--purple);border-color:rgba(168,85,247,.45);background:rgba(168,85,247,.09);}
+.tag.red{color:var(--red);border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.09);}
+
+.chip{display:inline-flex;align-items:center;gap:6px;background:#0b1222;border:1px solid var(--border);border-radius:999px;padding:5px 12px;font-size:12.5px;color:var(--muted);font-weight:600;}
+.chip.acc{color:var(--accent);border-color:rgba(0,212,255,.4);}
+
+/* Callouts */
+.callout{border-radius:10px;padding:14px 16px 14px 18px;margin:14px 0;border-left:4px solid;background:#0c1425;}
+.callout .ct{display:block;font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:6px;}
+.callout.info{border-color:var(--accent);background:rgba(0,212,255,.07);}
+.callout.info .ct{color:var(--accent);}
+.callout.ex{border-color:var(--green);background:rgba(34,197,94,.07);}
+.callout.ex .ct{color:var(--green);}
+.callout.warn{border-color:var(--amber);background:rgba(245,158,11,.07);}
+.callout.warn .ct{color:var(--amber);}
+.callout.err{border-color:var(--red);background:rgba(239,68,68,.07);}
+.callout.err .ct{color:var(--red);}
+.callout p:last-child{margin-bottom:0;}
+
+/* Steps numerados */
+.steps{counter-reset:st;list-style:none;padding:0;margin:0;}
+.steps>li{counter-increment:st;position:relative;padding:14px 14px 14px 58px;border:1px solid var(--border);border-radius:10px;background:#0c1425;margin-bottom:10px;}
+.steps>li::before{
+  content:counter(st);position:absolute;left:12px;top:13px;width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#061018;
+  background:linear-gradient(180deg,var(--accent),#0891b2);box-shadow:0 0 14px rgba(0,212,255,.35);
+}
+.steps>li b{color:#fff;}
+
+/* Fórmulas */
+.formula{
+  font-family:'Consolas','Courier New',monospace;background:#08111f;border:1px dashed rgba(0,212,255,.5);
+  border-radius:10px;padding:16px;text-align:center;font-size:clamp(15px,3.6vw,21px);color:var(--accent);
+  letter-spacing:1px;margin:12px 0;overflow-x:auto;
+}
+.formula small{display:block;color:var(--muted);font-family:'Segoe UI',system-ui,sans-serif;font-size:12.5px;letter-spacing:.4px;margin-top:8px;}
+
+/* Tablas */
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;margin:14px 0;-webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14px;}
+th,td{padding:11px 13px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top;}
+thead th{background:#0b1729;color:var(--accent);font-size:11.5px;letter-spacing:1.2px;text-transform:uppercase;position:sticky;top:0;}
+tbody tr:nth-child(even){background:rgba(30,58,95,.18);}
+tbody tr:hover{background:rgba(0,212,255,.07);}
+tbody tr:last-child td{border-bottom:none;}
+
+/* Botones */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  background:linear-gradient(180deg,rgba(0,212,255,.18),rgba(0,212,255,.07));
+  border:1px solid rgba(0,212,255,.5);color:var(--accent);font-family:inherit;font-weight:700;
+  font-size:13.5px;letter-spacing:.6px;padding:11px 16px;border-radius:9px;transition:.18s;text-transform:uppercase;
+}
+.btn:hover{background:rgba(0,212,255,.28);transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,212,255,.22);}
+.btn:active{transform:translateY(0);}
+.btn.solid{background:linear-gradient(180deg,var(--accent),#0891b2);color:#06121a;border-color:transparent;}
+.btn.ghost{background:transparent;border-color:var(--border);color:var(--muted);}
+.btn.ghost:hover{color:var(--txt);border-color:var(--accent);background:rgba(0,212,255,.08);box-shadow:none;}
+.btn.grn{border-color:rgba(34,197,94,.5);color:var(--green);background:rgba(34,197,94,.10);}
+.btn.grn:hover{background:rgba(34,197,94,.22);box-shadow:0 6px 18px rgba(34,197,94,.18);}
+.btn.amb{border-color:rgba(245,158,11,.5);color:var(--amber);background:rgba(245,158,11,.10);}
+.btn.amb:hover{background:rgba(245,158,11,.22);}
+.btn.sm{padding:8px 12px;font-size:12px;}
+.btn[disabled]{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important;}
+.btn-row{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0;}
+
+select,input[type=range]{font-family:inherit;}
+select{
+  background:#0b1222;color:var(--txt);border:1px solid var(--border);border-radius:9px;
+  padding:11px 12px;font-size:14.5px;width:100%;cursor:pointer;
+}
+label.fld{display:block;font-size:11px;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px;}
+
+/* ============================================================
+   HOME / PORTADA
+   ============================================================ */
+.cover-top{display:flex;justify-content:center;margin-bottom:14px;}
+.cover-svg-wrap{
+  width:100%;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+  background:#080d18;box-shadow:0 18px 60px rgba(0,0,0,.55),0 0 0 1px rgba(0,212,255,.06) inset;
+}
+.cover-svg{display:block;width:100%;height:auto;aspect-ratio:16/9;}
+.hero{text-align:center;margin:26px auto 8px;max-width:960px;}
+.badge{
+  display:inline-flex;align-items:center;gap:9px;border:1px solid rgba(0,212,255,.45);background:rgba(0,212,255,.08);
+  color:var(--accent);font-size:11px;font-weight:800;letter-spacing:2.4px;text-transform:uppercase;padding:7px 15px;border-radius:999px;
+}
+.badge .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:bp 1.8s infinite;}
+@keyframes bp{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.7);}}
+.hero h1{font-size:clamp(27px,6.2vw,50px);margin:14px 0 8px;background:linear-gradient(180deg,#fff,#9fd8ec);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero .sub{font-size:clamp(14.5px,3.2vw,19px);color:var(--accent);font-weight:600;margin:0 auto 14px;max-width:820px;}
+.hero .desc{color:var(--muted);font-size:15px;max-width:820px;margin:0 auto 18px;}
+.quote{
+  max-width:820px;margin:20px auto;padding:20px 22px;border-radius:var(--radius);
+  border:1px solid rgba(168,85,247,.4);background:linear-gradient(180deg,rgba(168,85,247,.10),rgba(15,23,42,.6));
+  font-size:clamp(15px,3.4vw,19px);font-style:italic;color:#f0e8ff;position:relative;
+}
+.quote::before{content:"“";position:absolute;left:10px;top:-6px;font-size:52px;color:rgba(168,85,247,.5);font-style:normal;line-height:1;}
+.quote span{display:block;margin-top:10px;font-style:normal;font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--purple);font-weight:800;}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:22px 0;}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.metric .v{font-size:26px;font-weight:800;color:var(--accent);line-height:1;font-family:'Consolas',monospace;}
+.metric .l{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-top:7px;font-weight:700;}
+.stamp{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin:16px 0 6px;}
+.stamp .chip{font-family:'Consolas',monospace;}
+
+/* ============================================================
+   CONTADORES DE GRADOS
+   ============================================================ */
+.deg-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+.deg{
+  flex:1 1 88px;min-width:84px;text-align:center;border:1px solid var(--border);border-radius:10px;background:#0b1222;
+  padding:10px 6px;transition:.25s;cursor:default;
+}
+.deg .n{font-size:19px;font-weight:800;color:var(--txt);font-family:'Consolas',monospace;}
+.deg .r{font-size:11px;color:var(--dim);letter-spacing:1px;font-weight:700;margin-top:3px;}
+.deg.lit{border-color:var(--accent);background:rgba(0,212,255,.14);box-shadow:0 0 20px rgba(0,212,255,.25);transform:translateY(-3px);}
+.deg.hit{border-color:var(--green);background:rgba(34,197,94,.16);box-shadow:0 0 22px rgba(34,197,94,.3);transform:translateY(-5px);}
+.deg.hit .n{color:var(--green);}
+.deg.hit .r{color:#c9f5d8;}
+.count-out{min-height:26px;font-family:'Consolas',monospace;font-size:14px;color:var(--accent);margin-top:8px;}
+
+/* ============================================================
+   CADENA INTERACTIVA
+   ============================================================ */
+.chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:14px 0;}
+.cnode{
+  flex:1 1 130px;min-width:126px;border:1px solid var(--border);border-radius:12px;background:#0b1222;padding:14px 10px;
+  text-align:center;cursor:pointer;transition:.22s;font-family:inherit;color:var(--txt);
+}
+.cnode:hover{transform:translateY(-4px);border-color:var(--accent);}
+.cnode.sel{border-color:var(--accent);background:rgba(0,212,255,.12);box-shadow:0 0 22px rgba(0,212,255,.22);}
+.cnode .ch{font-size:22px;font-weight:800;font-family:'Consolas',monospace;color:var(--accent);}
+.cnode .rl{font-size:11.5px;color:var(--muted);margin-top:4px;font-weight:600;}
+.carrow{align-self:center;color:var(--purple);font-size:22px;font-weight:800;flex:0 0 auto;}
+.panel-out{border:1px solid var(--border);border-left:4px solid var(--accent);background:#0c1425;border-radius:10px;padding:14px 16px;min-height:96px;}
+
+/* ============================================================
+   STEPPER DE PROGRESIÓN
+   ============================================================ */
+.prog-box{border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,var(--card),var(--card2));padding:16px;margin:16px 0;}
+.bars{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+.bar-chip{
+  flex:1 1 92px;min-width:88px;border:1px solid var(--border);border-radius:9px;background:#0b1222;padding:9px 6px;text-align:center;
+  cursor:pointer;transition:.2s;font-family:inherit;color:var(--muted);
+}
+.bar-chip .bc{font-size:16px;font-weight:800;font-family:'Consolas',monospace;color:var(--txt);}
+.bar-chip .bb{font-size:10px;letter-spacing:.8px;text-transform:uppercase;margin-top:2px;}
+.bar-chip.done{border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.10);}
+.bar-chip.cur{border-color:var(--accent);background:rgba(0,212,255,.16);box-shadow:0 0 18px rgba(0,212,255,.28);transform:translateY(-3px);}
+.bar-chip.cur .bc{color:var(--accent);}
+.stepper{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:14px;align-items:start;}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;}
+.ctrl .spacer{flex:1 1 auto;}
+.slider-row{display:flex;align-items:center;gap:10px;margin:8px 0 4px;}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:99px;background:#0b1222;border:1px solid var(--border);cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);border:3px solid #06121a;box-shadow:0 0 12px rgba(0,212,255,.7);cursor:pointer;}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);border:3px solid #06121a;cursor:pointer;}
+.ind{font-family:'Consolas',monospace;font-size:12.5px;color:var(--muted);letter-spacing:.6px;text-align:center;}
+.play-panel{border:1px solid var(--border);border-radius:10px;background:#08111f;padding:14px;}
+.pp-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+.pp-chord{font-size:30px;font-weight:800;font-family:'Consolas',monospace;color:var(--accent);line-height:1;}
+.pp-row{font-size:13.5px;margin:7px 0;color:var(--txt);}
+.pp-row .k{display:block;font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);font-weight:800;margin-bottom:2px;}
+.pp-row.why .k{color:var(--purple);}
+.pp-row.what .k{color:var(--green);}
+
+/* ============================================================
+   PIANO
+   ============================================================ */
+.piano-wrap{border:1px solid var(--border);border-radius:var(--radius);background:#080d18;padding:12px;}
+.piano{position:relative;display:flex;width:100%;height:200px;user-select:none;-webkit-user-select:none;touch-action:manipulation;}
+.wk{
+  flex:1 1 0;position:relative;background:linear-gradient(180deg,#fbfdff 0%,#e6ecf5 78%,#cfd8e6 100%);
+  border:1px solid #7c8ba1;border-radius:0 0 7px 7px;margin:0 1px;cursor:pointer;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;transition:background .1s,box-shadow .1s;
+}
+.wk span{font-size:10px;font-weight:700;color:#5b6b83;font-family:'Consolas',monospace;pointer-events:none;}
+.wk.on{background:linear-gradient(180deg,#a5f3ff,#00d4ff 70%,#0891b2);box-shadow:0 0 22px rgba(0,212,255,.75) inset;}
+.wk.on span{color:#052430;}
+.bk{
+  position:absolute;top:0;height:62%;background:linear-gradient(180deg,#2b3b57,#0a1120 70%,#05090f);
+  border:1px solid #04070d;border-radius:0 0 6px 6px;cursor:pointer;z-index:4;transition:background .1s;
+}
+.bk.on{background:linear-gradient(180deg,#00d4ff,#0e7490);box-shadow:0 0 18px rgba(0,212,255,.8);}
+.piano-foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;color:var(--dim);font-family:'Consolas',monospace;}
+.now-chord{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--border);border-radius:10px;background:#0b1222;padding:12px 14px;margin-top:12px;}
+.now-chord .nc{font-size:26px;font-weight:800;color:var(--amber);font-family:'Consolas',monospace;line-height:1;}
+.now-chord .nt{font-size:13px;color:var(--muted);}
+
+/* ============================================================
+   CALCULADORA
+   ============================================================ */
+.calc-out{border:1px solid rgba(0,212,255,.4);border-radius:10px;background:#08111f;padding:16px;margin-top:14px;}
+.calc-big{font-size:clamp(24px,6vw,38px);font-weight:800;color:var(--green);font-family:'Consolas',monospace;text-align:center;letter-spacing:1px;}
+.calc-sub{text-align:center;color:var(--muted);font-size:13px;margin-top:4px;}
+.kv{display:grid;grid-template-columns:150px minmax(0,1fr);gap:6px 12px;font-size:14px;margin-top:12px;}
+.kv dt{color:var(--dim);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:800;padding-top:3px;}
+.kv dd{margin:0;color:var(--txt);font-family:'Consolas',monospace;}
+
+/* ============================================================
+   EJERCICIOS
+   ============================================================ */
+.ex{border:1px solid var(--border);border-radius:10px;background:#0c1425;padding:16px;margin-bottom:12px;}
+.ex .q{font-weight:700;margin-bottom:8px;font-size:15.5px;}
+.ex .q .num{display:inline-flex;width:26px;height:26px;border-radius:7px;background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.45);color:var(--accent);align-items:center;justify-content:center;font-size:13px;font-family:'Consolas',monospace;margin-right:9px;}
+.answer{display:none;margin-top:10px;border-left:3px solid var(--green);background:rgba(34,197,94,.08);padding:11px 13px;border-radius:0 8px 8px 0;font-size:14.5px;}
+.answer.open{display:block;animation:viewIn .3s ease both;}
+.check{list-style:none;padding:0;margin:0;}
+.check li{padding-left:30px;position:relative;margin-bottom:9px;font-size:14.5px;}
+.check li::before{content:"✔";position:absolute;left:0;top:0;color:var(--green);font-weight:800;}
+
+/* ============================================================
+   CRÉDITOS
+   ============================================================ */
+.cred-card{text-align:center;border:1px solid rgba(245,158,11,.35);background:linear-gradient(180deg,rgba(245,158,11,.07),var(--card));border-radius:var(--radius);padding:22px;margin-top:18px;}
+.cred-card .au{font-size:clamp(22px,5vw,32px);font-weight:800;color:var(--amber);margin:8px 0;}
+.latin{font-style:italic;color:var(--purple);letter-spacing:1.4px;font-size:16px;margin-top:14px;font-family:Georgia,'Segoe UI',serif;}
+.edu{color:var(--muted);font-size:13.5px;max-width:70ch;margin:10px auto;}
+
+/* ============================================================
+   FOOTER + TO TOP
+   ============================================================ */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);background:#080d18;margin-top:26px;padding:24px 16px 34px;text-align:center;font-size:13.5px;color:var(--muted);}
+footer .fl{margin:5px 0;}
+footer .latin{font-size:14px;margin-top:12px;}
+#toTop{
+  position:fixed;right:16px;bottom:18px;z-index:115;width:48px;height:48px;border-radius:12px;cursor:pointer;
+  background:linear-gradient(180deg,var(--accent),#0891b2);border:none;color:#05121a;font-size:20px;font-weight:800;
+  box-shadow:0 8px 24px rgba(0,212,255,.35);opacity:0;pointer-events:none;transition:.25s;
+}
+#toTop.show{opacity:1;pointer-events:auto;}
+#toTop:hover{transform:translateY(-3px);}
+
+/* ============================================================
+   SVG ANIMADO — CLASES
+   ============================================================ */
+.cover-svg text{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;}
+.cv-title{font-size:44px;font-weight:800;fill:#ffffff;letter-spacing:2px;}
+.cv-sub{font-size:20px;font-weight:600;fill:#8fd8ea;letter-spacing:3.4px;}
+.cv-form{font-size:22px;font-weight:700;fill:#a855f7;letter-spacing:1.6px;font-family:'Consolas',monospace;}
+.cv-node{font-size:29px;font-weight:800;fill:#ffffff;font-family:'Consolas',monospace;}
+.cv-nodesub{font-size:14.5px;font-weight:700;fill:#9fb2d0;letter-spacing:1px;}
+.cv-card-t{font-size:22px;font-weight:800;fill:#ffffff;font-family:'Consolas',monospace;}
+.cv-card-s{font-size:12.5px;font-weight:700;fill:#93a6c6;letter-spacing:1.4px;}
+.cv-keylbl{font-size:15px;font-weight:700;fill:#5c6b83;font-family:'Consolas',monospace;}
+.cv-foot{font-size:14px;font-weight:700;fill:#5c708c;letter-spacing:1.8px;}
+.cv-wlbl{font-size:14px;font-weight:800;fill:#e8f6ff;letter-spacing:2px;font-family:'Consolas',monospace;}
+.cv-link{stroke-dasharray:14 12;animation:dashflow 1.4s linear infinite;}
+@keyframes dashflow{to{stroke-dashoffset:-52;}}
+.cv-glowkey{opacity:0;animation:keyglow 12s linear infinite;}
+@keyframes keyglow{0%{opacity:0}2%{opacity:.95}20%{opacity:.85}25%{opacity:0}100%{opacity:0}}
+.cv-cardglow{opacity:0;animation:cardglow 12s linear infinite;}
+@keyframes cardglow{0%{opacity:.15}2%{opacity:1}20%{opacity:.95}25%{opacity:.15}100%{opacity:.15}}
+.cv-nodeglow{opacity:0;animation:nodeglow 12s linear infinite;}
+@keyframes nodeglow{0%{opacity:0}2%{opacity:1}20%{opacity:.9}25%{opacity:0}100%{opacity:0}}
+.cv-halo{animation:halo 5.5s ease-in-out infinite;}
+@keyframes halo{0%,100%{opacity:.35;}50%{opacity:.8;}}
+.cv-blink{animation:blink 2.6s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+.cv-wave{stroke-dasharray:6 10;animation:dashflow2 3s linear infinite;}
+@keyframes dashflow2{to{stroke-dashoffset:-64;}}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:1000px){
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .g3{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .stepper{grid-template-columns:minmax(0,1fr);}
+}
+@media (max-width:680px){
+  main{padding:76px 11px 30px;}
+  .nav-inner{height:56px;padding:0 8px;gap:8px;}
+  .brand-txt{font-size:10.5px;}
+  .nav-btn{font-size:11.5px;padding:8px 10px;}
+  .g2,.g3,.g4{grid-template-columns:minmax(0,1fr);}
+  .card{padding:15px;}
+  .piano{height:150px;}
+  .wk span{font-size:8.5px;}
+  .kv{grid-template-columns:minmax(0,1fr);}
+  .kv dt{padding-top:8px;}
+  .steps>li{padding:12px 12px 12px 52px;}
+  .ctrl .btn{flex:1 1 auto;}
+  .pp-chord{font-size:25px;}
+  .carrow{display:none;}
+  #toTop{width:44px;height:44px;right:12px;bottom:14px;}
+}
+@media (max-width:380px){
+  .piano{height:132px;}
+  .deg{flex:1 1 44%;}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
+  .cv-glowkey,.cv-nodeglow{opacity:.75;}
+  .cv-cardglow{opacity:.9;}
+}
+</style>
+</head>
+<body>
+
+<div id="progressWrap"><div id="progressBar"></div></div>
+
+<nav id="navbar" aria-label="Navegación principal del tutorial">
+  <div class="nav-inner">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="37" height="37" rx="9" fill="#0b1222" stroke="#1e3a5f"/>
+        <rect x="7" y="10" width="4.4" height="20" rx="1.4" fill="#e7eefc"/>
+        <rect x="12.4" y="10" width="4.4" height="20" rx="1.4" fill="#e7eefc"/>
+        <rect x="17.8" y="10" width="4.4" height="20" rx="1.4" fill="#e7eefc"/>
+        <rect x="23.2" y="10" width="4.4" height="20" rx="1.4" fill="#00d4ff"/>
+        <rect x="28.6" y="10" width="4.4" height="20" rx="1.4" fill="#e7eefc"/>
+        <rect x="10.6" y="10" width="3" height="12.5" rx="1.2" fill="#0a0e1a"/>
+        <rect x="21.4" y="10" width="3" height="12.5" rx="1.2" fill="#0a0e1a"/>
+        <rect x="26.8" y="10" width="3" height="12.5" rx="1.2" fill="#0a0e1a"/>
+      </svg>
+      <div class="brand-txt">IV / IV<small>Armonía aplicada</small></div>
+    </div>
+    <div class="nav-scroll" id="navScroll">
+      <button class="nav-btn active" data-target="home">Inicio</button>
+      <button class="nav-btn" data-target="fundamentos">1 · Fundamentos</button>
+      <button class="nav-btn" data-target="formula">2 · La fórmula</button>
+      <button class="nav-btn" data-target="cadenas">3 · Cadenas</button>
+      <button class="nav-btn" data-target="progresiones">4 · Progresiones</button>
+      <button class="nav-btn" data-target="piano">5 · Piano Lab</button>
+      <button class="nav-btn" data-target="ejercicios">6 · Ejercicios</button>
+      <button class="nav-btn credits" data-target="credits">★ Créditos</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ================= HOME ================= -->
+<section id="home" class="view active" aria-label="Inicio">
+  <div class="cover-top"><span class="badge"><span class="dot"></span> Manual técnico interactivo · Armonía · Piano</span></div>
+
+  <div class="cover-svg-wrap" id="cover-home"></div>
+
+  <div class="hero">
+    <h1>La Arquitectura de la Subdominante Secundaria</h1>
+    <p class="sub">Cómo preparar cualquier acorde objetivo con el acorde IV de su propia tonalidad · Cadenas IV/IV aplicadas al piano</p>
+    <p class="desc">
+      Tutorial paso a paso basado íntegramente en el documento original de <strong>Rubén Sbarsky</strong>. Recorre la definición del acorde
+      subdominante, la regla que construye una <strong>subdominante secundaria</strong>, la fórmula de cálculo por grados, el encadenamiento
+      iterativo de varias subdominantes y tres progresiones comparadas en la tonalidad de <strong>C(I)</strong> — con teclado interactivo,
+      reproductores de progresión compás a compás, calculadora de cuartas y ejercicios autocorregibles.
+    </p>
+    <div class="quote">
+      Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.
+      <span>Principio didáctico del tutorial</span>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="v">4</div><div class="l">Pasos del método</div></div>
+    <div class="metric"><div class="v">1</div><div class="l">Fórmula general</div></div>
+    <div class="metric"><div class="v">2</div><div class="l">Ejemplos resueltos</div></div>
+    <div class="metric"><div class="v">3</div><div class="l">Progresiones comparadas</div></div>
+    <div class="metric"><div class="v">5</div><div class="l">Compases en la cadena</div></div>
+    <div class="metric"><div class="v">C(I)</div><div class="l">Tonalidad de referencia</div></div>
+  </div>
+
+  <div class="stamp">
+    <span class="chip acc">👨‍💻 Autor: Rubén Sbarsky</span>
+    <span class="chip">📅 FECHA: 10/09/2026</span>
+    <span class="chip">🕒 Hora: 06:58:08</span>
+    <span class="chip">🎹 Nomenclatura americana: A B C D E F G</span>
+    <span class="chip">🎓 Solo con fines educativos</span>
+  </div>
+
+  <div class="grid g3" style="margin-top:20px;">
+    <div class="card soft">
+      <h3><span class="tag acc">Ruta 01</span></h3>
+      <h4>Qué vas a aprender</h4>
+      <p style="color:var(--muted);font-size:14.5px;margin:0;">Qué es el acorde IV, qué convierte a un acorde en <strong>subdominante secundaria</strong> y cómo se escribe la relación <code>IV/IV</code>.</p>
+    </div>
+    <div class="card soft">
+      <h3><span class="tag grn">Ruta 02</span></h3>
+      <h4>Cómo se calcula</h4>
+      <p style="color:var(--muted);font-size:14.5px;margin:0;">Conteo de cuatro grados desde el acorde objetivo, con contador animado, calculadora de cuartas y teclado para comprobarlo de oído.</p>
+    </div>
+    <div class="card soft">
+      <h3><span class="tag pur">Ruta 03</span></h3>
+      <h4>Cómo se aplica</h4>
+      <p style="color:var(--muted);font-size:14.5px;margin:0;">Tres progresiones en C(I) — estándar, con una subdominante secundaria y con cadena encadenada — reproducibles compás a compás.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1. FUNDAMENTOS ================= -->
+<section id="fundamentos" class="view" aria-label="Fundamentos">
+  <div class="sec-head">
+    <span class="kicker"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.8"><path d="M3 18V8m5 10V5m5 13v-7m5 7V9"/></svg> Sección 1 · Paso 1 y Paso 2</span>
+    <h2>Fundamentos: el acorde IV y la definición de subdominante secundaria</h2>
+    <p class="lead">Antes de calcular nada hay que fijar dos ideas: cuál es la función del acorde subdominante principal en una tonalidad y qué regla define a una subdominante secundaria.</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <span class="tag acc">Paso 1</span>
+      <h3 style="margin-top:10px;">Entender el acorde subdominante básico (el acorde IV)</h3>
+      <p>Para comprender qué es una subdominante secundaria, primero debemos recordar la función del acorde subdominante principal en una tonalidad:</p>
+      <ul>
+        <li>En teoría musical, <strong>el acorde "cuatro" (IV) se conoce como el acorde subdominante</strong>.</li>
+        <li>Si tomamos como referencia la escala de <strong>C(I)</strong>, el cuarto grado de dicha escala corresponde a la nota <strong>F(IV)</strong>. Por lo tanto, el acorde subdominante principal en esa tonalidad es <strong>F(IV)</strong>.</li>
+      </ul>
+      <div class="callout info">
+        <span class="ct">Info · Convención de notación</span>
+        <p>Todo el tutorial utiliza el <strong>sistema americano</strong> de notas: <code>A, B, C, D, E, F, G</code>, indicando siempre el grado entre paréntesis: <code>C(I), D(II), E(III), F(IV), G(V), A(VI), B(VII)</code>.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="tag grn">Paso 2</span>
+      <h3 style="margin-top:10px;">Definiendo la subdominante secundaria</h3>
+      <p>A diferencia de la subdominante habitual de la canción, una <strong>subdominante secundaria</strong> se define con la siguiente regla:</p>
+      <div class="formula">
+        IV de un acorde o tonalidad distinta a la principal
+        <small>Un acorde subdominante secundario es el acorde "cuatro" (IV) de una tonalidad o acorde distinto a la tonalidad principal de la canción.</small>
+      </div>
+      <ul>
+        <li>Se utiliza principalmente como un <strong>acorde de paso</strong> (<em>passing chord</em>).</li>
+        <li>Su misión es <strong>preparar o anticipar la llegada a un acorde objetivo</strong> dentro de la progresión armónica.</li>
+      </ul>
+      <div class="callout ex">
+        <span class="ct">Ejemplo · Contraste</span>
+        <p><strong>Subdominante principal</strong> en C(I): <code>F(IV)</code> — es el IV de la tonalidad de la canción.<br>
+        <strong>Subdominante secundaria</strong>: <code>Bb(IV)</code> — es el IV de <code>F(I)</code>, es decir, el IV de un acorde distinto al principal.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h3>🎯 Contador de grados: de dónde sale F(IV)</h3>
+    <p style="color:var(--muted);font-size:14.5px;">Pulsa el botón para contar los cuatro grados de la escala de <strong>C(I)</strong> tal como lo hace el documento. También puedes pulsar cualquier grado para ver el conteo hasta él.</p>
+    <div class="deg-row" id="degRowC"></div>
+    <div class="count-out" id="degOutC">Referencia: escala de C(I) — pulsa «Contar 4 grados».</div>
+    <div class="btn-row">
+      <button class="btn solid" id="btnCountC">▶ Contar 4 grados desde C(I)</button>
+      <button class="btn ghost" id="btnResetC">Reset</button>
+    </div>
+  </div>
+
+  <div class="grid g3" style="margin-top:16px;">
+    <div class="card soft"><h4>Idea clave 1</h4><p style="margin:0;font-size:14.5px;color:var(--muted);">El acorde <strong>IV</strong> es el que cumple la <strong>función subdominante</strong> dentro de la referencia que estemos considerando.</p></div>
+    <div class="card soft"><h4>Idea clave 2</h4><p style="margin:0;font-size:14.5px;color:var(--muted);">Si la referencia cambia (de la canción a un acorde concreto), cambia también cuál es su IV: ahí nace la <strong>subdominante secundaria</strong>.</p></div>
+    <div class="card soft"><h4>Idea clave 3</h4><p style="margin:0;font-size:14.5px;color:var(--muted);">Su uso principal es ser <strong>acorde de paso</strong>: no es un destino, es un <strong>puente armónico</strong> hacia el acorde objetivo.</p></div>
+  </div>
+</section>
+
+<!-- ================= 2. LA FÓRMULA ================= -->
+<section id="formula" class="view" aria-label="La fórmula">
+  <div class="sec-head">
+    <span class="kicker"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.8"><path d="M5 4h14M9 4v16M7 20h6M15 8l4 8M19 8l-4 8"/></svg> Sección 2 · Paso 3</span>
+    <h2>Aplicar la fórmula paso a paso (Ejemplo 1)</h2>
+    <p class="lead">Supongamos que en nuestra composición queremos preparar la llegada al acorde de <strong>F(IV)</strong>. Estos son los cuatro movimientos exactos del método.</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>🧮 Los 4 movimientos del cálculo</h3>
+      <ol class="steps">
+        <li><b>Identificar el acorde objetivo.</b> Nuestro acorde objetivo será <strong>F(IV)</strong>.</li>
+        <li><b>Formular la pregunta clave.</b> ¿Cuál es el acorde cuatro (IV) o subdominante de nuestro acorde objetivo <strong>F(IV)</strong>?</li>
+        <li><b>Calcular la subdominante del acorde objetivo.</b> Contando cuatro grados a partir de la escala de la nota <strong>F(I)</strong>: <code>F(I) → G(II) → A(III) → Bb(IV)</code>, hallamos que la cuarta nota es <strong>Bb(IV)</strong>. Por consiguiente, la subdominante de F(IV) es el acorde de <strong>Bb(IV) mayor</strong> (o <strong>Bb(IV) major 7</strong>).</li>
+        <li><b>Resultado armónico.</b> El acorde de <strong>Bb(IV)</strong> actúa como la <strong>subdominante secundaria</strong> de F(IV). En la notación armónica, el símbolo de la barra diagonal (<code>"/"</code>) significa <em>"de"</em>, por lo que esta relación se escribe <strong>IV/IV</strong> (se lee <em>"el cuatro del cuatro"</em>).</li>
+      </ol>
+    </div>
+
+    <div>
+      <div class="card">
+        <h3>🔢 Conteo desde F(I)</h3>
+        <p style="color:var(--muted);font-size:14.5px;">El mismo conteo del documento, grado por grado. Pulsa para verlo en movimiento.</p>
+        <div class="deg-row" id="degRowF"></div>
+        <div class="count-out" id="degOutF">Objetivo: F(IV) — el cuarto grado desde F(I) es Bb(IV).</div>
+        <div class="btn-row">
+          <button class="btn solid" id="btnCountF">▶ Contar F(I) → Bb(IV)</button>
+          <button class="btn ghost" id="btnResetF">Reset</button>
+          <button class="btn grn" id="btnHearBb">🔊 Escuchar Bb mayor</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3>📐 Resumen de la fórmula para principiantes</h3>
+        <ul style="margin-bottom:0;">
+          <li><strong>Fórmula general:</strong> para anteceder y preparar cualquier acorde objetivo, calcula la nota que se encuentra a <strong>una cuarta de distancia</strong> (acorde IV) de dicho objetivo e inserta ese acorde como <strong>puente armónico</strong>.</li>
+          <li><strong>Lectura de la barra (<code>"/"</code>):</strong> la notación <strong>IV/IV</strong> expresa textualmente <em>"el acorde subdominante del subdominante"</em>.</li>
+        </ul>
+        <div class="formula" style="margin-bottom:0;">IV / IV<small>"el cuatro del cuatro" · la barra diagonal significa "de"</small></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="ct">Advertencia · Cambio de referencia</span>
+    <p>En el paso 3 el acorde <strong>F</strong> deja de leerse como <em>IV de C</em> y pasa a tratarse como <strong>F(I)</strong>, una <strong>tónica temporal</strong>. El conteo de cuatro grados se hace siempre desde esa referencia local, no desde la tonalidad principal de la canción.</p>
+  </div>
+
+  <!-- CALCULADORA -->
+  <div class="card" style="margin-top:16px;">
+    <span class="tag pur">Herramienta interactiva</span>
+    <h3 style="margin-top:10px;">🧭 Calculadora de subdominante secundaria</h3>
+    <p style="color:var(--muted);font-size:14.5px;">Elige un <strong>acorde objetivo</strong> y el <strong>grado</strong> que cumple dentro de la tonalidad principal. La herramienta aplica la fórmula del documento: cuenta cuatro grados desde el objetivo y devuelve su IV.</p>
+    <div class="grid g3">
+      <div><label class="fld" for="calcRoot">Acorde objetivo (raíz)</label>
+        <select id="calcRoot"></select>
+      </div>
+      <div><label class="fld" for="calcQual">Calidad del objetivo</label>
+        <select id="calcQual">
+          <option value="maj">Mayor</option>
+          <option value="maj7">Major 7</option>
+        </select>
+      </div>
+      <div><label class="fld" for="calcDeg">Grado del objetivo en la tonalidad principal</label>
+        <select id="calcDeg">
+          <option>I</option><option>II</option><option>III</option><option selected>IV</option><option>V</option><option>VI</option><option>VII</option>
+        </select>
+      </div>
+    </div>
+    <div class="calc-out" id="calcOut"></div>
+    <div class="btn-row" style="margin-bottom:0;">
+      <button class="btn solid" id="calcPlayBridge">🔊 Escuchar el acorde puente</button>
+      <button class="btn ghost" id="calcPlayBoth">🔊 Puente → Objetivo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. CADENAS ================= -->
+<section id="cadenas" class="view" aria-label="Cadenas de subdominantes">
+  <div class="sec-head">
+    <span class="kicker"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.8"><path d="M8 12h8M6 8H4a4 4 0 000 8h2m12-8h2a4 4 0 010 8h-2M9 8a4 4 0 000 8m6-8a4 4 0 010 8"/></svg> Sección 3 · Paso 4</span>
+    <h2>Encadenar subdominantes secundarias (Ejemplo 2)</h2>
+    <p class="lead">La misma fórmula se puede aplicar de forma <strong>iterativa</strong> para encadenar múltiples subdominantes secundarias hacia atrás.</p>
+  </div>
+
+  <div class="card">
+    <p style="margin-top:0;">Si ahora quisiéramos preparar la llegada al acorde de <strong>Bb(IV)</strong>:</p>
+    <ol class="steps">
+      <li><b>Identificar el nuevo acorde objetivo.</b> El objetivo actual es <strong>Bb(IV)</strong>.</li>
+      <li><b>Aplicar la fórmula.</b> Buscamos cuál es el acorde cuatro (IV) o subdominante del acorde <strong>Bb(I)</strong>.</li>
+      <li><b>Calcular el cuarto grado.</b> El cuarto grado partiendo de la nota <strong>Bb(I)</strong> es la nota <strong>Eb(IV)</strong> o el acorde de <strong>Eb(IV) mayor</strong>.</li>
+      <li><b>Construir la secuencia.</b> Al insertar el acorde de <strong>Eb(IV) mayor</strong>, este funciona como el cuatro (IV) de <strong>Bb(IV)</strong>. A su vez, el acorde de <strong>Bb(IV)</strong> es el cuatro (IV) de <strong>F(IV)</strong>.</li>
+    </ol>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h3>⛓️ Cadena interactiva · pulsa cada eslabón</h3>
+    <p style="color:var(--muted);font-size:14.5px;">Cada acorde es el <strong>IV</strong> del siguiente. La cadena resuelve hacia la tónica <strong>C(I)</strong>.</p>
+    <div class="chain" id="chainRow"></div>
+    <div class="panel-out" id="chainOut"></div>
+    <div class="btn-row" style="margin-bottom:0;">
+      <button class="btn solid" id="chainPlay">▶ Reproducir la cadena completa</button>
+      <button class="btn ghost" id="chainCount">🔢 Contar Bb(I) → Eb(IV)</button>
+    </div>
+    <div class="deg-row" id="degRowBb" style="margin-top:12px;"></div>
+    <div class="count-out" id="degOutBb">Conteo del cuarto grado desde Bb(I).</div>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px;">
+    <div class="card">
+      <h3>📌 Resumen de la fórmula para principiantes</h3>
+      <ul style="margin-bottom:0;">
+        <li><strong>Fórmula general:</strong> para anteceder y preparar cualquier acorde objetivo, calcula la nota que se encuentra a <strong>una cuarta de distancia</strong> (acorde IV) de dicho objetivo e inserta ese acorde como <strong>puente armónico</strong>.</li>
+        <li><strong>Lectura de la barra (<code>"/"</code>):</strong> la notación <strong>IV/IV</strong> expresa textualmente <em>"el acorde subdominante del subdominante"</em>.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>🔁 Lógica iterativa</h3>
+      <p style="font-size:14.5px;color:var(--muted);margin-bottom:8px;">Objetivo → se convierte en referencia local → se le calcula su IV → ese nuevo acorde puede volver a ser objetivo.</p>
+      <div class="formula" style="margin-bottom:0;">
+        Eb(IV) → Bb(IV) → F(IV) → C(I)
+        <small>Eb es el cuatro de Bb · Bb es el cuatro de F · F es el cuatro (subdominante principal) de C(I)</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="ct">Info · Dirección del encadenamiento</span>
+    <p>Las subdominantes secundarias se encadenan <strong>hacia atrás</strong>: se parte del acorde al que se quiere llegar y se retrocede de cuarta en cuarta. Al reproducirlas en la canción, suenan <strong>en orden inverso</strong>, resolviendo cada una en la siguiente hasta la tónica.</p>
+  </div>
+</section>
+
+<!-- ================= 4. PROGRESIONES ================= -->
+<section id="progresiones" class="view" aria-label="Progresiones prácticas">
+  <div class="sec-head">
+    <span class="kicker"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg> Sección 4 · Ejemplo práctico</span>
+    <h2>Ejemplo práctico de progresión armónica con subdominantes secundarias</h2>
+    <p class="lead">Para poner a prueba esta técnica de forma clara, tomaremos como tonalidad principal la escala de <strong>C(I)</strong>. Cada progresión dispone de su propio reproductor <strong>compás a compás</strong>.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag">4.1</span>
+    <h3 style="margin-top:10px;">La progresión básica de origen</h3>
+    <p>Comencemos con una progresión armónica muy común de <strong>cuatro compases</strong> en la tonalidad de <strong>C(I)</strong>:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Compás</th><th>Acorde</th><th>Función</th></tr></thead>
+        <tbody>
+          <tr><td>Compás 1</td><td><strong>C(I)</strong></td><td>Acorde tónico</td></tr>
+          <tr><td>Compás 2</td><td><strong>G(V)</strong></td><td>Acorde dominante</td></tr>
+          <tr><td>Compás 3</td><td><strong>F(IV)</strong></td><td>Acorde subdominante principal</td></tr>
+          <tr><td>Compás 4</td><td><strong>C(I)</strong></td><td>Resolución a la tónica</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info" style="margin-bottom:0;">
+      <span class="ct">Info</span>
+      <p>En esta secuencia tradicional, el paso de <strong>G(V)</strong> a <strong>F(IV)</strong> es un <strong>movimiento directo diatónico</strong>.</p>
+    </div>
+  </div>
+
+  <div id="progStd"></div>
+
+  <div class="card" style="margin-top:16px;">
+    <span class="tag grn">4.2</span>
+    <h3 style="margin-top:10px;">Aplicando una subdominante secundaria (IV/IV)</h3>
+    <p>Para crear un puente más suave e interesante hacia nuestro acorde objetivo <strong>F(IV)</strong>, insertamos su subdominante correspondiente justo antes de él:</p>
+    <ol class="steps">
+      <li><b>Identificar el objetivo:</b> nuestro objetivo es llegar al acorde de <strong>F(IV)</strong>.</li>
+      <li><b>Calcular la subdominante del objetivo:</b> si pensamos en <strong>F(I)</strong> como una tónica temporal, su cuarto grado (cuatro notas por encima) es la nota <strong>Bb(IV)</strong>.</li>
+      <li><b>Insertar el acorde de paso:</b> el acorde de <strong>Bb(IV)</strong> mayor (o <strong>Bb(IV)</strong> major 7) actúa como la <strong>subdominante secundaria</strong> (notado como <strong>IV/IV</strong>).</li>
+    </ol>
+    <h4>Progresión rearmonizada</h4>
+    <ul>
+      <li>Compás 1: <strong>C(I)</strong></li>
+      <li>Compás 2: <strong>G(V)</strong></li>
+      <li>Compás 3: <strong>Bb(IV)</strong> → <strong>F(IV)</strong> <em>(insertamos Bb(IV) para preparar F(IV))</em></li>
+      <li>Compás 4: <strong>C(I)</strong></li>
+    </ul>
+    <div class="callout warn">
+      <span class="ct">Advertencia · Efecto armónico (nota fuera de la tonalidad)</span>
+      <p>Al incluir el acorde <strong>Bb(IV)</strong>, introducimos una sonoridad <strong>fuera de la tonalidad estricta de C(I)</strong> (ya que modifica la nota <strong>B(VII)</strong> por un bemol), lo que genera una <strong>atracción armónica muy natural hacia F(IV)</strong>. Ese B natural transformado en Bb es justamente el "color" nuevo que aporta el acorde de paso.</p>
+    </div>
+  </div>
+
+  <div id="progIv"></div>
+
+  <div class="card" style="margin-top:16px;">
+    <span class="tag pur">4.3</span>
+    <h3 style="margin-top:10px;">Encadenando múltiples subdominantes secundarias</h3>
+    <p>Podemos extender esta preparación creando una <strong>cadena de subdominantes secundarias</strong>, donde cada acorde funciona como el cuarto grado del siguiente.</p>
+    <ol class="steps">
+      <li><b>Nuevo objetivo temporal:</b> queremos preparar la llegada al acorde de <strong>Bb(IV)</strong>.</li>
+      <li><b>Calcular la subdominante de Bb(I):</b> si tomamos <strong>Bb(I)</strong> como referencia local, su cuarto grado arriba es la nota <strong>Eb(IV)</strong>.</li>
+      <li><b>Formar la secuencia encadenada:</b> insertamos <strong>Eb(IV)</strong> antes de <strong>Bb(IV)</strong>.</li>
+    </ol>
+    <h4>Progresión con cadena extendida</h4>
+    <ul>
+      <li>Compás 1: <strong>C(I)</strong></li>
+      <li>Compás 2: <strong>Eb(IV)</strong> <em>(funciona como el cuatro de Bb(I))</em></li>
+      <li>Compás 3: <strong>Bb(IV)</strong> <em>(funciona como el cuatro de F(I))</em></li>
+      <li>Compás 4: <strong>F(IV)</strong> → <strong>C(I)</strong> <em>(resolución final a la tónica)</em></li>
+    </ul>
+    <h4>Análisis del flujo armónico</h4>
+    <ul style="margin-bottom:0;">
+      <li><strong>Eb(IV)</strong> resuelve hacia <strong>Bb(IV)</strong>.</li>
+      <li><strong>Bb(IV)</strong> resuelve hacia <strong>F(IV)</strong>.</li>
+      <li><strong>F(IV)</strong> resuelve de vuelta al acorde principal de <strong>C(I)</strong>.</li>
+    </ul>
+  </div>
+
+  <div id="progChain"></div>
+
+  <div class="card" style="margin-top:16px;">
+    <h3>📊 Comparativa gráfica de las progresiones</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tipo de Progresión</th><th>Secuencia de Acordes</th><th>Descripción Armónica</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Progresión Estándar</strong></td>
+            <td><strong>C(I)</strong> — <strong>G(V)</strong> — <strong>F(IV)</strong> — <strong>C(I)</strong></td>
+            <td>Movimiento diatónico convencional en <strong>C(I)</strong>.</td>
+          </tr>
+          <tr>
+            <td><strong>Con 1 Subdominante Secundaria</strong></td>
+            <td><strong>C(I)</strong> — <strong>G(V)</strong> — <strong>Bb(IV)</strong> — <strong>F(IV)</strong> — <strong>C(I)</strong></td>
+            <td><strong>Bb(IV)</strong> prepara el acorde <strong>F(IV)</strong> como su <strong>IV/IV</strong>.</td>
+          </tr>
+          <tr>
+            <td><strong>Con Cadena Encadenada</strong></td>
+            <td><strong>C(I)</strong> — <strong>Eb(IV)</strong> — <strong>Bb(IV)</strong> — <strong>F(IV)</strong> — <strong>C(I)</strong></td>
+            <td><strong>Eb(IV)</strong> es el cuatro de <strong>Bb(IV)</strong>, y <strong>Bb(IV)</strong> es el cuatro de <strong>F(IV)</strong>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout err" style="margin-bottom:0;">
+      <span class="ct">Error típico</span>
+      <p>Colocar la subdominante secundaria <strong>después</strong> del acorde objetivo. El acorde puente va siempre <strong>justo antes</strong> del acorde que prepara: si el objetivo es <strong>F(IV)</strong>, el puente <strong>Bb(IV)</strong> debe sonar inmediatamente antes, no después.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. PIANO LAB ================= -->
+<section id="piano" class="view" aria-label="Piano Lab">
+  <div class="sec-head">
+    <span class="kicker"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M7 5v9M12 5v9M17 5v9M2 14h20"/></svg> Sección 5 · Laboratorio</span>
+    <h2>Piano Lab: comprobar la fórmula de oído y con las manos</h2>
+    <p class="lead">Teclado interactivo (dos octavas, C4 → C6) con los acordes del documento, cadenas reproducibles y orientación visual para localizar una cuarta desde cualquier acorde objetivo.</p>
+  </div>
+
+  <div class="card">
+    <h3>🎹 Teclado interactivo</h3>
+    <p style="color:var(--muted);font-size:14.5px;">Pulsa las teclas con el ratón o el dedo. También puedes usar el teclado del ordenador: <code>A S D F G H J K L Ñ</code> (teclas blancas) y <code>W E T Y U O P</code> (teclas negras).</p>
+    <div class="piano-wrap">
+      <div class="piano" id="pianoKeys" role="group" aria-label="Teclado de piano interactivo"></div>
+      <div class="piano-foot"><span id="pianoHint">Listo · pulsa una tecla</span><span>C4 ——— C6</span></div>
+    </div>
+    <div class="now-chord">
+      <div class="nc" id="nowChord">—</div>
+      <div class="nt" id="nowNotes">Selecciona un acorde o toca las teclas.</div>
+    </div>
+    <div class="btn-row" style="margin-top:14px;">
+      <button class="btn" data-chord="C(I)">C (I)</button>
+      <button class="btn" data-chord="G(V)">G (V)</button>
+      <button class="btn" data-chord="F(IV)">F (IV)</button>
+      <button class="btn amb" data-chord="Bb(IV)">Bb (IV/IV)</button>
+      <button class="btn grn" data-chord="Eb(IV)">Eb (IV de Bb)</button>
+      <button class="btn ghost" id="toggleM7">maj7: OFF</button>
+      <button class="btn ghost" id="toggleMute">🔊 Sonido: ON</button>
+    </div>
+    <div class="btn-row" style="margin-bottom:0;">
+      <button class="btn solid" id="playChainFourths">▶ Ruta de cuartas: Eb → Bb → F → C</button>
+      <button class="btn ghost" id="playProgIv">▶ C(I) → G(V) → Bb(IV) → F(IV) → C(I)</button>
+      <button class="btn ghost" id="playProgStd">▶ C(I) → G(V) → F(IV) → C(I)</button>
+      <button class="btn ghost" id="stopAll">■ Detener</button>
+    </div>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px;">
+    <div class="card">
+      <h3>🧭 Orientación en el piano</h3>
+      <p style="font-size:14.5px;color:var(--muted);">Para hallar la subdominante de un acorde objetivo sin partitura:</p>
+      <ol class="steps" style="margin-bottom:0;">
+        <li>Localiza la <b>raíz del objetivo</b> (por ejemplo <b>F</b>).</li>
+        <li><b>Cuenta cuatro nombres de nota</b> hacia arriba, igual que en el documento: <code>F → G → A → Bb</code>.</li>
+        <li>La cuarta nota es la <b>raíz del acorde puente</b>: toca ese acorde <b>mayor</b> (o <b>major 7</b>) justo antes del objetivo.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>🎧 Diccionario de acordes del documento</h3>
+      <div class="table-wrap" style="margin:0;">
+        <table style="min-width:0;">
+          <thead><tr><th>Acorde</th><th>Función</th><th>Notas</th></tr></thead>
+          <tbody>
+            <tr><td><strong>C(I)</strong></td><td>Tónica</td><td>C – E – G</td></tr>
+            <tr><td><strong>G(V)</strong></td><td>Dominante</td><td>G – B – D</td></tr>
+            <tr><td><strong>F(IV)</strong></td><td>Subdominante principal</td><td>F – A – C</td></tr>
+            <tr><td><strong>Bb(IV)</strong></td><td>Subdominante secundaria <code>IV/IV</code></td><td>Bb – D – F</td></tr>
+            <tr><td><strong>Eb(IV)</strong></td><td>Subdominante de Bb (cadena)</td><td>Eb – G – Bb</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13px;color:var(--dim);margin:10px 0 0;">Con <code>maj7</code> activado se añade la séptima mayor: Bb maj7 = Bb – D – F – A (el documento menciona <strong>Bb(IV) major 7</strong> como alternativa).</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="ct">Info · Audio local</span>
+    <p>El sonido se genera con el motor de audio del propio navegador (sin archivos ni recursos externos). Si no oyes nada al primer clic, vuelve a pulsar cualquier botón: algunos navegadores exigen una interacción previa para activar el audio.</p>
+  </div>
+</section>
+
+<!-- ================= 6. EJERCICIOS ================= -->
+<section id="ejercicios" class="view" aria-label="Ejercicios">
+  <div class="sec-head">
+    <span class="kicker"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="1.8"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg> Sección 6 · Autoevaluación</span>
+    <h2>Ejercicios y comprobación del método</h2>
+    <p class="lead">Aplica la fórmula del documento sin mirar la solución. Cada ejercicio se resuelve con el mismo procedimiento: <strong>identificar el objetivo → contar cuatro grados → escribir la relación con la barra "/"</strong>.</p>
+  </div>
+
+  <div class="grid g2" id="exWrap">
+    <div class="ex">
+      <div class="q"><span class="num">1</span> En la tonalidad de C(I), quieres preparar la llegada a <strong>F(IV)</strong>. ¿Qué acorde insertas justo antes y cómo se escribe la relación?</div>
+      <button class="btn sm ghost" data-ans>Ver respuesta</button>
+      <div class="answer"><strong>Bb(IV) mayor</strong> (o <strong>Bb(IV) major 7</strong>). Conteo desde F(I): <code>F(I) → G(II) → A(III) → Bb(IV)</code>. La relación se escribe <strong>IV/IV</strong>, que se lee <em>"el cuatro del cuatro"</em>: el acorde subdominante del subdominante.</div>
+    </div>
+
+    <div class="ex">
+      <div class="q"><span class="num">2</span> Ahora quieres preparar la llegada a <strong>Bb(IV)</strong>. ¿Cuál es su subdominante?</div>
+      <button class="btn sm ghost" data-ans>Ver respuesta</button>
+      <div class="answer"><strong>Eb(IV) mayor</strong>. Tomando <strong>Bb(I)</strong> como referencia local, su cuarto grado arriba es la nota <strong>Eb(IV)</strong>. Al insertarlo, <strong>Eb</strong> funciona como el cuatro de <strong>Bb</strong>, y <strong>Bb</strong> como el cuatro de <strong>F</strong>.</div>
+    </div>
+
+    <div class="ex">
+      <div class="q"><span class="num">3</span> ¿Qué significa exactamente la barra diagonal en <strong>IV/IV</strong>?</div>
+      <button class="btn sm ghost" data-ans>Ver respuesta</button>
+      <div class="answer">El símbolo <code>"/"</code> significa <em>"de"</em>. <strong>IV/IV</strong> se lee <em>"el cuatro del cuatro"</em> y expresa textualmente <strong>"el acorde subdominante del subdominante"</strong>.</div>
+    </div>
+
+    <div class="ex">
+      <div class="q"><span class="num">4</span> ¿Qué nota de la escala de C(I) se ve modificada al introducir <strong>Bb(IV)</strong> y qué efecto produce?</div>
+      <button class="btn sm ghost" data-ans>Ver respuesta</button>
+      <div class="answer">Se modifica la nota <strong>B(VII)</strong>, que pasa a <strong>Bb</strong> (bemol). Esto introduce una sonoridad <strong>fuera de la tonalidad estricta de C(I)</strong> y genera una <strong>atracción armónica muy natural hacia F(IV)</strong>.</div>
+    </div>
+
+    <div class="ex">
+      <div class="q"><span class="num">5</span> Ordena la cadena encadenada del documento desde el primer acorde puente hasta la resolución final.</div>
+      <button class="btn sm ghost" data-ans>Ver respuesta</button>
+      <div class="answer"><strong>Eb(IV) → Bb(IV) → F(IV) → C(I)</strong>.<br>Flujo: <strong>Eb(IV)</strong> resuelve hacia <strong>Bb(IV)</strong>; <strong>Bb(IV)</strong> resuelve hacia <strong>F(IV)</strong>; <strong>F(IV)</strong> resuelve de vuelta al acorde principal de <strong>C(I)</strong>.</div>
+    </div>
+
+    <div class="ex">
+      <div class="q"><span class="num">6</span> En la progresión estándar <strong>C(I) — G(V) — F(IV) — C(I)</strong>, ¿qué carácter tiene el paso de G(V) a F(IV)? ¿Y qué cambia al rearmonizar el compás 3?</div>
+      <button class="btn sm ghost" data-ans>Ver respuesta</button>
+      <div class="answer">El paso de <strong>G(V)</strong> a <strong>F(IV)</strong> es un <strong>movimiento directo diatónico</strong>. Al rearmonizar, el compás 3 pasa a contener <strong>Bb(IV) → F(IV)</strong>: se crea un <strong>puente más suave e interesante</strong> hacia el acorde objetivo <strong>F(IV)</strong>, y la progresión queda <strong>C(I) — G(V) — Bb(IV) — F(IV) — C(I)</strong>.</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <h3>✅ Checklist del método</h3>
+    <ul class="check">
+      <li>He identificado con claridad el <strong>acorde objetivo</strong> de la progresión.</li>
+      <li>He tratado ese objetivo como <strong>tónica temporal (I)</strong> para el cálculo.</li>
+      <li>He contado <strong>cuatro grados</strong> hacia arriba y obtenido la raíz del acorde puente.</li>
+      <li>He construido el puente como acorde <strong>mayor</strong> (o <strong>major 7</strong>).</li>
+      <li>He colocado el puente <strong>inmediatamente antes</strong> del acorde objetivo.</li>
+      <li>He escrito correctamente la relación con la barra: <strong>IV/objetivo</strong>.</li>
+      <li>He comprobado que la cadena <strong>resuelve</strong> de forma natural hasta la tónica.</li>
+    </ul>
+  </div>
+
+  <div class="callout ex">
+    <span class="ct">Ejemplo · Aplicación rápida</span>
+    <p>Objetivo <strong>C(I)</strong> → pregunta clave: ¿cuál es el IV de C(I)? → conteo: <code>C(I) → D(II) → E(III) → F(IV)</code> → puente: <strong>F(IV)</strong>. Compruébalo en el <strong>Piano Lab</strong> con el botón «Puente → Objetivo» de la calculadora.</p>
+  </div>
+</section>
+
+<!-- ================= CRÉDITOS ================= -->
+<section id="credits" class="view" aria-label="Créditos">
+  <div class="sec-head">
+    <span class="kicker"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.8"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.8 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg> Sección final</span>
+    <h2>Créditos</h2>
+    <p class="lead">Portada animada del manual — la misma ilustración SVG de la HOME, en continuo movimiento.</p>
+  </div>
+
+  <div class="cover-svg-wrap" id="cover-credits"></div>
+
+  <div class="cred-card">
+    <span class="tag amb">Tutorial interactivo · Dark UI</span>
+    <h3 style="font-size:clamp(20px,4.6vw,30px);margin:14px 0 4px;">La Arquitectura de la Subdominante Secundaria</h3>
+    <p style="color:var(--muted);margin:0 0 14px;">Cadenas IV/IV · Subdominantes secundarias · Armonía aplicada al piano en C(I)</p>
+    <div class="au">Rubén Sbarsky</div>
+    <div class="stamp" style="margin:6px 0 0;">
+      <span class="chip">📅 FECHA: 10/09/2026</span>
+      <span class="chip">🕒 Hora: 06:58:08</span>
+      <span class="chip acc">👨‍💻 Créditos: Rubén Sbarsky</span>
+    </div>
+    <p class="edu">
+      Material de uso exclusivamente <strong>educativo y de divulgación</strong>. Todo el contenido teórico procede del documento original
+      «La Arquitectura de la Subdominante Secundaria» de Rubén Sbarsky. El archivo HTML es autónomo: no emplea librerías,
+      fuentes, imágenes ni recursos externos, y funciona sin conexión a Internet.
+    </p>
+    <div class="latin">Fiat iustitia, ruat caelum.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="fl">📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div class="fl">👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div class="fl">📅 FECHA: 10/09/2026</div>
+  <div class="fl">Hora: 06:58:08</div>
+  <div class="latin">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   0. UTILIDADES
+   ============================================================ */
+var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var $ = function(s,c){return (c||document).querySelector(s);};
+var $$ = function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
+
+var PRETTY = {'C#':'Db','D#':'Eb','F#':'F#','G#':'Ab','A#':'Bb'};
+function prettyNote(n){
+  if(!n) return n;
+  var m = /^([A-G]#?)(-?\d)$/.exec(n);
+  if(!m) return n;
+  return (PRETTY[m[1]]||m[1]) + m[2];
+}
+function prettyList(arr){ return arr.map(prettyNote).join(' – '); }
+
+/* ============================================================
+   1. SVG ANIMADO DE PORTADA (mismo SVG en HOME y CRÉDITOS)
+   ============================================================ */
+var WHITE_NOTES = ["C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6"];
+var BLACK_AFTER = {0:"C#4",1:"D#4",3:"F#4",4:"G#4",5:"A#4",7:"C#5",8:"D#5",10:"F#5",11:"G#5",12:"A#5"};
+
+var FRAMES = [
+  {label:"Eb (IV)", sub:"IV de Bb(I)", color:"#a855f7", keys:["D#4","G4","A#4"]},
+  {label:"Bb (IV)", sub:"IV de F(I)",  color:"#00d4ff", keys:["A#4","D5","F5"]},
+  {label:"F (IV)",  sub:"IV de C(I)",  color:"#22c55e", keys:["F4","A4","C5"]},
+  {label:"C (I)",   sub:"Tónica · resolución final", color:"#f59e0b", keys:["C4","E4","G4"]}
+];
+
+function coverSVG(uid){
+  var W=1600, H=900;
+  var kx=140, kw=1320, ky=600, kh=245, wCount=15, ww=kw/wCount;
+  var geom={};
+  WHITE_NOTES.forEach(function(n,i){ geom[n]={x:kx+i*ww+1,y:ky,w:ww-2,h:kh,b:false}; });
+  Object.keys(BLACK_AFTER).forEach(function(k){
+    var i=parseInt(k,10), n=BLACK_AFTER[i], bw=ww*0.62;
+    geom[n]={x:kx+(i+1)*ww-bw/2, y:ky, w:bw, h:kh*0.60, b:true};
+  });
+
+  var nodeX=[285,635,985,1335], nodeY=300, R=74;
+  var cardW=290, cardH=86, cardY=468;
+  var s='';
+
+  s+='<svg class="cover-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ct-'+uid+' cd-'+uid+'">';
+  s+='<title id="ct-'+uid+'">La Arquitectura de la Subdominante Secundaria — cadena Eb(IV) → Bb(IV) → F(IV) → C(I) sobre teclado de piano</title>';
+  s+='<desc id="cd-'+uid+'">Animación temática: cada acorde actúa como grado IV del siguiente y resuelve hacia la tónica C(I) mientras las teclas correspondientes del piano se iluminan en secuencia.</desc>';
+
+  /* --- defs --- */
+  s+='<defs>';
+  s+='<linearGradient id="bg-'+uid+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a0e1a"/><stop offset="55%" stop-color="#0d1526"/><stop offset="100%" stop-color="#070b14"/></linearGradient>';
+  s+='<radialGradient id="rg-'+uid+'" cx="50%" cy="34%" r="62%"><stop offset="0%" stop-color="#00d4ff" stop-opacity=".20"/><stop offset="55%" stop-color="#a855f7" stop-opacity=".08"/><stop offset="100%" stop-color="#0a0e1a" stop-opacity="0"/></radialGradient>';
+  s+='<pattern id="gr-'+uid+'" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0v40" fill="none" stroke="#16273f" stroke-width="1"/></pattern>';
+  s+='<filter id="gl-'+uid+'" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  s+='<filter id="gl2-'+uid+'" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
+  s+='<linearGradient id="wk-'+uid+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f7fafd"/><stop offset="78%" stop-color="#e2e9f3"/><stop offset="100%" stop-color="#c6d1e0"/></linearGradient>';
+  s+='<linearGradient id="bkk-'+uid+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2c3d59"/><stop offset="70%" stop-color="#0b1220"/><stop offset="100%" stop-color="#05080f"/></linearGradient>';
+  s+='<marker id="ar-'+uid+'" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="9" markerHeight="9" orient="auto"><path d="M1 1l9 5-9 5z" fill="#a855f7"/></marker>';
+  s+='<path id="pp-'+uid+'" d="M'+nodeX[0]+','+nodeY+' L'+nodeX[3]+','+nodeY+'"/>';
+  s+='</defs>';
+
+  /* --- fondo --- */
+  s+='<rect width="'+W+'" height="'+H+'" fill="url(#bg-'+uid+')"/>';
+  s+='<rect width="'+W+'" height="'+H+'" fill="url(#gr-'+uid+')" opacity=".55"/>';
+  s+='<rect width="'+W+'" height="'+H+'" fill="url(#rg-'+uid+')"/>';
+  s+='<rect x="14" y="14" width="'+(W-28)+'" height="'+(H-28)+'" rx="22" fill="none" stroke="#1e3a5f" stroke-width="2"/>';
+  s+='<rect x="24" y="24" width="'+(W-48)+'" height="'+(H-48)+'" rx="16" fill="none" stroke="#12263f" stroke-width="1"/>';
+
+  /* esquinas técnicas */
+  [[40,40],[W-40,40],[40,H-40],[W-40,H-40]].forEach(function(p){
+    s+='<path d="M'+(p[0]-11)+' '+p[1]+'h22M'+p[0]+' '+(p[1]-11)+'v22" stroke="#25456b" stroke-width="2" fill="none"/>';
+  });
+
+  /* --- títulos --- */
+  s+='<text class="cv-title" x="800" y="86" text-anchor="middle">LA ARQUITECTURA DE LA SUBDOMINANTE SECUNDARIA</text>';
+  s+='<text class="cv-sub" x="800" y="124" text-anchor="middle">CADENA DE CUARTAS · IV / IV · ARMONÍA APLICADA AL PIANO</text>';
+  s+='<line x1="560" y1="146" x2="1040" y2="146" stroke="#1e3a5f" stroke-width="2"/>';
+  s+='<text class="cv-form cv-blink" x="800" y="184" text-anchor="middle">IV / X  =  el acorde cuatro (IV) del acorde objetivo</text>';
+
+  /* --- cadena de nodos --- */
+  for(var i=0;i<4;i++){
+    var cx=nodeX[i], f=FRAMES[i], d=(i*3)+'s';
+    /* conector */
+    if(i<3){
+      s+='<line class="cv-link" x1="'+(cx+R+8)+'" y1="'+nodeY+'" x2="'+(nodeX[i+1]-R-10)+'" y2="'+nodeY+'" stroke="#a855f7" stroke-width="4" marker-end="url(#ar-'+uid+')" opacity=".9"/>';
+    }
+    /* halo */
+    s+='<circle cx="'+cx+'" cy="'+nodeY+'" r="'+(R+18)+'" fill="'+f.color+'" opacity=".08" class="cv-halo"/>';
+    /* base */
+    s+='<circle cx="'+cx+'" cy="'+nodeY+'" r="'+R+'" fill="#0c1425" stroke="#1e3a5f" stroke-width="3"/>';
+    /* glow sincronizado */
+    s+='<circle class="cv-nodeglow" style="animation-delay:'+d+'" cx="'+cx+'" cy="'+nodeY+'" r="'+R+'" fill="'+f.color+'" opacity="0" filter="url(#gl-'+uid+')" />';
+    s+='<circle class="cv-nodeglow" style="animation-delay:'+d+'" cx="'+cx+'" cy="'+nodeY+'" r="'+R+'" fill="none" stroke="'+f.color+'" stroke-width="5"/>';
+    /* anillo pulsante SMIL */
+    s+='<circle cx="'+cx+'" cy="'+nodeY+'" r="'+R+'" fill="none" stroke="'+f.color+'" stroke-width="2" opacity="0"><animate attributeName="r" values="'+R+';'+(R+42)+'" dur="12s" begin="'+d+'" repeatCount="indefinite"/><animate attributeName="opacity" values="0;.85;0" dur="12s" begin="'+d+'" repeatCount="indefinite"/></circle>';
+    s+='<text class="cv-node" x="'+cx+'" y="'+(nodeY+11)+'" text-anchor="middle">'+f.label+'</text>';
+    s+='<text class="cv-nodesub" x="'+cx+'" y="'+(nodeY+R+30)+'" text-anchor="middle">'+f.sub+'</text>';
+  }
+
+  /* --- pulso viajero --- */
+  s+='<g filter="url(#gl-'+uid+')">';
+  s+='<circle r="11" fill="#ffffff" opacity=".95"><animateMotion dur="6s" repeatCount="indefinite" rotate="auto"><mpath href="#pp-'+uid+'" xlink:href="#pp-'+uid+'"/></animateMotion></circle>';
+  s+='<circle r="20" fill="#00d4ff" opacity=".35"><animateMotion dur="6s" repeatCount="indefinite"><mpath href="#pp-'+uid+'" xlink:href="#pp-'+uid+'"/></animateMotion></circle>';
+  s+='<circle r="8" fill="#a855f7" opacity=".8"><animateMotion dur="6s" begin="3s" repeatCount="indefinite"><mpath href="#pp-'+uid+'" xlink:href="#pp-'+uid+'"/></animateMotion></circle>';
+  s+='</g>';
+
+  s+='<line x1="140" y1="440" x2="1460" y2="440" stroke="#16273f" stroke-width="2"/>';
+
+  /* --- tarjetas de acorde --- */
+  for(var c=0;c<4;c++){
+    var x=140+c*350, fc=FRAMES[c], dc=(c*3)+'s';
+    s+='<rect x="'+x+'" y="'+cardY+'" width="'+cardW+'" height="'+cardH+'" rx="12" fill="#0c1425" stroke="#1e3a5f" stroke-width="2"/>';
+    s+='<rect class="cv-cardglow" style="animation-delay:'+dc+'" x="'+x+'" y="'+cardY+'" width="'+cardW+'" height="'+cardH+'" rx="12" fill="none" stroke="'+fc.color+'" stroke-width="3" filter="url(#gl2-'+uid+')"/>';
+    s+='<rect class="cv-cardglow" style="animation-delay:'+dc+'" x="'+x+'" y="'+cardY+'" width="6" height="'+cardH+'" rx="3" fill="'+fc.color+'"/>';
+    s+='<text class="cv-card-t" x="'+(x+cardW/2)+'" y="'+(cardY+36)+'" text-anchor="middle">'+fc.label+'</text>';
+    s+='<text class="cv-card-s" x="'+(x+cardW/2)+'" y="'+(cardY+62)+'" text-anchor="middle">COMPÁS '+(c+1)+' · '+fc.sub.toUpperCase()+'</text>';
+  }
+
+  /* --- teclado --- */
+  s+='<rect x="'+(kx-10)+'" y="'+(ky-14)+'" width="'+(kw+20)+'" height="'+(kh+26)+'" rx="14" fill="#070c15" stroke="#1e3a5f" stroke-width="2"/>';
+  /* teclas blancas */
+  WHITE_NOTES.forEach(function(n,i){
+    var g=geom[n];
+    s+='<rect x="'+g.x+'" y="'+g.y+'" width="'+g.w+'" height="'+g.h+'" rx="6" fill="url(#wk-'+uid+')" stroke="#8494ab" stroke-width="1.2"/>';
+    var lbl = n.charAt(0)+(n.indexOf('#')>-1?'':'');
+    s+='<text class="cv-keylbl" x="'+(g.x+g.w/2)+'" y="'+(g.y+g.h-16)+'" text-anchor="middle">'+n.charAt(0)+(n.slice(-1)==='5'||n.slice(-1)==='4'||n.slice(-1)==='6'?'':'')+'</text>';
+  });
+  /* teclas negras */
+  Object.keys(BLACK_AFTER).forEach(function(k){
+    var n=BLACK_AFTER[parseInt(k,10)], g=geom[n];
+    s+='<rect x="'+g.x+'" y="'+g.y+'" width="'+g.w+'" height="'+g.h+'" rx="5" fill="url(#bkk-'+uid+')" stroke="#04070d" stroke-width="1.2"/>';
+  });
+  /* glows de teclas por compás */
+  FRAMES.forEach(function(f,fi){
+    var d=(fi*3)+'s';
+    f.keys.forEach(function(kn){
+      var g=geom[kn]; if(!g) return;
+      s+='<rect class="cv-glowkey" style="animation-delay:'+d+'" x="'+g.x+'" y="'+g.y+'" width="'+g.w+'" height="'+g.h+'" rx="6" fill="'+f.color+'" filter="url(#gl2-'+uid+')" pointer-events="none"/>';
+      if(!g.b){ s+='<rect class="cv-glowkey" style="animation-delay:'+d+'" x="'+g.x+'" y="'+g.y+'" width="'+g.w+'" height="9" rx="4" fill="#ffffff" pointer-events="none"/>'; }
+    });
+  });
+
+  /* etiqueta del teclado */
+  s+='<text class="cv-wlbl" x="'+(kx-10)+'" y="'+(ky-26)+'">TECLADO · C4 → C6 · LA CADENA RESUELVE SOBRE EL PIANO</text>';
+  s+='<text class="cv-wlbl" x="1470" y="'+(ky-26)+'" text-anchor="end" fill="#a855f7">Eb → Bb → F → C(I)</text>';
+
+  /* --- pie --- */
+  s+='<line class="cv-wave" x1="140" y1="868" x2="1460" y2="868" stroke="#00d4ff" stroke-width="2" opacity=".45"/>';
+  s+='<text class="cv-foot" x="140" y="888">FIG. 1 — CADENA DE SUBDOMINANTES SECUNDARIAS · CADA ACORDE ES EL IV DEL SIGUIENTE</text>';
+  s+='<text class="cv-foot" x="1460" y="888" text-anchor="end">RUBÉN SBARSKY · 10/09/2026 · 06:58:08</text>';
+
+  s+='</svg>';
+  return s;
+}
+
+function mountCover(hostId, uid){
+  var host=document.getElementById(hostId);
+  if(!host) return;
+  host.innerHTML = coverSVG(uid);
+  var svg = host.querySelector('svg');
+  if(svg && reduceMotion && svg.pauseAnimations){ try{ svg.pauseAnimations(); }catch(e){} }
+}
+
+/* ============================================================
+   2. MOTOR DE AUDIO (WebAudio, sin recursos externos)
+   ============================================================ */
+var actx=null, master=null, muted=false, activeVoices=[];
+var SEMI={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+function ensureAudio(){
+  try{
+    if(!actx){
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return null;
+      actx = new AC();
+      master = actx.createGain();
+      master.gain.value = 0.30;
+      master.connect(actx.destination);
+    }
+    if(actx.state==='suspended') actx.resume();
+    return actx;
+  }catch(e){ return null; }
+}
+function midiOf(n){
+  var m=/^([A-G])([#b]?)(-?\d)$/.exec(n); if(!m) return null;
+  var s=SEMI[m[1]] + (m[2]==='#'?1:(m[2]==='b'?-1:0));
+  return 12*(parseInt(m[3],10)+1)+s;
+}
+function freqOf(n){ var m=midiOf(n); return m==null?0:440*Math.pow(2,(m-69)/12); }
+function playNote(name, when, dur, vol){
+  var ctx=ensureAudio(); if(!ctx||muted) return;
+  var f=freqOf(name); if(!f) return;
+  when=when||0; dur=dur||1.6; vol=(vol==null?0.20:vol);
+  var t=ctx.currentTime+when;
+  var o1=ctx.createOscillator(), o2=ctx.createOscillator(), g=ctx.createGain(), g2=ctx.createGain(), lp=ctx.createBiquadFilter();
+  o1.type='triangle'; o1.frequency.value=f;
+  o2.type='sine'; o2.frequency.value=f*2.0; g2.gain.value=0.22;
+  lp.type='lowpass'; lp.frequency.value=Math.min(6500, f*6+1400); lp.Q.value=0.5;
+  o1.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(g); g.connect(master);
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.linearRampToValueAtTime(vol,t+0.018);
+  g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+  o1.start(t); o2.start(t); o1.stop(t+dur+0.06); o2.stop(t+dur+0.06);
+  activeVoices.push(o1,o2);
+}
+function playChord(names, when, dur, strum){
+  when=when||0; dur=dur||1.9; strum=(strum==null?0.045:strum);
+  names.forEach(function(n,i){ playNote(n, when+i*strum, dur, 0.19); });
+}
+function stopAllAudio(){
+  activeVoices.forEach(function(o){ try{o.stop();}catch(e){} });
+  activeVoices=[];
+  if(pianoTimer){ clearTimeout(pianoTimer); pianoTimer=null; }
+  seqTimers.forEach(function(t){clearTimeout(t);}); seqTimers=[];
+  clearKeys();
+}
+var seqTimers=[], pianoTimer=null;
+
+/* ============================================================
+   3. PIANO INTERACTIVO
+   ============================================================ */
+var pianoHost=$('#pianoKeys'), keyEls={};
+function buildPiano(){
+  if(!pianoHost) return;
+  var html='';
+  WHITE_NOTES.forEach(function(n,i){
+    html+='<div class="wk" data-note="'+n+'" role="button" tabindex="0" aria-label="Tecla '+prettyNote(n)+'"><span>'+prettyNote(n).replace(/\d/,'')+'</span></div>';
+  });
+  pianoHost.innerHTML=html;
+  var wPct=100/WHITE_NOTES.length, bPct=wPct*0.62;
+  Object.keys(BLACK_AFTER).forEach(function(k){
+    var i=parseInt(k,10), n=BLACK_AFTER[i];
+    var el=document.createElement('div');
+    el.className='bk'; el.dataset.note=n; el.setAttribute('role','button'); el.setAttribute('tabindex','0');
+    el.setAttribute('aria-label','Tecla '+prettyNote(n));
+    el.style.width=bPct+'%';
+    el.style.left='calc('+((i+1)*wPct)+'% - '+(bPct/2)+'%)';
+    pianoHost.appendChild(el);
+  });
+  $$('.wk,.bk',pianoHost).forEach(function(el){
+    keyEls[el.dataset.note]=el;
+    var hit=function(ev){ if(ev.cancelable) ev.preventDefault(); triggerKey(el.dataset.note); };
+    el.addEventListener('pointerdown',hit);
+    el.addEventListener('keydown',function(ev){ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); triggerKey(el.dataset.note);} });
+  });
+}
+function triggerKey(n){
+  playNote(n,0,1.35,0.22);
+  lightKey(n,420);
+  var hint=$('#pianoHint'); if(hint) hint.textContent='Nota pulsada: '+prettyNote(n);
+}
+function lightKey(n,ms){
+  var el=keyEls[n]; if(!el) return;
+  el.classList.add('on');
+  setTimeout(function(){ el.classList.remove('on'); }, ms||600);
+}
+function clearKeys(){ Object.keys(keyEls).forEach(function(k){ keyEls[k].classList.remove('on'); }); }
+function lightChord(names,ms){ (names||[]).forEach(function(n){ lightKey(n,ms||900); }); }
+
+var CHORDS={
+  "C(I)":{notes:["C4","E4","G4"], maj7:["C4","E4","G4","B4"], deg:"I", name:"C (I)", func:"Acorde tónico · centro de la tonalidad principal"},
+  "G(V)":{notes:["G4","B4","D5"], maj7:["G4","B4","D5","F#5"], deg:"V", name:"G (V)", func:"Acorde dominante de C(I)"},
+  "F(IV)":{notes:["F4","A4","C5"], maj7:["F4","A4","C5","E5"], deg:"IV", name:"F (IV)", func:"Subdominante principal de C(I) · cuarto grado de la escala de C"},
+  "Bb(IV)":{notes:["A#4","D5","F5"], maj7:["A#4","D5","F5","G5"], deg:"IV/IV", name:"Bb (IV)", func:"Subdominante secundaria · IV de F(I) · acorde de paso hacia F(IV)"},
+  "Eb(IV)":{notes:["D#4","G4","A#4"], maj7:["D#4","G4","A#4","C5"], deg:"IV de Bb", name:"Eb (IV)", func:"Subdominante de Bb(I) · primer eslabón de la cadena encadenada"}
+};
+var useM7=false;
+function chordNotes(key){ var c=CHORDS[key]; if(!c) return []; return useM7?c.maj7:c.notes; }
+function showChord(key){
+  var c=CHORDS[key]; if(!c) return;
+  $('#nowChord').textContent=c.name+(useM7?' maj7':'');
+  $('#nowNotes').innerHTML='<strong>'+c.func+'</strong> · Notas: '+prettyList(chordNotes(key));
+}
+
+/* teclado de ordenador */
+var KEYMAP={'a':'C4','w':'C#4','s':'D4','e':'D#4','d':'E4','f':'F4','t':'F#4','g':'G4','y':'G#4','h':'A4','u':'A#4','j':'B4','k':'C5','o':'C#5','l':'D5','p':'D#5','ñ':'E5'};
+document.addEventListener('keydown',function(ev){
+  if(ev.repeat) return;
+  var tgt=ev.target;
+  if(tgt && (tgt.tagName==='SELECT'||tgt.tagName==='INPUT'||tgt.tagName==='TEXTAREA')) return;
+  var pianoVisible = $('#piano') && $('#piano').classList.contains('active');
+  if(!pianoVisible) return;
+  var n=KEYMAP[(ev.key||'').toLowerCase()];
+  if(n && keyEls[n]){ triggerKey(n); }
+});
+
+/* ============================================================
+   4. CONTADORES DE GRADOS
+   ============================================================ */
+function buildDegreeRow(host, out, items, targetIdx){
+  if(!host) return;
+  host.innerHTML='';
+  items.forEach(function(it,i){
+    var d=document.createElement('div');
+    d.className='deg'; d.tabIndex=0;
+    d.innerHTML='<div class="n">'+it.n+'</div><div class="r">'+it.r+'</div>';
+    d.addEventListener('click',function(){ runCount(host,out,items,i); });
+    d.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault();runCount(host,out,items,i);} });
+    host.appendChild(d);
+  });
+  host.dataset.target=targetIdx;
+}
+function resetCount(host,out,msg){
+  if(!host) return;
+  $$('.deg',host).forEach(function(d){ d.classList.remove('lit','hit'); });
+  if(out) out.textContent=msg||'';
+}
+function runCount(host,out,items,upto){
+  if(!host) return;
+  var tiles=$$('.deg',host);
+  resetCount(host,out,'');
+  if(reduceMotion){
+    tiles.slice(0,upto).forEach(function(t){t.classList.add('lit');});
+    if(tiles[upto]) tiles[upto].classList.add('hit');
+    if(out) out.textContent=items.slice(0,upto+1).map(function(x){return x.n;}).join(' → ');
+    return;
+  }
+  var step=0;
+  var t=setInterval(function(){
+    if(step<upto){ tiles[step].classList.add('lit'); }
+    else{
+      clearInterval(t);
+      tiles[upto].classList.add('hit');
+      if(out) out.innerHTML='<strong>'+items.slice(0,upto+1).map(function(x){return x.n;}).join(' → ')+'</strong> &nbsp;·&nbsp; '+items[upto].msg;
+    }
+    step++;
+  },420);
+  seqTimers.push(t);
+}
+
+/* ============================================================
+   5. STEPPERS DE PROGRESIÓN
+   ============================================================ */
+function createStepper(cfg){
+  var host=document.getElementById(cfg.root);
+  if(!host) return;
+  var steps=cfg.steps, idx=0, playing=false;
+
+  var html='';
+  html+='<div class="prog-box">';
+  html+='<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">';
+  html+='<h3 style="margin:0;font-size:17px;">'+cfg.title+'</h3>';
+  html+='<span class="tag '+cfg.tagClass+'">'+cfg.tag+'</span>';
+  html+='<span class="spacer" style="flex:1 1 auto"></span>';
+  html+='<span class="chip">'+steps.length+' pasos · '+cfg.bars+' compases</span>';
+  html+='</div>';
+  html+='<p style="color:var(--muted);font-size:14px;margin:4px 0 12px;">'+cfg.desc+'</p>';
+  html+='<div class="bars" data-bars></div>';
+  html+='<div class="stepper">';
+  html+='<div>';
+  html+='<div class="ctrl">';
+  html+='<button class="btn sm ghost" data-act="reset" aria-label="Volver al inicio">⏮ Reset</button>';
+  html+='<button class="btn sm ghost" data-act="prev" aria-label="Paso anterior">◀ Anterior</button>';
+  html+='<button class="btn sm solid" data-act="next" aria-label="Paso siguiente">Siguiente ▶</button>';
+  html+='<button class="btn sm grn" data-act="play" aria-label="Reproducir progresión">▶ Auto</button>';
+  html+='<button class="btn sm ghost" data-act="chord" aria-label="Escuchar acorde actual">🔊 Acorde</button>';
+  html+='</div>';
+  html+='<div class="slider-row"><input type="range" min="0" max="'+(steps.length-1)+'" step="1" value="0" data-slider aria-label="Desplazarse por los compases"></div>';
+  html+='<div class="ind" data-ind></div>';
+  html+='</div>';
+  html+='<div class="play-panel" data-panel></div>';
+  html+='</div></div>';
+  host.innerHTML=html;
+
+  var barsEl=$('[data-bars]',host), slider=$('[data-slider]',host), ind=$('[data-ind]',host), panel=$('[data-panel]',host);
+
+  steps.forEach(function(st,i){
+    var b=document.createElement('button');
+    b.className='bar-chip'; b.type='button';
+    b.innerHTML='<div class="bc">'+st.chord+'</div><div class="bb">'+st.barShort+'</div>';
+    b.addEventListener('click',function(){ go(i); });
+    barsEl.appendChild(b);
+  });
+
+  function go(i, silent){
+    idx=Math.max(0,Math.min(steps.length-1,i));
+    var st=steps[idx];
+    $$('.bar-chip',barsEl).forEach(function(b,j){
+      b.classList.toggle('cur', j===idx);
+      b.classList.toggle('done', j<idx);
+    });
+    slider.value=idx;
+    ind.innerHTML='Paso '+(idx+1)+' de '+steps.length+' · '+st.bar+(st.tag?' · <span style="color:var(--accent)">'+st.tag+'</span>':'');
+    panel.innerHTML=
+      '<div class="pp-head"><div class="pp-chord" style="color:'+st.color+'">'+st.chord+'</div>'+
+      '<span class="tag acc">'+st.deg+'</span>'+(st.extra?'<span class="tag pur">'+st.extra+'</span>':'')+'</div>'+
+      '<div class="pp-row"><span class="k">Función armónica</span>'+st.func+'</div>'+
+      '<div class="pp-row"><span class="k">Notas del acorde</span>'+prettyList(st.notes)+'</div>'+
+      '<div class="pp-row what"><span class="k">¿Qué ocurre?</span>'+st.what+'</div>'+
+      '<div class="pp-row why"><span class="k">¿Por qué es importante?</span>'+st.why+'</div>';
+    if(!silent){
+      playChord(st.notes,0,1.7,0.04);
+      lightChord(st.notes,900);
+    }
+  }
+
+  $('[data-act="next"]',host).addEventListener('click',function(){ go(idx+1); stopAuto(); });
+  $('[data-act="prev"]',host).addEventListener('click',function(){ go(idx-1); stopAuto(); });
+  $('[data-act="reset"]',host).addEventListener('click',function(){ stopAuto(); go(0,true); });
+  $('[data-act="chord"]',host).addEventListener('click',function(){ go(idx); });
+  slider.addEventListener('input',function(){ stopAuto(); go(parseInt(slider.value,10)); });
+
+  var autoT=null;
+  function stopAuto(){ if(autoT){ clearInterval(autoT); autoT=null; } playing=false; $('[data-act="play"]',host).textContent='▶ Auto'; }
+  $('[data-act="play"]',host).addEventListener('click',function(){
+    if(playing){ stopAuto(); return; }
+    playing=true; $('[data-act="play"]',host).textContent='■ Parar';
+    go(0);
+    autoT=setInterval(function(){
+      if(idx>=steps.length-1){ stopAuto(); return; }
+      go(idx+1);
+    }, reduceMotion?1500:1700);
+  });
+
+  go(0,true);
+  return {go:go};
+}
+
+var PROGS=[
+ {
+  root:'progStd', tag:'4.1 · Progresión estándar', tagClass:'', bars:4,
+  title:'Reproductor compás a compás — C(I) · G(V) · F(IV) · C(I)',
+  desc:'Movimiento diatónico convencional en C(I). Cada paso equivale a un compás.',
+  steps:[
+   {bar:'Compás 1',barShort:'Compás 1',chord:'C(I)',deg:'I',color:'#f59e0b',notes:['C4','E4','G4'],func:'Acorde tónico',tag:'Diatónico',
+    what:'Suena el acorde de <strong>C(I)</strong>, el centro de la tonalidad.',
+    why:'Establece <strong>C(I)</strong> como referencia tonal de toda la progresión.'},
+   {bar:'Compás 2',barShort:'Compás 2',chord:'G(V)',deg:'V',color:'#00d4ff',notes:['G4','B4','D5'],func:'Acorde dominante',tag:'Diatónico',
+    what:'El acorde <strong>G(V)</strong> sustituye a la tónica.',
+    why:'Aporta la función <strong>dominante</strong> dentro del movimiento diatónico convencional.'},
+   {bar:'Compás 3',barShort:'Compás 3',chord:'F(IV)',deg:'IV',color:'#22c55e',notes:['F4','A4','C5'],func:'Acorde subdominante principal',tag:'Diatónico',
+    what:'Se pasa directamente de <strong>G(V)</strong> a <strong>F(IV)</strong>.',
+    why:'Es un <strong>movimiento directo diatónico</strong>: el acorde subdominante principal llega sin ninguna preparación previa.'},
+   {bar:'Compás 4',barShort:'Compás 4',chord:'C(I)',deg:'I',color:'#f59e0b',notes:['C4','E4','G4'],func:'Resolución a la tónica',tag:'Diatónico',
+    what:'La progresión vuelve a <strong>C(I)</strong>.',
+    why:'Cierra el ciclo de cuatro compases con la <strong>resolución a la tónica</strong>.'}
+  ]
+ },
+ {
+  root:'progIv', tag:'4.2 · Con IV/IV', tagClass:'amb', bars:4,
+  title:'Reproductor paso a paso — C(I) · G(V) · Bb(IV) → F(IV) · C(I)',
+  desc:'El compás 3 contiene dos acordes: se inserta Bb(IV) para preparar F(IV). Por eso la progresión tiene 5 pasos en 4 compases.',
+  steps:[
+   {bar:'Compás 1',barShort:'Compás 1',chord:'C(I)',deg:'I',color:'#f59e0b',notes:['C4','E4','G4'],func:'Acorde tónico',tag:'Diatónico',
+    what:'Comienza la progresión en <strong>C(I)</strong>.',
+    why:'Fija la tonalidad principal sobre la que se aplicará la rearmonización.'},
+   {bar:'Compás 2',barShort:'Compás 2',chord:'G(V)',deg:'V',color:'#00d4ff',notes:['G4','B4','D5'],func:'Acorde dominante',tag:'Diatónico',
+    what:'Entra el acorde dominante <strong>G(V)</strong>.',
+    why:'Mantiene la estructura original de la progresión básica antes del puente.'},
+   {bar:'Compás 3 · Bb(IV) → F(IV)',barShort:'Compás 3 · a',chord:'Bb(IV)',deg:'IV/IV',color:'#a855f7',notes:['A#4','D5','F5'],func:'Subdominante secundaria',extra:'Acorde de paso',tag:'Rearmonizado',
+    what:'Se inserta <strong>Bb(IV)</strong> mayor (o <strong>Bb(IV) major 7</strong>) como <strong>subdominante secundaria</strong> de F(IV).',
+    why:'Crea un <strong>puente más suave e interesante</strong> hacia el acorde objetivo. Introduce una sonoridad <strong>fuera de la tonalidad estricta de C(I)</strong>, ya que modifica la nota <strong>B(VII)</strong> por un bemol, generando una <strong>atracción armónica muy natural hacia F(IV)</strong>.'},
+   {bar:'Compás 3 · Bb(IV) → F(IV)',barShort:'Compás 3 · b',chord:'F(IV)',deg:'IV',color:'#22c55e',notes:['F4','A4','C5'],func:'Acorde subdominante principal (objetivo)',tag:'Objetivo preparado',
+    what:'<strong>F(IV)</strong> llega inmediatamente después de su IV.',
+    why:'El acorde objetivo ya no aparece de forma directa: ahora <strong>está preparado</strong> por su propia subdominante, <strong>IV/IV</strong>.'},
+   {bar:'Compás 4',barShort:'Compás 4',chord:'C(I)',deg:'I',color:'#f59e0b',notes:['C4','E4','G4'],func:'Resolución a la tónica',tag:'Diatónico',
+    what:'La progresión resuelve en <strong>C(I)</strong>.',
+    why:'Cierra la secuencia rearmonizada <strong>C(I) — G(V) — Bb(IV) — F(IV) — C(I)</strong>.'}
+  ]
+ },
+ {
+  root:'progChain', tag:'4.3 · Cadena encadenada', tagClass:'pur', bars:4,
+  title:'Reproductor paso a paso — C(I) · Eb(IV) · Bb(IV) · F(IV) → C(I)',
+  desc:'Cadena de subdominantes secundarias: cada acorde funciona como el cuarto grado del siguiente. El compás 4 contiene F(IV) → C(I).',
+  steps:[
+   {bar:'Compás 1',barShort:'Compás 1',chord:'C(I)',deg:'I',color:'#f59e0b',notes:['C4','E4','G4'],func:'Acorde tónico',tag:'Diatónico',
+    what:'Apertura en <strong>C(I)</strong>, tonalidad principal del ejemplo.',
+    why:'Punto de partida y de llegada de toda la progresión.'},
+   {bar:'Compás 2',barShort:'Compás 2',chord:'Eb(IV)',deg:'IV de Bb',color:'#a855f7',notes:['D#4','G4','A#4'],func:'Subdominante de Bb(I)',extra:'Cadena',tag:'Rearmonizado',
+    what:'Entra <strong>Eb(IV)</strong> mayor, obtenido contando cuatro grados desde <strong>Bb(I)</strong>.',
+    why:'Funciona como <strong>el cuatro de Bb(I)</strong>: prepara el siguiente eslabón de la cadena y amplía la rearmonización hacia atrás.'},
+   {bar:'Compás 3',barShort:'Compás 3',chord:'Bb(IV)',deg:'IV de F',color:'#00d4ff',notes:['A#4','D5','F5'],func:'Subdominante de F(I)',extra:'IV/IV',tag:'Rearmonizado',
+    what:'<strong>Eb(IV)</strong> resuelve hacia <strong>Bb(IV)</strong>.',
+    why:'<strong>Bb(IV)</strong> funciona como <strong>el cuatro de F(I)</strong>: es a la vez destino del eslabón anterior y preparación del siguiente.'},
+   {bar:'Compás 4 · F(IV) → C(I)',barShort:'Compás 4 · a',chord:'F(IV)',deg:'IV',color:'#22c55e',notes:['F4','A4','C5'],func:'Subdominante principal de C(I)',tag:'Objetivo final',
+    what:'<strong>Bb(IV)</strong> resuelve hacia <strong>F(IV)</strong>.',
+    why:'La cadena completa desemboca en el <strong>acorde subdominante principal</strong> de la tonalidad, ya totalmente preparado.'},
+   {bar:'Compás 4 · F(IV) → C(I)',barShort:'Compás 4 · b',chord:'C(I)',deg:'I',color:'#f59e0b',notes:['C4','E4','G4'],func:'Resolución final a la tónica',tag:'Resolución',
+    what:'<strong>F(IV)</strong> resuelve de vuelta al acorde principal de <strong>C(I)</strong>.',
+    why:'Confirma el flujo armónico completo de la cadena: <strong>Eb(IV) → Bb(IV) → F(IV) → C(I)</strong>.'}
+  ]
+ }
+];
+
+/* ============================================================
+   6. CALCULADORA DE SUBDOMINANTE SECUNDARIA
+   ============================================================ */
+var FOURTH={ 'C':'F','Db':'Gb','D':'G','Eb':'Ab','E':'A','F':'Bb','F#':'B','G':'C','Ab':'Db','A':'D','Bb':'Eb','B':'E' };
+var COUNT4={ 'C':['C','D','E','F'],'Db':['Db','Eb','F','Gb'],'D':['D','E','F#','G'],'Eb':['Eb','F','G','Ab'],'E':['E','F#','G#','A'],
+ 'F':['F','G','A','Bb'],'F#':['F#','G#','A#','B'],'G':['G','A','B','C'],'Ab':['Ab','Bb','C','Db'],'A':['A','B','C#','D'],
+ 'Bb':['Bb','C','D','Eb'],'B':['B','C#','D#','E'] };
+var TRIADS={ 'C':['C','E','G'],'Db':['Db','F','Ab'],'D':['D','F#','A'],'Eb':['Eb','G','Bb'],'E':['E','G#','B'],'F':['F','A','C'],
+ 'F#':['F#','A#','C#'],'G':['G','B','D'],'Ab':['Ab','C','Eb'],'A':['A','C#','E'],'Bb':['Bb','D','F'],'B':['B','D#','F#'] };
+var SEVENTH={ 'C':'B','Db':'C','D':'C#','Eb':'D','E':'D#','F':'E','F#':'E#','G':'F#','Ab':'G','A':'G#','Bb':'A','B':'A#' };
+/* notas reproducibles en el teclado C4-C6 */
+var PLAYMAP={ 'C':'C4','Db':'D#4','D':'D4','Eb':'D#4','E':'E4','F':'F4','F#':'F#4','G':'G4','Ab':'G#4','A':'A4','Bb':'A#4','B':'B4',
+ 'Gb':'F#4','Ab':'G#4','F#5':'F5' };
+function playable(names){
+  var out=[];
+  names.forEach(function(nm,i){
+    var root=/^([A-G][#b]?)/.exec(nm)[1];
+    var base=PLAYMAP[root];
+    if(base==null) return;
+    var oct=4 + (i>=3?1:0);
+    var mm=/^([A-G]#?)(-?\d)$/.exec(base);
+    var cand=mm[1]+oct;
+    if(!keyEls[cand]) cand=mm[1]+'4';
+    if(keyEls[cand]) out.push(cand);
+  });
+  return out;
+}
+function initCalc(){
+  var sel=$('#calcRoot'); if(!sel) return;
+  ['C','Db','D','Eb','E','F','F#','G','Ab','A','Bb','B'].forEach(function(r){
+    var o=document.createElement('option'); o.value=r; o.textContent=r; if(r==='F') o.selected=true; sel.appendChild(o);
+  });
+  var upd=function(){ renderCalc(); };
+  sel.addEventListener('change',upd);
+  $('#calcQual').addEventListener('change',upd);
+  $('#calcDeg').addEventListener('change',upd);
+  $('#calcPlayBridge').addEventListener('click',function(){
+    var d=lastCalc; if(!d||!d.bridgeKeys.length) return;
+    playChord(d.bridgeKeys,0,2.0,0.05); lightChord(d.bridgeKeys,1200);
+  });
+  $('#calcPlayBoth').addEventListener('click',function(){
+    var d=lastCalc; if(!d) return;
+    playChord(d.bridgeKeys,0,1.5,0.05); lightChord(d.bridgeKeys,1000);
+    playChord(d.targetKeys,0.95,2.2,0.05);
+    setTimeout(function(){ lightChord(d.targetKeys,1200); },950);
+  });
+  renderCalc();
+}
+var lastCalc=null;
+function renderCalc(){
+  var root=$('#calcRoot').value, qual=$('#calcQual').value, deg=$('#calcDeg').value;
+  var fourth=FOURTH[root], count=COUNT4[root], triad=TRIADS[fourth]||[];
+  var sev=SEVENTH[fourth];
+  var notes=triad.slice(); if(qual==='maj7'&&sev) notes.push(sev);
+  var tnotes=TRIADS[root]||[];
+  var bridgeKeys=playable(notes), targetKeys=playable(qual==='maj7'?tnotes.concat([SEVENTH[root]]):tnotes);
+  lastCalc={bridgeKeys:bridgeKeys,targetKeys:targetKeys};
+  var notation='IV/'+deg;
+  var out=$('#calcOut');
+  out.innerHTML=
+    '<div class="calc-big">'+fourth+' mayor'+(qual==='maj7'?' 7':'')+'</div>'+
+    '<div class="calc-sub">Subdominante secundaria de <strong>'+root+'</strong> · notación: <strong style="color:var(--accent);font-family:Consolas,monospace">'+notation+'</strong> (se lee "el cuatro del '+deg+'")</div>'+
+    '<dl class="kv">'+
+    '<dt>Acorde objetivo</dt><dd>'+root+' ('+deg+')'+(qual==='maj7'?' · major 7':'')+'</dd>'+
+    '<dt>Pregunta clave</dt><dd style="font-family:\'Segoe UI\',sans-serif;">¿Cuál es el acorde cuatro (IV) de '+root+'(I)?</dd>'+
+    '<dt>Conteo de grados</dt><dd>'+count.map(function(x,i){return x+'('+['I','II','III','IV'][i]+')';}).join(' → ')+'</dd>'+
+    '<dt>Cuarto grado</dt><dd>'+fourth+'(IV)</dd>'+
+    '<dt>Notas del puente</dt><dd>'+notes.join(' – ')+'</dd>'+
+    '<dt>Uso</dt><dd style="font-family:\'Segoe UI\',sans-serif;">Acorde de paso (<em>passing chord</em>) insertado <strong>justo antes</strong> de '+root+' ('+deg+')</dd>'+
+    '</dl>';
+}
+
+/* ============================================================
+   7. CADENA INTERACTIVA
+   ============================================================ */
+var CHAIN=[
+ {ch:'Eb(IV)',rl:'IV de Bb(I)',color:'#a855f7',notes:['D#4','G4','A#4'],
+  txt:'<strong>Eb(IV) mayor</strong> es el cuarto grado partiendo de la nota <strong>Bb(I)</strong>. Al insertarlo, funciona como el <strong>cuatro (IV) de Bb(IV)</strong> y resuelve hacia él. Es el eslabón más alejado de la tónica en la cadena del documento.'},
+ {ch:'Bb(IV)',rl:'IV de F(I)',color:'#00d4ff',notes:['A#4','D5','F5'],
+  txt:'<strong>Bb(IV)</strong> mayor (o <strong>Bb(IV) major 7</strong>) es el <strong>cuatro (IV) de F(IV)</strong>: la <strong>subdominante secundaria IV/IV</strong>. Recibe la resolución de <strong>Eb(IV)</strong> y prepara la llegada a <strong>F(IV)</strong>.'},
+ {ch:'F(IV)',rl:'IV de C(I)',color:'#22c55e',notes:['F4','A4','C5'],
+  txt:'<strong>F(IV)</strong> es el <strong>acorde subdominante principal</strong> de la tonalidad de C(I): el cuarto grado de la escala de C. En la cadena, recibe la resolución de <strong>Bb(IV)</strong>.'},
+ {ch:'C(I)',rl:'Tónica · resolución final',color:'#f59e0b',notes:['C4','E4','G4'],
+  txt:'<strong>C(I)</strong> es el acorde tónico. <strong>F(IV)</strong> resuelve de vuelta al acorde principal de <strong>C(I)</strong>, cerrando el flujo armónico completo de la cadena.'}
+];
+function buildChain(){
+  var row=$('#chainRow'); if(!row) return;
+  row.innerHTML='';
+  CHAIN.forEach(function(c,i){
+    var b=document.createElement('button');
+    b.className='cnode'; b.type='button';
+    b.innerHTML='<div class="ch" style="color:'+c.color+'">'+c.ch+'</div><div class="rl">'+c.rl+'</div>';
+    b.addEventListener('click',function(){ selChain(i); });
+    row.appendChild(b);
+    if(i<CHAIN.length-1){
+      var a=document.createElement('div'); a.className='carrow'; a.textContent='→'; a.setAttribute('aria-hidden','true');
+      row.appendChild(a);
+    }
+  });
+  selChain(0,true);
+}
+function selChain(i,silent){
+  var c=CHAIN[i]; if(!c) return;
+  $$('#chainRow .cnode').forEach(function(b,j){ b.classList.toggle('sel',j===i); });
+  var out=$('#chainOut');
+  out.style.borderLeftColor=c.color;
+  out.innerHTML='<div style="font-family:Consolas,monospace;font-size:20px;font-weight:800;color:'+c.color+';margin-bottom:6px;">'+c.ch+' <span style="color:var(--muted);font-size:13px;">· '+c.rl+'</span></div><p style="margin:0;font-size:14.5px;color:var(--txt);">'+c.txt+'</p>';
+  if(!silent){ playChord(c.notes,0,1.8,0.05); lightChord(c.notes,900); }
+}
+
+/* ============================================================
+   8. NAVEGACIÓN SPA + PROGRESO + TO TOP
+   ============================================================ */
+var views={};
+$$('.view').forEach(function(v){ views[v.id]=v; });
+var navBtns=$$('.nav-btn');
+
+function showSection(id, push){
+  if(!views[id]) id='home';
+  Object.keys(views).forEach(function(k){ views[k].classList.toggle('active', k===id); });
+  navBtns.forEach(function(b){ b.classList.toggle('active', b.dataset.target===id); });
+  var ab=navBtns.filter(function(b){return b.dataset.target===id;})[0];
+  if(ab && ab.scrollIntoView){ try{ ab.scrollIntoView({inline:'center',block:'nearest',behavior:reduceMotion?'auto':'smooth'}); }catch(e){} }
+  if(id==='home'){ mountCover('cover-home','h'); }
+  if(id==='credits'){ mountCover('cover-credits','c'); }
+  window.scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'});
+  updateProgress();
+  document.title = (id==='home' ? 'La Arquitectura de la Subdominante Secundaria' : (views[id].getAttribute('aria-label')||'')+' · Subdominante Secundaria') + ' — Tutorial Interactivo';
+}
+navBtns.forEach(function(b){ b.addEventListener('click',function(){ showSection(b.dataset.target); }); });
+
+function updateProgress(){
+  var h=document.documentElement;
+  var max=h.scrollHeight - h.clientHeight;
+  var p = max>0 ? (window.pageYOffset||h.scrollTop)/max*100 : 0;
+  var bar=$('#progressBar'); if(bar) bar.style.width=Math.max(0,Math.min(100,p))+'%';
+  var tt=$('#toTop'); if(tt) tt.classList.toggle('show',(window.pageYOffset||0)>260);
+}
+window.addEventListener('scroll',updateProgress,{passive:true});
+window.addEventListener('resize',updateProgress);
+$('#toTop').addEventListener('click',function(){ window.scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'}); });
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'&&e.altKey){ nav(1); }
+  if(e.key==='ArrowLeft'&&e.altKey){ nav(-1); }
+});
+function nav(dir){
+  var order=navBtns.map(function(b){return b.dataset.target;});
+  var cur=order.indexOf(($('.view.active')||{}).id);
+  showSection(order[Math.max(0,Math.min(order.length-1,cur+dir))]);
+}
+
+/* ============================================================
+   9. EJERCICIOS (respuestas desplegables)
+   ============================================================ */
+$$('[data-ans]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var a=btn.nextElementSibling;
+    var open=a.classList.toggle('open');
+    btn.textContent=open?'Ocultar respuesta':'Ver respuesta';
+    btn.classList.toggle('ghost',!open);
+    btn.classList.toggle('grn',open);
+  });
+});
+
+/* ============================================================
+   10. INICIALIZACIÓN
+   ============================================================ */
+function init(){
+  mountCover('cover-home','h');
+  mountCover('cover-credits','c');
+
+  /* contadores de grados */
+  buildDegreeRow($('#degRowC'),$('#degOutC'),[
+    {n:'C',r:'Grado I',msg:'Tónica · referencia de la escala'},
+    {n:'D',r:'Grado II',msg:''},
+    {n:'E',r:'Grado III',msg:''},
+    {n:'F',r:'Grado IV',msg:'Cuarto grado de C(I) → <strong>acorde subdominante principal F(IV)</strong>'},
+    {n:'G',r:'Grado V',msg:'Acorde dominante G(V)'},
+    {n:'A',r:'Grado VI',msg:''},
+    {n:'B',r:'Grado VII',msg:'Nota que Bb(IV) modifica por bemol'}
+  ],3);
+  $('#btnCountC').addEventListener('click',function(){ runCount($('#degRowC'),$('#degOutC'),[
+    {n:'C',r:'Grado I'},{n:'D',r:'Grado II'},{n:'E',r:'Grado III'},
+    {n:'F',r:'Grado IV',msg:'Cuarto grado de C(I) → <strong>acorde subdominante principal F(IV)</strong>'}
+  ],3); playChord(['F4','A4','C5'],0.1,1.8,0.05); setTimeout(function(){lightChord(['F4','A4','C5'],1200);},100); });
+  $('#btnResetC').addEventListener('click',function(){ resetCount($('#degRowC'),$('#degOutC'),'Referencia: escala de C(I) — pulsa «Contar 4 grados».'); });
+
+  buildDegreeRow($('#degRowF'),$('#degOutF'),[
+    {n:'F',r:'I (local)',msg:'F tratado como tónica temporal'},
+    {n:'G',r:'II',msg:''},
+    {n:'A',r:'III',msg:''},
+    {n:'Bb',r:'IV',msg:'Cuarta nota → <strong>Bb(IV) mayor</strong> (o Bb major 7) = subdominante secundaria <strong>IV/IV</strong>'}
+  ],3);
+  $('#btnCountF').addEventListener('click',function(){ runCount($('#degRowF'),$('#degOutF'),[
+    {n:'F',r:'I (local)'},{n:'G',r:'II'},{n:'A',r:'III'},
+    {n:'Bb',r:'IV',msg:'Cuarta nota → <strong>Bb(IV) mayor</strong> = subdominante secundaria <strong>IV/IV</strong>'}
+  ],3); playChord(['A#4','D5','F5'],0.1,1.9,0.05); setTimeout(function(){lightChord(['A#4','D5','F5'],1300);},100); });
+  $('#btnResetF').addEventListener('click',function(){ resetCount($('#degRowF'),$('#degOutF'),'Objetivo: F(IV) — el cuarto grado desde F(I) es Bb(IV).'); });
+  $('#btnHearBb').addEventListener('click',function(){ playChord(['A#4','D5','F5'],0,2.0,0.05); lightChord(['A#4','D5','F5'],1400); });
+
+  buildDegreeRow($('#degRowBb'),$('#degOutBb'),[
+    {n:'Bb',r:'I (local)',msg:'Bb tratado como referencia local'},
+    {n:'C',r:'II',msg:''},
+    {n:'D',r:'III',msg:''},
+    {n:'Eb',r:'IV',msg:'Cuarto grado partiendo de Bb(I) → <strong>Eb(IV) mayor</strong>'}
+  ],3);
+  $('#chainCount').addEventListener('click',function(){ runCount($('#degRowBb'),$('#degOutBb'),[
+    {n:'Bb',r:'I (local)'},{n:'C',r:'II'},{n:'D',r:'III'},
+    {n:'Eb',r:'IV',msg:'Cuarto grado partiendo de Bb(I) → <strong>Eb(IV) mayor</strong>'}
+  ],3); playChord(['D#4','G4','A#4'],0.1,1.9,0.05); setTimeout(function(){lightChord(['D#4','G4','A#4'],1300);},100); });
+
+  buildChain();
+  $('#chainPlay').addEventListener('click',function(){
+    stopAllAudio();
+    var t=0;
+    CHAIN.forEach(function(c,i){
+      seqTimers.push(setTimeout(function(){
+        selChain(i,true); playChord(c.notes,0,1.9,0.05); lightChord(c.notes,1100);
+      }, t));
+      t += reduceMotion?1200:1150;
+    });
+  });
+
+  /* piano */
+  buildPiano();
+  $$('[data-chord]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var k=b.dataset.chord;
+      showChord(k);
+      var n=chordNotes(k);
+      playChord(n,0,2.0,0.05); lightChord(n,1300);
+      var hint=$('#pianoHint'); if(hint) hint.textContent='Acorde: '+CHORDS[k].name+(useM7?' maj7':'')+' · '+prettyList(n);
+    });
+  });
+  $('#toggleM7').addEventListener('click',function(){
+    useM7=!useM7; this.textContent='maj7: '+(useM7?'ON':'OFF');
+    this.classList.toggle('grn',useM7);
+  });
+  $('#toggleMute').addEventListener('click',function(){
+    muted=!muted; this.textContent=(muted?'🔇 Sonido: OFF':'🔊 Sonido: ON');
+    if(muted) stopAllAudio(); else ensureAudio();
+  });
+  function playSeq(keys,gap,dur){
+    stopAllAudio();
+    var t=0;
+    keys.forEach(function(k){
+      seqTimers.push(setTimeout(function(){
+        var n=chordNotes(k);
+        showChord(k); playChord(n,0,dur||1.9,0.05); lightChord(n,900);
+      },t));
+      t+= gap;
+    });
+  }
+  $('#playChainFourths').addEventListener('click',function(){ playSeq(['Eb(IV)','Bb(IV)','F(IV)','C(I)'], reduceMotion?1300:1150); });
+  $('#playProgIv').addEventListener('click',function(){ playSeq(['C(I)','G(V)','Bb(IV)','F(IV)','C(I)'], reduceMotion?1300:1150); });
+  $('#playProgStd').addEventListener('click',function(){ playSeq(['C(I)','G(V)','F(IV)','C(I)'], reduceMotion?1500:1300); });
+  $('#stopAll').addEventListener('click',function(){ stopAllAudio(); $('#nowChord').textContent='—'; $('#nowNotes').textContent='Reproducción detenida.'; });
+
+  /* steppers */
+  PROGS.forEach(function(p){ createStepper(p); });
+
+  /* calculadora */
+  initCalc();
+
+  showSection('home');
+  updateProgress();
+}
+
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+else init();
+
+})();
+</script>
+</body>
+</html>
