@@ -1,0 +1,2399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Arquitectura de la Subdominante Secundaria · Tutorial Interactivo</title>
+<style>
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --card2:#0c1424; --border:#1e3a5f;
+  --accent:#00d4ff; --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+  --txt:#e2e8f0; --muted:#94a3b8; --dim:#64748b;
+  --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--txt);
+  font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height:1.65; font-size:16px; padding-top:62px;
+  -webkit-text-size-adjust:100%;
+  background-image:radial-gradient(circle at 15% -10%, rgba(0,212,255,.10), transparent 45%),
+                   radial-gradient(circle at 90% 0%, rgba(168,85,247,.09), transparent 40%);
+  background-attachment:fixed;
+  overflow-x:hidden;
+}
+/* ---------- PROGRESS ---------- */
+#progressWrap{position:fixed;top:0;left:0;right:0;height:4px;background:#0b1526;z-index:1400}
+#progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));box-shadow:0 0 12px rgba(0,212,255,.7);transition:width .12s linear}
+/* ---------- NAV ---------- */
+#navbar{
+  position:fixed;top:4px;left:0;right:0;height:58px;z-index:1300;
+  background:rgba(10,14,26,.94);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(10px);display:flex;align-items:center;gap:10px;
+}
+.brand{display:flex;align-items:center;gap:9px;padding:0 12px;flex:0 0 auto}
+.brand .logo{
+  width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-weight:800;font-size:12px;
+  background:linear-gradient(135deg,rgba(0,212,255,.22),rgba(168,85,247,.22));
+  border:1px solid var(--accent);color:var(--accent);letter-spacing:.5px;
+}
+.brand b{font-size:14px;letter-spacing:.4px;white-space:nowrap}
+.brand small{display:block;font-size:10px;color:var(--dim);letter-spacing:1.4px;text-transform:uppercase}
+#navScroll{
+  display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;flex:1 1 auto;
+  padding:8px 10px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:thin;
+}
+#navScroll::-webkit-scrollbar{height:5px}
+#navScroll::-webkit-scrollbar-thumb{background:#22405f;border-radius:4px}
+.nav-btn{
+  flex:0 0 auto;background:#0d1a2d;border:1px solid var(--border);color:var(--muted);
+  padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;cursor:pointer;
+  white-space:nowrap;transition:.2s;font-family:inherit;
+}
+.nav-btn:hover{color:var(--txt);border-color:#2f5c8c;background:#122238}
+.nav-btn.active{color:#04121a;background:linear-gradient(135deg,var(--accent),#67e8f9);border-color:var(--accent);box-shadow:0 0 14px rgba(0,212,255,.45)}
+.nav-btn.credit{border-color:rgba(168,85,247,.55);color:#d8b4fe}
+.nav-btn.credit.active{background:linear-gradient(135deg,var(--purple),#c084fc);color:#12061f;border-color:var(--purple)}
+/* ---------- LAYOUT ---------- */
+main{max-width:1180px;margin:0 auto;padding:26px 16px 60px}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .38s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sec-head{display:flex;align-items:center;gap:14px;margin:6px 0 22px;flex-wrap:wrap}
+.sec-ico{
+  width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:24px;flex:0 0 auto;
+  background:linear-gradient(135deg,rgba(0,212,255,.16),rgba(168,85,247,.14));border:1px solid var(--border);
+}
+.sec-head h2{font-size:clamp(22px,4.4vw,32px);letter-spacing:-.4px}
+.sec-head p{color:var(--muted);font-size:14px;max-width:70ch}
+.kicker{font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--accent);font-weight:700}
+/* ---------- CARDS ---------- */
+.card{
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:22px;margin-bottom:20px;position:relative;overflow:hidden;
+}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.55),transparent);opacity:.7}
+.card h3{font-size:clamp(18px,3.4vw,22px);margin-bottom:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card h4{font-size:15px;margin:18px 0 8px;color:var(--accent);letter-spacing:.4px;text-transform:uppercase}
+.card p{color:#cbd5e1;margin-bottom:10px}
+.card ul,.card ol{margin:8px 0 12px 20px;color:#cbd5e1}
+.card li{margin-bottom:6px}
+.num{
+  display:inline-grid;place-items:center;min-width:28px;height:28px;padding:0 7px;border-radius:8px;
+  background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.45);color:var(--accent);
+  font-size:12px;font-weight:800;letter-spacing:.5px;flex:0 0 auto
+}
+.src{font-size:11px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;font-weight:700}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+/* ---------- BADGES / CHIPS ---------- */
+.badge{display:inline-block;padding:5px 12px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;border:1px solid var(--border);background:#0c1a2c;color:var(--accent)}
+.badge.g{color:#86efac;border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.10)}
+.badge.a{color:#fcd34d;border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.10)}
+.badge.p{color:#d8b4fe;border-color:rgba(168,85,247,.45);background:rgba(168,85,247,.10)}
+.badge.r{color:#fca5a5;border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.10)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:#101f33;border:1px solid var(--border);font-size:13px;font-weight:600;margin:3px;color:#dbeafe}
+.chip.acc{border-color:rgba(0,212,255,.55);color:var(--accent);background:rgba(0,212,255,.09)}
+.chip.deg{font-variant-numeric:tabular-nums}
+/* ---------- CALLOUTS ---------- */
+.callout{border-radius:10px;padding:14px 16px;margin:14px 0;border-left:4px solid;font-size:14.5px}
+.callout .ct{font-weight:800;letter-spacing:1.4px;font-size:11px;text-transform:uppercase;display:block;margin-bottom:5px}
+.callout.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#c9f2ff}
+.callout.example{background:rgba(34,197,94,.08);border-color:var(--green);color:#c9f7d8}
+.callout.warn{background:rgba(245,158,11,.08);border-color:var(--amber);color:#fde6bd}
+.callout.error{background:rgba(239,68,68,.09);border-color:var(--red);color:#fcd2d2}
+.callout .ct.info{color:var(--accent)}.callout.example .ct{color:var(--green)}
+.callout.warn .ct{color:var(--amber)}.callout.error .ct{color:var(--red)}
+.callout b{color:#fff}
+/* ---------- RULE BOX ---------- */
+.rule{
+  border:1px solid rgba(0,212,255,.45);border-radius:14px;padding:22px;text-align:center;
+  background:radial-gradient(ellipse at center,rgba(0,212,255,.13),rgba(15,23,42,.4));
+  font-size:clamp(15px,3vw,20px);font-weight:800;letter-spacing:.4px;line-height:1.5;color:#eafcff;
+  box-shadow:0 0 30px rgba(0,212,255,.10) inset;
+}
+.rule small{display:block;font-size:12px;color:var(--muted);font-weight:600;letter-spacing:1.6px;margin-bottom:8px;text-transform:uppercase}
+/* ---------- CHAINS ---------- */
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0;padding:14px;background:#0a1424;border:1px dashed #26496f;border-radius:12px}
+.cnode{
+  padding:10px 15px;border-radius:10px;background:linear-gradient(180deg,#132740,#0d1c2e);
+  border:1px solid #2d5b8a;font-weight:800;font-size:16px;color:#e8f7ff;white-space:nowrap;
+  box-shadow:0 3px 10px rgba(0,0,0,.35)
+}
+.cnode.tgt{border-color:var(--green);color:#bbf7d0;background:linear-gradient(180deg,#123322,#0d2018)}
+.cnode.prep{border-color:var(--accent)}
+.cnode.deep{border-color:var(--purple);color:#e9d5ff;background:linear-gradient(180deg,#241640,#170f2b)}
+.carrow{color:var(--accent);font-size:20px;font-weight:800;text-shadow:0 0 10px rgba(0,212,255,.6)}
+.carrow small{display:block;font-size:9px;color:var(--dim);letter-spacing:1px;font-weight:600}
+/* ---------- STEPS ---------- */
+.steps{counter-reset:st;margin:12px 0}
+.step{
+  position:relative;padding:14px 16px 14px 60px;margin-bottom:10px;background:#0b1626;
+  border:1px solid var(--border);border-radius:10px;transition:.2s
+}
+.step:hover{border-color:#2f5c8c;transform:translateX(3px)}
+.step::before{
+  counter-increment:st;content:counter(st);position:absolute;left:14px;top:14px;
+  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-weight:800;
+  background:linear-gradient(135deg,rgba(0,212,255,.25),rgba(168,85,247,.2));border:1px solid rgba(0,212,255,.5);color:#bff1ff
+}
+.step b{color:#fff}
+.step .st-t{font-weight:800;color:var(--accent);letter-spacing:.6px;text-transform:uppercase;font-size:12px}
+/* ---------- FLOW ---------- */
+.flow{display:flex;flex-direction:column;align-items:center;gap:2px;margin:14px 0}
+.fnode{
+  width:100%;max-width:520px;text-align:center;padding:11px 14px;border-radius:10px;font-weight:700;font-size:14px;
+  background:#0c1a2c;border:1px solid var(--border);color:#dbeafe
+}
+.fnode.hi{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.08)}
+.fnode.ok{border-color:var(--green);color:#bbf7d0;background:rgba(34,197,94,.08)}
+.fnode.pu{border-color:var(--purple);color:#e9d5ff;background:rgba(168,85,247,.08)}
+.farrow{color:var(--accent);font-size:17px;line-height:1.1}
+/* ---------- STAIR ---------- */
+.stair{display:flex;flex-direction:column;gap:7px;margin:16px 0;overflow-x:auto;padding-bottom:6px}
+.stair-row{display:flex;align-items:center;gap:10px;min-width:max-content}
+.stair-row .cnode{min-width:74px;text-align:center}
+.stair-row span.rel{font-size:12px;color:var(--muted)}
+/* ---------- TABLES ---------- */
+.tw{overflow-x:auto;margin:14px 0;border:1px solid var(--border);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:340px}
+th,td{padding:11px 13px;text-align:left;border-bottom:1px solid #17304d}
+th{background:#0d1c30;color:var(--accent);font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(0,212,255,.05)}
+td b{color:#fff}
+.mono{font-family:Consolas,'Courier New',monospace;color:#7dd3fc}
+/* ---------- BUTTONS ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:10px 17px;border-radius:9px;cursor:pointer;
+  font-family:inherit;font-size:14px;font-weight:700;border:1px solid var(--border);
+  background:#101f33;color:var(--txt);transition:.18s;margin:4px 4px 4px 0
+}
+.btn:hover{border-color:var(--accent);color:#fff;transform:translateY(-1px)}
+.btn:active{transform:translateY(1px)}
+.btn.acc{background:linear-gradient(135deg,var(--accent),#38bdf8);color:#04121a;border-color:transparent;box-shadow:0 4px 16px rgba(0,212,255,.28)}
+.btn.pu{background:linear-gradient(135deg,var(--purple),#c084fc);color:#170826;border-color:transparent}
+.btn.gr{background:linear-gradient(135deg,var(--green),#4ade80);color:#052011;border-color:transparent}
+.btn.sm{padding:6px 11px;font-size:12.5px}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+/* ---------- ACCORDION ---------- */
+.acc{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;background:#0b1626}
+.acc-h{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 16px;background:#0e1c2e;border:none;cursor:pointer;color:var(--txt);
+  font-family:inherit;font-size:14.5px;font-weight:700;text-align:left
+}
+.acc-h:hover{background:#12243a}
+.acc-h .arw{transition:.28s;color:var(--accent);font-size:13px;flex:0 0 auto}
+.acc.open .acc-h .arw{transform:rotate(90deg)}
+.acc-b{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.acc-b .inner{padding:16px;border-top:1px solid var(--border)}
+/* ---------- TABS ---------- */
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.tab-btn{padding:9px 15px;border-radius:9px;border:1px solid var(--border);background:#0d1a2d;color:var(--muted);cursor:pointer;font-family:inherit;font-weight:700;font-size:13px;transition:.2s}
+.tab-btn.active{background:rgba(0,212,255,.14);border-color:var(--accent);color:var(--accent)}
+.tab-panel{display:none;animation:fadeIn .3s}
+.tab-panel.active{display:block}
+/* ---------- REVEAL ---------- */
+.reveal{display:none;margin-top:10px}
+.reveal.show{display:block;animation:fadeIn .3s}
+/* ---------- METRICS ---------- */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:20px 0}
+.metric{background:#0b1626;border:1px solid var(--border);border-radius:11px;padding:15px;text-align:center;transition:.2s}
+.metric:hover{border-color:var(--accent);transform:translateY(-3px)}
+.metric .mv{font-size:clamp(19px,4vw,26px);font-weight:800;color:var(--accent);line-height:1.2}
+.metric .ml{font-size:11px;color:var(--muted);letter-spacing:1.3px;text-transform:uppercase;margin-top:5px}
+.metric.g .mv{color:var(--green)}.metric.p .mv{color:#c084fc}.metric.a .mv{color:var(--amber)}
+/* ---------- HOME ---------- */
+.hero-svg{width:100%;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#060b16;box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 0 1px rgba(0,212,255,.08)}
+.hero-svg svg{display:block;width:100%;height:auto}
+.hero-top{display:flex;justify-content:center;margin-bottom:22px}
+.hero-title{text-align:center;margin:24px 0 6px}
+.hero-title h1{font-size:clamp(26px,6vw,46px);line-height:1.15;letter-spacing:-1px;background:linear-gradient(120deg,#fff,#7dd3fc 55%,#c084fc);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-title .sub{font-size:clamp(15px,3.4vw,20px);color:var(--muted);margin-top:10px;font-weight:600}
+.hero-title .by{font-size:13px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-top:12px;font-weight:700}
+.hero-desc{max-width:820px;margin:20px auto;text-align:center;color:#cbd5e1;font-size:15.5px}
+.quote{
+  max-width:840px;margin:26px auto;padding:24px 26px;border-radius:14px;text-align:center;
+  border:1px solid rgba(168,85,247,.4);background:linear-gradient(135deg,rgba(168,85,247,.11),rgba(0,212,255,.07));
+  font-size:clamp(15px,3.3vw,20px);font-style:italic;color:#f1e8ff;font-weight:600
+}
+.quote::before{content:"“";font-size:44px;color:var(--purple);line-height:0;vertical-align:-12px;margin-right:6px}
+.quote::after{content:"”";font-size:44px;color:var(--purple);line-height:0;vertical-align:-16px;margin-left:4px}
+.hero-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0}
+.datebox{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+/* ---------- PIANO ---------- */
+.piano-wrap{overflow-x:auto;padding:6px 0 12px}
+.piano{position:relative;height:170px;min-width:520px;margin:0 auto;user-select:none}
+.wkey{
+  position:absolute;top:0;height:170px;background:linear-gradient(180deg,#f8fafc,#cbd5e1);
+  border:1px solid #475569;border-radius:0 0 7px 7px;cursor:pointer;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;
+  font-size:10.5px;font-weight:800;color:#334155;transition:background .12s
+}
+.wkey:hover{background:linear-gradient(180deg,#e0f2fe,#bae6fd)}
+.wkey.lit{background:linear-gradient(180deg,#67e8f9,#00d4ff);color:#062635;box-shadow:0 0 18px rgba(0,212,255,.7)}
+.wkey.litg{background:linear-gradient(180deg,#86efac,#22c55e);color:#052e16}
+.bkey{
+  position:absolute;top:0;height:104px;background:linear-gradient(180deg,#1e293b,#020617);
+  border:1px solid #000;border-radius:0 0 6px 6px;cursor:pointer;z-index:3;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;
+  font-size:9.5px;font-weight:800;color:#94a3b8;transition:background .12s
+}
+.bkey:hover{background:linear-gradient(180deg,#334155,#0f172a)}
+.bkey.lit{background:linear-gradient(180deg,#22d3ee,#0891b2);color:#04222c;box-shadow:0 0 16px rgba(0,212,255,.8)}
+.bkey.litg{background:linear-gradient(180deg,#4ade80,#16a34a);color:#052e16}
+/* ---------- QUIZ ---------- */
+.quiz-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 13px;background:#0b1626;border:1px solid var(--border);border-radius:10px;margin-bottom:9px}
+.quiz-row .qn{min-width:64px;text-align:center;font-weight:800;font-size:17px;color:#e8f7ff;padding:7px 10px;border-radius:9px;background:#122740;border:1px solid #2d5b8a}
+select,input[type=text]{
+  background:#0a1424;border:1px solid var(--border);color:var(--txt);padding:9px 11px;border-radius:8px;
+  font-family:inherit;font-size:14px;max-width:100%
+}
+select:focus,input:focus{outline:2px solid rgba(0,212,255,.5);outline-offset:1px}
+.fb{font-size:13px;font-weight:700;min-width:120px}
+.fb.ok{color:var(--green)}.fb.no{color:var(--red)}
+input[type=range]{width:100%;accent-color:var(--accent);height:26px;background:transparent}
+/* ---------- CHECKLIST ---------- */
+.chk{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:#0b1626;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:.18s}
+.chk:hover{border-color:#2f5c8c}
+.chk input{width:20px;height:20px;accent-color:var(--green);flex:0 0 auto;margin-top:2px;cursor:pointer}
+.chk.done{border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.07)}
+.chk span{font-size:14.5px}
+.verdict{margin-top:14px;padding:16px;border-radius:11px;text-align:center;font-weight:800;font-size:15px;border:1px solid var(--border);background:#0b1626}
+.verdict.ok{border-color:var(--green);background:rgba(34,197,94,.12);color:#bbf7d0}
+.verdict.no{border-color:var(--red);background:rgba(239,68,68,.10);color:#fecaca}
+/* ---------- CIRCLE ---------- */
+.circle-wrap{display:flex;justify-content:center;margin:10px 0}
+.circle-wrap svg{max-width:100%;height:auto}
+.cnote{cursor:pointer}
+.cnote circle{transition:.2s}
+.cnote:hover circle{fill:rgba(0,212,255,.35)}
+/* ---------- LAB OUT ---------- */
+.out{background:#08111f;border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:14px}
+.rel-line{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:8px 0;border-bottom:1px dashed #1b3654;font-size:14px}
+.rel-line:last-child{border-bottom:none}
+.pill{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:800;background:rgba(0,212,255,.13);border:1px solid rgba(0,212,255,.4);color:#a5f3fc}
+.pill.g{background:rgba(34,197,94,.13);border-color:rgba(34,197,94,.45);color:#bbf7d0}
+.pill.p{background:rgba(168,85,247,.14);border-color:rgba(168,85,247,.45);color:#e9d5ff}
+/* ---------- FOOTER ---------- */
+footer{border-top:1px solid var(--border);background:#070c17;padding:30px 18px;text-align:center;color:var(--muted);font-size:13.5px}
+footer .frow{margin-bottom:7px}
+footer .lat{margin-top:14px;font-style:italic;color:#c4b5fd;letter-spacing:1.2px;font-size:14px}
+/* ---------- TO TOP ---------- */
+#toTop{
+  position:fixed;right:16px;bottom:18px;width:50px;height:50px;border-radius:14px;z-index:1200;
+  background:linear-gradient(135deg,var(--accent),#38bdf8);color:#04121a;border:none;cursor:pointer;
+  font-size:20px;font-weight:800;display:none;place-items:center;box-shadow:0 8px 22px rgba(0,212,255,.35)
+}
+#toTop.show{display:grid;animation:fadeIn .3s}
+#toTop:hover{transform:translateY(-3px)}
+/* ---------- CREDITS ---------- */
+.cred-card{text-align:center;padding:26px}
+.cred-name{font-size:clamp(22px,5vw,32px);font-weight:800;color:#fff;letter-spacing:.5px}
+.cred-role{color:var(--accent);letter-spacing:2.6px;text-transform:uppercase;font-size:11.5px;font-weight:700;margin-top:6px}
+.cred-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0}
+.cred-item{background:#0b1626;border:1px solid var(--border);border-radius:11px;padding:14px}
+.cred-item .l{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim);font-weight:700}
+.cred-item .v{font-size:16px;color:#fff;font-weight:700;margin-top:4px}
+/* ---------- COVER SVG ANIMATION ---------- */
+@keyframes cvPulse{0%,100%{opacity:.55;transform:scale(1)}8%{opacity:1;transform:scale(1.09)}30%{opacity:.75;transform:scale(1)}}
+@keyframes cvGlow{0%,100%{opacity:.25}10%{opacity:.9}40%{opacity:.35}}
+@keyframes cvDash{to{stroke-dashoffset:-260}}
+@keyframes cvKey{0%,100%{fill:#f1f5f9}4%{fill:#22d3ee}18%{fill:#f1f5f9}}
+@keyframes cvKeyB{0%,100%{fill:#0b1220}4%{fill:#00d4ff}18%{fill:#0b1220}}
+@keyframes cvBar{0%,100%{transform:scaleY(.18)}50%{transform:scaleY(1)}}
+@keyframes cvFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes cvFadeSeq{0%,100%{opacity:.25}12%{opacity:1}}
+@keyframes cvTitle{0%,100%{opacity:.9}50%{opacity:1}}
+.cv-node circle.core{animation:cvPulse 6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.cv-node circle.halo{animation:cvGlow 6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.cv-node text.nm{animation:cvFadeSeq 6s ease-in-out infinite}
+.cv-link{stroke-dasharray:14 10;animation:cvDash 3.2s linear infinite}
+.cv-keyw{animation:cvKey 6s ease-in-out infinite}
+.cv-keyb{animation:cvKeyB 6s ease-in-out infinite}
+.cv-bar{transform-box:fill-box;transform-origin:bottom center;animation:cvBar 1.5s ease-in-out infinite}
+.cv-float{animation:cvFloat 5s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.cv-title{animation:cvTitle 4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){
+  .cv-node circle,.cv-node text,.cv-link,.cv-keyw,.cv-keyb,.cv-bar,.cv-float,.cv-title{animation:none!important}
+  .page.active{animation:none}
+  .step:hover{transform:none}
+  html{scroll-behavior:auto}
+}
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:820px){
+  body{font-size:15.5px}
+  main{padding:20px 13px 50px}
+  .card{padding:17px}
+  .brand small{display:none}
+  .sec-ico{width:44px;height:44px;font-size:20px}
+}
+@media (max-width:480px){
+  body{padding-top:58px}
+  #navbar{height:54px;gap:6px}
+  .brand{padding:0 8px}
+  .brand b{font-size:12.5px}
+  .nav-btn{padding:7px 11px;font-size:12px}
+  .cnode{padding:8px 11px;font-size:14px}
+  .step{padding:13px 13px 13px 54px}
+  .piano{height:150px;min-width:480px}
+  .wkey{height:150px;font-size:9px}
+  .bkey{height:92px;font-size:8.5px}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  #toTop{width:46px;height:46px;right:12px;bottom:14px}
+}
+</style>
+</head>
+<body>
+
+<div id="progressWrap"><div id="progressBar"></div></div>
+
+<nav id="navbar">
+  <div class="brand">
+    <div class="logo">IV/IV</div>
+    <div><b>Subdominante Secundaria</b><small>Armonía · Cadenas IV</small></div>
+  </div>
+  <div id="navScroll">
+    <button class="nav-btn active" data-target="home">🏠 Inicio</button>
+    <button class="nav-btn" data-target="fundamentos">① Fundamentos</button>
+    <button class="nav-btn" data-target="algoritmo">② Algoritmo</button>
+    <button class="nav-btn" data-target="cadenas">③ Cadenas</button>
+    <button class="nav-btn" data-target="contexto">④ Contexto</button>
+    <button class="nav-btn" data-target="voicings">⑤ Voicings</button>
+    <button class="nav-btn" data-target="piano">⑥ Piano y oído</button>
+    <button class="nav-btn" data-target="arreglista">⑦ El arreglista</button>
+    <button class="nav-btn" data-target="laboratorio">⑧ Laboratorio</button>
+    <button class="nav-btn" data-target="sintesis">⑨ Síntesis</button>
+    <button class="nav-btn credit" data-target="creditos">★ Créditos</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section id="home" class="page active">
+  <div class="hero-top">
+    <div class="hero-svg" id="svgHome" aria-label="Portada animada: cadena de subdominantes Ab → Eb → Bb → F → C sobre un teclado de piano"></div>
+  </div>
+
+  <div class="hero-title">
+    <span class="badge">Teoría musical · Armonía · Nivel intermedio</span>
+    <h1>La Arquitectura de la Subdominante Secundaria</h1>
+    <div class="sub">Cómo crear movimiento armónico mediante cadenas de acordes IV</div>
+    <div class="by">Por Rubén Sbarsky</div>
+  </div>
+
+  <p class="hero-desc">
+    Un tutorial interactivo y autónomo sobre una de las herramientas más elegantes de la armonía tonal:
+    <b>preparar cualquier acorde objetivo con su propio acorde IV</b>. Aprenderás a generar —no a memorizar—
+    cadenas como <span class="mono">Ab → Eb → Bb → F → C</span>, a distinguirlas de las dominantes secundarias,
+    a decidir la calidad y el voicing de cada acorde, y a aplicar el criterio musical necesario para saber
+    <b>cuándo parar</b>.
+  </p>
+
+  <div class="quote">Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.</div>
+
+  <div class="metrics">
+    <div class="metric"><div class="mv">IV → I</div><div class="ml">Relación base</div></div>
+    <div class="metric g"><div class="mv">59</div><div class="ml">Apartados fuente</div></div>
+    <div class="metric p"><div class="mv">10</div><div class="ml">Capítulos navegables</div></div>
+    <div class="metric a"><div class="mv">5</div><div class="ml">Niveles de cadena</div></div>
+    <div class="metric"><div class="mv">A – G</div><div class="ml">Nomenclatura + I–VII</div></div>
+    <div class="metric g"><div class="mv">♫ Web Audio</div><div class="ml">Escucha integrada</div></div>
+  </div>
+
+  <div class="chain" style="justify-content:center">
+    <span class="cnode deep">Ab</span><span class="carrow">→<small>IV de Eb</small></span>
+    <span class="cnode deep">Eb</span><span class="carrow">→<small>IV de Bb</small></span>
+    <span class="cnode prep">Bb</span><span class="carrow">→<small>IV de F</small></span>
+    <span class="cnode prep">F</span><span class="carrow">→<small>IV de C</small></span>
+    <span class="cnode tgt">C</span>
+  </div>
+
+  <div class="hero-cta">
+    <button class="btn acc" data-target="fundamentos">▶ Comenzar el tutorial</button>
+    <button class="btn pu" data-target="laboratorio">🎛 Ir al laboratorio interactivo</button>
+    <button class="btn" data-target="piano">🎹 Ejercicios de piano</button>
+    <button class="btn" data-target="creditos">★ Créditos</button>
+  </div>
+
+  <div class="datebox">
+    <span class="chip acc">📅 Fecha: 10/09/2026</span>
+    <span class="chip acc">🕒 Hora: 06:58:08</span>
+    <span class="chip">📚 Solo con fines educativos</span>
+  </div>
+</section>
+
+<!-- ============ FUNDAMENTOS ============ -->
+<section id="fundamentos" class="page">
+  <div class="sec-head">
+    <div class="sec-ico">🧭</div>
+    <div>
+      <div class="kicker">Capítulo 1 · Apartados 1–10</div>
+      <h2>Fundamentos: la idea central</h2>
+      <p>Tres conceptos previos, la función del acorde IV, qué es exactamente una subdominante secundaria y por qué funciona musicalmente.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">1</span> Qué vas a aprender <span class="src">ap. 1</span></h3>
+    <p>La idea central de este tutorial es muy sencilla:</p>
+    <div class="rule"><small>Idea central</small>Un acorde puede ser preparado por su propio acorde IV.</div>
+    <p style="margin-top:14px">Si queremos llegar a <b>F(IV)</b> en la tonalidad de <b>C(I)</b>, podemos colocar <b>Bb(IV)</b> inmediatamente antes:</p>
+    <div class="chain"><span class="cnode prep">Bb<small style="display:block;font-size:10px;color:var(--muted)">(IV)</small></span><span class="carrow">→</span><span class="cnode tgt">F<small style="display:block;font-size:10px;color:var(--muted)">(IV)</small></span></div>
+    <h4>¿Por qué?</h4>
+    <p>Porque durante un instante tratamos <b>F</b> como si fuera nuestra tónica local:</p>
+    <div class="chain">
+      <span class="cnode">F<small style="display:block;font-size:10px;color:var(--muted)">(I)</small></span><span class="carrow">→</span>
+      <span class="cnode">G<small style="display:block;font-size:10px;color:var(--muted)">(II)</small></span><span class="carrow">→</span>
+      <span class="cnode">A<small style="display:block;font-size:10px;color:var(--muted)">(III)</small></span><span class="carrow">→</span>
+      <span class="cnode tgt">Bb<small style="display:block;font-size:10px;color:var(--muted)">(IV)</small></span>
+    </div>
+    <p>Por tanto: <span class="chip acc">Bb = IV de F</span></p>
+    <p>Y, respecto de la tonalidad original de C: <span class="chip">Bb = IV/IV</span></p>
+    <p>La misma idea puede repetirse:</p>
+    <div class="chain"><span class="cnode deep">Eb</span><span class="carrow">→</span><span class="cnode deep">Bb</span><span class="carrow">→</span><span class="cnode prep">F</span><span class="carrow">→</span><span class="cnode tgt">C</span>
+      <button class="btn sm gr" data-play="Eb|Bb|F|C">▶ Escuchar</button></div>
+    <p>Aquí cada acorde prepara al siguiente mediante su propio IV. Esta técnica permite construir una especie de
+      <b>cadena de movimiento armónico</b>:</p>
+    <div class="callout info"><span class="ct info">Lectura de cada flecha</span>
+      Cada flecha significa: <b>“El acorde de la izquierda funciona como subdominante del acorde de la derecha.”</b>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">2</span> Antes de empezar: tres conceptos fundamentales <span class="src">ap. 2</span></h3>
+    <p>Para entender correctamente esta técnica hay que distinguir tres cosas:</p>
+    <div class="grid3">
+      <div class="step"><span class="st-t">Concepto 1</span><br><b>La tonalidad principal.</b></div>
+      <div class="step"><span class="st-t">Concepto 2</span><br><b>El acorde objetivo.</b></div>
+      <div class="step"><span class="st-t">Concepto 3</span><br><b>La referencia tonal temporal</b> utilizada para encontrar su IV.</div>
+    </div>
+    <div class="callout example"><span class="ct">Ejemplo</span>
+      Estamos en <b>C major</b>. Queremos llegar a <b>F</b>. F es el acorde IV de C:
+      <div class="chain"><span class="cnode">C(I)</span><span class="carrow">→</span><span class="cnode tgt">F(IV)</span></div>
+      Ahora queremos encontrar un acorde que prepare F. La pregunta es: <b>¿Cuál es el IV de F?</b><br>
+      Para responderla imaginamos temporalmente <b>F(I)</b> y construimos su escala:
+      <div class="chain">
+        <span class="cnode">F(I)</span><span class="carrow">-</span><span class="cnode">G(II)</span><span class="carrow">-</span>
+        <span class="cnode">A(III)</span><span class="carrow">-</span><span class="cnode tgt">Bb(IV)</span><span class="carrow">-</span>
+        <span class="cnode">C(V)</span><span class="carrow">-</span><span class="cnode">D(VI)</span><span class="carrow">-</span><span class="cnode">E(VII)</span>
+      </div>
+      Por tanto: <b>Bb = IV de F</b>. Así obtenemos: <b>Bb → F</b>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">3</span> El acorde subdominante: IV <span class="src">ap. 3</span></h3>
+    <p>En una tonalidad mayor, el acorde construido sobre el <b>cuarto grado</b> es tradicionalmente el acorde subdominante. En C major:</p>
+    <div class="chain">
+      <span class="cnode">C(I)</span><span class="cnode">D(II)</span><span class="cnode">E(III)</span>
+      <span class="cnode tgt">F(IV)</span><span class="cnode">G(V)</span><span class="cnode">A(VI)</span><span class="cnode">B(VII)</span>
+    </div>
+    <p>Por tanto: <span class="chip acc">F = IV de C</span></p>
+    <p>El movimiento <b>C → F</b> es: <b>I → IV</b>. Es decir: <b>Tónica → Subdominante</b>.</p>
+    <div class="callout info"><span class="ct info">Info</span>El acorde IV es uno de los principales acordes de función <b>predominante o subdominante</b>.</div>
+    <button class="btn sm gr" data-play="C|F">▶ C(I) → F(IV)</button>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">4</span> ¿Qué es una subdominante secundaria? <span class="src">ap. 4</span></h3>
+    <p>La idea consiste en utilizar el <b>IV de un acorde distinto de la tónica principal</b>. En otras palabras:</p>
+    <ul>
+      <li>No buscamos únicamente el IV de la tonalidad.</li>
+      <li>Buscamos el <b>IV de un acorde que queremos alcanzar</b>.</li>
+    </ul>
+    <p>Por ejemplo: <span class="mono">C → ? → F</span></p>
+    <div class="steps">
+      <div class="step">El acorde objetivo es <b>F</b>.</div>
+      <div class="step">Tratamos temporalmente F como <b>I</b>: <span class="mono">F(I) - G(II) - A(III) - Bb(IV)</span></div>
+      <div class="step">Por tanto: <b>Bb → F</b>. Bb es el IV de F.</div>
+      <div class="step">En relación con C: <b>Bb = IV/IV</b>.</div>
+    </div>
+    <div class="callout info"><span class="ct info">Se lee</span><b>“el cuatro del cuatro”.</b></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">5</span> La regla fundamental <span class="src">ap. 5</span></h3>
+    <div class="rule"><small>Memoriza esta regla</small>PARA PREPARAR UN ACORDE OBJETIVO, TRATA TEMPORALMENTE ESE ACORDE COMO I Y BUSCA SU IV.</div>
+    <div class="callout example" style="margin-top:16px"><span class="ct">Ejemplo</span>
+      <div class="flow">
+        <div class="fnode">Objetivo: <b>F</b></div><div class="farrow">↓</div>
+        <div class="fnode">Lo tratamos como: <b>F(I)</b></div><div class="farrow">↓</div>
+        <div class="fnode">Buscamos su IV: <b>Bb(IV)</b></div><div class="farrow">↓</div>
+        <div class="fnode ok">Resultado: <b>Bb → F</b></div>
+      </div>
+      <button class="btn sm gr" data-play="Bb|F">▶ Escuchar Bb → F</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">6</span> No confundas grados con teclas <span class="src">ap. 6</span></h3>
+    <div class="callout warn"><span class="ct">Advertencia</span>Cuando decimos <b>“IV”</b> no significa simplemente <b>“cuatro teclas hacia arriba”</b>. Estamos hablando del <b>cuarto grado de una escala</b>.</div>
+    <p>Por ejemplo, <b>F major</b>: <span class="chip">F</span><span class="chip">G</span><span class="chip">A</span><span class="chip acc">Bb ← 4.º grado</span><span class="chip">C</span><span class="chip">D</span><span class="chip">E</span></p>
+    <p>El cuarto grado es <b>Bb</b>. Por tanto: <span class="chip acc">Bb = IV de F</span></p>
+    <p>También podemos expresarlo mediante intervalos: <span class="mono">F → Bb = cuarta justa</span></p>
+    <div class="callout info"><span class="ct info">Piano</span>Esta forma de pensarlo (por intervalos) es <b>especialmente útil en el piano</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">8</span> ¿Por qué funciona? <span class="src">ap. 8</span></h3>
+    <p>No debemos aprender esta técnica solamente como una fórmula matemática. La razón musical es que estamos creando una
+      <b>relación funcional local</b>.</p>
+    <p>Tenemos: <b>Bb → F</b>. Si F se convierte temporalmente en nuestro centro local, Bb desempeña la función <b>IV respecto de F</b>.</p>
+    <p>Después: <b>F → C</b>. F desempeña la función <b>IV respecto de C</b>.</p>
+    <p>Por tanto <b>Bb → F → C</b> puede entenderse como:</p>
+    <div class="chain">
+      <span class="cnode prep">IV de F</span><span class="carrow">→</span>
+      <span class="cnode prep">IV de C</span><span class="carrow">→</span>
+      <span class="cnode tgt">I</span>
+      <button class="btn sm gr" data-play="Bb|F|C">▶ Escuchar</button>
+    </div>
+    <div class="callout info"><span class="ct info">Resultado</span>La progresión adquiere una sensación de <b>preparación progresiva hacia C</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">9</span> Cómo leer IV/IV <span class="src">ap. 9</span></h3>
+    <p>La notación <span class="mono">IV/IV</span> puede parecer extraña al principio. La barra <b>“/”</b> no significa división matemática. Aquí expresa una <b>relación</b>:</p>
+    <div class="rule"><small>Notación</small>IV/IV = IV del IV</div>
+    <p style="margin-top:14px">En C:</p>
+    <ul>
+      <li>IV de C = <b>F</b></li>
+      <li>IV de F = <b>Bb</b></li>
+    </ul>
+    <p>Por tanto: <span class="chip acc">Bb = IV/IV</span></p>
+    <p>La cadena es: <b>Bb → F → C</b></p>
+    <div class="callout info"><span class="ct info">Lectura conceptual</span>“El cuatro del cuatro va al cuatro, y el cuatro va a uno.”</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">10</span> El cambio de mentalidad más importante <span class="src">ap. 10</span></h3>
+    <div class="grid2">
+      <div class="callout error" style="margin:0"><span class="ct">No pienses solamente</span>“¿Qué acorde puedo poner?”</div>
+      <div class="callout example" style="margin:0"><span class="ct">Piensa</span>“¿A qué acorde quiero llegar?”</div>
+    </div>
+    <div class="steps" style="margin-top:16px">
+      <div class="step">Después: <b>“¿Cuál es el IV de ese acorde?”</b></div>
+      <div class="step">Y finalmente: <b>“¿Quiero utilizar ese IV para prepararlo?”</b></div>
+    </div>
+    <div class="callout info"><span class="ct info">Clave</span>Este cambio de pensamiento es fundamental para comenzar a <b>pensar como arreglista</b>.</div>
+  </div>
+</section>
+
+<!-- ============ ALGORITMO ============ -->
+<section id="algoritmo" class="page">
+  <div class="sec-head">
+    <div class="sec-ico">⚙️</div>
+    <div>
+      <div class="kicker">Capítulo 2 · Apartados 7, 11, 12, 46, 47, 55</div>
+      <h2>El algoritmo: de la teoría al procedimiento</h2>
+      <p>El ejemplo fundamental paso a paso, el algoritmo universal de 8 pasos, la fórmula comprimida, la fórmula matemática y el mapa mental definitivo.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">7</span> Ejemplo fundamental: preparar F <span class="src">ap. 7</span></h3>
+    <p>Estamos en C major. Tenemos: <b>C → F</b>. Queremos darle más movimiento.</p>
+    <div class="steps">
+      <div class="step"><span class="st-t">Paso 1 — Identificar el objetivo</span><br>El objetivo es: <b>F(IV)</b></div>
+      <div class="step"><span class="st-t">Paso 2 — Convertir mentalmente el objetivo en I</span><br>Pensamos: <b>F(I)</b></div>
+      <div class="step"><span class="st-t">Paso 3 — Construir su escala</span><br><span class="mono">F - G - A - Bb - C - D - E</span></div>
+      <div class="step"><span class="st-t">Paso 4 — Localizar el IV</span><br><b>Bb</b></div>
+      <div class="step"><span class="st-t">Paso 5 — Construir el acorde</span><br><b>Bb major</b></div>
+      <div class="step"><span class="st-t">Paso 6 — Colocarlo antes del objetivo</span><br><b>Bb → F</b></div>
+      <div class="step"><span class="st-t">Paso 7 — Volver a la tonalidad principal</span><br><b>Bb → F → C</b></div>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>Acorde</th><th>Función en C major</th><th>Relación local</th></tr></thead>
+      <tbody>
+        <tr><td><b>Bb</b></td><td class="mono">IV/IV</td><td>IV de F</td></tr>
+        <tr><td><b>F</b></td><td class="mono">IV</td><td>IV de C</td></tr>
+        <tr><td><b>C</b></td><td class="mono">I</td><td>Tónica principal</td></tr>
+      </tbody>
+    </table></div>
+    <button class="btn sm gr" data-play="Bb|F|C">▶ Escuchar Bb → F → C</button>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">11</span> Algoritmo universal <span class="src">ap. 11</span></h3>
+    <p>Cuando tengas un acorde objetivo:</p>
+    <div class="steps">
+      <div class="step"><span class="st-t">Paso 1</span><br>Escribe el acorde objetivo. <i>Ejemplo:</i> <b>F</b></div>
+      <div class="step"><span class="st-t">Paso 2</span><br>Imagínalo como I. <b>F(I)</b></div>
+      <div class="step"><span class="st-t">Paso 3</span><br>Construye su escala mayor. <span class="mono">F - G - A - Bb - C - D - E</span></div>
+      <div class="step"><span class="st-t">Paso 4</span><br>Localiza el IV. <b>Bb</b></div>
+      <div class="step"><span class="st-t">Paso 5</span><br>Construye el acorde IV. <b>Bb major</b></div>
+      <div class="step"><span class="st-t">Paso 6</span><br>Colócalo antes del objetivo. <b>Bb → F</b></div>
+      <div class="step"><span class="st-t">Paso 7</span><br><b>Escucha.</b></div>
+      <div class="step"><span class="st-t">Paso 8</span><br><b>Decide si realmente mejora la progresión.</b></div>
+    </div>
+    <div class="callout warn"><span class="ct">Advertencia</span>Los pasos 7 y 8 no son opcionales: la teoría propone, <b>el oído decide</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">12</span> La fórmula comprimida <span class="src">ap. 12</span></h3>
+    <div class="flow">
+      <div class="fnode hi">OBJETIVO</div><div class="farrow">↓</div>
+      <div class="fnode">TRATARLO COMO I</div><div class="farrow">↓</div>
+      <div class="fnode">BUSCAR SU IV</div><div class="farrow">↓</div>
+      <div class="fnode ok">COLOCAR EL IV ANTES DEL OBJETIVO</div>
+    </div>
+    <div class="callout example"><span class="ct">Ejemplo</span>
+      Objetivo = <b>F</b> · IV de F = <b>Bb</b> · Resultado: <b>Bb → F</b>
+      <div style="margin-top:8px"><button class="btn sm gr" data-play="Bb|F">▶ Escuchar</button></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">47</span> La fórmula matemática <span class="src">ap. 47</span></h3>
+    <p>Podemos representar conceptualmente la operación así:</p>
+    <div class="rule" style="font-family:Consolas,'Courier New',monospace"><small>Definición</small>IV(T) = nota situada una cuarta justa por encima de la raíz T.</div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="callout example" style="margin:0"><span class="ct">Ejemplos</span>
+        IV(C) = <b>F</b><br>IV(F) = <b>Bb</b><br>IV(Bb) = <b>Eb</b><br>IV(Eb) = <b>Ab</b>
+      </div>
+      <div class="callout info" style="margin:0"><span class="ct info">Iteración</span>
+        Por tanto: <span class="mono" style="font-size:18px">IVⁿ(C)</span> genera una cadena.
+      </div>
+    </div>
+    <div class="callout warn"><span class="ct">Nota</span>No es necesario utilizar esta fórmula matemáticamente cuando toques. Su utilidad es demostrar que
+      <b>la operación puede repetirse</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">46</span> Lo que NO debes memorizar <span class="src">ap. 46</span></h3>
+    <div class="callout error"><span class="ct">No memorices simplemente</span><b>Bb = IV/IV</b> — eso solamente sirve para un ejemplo concreto.</div>
+    <p>Debes aprender:</p>
+    <div class="steps">
+      <div class="step">“Si conozco el objetivo, puedo encontrar su <b>IV</b>.”</div>
+      <div class="step">“Si quiero más preparación, puedo buscar el <b>IV del IV</b>.”</div>
+      <div class="step">“Puedo <b>repetir el proceso</b>.”</div>
+    </div>
+    <div class="callout info"><span class="ct info">Conclusión</span>Eso es <b>comprender la técnica</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">55</span> Mapa mental definitivo <span class="src">ap. 55</span></h3>
+    <div class="flow">
+      <div class="fnode hi">TONALIDAD PRINCIPAL</div><div class="farrow">↓</div>
+      <div class="fnode">ACORDE OBJETIVO</div><div class="farrow">↓</div>
+      <div class="fnode">TRATAR EL OBJETIVO COMO I</div><div class="farrow">↓</div>
+      <div class="fnode">BUSCAR SU IV</div><div class="farrow">↓</div>
+      <div class="fnode">CREAR EL ACORDE PREPARATORIO</div><div class="farrow">↓</div>
+      <div class="fnode ok">IV → OBJETIVO</div><div class="farrow">↓</div>
+      <div class="fnode pu">¿QUIERO MÁS PREPARACIÓN?</div><div class="farrow">↓</div>
+      <div class="fnode">BUSCAR EL IV DEL ACORDE ANTERIOR</div><div class="farrow">↓</div>
+      <div class="fnode hi">REPETIR SI ES MUSICALMENTE ÚTIL</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CADENAS ============ -->
+<section id="cadenas" class="page">
+  <div class="sec-head">
+    <div class="sec-ico">🔗</div>
+    <div>
+      <div class="kicker">Capítulo 3 · Apartados 13, 14, 15, 28, 29, 31, 32, 43, 44</div>
+      <h2>Construcción de cadenas y círculo de cuartas</h2>
+      <p>Cómo encadenar preparaciones, trabajar desde el objetivo hacia atrás, visualizar la escalera armónica y orientarte en el círculo de cuartas.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">13</span> Segundo ejemplo: preparar Bb <span class="src">ap. 13</span></h3>
+    <p>Ahora queremos llegar a: <b>Bb</b>. Pregunta: <b>¿Cuál es el IV de Bb?</b> Tratamos Bb como I.</p>
+    <div class="chain">
+      <span class="cnode">Bb(I)</span><span class="carrow">-</span><span class="cnode">C(II)</span><span class="carrow">-</span>
+      <span class="cnode">D(III)</span><span class="carrow">-</span><span class="cnode tgt">Eb(IV)</span><span class="carrow">-</span>
+      <span class="cnode">F(V)</span><span class="carrow">-</span><span class="cnode">G(VI)</span><span class="carrow">-</span><span class="cnode">A(VII)</span>
+    </div>
+    <p>Por tanto: <span class="chip acc">Eb = IV de Bb</span> → Resultado: <b>Eb → Bb</b></p>
+    <p>Ahora podemos continuar hacia F: <b>Eb → Bb → F</b>. Y finalmente hacia C:</p>
+    <div class="chain"><span class="cnode deep">Eb</span><span class="carrow">→</span><span class="cnode deep">Bb</span><span class="carrow">→</span><span class="cnode prep">F</span><span class="carrow">→</span><span class="cnode tgt">C</span>
+      <button class="btn sm gr" data-play="Eb|Bb|F|C">▶ Escuchar</button></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">14</span> Construyendo una cadena <span class="src">ap. 14</span></h3>
+    <p>Aquí aparece la parte más interesante. Queremos llegar a <b>C</b>:</p>
+    <div class="tw"><table>
+      <thead><tr><th>Pregunta</th><th>Respuesta</th></tr></thead>
+      <tbody>
+        <tr><td>El IV de C es:</td><td><b>F</b></td></tr>
+        <tr><td>El IV de F es:</td><td><b>Bb</b></td></tr>
+        <tr><td>El IV de Bb es:</td><td><b>Eb</b></td></tr>
+        <tr><td>El IV de Eb es:</td><td><b>Ab</b></td></tr>
+      </tbody>
+    </table></div>
+    <p>Por tanto:</p>
+    <div class="chain"><span class="cnode deep">Ab</span><span class="carrow">→</span><span class="cnode deep">Eb</span><span class="carrow">→</span><span class="cnode deep">Bb</span><span class="carrow">→</span><span class="cnode prep">F</span><span class="carrow">→</span><span class="cnode tgt">C</span>
+      <button class="btn sm gr" data-play="Ab|Eb|Bb|F|C">▶ Escuchar</button></div>
+    <p>Cada acorde prepara al siguiente. Veamos las relaciones:</p>
+    <div class="rel-line"><span class="pill">Ab → Eb</span> Ab = <b>IV de Eb</b></div>
+    <div class="rel-line"><span class="pill">Eb → Bb</span> Eb = <b>IV de Bb</b></div>
+    <div class="rel-line"><span class="pill">Bb → F</span> Bb = <b>IV de F</b></div>
+    <div class="rel-line"><span class="pill">F → C</span> F = <b>IV de C</b></div>
+    <p style="margin-top:12px">Por tanto, <b>Ab → Eb → Bb → F → C</b> es una <b>cadena de subdominantes</b>.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">15</span> La cadena como una escalera <span class="src">ap. 15</span></h3>
+    <p>Podemos visualizarla así:</p>
+    <div class="stair">
+      <div class="stair-row" style="margin-left:0"><span class="cnode deep">Ab</span><span class="rel">↓</span></div>
+      <div class="stair-row" style="margin-left:38px"><span class="cnode deep">Eb</span><span class="rel">↓</span></div>
+      <div class="stair-row" style="margin-left:76px"><span class="cnode deep">Bb</span><span class="rel">↓</span></div>
+      <div class="stair-row" style="margin-left:114px"><span class="cnode prep">F</span><span class="rel">↓</span></div>
+      <div class="stair-row" style="margin-left:152px"><span class="cnode tgt">C</span><span class="rel">= llegada</span></div>
+    </div>
+    <div class="callout info"><span class="ct info">Lectura</span>
+      Cada paso representa una <b>relación de cuarta entre las raíces</b>. También puede entenderse como
+      <b>movimiento de quintas descendentes</b>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">28</span> Ejercicio inverso <span class="src">ap. 28</span></h3>
+    <p>Partimos de <b>C</b> y buscamos hacia atrás:</p>
+    <div class="steps">
+      <div class="step">Buscamos su IV: <b>F</b></div>
+      <div class="step">Después el IV de F: <b>Bb</b></div>
+      <div class="step">Después el IV de Bb: <b>Eb</b></div>
+      <div class="step">Después el IV de Eb: <b>Ab</b></div>
+    </div>
+    <p>Resultado: <span class="mono">C ← F ← Bb ← Eb ← Ab</span></p>
+    <p>Si invertimos el sentido: <b>Ab → Eb → Bb → F → C</b></p>
+    <div class="callout info"><span class="ct info">Utilidad</span>Este procedimiento permite construir cadenas <b>trabajando hacia atrás desde el objetivo</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">29</span> Trabajar desde el objetivo hacia atrás <span class="src">ap. 29</span></h3>
+    <div class="callout example"><span class="ct">Idea poderosa</span>Esta es una de las ideas más poderosas del método.</div>
+    <p>Normalmente pensamos: <span class="mono">C → F → G → C</span>. Pero para diseñar una preparación podemos trabajar desde el destino:</p>
+    <div class="flow">
+      <div class="fnode hi">OBJETIVO: C</div><div class="farrow">↓</div>
+      <div class="fnode">IV de C: <b>F</b></div><div class="farrow">↓</div>
+      <div class="fnode">IV de F: <b>Bb</b></div><div class="farrow">↓</div>
+      <div class="fnode">IV de Bb: <b>Eb</b></div><div class="farrow">↓</div>
+      <div class="fnode ok">Entonces invertimos: <b>Eb → Bb → F → C</b></div>
+    </div>
+    <p>Si queremos todavía más: <b>IV de Eb = Ab</b> → Resultado: <b>Ab → Eb → Bb → F → C</b></p>
+    <div class="callout info"><span class="ct info">Clave</span>Estamos <b>diseñando la progresión desde su destino</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">43</span> Una cadena hacia C <span class="src">ap. 43</span></h3>
+    <p>Partimos del objetivo <b>C</b> y encadenamos IV hacia atrás:</p>
+    <div class="tw"><table>
+      <thead><tr><th>Pregunta</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td>IV de C</td><td><b>F</b></td></tr>
+        <tr><td>IV de F</td><td><b>Bb</b></td></tr>
+        <tr><td>IV de Bb</td><td><b>Eb</b></td></tr>
+        <tr><td>IV de Eb</td><td><b>Ab</b></td></tr>
+        <tr><td>IV de Ab</td><td><b>Db</b></td></tr>
+      </tbody>
+    </table></div>
+    <p>Por tanto: <b>Db → Ab → Eb → Bb → F → C</b></p>
+    <div class="callout info"><span class="ct info">Importante</span>Podemos <b>detenernos en cualquier punto</b>.</div>
+    <div class="rel-line"><span class="pill g">Una preparación</span> F → C <button class="btn sm" data-play="F|C">▶</button></div>
+    <div class="rel-line"><span class="pill g">Dos</span> Bb → F → C <button class="btn sm" data-play="Bb|F|C">▶</button></div>
+    <div class="rel-line"><span class="pill g">Tres</span> Eb → Bb → F → C <button class="btn sm" data-play="Eb|Bb|F|C">▶</button></div>
+    <div class="rel-line"><span class="pill g">Cuatro</span> Ab → Eb → Bb → F → C <button class="btn sm" data-play="Ab|Eb|Bb|F|C">▶</button></div>
+    <div class="rel-line"><span class="pill g">Cinco</span> Db → Ab → Eb → Bb → F → C <button class="btn sm" data-play="Db|Ab|Eb|Bb|F|C">▶</button></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">44</span> ¿Cuántos acordes debemos utilizar? <span class="src">ap. 44</span></h3>
+    <p>No existe una cantidad obligatoria. Podemos pensar en <b>niveles</b>:</p>
+    <div class="tw"><table>
+      <thead><tr><th>Nivel</th><th>Cadena</th><th>Escuchar</th></tr></thead>
+      <tbody>
+        <tr><td><b>Nivel 1</b></td><td class="mono">C → F</td><td><button class="btn sm" data-play="C|F">▶</button></td></tr>
+        <tr><td><b>Nivel 2</b></td><td class="mono">Bb → F</td><td><button class="btn sm" data-play="Bb|F">▶</button></td></tr>
+        <tr><td><b>Nivel 3</b></td><td class="mono">Eb → Bb → F</td><td><button class="btn sm" data-play="Eb|Bb|F">▶</button></td></tr>
+        <tr><td><b>Nivel 4</b></td><td class="mono">Ab → Eb → Bb → F</td><td><button class="btn sm" data-play="Ab|Eb|Bb|F">▶</button></td></tr>
+        <tr><td><b>Nivel 5</b></td><td class="mono">Db → Ab → Eb → Bb → F</td><td><button class="btn sm" data-play="Db|Ab|Eb|Bb|F">▶</button></td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout warn"><span class="ct">Advertencia</span>La cadena debe detenerse cuando el efecto musical <b>deje de aportar algo</b>.
+      La complejidad no es automáticamente calidad.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">31</span> El círculo de cuartas <span class="src">ap. 31</span></h3>
+    <p>La técnica está directamente relacionada con el <b>movimiento por cuartas</b>. Una parte del recorrido es:</p>
+    <div class="chain"><span class="cnode deep">Ab</span><span class="carrow">→</span><span class="cnode deep">Eb</span><span class="carrow">→</span><span class="cnode deep">Bb</span><span class="carrow">→</span><span class="cnode prep">F</span><span class="carrow">→</span><span class="cnode tgt">C</span><span class="carrow">→</span><span class="cnode">G</span><span class="carrow">→</span><span class="cnode">D</span><span class="carrow">→</span><span class="cnode">A</span><span class="carrow">→</span><span class="cnode">E</span><span class="carrow">→</span><span class="cnode">B</span></div>
+    <p>Las raíces avanzan por <b>cuartas ascendentes</b>. Equivalentemente, podemos decir que avanzan por <b>quintas descendentes</b>.</p>
+    <div class="callout info"><span class="ct info">Relación</span>Por eso las cadenas de subdominantes tienen una relación natural con el <b>círculo de cuartas y quintas</b>.</div>
+    <h4>Círculo interactivo — pulsa cualquier nota</h4>
+    <div class="circle-wrap" id="circleBox"></div>
+    <div id="circleInfo" class="callout example" style="margin-top:6px"><span class="ct">Selecciona una nota</span>
+      Pulsa una nota del círculo para ver su escala mayor, su IV y escucharlo.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">32</span> Ejercicio del círculo de cuartas <span class="src">ap. 32</span></h3>
+    <p>Toca lentamente:</p>
+    <div class="chain"><span class="cnode">C</span><span class="carrow">→</span><span class="cnode">F</span><span class="carrow">→</span><span class="cnode">Bb</span><span class="carrow">→</span><span class="cnode">Eb</span><span class="carrow">→</span><span class="cnode">Ab</span><span class="carrow">→</span><span class="cnode">Db</span><span class="carrow">→</span><span class="cnode">Gb</span><span class="carrow">→</span><span class="cnode">B</span><span class="carrow">→</span><span class="cnode">E</span><span class="carrow">→</span><span class="cnode">A</span><span class="carrow">→</span><span class="cnode">D</span><span class="carrow">→</span><span class="cnode">G</span><span class="carrow">→</span><span class="cnode">C</span>
+      <button class="btn sm gr" data-play="C|F|Bb|Eb|Ab|Db|Gb|B|E|A|D|G|C" data-dur="0.55">▶ Escuchar</button></div>
+    <p>Después prueba:</p>
+    <div class="chain"><span class="cnode">C</span><span class="carrow">→</span><span class="cnode">G</span><span class="carrow">→</span><span class="cnode">D</span><span class="carrow">→</span><span class="cnode">A</span><span class="carrow">→</span><span class="cnode">E</span><span class="carrow">→</span><span class="cnode">B</span><span class="carrow">→</span><span class="cnode">F#</span><span class="carrow">→</span><span class="cnode">C#</span><span class="carrow">→</span><span class="cnode">G#</span><span class="carrow">→</span><span class="cnode">D#</span><span class="carrow">→</span><span class="cnode">A#</span><span class="carrow">→</span><span class="cnode">F</span><span class="carrow">→</span><span class="cnode">C</span>
+      <button class="btn sm gr" data-play="C|G|D|A|E|B|F#|C#|G#|D#|A#|F|C" data-dur="0.55">▶ Escuchar</button></div>
+    <div class="callout info"><span class="ct info">Objetivo</span>No necesitas utilizar toda esta secuencia en una canción. El objetivo es desarrollar
+      <b>orientación armónica</b>.</div>
+  </div>
+</section>
+
+<!-- ============ CONTEXTO ============ -->
+<section id="contexto" class="page">
+  <div class="sec-head">
+    <div class="sec-ico">🎼</div>
+    <div>
+      <div class="kicker">Capítulo 4 · Apartados 16–22, 42, 45, 54</div>
+      <h2>La cadena dentro de la progresión real</h2>
+      <p>Progresión original frente a progresión enriquecida, cromatismo sin pérdida de tonalidad, diferencia con la dominante secundaria y usos compositivos.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">16</span> Progresión original frente a progresión enriquecida <span class="src">ap. 16</span></h3>
+    <h4>Progresión original</h4>
+    <div class="chain"><span class="cnode">C(I)</span><span class="carrow">|</span><span class="cnode">G(V)</span><span class="carrow">|</span><span class="cnode">F(IV)</span><span class="carrow">|</span><span class="cnode tgt">C(I)</span>
+      <button class="btn sm gr" data-play="C|G|F|C">▶ Escuchar</button></div>
+    <p>Es una progresión perfectamente normal dentro de C major.</p>
+    <h4>Ahora añadimos una preparación hacia F</h4>
+    <div class="chain"><span class="cnode">C(I)</span><span class="carrow">|</span><span class="cnode">G(V)</span><span class="carrow">|</span><span class="cnode deep">Bb</span><span class="carrow">|</span><span class="cnode">F(IV)</span><span class="carrow">|</span><span class="cnode tgt">C(I)</span>
+      <button class="btn sm gr" data-play="C|G|Bb|F|C">▶ Escuchar</button></div>
+    <p>Aquí: <b>Bb = IV de F</b>. Por tanto: <span class="chip acc">Bb = IV/IV</span></p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">17</span> Cadena más larga <span class="src">ap. 17</span></h3>
+    <p>Podemos ampliar todavía más:</p>
+    <div class="chain"><span class="cnode">C(I)</span><span class="carrow">|</span><span class="cnode deep">Eb</span><span class="carrow">|</span><span class="cnode deep">Bb</span><span class="carrow">|</span><span class="cnode">F(IV)</span><span class="carrow">|</span><span class="cnode tgt">C(I)</span>
+      <button class="btn sm gr" data-play="C|Eb|Bb|F|C">▶ Escuchar</button></div>
+    <div class="rel-line"><span class="pill">Eb → Bb</span> Eb = <b>IV de Bb</b></div>
+    <div class="rel-line"><span class="pill">Bb → F</span> Bb = <b>IV de F</b></div>
+    <div class="rel-line"><span class="pill">F → C</span> F = <b>IV de C</b></div>
+    <p style="margin-top:10px">La cadena completa es: <b>Eb → Bb → F → C</b></p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">18</span> Cadena todavía más larga <span class="src">ap. 18</span></h3>
+    <p>Podemos añadir otro nivel: <b>Ab → Eb → Bb → F → C</b></p>
+    <div class="tw"><table>
+      <thead><tr><th>Arquitectura</th><th>Relación</th></tr></thead>
+      <tbody>
+        <tr><td><b>Ab</b></td><td>= IV de Eb</td></tr>
+        <tr><td><b>Eb</b></td><td>= IV de Bb</td></tr>
+        <tr><td><b>Bb</b></td><td>= IV de F</td></tr>
+        <tr><td><b>F</b></td><td>= IV de C</td></tr>
+      </tbody>
+    </table></div>
+    <p>Cada acorde prepara al siguiente.</p>
+    <button class="btn sm gr" data-play="Ab|Eb|Bb|F|C">▶ Escuchar la cadena completa</button>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">19</span> La tonalidad principal no desaparece necesariamente <span class="src">ap. 19</span></h3>
+    <p>Cuando aparecen <b>Bb</b> o <b>Eb</b> dentro de C major, estamos utilizando notas que <b>no pertenecen a la escala diatónica de C major</b>.</p>
+    <div class="grid2">
+      <div>
+        <h4>C major</h4>
+        <div><span class="chip">C</span><span class="chip">D</span><span class="chip">E</span><span class="chip">F</span><span class="chip">G</span><span class="chip">A</span><span class="chip">B</span></div>
+      </div>
+      <div>
+        <h4>Fuera de la escala</h4>
+        <div><span class="chip" style="border-color:rgba(239,68,68,.5);color:#fca5a5">Bb ✗</span><span class="chip" style="border-color:rgba(239,68,68,.5);color:#fca5a5">Eb ✗</span></div>
+      </div>
+    </div>
+    <p style="margin-top:12px"><b>Bb</b> no pertenece a esa escala. <b>Eb</b> tampoco.</p>
+    <div class="callout info"><span class="ct info">Matiz esencial</span>
+      Pero esto <b>no significa automáticamente que la tonalidad principal haya cambiado de forma permanente</b>.
+      Estamos utilizando <b>relaciones armónicas temporales</b>. La tonalidad principal puede seguir siendo C mientras
+      introducimos <b>cromatismo</b> para enriquecer el movimiento.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">20</span> No confundir subdominante secundaria con dominante secundaria <span class="src">ap. 20</span></h3>
+    <div class="callout warn"><span class="ct">Advertencia</span>Esta distinción es <b>fundamental</b>.</div>
+    <ul>
+      <li>Una <b>dominante secundaria</b> utiliza el <b>V</b> de un acorde objetivo.</li>
+      <li>Una <b>subdominante secundaria</b> utiliza el <b>IV</b> de un acorde objetivo.</li>
+    </ul>
+    <div class="tabs" data-tabs="tabsSD">
+      <button class="tab-btn active" data-tab="t1">Hacia F · Subdominante secundaria</button>
+      <button class="tab-btn" data-tab="t2">Hacia F · Dominante secundaria</button>
+    </div>
+    <div id="tabsSD">
+      <div class="tab-panel active" data-panel="t1">
+        <div class="callout example"><span class="ct">Subdominante secundaria</span>
+          <b>Bb → F</b> porque <b>Bb = IV de F</b>
+          <div style="margin-top:10px"><button class="btn sm gr" data-play="Bb|F">▶ Escuchar Bb → F</button></div>
+        </div>
+      </div>
+      <div class="tab-panel" data-panel="t2">
+        <div class="callout warn"><span class="ct">Dominante secundaria</span>
+          <b>C7 → F</b> porque <b>C = V de F</b>
+          <div style="margin-top:10px"><button class="btn sm gr" data-play="C7|F">▶ Escuchar C7 → F</button></div>
+        </div>
+      </div>
+    </div>
+    <p>Son <b>dos mecanismos diferentes</b>.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">21</span> Diferencia de sensación <span class="src">ap. 21</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>Mecanismo</th><th>Movimiento</th><th>Sensación</th><th>Escuchar</th></tr></thead>
+      <tbody>
+        <tr><td><b>Dominante secundaria</b></td><td class="mono">V → I</td><td>Atracción y resolución <b>fuerte</b>; sensación claramente dominante.</td><td><button class="btn sm" data-play="C7|F">▶ C7 → F</button></td></tr>
+        <tr><td><b>Subdominante secundaria</b></td><td class="mono">IV → I</td><td>Preparación diferente, generalmente <b>más abierta y menos dominante</b>; sensación más predominante/plagal.</td><td><button class="btn sm" data-play="Bb|F">▶ Bb → F</button></td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout error"><span class="ct">Importante</span><b>No son intercambiables desde el punto de vista expresivo.</b></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">22</span> ¿Para qué utilizar una subdominante secundaria? <span class="src">ap. 22</span></h3>
+    <p>Puede utilizarse para:</p>
+    <div class="grid3">
+      <span class="chip">preparar un acorde</span><span class="chip">prolongar una llegada</span><span class="chip">crear movimiento</span>
+      <span class="chip">enriquecer una progresión sencilla</span><span class="chip">introducir cromatismo</span><span class="chip">generar una línea de bajo</span>
+      <span class="chip">crear una cadena armónica</span><span class="chip">conectar secciones</span><span class="chip">preparar una llegada importante</span>
+      <span class="chip">crear variedad sin recurrir continuamente a dominantes</span>
+    </div>
+    <div class="callout error"><span class="ct">Regla estética esencial</span>
+      <b>NO AÑADAS UN ACORDE SOLAMENTE PORQUE LA TEORÍA TE PERMITE AÑADIRLO.</b><br>El acorde debe mejorar la música.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">42</span> Ejemplo completo de razonamiento <span class="src">ap. 42</span></h3>
+    <p>Tenemos: <span class="mono">C | G | F | C</span>. Queremos reforzar <b>F</b>.</p>
+    <div class="flow">
+      <div class="fnode hi">OBJETIVO: F</div><div class="farrow">↓</div>
+      <div class="fnode">IV DE F: <b>Bb</b></div><div class="farrow">↓</div>
+      <div class="fnode ok">Probamos: C | G | Bb | F | C</div>
+    </div>
+    <button class="btn sm gr" data-play="C|G|Bb|F|C">▶ Escuchar la versión enriquecida</button>
+    <h4>Ahora comprobamos</h4>
+    <div class="rel-line"><b>¿Bb pertenece a C major?</b> <span class="pill" style="background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.45);color:#fecaca">No</span></div>
+    <div class="rel-line"><b>¿Eso significa que está mal?</b> <span class="pill g">No</span></div>
+    <p>Precisamente estamos introduciendo <b>cromatismo</b>. Después <b>escuchamos</b>:</p>
+    <div class="grid2">
+      <div class="callout example" style="margin:0"><span class="ct">Si mejora</span>lo conservamos.</div>
+      <div class="callout error" style="margin:0"><span class="ct">Si no mejora</span>lo eliminamos.</div>
+    </div>
+    <div class="callout warn"><span class="ct">Advertencia</span>Este último paso es <b>fundamental</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">45</span> Subdominante secundaria y composición <span class="src">ap. 45</span></h3>
+    <p>Esta técnica puede servir para:</p>
+    <div class="grid3">
+      <span class="chip acc">preparar el comienzo de un estribillo</span>
+      <span class="chip acc">preparar el final de una frase</span>
+      <span class="chip acc">crear un turnaround</span>
+      <span class="chip acc">generar una línea de bajo</span>
+      <span class="chip acc">aumentar la sensación de movimiento</span>
+      <span class="chip acc">prolongar un acorde</span>
+      <span class="chip acc">conectar dos secciones</span>
+      <span class="chip acc">crear cromatismo</span>
+      <span class="chip acc">construir una llegada progresiva</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">54</span> Ejemplo final completo <span class="src">ap. 54</span></h3>
+    <p>Partimos de: <b>C(I) → G(V) → F(IV) → C(I)</b></p>
+    <div class="acc open">
+      <button class="acc-h" aria-expanded="true">Nivel 1 — Queremos reforzar la llegada a F <span class="arw">▶</span></button>
+      <div class="acc-b"><div class="inner">
+        <p>Buscamos: <b>IV de F = Bb</b></p>
+        <div class="chain"><span class="cnode">C(I)</span><span class="carrow">→</span><span class="cnode">G(V)</span><span class="carrow">→</span><span class="cnode deep">Bb</span><span class="carrow">→</span><span class="cnode">F(IV)</span><span class="carrow">→</span><span class="cnode tgt">C(I)</span>
+          <button class="btn sm gr" data-play="C|G|Bb|F|C">▶</button></div>
+      </div></div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" aria-expanded="false">Nivel 2 — Ahora queremos reforzar la llegada a Bb <span class="arw">▶</span></button>
+      <div class="acc-b"><div class="inner">
+        <p>Buscamos: <b>IV de Bb = Eb</b></p>
+        <div class="chain"><span class="cnode">C(I)</span><span class="carrow">→</span><span class="cnode">G(V)</span><span class="carrow">→</span><span class="cnode deep">Eb</span><span class="carrow">→</span><span class="cnode deep">Bb</span><span class="carrow">→</span><span class="cnode">F</span><span class="carrow">→</span><span class="cnode tgt">C</span>
+          <button class="btn sm gr" data-play="C|G|Eb|Bb|F|C">▶</button></div>
+      </div></div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" aria-expanded="false">Nivel 3 — Preparación todavía mayor <span class="arw">▶</span></button>
+      <div class="acc-b"><div class="inner">
+        <p>Buscamos: <b>IV de Eb = Ab</b></p>
+        <div class="chain"><span class="cnode deep">Ab</span><span class="carrow">→</span><span class="cnode deep">Eb</span><span class="carrow">→</span><span class="cnode deep">Bb</span><span class="carrow">→</span><span class="cnode prep">F</span><span class="carrow">→</span><span class="cnode tgt">C</span>
+          <button class="btn sm gr" data-play="Ab|Eb|Bb|F|C">▶</button></div>
+        <div class="stair" style="margin-top:14px">
+          <div class="stair-row" style="margin-left:0"><span class="cnode deep">Ab</span><span class="rel">↓</span></div>
+          <div class="stair-row" style="margin-left:34px"><span class="cnode deep">Eb</span><span class="rel">↓</span></div>
+          <div class="stair-row" style="margin-left:68px"><span class="cnode deep">Bb</span><span class="rel">↓</span></div>
+          <div class="stair-row" style="margin-left:102px"><span class="cnode prep">F</span><span class="rel">↓</span></div>
+          <div class="stair-row" style="margin-left:136px"><span class="cnode tgt">C</span></div>
+        </div>
+        <p>La arquitectura: cada acorde prepara al siguiente.</p>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VOICINGS ============ -->
+<section id="voicings" class="page">
+  <div class="sec-head">
+    <div class="sec-ico">🎚️</div>
+    <div>
+      <div class="kicker">Capítulo 5 · Apartados 33–40</div>
+      <h2>Calidad del acorde, voicing y textura</h2>
+      <p>Función y sonoridad son dos decisiones separadas: cualidad del acorde, melodía, conducción de voces, inversiones, bajo y ritmo.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">33</span> Una precisión importante sobre la cualidad del acorde <span class="src">ap. 33</span></h3>
+    <p>La <b>función</b> y la <b>sonoridad concreta</b> no son exactamente la misma cosa. La relación estructural puede ser
+      <b>Bb → F</b>, pero el acorde preparatorio puede presentarse con diferentes extensiones o disposiciones:</p>
+    <div class="grid2">
+      <div>
+        <span class="chip acc">Bb</span><span class="chip acc">Bbmaj7</span><span class="chip acc">Bb7</span><span class="chip acc">Bb6</span>
+      </div>
+      <div>
+        <button class="btn sm gr" data-play="Bb|F">▶ Bb → F</button>
+        <button class="btn sm gr" data-play="Bbmaj7|F">▶ Bbmaj7 → F</button>
+        <button class="btn sm gr" data-play="Bb7|F">▶ Bb7 → F</button>
+        <button class="btn sm gr" data-play="Bb6|F">▶ Bb6 → F</button>
+      </div>
+    </div>
+    <p style="margin-top:12px">No producen exactamente el mismo sonido. Por eso debemos separar <b>dos decisiones</b>:</p>
+    <div class="steps">
+      <div class="step"><b>¿Qué función cumple el acorde?</b></div>
+      <div class="step"><b>¿Qué sonoridad concreta quiero utilizar?</b></div>
+    </div>
+    <div class="callout info"><span class="ct info">Orden</span>Primero decidimos la <b>función</b>. Después elegimos la <b>calidad</b> y el <b>voicing</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">34</span> Bb, Bbmaj7 y Bb7 no son lo mismo <span class="src">ap. 34</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>Acorde</th><th>Notas</th><th>Color</th><th>Escuchar → F</th></tr></thead>
+      <tbody>
+        <tr><td><b>Bb major</b></td><td class="mono">Bb - D - F</td><td>Referencia diatónica del acorde IV de F.</td><td><button class="btn sm" data-play="Bb|F">▶</button></td></tr>
+        <tr><td><b>Bbmaj7</b></td><td class="mono">Bb - D - F - A</td><td>Añade A: color más abierto y luminoso.</td><td><button class="btn sm" data-play="Bbmaj7|F">▶</button></td></tr>
+        <tr><td><b>Bb7</b></td><td class="mono">Bb - D - F - Ab</td><td>Introduce <b>Ab</b>: el color cambia considerablemente y añade un cromatismo adicional.</td><td><button class="btn sm" data-play="Bb7|F">▶</button></td></tr>
+      </tbody>
+    </table></div>
+    <p>El último introduce <b>Ab</b>. Por tanto, el color cambia considerablemente.</p>
+    <ul>
+      <li>Si utilizamos <b>Bb7 → F</b> estamos introduciendo un <b>cromatismo adicional</b>.</li>
+      <li>Si utilizamos <b>Bbmaj7 → F</b> el color es diferente.</li>
+    </ul>
+    <div class="callout warn"><span class="ct">Advertencia</span>No debemos pensar: <b>“Todo es simplemente Bb.”</b> La elección de la séptima <b>importa musicalmente</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">35</span> La melodía debe ser tenida en cuenta <span class="src">ap. 35</span></h3>
+    <div class="callout error"><span class="ct">Regla</span>Nunca debemos insertar un acorde preparatorio <b>sin mirar qué ocurre en la melodía</b>.</div>
+    <p>Supongamos que sobre el acorde <b>Bb</b> aparece una nota <b>A</b>:</p>
+    <div class="tw"><table>
+      <thead><tr><th>Nota de la melodía</th><th>Qué ocurre</th></tr></thead>
+      <tbody>
+        <tr><td><b>A</b> sobre Bb</td><td>Puede funcionar muy bien con <b>Bbmaj7</b>.</td></tr>
+        <tr><td><b>Bb</b> sobre Bb</td><td>Puede reforzar la identidad del acorde.</td></tr>
+        <tr><td>Nota que crea una <b>disonancia fuerte</b> con el voicing</td><td>Debemos <b>estudiarla</b>.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout info"><span class="ct info">Principio</span>La armonía y la melodía deben <b>trabajar juntas</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">36</span> La conducción de voces <span class="src">ap. 36</span></h3>
+    <p>La arquitectura armónica nos dice: <b>Bb → F</b>. Pero todavía tenemos que decidir <b>cómo tocarlo</b>.</p>
+    <div class="grid2">
+      <div class="callout example" style="margin:0"><span class="ct">Opción en posición fundamental</span>
+        <span class="mono">Bb - D - F</span> → <span class="mono">F - A - C</span>
+        <div style="margin-top:8px"><button class="btn sm gr" data-play="Bb|F">▶</button></div>
+      </div>
+      <div class="callout info" style="margin:0"><span class="ct">Otras posibilidades</span>
+        O utilizar inversiones.<br>O acordes con séptimas.<br>O voicings abiertos.<br>O una línea de bajo independiente.
+      </div>
+    </div>
+    <div class="callout info" style="margin-top:14px"><span class="ct info">Conclusión</span>
+      La progresión determina la <b>función</b>. La conducción de voces determina <b>cómo se mueve físicamente la música</b>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">37</span> Función + conducción de voces <span class="src">ap. 37</span></h3>
+    <p>Una manera excelente de pensar como arreglista es separar <b>dos niveles</b>.</p>
+    <div class="grid2">
+      <div class="acc open">
+        <button class="acc-h" aria-expanded="true">NIVEL 1 — FUNCIÓN <span class="arw">▶</span></button>
+        <div class="acc-b"><div class="inner">
+          <p>¿Qué acorde prepara a cuál?</p>
+          <p>Ejemplo: <b>Bb → F</b></p>
+          <button class="btn sm gr" data-play="Bb|F">▶ Escuchar función</button>
+        </div></div>
+      </div>
+      <div class="acc">
+        <button class="acc-h" aria-expanded="false">NIVEL 2 — VOICING <span class="arw">▶</span></button>
+        <div class="acc-b"><div class="inner">
+          <p>¿Cómo voy a colocar las notas?</p>
+          <p>Por ejemplo: <b>Bbmaj7 → Fmaj7</b> podría aprovechar notas comunes y movimientos pequeños entre voces.</p>
+          <button class="btn sm gr" data-play="Bbmaj7|Fmaj7">▶ Escuchar voicing</button>
+        </div></div>
+      </div>
+    </div>
+    <div class="callout info"><span class="ct info">Síntesis</span>
+      La <b>función</b> proporciona la arquitectura. El <b>voice leading</b> proporciona la continuidad y elegancia.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">38</span> Las inversiones <span class="src">ap. 38</span></h3>
+    <p>Una subdominante secundaria <b>no tiene que aparecer necesariamente en posición fundamental</b>. Por ejemplo:</p>
+    <div class="chain"><span class="cnode prep">Bb/D</span><span class="carrow">→</span><span class="cnode tgt">F</span>
+      <button class="btn sm gr" data-play="Bb/D|F">▶ Escuchar</button>
+      <button class="btn sm" data-play="Bb|F">▶ Comparar con Bb fundamental</button></div>
+    <p>Puede utilizarse para obtener un <b>bajo diferente</b>. Esto permite diseñar <b>líneas de bajo más suaves</b>.</p>
+    <div class="callout info"><span class="ct info">Regla</span>
+      La <b>función</b> depende de la relación armónica. La <b>posición concreta de las notas</b> puede modificarse mediante inversiones.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">39</span> El bajo como herramienta compositiva <span class="src">ap. 39</span></h3>
+    <p>Consideremos: <b>Ab → Eb → Bb → F → C</b>. Las raíces forman una dirección muy clara.</p>
+    <p>En un arreglo para piano podemos hacer que la <b>mano izquierda</b> enfatice esa arquitectura:</p>
+    <div class="chain"><span class="cnode deep">Ab</span><span class="carrow">-</span><span class="cnode deep">Eb</span><span class="carrow">-</span><span class="cnode deep">Bb</span><span class="carrow">-</span><span class="cnode prep">F</span><span class="carrow">-</span><span class="cnode tgt">C</span>
+      <button class="btn sm gr" data-play="Ab:root|Eb:root|Bb:root|F:root|C:root">▶ Solo raíces (mano izquierda)</button></div>
+    <p>Mientras la <b>mano derecha</b> utiliza voicings más próximos.</p>
+    <div class="callout info"><span class="ct info">Idea</span>El bajo puede convertirse en <b>una de las principales razones por las que la progresión funciona</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">40</span> El ritmo también importa <span class="src">ap. 40</span></h3>
+    <p>No es lo mismo:</p>
+    <div class="grid3">
+      <div class="callout example" style="margin:0"><span class="ct">Opción A</span><span class="mono">Bb | F</span></div>
+      <div class="callout example" style="margin:0"><span class="ct">Opción B</span><span class="mono">Bb F | F</span></div>
+      <div class="callout example" style="margin:0"><span class="ct">Opción C</span><span class="mono">Bb → F</span> dentro de un mismo compás</div>
+    </div>
+    <p style="margin-top:12px">La <b>función</b> puede ser la misma, pero el <b>efecto musical cambia</b> porque cambia la duración.</p>
+    <p>Por tanto, debemos considerar:</p>
+    <div class="grid3">
+      <span class="chip">qué acorde utilizamos</span><span class="chip">cuánto dura</span><span class="chip">dónde entra</span>
+      <span class="chip">qué hace la melodía</span><span class="chip">qué hace el bajo</span><span class="chip">cómo se mueven las voces</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PIANO Y OÍDO ============ -->
+<section id="piano" class="page">
+  <div class="sec-head">
+    <div class="sec-ico">🎹</div>
+    <div>
+      <div class="kicker">Capítulo 6 · Apartados 24, 25, 26, 27, 30, 48, 50</div>
+      <h2>Aplicación al piano, tabla de relaciones y entrenamiento de oído</h2>
+      <p>Todos los ejercicios del documento, con teclado interactivo, respuestas desplegables y reproducción sonora local.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">24</span> Aplicación al piano <span class="src">ap. 24</span></h3>
+    <p>En el piano esta técnica resulta especialmente interesante porque las raíces pueden formar una <b>línea de bajo muy clara</b>.</p>
+    <div class="chain"><span class="cnode deep">Eb</span><span class="carrow">→</span><span class="cnode deep">Bb</span><span class="carrow">→</span><span class="cnode prep">F</span><span class="carrow">→</span><span class="cnode tgt">C</span></div>
+    <div class="steps">
+      <div class="step"><span class="st-t">Primero</span><br>Toca inicialmente <b>solamente las raíces con la mano izquierda</b>: Eb · Bb · F · C
+        <div style="margin-top:8px"><button class="btn sm gr" data-play="Eb:root|Bb:root|F:root|C:root">▶ Raíces</button></div></div>
+      <div class="step"><span class="st-t">Segundo</span><br><b>Escucha la dirección.</b></div>
+      <div class="step"><span class="st-t">Después</span><br>Toca: Eb major · Bb major · F major · C major
+        <div style="margin-top:8px"><button class="btn sm gr" data-play="Eb|Bb|F|C">▶ Acordes completos</button></div></div>
+    </div>
+    <div class="callout info"><span class="ct info">Indicación</span>No te preocupes todavía por inversiones ni extensiones. Primero debes conseguir que tu oído
+      <b>reconozca la relación entre las raíces</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">25</span> Ejercicio de piano 1 <span class="src">ap. 25</span></h3>
+    <div class="steps">
+      <div class="step">Toca: <b>Eb → Bb → F → C</b>. Utiliza <b>cuatro pulsos para cada acorde</b>.
+        <div style="margin-top:8px"><button class="btn sm gr" data-play="Eb|Bb|F|C" data-dur="1.5">▶ 4 pulsos por acorde</button></div></div>
+      <div class="step">Después toca: <b>Eb major → Bb major → F major → C major</b>.</div>
+      <div class="step"><b>Hazlo lentamente.</b></div>
+      <div class="step">Pregúntate: <b>¿Siento que cada acorde parece preparar al siguiente?</b></div>
+    </div>
+    <div class="callout warn"><span class="ct">Advertencia</span>No busques todavía una respuesta intelectual. <b>Escucha.</b></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">26</span> Ejercicio de piano 2: encontrar el IV <span class="src">ap. 26</span></h3>
+    <p>Sin mirar ninguna tabla, toma estas notas: <span class="chip">C</span><span class="chip">F</span><span class="chip">Bb</span><span class="chip">Eb</span><span class="chip">G</span><span class="chip">D</span><span class="chip">A</span><span class="chip">E</span></p>
+    <p>Para cada una pregunta: <b>“¿Cuál es su IV?”</b></p>
+    <div class="grid2" style="margin-bottom:12px">
+      <div><button class="btn sm acc" id="quizShow">👁 Ver todas las respuestas</button>
+           <button class="btn sm" id="quizReset">↺ Reiniciar el test</button></div>
+      <div><span class="chip" id="quizScore">Aciertos: 0 / 8</span></div>
+    </div>
+    <div id="quizBox"></div>
+    <div class="reveal" id="quizAnswers">
+      <div class="callout example"><span class="ct">Respuestas del documento</span>
+        C → <b>F</b> · F → <b>Bb</b> · Bb → <b>Eb</b> · Eb → <b>Ab</b> · G → <b>C</b> · D → <b>G</b> · A → <b>D</b> · E → <b>A</b>
+      </div>
+    </div>
+    <div class="callout info"><span class="ct info">Objetivo</span>Practica hasta que la relación empiece a ser <b>automática</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">27</span> Ejercicio mental <span class="src">ap. 27</span></h3>
+    <div class="callout warn"><span class="ct">Instrucción</span><b>No toques. Piensa.</b></div>
+    <div class="acc">
+      <button class="acc-h" aria-expanded="false">Piensa: F → ¿Cuál es su IV? <span class="arw">▶</span></button>
+      <div class="acc-b"><div class="inner"><p><b>Bb</b></p><button class="btn sm gr" data-play="F|Bb">▶ Comprobar</button></div></div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" aria-expanded="false">Ahora: Bb → ¿Cuál es su IV? <span class="arw">▶</span></button>
+      <div class="acc-b"><div class="inner"><p><b>Eb</b></p><button class="btn sm gr" data-play="Bb|Eb">▶ Comprobar</button></div></div>
+    </div>
+    <div class="acc">
+      <button class="acc-h" aria-expanded="false">Ahora: Eb → ¿Cuál es su IV? <span class="arw">▶</span></button>
+      <div class="acc-b"><div class="inner"><p><b>Ab</b></p><button class="btn sm gr" data-play="Eb|Ab">▶ Comprobar</button></div></div>
+    </div>
+    <p style="margin-top:12px">Has construido mentalmente: <b>Ab → Eb → Bb → F</b></p>
+    <div class="callout info"><span class="ct info">Por qué importa</span>Esta habilidad es muy importante. No necesitas memorizar una lista de progresiones si puedes
+      <b>generar la siguiente relación mentalmente</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">30</span> Tabla de relaciones básicas <span class="src">ap. 30</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>Objetivo</th><th>IV del objetivo</th><th>Escala del objetivo (I → VII)</th><th>Escuchar IV → objetivo</th></tr></thead>
+      <tbody id="tblBasic"></tbody>
+    </table></div>
+    <div class="callout info"><span class="ct info">Objetivo real</span>La idea no es memorizar la tabla indefinidamente. El objetivo es poder
+      <b>calcular estas relaciones mentalmente</b>.</div>
+    <h4>Calculadora del IV — pulsa una raíz</h4>
+    <p>Selecciona cualquier nota y el sistema construirá su escala mayor, localizará el cuarto grado y mostrará el intervalo:</p>
+    <div id="calcKeys" style="margin:10px 0"></div>
+    <div class="out" id="calcOut">
+      <p style="color:var(--muted)">Pulsa una nota para calcular su IV.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">48</span> Una observación sobre acordes menores <span class="src">ap. 48</span></h3>
+    <div class="callout warn"><span class="ct">Advertencia</span>
+      La explicación principal de este tutorial está centrada en <b>tonalidades mayores y acordes mayores</b>.
+      Cuando el acorde objetivo es <b>menor</b>, la situación se vuelve más dependiente del contexto tonal, de la escala utilizada y del estilo.
+      Por eso <b>no conviene aplicar mecánicamente la misma tabla de acordes mayores</b>.
+    </div>
+    <div class="steps">
+      <div class="step">Primero domina perfectamente: <b>IV → objetivo mayor</b></div>
+      <div class="step">Después podremos estudiar las <b>variantes sobre acordes menores</b>.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">50</span> Ejercicio de oído <span class="src">ap. 50</span></h3>
+    <p>Toca (o pulsa) en este orden:</p>
+    <div class="rel-line"><span class="pill">1</span> F → C <button class="btn sm gr" data-play="F|C">▶</button></div>
+    <div class="rel-line"><span class="pill">2</span> Bb → F → C <button class="btn sm gr" data-play="Bb|F|C">▶</button></div>
+    <div class="rel-line"><span class="pill">3</span> Eb → Bb → F → C <button class="btn sm gr" data-play="Eb|Bb|F|C">▶</button></div>
+    <div class="rel-line"><span class="pill">4</span> Ab → Eb → Bb → F → C <button class="btn sm gr" data-play="Ab|Eb|Bb|F|C">▶</button></div>
+    <p style="margin-top:12px">Después de cada ejemplo pregunta:</p>
+    <ul>
+      <li>¿Qué ha cambiado en la sensación de llegada?</li>
+      <li>¿La preparación se siente más larga?</li>
+      <li>¿La llegada a C parece más importante?</li>
+      <li>¿La cadena empieza a sentirse excesiva?</li>
+    </ul>
+    <div class="callout error"><span class="ct">Instrucción final</span>No respondas solamente con teoría. <b>Escucha.</b></div>
+  </div>
+</section>
+
+<!-- ============ ARREGLISTA ============ -->
+<section id="arreglista" class="page">
+  <div class="sec-head">
+    <div class="sec-ico">🧠</div>
+    <div>
+      <div class="kicker">Capítulo 7 · Apartados 23, 41, 49, 51, 52, 53</div>
+      <h2>Pensamiento de arreglista y criterio musical</h2>
+      <p>Cómo decidir, cómo aplicar la técnica a una lead sheet, los ejercicios de arreglo y composición, y el checklist definitivo.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">23</span> Pensamiento de arreglista <span class="src">ap. 23</span></h3>
+    <p>Supongamos que queremos llegar a <b>F</b>. Tenemos: <b>C → F</b>.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Opción</th><th>Progresión</th><th>Escuchar</th></tr></thead>
+      <tbody>
+        <tr><td>Podemos dejarlo así</td><td class="mono">C → F</td><td><button class="btn sm" data-play="C|F">▶</button></td></tr>
+        <tr><td>O podemos probar</td><td class="mono">Bb → F</td><td><button class="btn sm" data-play="Bb|F">▶</button></td></tr>
+        <tr><td>O</td><td class="mono">Eb → Bb → F</td><td><button class="btn sm" data-play="Eb|Bb|F">▶</button></td></tr>
+        <tr><td>O</td><td class="mono">Ab → Eb → Bb → F</td><td><button class="btn sm" data-play="Ab|Eb|Bb|F">▶</button></td></tr>
+      </tbody>
+    </table></div>
+    <div class="grid2" style="margin-top:12px">
+      <div class="callout error" style="margin:0"><span class="ct">La pregunta NO es</span>“¿Cuál es la progresión más complicada?”</div>
+      <div class="callout example" style="margin:0"><span class="ct">La pregunta correcta es</span>“¿Cuál produce el efecto musical que necesito?”</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">41</span> Aplicación a una lead sheet <span class="src">ap. 41</span></h3>
+    <p>Supongamos que una lead sheet contiene: <b>Melodía + acordes básicos</b>. Queremos enriquecer el arreglo.
+      Para cada acorde importante:</p>
+    <div class="steps">
+      <div class="step"><b>Identificamos</b> el acorde objetivo.</div>
+      <div class="step"><b>Preguntamos</b> si necesita preparación.</div>
+      <div class="step"><b>Tratamos</b> el objetivo como I.</div>
+      <div class="step"><b>Buscamos</b> su IV.</div>
+      <div class="step"><b>Probamos</b> ese acorde.</div>
+      <div class="step"><b>Miramos</b> la nota de la melodía.</div>
+      <div class="step"><b>Elegimos</b> la calidad.</div>
+      <div class="step"><b>Diseñamos</b> el voicing.</div>
+      <div class="step"><b>Revisamos</b> el bajo.</div>
+      <div class="step"><b>Escuchamos.</b></div>
+      <div class="step"><b>Comparamos</b> con la versión original.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">49</span> Ejercicio de arreglista <span class="src">ap. 49</span></h3>
+    <p>Toma una progresión sencilla. Por ejemplo: <b>C → Am → F → G</b></p>
+    <button class="btn sm gr" data-play="C|Am|F|G">▶ Escuchar la progresión original</button>
+    <div class="steps" style="margin-top:12px">
+      <div class="step"><span class="st-t">Elige un acorde objetivo</span><br>Supongamos: <b>F</b></div>
+      <div class="step"><span class="st-t">Busca su IV</span><br><b>Bb</b></div>
+      <div class="step"><span class="st-t">Prueba</span><br>C → Am → Bb → F → G
+        <div style="margin-top:8px"><button class="btn sm gr" data-play="C|Am|Bb|F|G">▶ Escuchar</button></div></div>
+      <div class="step"><span class="st-t">Escucha</span><br>Registra qué cambia en la llegada a F.</div>
+      <div class="step"><span class="st-t">Ahora prueba una cadena</span><br>Eb → Bb → F
+        <div style="margin-top:8px"><button class="btn sm gr" data-play="C|Am|Eb|Bb|F|G">▶ Escuchar</button></div></div>
+      <div class="step"><span class="st-t">Compara</span><br>No supongas que la versión más compleja es mejor.</div>
+    </div>
+    <div class="callout info"><span class="ct info">Objetivo</span>El objetivo es desarrollar <b>criterio</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">51</span> Ejercicio de composición <span class="src">ap. 51</span></h3>
+    <p>Escribe una pequeña progresión. Elige un acorde importante. Pregúntate: <b>“¿Quiero prepararlo?”</b> Si sí:</p>
+    <div class="steps">
+      <div class="step"><b>Trátalo como I.</b></div>
+      <div class="step"><b>Busca su IV.</b></div>
+      <div class="step"><b>Colócalo antes.</b></div>
+      <div class="step"><b>Escucha.</b></div>
+      <div class="step"><b>Prueba una inversión.</b></div>
+      <div class="step"><b>Prueba otra calidad.</b></div>
+      <div class="step"><b>Comprueba la melodía.</b></div>
+      <div class="step"><b>Decide.</b></div>
+    </div>
+    <div class="callout info"><span class="ct info">Si todavía quieres más movimiento</span>Busca el <b>IV del nuevo acorde preparatorio</b>.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">52</span> La gran diferencia entre teoría y música <span class="src">ap. 52</span></h3>
+    <div class="tw"><table>
+      <thead><tr><th>Saber</th><th>Es</th></tr></thead>
+      <tbody>
+        <tr><td><b>Bb = IV de F</b></td><td>teoría</td></tr>
+        <tr><td>Saber <b>cuándo utilizar Bb → F</b></td><td>criterio musical</td></tr>
+        <tr><td>Saber si utilizar <b>Bb / Bbmaj7 / Bb7 / Bb6 / Bb/D</b></td><td>una decisión de arreglo</td></tr>
+        <tr><td>Saber <b>cómo colocar las voces</b> para que suene bien</td><td>conducción de voces</td></tr>
+        <tr><td>Saber <b>cuándo NO añadir nada</b></td><td>también es parte del oficio</td></tr>
+      </tbody>
+    </table></div>
+    <div style="margin-top:10px">
+      <button class="btn sm" data-play="Bb|F">▶ Bb</button>
+      <button class="btn sm" data-play="Bbmaj7|F">▶ Bbmaj7</button>
+      <button class="btn sm" data-play="Bb7|F">▶ Bb7</button>
+      <button class="btn sm" data-play="Bb6|F">▶ Bb6</button>
+      <button class="btn sm" data-play="Bb/D|F">▶ Bb/D</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">53</span> Checklist del arreglista <span class="src">ap. 53</span></h3>
+    <p>Antes de conservar una subdominante secundaria, pregunta (marca cada punto ya verificado):</p>
+    <div id="checklist"></div>
+    <div class="verdict no" id="verdict">Pendiente: 0 de 12 verificados</div>
+    <div class="callout error"><span class="ct">Si la respuesta final es no</span>
+      <b>ELIMÍNALO.</b><br>Un acorde innecesario es peor que una progresión sencilla que funciona.
+    </div>
+  </div>
+</section>
+
+<!-- ============ LABORATORIO ============ -->
+<section id="laboratorio" class="page">
+  <div class="sec-head">
+    <div class="sec-ico">🎛</div>
+    <div>
+      <div class="kicker">Capítulo 8 · Herramientas interactivas</div>
+      <h2>Laboratorio de cadenas IV</h2>
+      <p>Genera cualquier cadena de subdominantes a partir de un acorde objetivo, escúchala, compara calidades y practica sobre el teclado.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔗 Generador de cadenas de subdominantes</h3>
+    <p>Aplica el algoritmo universal de forma automática: elige el <b>acorde objetivo</b> y el <b>número de niveles de preparación</b>.
+      El sistema trabaja <b>desde el objetivo hacia atrás</b>, exactamente como describe el apartado 29.</p>
+    <div class="grid2">
+      <div>
+        <label for="labTarget" style="font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:700">Acorde objetivo</label><br>
+        <select id="labTarget"></select>
+      </div>
+      <div>
+        <label for="labDepth" style="font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:700">Niveles de preparación</label><br>
+        <select id="labDepth">
+          <option value="1">1 — IV → objetivo</option>
+          <option value="2">2 — IV del IV</option>
+          <option value="3">3 — tres preparaciones</option>
+          <option value="4" selected>4 — cuatro preparaciones</option>
+          <option value="5">5 — cinco preparaciones</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:14px">
+      <button class="btn acc" id="labBuild">⚙ Generar cadena</button>
+      <button class="btn gr" id="labPlay">▶ Reproducir acordes</button>
+      <button class="btn" id="labPlayRoots">▶ Solo raíces (mano izquierda)</button>
+      <button class="btn pu" id="labPlaySlow">▶ Lento (4 pulsos)</button>
+    </div>
+    <div class="out" id="labOut"></div>
+    <div class="callout warn"><span class="ct">Advertencia</span>Recuerda el apartado 44: la cadena debe detenerse cuando el efecto musical deje de aportar algo.
+      <b>La complejidad no es automáticamente calidad.</b></div>
+  </div>
+
+  <div class="card">
+    <h3>🎚 Comparador de calidades sobre un mismo objetivo</h3>
+    <p>La función puede ser idéntica y la sonoridad distinta (apartados 33 y 34). Elige el acorde preparatorio y compáralo llegando a su objetivo.</p>
+    <div class="grid2">
+      <div>
+        <label for="qualRoot" style="font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:700">Raíz del acorde preparatorio</label><br>
+        <select id="qualRoot"></select>
+      </div>
+      <div>
+        <label for="qualType" style="font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:700">Calidad / disposición</label><br>
+        <select id="qualType">
+          <option value="">major (tríada)</option>
+          <option value="maj7">maj7</option>
+          <option value="7">7</option>
+          <option value="6">6</option>
+          <option value="/3">en primera inversión (bajo = 3.ª)</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:14px">
+      <button class="btn acc" id="qualPlay">▶ Escuchar preparación → objetivo</button>
+      <button class="btn" id="qualNotes">🔍 Ver notas del acorde</button>
+    </div>
+    <div class="out" id="qualOut"><p style="color:var(--muted)">El objetivo se calcula automáticamente: es la nota de la que el acorde elegido es IV.</p></div>
+  </div>
+
+  <div class="card">
+    <h3>🎹 Teclado interactivo</h3>
+    <p>Pulsa las teclas para escuchar cada nota. Usa los botones para reproducir las raíces de la cadena del documento y comprobar la
+      <b>dirección del bajo</b> (apartado 24).</p>
+    <div style="margin-bottom:10px">
+      <button class="btn sm gr" data-play="Eb:root|Bb:root|F:root|C:root" data-kb="1">▶ Raíces Eb · Bb · F · C</button>
+      <button class="btn sm gr" data-play="Eb|Bb|F|C" data-kb="1">▶ Acordes completos</button>
+      <button class="btn sm" data-play="Ab|Eb|Bb|F|C" data-kb="1">▶ Cadena completa</button>
+      <button class="btn sm" data-play="Bb|F|C" data-kb="1">▶ Bb → F → C</button>
+    </div>
+    <div class="piano-wrap"><div class="piano" id="labPiano"></div></div>
+    <div class="callout info"><span class="ct info">Sugerencia</span>Repite el ejercicio lentamente hasta que tu oído reconozca la relación entre las raíces
+      <b>sin necesidad de análisis intelectual</b>.</div>
+  </div>
+</section>
+
+<!-- ============ SÍNTESIS ============ -->
+<section id="sintesis" class="page">
+  <div class="sec-head">
+    <div class="sec-ico">🏁</div>
+    <div>
+      <div class="kicker">Capítulo 9 · Apartados 56, 57, 58, 59</div>
+      <h2>Síntesis final</h2>
+      <p>Las tres reglas que debes recordar, la fórmula mental definitiva, la conclusión y el resumen de una sola línea.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">56</span> Las tres reglas que debes recordar <span class="src">ap. 56</span></h3>
+    <div class="grid3">
+      <div class="callout info" style="margin:0"><span class="ct">Regla 1</span>
+        <b>IV es el cuarto grado de una escala.</b><br>En C: <span class="mono">F = IV</span></div>
+      <div class="callout example" style="margin:0"><span class="ct">Regla 2</span>
+        <b>Para preparar un acorde podemos utilizar su IV.</b><br>Por ejemplo: <span class="mono">Bb → F</span> porque <span class="mono">Bb = IV de F</span></div>
+      <div class="callout warn" style="margin:0"><span class="ct">Regla 3</span>
+        <b>La operación puede repetirse.</b><br>Por ejemplo: <span class="mono">Eb → Bb → F → C</span> porque
+        <span class="mono">Eb = IV de Bb</span>, <span class="mono">Bb = IV de F</span>, <span class="mono">F = IV de C</span></div>
+    </div>
+    <div style="margin-top:12px"><button class="btn sm gr" data-play="Eb|Bb|F|C">▶ Escuchar la Regla 3</button></div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">57</span> La fórmula mental definitiva <span class="src">ap. 57</span></h3>
+    <p>Cuando estés tocando el piano y quieras enriquecer una progresión:</p>
+    <div class="flow">
+      <div class="fnode hi">¿DÓNDE QUIERO LLEGAR?</div><div class="farrow">↓</div>
+      <div class="fnode">¿CUÁL ES EL IV DE ESE ACORDE?</div><div class="farrow">↓</div>
+      <div class="fnode">¿PUEDO COLOCARLO ANTES?</div><div class="farrow">↓</div>
+      <div class="fnode">¿LA MELODÍA LO PERMITE?</div><div class="farrow">↓</div>
+      <div class="fnode">¿EL BAJO MEJORA?</div><div class="farrow">↓</div>
+      <div class="fnode">¿EL VOICING FUNCIONA?</div><div class="farrow">↓</div>
+      <div class="fnode pu">¿EL OÍDO DICE QUE SÍ?</div>
+    </div>
+    <div class="grid2">
+      <div class="callout example" style="margin:0"><span class="ct">Si todo funciona</span><b>CONSERVA EL ACORDE.</b></div>
+      <div class="callout error" style="margin:0"><span class="ct">Si no</span><b>ELIMÍNALO.</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">58</span> Conclusión <span class="src">ap. 58</span></h3>
+    <p>La subdominante secundaria puede entenderse como una herramienta de construcción armónica basada en una idea muy sencilla:</p>
+    <div class="rule"><small>Idea fundamental</small>UN ACORDE OBJETIVO PUEDE SER PRECEDIDO POR SU PROPIO IV.</div>
+    <p style="margin-top:14px">La verdadera potencia aparece cuando <b>repetimos el procedimiento</b>:</p>
+    <div class="flow">
+      <div class="fnode">IV → objetivo</div><div class="farrow">↓ se convierte en</div>
+      <div class="fnode">IV del IV → IV → objetivo</div><div class="farrow">↓ y después</div>
+      <div class="fnode">IV del IV del IV → IV del IV → IV → objetivo</div>
+    </div>
+    <p>Por ejemplo: <b>Ab → Eb → Bb → F → C</b>
+      <button class="btn sm gr" data-play="Ab|Eb|Bb|F|C">▶</button></p>
+    <div class="callout warn"><span class="ct">Advertencia</span>No debemos aprender esta secuencia como una progresión que hay que <b>memorizar</b>.
+      Debemos aprender a <b>GENERARLA</b>.</div>
+    <p>El verdadero conocimiento consiste en poder mirar un acorde y pensar inmediatamente:</p>
+    <ul>
+      <li>“Este es mi objetivo. <b>¿Cuál es su IV?</b>”</li>
+      <li>“¿Quiero prepararlo <b>una vez, dos veces o construir una cadena</b>?”</li>
+    </ul>
+    <div class="callout info"><span class="ct info">Cierre</span>
+      Finalmente, <b>el oído tiene la última palabra</b>.<br>
+      La teoría nos permite <b>construir</b>.<br>
+      El oído nos permite <b>decidir</b>.<br>
+      Y el criterio musical nos permite saber <b>cuándo parar</b>.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="num">59</span> Resumen de una sola línea <span class="src">ap. 59</span></h3>
+    <div class="rule" style="font-size:clamp(14px,2.8vw,19px)"><small>Todo el método en una frase</small>
+      PARA LLEGAR A UN ACORDE, PUEDES BUSCAR SU IV Y UTILIZARLO COMO PREPARACIÓN; SI QUIERES MÁS MOVIMIENTO, REPITE EL PROCESO HACIA ATRÁS.
+    </div>
+    <p style="margin-top:16px">Ejemplo:</p>
+    <div class="chain" style="justify-content:center">
+      <span class="cnode deep">Ab</span><span class="carrow">→</span><span class="cnode deep">Eb</span><span class="carrow">→</span>
+      <span class="cnode deep">Bb</span><span class="carrow">→</span><span class="cnode prep">F</span><span class="carrow">→</span><span class="cnode tgt">C</span>
+      <button class="btn sm gr" data-play="Ab|Eb|Bb|F|C">▶ Escuchar</button>
+    </div>
+    <div class="rel-line"><span class="pill">Ab</span> es <b>IV de Eb</b>.</div>
+    <div class="rel-line"><span class="pill">Eb</span> es <b>IV de Bb</b>.</div>
+    <div class="rel-line"><span class="pill">Bb</span> es <b>IV de F</b>.</div>
+    <div class="rel-line"><span class="pill">F</span> es <b>IV de C</b>.</div>
+    <div class="callout info" style="margin-top:14px"><span class="ct info">Fin</span>Esa es la <b>arquitectura de la subdominante secundaria</b>.</div>
+    <div style="text-align:center;margin-top:18px">
+      <button class="btn pu" data-target="creditos">★ Ver créditos</button>
+      <button class="btn" data-target="home">🏠 Volver al inicio</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CRÉDITOS ============ -->
+<section id="creditos" class="page">
+  <div class="sec-head">
+    <div class="sec-ico">★</div>
+    <div>
+      <div class="kicker">Créditos y ficha del tutorial</div>
+      <h2>Créditos</h2>
+      <p>La misma portada animada del inicio, la autoría y los datos de publicación.</p>
+    </div>
+  </div>
+
+  <div class="hero-svg" id="svgCredits" aria-label="Portada animada: cadena de subdominantes Ab → Eb → Bb → F → C sobre un teclado de piano"></div>
+
+  <div class="card cred-card" style="margin-top:22px">
+    <span class="badge p">Tutorial interactivo · Documento educativo</span>
+    <h2 style="font-size:clamp(21px,4.6vw,32px);margin:16px 0 4px">La Arquitectura de la Subdominante Secundaria</h2>
+    <p style="color:var(--muted);max-width:760px;margin:0 auto">Cómo crear movimiento armónico mediante cadenas de acordes IV</p>
+    <div class="cred-name" style="margin-top:22px">Rubén Sbarsky</div>
+    <div class="cred-role">Autor · Contenido y desarrollo del tutorial</div>
+
+    <div class="cred-grid">
+      <div class="cred-item"><div class="l">Fecha</div><div class="v">10/09/2026</div></div>
+      <div class="cred-item"><div class="l">Hora</div><div class="v">06:58:08</div></div>
+      <div class="cred-item"><div class="l">Materia</div><div class="v">Armonía · Piano</div></div>
+      <div class="cred-item"><div class="l">Nomenclatura</div><div class="v">A–G · Grados I–VII</div></div>
+    </div>
+
+    <div class="callout info" style="text-align:left"><span class="ct info">Indicación educativa</span>
+      📚 Este tutorial tiene <b>exclusivamente fines educativos y de divulgación</b>. Todo el contenido proviene del documento original
+      “Cómo crear movimiento armónico mediante cadenas de acordes IV”, de Rubén Sbarsky. No se ha añadido información externa.
+      El audio se genera localmente en el navegador (Web Audio API) como apoyo al entrenamiento del oído; no sustituye la práctica real al piano.
+    </div>
+
+    <div class="callout example" style="text-align:left"><span class="ct">Contenido íntegro</span>
+      Se conservan los <b>59 apartados</b> del documento fuente: conceptos, definiciones, ejemplos, procedimientos, fórmulas,
+      tablas, ejercicios, advertencias, matices y conclusiones.
+    </div>
+
+    <div class="lat" style="font-size:clamp(17px,4vw,24px);font-weight:700;margin-top:20px;color:#d8b4fe">Fiat iustitia, ruat caelum.</div>
+
+    <div style="margin-top:20px">
+      <button class="btn acc" data-target="home">🏠 Volver al inicio</button>
+      <button class="btn" data-target="fundamentos">① Ir a Fundamentos</button>
+      <button class="btn pu" data-target="laboratorio">🎛 Laboratorio</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="frow">📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div class="frow">👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div class="frow">📅 FECHA: 10/09/2026</div>
+  <div class="frow">Hora: 06:58:08</div>
+  <div class="lat">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   0. UTILIDADES DE NOTAS
+   ============================================================ */
+var SEMI = {C:0,'C#':1,'Db':1,D:2,'D#':3,'Eb':3,E:4,'Fb':5,'E#':5,F:5,'F#':6,'Gb':6,
+            G:7,'G#':8,'Ab':8,A:9,'A#':10,'Bb':10,B:11,'Cb':11,'B#':0};
+var SCALES = {
+  C:['C','D','E','F','G','A','B'],
+  Db:['Db','Eb','F','Gb','Ab','Bb','C'],
+  D:['D','E','F#','G','A','B','C#'],
+  Eb:['Eb','F','G','Ab','Bb','C','D'],
+  E:['E','F#','G#','A','B','C#','D#'],
+  F:['F','G','A','Bb','C','D','E'],
+  Gb:['Gb','Ab','Bb','Cb','Db','Eb','F'],
+  G:['G','A','B','C','D','E','F#'],
+  Ab:['Ab','Bb','C','Db','Eb','F','G'],
+  A:['A','B','C#','D','E','F#','G#'],
+  Bb:['Bb','C','D','Eb','F','G','A'],
+  B:['B','C#','D#','E','F#','G#','A#'],
+  F_:null
+};
+delete SCALES.F_;
+var ROOTS = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+var DEGS = ['I','II','III','IV','V','VI','VII'];
+function ivOf(r){ var s = SCALES[r]; return s ? s[3] : null; }
+function disp(n){ return n==='Cb' ? 'Cb (B)' : n; }
+function semiOf(n){ var s = SEMI[n]; return s===undefined ? 0 : s; }
+function rootMidi(n, oct){ return 12*((oct===undefined?3:oct)+1)+semiOf(n); }
+var QUAL = {'':[0,4,7],'maj':[0,4,7],'maj7':[0,4,7,11],'7':[0,4,7,10],'6':[0,4,7,9],
+            'm':[0,3,7],'m7':[0,3,7,10],'dim':[0,3,6],'sus4':[0,5,7]};
+
+function parseChord(str){
+  var m = /^([A-G](?:[#b])?)(.*)$/.exec(str.trim());
+  if(!m) return null;
+  var root = m[1], rest = m[2], bass = null, qual = '';
+  if(rest.charAt(0)==='/'){ bass = rest.slice(1); }
+  else { qual = rest; }
+  if(!QUAL.hasOwnProperty(qual)) qual = '';
+  return {root:root, qual:qual, bass:bass, label:str};
+}
+function chordMidis(str){
+  var p = parseChord(str); if(!p) return [];
+  var R = rootMidi(p.root,3);
+  var iv = QUAL[p.qual];
+  var out = [];
+  if(p.bass){
+    var bm = rootMidi(p.bass,3);
+    while(bm > R) bm -= 12;
+    out.push(bm);
+  }
+  for(var i=0;i<iv.length;i++){ out.push(R+iv[i]); }
+  return out;
+}
+
+/* ============================================================
+   1. MOTOR DE AUDIO (local, Web Audio API)
+   ============================================================ */
+var actx = null;
+function AC(){
+  if(!actx){
+    var C = window.AudioContext || window.webkitAudioContext;
+    if(!C) return null;
+    actx = new C();
+  }
+  if(actx.state === 'suspended' && actx.resume) actx.resume();
+  return actx;
+}
+function noteOn(ac, midi, t0, dur, vol){
+  if(!ac) return;
+  var f = 440*Math.pow(2,(midi-69)/12);
+  var g = ac.createGain();
+  g.gain.setValueAtTime(0.0001,t0);
+  g.gain.linearRampToValueAtTime(vol,t0+0.025);
+  g.gain.exponentialRampToValueAtTime(0.0008,t0+dur);
+  var lp = ac.createBiquadFilter(); lp.type='lowpass';
+  lp.frequency.setValueAtTime(3200,t0);
+  lp.frequency.exponentialRampToValueAtTime(900,t0+dur);
+  var types = ['triangle','sine','sine'];
+  var dets  = [0,-5,6];
+  var vls   = [0.5,0.28,0.2];
+  for(var i=0;i<3;i++){
+    var o = ac.createOscillator();
+    o.type = types[i]; o.frequency.value = f; o.detune.value = dets[i];
+    var og = ac.createGain(); og.gain.value = vls[i];
+    o.connect(og); og.connect(lp);
+    o.start(t0); o.stop(t0+dur+0.06);
+  }
+  lp.connect(g); g.connect(ac.destination);
+}
+function playMidis(midis, when, dur, vol){
+  var ac = AC(); if(!ac) return;
+  for(var i=0;i<midis.length;i++){
+    noteOn(ac, midis[i], when + i*0.012, dur, vol===undefined?0.16:vol);
+  }
+}
+var litTimers = [];
+function clearLits(){
+  litTimers.forEach(function(t){ clearTimeout(t); });
+  litTimers = [];
+  document.querySelectorAll('#labPiano .lit,#labPiano .litg').forEach(function(el){
+    el.classList.remove('lit'); el.classList.remove('litg');
+  });
+}
+function lightMidi(midi, ms, green){
+  var el = document.querySelector('#labPiano [data-midi="'+midi+'"]');
+  if(!el) return;
+  el.classList.add(green?'litg':'lit');
+  litTimers.push(setTimeout(function(){ el.classList.remove('lit'); el.classList.remove('litg'); }, ms));
+}
+function playSequence(list, dur, gap, rootsOnly, green){
+  var ac = AC(); if(!ac) return;
+  clearLits();
+  var t = ac.currentTime + 0.06;
+  var step = (dur||0.85) + (gap===undefined?0.06:gap);
+  list.forEach(function(item, idx){
+    var midis;
+    if(typeof item === 'string'){
+      if(rootsOnly){
+        var p = parseChord(item);
+        var R = rootMidi(p?p.root:item,3);
+        if(p && p.bass){ var bm = rootMidi(p.bass,3); while(bm>R) bm-=12; midis=[bm]; }
+        else midis = [R];
+      } else midis = chordMidis(item);
+    } else midis = item;
+    playMidis(midis, t + idx*step, dur||0.85, 0.16);
+    var delay = idx*step*1000;
+    litTimers.push(setTimeout(function(){
+      midis.forEach(function(m){ lightMidi(m, (dur||0.85)*900, green); });
+    }, delay));
+  });
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-play]');
+  if(!b) return;
+  var arr = b.getAttribute('data-play').split('|');
+  var d = parseFloat(b.getAttribute('data-dur')) || 0.85;
+  var roots = /:root/.test(b.getAttribute('data-play'));
+  if(roots) arr = arr.map(function(s){ return s.replace(':root',''); });
+  playSequence(arr, d, 0.07, roots, false);
+});
+
+/* ============================================================
+   2. SVG DE PORTADA (mismo SVG en HOME y CRÉDITOS)
+   ============================================================ */
+function buildCoverSVG(){
+  var RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sm = function(s){ return RM ? '' : s; };
+
+  var nodes = [
+    {x:250,y:205,n:'Ab',s:'IV de Eb',c:'#a855f7'},
+    {x:372,y:282,n:'Eb',s:'IV de Bb',c:'#a855f7'},
+    {x:494,y:359,n:'Bb',s:'IV de F',c:'#00d4ff'},
+    {x:616,y:436,n:'F', s:'IV de C',c:'#00d4ff'},
+    {x:738,y:513,n:'C', s:'I · tónica',c:'#22c55e'}
+  ];
+  var nodeSvg = '';
+  nodes.forEach(function(nd,i){
+    var d = (i*1.2).toFixed(2);
+    nodeSvg += '<g class="cv-node">'+
+      '<circle class="halo" cx="'+nd.x+'" cy="'+nd.y+'" r="52" fill="none" stroke="'+nd.c+'" stroke-width="2" opacity=".3" style="animation-delay:'+d+'s"/>'+
+      '<circle class="core" cx="'+nd.x+'" cy="'+nd.y+'" r="40" fill="#0b1729" stroke="'+nd.c+'" stroke-width="3" style="animation-delay:'+d+'s"/>'+
+      '<text class="nm" x="'+nd.x+'" y="'+(nd.y+11)+'" text-anchor="middle" font-size="32" font-weight="800" fill="#f8fafc" style="animation-delay:'+d+'s">'+nd.n+'</text>'+
+      '<text x="'+nd.x+'" y="'+(nd.y+66)+'" text-anchor="middle" font-size="15" fill="'+nd.c+'" font-weight="700">'+nd.s+'</text>'+
+      sm('<circle cx="'+nd.x+'" cy="'+nd.y+'" r="40" fill="none" stroke="'+nd.c+'" stroke-width="2">'+
+         '<animate attributeName="r" values="40;74" dur="6s" begin="'+d+'s" repeatCount="indefinite"/>'+
+         '<animate attributeName="opacity" values=".75;0" dur="6s" begin="'+d+'s" repeatCount="indefinite"/></circle>')+
+    '</g>';
+  });
+  var links = '';
+  for(var i=0;i<nodes.length-1;i++){
+    var a=nodes[i], b=nodes[i+1];
+    var dx=b.x-a.x, dy=b.y-a.y, L=Math.sqrt(dx*dx+dy*dy), ux=dx/L, uy=dy/L;
+    links += '<line class="cv-link" x1="'+(a.x+ux*44)+'" y1="'+(a.y+uy*44)+'" x2="'+(b.x-ux*44)+'" y2="'+(b.y-uy*44)+
+             '" stroke="#00d4ff" stroke-width="3" opacity=".65" style="animation-delay:'+(i*0.25)+'s"/>';
+  }
+  var pathD = 'M'+nodes.map(function(n){return n.x+','+n.y;}).join(' L');
+
+  /* círculo de cuartas */
+  var cx=985, cy=210, R=112;
+  var circNotes = ['C','F','Bb','Eb','Ab','Db','Gb','B','E','A','D','G'];
+  var circ = '';
+  circNotes.forEach(function(n,i){
+    var ang = (-90 + i*30) * Math.PI/180;
+    var px = cx + R*Math.cos(ang), py = cy + R*Math.sin(ang);
+    var hot = ['C','F','Bb','Eb','Ab'].indexOf(n) >= 0;
+    circ += '<g><circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+(hot?17:13)+'" fill="'+(hot?'rgba(0,212,255,.20)':'#0d1a2d')+
+            '" stroke="'+(hot?'#00d4ff':'#1e3a5f')+'" stroke-width="2"/>'+
+            '<text x="'+px.toFixed(1)+'" y="'+(py+5).toFixed(1)+'" text-anchor="middle" font-size="14" font-weight="800" fill="'+(hot?'#a5f3fc':'#64748b')+'">'+n+'</text></g>';
+  });
+
+  /* teclado */
+  var kx=90, ky=540, kw=68, kh=106, bw=40, bh=66;
+  var whiteNames=['C','D','E','F','G','A','B','C','D','E','F','G','A','B','C'];
+  var blackAt={0:'C#',1:'D#',3:'F#',4:'G#',5:'A#',7:'C#',8:'D#',10:'F#',11:'G#',12:'A#'};
+  var keysSvg='';
+  whiteNames.forEach(function(n,i){ keysSvg += '<rect x="'+(kx+i*kw)+'" y="'+ky+'" width="'+kw+'" height="'+kh+'" rx="5" fill="#f1f5f9" stroke="#475569" stroke-width="1.5"/>'; });
+  Object.keys(blackAt).forEach(function(k){
+    var wi = parseInt(k,10);
+    var bx = kx + (wi+1)*kw - bw/2;
+    keysSvg += '<rect x="'+bx+'" y="'+ky+'" width="'+bw+'" height="'+bh+'" rx="4" fill="#0b1220" stroke="#020617" stroke-width="1.5"/>';
+  });
+  var animKeys = [
+    {type:'b', idx:4,  d:0.0, lab:'Ab'},
+    {type:'b', idx:8,  d:1.2,lab:'Eb'},
+    {type:'b', idx:5,  d:2.4,lab:'Bb'},
+    {type:'w', idx:10, d:3.6,lab:'F'},
+    {type:'w', idx:14, d:4.8,lab:'C'}
+  ];
+  animKeys.forEach(function(k){
+    var x = k.type==='w' ? (kx+k.idx*kw) : (kx+(k.idx+1)*kw-bw/2);
+    var w = k.type==='w' ? kw : bw;
+    var h = k.type==='w' ? kh : bh;
+    keysSvg += '<rect class="'+(k.type==='w'?'cv-keyw':'cv-keyb')+'" x="'+x+'" y="'+ky+'" width="'+w+'" height="'+h+'" rx="4" fill="transparent" style="animation-delay:'+k.d+'s"/>';
+    keysSvg += '<text x="'+(x+w/2)+'" y="'+(ky+h+ (k.type==='w'?22:20) )+'" text-anchor="middle" font-size="15" font-weight="800" fill="#7dd3fc" opacity=".0" style="animation:cvFadeSeq 6s ease-in-out infinite;animation-delay:'+k.d+'s">'+k.lab+'</text>';
+  });
+  keysSvg += '<text x="'+(kx+15*kw/2)+'" y="'+(ky-12)+'" text-anchor="middle" font-size="14" letter-spacing="3" fill="#475569" font-weight="700">LÍNEA DE BAJO · RAÍCES DE LA CADENA</text>';
+
+  /* ecualizador */
+  var eq='';
+  for(var e=0;e<14;e++){
+    var ex = 880 + e*17;
+    eq += '<rect class="cv-bar" x="'+ex+'" y="400" width="9" height="86" rx="4" fill="url(#gEq)" style="animation-delay:'+(e*0.11).toFixed(2)+'s"/>';
+  }
+
+  return ''+
+'<svg viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg" role="img" preserveAspectRatio="xMidYMid meet">'+
+  '<defs>'+
+    '<linearGradient id="gBg" x1="0" y1="0" x2="1" y2="1">'+
+      '<stop offset="0%" stop-color="#070d1a"/><stop offset="55%" stop-color="#0a1424"/><stop offset="100%" stop-color="#0d0a1e"/></linearGradient>'+
+    '<linearGradient id="gEq" x1="0" y1="1" x2="0" y2="0">'+
+      '<stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#a855f7"/></linearGradient>'+
+    '<linearGradient id="gTitle" x1="0" y1="0" x2="1" y2="0">'+
+      '<stop offset="0%" stop-color="#ffffff"/><stop offset="55%" stop-color="#7dd3fc"/><stop offset="100%" stop-color="#c084fc"/></linearGradient>'+
+    '<radialGradient id="gGlow"><stop offset="0%" stop-color="rgba(0,212,255,.28)"/><stop offset="100%" stop-color="rgba(0,212,255,0)"/></radialGradient>'+
+    '<filter id="fGlow" x="-60%" y="-60%" width="220%" height="220%">'+
+      '<feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+    '<pattern id="pGrid" width="40" height="40" patternUnits="userSpaceOnUse">'+
+      '<path d="M40 0 L0 0 0 40" fill="none" stroke="#12233c" stroke-width="1"/></pattern>'+
+  '</defs>'+
+  '<rect width="1200" height="675" fill="url(#gBg)"/>'+
+  '<rect width="1200" height="675" fill="url(#pGrid)" opacity=".55"/>'+
+  '<circle cx="330" cy="250" r="330" fill="url(#gGlow)"/>'+
+  '<circle cx="985" cy="210" r="200" fill="url(#gGlow)" opacity=".7"/>'+
+  '<rect x="14" y="14" width="1172" height="647" rx="16" fill="none" stroke="#1e3a5f" stroke-width="2"/>'+
+  /* encabezado */
+  '<g class="cv-title">'+
+    '<rect x="60" y="44" width="268" height="26" rx="13" fill="rgba(0,212,255,.10)" stroke="#00d4ff" stroke-width="1.5"/>'+
+    '<text x="194" y="62" text-anchor="middle" font-size="13" letter-spacing="2.6" fill="#7dd3fc" font-weight="800">ARQUITECTURA ARMÓNICA</text>'+
+    '<text x="60" y="120" font-size="46" font-weight="800" fill="url(#gTitle)" letter-spacing="-1">CADENA DE SUBDOMINANTES</text>'+
+    '<text x="60" y="150" font-size="19" fill="#94a3b8" font-weight="600">Ab → Eb → Bb → F → C · cada acorde prepara al siguiente mediante su propio IV</text>'+
+  '</g>'+
+  /* bloque fórmula */
+  '<g>'+
+    '<rect x="60" y="360" width="212" height="128" rx="12" fill="rgba(15,23,42,.85)" stroke="#1e3a5f" stroke-width="1.5"/>'+
+    '<text x="166" y="386" text-anchor="middle" font-size="12" letter-spacing="2" fill="#64748b" font-weight="800">FÓRMULA</text>'+
+    '<text x="166" y="412" text-anchor="middle" font-size="16" fill="#e2e8f0" font-weight="700">OBJETIVO</text>'+
+    '<text x="166" y="430" text-anchor="middle" font-size="14" fill="#00d4ff">↓ tratarlo como I</text>'+
+    '<text x="166" y="452" text-anchor="middle" font-size="16" fill="#e2e8f0" font-weight="700">BUSCAR SU IV</text>'+
+    '<text x="166" y="470" text-anchor="middle" font-size="14" fill="#22c55e">↓ colocarlo antes</text>'+
+    '<text x="166" y="486" text-anchor="middle" font-size="13" fill="#a855f7" font-weight="700">IV → OBJETIVO</text>'+
+  '</g>'+
+  '<text x="166" y="522" text-anchor="middle" font-size="30" font-weight="800" fill="#00d4ff" filter="url(#fGlow)">IV/IV</text>'+
+  /* círculo de cuartas */
+  '<g>'+
+    '<text x="'+cx+'" y="'+(cy-R-26)+'" text-anchor="middle" font-size="13" letter-spacing="2.4" fill="#64748b" font-weight="800">CÍRCULO DE CUARTAS</text>'+
+    '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="4 6"/>'+
+    circ+
+    sm('<g><line x1="'+cx+'" y1="'+cy+'" x2="'+cx+'" y2="'+(cy-R+16)+'" stroke="#22c55e" stroke-width="3" opacity=".85"/>'+
+       '<animateTransform attributeName="transform" type="rotate" from="0 '+cx+' '+cy+'" to="360 '+cx+' '+cy+'" dur="18s" repeatCount="indefinite"/></g>')+
+    '<circle cx="'+cx+'" cy="'+cy+'" r="9" fill="#22c55e"/>'+
+    '<text x="'+cx+'" y="'+(cy+R+30)+'" text-anchor="middle" font-size="13" fill="#94a3b8">cuartas ascendentes ≡ quintas descendentes</text>'+
+  '</g>'+
+  /* ecualizador */
+  '<g opacity=".9">'+eq+
+    '<text x="999" y="512" text-anchor="middle" font-size="12" letter-spacing="2" fill="#475569" font-weight="800">FUNCIÓN PREDOMINANTE</text></g>'+
+  /* cadena */
+  '<g filter="url(#fGlow)">'+links+'</g>'+
+  nodeSvg+
+  sm('<g><circle r="10" fill="#22c55e" filter="url(#fGlow)">'+
+      '<animateMotion dur="6s" repeatCount="indefinite" path="'+pathD+'"/></circle>'+
+     '<circle r="5" fill="#ffffff">'+
+      '<animateMotion dur="6s" repeatCount="indefinite" path="'+pathD+'"/></circle></g>')+
+  /* teclado */
+  keysSvg+
+  '<text x="600" y="668" text-anchor="middle" font-size="11.5" letter-spacing="1.6" fill="#475569">TUTORIAL INTERACTIVO · RUBÉN SBARSKY · 10/09/2026 · 06:58:08</text>'+
+'</svg>';
+}
+function injectCover(){
+  var html = buildCoverSVG();
+  var h = document.getElementById('svgHome');
+  var c = document.getElementById('svgCredits');
+  if(h) h.innerHTML = html;
+  if(c) c.innerHTML = html;   /* exactamente el mismo SVG */
+}
+injectCover();
+
+/* ============================================================
+   3. SPA · NAV · PROGRESO · TO TOP
+   ============================================================ */
+var navScroll = document.getElementById('navScroll');
+var pages = document.querySelectorAll('.page');
+var navBtns = document.querySelectorAll('.nav-btn');
+function showPage(id){
+  var found = false;
+  pages.forEach(function(p){
+    var on = (p.id === id);
+    p.classList.toggle('active', on);
+    if(on) found = true;
+  });
+  if(!found){ pages[0].classList.add('active'); id = 'home'; }
+  navBtns.forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-target') === id); });
+  var act = document.querySelector('.nav-btn[data-target="'+id+'"]');
+  if(act && act.scrollIntoView){
+    try{ navScroll.scrollTo({left: act.offsetLeft - 20, behavior:'smooth'}); }catch(err){ navScroll.scrollLeft = act.offsetLeft - 20; }
+  }
+  window.scrollTo({top:0, behavior:'auto'});
+  updateProgress();
+  if(id === 'creditos' || id === 'home'){ injectCover(); }
+}
+document.addEventListener('click', function(e){
+  var b = e.target.closest('[data-target]');
+  if(!b) return;
+  e.preventDefault();
+  showPage(b.getAttribute('data-target'));
+});
+
+var bar = document.getElementById('progressBar');
+function updateProgress(){
+  var h = document.documentElement.scrollHeight - window.innerHeight;
+  var p = h > 0 ? (window.scrollY / h) * 100 : 0;
+  bar.style.width = Math.max(0, Math.min(100, p)) + '%';
+}
+var toTop = document.getElementById('toTop');
+window.addEventListener('scroll', function(){
+  updateProgress();
+  toTop.classList.toggle('show', window.scrollY > 320);
+}, {passive:true});
+window.addEventListener('resize', updateProgress);
+toTop.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+updateProgress();
+
+/* ============================================================
+   4. ACORDEONES · TABS · REVEALS
+   ============================================================ */
+function syncAcc(acc){
+  var body = acc.querySelector('.acc-b');
+  var btn = acc.querySelector('.acc-h');
+  var open = acc.classList.contains('open');
+  if(btn) btn.setAttribute('aria-expanded', open ? 'true':'false');
+  if(body) body.style.maxHeight = open ? (body.scrollHeight + 40) + 'px' : '0px';
+}
+document.querySelectorAll('.acc').forEach(function(acc){
+  syncAcc(acc);
+  var h = acc.querySelector('.acc-h');
+  if(h) h.addEventListener('click', function(){ acc.classList.toggle('open'); syncAcc(acc); });
+});
+window.addEventListener('resize', function(){
+  document.querySelectorAll('.acc.open').forEach(syncAcc);
+});
+
+document.querySelectorAll('.tabs').forEach(function(group){
+  var wrapId = group.getAttribute('data-tabs');
+  var wrap = document.getElementById(wrapId);
+  if(!wrap) return;
+  group.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      group.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      wrap.querySelectorAll('.tab-panel').forEach(function(p){
+        p.classList.toggle('active', p.getAttribute('data-panel') === btn.getAttribute('data-tab'));
+      });
+    });
+  });
+});
+
+/* ============================================================
+   5. CÍRCULO DE CUARTAS INTERACTIVO
+   ============================================================ */
+(function(){
+  var box = document.getElementById('circleBox');
+  if(!box) return;
+  var notes = ['C','F','Bb','Eb','Ab','Db','Gb','B','E','A','D','G'];
+  var S = 460, cx = S/2, cy = S/2, R = 168;
+  var svg = '<svg viewBox="0 0 '+S+' '+S+'" width="'+S+'" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Círculo de cuartas interactivo">';
+  svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="5 7"/>';
+  svg += '<circle cx="'+cx+'" cy="'+cy+'" r="'+(R-56)+'" fill="none" stroke="#152a45" stroke-width="1"/>';
+  notes.forEach(function(n,i){
+    var ang = (-90 + i*30)*Math.PI/180;
+    var px = cx + R*Math.cos(ang), py = cy + R*Math.sin(ang);
+    var hot = ['C','F','Bb','Eb','Ab'].indexOf(n) >= 0;
+    svg += '<g class="cnote" data-note="'+n+'" role="button" tabindex="0" aria-label="Nota '+n+'">'+
+           '<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="27" fill="'+(hot?'rgba(0,212,255,.14)':'#0d1a2d')+
+           '" stroke="'+(hot?'#00d4ff':'#1e3a5f')+'" stroke-width="2"/>'+
+           '<text x="'+px.toFixed(1)+'" y="'+(py+7).toFixed(1)+'" text-anchor="middle" font-size="19" font-weight="800" fill="'+(hot?'#a5f3fc':'#94a3b8')+'">'+n+'</text></g>';
+  });
+  svg += '<text x="'+cx+'" y="'+(cy-8)+'" text-anchor="middle" font-size="13" letter-spacing="2" fill="#64748b" font-weight="800">IV →</text>';
+  svg += '<text x="'+cx+'" y="'+(cy+16)+'" text-anchor="middle" font-size="15" fill="#00d4ff" font-weight="800">PULSA UNA NOTA</text>';
+  svg += '</svg>';
+  box.innerHTML = svg;
+  var info = document.getElementById('circleInfo');
+  function pick(g){
+    var n = g.getAttribute('data-note');
+    if(!SCALES[n]) { info.innerHTML = '<span class="ct">Escala no incluida</span>Nota: <b>'+disp(n)+'</b>'; return; }
+    var sc = SCALES[n], iv = sc[3];
+    var chips = sc.map(function(x,i){
+      return '<span class="chip'+(i===3?' acc':'')+'">'+x+'('+DEGS[i]+')</span>';
+    }).join(' ');
+    info.className = 'callout example';
+    info.innerHTML = '<span class="ct">Objetivo '+n+' → tratado como I</span>'+
+      '<div style="margin:6px 0">'+chips+'</div>'+
+      '<b>IV de '+n+' = '+disp(iv)+'</b> · intervalo: <b>cuarta justa</b> · preparación: <span class="mono">'+iv+' → '+n+'</span>'+
+      '<div style="margin-top:10px"><button class="btn sm gr" data-play="'+iv+'|'+n+'">▶ Escuchar '+iv+' → '+n+'</button></div>';
+    playSequence([iv, n], 0.85, 0.07, false, false);
+  }
+  box.querySelectorAll('.cnote').forEach(function(g){
+    g.addEventListener('click', function(){ pick(g); });
+    g.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pick(g); } });
+  });
+})();
+
+/* ============================================================
+   6. TABLA DE RELACIONES BÁSICAS (§30) + CALCULADORA
+   ============================================================ */
+(function(){
+  var tb = document.getElementById('tblBasic');
+  if(tb){
+    [['C','F'],['D','G'],['E','A'],['F','Bb'],['G','C'],['A','D'],['B','E']].forEach(function(r){
+      var sc = SCALES[r[0]];
+      var chips = sc.map(function(x,i){ return '<span class="chip'+(i===3?' acc':'')+'" style="padding:3px 8px;font-size:12px">'+x+'('+DEGS[i]+')</span>'; }).join('');
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><b>'+r[0]+'</b></td><td><b style="color:#7dd3fc">'+r[1]+'</b></td><td>'+chips+'</td>'+
+                     '<td><button class="btn sm" data-play="'+r[1]+'|'+r[0]+'">▶</button></td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  var keys = document.getElementById('calcKeys');
+  var out = document.getElementById('calcOut');
+  if(keys && out){
+    ROOTS.forEach(function(n){
+      var b = document.createElement('button');
+      b.className = 'btn sm'; b.textContent = n; b.setAttribute('data-root', n);
+      b.style.minWidth = '54px';
+      keys.appendChild(b);
+    });
+    keys.addEventListener('click', function(e){
+      var b = e.target.closest('[data-root]'); if(!b) return;
+      var n = b.getAttribute('data-root');
+      var sc = SCALES[n];
+      if(!sc){ out.innerHTML = '<p>Nota no disponible en la tabla de escalas.</p>'; return; }
+      var iv = sc[3];
+      var chips = sc.map(function(x,i){ return '<span class="chip'+(i===3?' acc':'')+'">'+x+' <b style="opacity:.7">('+DEGS[i]+')</b></span>'; }).join('');
+      out.innerHTML =
+        '<h4 style="margin-top:0">Objetivo tratado como I: '+n+'(I)</h4>'+
+        '<div style="margin:8px 0">'+chips+'</div>'+
+        '<div class="rel-line"><span class="pill">IV de '+n+'</span> <b style="font-size:18px;color:#7dd3fc">'+disp(iv)+'</b></div>'+
+        '<div class="rel-line"><span class="pill g">Intervalo</span> '+n+' → '+disp(iv)+' = <b>cuarta justa</b></div>'+
+        '<div class="rel-line"><span class="pill p">Preparación</span> <span class="mono">'+iv+' → '+n+'</span></div>'+
+        '<div style="margin-top:10px"><button class="btn sm gr" data-play="'+iv+'|'+n+'">▶ Escuchar '+iv+' → '+n+'</button>'+
+        '<button class="btn sm" data-play="'+iv+'">▶ Solo '+iv+'</button></div>';
+      playSequence([iv, n], 0.85, 0.07, false, false);
+    });
+  }
+})();
+
+/* ============================================================
+   7. QUIZ §26
+   ============================================================ */
+(function(){
+  var box = document.getElementById('quizBox'); if(!box) return;
+  var items = [['C','F'],['F','Bb'],['Bb','Eb'],['Eb','Ab'],['G','C'],['D','G'],['A','D'],['E','A']];
+  var scoreEl = document.getElementById('quizScore');
+  var answered = {};
+  function render(){
+    box.innerHTML = '';
+    items.forEach(function(it, idx){
+      var row = document.createElement('div');
+      row.className = 'quiz-row';
+      var opts = ROOTS.map(function(r){ return '<option value="'+r+'">'+r+'</option>'; }).join('');
+      row.innerHTML = '<span class="qn">'+it[0]+'</span><span style="color:var(--muted);font-size:13px">→ ¿cuál es su IV?</span>'+
+        '<select data-i="'+idx+'"><option value="">—</option>'+opts+'</select>'+
+        '<button class="btn sm acc" data-check="'+idx+'">Comprobar</button>'+
+        '<button class="btn sm" data-hear="'+idx+'">▶ Oír</button>'+
+        '<span class="fb" data-fb="'+idx+'"></span>';
+      box.appendChild(row);
+    });
+  }
+  render();
+  function refresh(){
+    var ok = Object.keys(answered).filter(function(k){ return answered[k] === true; }).length;
+    scoreEl.textContent = 'Aciertos: ' + ok + ' / ' + items.length;
+    scoreEl.className = 'chip' + (ok === items.length ? ' acc' : '');
+  }
+  box.addEventListener('click', function(e){
+    var c = e.target.closest('[data-check]');
+    if(c){
+      var i = c.getAttribute('data-check');
+      var sel = box.querySelector('select[data-i="'+i+'"]');
+      var fb = box.querySelector('[data-fb="'+i+'"]');
+      if(!sel.value){ fb.className='fb no'; fb.textContent='Elige una nota'; return; }
+      if(sel.value === items[i][1]){
+        fb.className='fb ok'; fb.textContent='✔ Correcto: '+items[i][1];
+        answered[i]=true;
+      } else {
+        fb.className='fb no'; fb.textContent='✘ Incorrecto — piensa: '+items[i][0]+'(I)';
+        answered[i]=false;
+      }
+      refresh(); return;
+    }
+    var h = e.target.closest('[data-hear]');
+    if(h){
+      var j = h.getAttribute('data-hear');
+      playSequence([items[j][1], items[j][0]], 0.85, 0.07, false, false);
+    }
+  });
+  var showBtn = document.getElementById('quizShow');
+  var ansBox = document.getElementById('quizAnswers');
+  showBtn.addEventListener('click', function(){
+    ansBox.classList.toggle('show');
+    showBtn.textContent = ansBox.classList.contains('show') ? '🙈 Ocultar respuestas' : '👁 Ver todas las respuestas';
+  });
+  document.getElementById('quizReset').addEventListener('click', function(){
+    answered = {}; render(); refresh();
+    ansBox.classList.remove('show'); showBtn.textContent='👁 Ver todas las respuestas';
+  });
+  refresh();
+})();
+
+/* ============================================================
+   8. CHECKLIST §53
+   ============================================================ */
+(function(){
+  var wrap = document.getElementById('checklist'); if(!wrap) return;
+  var items = [
+    '¿Cuál es el acorde objetivo?',
+    '¿Cuál es su IV?',
+    '¿La relación tiene sentido musical?',
+    '¿La melodía funciona sobre el acorde?',
+    '¿El bajo mejora?',
+    '¿El ritmo funciona?',
+    '¿La calidad del acorde es apropiada?',
+    '¿El voicing funciona?',
+    '¿El cromatismo aporta algo?',
+    '¿La llegada queda mejor?',
+    '¿La progresión sigue sonando natural?',
+    '¿El acorde realmente mejora el arreglo?'
+  ];
+  items.forEach(function(t,i){
+    var l = document.createElement('label');
+    l.className = 'chk';
+    l.innerHTML = '<input type="checkbox" data-c="'+i+'"><span>'+t+'</span>';
+    wrap.appendChild(l);
+  });
+  var verdict = document.getElementById('verdict');
+  function upd(){
+    var boxes = wrap.querySelectorAll('input[type=checkbox]');
+    var n = 0;
+    boxes.forEach(function(b){ b.closest('.chk').classList.toggle('done', b.checked); if(b.checked) n++; });
+    var last = boxes[boxes.length-1].checked;
+    if(n === items.length && last){
+      verdict.className = 'verdict ok';
+      verdict.innerHTML = '✔ ' + n + ' de ' + items.length + ' verificados · <b>CONSERVA EL ACORDE</b>';
+    } else {
+      verdict.className = 'verdict no';
+      verdict.innerHTML = 'Pendiente: ' + n + ' de ' + items.length + ' verificados · ' +
+        (last ? 'revisa los puntos anteriores' : 'falta la pregunta decisiva: <b>¿el acorde realmente mejora el arreglo?</b>');
+    }
+  }
+  wrap.addEventListener('change', upd);
+  upd();
+})();
+
+/* ============================================================
+   9. LABORATORIO — GENERADOR DE CADENAS
+   ============================================================ */
+var labChain = ['Ab','Eb','Bb','F','C'];
+(function(){
+  var selT = document.getElementById('labTarget');
+  var selD = document.getElementById('labDepth');
+  var selQ = document.getElementById('qualRoot');
+  if(!selT) return;
+  ROOTS.forEach(function(n){
+    var o = document.createElement('option'); o.value=n; o.textContent=n; selT.appendChild(o);
+    var o2 = o.cloneNode(true); selQ.appendChild(o2);
+  });
+  selT.value = 'C'; selQ.value = 'Bb';
+
+  function degNotation(chain, target){
+    /* Solo cuando el objetivo es la tónica principal C (notación del documento: IV, IV/IV, ...) */
+    if(target !== 'C') return null;
+    var out = [];
+    for(var i=chain.length-1;i>=0;i--){
+      var back = chain.length-1-i;
+      if(back === 0) out.push('I');
+      else {
+        var s = 'IV';
+        for(var k=1;k<back;k++) s += '/IV';
+        out.push(s);
+      }
+    }
+    return out;
+  }
+
+  function build(){
+    var target = selT.value;
+    var depth = parseInt(selD.value,10);
+    var chain = [target];
+    for(var i=0;i<depth;i++){ chain.unshift(ivOf(chain[0])); }
+    labChain = chain;
+    var degs = degNotation(chain, target);
+    var out = document.getElementById('labOut');
+    var nodes = '';
+    chain.forEach(function(n,i){
+      var cls = (i===chain.length-1) ? 'tgt' : (i >= chain.length-3 ? 'prep' : 'deep');
+      nodes += '<span class="cnode '+cls+'">'+disp(n)+
+        (degs ? '<small style="display:block;font-size:10px;color:var(--muted)">'+degs[i]+'</small>' : '')+'</span>';
+      if(i < chain.length-1) nodes += '<span class="carrow">→<small>IV</small></span>';
+    });
+    var rels = '';
+    for(var j=0;j<chain.length-1;j++){
+      rels += '<div class="rel-line"><span class="pill">'+disp(chain[j])+' → '+disp(chain[j+1])+'</span> '+
+              '<b>'+disp(chain[j])+'</b> = IV de <b>'+disp(chain[j+1])+'</b>'+
+              (degs ? ' <span class="pill p">'+degs[j]+'</span>' : '')+'</div>';
+    }
+    var scales = '';
+    chain.forEach(function(n){
+      if(n === chain[chain.length-1] && !degs) return;
+      var sc = SCALES[n]; if(!sc) return;
+      scales += '<div class="rel-line"><span class="pill g">'+n+'(I)</span> '+
+        sc.map(function(x,i){ return '<span class="chip'+(i===3?' acc':'')+'" style="padding:3px 8px;font-size:12px">'+x+'('+DEGS[i]+')</span>'; }).join(' ')+'</div>';
+    });
+    out.innerHTML =
+      '<div class="kicker" style="margin-bottom:8px">Cadena generada · '+depth+' nivel(es) de preparación hacia '+target+'</div>'+
+      '<div class="chain" style="justify-content:flex-start">'+nodes+'</div>'+
+      '<h4>Relaciones funcionales</h4>'+rels+
+      '<h4>Escalas de referencia temporal (cada acorde tratado como I)</h4>'+scales+
+      '<div class="callout info" style="margin-bottom:0"><span class="ct info">Lectura</span>'+
+      'Cada flecha significa: “El acorde de la izquierda funciona como subdominante del acorde de la derecha.”'+
+      (degs ? ' Notación respecto de C: <b>'+degs.slice(0,degs.length-1).join(' · ')+'</b>.' : '')+
+      '</div>';
+  }
+  document.getElementById('labBuild').addEventListener('click', build);
+  document.getElementById('labPlay').addEventListener('click', function(){ playSequence(labChain, 0.9, 0.08, false, false); });
+  document.getElementById('labPlayRoots').addEventListener('click', function(){ playSequence(labChain, 0.9, 0.08, true, false); });
+  document.getElementById('labPlaySlow').addEventListener('click', function(){ playSequence(labChain, 1.6, 0.1, false, true); });
+  build();
+
+  /* comparador de calidades */
+  var qOut = document.getElementById('qualOut');
+  function qName(){
+    var r = selQ.value, t = selQ ? document.getElementById('qualType').value : '';
+    if(t === '/3'){
+      var sc = SCALES[r]; return {str: r + '/' + sc[2], target: ivOf(r), notes: r+'(bajo: '+sc[2]+') · '+sc[4]+' · '+r, kind:'inversión'};
+    }
+    var s2 = SCALES[r];
+    var notes;
+    if(t === 'maj7') notes = s2[0]+' - '+s2[2]+' - '+s2[4]+' - '+s2[6];
+    else if(t === '7') notes = s2[0]+' - '+s2[2]+' - '+s2[4]+' - 7.ª menor';
+    else if(t === '6') notes = s2[0]+' - '+s2[2]+' - '+s2[4]+' - 6.ª';
+    else notes = s2[0]+' - '+s2[2]+' - '+s2[4];
+    return {str: r + t, target: ivOf(r), notes: notes, kind: t===''?'tríada mayor':t};
+  }
+  function renderQ(){
+    var q = qName();
+    qOut.innerHTML =
+      '<div class="rel-line"><span class="pill">Acorde preparatorio</span> <b style="font-size:17px;color:#7dd3fc">'+q.str+'</b></div>'+
+      '<div class="rel-line"><span class="pill g">Objetivo (del cual es IV)</span> <b style="font-size:17px">'+disp(q.target)+'</b></div>'+
+      '<div class="rel-line"><span class="pill p">Notas</span> <span class="mono">'+q.notes+'</span></div>'+
+      '<div class="rel-line"><span class="pill">Progresión</span> <span class="mono">'+q.str+' → '+q.target+'</span></div>';
+  }
+  document.getElementById('qualType').addEventListener('change', renderQ);
+  selQ.addEventListener('change', renderQ);
+  document.getElementById('qualPlay').addEventListener('click', function(){
+    var q = qName();
+    playSequence([q.str, q.target], 1.0, 0.08, false, false);
+  });
+  document.getElementById('qualNotes').addEventListener('click', renderQ);
+  renderQ();
+})();
+
+/* ============================================================
+   10. TECLADO INTERACTIVO DEL LABORATORIO
+   ============================================================ */
+(function(){
+  var p = document.getElementById('labPiano'); if(!p) return;
+  var whites = [
+    {n:'C',o:3},{n:'D',o:3},{n:'E',o:3},{n:'F',o:3},{n:'G',o:3},{n:'A',o:3},{n:'B',o:3},
+    {n:'C',o:4},{n:'D',o:4},{n:'E',o:4},{n:'F',o:4},{n:'G',o:4},{n:'A',o:4},{n:'B',o:4},{n:'C',o:5}
+  ];
+  var blacks = {0:{n:'C#',o:3},1:{n:'D#',o:3},3:{n:'F#',o:3},4:{n:'G#',o:3},5:{n:'A#',o:3},
+                7:{n:'C#',o:4},8:{n:'D#',o:4},10:{n:'F#',o:4},11:{n:'G#',o:4},12:{n:'A#',o:4}};
+  var N = whites.length, W = 100/N;
+  var html = '';
+  whites.forEach(function(k,i){
+    var m = 12*(k.o+1)+semiOf(k.n);
+    html += '<div class="wkey" data-midi="'+m+'" data-name="'+k.n+k.o+'" style="left:'+(i*W)+'%;width:'+W+'%">'+k.n+'<sub style="font-size:8px">'+k.o+'</sub></div>';
+  });
+  Object.keys(blacks).forEach(function(i){
+    var k = blacks[i], wi = parseInt(i,10);
+    var m = 12*(k.o+1)+semiOf(k.n);
+    var left = (wi+1)*W - (W*0.6)/2;
+    html += '<div class="bkey" data-midi="'+m+'" data-name="'+k.n+k.o+'" style="left:'+left+'%;width:'+(W*0.6)+'%">'+k.n+'</div>';
+  });
+  p.innerHTML = html;
+  p.addEventListener('pointerdown', function(e){
+    var k = e.target.closest('[data-midi]'); if(!k) return;
+    var m = parseInt(k.getAttribute('data-midi'),10);
+    var ac = AC(); if(!ac) return;
+    noteOn(ac, m, ac.currentTime, 1.1, 0.2);
+    k.classList.add('lit');
+    setTimeout(function(){ k.classList.remove('lit'); }, 320);
+  });
+})();
+
+/* ============================================================
+   11. TECLADO: navegación por teclado físico (accesibilidad)
+   ============================================================ */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){ showPage('home'); }
+});
+
+})();
+</script>
+</body>
+</html>
