@@ -1,1517 +1,501 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>El Movimiento de una Nota: Acordes con Vida — Rubén Sbarsky</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Make Your Chords Flow (Lesson Guide) by Rubén Sbarsky</title>
 <style>
-:root{
-  --bg:#0a0e1a;
-  --card:#0f172a;
-  --border:#1e3a5f;
-  --accent:#00d4ff;
-  --green:#22c55e;
-  --amber:#f59e0b;
-  --red:#ef4444;
-  --purple:#a855f7;
-  --text:#e2e8f0;
-  --muted:#94a3b8;
-  --nav-h:58px;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-  line-height:1.65;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
-#progressTrack{
-  position:fixed;top:0;left:0;right:0;height:3px;
-  background:rgba(30,58,95,.6);z-index:1200;
-}
-#progressBar{
-  height:100%;width:0%;
-  background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));
-  transition:width .12s linear;
-  box-shadow:0 0 10px rgba(0,212,255,.7);
-}
-#navbar{
-  position:fixed;top:3px;left:0;right:0;height:var(--nav-h);
-  background:rgba(10,14,26,.95);
-  -webkit-backdrop-filter:blur(10px);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--border);
-  z-index:1100;
-  display:flex;align-items:center;
-}
-#navScroll{
-  display:flex;gap:6px;align-items:center;
-  overflow-x:auto;overflow-y:hidden;
-  padding:0 10px;width:100%;height:100%;
-  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
-  -webkit-overflow-scrolling:touch;
-}
-#navScroll::-webkit-scrollbar{height:4px}
-#navScroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
-.nav-brand{
-  flex:0 0 auto;font-weight:800;font-size:.78rem;letter-spacing:.06em;
-  color:var(--accent);padding:0 12px 0 4px;border-right:1px solid var(--border);
-  margin-right:6px;white-space:nowrap;text-transform:uppercase;
-}
-.nav-btn{
-  flex:0 0 auto;
-  background:transparent;border:1px solid transparent;
-  color:var(--muted);font-family:inherit;font-size:.78rem;font-weight:600;
-  padding:8px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;
-  transition:all .2s ease;letter-spacing:.02em;
-}
-.nav-btn:hover{color:var(--text);background:rgba(0,212,255,.07);border-color:var(--border)}
-.nav-btn.active{
-  color:#04121b;background:var(--accent);border-color:var(--accent);
-  box-shadow:0 0 14px rgba(0,212,255,.45);
-}
-main{padding-top:calc(var(--nav-h) + 3px);}
-.section{display:none;padding:18px 16px 70px;max-width:1080px;margin:0 auto;animation:fadeIn .38s ease}
-.section.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.hero-wrap{
-  width:100%;border-radius:14px;overflow:hidden;
-  border:1px solid var(--border);
-  box-shadow:0 0 0 1px rgba(0,212,255,.08),0 18px 50px -20px rgba(0,212,255,.35);
-  background:#070b14;
-  margin-bottom:18px;
-}
-.hero-wrap svg{display:block;width:100%;height:auto}
-h1{
-  font-size:clamp(1.6rem,5vw,2.7rem);line-height:1.15;font-weight:800;
-  letter-spacing:-.02em;margin-bottom:12px;
-  background:linear-gradient(120deg,#ffffff 10%,var(--accent) 55%,var(--purple) 100%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-h2{
-  font-size:clamp(1.25rem,3.6vw,1.75rem);font-weight:800;margin:0 0 6px;
-  color:#fff;letter-spacing:-.01em;
-}
-h3{font-size:1.06rem;font-weight:700;color:var(--accent);margin:22px 0 10px;letter-spacing:.01em}
-h4{font-size:.96rem;font-weight:700;color:#cbd5e1;margin:16px 0 8px}
-p{margin-bottom:12px;color:#cbd5e1}
-ul,ol{margin:0 0 14px 20px;color:#cbd5e1}
-li{margin-bottom:7px}
-strong{color:#fff;font-weight:700}
-code{
-  font-family:ui-monospace,'Cascadia Code',Consolas,monospace;
-  background:rgba(0,212,255,.10);color:var(--accent);
-  padding:2px 7px;border-radius:6px;font-size:.88em;border:1px solid rgba(0,212,255,.18);
-}
-.badge{
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.35);
-  color:var(--accent);font-size:.7rem;font-weight:800;letter-spacing:.14em;
-  text-transform:uppercase;padding:6px 13px;border-radius:999px;margin-bottom:14px;
-}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
-.chip{
-  background:var(--card);border:1px solid var(--border);color:var(--muted);
-  font-size:.72rem;font-weight:700;padding:5px 11px;border-radius:999px;letter-spacing:.04em;
-}
-.chip.b{border-color:rgba(0,212,255,.45);color:var(--accent)}
-.chip.g{border-color:rgba(34,197,94,.45);color:var(--green)}
-.chip.a{border-color:rgba(245,158,11,.45);color:var(--amber)}
-.chip.p{border-color:rgba(168,85,247,.45);color:var(--purple)}
-.chip.r{border-color:rgba(239,68,68,.45);color:var(--red)}
-.card{
-  background:var(--card);border:1px solid var(--border);border-radius:12px;
-  padding:20px;margin-bottom:18px;position:relative;overflow:hidden;
-}
-.card::before{
-  content:'';position:absolute;top:0;left:0;width:100%;height:2px;
-  background:linear-gradient(90deg,var(--accent),transparent 65%);opacity:.65;
-}
-.card.p::before{background:linear-gradient(90deg,var(--purple),transparent 65%)}
-.card.g::before{background:linear-gradient(90deg,var(--green),transparent 65%)}
-.card.a::before{background:linear-gradient(90deg,var(--amber),transparent 65%)}
-.card.r::before{background:linear-gradient(90deg,var(--red),transparent 65%)}
-.section-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap}
-.section-ico{
-  flex:0 0 auto;width:46px;height:46px;border-radius:11px;
-  display:flex;align-items:center;justify-content:center;font-size:1.35rem;
-  background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.32);
-}
-.section-ico.p{background:rgba(168,85,247,.10);border-color:rgba(168,85,247,.32)}
-.section-ico.g{background:rgba(34,197,94,.10);border-color:rgba(34,197,94,.32)}
-.section-ico.a{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.32)}
-.grid{display:grid;gap:14px}
-.g2{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
-.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:20px 0}
-.metric{
-  background:var(--card);border:1px solid var(--border);border-radius:11px;
-  padding:14px 12px;text-align:center;
-}
-.metric .val{
-  font-size:1.5rem;font-weight:800;color:var(--accent);line-height:1.1;
-  display:block;font-variant-numeric:tabular-nums;
-}
-.metric .lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-top:5px;display:block}
-.quote{
-  border-left:4px solid var(--accent);
-  background:linear-gradient(90deg,rgba(0,212,255,.10),transparent);
-  padding:16px 18px;border-radius:0 11px 11px 0;margin:20px 0;
-  font-style:italic;color:#e2e8f0;font-size:.98rem;
-}
-.quote::before{content:'“';color:var(--accent);font-size:2rem;line-height:0;vertical-align:-.35em;margin-right:5px;font-style:normal}
-.callout{border-left:4px solid;padding:13px 16px;border-radius:9px;margin:15px 0;font-size:.92rem}
-.callout .ct{font-weight:800;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:5px}
-.callout.info{border-color:var(--accent);background:rgba(0,212,255,.08)}
-.callout.info .ct{color:var(--accent)}
-.callout.ejemplo{border-color:var(--green);background:rgba(34,197,94,.08)}
-.callout.ejemplo .ct{color:var(--green)}
-.callout.advertencia{border-color:var(--amber);background:rgba(245,158,11,.08)}
-.callout.advertencia .ct{color:var(--amber)}
-.callout.error{border-color:var(--red);background:rgba(239,68,68,.08)}
-.callout.error .ct{color:var(--red)}
-.table-wrap{overflow-x:auto;margin:16px 0;border-radius:11px;border:1px solid var(--border);-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;min-width:520px;font-size:.87rem}
-th{
-  background:#0c1526;color:var(--accent);text-align:left;padding:11px 13px;
-  font-weight:800;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
-  border-bottom:1px solid var(--border);white-space:nowrap;
-}
-td{padding:10px 13px;border-bottom:1px solid rgba(30,58,95,.55);color:#cbd5e1;vertical-align:top}
-tr:last-child td{border-bottom:none}
-tbody tr:hover{background:rgba(0,212,255,.045)}
-.steps{list-style:none;margin:16px 0;padding:0;counter-reset:st}
-.steps li{
-  counter-increment:st;position:relative;padding:13px 14px 13px 52px;
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  margin-bottom:10px;
-}
-.steps li::before{
-  content:counter(st);position:absolute;left:13px;top:13px;
-  width:26px;height:26px;border-radius:8px;
-  background:rgba(0,212,255,.14);border:1px solid rgba(0,212,255,.4);
-  color:var(--accent);font-weight:800;font-size:.78rem;
-  display:flex;align-items:center;justify-content:center;
-}
-.steps li .why{display:block;color:var(--muted);font-size:.83rem;margin-top:5px;font-style:italic}
-.check{list-style:none;margin:14px 0;padding:0}
-.check li{
-  position:relative;padding:10px 12px 10px 42px;background:var(--card);
-  border:1px solid var(--border);border-radius:9px;margin-bottom:8px;font-size:.9rem;
-}
-.check li::before{
-  content:'✓';position:absolute;left:12px;top:9px;
-  width:20px;height:20px;border-radius:6px;background:rgba(34,197,94,.14);
-  border:1px solid rgba(34,197,94,.45);color:var(--green);
-  font-size:.72rem;font-weight:900;display:flex;align-items:center;justify-content:center;
-}
-.formula{
-  font-family:ui-monospace,'Cascadia Code',Consolas,monospace;
-  background:#070d18;border:1px dashed rgba(0,212,255,.42);border-radius:10px;
-  padding:13px 16px;color:var(--accent);font-size:.92rem;font-weight:700;
-  margin:13px 0;overflow-x:auto;white-space:nowrap;letter-spacing:.03em;
-}
-.formula.a{border-color:rgba(245,158,11,.45);color:var(--amber)}
-.formula.g{border-color:rgba(34,197,94,.45);color:var(--green)}
-.formula.p{border-color:rgba(168,85,247,.45);color:var(--purple)}
-details{
-  background:var(--card);border:1px solid var(--border);border-radius:10px;
-  margin-bottom:10px;overflow:hidden;
-}
-details[open]{border-color:rgba(0,212,255,.42)}
-summary{
-  cursor:pointer;padding:13px 16px;font-weight:700;color:#e2e8f0;
-  list-style:none;display:flex;justify-content:space-between;gap:12px;
-  align-items:center;font-size:.93rem;transition:background .2s;
-}
-summary::-webkit-details-marker{display:none}
-summary:hover{background:rgba(0,212,255,.06)}
-summary::after{
-  content:'+';color:var(--accent);font-weight:900;font-size:1.2rem;line-height:1;
-  flex:0 0 auto;transition:transform .25s;
-}
-details[open] summary::after{content:'−';transform:rotate(180deg)}
-.details-body{padding:2px 16px 16px;color:#cbd5e1;font-size:.9rem;border-top:1px solid rgba(30,58,95,.5);margin-top:2px;padding-top:14px}
-/* PIANO */
-.piano-panel{
-  background:var(--card);border:1px solid var(--border);border-radius:12px;
-  padding:16px;margin:18px 0;
-}
-.piano-panel h4{margin-top:0}
-.chord-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.cbtn{
-  background:#0c1526;border:1px solid var(--border);color:var(--muted);
-  font-family:inherit;font-size:.78rem;font-weight:700;padding:8px 13px;
-  border-radius:9px;cursor:pointer;transition:all .18s;
-}
-.cbtn:hover{border-color:rgba(0,212,255,.5);color:var(--text)}
-.cbtn.active{background:rgba(0,212,255,.14);border-color:var(--accent);color:var(--accent);box-shadow:0 0 12px rgba(0,212,255,.25)}
-.piano{
-  position:relative;height:132px;width:100%;
-  border-radius:8px;overflow:hidden;background:#070b14;
-  border:1px solid var(--border);user-select:none;
-}
-.pkey{
-  position:absolute;bottom:0;top:0;
-  background:linear-gradient(180deg,#f8fafc,#cbd5e1);
-  border-right:1px solid #1e293b;border-radius:0 0 6px 6px;
-  display:flex;align-items:flex-end;justify-content:center;
-  padding-bottom:7px;font-size:.62rem;font-weight:800;color:#475569;
-  transition:background .18s,box-shadow .18s;
-  cursor:pointer;pointer-events:none;
-}
-.pkey.black{
-  top:0;height:62%;z-index:3;
-  background:linear-gradient(180deg,#334155,#0f172a);
-  border:1px solid #020617;border-right:none;border-radius:0 0 5px 5px;
-  color:#94a3b8;font-size:.56rem;padding-bottom:5px;
-}
-.pkey.on{background:linear-gradient(180deg,#67e8f9,#00d4ff);color:#04121b;box-shadow:0 0 18px rgba(0,212,255,.75) inset,0 0 14px rgba(0,212,255,.5)}
-.pkey.black.on{background:linear-gradient(180deg,#00d4ff,#0891b2);color:#04121b;box-shadow:0 0 16px rgba(0,212,255,.75)}
-.chord-info{
-  margin-top:13px;padding:12px 14px;border-radius:9px;
-  background:#0c1526;border:1px solid var(--border);font-size:.87rem;
-}
-.chord-info .cn{font-weight:800;color:var(--accent);font-size:1rem;display:block;margin-bottom:4px}
-.chord-info .notes{font-family:ui-monospace,Consolas,monospace;color:var(--green);font-weight:700;letter-spacing:.04em}
-#toTop{
-  position:fixed;right:16px;bottom:16px;width:46px;height:46px;border-radius:12px;
-  background:rgba(0,212,255,.14);border:1px solid rgba(0,212,255,.5);
-  color:var(--accent);font-size:1.25rem;font-weight:900;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;z-index:1000;
-  opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
-  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
-}
-#toTop.show{opacity:1;pointer-events:auto}
-#toTop:hover{background:rgba(0,212,255,.26);transform:translateY(-3px)}
-footer{
-  border-top:1px solid var(--border);background:#080c16;
-  padding:26px 16px 34px;text-align:center;color:var(--muted);font-size:.83rem;
-}
-footer p{margin-bottom:6px;color:var(--muted)}
-footer .law{color:var(--amber);font-style:italic;margin-top:12px;font-size:.82rem;letter-spacing:.02em}
-.credit-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin:18px 0}
-.credit-item{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px}
-.credit-item .k{font-size:.68rem;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);font-weight:800;display:block;margin-bottom:4px}
-.credit-item .v{font-size:.98rem;color:#fff;font-weight:700;word-break:break-word}
-@media(max-width:640px){
-  .section{padding:14px 11px 60px}
-  .card{padding:15px}
-  .nav-brand{display:none}
-  .metric .val{font-size:1.25rem}
-  .piano{height:112px}
-  .pkey{font-size:.54rem}
-  .pkey.black{font-size:.5rem}
-  table{min-width:460px;font-size:.82rem}
-  th,td{padding:9px 10px}
-}
-@media(prefers-reduced-motion:reduce){
-  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
-}
+  :root{
+    --bg:#0a0e1a;
+    --card:#0f172a;
+    --border:#1e3a5f;
+    --accent:#00d4ff;
+    --green:#22c55e;
+    --amber:#f59e0b;
+    --red:#ef4444;
+    --purple:#a855f7;
+    --text:#e2e8f0;
+    --text-dim:#94a3b8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height:1.6;
+    min-height:100vh;
+    padding-top:64px;
+  }
+  /* progress bar */
+  .progress-bar{
+    position:fixed; top:0; left:0; width:100%; height:4px;
+    background:rgba(255,255,255,0.05); z-index:1000;
+  }
+  .progress-fill{
+    height:100%; width:0%; background:linear-gradient(90deg,var(--accent),var(--purple));
+    transition:width .15s ease-out;
+  }
+  /* navbar */
+  .navbar{
+    position:fixed; top:4px; left:0; width:100%; z-index:999;
+    background:rgba(10,14,26,0.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    display:flex; gap:6px; overflow-x:auto; padding:10px 12px;
+    scrollbar-width:thin;
+  }
+  .nav-inner::-webkit-scrollbar{height:4px;}
+  .nav-inner::-webkit-scrollbar-thumb{background:var(--border); border-radius:4px;}
+  .nav-item{
+    flex:0 0 auto; background:transparent; color:var(--text-dim);
+    border:1px solid var(--border); border-radius:8px;
+    padding:8px 14px; font-size:.8rem; font-weight:600; letter-spacing:.04em;
+    cursor:pointer; white-space:nowrap; transition:all .2s ease;
+  }
+  .nav-item:hover{ color:var(--text); border-color:var(--accent); }
+  .nav-item.active{
+    background:linear-gradient(135deg,var(--accent),#0099cc);
+    color:#001018; border-color:var(--accent);
+  }
+  main{max-width:980px; margin:0 auto; padding:24px 18px 80px;}
+  .section{display:none; animation:fadeIn .35s ease;}
+  .section.active{display:block;}
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  /* HOME */
+  .badge{
+    display:inline-block; background:rgba(0,212,255,0.1); color:var(--accent);
+    border:1px solid var(--accent); border-radius:20px; padding:4px 14px;
+    font-size:.75rem; font-weight:700; letter-spacing:.08em; margin-bottom:16px;
+  }
+  h1.hero-title{
+    font-size:clamp(2rem,6vw,3.2rem); font-weight:800; letter-spacing:-.02em;
+    background:linear-gradient(135deg,#fff,var(--accent));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin-bottom:10px;
+  }
+  .hero-subtitle{ font-size:1.1rem; color:var(--text-dim); margin-bottom:18px; font-weight:600;}
+  .hero-desc{ color:var(--text-dim); max-width:640px; margin-bottom:22px; }
+  .hero-quote{
+    border-left:4px solid var(--purple); background:rgba(168,85,247,.08);
+    padding:14px 18px; border-radius:8px; font-style:italic; color:#dcd3f5;
+    margin-bottom:26px; max-width:640px;
+  }
+  .metrics{ display:flex; flex-wrap:wrap; gap:14px; margin-bottom:28px; }
+  .metric{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:12px 18px; min-width:120px;
+  }
+  .metric .num{ font-size:1.4rem; font-weight:800; color:var(--accent); }
+  .metric .lbl{ font-size:.72rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:.05em; }
+  .datetime{ font-size:.8rem; color:var(--text-dim); margin-bottom:26px; }
+  .datetime span{ color:var(--green); font-weight:700; }
+
+  .svg-wrap{
+    width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden;
+    border:1px solid var(--border); background:#060a14;
+  }
+  .svg-wrap svg{ width:100%; height:100%; display:block; }
+
+  /* cards / general content */
+  h2.step-title{
+    font-size:clamp(1.4rem,4vw,2rem); font-weight:800; color:#fff; margin-bottom:4px;
+  }
+  .step-eyebrow{
+    color:var(--accent); font-weight:700; font-size:.78rem; letter-spacing:.08em;
+    text-transform:uppercase; margin-bottom:6px; display:flex; align-items:center; gap:8px;
+  }
+  .video-tag{
+    background:rgba(245,158,11,.12); color:var(--amber); border:1px solid var(--amber);
+    border-radius:16px; padding:2px 10px; font-size:.72rem; font-weight:700;
+  }
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:18px 20px; margin:16px 0;
+  }
+  .card p{ color:var(--text); margin-bottom:8px; }
+  .card p:last-child{ margin-bottom:0; }
+  .card strong{ color:var(--accent); }
+  .callout{
+    border-radius:10px; padding:14px 18px; margin:16px 0; border:1px solid;
+    display:flex; gap:12px; align-items:flex-start;
+  }
+  .callout .icon{ font-size:1.1rem; }
+  .callout-info{ background:rgba(0,212,255,.08); border-color:var(--accent); }
+  .callout-example{ background:rgba(34,197,94,.08); border-color:var(--green); }
+  .callout-warning{ background:rgba(245,158,11,.08); border-color:var(--amber); }
+  .callout-error{ background:rgba(239,68,68,.08); border-color:var(--red); }
+  .callout-title{ font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; margin-bottom:2px; }
+  .chord-row{ display:flex; flex-wrap:wrap; gap:10px; margin:14px 0; }
+  .chord-chip{
+    background:#111c33; border:1px solid var(--border); border-radius:8px;
+    padding:10px 14px; text-align:center; min-width:76px;
+  }
+  .chord-chip .chord{ font-size:1.15rem; font-weight:800; color:var(--accent); }
+  .chord-chip .deg{ font-size:.68rem; color:var(--text-dim); }
+  blockquote.adam-quote{
+    border-left:4px solid var(--accent); background:rgba(0,212,255,.06);
+    padding:14px 18px; border-radius:8px; font-style:italic; margin:16px 0; color:#d7f4ff;
+  }
+  ol.steps-list{ margin:14px 0 14px 20px; }
+  ol.steps-list li{ margin-bottom:8px; }
+  .accordion{ margin:16px 0; }
+  .acc-item{ border:1px solid var(--border); border-radius:10px; margin-bottom:8px; overflow:hidden; background:var(--card); }
+  .acc-head{
+    width:100%; text-align:left; background:transparent; border:none; color:var(--text);
+    padding:14px 16px; font-weight:700; cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+    font-size:.95rem;
+  }
+  .acc-head:after{ content:'+'; color:var(--accent); font-size:1.2rem; transition:transform .2s ease; }
+  .acc-item.open .acc-head:after{ transform:rotate(45deg); }
+  .acc-body{ max-height:0; overflow:hidden; transition:max-height .25s ease; padding:0 16px; color:var(--text-dim); }
+  .acc-item.open .acc-body{ max-height:400px; padding:0 16px 16px; }
+
+  /* coach section */
+  .coach-flex{ display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; }
+  .coach-avatar{
+    width:96px; height:96px; border-radius:50%; flex:0 0 auto;
+    background:linear-gradient(135deg,var(--accent),var(--purple));
+    display:flex; align-items:center; justify-content:center; font-size:2.2rem; font-weight:800; color:#001018;
+  }
+  .coach-text{ flex:1; min-width:220px; }
+  .coach-mission{
+    margin-top:14px; border-radius:10px; border:1px dashed var(--green);
+    background:rgba(34,197,94,.06); padding:14px 16px; color:#d3f5df;
+  }
+
+  /* creditos */
+  .credits-box{ text-align:center; padding:20px 0 10px; }
+  .credits-box h2{ font-size:1.6rem; color:#fff; margin:18px 0 4px; }
+  .credits-box .author{ color:var(--accent); font-weight:800; font-size:1.1rem; margin-bottom:14px; }
+  .credits-meta{ color:var(--text-dim); font-size:.85rem; margin-bottom:18px; }
+  .latin{ font-style:italic; color:var(--purple); margin-top:18px; font-size:.9rem; }
+
+  /* back to top */
+  #backToTop{
+    position:fixed; bottom:22px; right:22px; width:46px; height:46px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),#0099cc); color:#001018; border:none;
+    font-size:1.2rem; font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(0,212,255,.35);
+    display:none; z-index:998;
+  }
+  #backToTop.show{ display:block; }
+
+  footer{
+    border-top:1px solid var(--border); margin-top:40px; padding:26px 18px;
+    text-align:center; color:var(--text-dim); font-size:.8rem; max-width:980px; margin-left:auto; margin-right:auto;
+  }
+  footer div{ margin:4px 0; }
+
+  @media (max-width:480px){
+    body{ padding-top:58px; }
+    .nav-item{ padding:7px 11px; font-size:.72rem; }
+    .card{ padding:14px 16px; }
+    .coach-flex{ flex-direction:column; align-items:center; text-align:center; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.001s !important; }
+    .note-dot, .flow-line, .pulse-ring{ animation:none !important; }
+  }
 </style>
 </head>
 <body>
 
-<div id="progressTrack"><div id="progressBar"></div></div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 
-<nav id="navbar">
-  <div id="navScroll">
-    <span class="nav-brand">🎹 One Note Move</span>
-    <button class="nav-btn active" data-target="home">Inicio</button>
-    <button class="nav-btn" data-target="recurso">Recurso</button>
-    <button class="nav-btn" data-target="cap1">Cap. 1 · Introducción</button>
-    <button class="nav-btn" data-target="cap2">Cap. 2 · Base</button>
-    <button class="nav-btn" data-target="cap3">Cap. 3 · Mov. Triple</button>
-    <button class="nav-btn" data-target="cap4">Cap. 4 · Groove</button>
-    <button class="nav-btn" data-target="cap5">Cap. 5 · Coordinación</button>
-    <button class="nav-btn" data-target="faq">FAQ</button>
-    <button class="nav-btn" data-target="ejercicio">Ejercicio</button>
-    <button class="nav-btn" data-target="glosario">Glosario</button>
-    <button class="nav-btn" data-target="creditos">Créditos</button>
+<nav class="navbar">
+  <div class="nav-inner" id="navInner">
+    <button class="nav-item active" data-target="home">HOME</button>
+    <button class="nav-item" data-target="paso1">PASO 1</button>
+    <button class="nav-item" data-target="paso2">PASO 2</button>
+    <button class="nav-item" data-target="paso3">PASO 3</button>
+    <button class="nav-item" data-target="paso4">PASO 4</button>
+    <button class="nav-item" data-target="coach">TU COACH</button>
+    <button class="nav-item" data-target="creditos">CRÉDITOS</button>
   </div>
 </nav>
 
-<main>
+<main id="app">
 
-<!-- ============================ HOME ============================ -->
-<section id="home" class="section active">
+  <section id="home" class="section active">
+    <span class="badge">GUÍA DE LECCIÓN · PIANO</span>
+    <h1 class="hero-title">MAKE YOUR CHORDS FLOW</h1>
+    <p class="hero-subtitle">Un truco simple para acordes más expresivos</p>
+    <p class="hero-desc">Introducción de Adam: esta técnica sencilla es su recurso favorito para conseguir que los acordes al piano "fluyan y respiren". Es fácil de aprender, suena musical desde el primer intento y ayuda a dar vida a cualquier progresión de acordes.</p>
+    <blockquote class="hero-quote">"Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."</blockquote>
 
-  <div class="hero-wrap" id="heroHome">
-    <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" role="img"
-         aria-label="Animación del Movimiento de una Nota: la tríada Si-Re-Sol sobre el teclado, con una nota que se mueve y regresa mientras las demás permanecen ancladas">
-      <defs>
-        <linearGradient id="m-bgGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#070b14"/>
-          <stop offset="45%" stop-color="#0d1526"/>
-          <stop offset="100%" stop-color="#070b14"/>
-        </linearGradient>
-        <linearGradient id="m-keyWhite" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#e2e8f0"/>
-          <stop offset="100%" stop-color="#94a3b8"/>
-        </linearGradient>
-        <linearGradient id="m-keyBlack" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#334155"/>
-          <stop offset="100%" stop-color="#020617"/>
-        </linearGradient>
-        <radialGradient id="m-glowBlue">
-          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.55"/>
-          <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="m-glowGreen">
-          <stop offset="0%" stop-color="#22c55e" stop-opacity="0.55"/>
-          <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="m-glowPurple">
-          <stop offset="0%" stop-color="#a855f7" stop-opacity="0.55"/>
-          <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="m-glowAmber">
-          <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.55"/>
-          <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
-        </radialGradient>
-        <pattern id="m-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M40 0 L0 0 0 40" fill="none" stroke="#1e3a5f" stroke-width="0.6" opacity="0.35"/>
-        </pattern>
-      </defs>
+    <div class="svg-wrap" id="homeSvgContainer"></div>
 
-      <rect x="0" y="0" width="800" height="450" fill="url(#m-bgGrad)"/>
-      <rect x="0" y="0" width="800" height="450" fill="url(#m-grid)"/>
+    <div class="metrics" style="margin-top:24px;">
+      <div class="metric"><div class="num">4</div><div class="lbl">Pasos</div></div>
+      <div class="metric"><div class="num">G</div><div class="lbl">Tonalidad base</div></div>
+      <div class="metric"><div class="num">7:35</div><div class="lbl">Duración vídeo</div></div>
+      <div class="metric"><div class="num">1</div><div class="lbl">Movimiento clave</div></div>
+    </div>
 
-      <text x="34" y="44" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5"
-            font-weight="800" letter-spacing="4" fill="#00d4ff" opacity="0.9">TÉCNICA DE PIANO · ONE NOTE MOVE</text>
-      <text x="34" y="80" font-family="Segoe UI, system-ui, sans-serif" font-size="26"
-            font-weight="800" fill="#ffffff" letter-spacing="-0.4">EL MOVIMIENTO DE UNA NOTA</text>
-      <text x="34" y="104" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5"
-            font-weight="600" fill="#94a3b8" letter-spacing="1.4">ACORDES CON VIDA · HOME BASE · GROOVE</text>
+    <div class="datetime">📅 Fecha: <span>12/09/2026</span> &nbsp;·&nbsp; 🕒 Hora: <span>17:51</span></div>
+  </section>
 
-      <!-- Etiqueta ciclo -->
-      <g>
-        <rect x="586" y="30" width="180" height="34" rx="17" fill="#0f172a" stroke="#1e3a5f"/>
-        <text x="676" y="52" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="11.5" font-weight="800" letter-spacing="2" fill="#00d4ff">
-          PULGAR · B → C → B → A → B
-        </text>
-      </g>
+  <!-- PASO 1 -->
+  <section id="paso1" class="section">
+    <div class="step-eyebrow">PASO #1 <span class="video-tag">🎬 vídeo 2:20</span></div>
+    <h2 class="step-title">The One Note Move</h2>
 
-      <!-- Título de bloque -->
-      <text x="400" y="150" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-            font-size="12" font-weight="800" letter-spacing="3" fill="#94a3b8">
-        HOME BASE · SOL MAYOR · 1ª INVERSIÓN
-      </text>
+    <div class="card">
+      <p>Empieza con una <strong>octava de G</strong> en la mano izquierda, y toca una <strong>tríada de G mayor en primera inversión (B–D–G)</strong> con la mano derecha.</p>
+      <div class="chord-row">
+        <div class="chord-chip"><div class="chord">B</div><div class="deg">3ª (III)</div></div>
+        <div class="chord-chip"><div class="chord">D</div><div class="deg">5ª (V)</div></div>
+        <div class="chord-chip"><div class="chord">G</div><div class="deg">raíz (I)</div></div>
+      </div>
+      <p>Mantén esa forma como tu "casa base" y luego mueve <strong>solo la nota más grave</strong>, después <strong>solo la del medio</strong>, y después <strong>solo la más aguda</strong>, volviendo cada vez a la tríada original.</p>
+    </div>
 
-      <!-- Glows estáticos bajo cada nodo ancla -->
-      <ellipse cx="240" cy="240" rx="60" ry="60" fill="url(#m-glowBlue)" opacity="0.55"/>
-      <ellipse cx="400" cy="240" rx="60" ry="60" fill="url(#m-glowGreen)" opacity="0.55"/>
-      <ellipse cx="560" cy="240" rx="60" ry="60" fill="url(#m-glowPurple)" opacity="0.55"/>
-
-      <!-- Línea conectora de la tríada -->
-      <line x1="270" y1="240" x2="370" y2="240" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="4 4"/>
-      <line x1="430" y1="240" x2="530" y2="240" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="4 4"/>
-
-      <!-- NODO 1: B (Si) — Pulgar, nota móvil -->
-      <g>
-        <circle cx="240" cy="240" r="42" fill="#0b1424" stroke="#00d4ff" stroke-width="3">
-          <animate attributeName="stroke-width" dur="1.6s" repeatCount="indefinite" values="3;5;3" keyTimes="0;0.5;1"/>
-        </circle>
-        <text x="240" y="236" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="26" font-weight="800" fill="#00d4ff">B</text>
-        <text x="240" y="256" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="12.5" font-weight="800" fill="#e2e8f0">(III)</text>
-        <text x="240" y="300" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="11" font-weight="800" letter-spacing="1.6" fill="#22c55e">PULGAR</text>
-      </g>
-
-      <!-- Nota fantasma: C (Do) que se activa al "moverse" -->
-      <g opacity="0">
-        <circle cx="240" cy="170" r="42" fill="#071019" stroke="#00d4ff" stroke-width="2.5" stroke-dasharray="3 3"/>
-        <text x="240" y="166" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="24" font-weight="800" fill="#00d4ff">C</text>
-        <text x="240" y="186" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="11" font-weight="800" fill="#e2e8f0">(IV)</text>
-        <animate attributeName="opacity" dur="4s" repeatCount="indefinite"
-                 keyTimes="0;0.18;0.28;0.36;0.5;0.62;0.72;0.8;1"
-                 values="0;0;1;1;0;0;1;1;0"/>
-        <animateTransform attributeName="transform" type="translate" dur="4s"
-                          repeatCount="indefinite"
-                          values="0 0; 0 0; 0 -70; 0 -70; 0 0; 0 0; 0 -70; 0 -70; 0 0"
-                          keyTimes="0;0.18;0.28;0.36;0.5;0.62;0.72;0.8;1"/>
-      </g>
-
-      <!-- Nota fantasma: A (La) que se activa al moverse hacia abajo -->
-      <g opacity="0">
-        <circle cx="240" cy="310" r="42" fill="#071019" stroke="#00d4ff" stroke-width="2.5" stroke-dasharray="3 3"/>
-        <text x="240" y="306" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="24" font-weight="800" fill="#00d4ff">A</text>
-        <text x="240" y="326" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="11" font-weight="800" fill="#e2e8f0">(VI)</text>
-        <animate attributeName="opacity" dur="4s" repeatCount="indefinite"
-                 keyTimes="0;0.18;0.28;0.36;0.5;0.62;0.72;0.8;1"
-                 values="0;0;0;0;1;1;0;0;0"/>
-        <animateTransform attributeName="transform" type="translate" dur="4s"
-                          repeatCount="indefinite"
-                          values="0 0; 0 0; 0 0; 0 0; 0 70; 0 70; 0 70; 0 70; 0 0"
-                          keyTimes="0;0.18;0.28;0.36;0.5;0.62;0.72;0.8;1"/>
-      </g>
-
-      <!-- NODO 2: D (Re) — Segundo dedo -->
-      <g>
-        <circle cx="400" cy="240" r="42" fill="#0b1424" stroke="#22c55e" stroke-width="3">
-          <animate attributeName="stroke-width" dur="1.6s" begin="0.5s" repeatCount="indefinite" values="3;5;3" keyTimes="0;0.5;1"/>
-        </circle>
-        <text x="400" y="236" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="26" font-weight="800" fill="#22c55e">D</text>
-        <text x="400" y="256" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="12.5" font-weight="800" fill="#e2e8f0">(V)</text>
-        <text x="400" y="300" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="11" font-weight="800" letter-spacing="1.6" fill="#22c55e">SEGUNDO DEDO</text>
-      </g>
-
-      <!-- Nota fantasma: E (Mi) -->
-      <g opacity="0">
-        <circle cx="400" cy="170" r="42" fill="#071019" stroke="#22c55e" stroke-width="2.5" stroke-dasharray="3 3"/>
-        <text x="400" y="166" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="24" font-weight="800" fill="#22c55e">E</text>
-        <text x="400" y="186" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="11" font-weight="800" fill="#e2e8f0">(VI)</text>
-        <animate attributeName="opacity" dur="5s" repeatCount="indefinite"
-                 keyTimes="0;0.1;0.2;0.3;0.5;0.62;0.72;0.82;1"
-                 values="0;0;1;1;0;0;1;1;0"/>
-        <animateTransform attributeName="transform" type="translate" dur="5s"
-                          repeatCount="indefinite"
-                          values="0 0; 0 0; 0 -70; 0 -70; 0 0; 0 0; 0 -70; 0 -70; 0 0"
-                          keyTimes="0;0.1;0.2;0.3;0.5;0.62;0.72;0.82;1"/>
-      </g>
-
-      <!-- Nota fantasma: C (Do) por debajo -->
-      <g opacity="0">
-        <circle cx="400" cy="310" r="42" fill="#071019" stroke="#22c55e" stroke-width="2.5" stroke-dasharray="3 3"/>
-        <text x="400" y="306" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="24" font-weight="800" fill="#22c55e">C</text>
-        <text x="400" y="326" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="11" font-weight="800" fill="#e2e8f0">(IV)</text>
-        <animate attributeName="opacity" dur="5s" repeatCount="indefinite"
-                 keyTimes="0;0.1;0.2;0.3;0.5;0.62;0.72;0.82;1"
-                 values="0;0;0;0;1;1;0;0;0"/>
-        <animateTransform attributeName="transform" type="translate" dur="5s"
-                          repeatCount="indefinite"
-                          values="0 0; 0 0; 0 0; 0 0; 0 70; 0 70; 0 70; 0 70; 0 0"
-                          keyTimes="0;0.1;0.2;0.3;0.5;0.62;0.72;0.82;1"/>
-      </g>
-
-      <!-- NODO 3: G (Sol) — Meñique, nota superior -->
-      <g>
-        <circle cx="560" cy="240" r="42" fill="#0b1424" stroke="#a855f7" stroke-width="3">
-          <animate attributeName="stroke-width" dur="1.6s" begin="1s" repeatCount="indefinite" values="3;5;3" keyTimes="0;0.5;1"/>
-        </circle>
-        <text x="560" y="236" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="26" font-weight="800" fill="#a855f7">G</text>
-        <text x="560" y="256" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="12.5" font-weight="800" fill="#e2e8f0">(I)</text>
-        <text x="560" y="300" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="11" font-weight="800" letter-spacing="1.6" fill="#a855f7">MEÑIQUE</text>
-      </g>
-
-      <!-- Nota fantasma: A (La) superior -->
-      <g opacity="0">
-        <circle cx="560" cy="170" r="42" fill="#071019" stroke="#a855f7" stroke-width="2.5" stroke-dasharray="3 3"/>
-        <text x="560" y="166" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="24" font-weight="800" fill="#a855f7">A</text>
-        <text x="560" y="186" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="11" font-weight="800" fill="#e2e8f0">(II)</text>
-        <animate attributeName="opacity" dur="6s" repeatCount="indefinite"
-                 keyTimes="0;0.08;0.18;0.28;0.5;0.62;0.72;0.82;1"
-                 values="0;0;1;1;0;0;1;1;0"/>
-        <animateTransform attributeName="transform" type="translate" dur="6s"
-                          repeatCount="indefinite"
-                          values="0 0; 0 0; 0 -70; 0 -70; 0 0; 0 0; 0 -70; 0 -70; 0 0"
-                          keyTimes="0;0.08;0.18;0.28;0.5;0.62;0.72;0.82;1"/>
-      </g>
-
-      <!-- Nota fantasma: F# (Fa#) inferior -->
-      <g opacity="0">
-        <circle cx="560" cy="310" r="42" fill="#071019" stroke="#a855f7" stroke-width="2.5" stroke-dasharray="3 3"/>
-        <text x="560" y="306" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="24" font-weight="800" fill="#a855f7">F#</text>
-        <text x="560" y="326" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
-              font-size="11" font-weight="800" fill="#e2e8f0">(VII)</text>
-        <animate attributeName="opacity" dur="6s" repeatCount="indefinite"
-                 keyTimes="0;0.08;0.18;0.28;0.5;0.62;0.72;0.82;1"
-                 values="0;0;0;0;1;1;0;0;0"/>
-        <animateTransform attributeName="transform" type="translate" dur="6s"
-                          repeatCount="indefinite"
-                          values="0 0; 0 0; 0 0; 0 0; 0 70; 0 70; 0 70; 0 70; 0 0"
-                          keyTimes="0;0.08;0.18;0.28;0.5;0.62;0.72;0.82;1"/>
-      </g>
-
-      <!-- TECLADO -->
-      <g>
-        <g fill="url(#m-keyWhite)" stroke="#1e293b" stroke-width="1">
-          <rect x="40"  y="330" width="52" height="86" rx="4"/>
-          <rect x="92"  y="330" width="52" height="86" rx="4"/>
-          <rect x="144" y="330" width="52" height="86" rx="4"/>
-          <rect x="196" y="330" width="52" height="86" rx="4"/>
-          <rect x="248" y="330" width="52" height="86" rx="4"/>
-          <rect x="300" y="330" width="52" height="86" rx="4"/>
-          <rect x="352" y="330" width="52" height="86" rx="4"/>
-          <rect x="404" y="330" width="52" height="86" rx="4"/>
-          <rect x="456" y="330" width="52" height="86" rx="4"/>
-          <rect x="508" y="330" width="52" height="86" rx="4"/>
-          <rect x="560" y="330" width="52" height="86" rx="4"/>
-          <rect x="612" y="330" width="52" height="86" rx="4"/>
-          <rect x="664" y="330" width="52" height="86" rx="4"/>
-          <rect x="716" y="330" width="52" height="86" rx="4"/>
-        </g>
-
-        <!-- Teclas activas (notas ancla): B4 (x354), D4 (x146), G4 (x250) -->
-        <rect x="354" y="332" width="48" height="82" rx="4" fill="#00d4ff" opacity="0.85"/>
-        <rect x="146" y="332" width="48" height="82" rx="4" fill="#22c55e" opacity="0.85"/>
-        <rect x="250" y="332" width="48" height="82" rx="4" fill="#a855f7" opacity="0.85"/>
-
-        <!-- Notas negras -->
-        <g fill="url(#m-keyBlack)" stroke="#020617" stroke-width="1">
-          <rect x="74"  y="330" width="36" height="54" rx="3"/>
-          <rect x="126" y="330" width="36" height="54" rx="3"/>
-          <rect x="230" y="330" width="36" height="54" rx="3"/>
-          <rect x="282" y="330" width="36" height="54" rx="3"/>
-          <rect x="334" y="330" width="36" height="54" rx="3"/>
-          <rect x="438" y="330" width="36" height="54" rx="3"/>
-          <rect x="490" y="330" width="36" height="54" rx="3"/>
-          <rect x="594" y="330" width="36" height="54" rx="3"/>
-          <rect x="646" y="330" width="36" height="54" rx="3"/>
-          <rect x="698" y="330" width="36" height="54" rx="3"/>
-        </g>
-
-        <text x="170" y="410" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="11" font-weight="800" fill="#0a0e1a">D</text>
-        <text x="274" y="410" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="11" font-weight="800" fill="#0a0e1a">G</text>
-        <text x="378" y="410" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="11" font-weight="800" fill="#0a0e1a">B</text>
-      </g>
-
-      <text x="34" y="440" font-family="Segoe UI, system-ui, sans-serif" font-size="11"
-            font-weight="700" letter-spacing="1.6" fill="#64748b">
-        B(III) · D(V) · G(I)  ·  UNA NOTA SE MUEVE, LAS OTRAS ANCLAN
-      </text>
-      <text x="766" y="440" text-anchor="end" font-family="Segoe UI, system-ui, sans-serif"
-            font-size="11" font-weight="700" letter-spacing="1.6" fill="#64748b">
-        RUBÉN SBARSKY
-      </text>
-    </svg>
-  </div>
-
-  <span class="badge">🎹 Tutorial técnico · Técnica de piano</span>
-  <h1>El Movimiento de una Nota: Acordes con Vida</h1>
-  <p style="font-size:1.02rem;color:#94a3b8;max-width:760px">
-    Un recorrido completo por la técnica del <strong>One Note Move</strong>: cómo desplazar un solo dedo
-    dentro de la estructura de un acorde —mientras los demás permanecen anclados— para que el piano
-    <em>respire</em>, cree <em>groove</em> y deje de sonar como un principiante.
-  </p>
-
-  <div class="quote">
-    Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.
-  </div>
-
-  <div class="metrics">
-    <div class="metric"><span class="val">5</span><span class="lbl">Capítulos</span></div>
-    <div class="metric"><span class="val">3</span><span class="lbl">Escenarios</span></div>
-    <div class="metric"><span class="val">8</span><span class="lbl">Pasos guiados</span></div>
-    <div class="metric"><span class="val">1</span><span class="lbl">Ejercicio</span></div>
-  </div>
-
-  <div class="chips">
-    <span class="chip b">One Note Move</span>
-    <span class="chip g">Home Base</span>
-    <span class="chip p">Síncopa</span>
-    <span class="chip a">Groove</span>
-    <span class="chip">Bordadura</span>
-    <span class="chip">Seesaw</span>
-    <span class="chip">Sistema americano</span>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">¿Qué vas a encontrar en este tutorial?</h3>
-    <div class="grid g2">
+    <div class="callout callout-example">
+      <div class="icon">🎹</div>
       <div>
-        <h4>Introducción</h4>
-        <p style="font-size:.9rem;margin-bottom:0">
-          Por qué el acorde estático suena a fotografía y el acorde con movimiento suena a latido.
-        </p>
+        <div class="callout-title">Ejemplo</div>
+        El material gráfico original muestra tres compases sobre el acorde de G, etiquetados como "Lowest note!" (nota más grave), "Middle note!" (nota media) y "Highest note!" (nota más aguda) — cada uno moviendo solo esa voz y regresando a la tríada B–D–G.
       </div>
+    </div>
+
+    <div class="accordion">
+      <div class="acc-item">
+        <button class="acc-head" onclick="toggleAcc(this)">¿Por qué funciona este movimiento?</button>
+        <div class="acc-body"><p>Al mover una sola nota cada vez y volver a la tríada original, generas un pequeño adorno melódico sin abandonar la armonía de G. Es la base para que, más adelante, la voz que se mueve pueda coincidir con el cambio de acorde (Paso 4).</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PASO 2 -->
+  <section id="paso2" class="section">
+    <div class="step-eyebrow">PASO #2 <span class="video-tag">🎬 vídeo 3:49</span></div>
+    <h2 class="step-title">Adding Rhythm</h2>
+
+    <div class="card">
+      <p>Una vez que el patrón de movimiento se sienta sólido, añade un toque de <strong>síncopa</strong> en la mano derecha.</p>
+      <p>Ese nuevo "impulso rítmico" convierte los acordes fijos y "a tiempo" en algo <strong>vivo, expresivo e instantáneamente más musical</strong>.</p>
+    </div>
+
+    <div class="callout callout-info">
+      <div class="icon">💡</div>
       <div>
-        <h4>Base de operaciones</h4>
-        <p style="font-size:.9rem;margin-bottom:0">
-          La postura Home Base: octavas de Sol a la izquierda, tríada Si-Re-Sol a la derecha.
-        </p>
+        <div class="callout-title">Consejo extra (Bonus tip)</div>
+        Prueba un ritmo diferente sobre tus propios patrones: oirás sensaciones <strong>juguetonas y groovy</strong>, y también <strong>suaves y relajadas</strong> — todo a partir del mismo movimiento de mano derecha, solo cambiando el ritmo con el que lo ejecutas.
       </div>
+    </div>
+  </section>
+
+  <!-- PASO 3 -->
+  <section id="paso3" class="section">
+    <div class="step-eyebrow">PASO #3 <span class="video-tag">🎬 vídeo 5:00</span></div>
+    <h2 class="step-title">Introducing the Left Hand</h2>
+
+    <div class="card">
+      <p>Toca un <strong>patrón de bajo repetitivo</strong> en la tonalidad de G, eligiendo notas del bajo dentro de la escala para colorear las formas de la mano derecha.</p>
+      <p>Deja que el <strong>meñique (o la voz más grave)</strong> sostenga la <strong>fundamental (raíz)</strong> mientras el <strong>pulgar</strong> responde en otro tiempo, creando movimiento hacia adelante y "pegamento" entre los acordes.</p>
+    </div>
+
+    <div class="chord-row">
+      <div class="chord-chip"><div class="chord">G</div><div class="deg">I</div></div>
+      <div class="chord-chip"><div class="chord">Am7</div><div class="deg">ii7</div></div>
+      <div class="chord-chip"><div class="chord">C</div><div class="deg">IV</div></div>
+      <div class="chord-chip"><div class="chord">Em7</div><div class="deg">vi7</div></div>
+      <div class="chord-chip"><div class="chord">G/D</div><div class="deg">I/5</div></div>
+    </div>
+
+    <div class="callout callout-warning">
+      <div class="icon">🥁</div>
       <div>
-        <h4>Movimiento triple</h4>
-        <p style="font-size:.9rem;margin-bottom:0">
-          Las tres coreografías: pulgar, segundo dedo y meñique, cada uno con sus idas y vueltas.
-        </p>
-      </div>
-      <div>
-        <h4>Groove y coordinación</h4>
-        <p style="font-size:.9rem;margin-bottom:0">
-          Síncopa en el "y", efecto seesaw de la mano izquierda y progresión "Pro" de Adam Saunders.
-        </p>
+        <div class="callout-title">Pista de batería (Drum Track)</div>
+        El material original invita a practicar este patrón junto a una pista de batería ("Download Drum Track — la pista que usa Adam en el vídeo") para afianzar el groove, sentir el pulso y hacer que las formas se muevan y respiren como música real. El documento fuente no incluye una URL de descarga verificable, así que no se reproduce ningún enlace aquí.
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="piano-panel">
-    <h4>🎹 Teclado interactivo · Visualiza cada acorde</h4>
-    <p style="font-size:.87rem;color:#94a3b8">
-      Pulsa cada botón para iluminar las notas de la tríada Home Base y las progresiones del sistema.
-    </p>
-    <div class="chord-btns" id="chordBtns"></div>
-    <div class="piano" id="piano"></div>
-    <div class="chord-info" id="chordInfo">
-      <span class="cn">Selecciona un acorde</span>
-      <span class="notes">—</span>
+  <!-- PASO 4 -->
+  <section id="paso4" class="section">
+    <div class="step-eyebrow">PASO #4 <span class="video-tag">🎬 vídeo 7:35</span></div>
+    <h2 class="step-title">Alternate the Shapes</h2>
+
+    <div class="card">
+      <p>Cuando el ritmo se sienta natural, sincroniza los <strong>cambios de forma de la mano derecha</strong> con los cambios de la nota del bajo.</p>
+      <p>Oirás cómo la armonía <strong>cambia de color y fluye</strong> de forma más orgánica, aunque sigas usando el mismo patrón de movimiento simple.</p>
     </div>
-  </div>
 
-  <div class="callout info">
-    <span class="ct">Nomenclatura</span>
-    En este tutorial se utiliza exclusivamente el <strong>sistema americano</strong> de notas
-    (<code>A, B, C, D, E, F, G</code>) junto con el <strong>grado de la escala</strong> en números romanos:
-    <code>C(I), D(II), E(III), F(IV), G(V), A(VI), B(VII)</code>.
-  </div>
-
-</section>
-
-<!-- ============================ RECURSO ============================ -->
-<section id="recurso" class="section">
-  <div class="section-head">
-    <div class="section-ico">📼</div>
-    <div>
-      <h2>0. Información del Recurso Original</h2>
-      <p style="margin-bottom:0;color:#94a3b8">Referencia visual y auditiva completa del sistema.</p>
+    <div class="chord-row">
+      <div class="chord-chip"><div class="chord">G</div><div class="deg">nota más aguda</div></div>
+      <div class="chord-chip"><div class="chord">Am7</div><div class="deg">nota más grave</div></div>
+      <div class="chord-chip"><div class="chord">C</div><div class="deg">nota media</div></div>
+      <div class="chord-chip"><div class="chord">Em7 → G/D</div><div class="deg">nota más grave</div></div>
     </div>
-  </div>
 
-  <p>
-    Para una referencia visual y auditiva completa de este sistema, consulte el material de
-    <strong>Adam Saunders</strong>:
-  </p>
+    <blockquote class="adam-quote">"We'll switch these shapes each time the bass note changes — the sort of chord progression you'll hear in so many tunes!"</blockquote>
 
-  <div class="card">
-    <div class="credit-grid">
-      <div class="credit-item">
-        <span class="k">Canal</span>
-        <span class="v">The Keys Coach (Adam Saunders)</span>
-      </div>
-      <div class="credit-item" style="grid-column:1/-1">
-        <span class="k">Título del Video</span>
-        <span class="v">"Give Me 10 Mins, I'll Make Your Chords Sound 10x Better"</span>
-      </div>
-      <div class="credit-item" style="grid-column:1/-1">
-        <span class="k">URL</span>
-        <span class="v" style="font-weight:600;font-size:.86rem;word-break:break-all">
-          <a href="https://www.youtube.com/watch?v=F0vS7u9N1pY"
-             target="_blank" rel="noopener noreferrer"
-             style="color:var(--accent);text-decoration:none">
-            https://www.youtube.com/watch?v=F0vS7u9N1pY
-          </a>
-        </span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ CAP 1 ============================ -->
-<section id="cap1" class="section">
-  <div class="section-head">
-    <div class="section-ico">💓</div>
-    <div>
-      <h2>1. Introducción: El Arte de Hacer que el Piano "Respire"</h2>
-      <p style="margin-bottom:0;color:#94a3b8">Romper la rigidez del bloque y activar el flujo interno de las armonías.</p>
-    </div>
-  </div>
-
-  <div class="card">
-    <p>
-      Para dejar de sonar como un principiante, debes romper la rigidez del bloque y activar el flujo
-      interno de tus armonías. La ejecución profesional no se trata de tocar acordes complejos, sino de
-      cómo estos evolucionan en el tiempo. La técnica del <strong>"One Note Move"</strong>
-      (Movimiento de una Nota) consiste en desplazar un solo dedo dentro de la estructura de un acorde
-      mientras los demás permanecen anclados como pilares.
-    </p>
-
-    <div class="quote" style="margin-bottom:0">
-      Un acorde estático es una fotografía: es estético, pero está congelado.
-      Un acorde con movimiento es un latido del corazón o una respiración: posee una pulsación
-      orgánica que indica que la música está viva.
-    </div>
-  </div>
-
-  <div class="card g">
-    <h3 style="margin-top:0">Tres escenarios críticos</h3>
-    <p>Utiliza esta técnica para dominar tres escenarios críticos:</p>
-    <ol style="margin-bottom:0">
-      <li>
-        <strong>Acompañamiento:</strong> crea un colchón dinámico que sostiene la voz sin saturar
-        el espacio.
-      </li>
-      <li>
-        <strong>Piano Solo:</strong> transforma progresiones básicas en piezas fluidas y sofisticadas.
-      </li>
-      <li>
-        <strong>Improvisación:</strong> obtén "licencia creativa" para retocar la armonía y explorar
-        texturas sobre la marcha.
-      </li>
+    <ol class="steps-list">
+      <li>Sobre <strong>G</strong>, usa la forma con la nota más aguda en movimiento.</li>
+      <li>Sobre <strong>Am7</strong>, cambia a la forma con la nota más grave en movimiento.</li>
+      <li>Sobre <strong>C</strong>, usa la forma con la nota media en movimiento.</li>
+      <li>Sobre <strong>Em7 → G/D</strong>, vuelve a la forma con la nota más grave en movimiento.</li>
     </ol>
-  </div>
-</section>
+  </section>
 
-<!-- ============================ CAP 2 ============================ -->
-<section id="cap2" class="section">
-  <div class="section-head">
-    <div class="section-ico g">⚙️</div>
-    <div>
-      <h2>2. La "Base de Operaciones": Preparando el Terreno Técnico</h2>
-      <p style="margin-bottom:0;color:#94a3b8">La ergonomía como cimiento estratégico.</p>
+  <!-- COACH -->
+  <section id="coach" class="section">
+    <div class="step-eyebrow">SOBRE EL AUTOR ORIGINAL</div>
+    <h2 class="step-title">Meet Your Coach — Adam Saunders</h2>
+
+    <div class="card coach-flex">
+      <div class="coach-avatar">AS</div>
+      <div class="coach-text">
+        <p>Adam es el fundador de <strong>The Keys Coach</strong>, y ayuda a pianistas a ganar libertad, confianza y creatividad al teclado.</p>
+        <p>Es <strong>profesor en el Trinity Laban Conservatoire de Londres</strong>, donde co-fundó su titulación de Música Popular — una de las primeras de su tipo en el Reino Unido.</p>
+        <p>Es <strong>autor publicado</strong>, <strong>ponente internacional</strong> y <strong>pianista profesional</strong> que ha actuado en escenarios de todo el mundo y en importantes cadenas de televisión.</p>
+        <div class="coach-mission">
+          <strong>Misión:</strong> ayudarte a liberarte de métodos rígidos y tradicionales para que puedas tocar con verdadera <em>musicalidad</em>, <em>creatividad</em> y <em>alegría</em>.
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <p>
-    La claridad profesional nace de la ergonomía. Establecer una <strong>"Home Base"</strong> sólida es
-    el cimiento estratégico que evita el sonido "turbio" (<em>muddy</em>) y permite la independencia
-    motriz.
-  </p>
-
-  <div class="card">
-    <h3 style="margin-top:0">Pasos accionables para la postura inicial</h3>
-    <ol class="steps">
-      <li>
-        <strong>Paso 1: Configuración de la Mano Izquierda.</strong>
-        Coloca el meñique y el pulgar en octavas de Sol (G).
-        <span class="why">Este es tu cimiento de gravedad.</span>
-      </li>
-      <li>
-        <strong>Paso 2: La Tríada "Home Base" (Mano Derecha).</strong>
-        Toca la tríada de Sol Mayor en primera inversión: las notas Si (B), Re (D) y Sol (G).
-        <span class="why">Esta inversión es táctica: evita la saturación de frecuencias graves y establece un Voice Leading Interno (conducción de voces).</span>
-      </li>
-    </ol>
-
-    <div class="callout info" style="margin-bottom:0">
-      <span class="ct">¿Por qué esta configuración?</span>
-      Al mover una nota dentro de este "cluster" abierto, estás "cantando" una melodía secundaria
-      dentro de la armonía.
+  <!-- CREDITOS -->
+  <section id="creditos" class="section">
+    <div class="credits-box">
+      <div class="svg-wrap" id="creditosSvgContainer"></div>
+      <h2>MAKE YOUR CHORDS FLOW</h2>
+      <div class="author">by Rubén Sbarsky</div>
+      <div class="credits-meta">
+        👨‍💻 Créditos: Rubén Sbarsky<br>
+        📅 Fecha: 12/09/2026 &nbsp;·&nbsp; 🕒 Hora: 17:51<br>
+        📚 Tutorial solo con fines educativos y de divulgación
+      </div>
+      <div class="latin">Fiat iustitia, ruat caelum.</div>
     </div>
-  </div>
-
-  <div class="card a">
-    <h3 style="margin-top:0">Comparativa: acordes en bloque vs. acordes con movimiento</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Característica</th>
-            <th>Acordes en Bloque</th>
-            <th>Acordes con Movimiento</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Esfuerzo</strong></td>
-            <td>Mínimo (golpe de muñeca)</td>
-            <td>Consciente (independencia de dedos)</td>
-          </tr>
-          <tr>
-            <td><strong>Sonoridad</strong></td>
-            <td>Repetitiva y "cuadrada"</td>
-            <td>Orgánica y profesional</td>
-          </tr>
-          <tr>
-            <td><strong>Efecto</strong></td>
-            <td>Estático / Aburrido</td>
-            <td>Musical / Con "respiración"</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="callout ejemplo">
-    <span class="ct">Home Base</span>
-    <code>Mano izquierda: G(I) – G(I)</code> (octavas de Sol) · 
-    <code>Mano derecha: B(III) – D(V) – G(I)</code> (primera inversión).
-  </div>
-</section>
-
-<!-- ============================ CAP 3 ============================ -->
-<section id="cap3" class="section">
-  <div class="section-head">
-    <div class="section-ico p">🎭</div>
-    <div>
-      <h2>3. El Movimiento Triple: Guía de Independencia Motriz</h2>
-      <p style="margin-bottom:0;color:#94a3b8">Una coreografía donde un bailarín se mueve y los demás actúan como anclas.</p>
-    </div>
-  </div>
-
-  <p>
-    Visualiza esta técnica como una coreografía: un bailarín se mueve mientras los otros actúan como
-    anclas. Utiliza el peso independiente de los dedos: deja que el peso de la mano descanse en las
-    notas fijas mientras el dedo activo se desplaza.
-  </p>
-
-  <div class="card b">
-    <h3 style="margin-top:0">Paso 3: Movimiento del Pulgar (Nota Inferior)</h3>
-    <p>
-      Desde el <strong>Si (B)</strong>, desplaza al <strong>Do (C)</strong>, regresa al
-      <strong>Si (B)</strong>, baja al <strong>La (A)</strong> y vuelve al <strong>Si (B)</strong>.
-    </p>
-    <div class="callout info" style="margin-bottom:0">
-      <span class="ct">Efecto</span>
-      Crea dirección en la base del acorde.
-    </div>
-  </div>
-
-  <div class="card g">
-    <h3 style="margin-top:0">Paso 4: Movimiento del Segundo Dedo (Nota Media)</h3>
-    <p>
-      Desde el <strong>Re (D)</strong>, sube al <strong>Mi (E)</strong>, regresa al
-      <strong>Re (D)</strong>, baja al <strong>Do (C)</strong> y vuelve al <strong>Re (D)</strong>.
-    </p>
-    <div class="callout info" style="margin-bottom:0">
-      <span class="ct">Efecto</span>
-      Aporta elegancia en el corazón del acorde.
-    </div>
-  </div>
-
-  <div class="card p">
-    <h3 style="margin-top:0">Paso 5: Movimiento del Meñique (Nota Superior)</h3>
-    <p>
-      Desde el <strong>Sol (G)</strong>, sube al <strong>La (A)</strong>, regresa al
-      <strong>Sol (G)</strong>, baja al <strong>Fa# (F#)</strong> y vuelve al <strong>Sol (G)</strong>.
-    </p>
-    <div class="callout info" style="margin-bottom:0">
-      <span class="ct">Efecto</span>
-      Otorga brillo y apertura melódica.
-    </div>
-  </div>
-
-  <div class="card r">
-    <h3 style="margin-top:0">Sección de Errores Comunes</h3>
-    <ul style="margin-bottom:0">
-      <li>
-        <strong>Levantar toda la mano:</strong> mantén los dedos pasivos pegados a las teclas; no permitas
-        que la mano "salte".
-      </li>
-      <li>
-        <strong>Perder la estructura:</strong> olvidar regresar siempre a la nota original de la
-        "Home Base".
-      </li>
-    </ul>
-  </div>
-
-  <div class="card g">
-    <h3 style="margin-top:0">Lista de Comprobación</h3>
-    <ul class="check" style="margin-bottom:0">
-      <li>¿Sientes el peso descansando en las notas ancladas?</li>
-      <li>¿El movimiento de cada dedo es aislado y fluido?</li>
-      <li>¿Vuelves siempre a la tríada original (Si-Re-Sol)?</li>
-    </ul>
-  </div>
-</section>
-
-<!-- ============================ CAP 4 ============================ -->
-<section id="cap4" class="section">
-  <div class="section-head">
-    <div class="section-ico a">🥁</div>
-    <div>
-      <h2>4. Inyectando el "Groove": Ritmo y Síncopa</h2>
-      <p style="margin-bottom:0;color:#94a3b8">La síncopa transforma la gimnasia técnica en interpretación profesional.</p>
-    </div>
-  </div>
-
-  <p>
-    La síncopa transforma la gimnasia técnica en interpretación profesional. Tocar fuera del pulso
-    esperado genera una sensación de alivio y respiración.
-  </p>
-
-  <div class="card">
-    <h3 style="margin-top:0">Paso 6: El "Levantamiento Rítmico"</h3>
-    <p>
-      Subdivide el pulso mentalmente contando: <code>1 y 2 y 3 y 4 y</code>. El secreto es ejecutar el
-      movimiento de la nota justo en el <strong>"y"</strong> (contratiempo).
-    </p>
-
-    <h4>Especificación Técnica</h4>
-    <ul style="margin-bottom:0">
-      <li>
-        <strong>Tiempo fuerte (1, 2, 3, 4):</strong> mantén el acorde o marca el bajo.
-      </li>
-      <li>
-        <strong>Contratiempo (&amp;):</strong> ejecuta el "blip" o movimiento de la nota interna.
-      </li>
-    </ul>
-  </div>
-
-  <div class="card a">
-    <h3 style="margin-top:0">Consejo de Experto</h3>
-    <p style="margin-bottom:0">
-      Entrena con pistas de batería (<em>drum tracks</em>). El metrónomo es para precisión, pero la
-      batería es para el "groove". Necesitas sentir el pulso orgánico para que el movimiento no suene
-      mecánico.
-    </p>
-  </div>
-</section>
-
-<!-- ============================ CAP 5 ============================ -->
-<section id="cap5" class="section">
-  <div class="section-head">
-    <div class="section-ico">⚖️</div>
-    <div>
-      <h2>5. Coordinación Bilateral y Progresión Avanzada</h2>
-      <p style="margin-bottom:0;color:#94a3b8">La mano izquierda es el "pegamento" rítmico de la estructura.</p>
-    </div>
-  </div>
-
-  <p>
-    La mano izquierda es el "pegamento" rítmico de la estructura. No es un acompañante pasivo,
-    es el motor.
-  </p>
-
-  <div class="card g">
-    <h3 style="margin-top:0">Paso 7: El Rol Dividido (Efecto Seesaw)</h3>
-    <p>Aplica un vaivén rítmico:</p>
-    <ul style="margin-bottom:0">
-      <li>
-        <strong>El Meñique:</strong> es el ancla de gravedad; marca la raíz en el <strong>Tiempo 1</strong>.
-      </li>
-      <li>
-        <strong>El Pulgar:</strong> es el motor del groove; "responde" al meñique marcando el pulso
-        en los <strong>Tiempos 2, 3 y 4</strong>.
-      </li>
-    </ul>
-  </div>
-
-  <div class="card p">
-    <h3 style="margin-top:0">Paso 8: Mapeo Táctico de la Secuencia "Pro"</h3>
-    <p>
-      Aplica el movimiento en esta progresión cambiando la nota activa en cada acorde según el estándar
-      de Adam Saunders:
-    </p>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Acorde</th>
-            <th>Nota Activa</th>
-            <th>Movimiento</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td><strong>Sol (G)</strong></td>
-            <td>Nota Superior</td>
-            <td><code>Sol → La → Sol</code></td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td><strong>La menor 7 (Am7)</strong></td>
-            <td>Nota Media</td>
-            <td><code>Do → Re → Do</code></td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td><strong>Do (C)</strong></td>
-            <td>Nota Inferior</td>
-            <td><code>Sol → La → Sol</code></td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td><strong>Mi menor 7 (Em7) → Sol/Re</strong></td>
-            <td>Nota Inferior</td>
-            <td><code>Sol → La → Sol</code></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card a">
-    <h3 style="margin-top:0">Especificación Visual del Pentagrama</h3>
-    <ul style="margin-bottom:0">
-      <li>
-        <strong>Notas Ancla:</strong> representadas como Redondas o Blancas con ligaduras de prolongación
-        (indican que el sonido no se corta).
-      </li>
-      <li>
-        <strong>Movimiento:</strong> representado como "destellos" de Corcheas que orbitan la armonía
-        en los contratiempos ("y").
-      </li>
-    </ul>
-  </div>
-</section>
-
-<!-- ============================ FAQ ============================ -->
-<section id="faq" class="section">
-  <div class="section-head">
-    <div class="section-ico">❓</div>
-    <div>
-      <h2>Sección de FAQ</h2>
-      <p style="margin-bottom:0;color:#94a3b8">Dudas habituales al aplicar el Movimiento de una Nota.</p>
-    </div>
-  </div>
-
-  <details open>
-    <summary>¿Qué hago con el pedal de sustain?</summary>
-    <div class="details-body">
-      Úsalo para "pegar" las anclas, pero límpialo (levanta y pisa rápido) en el "y" si el movimiento
-      se escucha borroso o sucio.
-    </div>
-  </details>
-
-  <details>
-    <summary>¿Mis dedos están rígidos?</summary>
-    <div class="details-body">
-      No fuerces el movimiento. Usa la gravedad; deja que el peso de la mano haga el trabajo sucio
-      sobre las notas fijas.
-    </div>
-  </details>
-
-  <div class="card r" style="margin-top:18px">
-    <h3 style="margin-top:0">Errores que NUNCA debes cometer</h3>
-    <ol style="margin-bottom:0">
-      <li>
-        <strong>Dinámica descompensada:</strong> tocar la nota móvil demasiado fuerte. El "One Note Move"
-        debe ser sutil, como un susurro interno.
-      </li>
-      <li>
-        <strong>Ignorar el pulso:</strong> perder la regularidad de la mano izquierda por concentrarte
-        demasiado en la derecha.
-      </li>
-    </ol>
-  </div>
-</section>
-
-<!-- ============================ EJERCICIO ============================ -->
-<section id="ejercicio" class="section">
-  <div class="section-head">
-    <div class="section-ico g">✏️</div>
-    <div>
-      <h2>Ejercicio Práctico con Solución</h2>
-      <p style="margin-bottom:0;color:#94a3b8">Aplica el movimiento del pulgar sobre Do Mayor.</p>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">Reto</h3>
-    <p>
-      Aplica el movimiento del pulgar sobre <strong>Do Mayor (Do-Mi-Sol)</strong>.
-    </p>
-
-    <h3>Solución</h3>
-    <p>Mantén <strong>Mi (E)</strong> y <strong>Sol (G)</strong> fijos. Mueve el pulgar:</p>
-    <div class="formula g" style="white-space:normal">
-      Do → Re (en el "y") → Do → Si (en el "y") → Do
-    </div>
-
-    <div class="callout ejemplo" style="margin-bottom:0">
-      <span class="ct">Observación</span>
-      Toda la tríada se sostiene sobre las notas ancla <code>E(III) - G(V)</code>, mientras el pulgar
-      construye una pequeña melodía interna que <em>respira</em> en los contratiempos.
-    </div>
-  </div>
-
-  <div class="piano-panel">
-    <h4>🎹 Comprueba sobre el teclado</h4>
-    <p style="font-size:.87rem;color:#94a3b8">
-      Selecciona cada acorde y observa la posición exacta de las notas.
-    </p>
-    <div class="chord-btns" id="chordBtns2"></div>
-    <div class="piano" id="piano2"></div>
-    <div class="chord-info" id="chordInfo2">
-      <span class="cn">Selecciona un acorde</span>
-      <span class="notes">—</span>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ GLOSARIO ============================ -->
-<section id="glosario" class="section">
-  <div class="section-head">
-    <div class="section-ico p">📖</div>
-    <div>
-      <h2>Glosario Técnico</h2>
-      <p style="margin-bottom:0;color:#94a3b8">Definiciones esenciales utilizadas a lo largo del tutorial.</p>
-    </div>
-  </div>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr><th>Término</th><th>Definición</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><strong>Tríada</strong></td><td>Acorde de tres notas.</td></tr>
-        <tr><td><strong>Octava</strong></td><td>Intervalo entre dos notas con el mismo nombre.</td></tr>
-        <tr><td><strong>Bordadura</strong></td><td>Nota ornamental a un tono/semitono que regresa a la nota original.</td></tr>
-        <tr><td><strong>Groove</strong></td><td>Sensación rítmica fluida lograda mediante la síncopa y el peso correcto.</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="card g">
-    <h3 style="margin-top:0">Resumen de Conceptos Clave</h3>
-    <ul style="margin-bottom:0">
-      <li>
-        <strong>Inversión:</strong> reordenar las notas (ej. Si-Re-Sol) para optimizar la conducción.
-      </li>
-      <li>
-        <strong>Síncopa:</strong> tocar en los contratiempos para generar "groove".
-      </li>
-      <li>
-        <strong>Home Base:</strong> la estructura original a la que siempre regresas.
-      </li>
-      <li>
-        <strong>Bordadura / Nota Auxiliar:</strong> el movimiento de desplazarse a una nota vecina y
-        volver a la real.
-      </li>
-    </ul>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">6. Conclusión y Plan de Acción Final</h3>
-    <p style="margin-bottom:0">
-      Dominar el flujo interno es tu "licencia creativa" para que cualquier canción cobre vida. Has
-      pasado de ser un operario de teclas a un narrador musical que sabe hacer que el piano respire.
-    </p>
-  </div>
-</section>
-
-<!-- ============================ CRÉDITOS ============================ -->
-<section id="creditos" class="section">
-  <div class="hero-wrap" id="heroCreditos"></div>
-
-  <span class="badge">🎬 Créditos del tutorial</span>
-  <h2>El Movimiento de una Nota: Acordes con Vida</h2>
-
-  <div class="credit-grid">
-    <div class="credit-item">
-      <span class="k">Créditos</span>
-      <span class="v">Rubén Sbarsky</span>
-    </div>
-    <div class="credit-item">
-      <span class="k">Fecha</span>
-      <span class="v">12/09/2026</span>
-    </div>
-    <div class="credit-item">
-      <span class="k">Hora</span>
-      <span class="v">08:04:15</span>
-    </div>
-    <div class="credit-item">
-      <span class="k">Recurso de origen</span>
-      <span class="v" style="font-size:.86rem">The Keys Coach (Adam Saunders)</span>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3 style="margin-top:0">Indicación educativa</h3>
-    <p style="margin-bottom:0">
-      Este tutorial ha sido elaborado con fines exclusivamente <strong>educativos y de divulgación</strong>.
-      Todo el contenido teórico y práctico proviene del recurso audiovisual de referencia indicado en la
-      sección <em>Recurso</em>. Se recomienda practicar la Home Base <code>B(III) – D(V) – G(I)</code>
-      lentamente antes de añadir síncopa y coordinación bilateral.
-    </p>
-  </div>
-
-  <div class="callout advertencia">
-    <span class="ct">Lema</span>
-    <em>Fiat iustitia, ruat caelum.</em>
-  </div>
-</section>
+  </section>
 
 </main>
 
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
 <footer>
-  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
-  <p>👨‍💻 Créditos: Rubén Sbarsky</p>
-  <p>📅 FECHA: 12/09/2026</p>
-  <p>Hora: 08:04:15</p>
-  <p class="law">Fiat iustitia, ruat caelum.</p>
+  <div>📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div>👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div>📅 FECHA: 12/09/2026 &nbsp; Hora: 17:51</div>
+  <div class="latin">Fiat iustitia, ruat caelum.</div>
 </footer>
 
-<button id="toTop" aria-label="Volver arriba">↑</button>
-
 <script>
-(function(){
-  'use strict';
+  // ---------- SPA navigation ----------
+  const navItems = document.querySelectorAll('.nav-item');
+  const sections = document.querySelectorAll('.section');
 
-  /* ============ NAVEGACIÓN SPA ============ */
-  var navBtns = Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
-  var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
-  var heroCloned = false;
-
-  function cloneSVGToCredits(){
-    if(heroCloned) return;
-    var src = document.querySelector('#heroHome svg');
-    var dst = document.getElementById('heroCreditos');
-    if(!src || !dst) return;
-
-    var clone = src.cloneNode(true);
-    var map = {};
-    Array.prototype.forEach.call(clone.querySelectorAll('[id]'), function(node){
-      var oldId = node.getAttribute('id');
-      var newId = 'c-' + oldId;
-      map[oldId] = newId;
-      node.setAttribute('id', newId);
-    });
-
-    var refAttrs = ['fill','stroke','marker-end','marker-start','marker-mid','clip-path','mask','filter'];
-    Array.prototype.forEach.call(clone.querySelectorAll('*'), function(node){
-      refAttrs.forEach(function(attr){
-        var v = node.getAttribute(attr);
-        if(v && v.indexOf('url(#') === 0){
-          var id = v.substring(5, v.length - 1);
-          if(map[id]) node.setAttribute(attr, 'url(#' + map[id] + ')');
-        }
-      });
-      var href = node.getAttribute('href') || node.getAttribute('xlink:href');
-      if(href && href.charAt(0) === '#'){
-        var rid = href.substring(1);
-        if(map[rid]){
-          node.setAttribute('href', '#' + map[rid]);
-          if(node.hasAttribute('xlink:href')) node.setAttribute('xlink:href', '#' + map[rid]);
-        }
-      }
-    });
-
-    dst.innerHTML = '';
-    dst.appendChild(clone);
-    heroCloned = true;
-
-    try{
-      var svg = dst.querySelector('svg');
-      if(svg && typeof svg.setCurrentTime === 'function'){ svg.setCurrentTime(0); }
-    }catch(e){}
+  function activateSection(target){
+    sections.forEach(s => s.classList.toggle('active', s.id === target));
+    navItems.forEach(n => n.classList.toggle('active', n.dataset.target === target));
+    if(target === 'creditos'){ renderHeroSVG('creditosSvgContainer','c'); }
+    window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
   }
 
-  function showSection(id){
-    var found = false;
-    sections.forEach(function(s){
-      if(s.id === id){ s.classList.add('active'); found = true; }
-      else{ s.classList.remove('active'); }
-    });
-    if(!found) return;
-
-    navBtns.forEach(function(b){
-      b.classList.toggle('active', b.getAttribute('data-target') === id);
-    });
-
-    if(id === 'creditos'){ cloneSVGToCredits(); }
-
-    window.scrollTo(0,0);
-    updateProgress();
-  }
-
-  navBtns.forEach(function(btn){
-    btn.addEventListener('click', function(){
-      showSection(btn.getAttribute('data-target'));
-    });
+  navItems.forEach(btn => {
+    btn.addEventListener('click', () => activateSection(btn.dataset.target));
   });
 
-  /* ============ PROGRESO ============ */
-  var bar = document.getElementById('progressBar');
-  function updateProgress(){
-    var doc = document.documentElement;
-    var h = doc.scrollHeight - doc.clientHeight;
-    var p = h > 0 ? (doc.scrollTop / h) * 100 : 0;
-    if(p < 0) p = 0;
-    if(p > 100) p = 100;
-    bar.style.width = p.toFixed(2) + '%';
-  }
-  window.addEventListener('scroll', updateProgress, {passive:true});
-  window.addEventListener('resize', updateProgress);
+  // ---------- progress bar ----------
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = h.scrollTop;
+    const max = h.scrollHeight - h.clientHeight;
+    const pct = max > 0 ? (scrolled / max) * 100 : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
 
-  /* ============ BOTÓN ARRIBA ============ */
-  var toTop = document.getElementById('toTop');
-  window.addEventListener('scroll', function(){
-    if(window.scrollY > 380){ toTop.classList.add('show'); }
-    else{ toTop.classList.remove('show'); }
-  }, {passive:true});
-  toTop.addEventListener('click', function(){
-    window.scrollTo({top:0, behavior:'smooth'});
+    const backBtn = document.getElementById('backToTop');
+    backBtn.classList.toggle('show', scrolled > 300);
   });
 
-  /* ============ PIANO INTERACTIVO ============ */
-  var WHITE_KEYS = [
-    {id:'C4',  label:'C',  oct:'4'},
-    {id:'D4',  label:'D',  oct:'4'},
-    {id:'E4',  label:'E',  oct:'4'},
-    {id:'F4',  label:'F',  oct:'4'},
-    {id:'G4',  label:'G',  oct:'4'},
-    {id:'A4',  label:'A',  oct:'4'},
-    {id:'B4',  label:'B',  oct:'4'},
-    {id:'C5',  label:'C',  oct:'5'},
-    {id:'D5',  label:'D',  oct:'5'}
-  ];
-
-  var BLACK_KEYS = [
-    {id:'C#4', label:'C#', left:7.67},
-    {id:'D#4', label:'D#', left:18.78},
-    {id:'F#4', label:'F#', left:41.00},
-    {id:'G#4', label:'G#', left:52.11},
-    {id:'A#4', label:'A#', left:63.22},
-    {id:'C#5', label:'C#', left:85.44}
-  ];
-
-  var WHITE_W = 100 / WHITE_KEYS.length;
-
-  var CHORDS = [
-    {
-      key:'home',
-      label:'Home Base (G)',
-      notes:['B4','D4','G4'],
-      names:'B(III) – D(V) – G(I)',
-      desc:'Tríada de Sol Mayor en primera inversión. Base de operaciones del One Note Move.'
-    },
-    {
-      key:'pulgar',
-      label:'Pulgar · B → C → B',
-      notes:['B4','C5','D4','G4'],
-      names:'Movimiento del pulgar hacia arriba (C)',
-      desc:'El pulgar sube al Do sobre las anclas D(V) y G(I). Dirección en la base del acorde.'
-    },
-    {
-      key:'pulgar2',
-      label:'Pulgar · B → A → B',
-      notes:['B4','A4','D4','G4'],
-      names:'Movimiento del pulgar hacia abajo (A)',
-      desc:'El pulgar baja al La. Aporta contraste a la dirección ascendente.'
-    },
-    {
-      key:'segundo',
-      label:'Segundo dedo · D → E → D',
-      notes:['B4','D4','E4','G4'],
-      names:'Movimiento del segundo dedo (E)',
-      desc:'Elegancia en el corazón del acorde, con las anclas B(III) y G(I) sostenidas.'
-    },
-    {
-      key:'menique',
-      label:'Meñique · G → A → G',
-      notes:['B4','D4','G4','A4'],
-      names:'Movimiento del meñique (A)',
-      desc:'Brillo y apertura melódica en la nota superior del acorde.'
-    },
-    {
-      key:'do',
-      label:'Do Mayor · C – E – G',
-      notes:['C4','E4','G4'],
-      names:'C(I) – E(III) – G(V)',
-      desc:'Tríada de Do Mayor. Punto de partida del ejercicio práctico.'
-    },
-    {
-      key:'do-pulgar',
-      label:'Do · Pulgar → Re',
-      notes:['C4','D4','E4','G4'],
-      names:'C(I) → D(II) — anclas E(III) y G(V)',
-      desc:'El pulgar sube al Re manteniendo Mi y Sol fijos. Ejercicio del capítulo final.'
-    },
-    {
-      key:'do-pulgar-b',
-      label:'Do · Pulgar → Si',
-      notes:['C4','B4','E4','G4'],
-      names:'C(I) → B(VII) — anclas E(III) y G(V)',
-      desc:'El pulgar baja al Si manteniendo Mi y Sol fijos. Segunda fase del ejercicio.'
-    }
-  ];
-
-  function buildPiano(pianoEl, buttonsEl, infoEl){
-    if(!pianoEl) return;
-
-    WHITE_KEYS.forEach(function(k, i){
-      var d = document.createElement('div');
-      d.className = 'pkey';
-      d.setAttribute('data-note', k.id);
-      d.style.left = (i * WHITE_W) + '%';
-      d.style.width = WHITE_W + '%';
-      d.textContent = k.label + k.oct;
-      pianoEl.appendChild(d);
-    });
-
-    BLACK_KEYS.forEach(function(k){
-      var d = document.createElement('div');
-      d.className = 'pkey black';
-      d.setAttribute('data-note', k.id);
-      d.style.left = k.left + '%';
-      d.style.width = '6.9%';
-      d.textContent = k.label;
-      pianoEl.appendChild(d);
-    });
-
-    var allKeys = Array.prototype.slice.call(pianoEl.querySelectorAll('.pkey'));
-
-    function clearKeys(){
-      allKeys.forEach(function(k){ k.classList.remove('on'); });
-    }
-
-    function highlight(notes){
-      clearKeys();
-      allKeys.forEach(function(k){
-        var n = k.getAttribute('data-note');
-        if(notes.indexOf(n) !== -1){ k.classList.add('on'); }
-      });
-    }
-
-    function selectChord(ch){
-      highlight(ch.notes);
-      if(infoEl){
-        infoEl.innerHTML = '<span class="cn">' + ch.label + '</span>' +
-          '<span class="notes">' + ch.names + '</span>' +
-          '<p style="margin:8px 0 0;font-size:.85rem;color:#94a3b8">' + ch.desc + '</p>';
-      }
-      if(buttonsEl){
-        Array.prototype.slice.call(buttonsEl.children).forEach(function(b){
-          b.classList.toggle('active', b.getAttribute('data-chord') === ch.key);
-        });
-      }
-    }
-
-    if(buttonsEl){
-      CHORDS.forEach(function(ch, idx){
-        var b = document.createElement('button');
-        b.className = 'cbtn' + (idx === 0 ? ' active' : '');
-        b.setAttribute('data-chord', ch.key);
-        b.textContent = ch.label;
-        b.addEventListener('click', function(){ selectChord(ch); });
-        buttonsEl.appendChild(b);
-      });
-    }
-
-    selectChord(CHORDS[0]);
+  // ---------- accordion ----------
+  function toggleAcc(headBtn){
+    headBtn.parentElement.classList.toggle('open');
   }
 
-  buildPiano(
-    document.getElementById('piano'),
-    document.getElementById('chordBtns'),
-    document.getElementById('chordInfo')
-  );
-  buildPiano(
-    document.getElementById('piano2'),
-    document.getElementById('chordBtns2'),
-    document.getElementById('chordInfo2')
-  );
+  // ---------- reusable animated hero SVG (piano / chord-flow theme) ----------
+  function heroSVGMarkup(prefix){
+    return `
+    <svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Piano y notas fluyendo entre acordes">
+      <defs>
+        <linearGradient id="${prefix}-bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#0a0e1a"/>
+          <stop offset="100%" stop-color="#0f2038"/>
+        </linearGradient>
+        <linearGradient id="${prefix}-key" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f1f5f9"/>
+          <stop offset="100%" stop-color="#cbd5e1"/>
+        </linearGradient>
+      </defs>
 
-  /* ============ INICIALIZACIÓN ============ */
-  updateProgress();
+      <rect x="0" y="0" width="800" height="450" fill="url(#${prefix}-bg)"/>
 
-  if(window.location.hash){
-    var targetId = window.location.hash.substring(1);
-    if(document.getElementById(targetId)){ showSection(targetId); }
+      <text x="400" y="70" text-anchor="middle" font-family="Segoe UI, sans-serif" font-weight="800" font-size="34" fill="#e2e8f0" letter-spacing="2">MAKE YOUR CHORDS FLOW</text>
+      <text x="400" y="98" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="15" fill="#00d4ff">B – D – G · primera inversión de G mayor</text>
+
+      <!-- flowing wave line representing "flow" -->
+      <path id="${prefix}-flow" d="M60,140 C160,110 240,170 340,140 C440,110 520,170 620,140 C680,124 720,150 740,140"
+            fill="none" stroke="#00d4ff" stroke-width="3" stroke-linecap="round" opacity="0.55"
+            stroke-dasharray="14 10">
+        <animate attributeName="stroke-dashoffset" from="0" to="-240" dur="4s" repeatCount="indefinite"/>
+      </path>
+
+      <!-- keyboard -->
+      <g transform="translate(100,300)">
+        <rect x="-6" y="-6" width="612" height="112" rx="10" fill="#0b1120" stroke="#1e3a5f" stroke-width="2"/>
+        <!-- white keys -->
+        <g id="${prefix}-whitekeys">
+          ${Array.from({length:10}).map((_,i)=>`<rect x="${i*60}" y="0" width="58" height="100" rx="4" fill="url(#${prefix}-key)" stroke="#0b1120" stroke-width="2"/>`).join('')}
+        </g>
+        <!-- black keys: after white index 0,1,3,4,5,7,8 -->
+        <g id="${prefix}-blackkeys">
+          ${[0,1,3,4,5,7,8].map(i=>`<rect x="${i*60+40}" y="0" width="36" height="62" rx="3" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1.5"/>`).join('')}
+        </g>
+
+        <!-- highlighted keys: G (idx4), B (idx6), D (idx8) -->
+        <rect x="${4*60}" y="0" width="58" height="100" rx="4" fill="#00d4ff" opacity="0.35"/>
+        <rect x="${6*60}" y="0" width="58" height="100" rx="4" fill="#a855f7" opacity="0.35"/>
+        <rect x="${8*60}" y="0" width="58" height="100" rx="4" fill="#f59e0b" opacity="0.35"/>
+      </g>
+
+      <!-- note dots doing "the one note move" above the keyboard -->
+      <g font-family="Segoe UI, sans-serif" font-weight="800" font-size="15" text-anchor="middle">
+        <g class="note-dot" style="transform-origin:${100+4*60+29}px 250px; animation:${prefix}-bob-g 2.4s ease-in-out infinite;">
+          <circle cx="${100+4*60+29}" cy="250" r="16" fill="#00d4ff"/>
+          <text x="${100+4*60+29}" y="255" fill="#001018">G</text>
+        </g>
+        <g class="note-dot" style="transform-origin:${100+6*60+29}px 250px; animation:${prefix}-bob-b 2.4s ease-in-out infinite; animation-delay:0.8s;">
+          <circle cx="${100+6*60+29}" cy="250" r="16" fill="#a855f7"/>
+          <text x="${100+6*60+29}" y="255" fill="#001018">B</text>
+        </g>
+        <g class="note-dot" style="transform-origin:${100+8*60+29}px 250px; animation:${prefix}-bob-d 2.4s ease-in-out infinite; animation-delay:1.6s;">
+          <circle cx="${100+8*60+29}" cy="250" r="16" fill="#f59e0b"/>
+          <text x="${100+8*60+29}" y="255" fill="#001018">D</text>
+        </g>
+      </g>
+
+      <style>
+        @keyframes ${prefix}-bob-g{ 0%,60%,100%{ transform:translateY(0);} 25%{ transform:translateY(-30px);} }
+        @keyframes ${prefix}-bob-b{ 0%,60%,100%{ transform:translateY(0);} 25%{ transform:translateY(-30px);} }
+        @keyframes ${prefix}-bob-d{ 0%,60%,100%{ transform:translateY(0);} 25%{ transform:translateY(-30px);} }
+      </style>
+    </svg>`;
   }
 
-})();
+  function renderHeroSVG(containerId, prefix){
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    el.innerHTML = heroSVGMarkup(prefix);
+  }
+
+  renderHeroSVG('homeSvgContainer','h');
+  renderHeroSVG('creditosSvgContainer','c');
 </script>
 </body>
 </html>
-```
