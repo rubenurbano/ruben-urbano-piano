@@ -1,0 +1,1851 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acordes de Novena: Guía Teórica y Práctica para Piano — Rubén Sbarsky</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+  --nav-h:58px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+#progressTrack{
+  position:fixed;top:0;left:0;right:0;height:3px;
+  background:rgba(30,58,95,.6);z-index:1200;
+}
+#progressBar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));
+  transition:width .12s linear;
+  box-shadow:0 0 10px rgba(0,212,255,.7);
+}
+#navbar{
+  position:fixed;top:3px;left:0;right:0;height:var(--nav-h);
+  background:rgba(10,14,26,.95);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  z-index:1100;
+  display:flex;align-items:center;
+}
+#navScroll{
+  display:flex;gap:6px;align-items:center;
+  overflow-x:auto;overflow-y:hidden;
+  padding:0 10px;width:100%;height:100%;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+  -webkit-overflow-scrolling:touch;
+}
+#navScroll::-webkit-scrollbar{height:4px}
+#navScroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.nav-brand{
+  flex:0 0 auto;font-weight:800;font-size:.78rem;letter-spacing:.06em;
+  color:var(--accent);padding:0 12px 0 4px;border-right:1px solid var(--border);
+  margin-right:6px;white-space:nowrap;text-transform:uppercase;
+}
+.nav-btn{
+  flex:0 0 auto;
+  background:transparent;border:1px solid transparent;
+  color:var(--muted);font-family:inherit;font-size:.78rem;font-weight:600;
+  padding:8px 12px;border-radius:8px;cursor:pointer;white-space:nowrap;
+  transition:all .2s ease;letter-spacing:.02em;
+}
+.nav-btn:hover{color:var(--text);background:rgba(0,212,255,.07);border-color:var(--border)}
+.nav-btn.active{
+  color:#04121b;background:var(--accent);border-color:var(--accent);
+  box-shadow:0 0 14px rgba(0,212,255,.45);
+}
+main{padding-top:calc(var(--nav-h) + 3px);}
+.section{display:none;padding:18px 16px 70px;max-width:1080px;margin:0 auto;animation:fadeIn .38s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-wrap{
+  width:100%;border-radius:14px;overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 0 0 1px rgba(0,212,255,.08),0 18px 50px -20px rgba(0,212,255,.35);
+  background:#070b14;
+  margin-bottom:18px;
+}
+.hero-wrap svg{display:block;width:100%;height:auto}
+h1{
+  font-size:clamp(1.6rem,5vw,2.7rem);line-height:1.15;font-weight:800;
+  letter-spacing:-.02em;margin-bottom:12px;
+  background:linear-gradient(120deg,#ffffff 10%,var(--accent) 55%,var(--purple) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+h2{
+  font-size:clamp(1.25rem,3.6vw,1.75rem);font-weight:800;margin:0 0 6px;
+  color:#fff;letter-spacing:-.01em;
+}
+h3{font-size:1.06rem;font-weight:700;color:var(--accent);margin:22px 0 10px;letter-spacing:.01em}
+h4{font-size:.96rem;font-weight:700;color:#cbd5e1;margin:16px 0 8px}
+p{margin-bottom:12px;color:#cbd5e1}
+ul,ol{margin:0 0 14px 20px;color:#cbd5e1}
+li{margin-bottom:7px}
+strong{color:#fff;font-weight:700}
+code{
+  font-family:ui-monospace,'Cascadia Code',Consolas,monospace;
+  background:rgba(0,212,255,.10);color:var(--accent);
+  padding:2px 7px;border-radius:6px;font-size:.88em;border:1px solid rgba(0,212,255,.18);
+}
+.badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.35);
+  color:var(--accent);font-size:.7rem;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;padding:6px 13px;border-radius:999px;margin-bottom:14px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.chip{
+  background:var(--card);border:1px solid var(--border);color:var(--muted);
+  font-size:.72rem;font-weight:700;padding:5px 11px;border-radius:999px;letter-spacing:.04em;
+}
+.chip.b{border-color:rgba(0,212,255,.45);color:var(--accent)}
+.chip.g{border-color:rgba(34,197,94,.45);color:var(--green)}
+.chip.a{border-color:rgba(245,158,11,.45);color:var(--amber)}
+.chip.p{border-color:rgba(168,85,247,.45);color:var(--purple)}
+.chip.r{border-color:rgba(239,68,68,.45);color:var(--red)}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:20px;margin-bottom:18px;position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;width:100%;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent 65%);opacity:.65;
+}
+.card.p::before{background:linear-gradient(90deg,var(--purple),transparent 65%)}
+.card.g::before{background:linear-gradient(90deg,var(--green),transparent 65%)}
+.card.a::before{background:linear-gradient(90deg,var(--amber),transparent 65%)}
+.card.r::before{background:linear-gradient(90deg,var(--red),transparent 65%)}
+.section-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.section-ico{
+  flex:0 0 auto;width:46px;height:46px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;font-size:1.35rem;
+  background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.32);
+}
+.section-ico.p{background:rgba(168,85,247,.10);border-color:rgba(168,85,247,.32)}
+.section-ico.g{background:rgba(34,197,94,.10);border-color:rgba(34,197,94,.32)}
+.section-ico.a{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.32)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:20px 0}
+.metric{
+  background:var(--card);border:1px solid var(--border);border-radius:11px;
+  padding:14px 12px;text-align:center;
+}
+.metric .val{
+  font-size:1.5rem;font-weight:800;color:var(--accent);line-height:1.1;
+  display:block;font-variant-numeric:tabular-nums;
+}
+.metric .lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-top:5px;display:block}
+.quote{
+  border-left:4px solid var(--accent);
+  background:linear-gradient(90deg,rgba(0,212,255,.10),transparent);
+  padding:16px 18px;border-radius:0 11px 11px 0;margin:20px 0;
+  font-style:italic;color:#e2e8f0;font-size:.98rem;
+}
+.quote::before{content:'“';color:var(--accent);font-size:2rem;line-height:0;vertical-align:-.35em;margin-right:5px;font-style:normal}
+.callout{border-left:4px solid;padding:13px 16px;border-radius:9px;margin:15px 0;font-size:.92rem}
+.callout .ct{font-weight:800;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:5px}
+.callout.info{border-color:var(--accent);background:rgba(0,212,255,.08)}
+.callout.info .ct{color:var(--accent)}
+.callout.ejemplo{border-color:var(--green);background:rgba(34,197,94,.08)}
+.callout.ejemplo .ct{color:var(--green)}
+.callout.advertencia{border-color:var(--amber);background:rgba(245,158,11,.08)}
+.callout.advertencia .ct{color:var(--amber)}
+.callout.error{border-color:var(--red);background:rgba(239,68,68,.08)}
+.callout.error .ct{color:var(--red)}
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:11px;border:1px solid var(--border);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:520px;font-size:.87rem}
+th{
+  background:#0c1526;color:var(--accent);text-align:left;padding:11px 13px;
+  font-weight:800;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  border-bottom:1px solid var(--border);white-space:nowrap;
+}
+td{padding:10px 13px;border-bottom:1px solid rgba(30,58,95,.55);color:#cbd5e1;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(0,212,255,.045)}
+.steps{list-style:none;margin:16px 0;padding:0;counter-reset:st}
+.steps li{
+  counter-increment:st;position:relative;padding:13px 14px 13px 52px;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  margin-bottom:10px;
+}
+.steps li::before{
+  content:counter(st);position:absolute;left:13px;top:13px;
+  width:26px;height:26px;border-radius:8px;
+  background:rgba(0,212,255,.14);border:1px solid rgba(0,212,255,.4);
+  color:var(--accent);font-weight:800;font-size:.78rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.steps li .why{display:block;color:var(--muted);font-size:.83rem;margin-top:5px;font-style:italic}
+.check{list-style:none;margin:14px 0;padding:0}
+.check li{
+  position:relative;padding:10px 12px 10px 42px;background:var(--card);
+  border:1px solid var(--border);border-radius:9px;margin-bottom:8px;font-size:.9rem;
+}
+.check li::before{
+  content:'✓';position:absolute;left:12px;top:9px;
+  width:20px;height:20px;border-radius:6px;background:rgba(34,197,94,.14);
+  border:1px solid rgba(34,197,94,.45);color:var(--green);
+  font-size:.72rem;font-weight:900;display:flex;align-items:center;justify-content:center;
+}
+.formula{
+  font-family:ui-monospace,'Cascadia Code',Consolas,monospace;
+  background:#070d18;border:1px dashed rgba(0,212,255,.42);border-radius:10px;
+  padding:13px 16px;color:var(--accent);font-size:.92rem;font-weight:700;
+  margin:13px 0;overflow-x:auto;white-space:nowrap;letter-spacing:.03em;
+}
+.formula.a{border-color:rgba(245,158,11,.45);color:var(--amber)}
+.formula.g{border-color:rgba(34,197,94,.45);color:var(--green)}
+.formula.p{border-color:rgba(168,85,247,.45);color:var(--purple)}
+.formula.r{border-color:rgba(239,68,68,.45);color:var(--red)}
+.degrees{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}
+.deg{
+  flex:1 1 84px;min-width:84px;background:#0c1526;border:1px solid var(--border);
+  border-radius:10px;padding:11px 8px;text-align:center;
+}
+.deg .n{font-size:1.05rem;font-weight:800;color:#fff;display:block}
+.deg .gr{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:700;margin-top:3px;display:block}
+.deg.on-blue{border-color:rgba(0,212,255,.55);background:rgba(0,212,255,.09)}
+.deg.on-blue .n{color:var(--accent)}
+.deg.on-amber{border-color:rgba(245,158,11,.55);background:rgba(245,158,11,.09)}
+.deg.on-amber .n{color:var(--amber)}
+.deg.on-purple{border-color:rgba(168,85,247,.55);background:rgba(168,85,247,.09)}
+.deg.on-purple .n{color:var(--purple)}
+details{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  margin-bottom:10px;overflow:hidden;
+}
+details[open]{border-color:rgba(0,212,255,.42)}
+summary{
+  cursor:pointer;padding:13px 16px;font-weight:700;color:#e2e8f0;
+  list-style:none;display:flex;justify-content:space-between;gap:12px;
+  align-items:center;font-size:.93rem;transition:background .2s;
+}
+summary::-webkit-details-marker{display:none}
+summary:hover{background:rgba(0,212,255,.06)}
+summary::after{
+  content:'+';color:var(--accent);font-weight:900;font-size:1.2rem;line-height:1;
+  flex:0 0 auto;transition:transform .25s;
+}
+details[open] summary::after{content:'−';transform:rotate(180deg)}
+.details-body{padding:2px 16px 16px;color:#cbd5e1;font-size:.9rem;border-top:1px solid rgba(30,58,95,.5);margin-top:2px;padding-top:14px}
+/* PIANO */
+.piano-panel{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:16px;margin:18px 0;
+}
+.piano-panel h4{margin-top:0}
+.chord-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.cbtn{
+  background:#0c1526;border:1px solid var(--border);color:var(--muted);
+  font-family:inherit;font-size:.78rem;font-weight:700;padding:8px 13px;
+  border-radius:9px;cursor:pointer;transition:all .18s;
+}
+.cbtn:hover{border-color:rgba(0,212,255,.5);color:var(--text)}
+.cbtn.active{background:rgba(0,212,255,.14);border-color:var(--accent);color:var(--accent);box-shadow:0 0 12px rgba(0,212,255,.25)}
+.piano{
+  position:relative;height:132px;width:100%;
+  border-radius:8px;overflow:hidden;background:#070b14;
+  border:1px solid var(--border);user-select:none;
+}
+.pkey{
+  position:absolute;bottom:0;top:0;
+  background:linear-gradient(180deg,#f8fafc,#cbd5e1);
+  border-right:1px solid #1e293b;border-radius:0 0 6px 6px;
+  display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:7px;font-size:.62rem;font-weight:800;color:#475569;
+  transition:background .18s,box-shadow .18s;
+  cursor:pointer;pointer-events:none;
+}
+.pkey.black{
+  top:0;height:62%;z-index:3;
+  background:linear-gradient(180deg,#334155,#0f172a);
+  border:1px solid #020617;border-right:none;border-radius:0 0 5px 5px;
+  color:#94a3b8;font-size:.56rem;padding-bottom:5px;
+}
+.pkey.on{background:linear-gradient(180deg,#67e8f9,#00d4ff);color:#04121b;box-shadow:0 0 18px rgba(0,212,255,.75) inset,0 0 14px rgba(0,212,255,.5)}
+.pkey.black.on{background:linear-gradient(180deg,#00d4ff,#0891b2);color:#04121b;box-shadow:0 0 16px rgba(0,212,255,.75)}
+.pkey.amber.on{background:linear-gradient(180deg,#fcd34d,#f59e0b);color:#3b2400}
+.pkey.purple.on{background:linear-gradient(180deg,#d8b4fe,#a855f7);color:#1a0b2e}
+.chord-info{
+  margin-top:13px;padding:12px 14px;border-radius:9px;
+  background:#0c1526;border:1px solid var(--border);font-size:.87rem;
+}
+.chord-info .cn{font-weight:800;color:var(--accent);font-size:1rem;display:block;margin-bottom:4px}
+.chord-info .notes{font-family:ui-monospace,Consolas,monospace;color:var(--green);font-weight:700;letter-spacing:.04em}
+#toTop{
+  position:fixed;right:16px;bottom:16px;width:46px;height:46px;border-radius:12px;
+  background:rgba(0,212,255,.14);border:1px solid rgba(0,212,255,.5);
+  color:var(--accent);font-size:1.25rem;font-weight:900;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;z-index:1000;
+  opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{background:rgba(0,212,255,.26);transform:translateY(-3px)}
+footer{
+  border-top:1px solid var(--border);background:#080c16;
+  padding:26px 16px 34px;text-align:center;color:var(--muted);font-size:.83rem;
+}
+footer p{margin-bottom:6px;color:var(--muted)}
+footer .law{color:var(--amber);font-style:italic;margin-top:12px;font-size:.82rem;letter-spacing:.02em}
+.credit-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin:18px 0}
+.credit-item{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px}
+.credit-item .k{font-size:.68rem;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);font-weight:800;display:block;margin-bottom:4px}
+.credit-item .v{font-size:.98rem;color:#fff;font-weight:700;word-break:break-word}
+@media(max-width:640px){
+  .section{padding:14px 11px 60px}
+  .card{padding:15px}
+  .nav-brand{display:none}
+  .metric .val{font-size:1.25rem}
+  .piano{height:112px}
+  .pkey{font-size:.54rem}
+  .pkey.black{font-size:.5rem}
+  table{min-width:460px;font-size:.82rem}
+  th,td{padding:9px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<div id="progressTrack"><div id="progressBar"></div></div>
+
+<nav id="navbar">
+  <div id="navScroll">
+    <span class="nav-brand">🎹 Novena</span>
+    <button class="nav-btn active" data-target="home">Inicio</button>
+    <button class="nav-btn" data-target="intro">Introducción</button>
+    <button class="nav-btn" data-target="cap1">Cap. 1 · Tríada</button>
+    <button class="nav-btn" data-target="cap2">Cap. 2 · Séptimas</button>
+    <button class="nav-btn" data-target="cap3">Cap. 3 · 3 Novenas</button>
+    <button class="nav-btn" data-target="cap4">Cap. 4 · Voicings</button>
+    <button class="nav-btn" data-target="cap5">Cap. 5 · Inversiones</button>
+    <button class="nav-btn" data-target="faq">FAQ</button>
+    <button class="nav-btn" data-target="ejercicios">Ejercicios</button>
+    <button class="nav-btn" data-target="glosario">Glosario</button>
+    <button class="nav-btn" data-target="referencias">Referencias</button>
+    <button class="nav-btn" data-target="creditos">Créditos</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================ HOME ============================ -->
+<section id="home" class="section active">
+
+  <div class="hero-wrap" id="heroHome">
+    <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" role="img"
+         aria-label="Animación de los acordes de novena: Cmaj9, C9 y Cm9 rotando sobre un teclado de piano">
+      <defs>
+        <linearGradient id="n-bgGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#070b14"/>
+          <stop offset="45%" stop-color="#0d1526"/>
+          <stop offset="100%" stop-color="#070b14"/>
+        </linearGradient>
+        <linearGradient id="n-keyWhite" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e2e8f0"/>
+          <stop offset="100%" stop-color="#94a3b8"/>
+        </linearGradient>
+        <linearGradient id="n-keyBlack" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#334155"/>
+          <stop offset="100%" stop-color="#020617"/>
+        </linearGradient>
+        <radialGradient id="n-glowBlue">
+          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="n-glowAmber">
+          <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="n-glowPurple">
+          <stop offset="0%" stop-color="#a855f7" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+        </radialGradient>
+        <pattern id="n-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M40 0 L0 0 0 40" fill="none" stroke="#1e3a5f" stroke-width="0.6" opacity="0.35"/>
+        </pattern>
+      </defs>
+
+      <rect x="0" y="0" width="800" height="450" fill="url(#n-bgGrad)"/>
+      <rect x="0" y="0" width="800" height="450" fill="url(#n-grid)"/>
+
+      <text x="34" y="44" font-family="Segoe UI, system-ui, sans-serif" font-size="13"
+            font-weight="800" letter-spacing="4" fill="#00d4ff" opacity="0.9">ARMONÍA APLICADA · PIANO</text>
+      <text x="34" y="80" font-family="Segoe UI, system-ui, sans-serif" font-size="26"
+            font-weight="800" fill="#ffffff" letter-spacing="-0.4">ACORDES DE NOVENA</text>
+      <text x="34" y="104" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5"
+            font-weight="600" fill="#94a3b8" letter-spacing="1.4">MAJ9 · 9 · m9 · VOICING 7 – 9 – 3 – 5</text>
+
+      <!-- Etiqueta de estado cíclica -->
+      <g>
+        <rect x="586" y="30" width="180" height="34" rx="17" fill="#0f172a" stroke="#1e3a5f"/>
+        <text x="676" y="52" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="12" font-weight="800" letter-spacing="2.2" fill="#22c55e">
+          Cmaj9 · REPOSO
+          <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="1;1;0;0;0;0;1"/>
+        </text>
+        <text x="676" y="52" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="12" font-weight="800" letter-spacing="2.2" fill="#f59e0b" opacity="0">
+          C9 · TENSIÓN
+          <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0;0;1;1;0;0;0"/>
+        </text>
+        <text x="676" y="52" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="12" font-weight="800" letter-spacing="2.2" fill="#a855f7" opacity="0">
+          Cm9 · MELANCOLÍA
+          <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0;0;0;0;1;1;0"/>
+        </text>
+      </g>
+
+      <!-- Glow detrás de la nube de notas -->
+      <ellipse cx="400" cy="170" rx="230" ry="100" fill="url(#n-glowBlue)" opacity="0.85">
+        <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                 keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0.85;0.85;0;0;0;0;0.85"/>
+      </ellipse>
+      <ellipse cx="400" cy="170" rx="230" ry="100" fill="url(#n-glowAmber)" opacity="0">
+        <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                 keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0;0;0.9;0.9;0;0;0"/>
+      </ellipse>
+      <ellipse cx="400" cy="170" rx="230" ry="100" fill="url(#n-glowPurple)" opacity="0">
+        <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                 keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0;0;0;0;0.9;0.9;0"/>
+      </ellipse>
+
+      <!-- Ondas de sonido -->
+      <g fill="none" stroke-width="1.6">
+        <circle cx="400" cy="170" r="60" stroke="#00d4ff">
+          <animate attributeName="r" dur="3s" repeatCount="indefinite" values="60;200" keyTimes="0;1"/>
+          <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0.5;0" keyTimes="0;1"/>
+        </circle>
+        <circle cx="400" cy="170" r="60" stroke="#00d4ff">
+          <animate attributeName="r" dur="3s" begin="1s" repeatCount="indefinite" values="60;200" keyTimes="0;1"/>
+          <animate attributeName="opacity" dur="3s" begin="1s" repeatCount="indefinite" values="0.5;0" keyTimes="0;1"/>
+        </circle>
+        <circle cx="400" cy="170" r="60" stroke="#00d4ff">
+          <animate attributeName="r" dur="3s" begin="2s" repeatCount="indefinite" values="60;200" keyTimes="0;1"/>
+          <animate attributeName="opacity" dur="3s" begin="2s" repeatCount="indefinite" values="0.5;0" keyTimes="0;1"/>
+        </circle>
+      </g>
+
+      <!-- NODOS: Séptima / Novena / Tercera / Quinta -->
+      <!-- 7ª nodo -->
+      <g>
+        <circle cx="200" cy="160" r="42" fill="#0b1424" stroke="#00d4ff" stroke-width="2.5">
+          <animate attributeName="stroke" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1"
+                   values="#00d4ff;#00d4ff;#f59e0b;#f59e0b;#a855f7;#a855f7;#00d4ff"/>
+        </circle>
+        <text x="200" y="156" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="20" font-weight="800" fill="#fff">7ª</text>
+        <text x="200" y="176" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="11.5" font-weight="700" fill="#94a3b8" letter-spacing="1">GRADO</text>
+        <text x="200" y="222" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="13" font-weight="800" fill="#00d4ff">
+          <tspan>B(VII)</tspan>
+        </text>
+      </g>
+
+      <!-- 9ª nodo -->
+      <g>
+        <circle cx="320" cy="160" r="42" fill="#0b1424" stroke="#00d4ff" stroke-width="2.5">
+          <animate attributeName="stroke" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1"
+                   values="#00d4ff;#00d4ff;#f59e0b;#f59e0b;#a855f7;#a855f7;#00d4ff"/>
+        </circle>
+        <text x="320" y="156" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="20" font-weight="800" fill="#fff">9ª</text>
+        <text x="320" y="176" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="11.5" font-weight="700" fill="#94a3b8" letter-spacing="1">NOVENA</text>
+        <text x="320" y="222" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="13" font-weight="800" fill="#00d4ff">D(II)</text>
+      </g>
+
+      <!-- 3ª nodo -->
+      <g>
+        <circle cx="440" cy="160" r="42" fill="#0b1424" stroke="#00d4ff" stroke-width="2.5">
+          <animate attributeName="stroke" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1"
+                   values="#00d4ff;#00d4ff;#f59e0b;#f59e0b;#a855f7;#a855f7;#00d4ff"/>
+        </circle>
+        <text x="440" y="156" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="20" font-weight="800" fill="#fff">3ª</text>
+        <text x="440" y="176" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="11.5" font-weight="700" fill="#94a3b8" letter-spacing="1">TERCERA</text>
+        <text x="440" y="222" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="13" font-weight="800" fill="#00d4ff">
+          <tspan>E(III)</tspan>
+        </text>
+      </g>
+
+      <!-- 5ª nodo -->
+      <g>
+        <circle cx="560" cy="160" r="42" fill="#0b1424" stroke="#00d4ff" stroke-width="2.5">
+          <animate attributeName="stroke" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1"
+                   values="#00d4ff;#00d4ff;#f59e0b;#f59e0b;#a855f7;#a855f7;#00d4ff"/>
+        </circle>
+        <text x="560" y="156" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="20" font-weight="800" fill="#fff">5ª</text>
+        <text x="560" y="176" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="11.5" font-weight="700" fill="#94a3b8" letter-spacing="1">QUINTA</text>
+        <text x="560" y="222" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="13" font-weight="800" fill="#00d4ff">G(V)</text>
+      </g>
+
+      <!-- Alteraciones animadas: E->Eb para m9 -->
+      <text x="440" y="270" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+            font-size="11.5" font-weight="800" fill="#a855f7" opacity="0">
+        ▼ Eb(bIII)
+        <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                 keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0;0;0;0;1;1;0"/>
+      </text>
+
+      <!-- ALTERACIÓN: B->Bb para C9 / Cm9 -->
+      <text x="200" y="270" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+            font-size="11.5" font-weight="800" fill="#f59e0b" opacity="0">
+        ▼ Bb(bVII)
+        <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                 keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0;0;0.9;0.9;0.9;0.9;0"/>
+      </text>
+
+      <!-- Fórmula 7-9-3-5 -->
+      <text x="380" y="270" text-anchor="middle" font-family="ui-monospace, Consolas, monospace"
+            font-size="14" font-weight="800" fill="#00d4ff" letter-spacing="2">
+        VOICING  7 – 9 – 3 – 5
+      </text>
+
+      <!-- TECLADO -->
+      <g>
+        <g fill="url(#n-keyWhite)" stroke="#1e293b" stroke-width="1">
+          <rect x="40"  y="300" width="52" height="96" rx="4"/>
+          <rect x="92"  y="300" width="52" height="96" rx="4"/>
+          <rect x="144" y="300" width="52" height="96" rx="4"/>
+          <rect x="196" y="300" width="52" height="96" rx="4"/>
+          <rect x="248" y="300" width="52" height="96" rx="4"/>
+          <rect x="300" y="300" width="52" height="96" rx="4"/>
+          <rect x="352" y="300" width="52" height="96" rx="4"/>
+          <rect x="404" y="300" width="52" height="96" rx="4"/>
+          <rect x="456" y="300" width="52" height="96" rx="4"/>
+          <rect x="508" y="300" width="52" height="96" rx="4"/>
+          <rect x="560" y="300" width="52" height="96" rx="4"/>
+          <rect x="612" y="300" width="52" height="96" rx="4"/>
+          <rect x="664" y="300" width="52" height="96" rx="4"/>
+          <rect x="716" y="300" width="52" height="96" rx="4"/>
+        </g>
+
+        <!-- B(VII) en la tecla B4 (índice 6) -->
+        <rect x="354" y="302" width="48" height="92" rx="4" fill="#00d4ff" opacity="0">
+          <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0.85;0.85;0;0;0;0;0.85"/>
+        </rect>
+        <!-- Bb en A#4 (negra) para C9 / Cm9 -->
+        <rect x="508" y="300" width="48" height="60" rx="3" fill="#f59e0b" opacity="0">
+          <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0;0;0.9;0.9;0.9;0.9;0"/>
+        </rect>
+        <!-- D(II) en D4 (índice 1) -->
+        <rect x="146" y="302" width="48" height="92" rx="4" fill="#00d4ff" opacity="0.85">
+          <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0.85;0.85;0.9;0.9;0.9;0.9;0.85"/>
+        </rect>
+        <!-- E(III) en E4 (índice 2) -->
+        <rect x="198" y="302" width="48" height="92" rx="4" fill="#00d4ff" opacity="0.85">
+          <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0.85;0.85;0.9;0.9;0;0;0.85"/>
+        </rect>
+        <!-- Eb en D#4 (negra, índice 1) -->
+        <rect x="282" y="300" width="48" height="60" rx="3" fill="#a855f7" opacity="0">
+          <animate attributeName="opacity" dur="15s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.33;0.61;0.66;0.94;1" values="0;0;0;0;0.9;0.9;0"/>
+        </rect>
+        <!-- G(V) en G4 (índice 4) -->
+        <rect x="250" y="302" width="48" height="92" rx="4" fill="#00d4ff" opacity="0.85"/>
+
+        <!-- Notas negras -->
+        <g fill="url(#n-keyBlack)" stroke="#020617" stroke-width="1">
+          <rect x="74"  y="300" width="36" height="60" rx="3"/>
+          <rect x="126" y="300" width="36" height="60" rx="3"/>
+          <rect x="230" y="300" width="36" height="60" rx="3"/>
+          <rect x="282" y="300" width="36" height="60" rx="3"/>
+          <rect x="334" y="300" width="36" height="60" rx="3"/>
+          <rect x="438" y="300" width="36" height="60" rx="3"/>
+          <rect x="490" y="300" width="36" height="60" rx="3"/>
+          <rect x="594" y="300" width="36" height="60" rx="3"/>
+          <rect x="646" y="300" width="36" height="60" rx="3"/>
+          <rect x="698" y="300" width="36" height="60" rx="3"/>
+        </g>
+      </g>
+
+      <text x="34" y="432" font-family="Segoe UI, system-ui, sans-serif" font-size="11"
+            font-weight="700" letter-spacing="1.6" fill="#64748b">
+        C(I) + (7ª ó b7) + 9ª + 3ª + 5ª · MANO IZQ: TÓNICA
+      </text>
+      <text x="766" y="432" text-anchor="end" font-family="Segoe UI, system-ui, sans-serif"
+            font-size="11" font-weight="700" letter-spacing="1.6" fill="#64748b">
+        RUBÉN SBARSKY
+      </text>
+    </svg>
+  </div>
+
+  <span class="badge">🎹 Tutorial técnico · Armonía aplicada al piano</span>
+  <h1>Acordes de Novena: Guía Teórica y Práctica para Piano</h1>
+  <p style="font-size:1.02rem;color:#94a3b8;max-width:760px">
+    Un recorrido completo —desde la escala mayor y la tríada básica hasta la fórmula secreta
+    de <em>voicings</em> <strong>7 – 9 – 3 – 5</strong>— para dominar los acordes
+    <strong>Cmaj9</strong>, <strong>C9</strong> y <strong>Cm9</strong> y aplicarlos en progresiones reales.
+  </p>
+
+  <div class="quote">
+    Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><span class="val">5</span><span class="lbl">Capítulos</span></div>
+    <div class="metric"><span class="val">3</span><span class="lbl">Novenas base</span></div>
+    <div class="metric"><span class="val">7–9–3–5</span><span class="lbl">Voicing</span></div>
+    <div class="metric"><span class="val">2</span><span class="lbl">Ejercicios</span></div>
+  </div>
+
+  <div class="chips">
+    <span class="chip b">Cmaj9</span>
+    <span class="chip a">C9</span>
+    <span class="chip p">Cm9</span>
+    <span class="chip g">ii – V – I</span>
+    <span class="chip">Voicing</span>
+    <span class="chip">Inversiones</span>
+    <span class="chip">Sistema americano</span>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">¿Qué vas a encontrar en este tutorial?</h3>
+    <div class="grid g2">
+      <div>
+        <h4>Fundamentos</h4>
+        <p style="font-size:.9rem;margin-bottom:0">
+          La escala mayor, la tríada básica y el paso de mayor a menor mediante el descenso de la tercera.
+        </p>
+      </div>
+      <div>
+        <h4>Puente: las séptimas</h4>
+        <p style="font-size:.9rem;margin-bottom:0">
+          Séptima mayor (reposo) y séptima menor (tensión dominante) como antesala de la novena.
+        </p>
+      </div>
+      <div>
+        <h4>Los 3 acordes clave</h4>
+        <p style="font-size:.9rem;margin-bottom:0">
+          Cmaj9, C9 y Cm9: estructura teórica y cómo se transforma cada uno en el teclado.
+        </p>
+      </div>
+      <div>
+        <h4>Voicings y práctica</h4>
+        <p style="font-size:.9rem;margin-bottom:0">
+          La fórmula <code>7 – 9 – 3 – 5</code> de la mano derecha, inversiones y aplicación en <em>ii – V – I</em>.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="piano-panel">
+    <h4>🎹 Teclado interactivo · Visualiza cada acorde</h4>
+    <p style="font-size:.87rem;color:#94a3b8">
+      Pulsa un botón para iluminar las notas del acorde sobre el teclado. Las notas en
+      <strong style="color:var(--accent)">azul</strong> pertenecen a la tríada base; las notas en
+      <strong style="color:var(--amber)">ámbar</strong> o <strong style="color:var(--purple)">púrpura</strong>
+      muestran las alteraciones y extensiones.
+    </p>
+    <div class="chord-btns" id="chordBtns"></div>
+    <div class="piano" id="piano"></div>
+    <div class="chord-info" id="chordInfo">
+      <span class="cn">Selecciona un acorde</span>
+      <span class="notes">—</span>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="ct">Nomenclatura</span>
+    En este tutorial se utiliza exclusivamente el <strong>sistema americano</strong> de notas
+    (<code>A, B, C, D, E, F, G</code>) junto con el <strong>grado de la escala</strong> en números romanos:
+    <code>C(I), D(II), E(III), F(IV), G(V), A(VI), B(VII)</code>.
+  </div>
+
+</section>
+
+<!-- ============================ INTRODUCCIÓN ============================ -->
+<section id="intro" class="section">
+  <div class="section-head">
+    <div class="section-ico">🎯</div>
+    <div>
+      <h2>Introducción y Objetivo del Tutorial</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Desde cero, sin dar ningún conocimiento por sentado.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>
+      El objetivo de este tutorial es guiarte desde cero, sin dar ningún conocimiento por sentado,
+      para que domines el uso de los <strong>acordes con novena</strong> en el piano.
+    </p>
+    <p style="margin-bottom:0">
+      Un acorde de novena es una extensión armónica que agrega una nota superior (el noveno grado de la
+      escala) a la estructura básica de un acorde de tres o cuatro notas. Sirve para transformar sonidos
+      planos y sencillos en sonoridades complejas, profundas, modernas y elegantes, características del
+      <strong>jazz, el bolero, el R&amp;B y las baladas profesionales</strong>.
+    </p>
+  </div>
+
+  <div class="card g">
+    <h3 style="margin-top:0">¿Por qué es importante aprender este tema?</h3>
+    <ol style="margin-bottom:0">
+      <li>
+        <strong>Elevación del sonido:</strong> tocar solo acordes de tres notas (tríadas) hace que tu
+        interpretación suene básica o infantil. Las novenas aportan el "color" profesional que escuchas
+        en grabaciones comerciales.
+      </li>
+      <li>
+        <strong>Eficiencia en el teclado:</strong> al aprender la distribución adecuada de notas
+        (<em>voicings</em>), tocarás acordes sofisticados sin necesidad de hacer estiramientos incómodos
+        en la mano.
+      </li>
+      <li>
+        <strong>Control de tensión y resolución:</strong> te permite manipular las emociones del oyente
+        creando momentos de descanso o de expectativa.
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ CAP 1 ============================ -->
+<section id="cap1" class="section">
+  <div class="section-head">
+    <div class="section-ico">🎼</div>
+    <div>
+      <h2>Capítulo 1: De la Escala Mayor a la Tríada Básica</h2>
+      <p style="margin-bottom:0;color:#94a3b8">El Génesis Armónico.</p>
+    </div>
+  </div>
+
+  <p>
+    Para comprender una novena, primero debemos entender la materia prima con la que se construye
+    cualquier acorde: la <strong>escala mayor</strong>.
+  </p>
+
+  <div class="card">
+    <h3 style="margin-top:0">Paso 1: La Escala Mayor de C(I) en Dos Octavas</h3>
+    <ol>
+      <li>
+        Identifica las notas de la escala mayor de C(I) en el piano. En esta escala solo se utilizan
+        teclas blancas, sin sostenidos ni bemoles.
+      </li>
+      <li>
+        Numera cada nota de forma correlativa extendiendo el conteo a través de dos octavas:
+      </li>
+    </ol>
+
+    <div class="degrees">
+      <div class="deg on-blue"><span class="n">C</span><span class="gr">1 · Tónica</span></div>
+      <div class="deg"><span class="n">D</span><span class="gr">2 · Segunda</span></div>
+      <div class="deg"><span class="n">E</span><span class="gr">3 · Tercera</span></div>
+      <div class="deg"><span class="n">F</span><span class="gr">4 · Cuarta</span></div>
+      <div class="deg"><span class="n">G</span><span class="gr">5 · Quinta</span></div>
+      <div class="deg"><span class="n">A</span><span class="gr">6 · Sexta</span></div>
+      <div class="deg"><span class="n">B</span><span class="gr">7 · Séptima</span></div>
+      <div class="deg"><span class="n">C</span><span class="gr">8 · Octava</span></div>
+      <div class="deg on-amber"><span class="n">D</span><span class="gr">9 · Novena</span></div>
+    </div>
+
+    <div class="callout info">
+      <span class="ct">Motivo de la acción</span>
+      Enumerar hasta el grado 13 permite visualizar que la nota D(II) en la segunda octava es exactamente
+      el noveno grado (9ª) de nuestra escala.
+    </div>
+
+    <h4>Esquema de Grados en C(I)</h4>
+    <div class="formula" style="white-space:normal">
+      Nota:  C(I)  D(II)  E(III)  F(IV)  G(V)  A(VI)  B(VII) | C(I)  D(II)
+      Grado:   1     2      3      4      5     6      7     |  8     9
+    </div>
+  </div>
+
+  <div class="card a">
+    <h3 style="margin-top:0">Paso 2: Construcción de la Tríada Básica</h3>
+    <ol>
+      <li>Selecciona la tónica C(I).</li>
+      <li>
+        Aplica el patrón de alternancia: "una nota sí, una no, una sí, una no" sobre la escala.
+      </li>
+      <li>
+        Obtendrás las notas <strong>C(I)</strong> (1ª), <strong>E(III)</strong> (3ª) y
+        <strong>G(V)</strong> (5ª).
+      </li>
+    </ol>
+    <div class="callout info" style="margin-bottom:0">
+      <span class="ct">Motivo de la acción</span>
+      Este acorde de tres notas es la estructura elemental sobre la cual se superponen las demás extensiones.
+    </div>
+  </div>
+
+  <div class="card p">
+    <h3 style="margin-top:0">Paso 3: Transformación de Mayor a Menor</h3>
+    <ol>
+      <li>Toma el acorde de C(I) mayor formado por C(I) - E(III) - G(V).</li>
+      <li>
+        Para convertirlo en un acorde menor, baja la tercera nota, <strong>E(III)</strong>, un semitono
+        hacia la izquierda.
+      </li>
+      <li>
+        La nueva nota será <strong>Eb(bIII)</strong>, obteniendo la tríada menor:
+        C(I) - Eb(bIII) - G(V).
+      </li>
+    </ol>
+    <div class="callout info" style="margin-bottom:0">
+      <span class="ct">Motivo de la acción</span>
+      El tercer grado es la nota determinante que define si la cualidad del acorde es alegre/imponente
+      (mayor) o melancólica/sombría (menor).
+    </div>
+  </div>
+
+  <div class="card g">
+    <h3 style="margin-top:0">Ejemplos Cotidianos y Analogías</h3>
+    <ul>
+      <li>
+        <strong>Analogía del edificio:</strong> la tríada básica es como los cimientos y las paredes
+        principales de una casa. Es la estructura mínima para que el espacio exista.
+      </li>
+      <li>
+        <strong>Ejemplo correcto:</strong> <code>C(I) - E(III) - G(V)</code> para C(I) mayor.
+      </li>
+      <li>
+        <strong>Ejemplo incorrecto:</strong> <code>C(I) - D(II) - G(V)</code> (esto no forma una tríada
+        mayor estándar, sino un acorde suspendido).
+      </li>
+    </ul>
+
+    <h4>Tabla comparativa: tríadas básicas</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo de Acorde</th>
+            <th>Estructura de Grados</th>
+            <th>Notas en C(I)</th>
+            <th>Sonido característico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Mayor</strong></td>
+            <td><code>1 - 3 - 5</code></td>
+            <td><code>C(I) - E(III) - G(V)</code></td>
+            <td>Alegre, estable, luminoso</td>
+          </tr>
+          <tr>
+            <td><strong>Menor</strong></td>
+            <td><code>1 - b3 - 5</code></td>
+            <td><code>C(I) - Eb(bIII) - G(V)</code></td>
+            <td>Melancólico, sobrio, sombrío</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card r">
+    <h3 style="margin-top:0">Errores Frecuentes en el Capítulo 1</h3>
+    <div class="callout error" style="margin-top:0">
+      <span class="ct">Error</span>
+      Confundir el grado 2 con el grado 9.
+    </div>
+    <div class="callout advertencia" style="margin-bottom:0">
+      <span class="ct">Cómo evitarlo</span>
+      Aunque conceptualmente son la misma nota (D(II) en la escala de C(I)), el grado 2 se piensa al
+      lado de la tónica, mientras que el grado 9 se ubica por encima de la séptima.
+    </div>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Resumen del Capítulo 1</span>
+    Una tríada mayor se compone de los grados 1, 3 y 5 de la escala. Al bajar la 3ª un semitono obtenemos
+    una tríada menor. La novena (9ª) es la extensión del segundo grado en la siguiente octava.
+  </div>
+</section>
+
+<!-- ============================ CAP 2 ============================ -->
+<section id="cap2" class="section">
+  <div class="section-head">
+    <div class="section-ico p">🪜</div>
+    <div>
+      <h2>Capítulo 2: Los Acordes de Séptima</h2>
+      <p style="margin-bottom:0;color:#94a3b8">El Puente hacia las Novenas.</p>
+    </div>
+  </div>
+
+  <p>
+    Antes de agregar la novena, es obligatorio integrar la séptima (7ª), que convierte la tríada en un
+    acorde de cuatro notas.
+  </p>
+
+  <div class="card g">
+    <h3 style="margin-top:0">Paso 1: Agregar la Séptima Mayor (Maj7)</h3>
+    <ol>
+      <li>Toca la tríada de C(I) mayor: C(I) - E(III) - G(V).</li>
+      <li>
+        Siguiendo el patrón "una sí, una no", agrega la siguiente nota de la escala: <strong>B(VII)</strong>.
+      </li>
+      <li>
+        Observa que <strong>B(VII)</strong> se encuentra exactamente un semitono por debajo de la octava C(I).
+      </li>
+      <li>
+        El acorde resultante es <strong>Cmaj7</strong>
+        (C(I) - E(III) - G(V) - B(VII)).
+      </li>
+    </ol>
+    <div class="callout info" style="margin-bottom:0">
+      <span class="ct">Motivo de la acción</span>
+      La séptima mayor genera una sonoridad dulce, apacible y de reposo, ampliamente utilizada en géneros
+      como el bolero.
+    </div>
+  </div>
+
+  <div class="card a">
+    <h3 style="margin-top:0">Paso 2: Crear la Séptima Menor o Dominante (7)</h3>
+    <ol>
+      <li>Toma el acorde de <strong>Cmaj7</strong> (C(I) - E(III) - G(V) - B(VII)).</li>
+      <li>
+        Retrocede la nota <strong>B(VII)</strong> un semitono hacia la izquierda para convertirla en
+        <strong>Bb(bVII)</strong>.
+      </li>
+      <li>
+        El acorde resultante es <strong>C7</strong> (C(I) - E(III) - G(V) - Bb(bVII)).
+      </li>
+    </ol>
+    <div class="callout info" style="margin-bottom:0">
+      <span class="ct">Motivo de la acción</span>
+      Al rebajar la séptima un semitono, transformamos un acorde de descanso en un acorde de
+      <strong>tensión dominante</strong>, el cual exige resolver hacia otro acorde.
+    </div>
+
+    <h4>Comparación de Séptimas</h4>
+    <div class="formula g" style="white-space:normal">
+      Cmaj7 (Reposo / Sensible):   C(I) - E(III) - G(V) - B(VII)    ← B(VII) a 1 semitono de la octava
+    </div>
+    <div class="formula a" style="white-space:normal">
+      C7 (Tensión Dominante):     C(I) - E(III) - G(V) - Bb(bVII)  ← Bb(bVII) bajó 1 semitono
+    </div>
+  </div>
+
+  <div class="card p">
+    <h3 style="margin-top:0">Ejemplos Reales y Casos Prácticos</h3>
+    <p><strong>Situación cotidiana de reposo vs. tensión:</strong></p>
+    <ul style="margin-bottom:0">
+      <li>
+        <strong>Cmaj7</strong> es como llegar a casa después del trabajo y sentarse en el sofá
+        (relajación).
+      </li>
+      <li>
+        <strong>C7</strong> es como escuchar la alarma del horno avisando que la comida está lista
+        (tensión que pide una acción).
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Consejos de Experto</h3>
+    <p style="margin-bottom:0">
+      Siempre identifica la distancia entre la séptima y la tónica: si la séptima está a un semitono de
+      distancia de la tónica superior, es <strong>séptima mayor</strong>. Si está a un tono completo
+      (dos teclas), es <strong>séptima menor</strong>.
+    </p>
+  </div>
+
+  <div class="card r">
+    <h3 style="margin-top:0">Errores Frecuentes en el Capítulo 2</h3>
+    <div class="callout error" style="margin-top:0">
+      <span class="ct">Error</span>
+      Pensar que la palabra "Dominante" se refiere al quinto grado de la escala.
+    </div>
+    <div class="callout advertencia" style="margin-bottom:0">
+      <span class="ct">Cómo evitarlo</span>
+      En este contexto, "Dominante" describe la cualidad de tensión del acorde producida por la presencia
+      de la séptima menor (b7).
+    </div>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Resumen del Capítulo 2</span>
+    La séptima mayor (B(VII) en C(I)) aporta reposo. La séptima menor (Bb(bVII) en C(I)) genera tensión
+    armónica. Estos dos tipos de séptima dictan la personalidad del acorde con novena.
+  </div>
+</section>
+
+<!-- ============================ CAP 3 ============================ -->
+<section id="cap3" class="section">
+  <div class="section-head">
+    <div class="section-ico p">🚀</div>
+    <div>
+      <h2>Capítulo 3: Construcción Teórica de los 3 Acordes de Novena Fundamentales</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Maj9, Dominante 9 y Menor 9.</p>
+    </div>
+  </div>
+
+  <p>
+    Existen muchas variantes de acordes de novena, pero dominando los <strong>tres tipos básicos</strong>
+    transformarás por completo tu forma de tocar.
+  </p>
+
+  <div class="card g">
+    <h3 style="margin-top:0">Paso 1: Construir el Acorde Major 9 (Cmaj9)</h3>
+    <ol>
+      <li>
+        Reúne la tónica <strong>C(I)</strong>, la 3ª mayor <strong>E(III)</strong>, la 5ª justa
+        <strong>G(V)</strong> y la 7ª mayor <strong>B(VII)</strong>.
+      </li>
+      <li>Agrega el noveno grado: <strong>D(II)</strong>.</li>
+      <li>
+        Estructura teórica de Cmaj9:
+        <strong>C(I) - E(III) - G(V) - B(VII) - D(II)</strong>.
+      </li>
+    </ol>
+    <div class="callout info" style="margin-bottom:0">
+      <span class="ct">Motivo de la acción</span>
+      La combinación de la séptima mayor con la novena produce un sonido sumamente rico, noble y de
+      descanso sofisticado.
+    </div>
+  </div>
+
+  <div class="card a">
+    <h3 style="margin-top:0">Paso 2: Construir el Acorde Dominante 9 (C9)</h3>
+    <ol>
+      <li>
+        Toma la estructura anterior pero utiliza la séptima menor: <strong>Bb(bVII)</strong>.
+      </li>
+      <li>
+        Mantén la 3ª mayor <strong>E(III)</strong>, la 5ª justa <strong>G(V)</strong> y la novena
+        <strong>D(II)</strong>.
+      </li>
+      <li>
+        Estructura teórica de C9:
+        <strong>C(I) - E(III) - G(V) - Bb(bVII) - D(II)</strong>.
+      </li>
+    </ol>
+    <div class="callout info" style="margin-bottom:0">
+      <span class="ct">Motivo de la acción</span>
+      Mantiene la tensión impetuosa de la séptima menor, pero con el color moderno que añade la novena
+      como "cereza en el pastel".
+    </div>
+  </div>
+
+  <div class="card p">
+    <h3 style="margin-top:0">Paso 3: Construir el Acorde Menor 9 (Cm9)</h3>
+    <ol>
+      <li>Modifica la tercera para que sea menor: <strong>Eb(bIII)</strong>.</li>
+      <li>Utiliza la séptima menor: <strong>Bb(bVII)</strong>.</li>
+      <li>
+        Mantén la 5ª justa <strong>G(V)</strong> y la novena <strong>D(II)</strong>.
+      </li>
+      <li>
+        Estructura teórica de Cm9:
+        <strong>C(I) - Eb(bIII) - G(V) - Bb(bVII) - D(II)</strong>.
+      </li>
+    </ol>
+    <div class="callout info" style="margin-bottom:0">
+      <span class="ct">Motivo de la acción</span>
+      Crea una atmósfera melancólica, profunda y suave, pilar del jazz y las baladas modernas.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Cuadro Sinóptico de los 3 Acordes de Novena (Teoría)</h3>
+    <div class="formula g" style="white-space:normal">1. Cmaj9 : C(I) - E(III) - G(V) - B(VII) - D(II)   (Reposo, brillo, dulzura)</div>
+    <div class="formula a" style="white-space:normal">2. C9    : C(I) - E(III) - G(V) - Bb(bVII) - D(II)  (Tensión, fuerza, resolución)</div>
+    <div class="formula p" style="white-space:normal">3. Cm9   : C(I) - Eb(bIII) - G(V) - Bb(bVII) - D(II) (Suavidad, misterio, melancolía)</div>
+  </div>
+
+  <div class="card r">
+    <h3 style="margin-top:0">Problema Físico en el Piano (La Trampa Teórica)</h3>
+    <p style="margin-bottom:0">
+      Si intentas tocar cualquiera de estos acordes apilando las notas en orden lineal continuo
+      (C(I) - E(III) - G(V) - B(VII) - D(II)), descubrirás que es <strong>extremadamente incómodo</strong>,
+      requiere estirar la mano en forma de "araña" y no produce el sonido balanceado que se busca.
+    </p>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Resumen del Capítulo 3</span>
+    Los tres acordes esenciales son Maj9 (séptima mayor + novena), Dominante 9 (séptima menor + novena)
+    y Menor 9 (tercera menor + séptima menor + novena). Apilarlos en orden correlativo desde la tónica
+    es ineficiente en el piano.
+  </div>
+</section>
+
+<!-- ============================ CAP 4 ============================ -->
+<section id="cap4" class="section">
+  <div class="section-head">
+    <div class="section-ico a">🔑</div>
+    <div>
+      <h2>Capítulo 4: La "Fórmula Secreta" de Voicings para Piano</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Práctica Real.</p>
+    </div>
+  </div>
+
+  <p>
+    Para lograr el auténtico <strong>sonido de jazz</strong> sin esfuerzo físico, debemos cambiar la
+    disposición u orden de las notas (disposición conocida como <em>voicing</em>).
+  </p>
+
+  <div class="card">
+    <h3 style="margin-top:0">El Secreto de la Fórmula: 7ª - 9ª - 3ª - 5ª</h3>
+    <p>
+      En lugar de empezar por la tónica en la mano derecha, comenzaremos directamente en la
+      <strong>séptima</strong> y seguiremos este orden estricto:
+    </p>
+    <div class="formula" style="text-align:center;font-size:1.05rem">
+      Orden para Mano Derecha:  7ª → 9ª → 3ª → 5ª
+    </div>
+    <div class="callout info">
+      <span class="ct">¿Qué pasa con la Tónica?</span>
+      La tónica C(I) la ejecutará la mano izquierda en el registro grave, o la tocará el bajista de la
+      agrupación.
+    </div>
+  </div>
+
+  <div class="card g">
+    <h3 style="margin-top:0">Paso a Paso Práctico para Ejecutar los 3 Acordes</h3>
+
+    <h4>1. Voicing para Cmaj9</h4>
+    <ul>
+      <li><strong>Mano Izquierda:</strong> toca la tónica <strong>C(I)</strong> en las teclas graves.</li>
+      <li>
+        <strong>Mano Derecha (Fórmula 7 - 9 - 3 - 5):</strong>
+        <ol>
+          <li><strong>7ª Mayor:</strong> toca <strong>B(VII)</strong>.</li>
+          <li><strong>9ª:</strong> toca <strong>D(II)</strong>.</li>
+          <li><strong>3ª Mayor:</strong> toca <strong>E(III)</strong>.</li>
+          <li><strong>5ª Justa:</strong> toca <strong>G(V)</strong>.</li>
+        </ol>
+      </li>
+      <li>
+        <strong>Resultado:</strong> mano derecha posicionada cómodamente en
+        <strong>B(VII) - D(II) - E(III) - G(V)</strong>.
+      </li>
+    </ul>
+    <div class="formula g" style="white-space:normal">
+      Posición de la Mano Derecha en Cmaj9:
+      Dedos:   Pulgar   Índice   Medio   Meñique
+      Notas:   B(VII)   D(II)    E(III)  G(V)
+      Grados:   7ª       9ª       3ª      5ª
+    </div>
+  </div>
+
+  <div class="card a">
+    <h3 style="margin-top:0">2. Voicing para C9 (Dominante)</h3>
+    <ul>
+      <li><strong>Mano Izquierda:</strong> toca la tónica <strong>C(I)</strong> en los graves.</li>
+      <li>
+        <strong>Mano Derecha (Fórmula b7 - 9 - 3 - 5):</strong>
+        <ol>
+          <li><strong>7ª Menor:</strong> baja el pulgar a <strong>Bb(bVII)</strong>.</li>
+          <li><strong>9ª:</strong> mantén <strong>D(II)</strong>.</li>
+          <li><strong>3ª Mayor:</strong> mantén <strong>E(III)</strong>.</li>
+          <li><strong>5ª Justa:</strong> mantén <strong>G(V)</strong>.</li>
+        </ol>
+      </li>
+      <li>
+        <strong>Resultado:</strong> mano derecha en
+        <strong>Bb(bVII) - D(II) - E(III) - G(V)</strong>.
+      </li>
+    </ul>
+  </div>
+
+  <div class="card p">
+    <h3 style="margin-top:0">3. Voicing para Cm9 (Menor)</h3>
+    <ul>
+      <li><strong>Mano Izquierda:</strong> toca la tónica <strong>C(I)</strong> en los graves.</li>
+      <li>
+        <strong>Mano Derecha (Fórmula b7 - 9 - b3 - 5):</strong>
+        <ol>
+          <li><strong>7ª Menor:</strong> mantén <strong>Bb(bVII)</strong>.</li>
+          <li><strong>9ª:</strong> mantén <strong>D(II)</strong>.</li>
+          <li><strong>3ª Menor:</strong> baja el dedo medio a <strong>Eb(bIII)</strong>.</li>
+          <li><strong>5ª Justa:</strong> mantén <strong>G(V)</strong>.</li>
+        </ol>
+      </li>
+      <li>
+        <strong>Resultado:</strong> mano derecha en
+        <strong>Bb(bVII) - D(II) - Eb(bIII) - G(V)</strong>.
+      </li>
+    </ul>
+  </div>
+
+  <div class="card g">
+    <h3 style="margin-top:0">Lista de Comprobación para la Práctica de Voicings</h3>
+    <ul class="check" style="margin-bottom:0">
+      <li>¿La mano izquierda está tocando únicamente la tónica C(I) en el grave?</li>
+      <li>¿La mano derecha empieza en la séptima correspondiente y no en la tónica?</li>
+      <li>¿La mano se siente relajada, compacta y sin tensiones musculares?</li>
+      <li>¿El sonido resultante es rico, amplio y con carácter jazzístico?</li>
+    </ul>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Resumen del Capítulo 4</span>
+    La fórmula profesional para la mano derecha es <strong>7ª - 9ª - 3ª - 5ª</strong>, dejando la tónica
+    a la mano izquierda. Esto elimina posturas incómodas y genera una sonoridad limpia y balanceada.
+  </div>
+</section>
+
+<!-- ============================ CAP 5 ============================ -->
+<section id="cap5" class="section">
+  <div class="section-head">
+    <div class="section-ico">🔄</div>
+    <div>
+      <h2>Capítulo 5: Inversiones de Voicings y Aplicación en Progresiones Armónicas</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Fluidez y enlaces suaves.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Paso 1: Invertir los Voicings para Mayor Fluidez</h3>
+    <p>
+      No siempre debes tocar el voicing en la posición base (empezando en la 7ª). Puedes invertir las
+      notas pasando la nota inferior al extremo superior:
+    </p>
+    <ol>
+      <li><strong>Posición Base Cmaj9:</strong> B(VII) - D(II) - E(III) - G(V).</li>
+      <li>
+        <strong>Primera Inversión:</strong> pasa la nota B(VII) una octava arriba:
+        D(II) - E(III) - G(V) - B(VII).
+      </li>
+      <li>
+        <strong>Segunda Inversión:</strong> pasa D(II) una octava arriba:
+        E(III) - G(V) - B(VII) - D(II).
+      </li>
+      <li>
+        <strong>Tercera Inversión:</strong> pasa E(III) una octava arriba:
+        G(V) - B(VII) - D(II) - E(III).
+      </li>
+    </ol>
+    <div class="callout info" style="margin-bottom:0">
+      <span class="ct">Motivo de la acción</span>
+      Invertir voicings te permite conectar acordes sin mover la mano bruscamente a lo largo del teclado.
+    </div>
+  </div>
+
+  <div class="card a">
+    <h3 style="margin-top:0">Paso 2: Aplicación en una Progresión Real ii - V - I</h3>
+    <p>
+      Compara cómo suena una secuencia de acordes tradicional frente a su versión enriquecida con novenas:
+    </p>
+
+    <h4>Secuencia Tradicional (Básica)</h4>
+    <div class="formula a" style="white-space:normal">
+      Dm(I) → G(V) → C(I)
+    </div>
+
+    <h4>Secuencia Profesional con Novenas (Fórmula Jazz)</h4>
+    <ol>
+      <li>
+        <strong>ii grado (Dm9):</strong><br>
+        Izquierda: <strong>D(I)</strong><br>
+        Derecha (b7 - 9 - b3 - 5 de D): <strong>C(bVII) - E(II) - F(bIII) - A(V)</strong>
+      </li>
+      <li>
+        <strong>V grado (G9):</strong><br>
+        Izquierda: <strong>G(I)</strong><br>
+        Derecha (b7 - 9 - 3 - 5 de G): <strong>F(bVII) - A(II) - B(III) - D(V)</strong>
+      </li>
+      <li>
+        <strong>I grado (Cmaj9):</strong><br>
+        Izquierda: <strong>C(I)</strong><br>
+        Derecha (7 - 9 - 3 - 5 de C): <strong>B(VII) - D(II) - E(III) - G(V)</strong>
+      </li>
+    </ol>
+
+    <div class="formula g" style="white-space:normal">
+      Sencilla  : Dm  →  G   →  C      (Sonido plano, tradicional)
+      Pro (9ªs) : Dm9 →  G9  →  Cmaj9  (Sonido moderno, cálido, jazzístico)
+    </div>
+  </div>
+
+  <div class="card p">
+    <h3 style="margin-top:0">Paso 3: Transposición a Otras Tonalidades</h3>
+    <p>Puedes aplicar exactamente la misma fórmula en cualquier tonalidad:</p>
+    <ul style="margin-bottom:0">
+      <li>
+        <strong>Tonalidad de D(I):</strong><br>
+        Dmaj9: Izquierda <strong>D(I)</strong> | Derecha
+        <strong>C#(VII) - E(II) - F#(III) - A(V)</strong>
+      </li>
+      <li>
+        <strong>Tonalidad de E(I):</strong><br>
+        Emaj9: Izquierda <strong>E(I)</strong> | Derecha
+        <strong>D#(VII) - F#(II) - G#(III) - B(V)</strong>
+      </li>
+      <li>
+        <strong>Tonalidad de F(I):</strong><br>
+        Fmaj9: Izquierda <strong>F(I)</strong> | Derecha
+        <strong>E(VII) - G(II) - A(III) - C(V)</strong>
+      </li>
+    </ul>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Resumen del Capítulo 5</span>
+    Las inversiones permiten enlazar acordes suavemente. La aplicación de novenas en la progresión
+    <strong>ii - V - I</strong> transforma por completo la riqueza armónica de cualquier canción.
+  </div>
+</section>
+
+<!-- ============================ FAQ ============================ -->
+<section id="faq" class="section">
+  <div class="section-head">
+    <div class="section-ico">❓</div>
+    <div>
+      <h2>Preguntas Frecuentes (FAQ)</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Dudas habituales sobre los acordes de novena.</p>
+    </div>
+  </div>
+
+  <details open>
+    <summary>1. ¿Puedo tocar la tónica con la mano derecha si no tengo bajista?</summary>
+    <div class="details-body">
+      Sí, pero es preferible dejar la tónica a la mano izquierda en los graves para que la mano derecha
+      mantenga el voicing <strong>7 - 9 - 3 - 5</strong> limpio y sin saturación de frecuencias.
+    </div>
+  </details>
+
+  <details>
+    <summary>2. ¿Qué diferencia hay entre un acorde Add9 y un acorde 9?</summary>
+    <div class="details-body">
+      Un acorde <strong>Add9</strong> añade la novena a una tríada básica (sin séptima). Un acorde
+      <strong>9</strong> incluye obligatoriamente la séptima (ya sea mayor o menor) junto a la novena.
+    </div>
+  </details>
+
+  <details>
+    <summary>3. ¿Se pueden usar acordes de novena en canciones de pop o baladas?</summary>
+    <div class="details-body">
+      ¡Absolutamente! Los acordes <strong>Maj9</strong> y <strong>m9</strong> son ampliamente utilizados
+      en baladas modernas, pop, neo-soul y R&amp;B.
+    </div>
+  </details>
+</section>
+
+<!-- ============================ EJERCICIOS ============================ -->
+<section id="ejercicios" class="section">
+  <div class="section-head">
+    <div class="section-ico g">✏️</div>
+    <div>
+      <h2>Ejercicios Prácticos con Soluciones Explicadas</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Aplica la fórmula 7 - 9 - 3 - 5 en distintas tonalidades.</p>
+    </div>
+  </div>
+
+  <details open>
+    <summary>Ejercicio 1 · Voicing de mano derecha para Gmaj9</summary>
+    <div class="details-body">
+      <p><strong>Consigna:</strong> escribe el voicing para la mano derecha de <strong>Gmaj9</strong>
+        utilizando la fórmula <strong>7 - 9 - 3 - 5</strong>.</p>
+      <p><strong>Solución:</strong></p>
+      <ul>
+        <li>Tónica: <strong>G(I)</strong> (Mano izquierda)</li>
+        <li>7ª Mayor de G(I): <strong>F#(VII)</strong></li>
+        <li>9ª de G(I): <strong>A(II)</strong></li>
+        <li>3ª Mayor de G(I): <strong>B(III)</strong></li>
+        <li>5ª Justa de G(I): <strong>D(V)</strong></li>
+      </ul>
+      <div class="callout ejemplo" style="margin-bottom:0">
+        <span class="ct">Mano Derecha</span>
+        <code>F#(VII) - A(II) - B(III) - D(V)</code>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>Ejercicio 2 · Voicing de mano derecha para A9 (Dominante)</summary>
+    <div class="details-body">
+      <p><strong>Consigna:</strong> construye el voicing de mano derecha para <strong>A9</strong>
+        (Dominante).</p>
+      <p><strong>Solución:</strong></p>
+      <ul>
+        <li>Tónica: <strong>A(I)</strong> (Mano izquierda)</li>
+        <li>7ª Menor de A(I): <strong>G(bVII)</strong></li>
+        <li>9ª de A(I): <strong>B(II)</strong></li>
+        <li>3ª Mayor de A(I): <strong>C#(III)</strong></li>
+        <li>5ª Justa de A(I): <strong>E(V)</strong></li>
+      </ul>
+      <div class="callout ejemplo" style="margin-bottom:0">
+        <span class="ct">Mano Derecha</span>
+        <code>G(bVII) - B(II) - C#(III) - E(V)</code>
+      </div>
+    </div>
+  </details>
+
+  <div class="piano-panel">
+    <h4>🎹 Comprueba sobre el teclado</h4>
+    <p style="font-size:.87rem;color:#94a3b8">
+      Selecciona cada acorde y observa la posición exacta de las notas.
+    </p>
+    <div class="chord-btns" id="chordBtns2"></div>
+    <div class="piano" id="piano2"></div>
+    <div class="chord-info" id="chordInfo2">
+      <span class="cn">Selecciona un acorde</span>
+      <span class="notes">—</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ GLOSARIO ============================ -->
+<section id="glosario" class="section">
+  <div class="section-head">
+    <div class="section-ico p">📖</div>
+    <div>
+      <h2>Glosario de Términos Técnicos</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Definiciones esenciales utilizadas a lo largo del tutorial.</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Término</th><th>Definición</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Intervalo</strong></td><td>Distancia de altura entre dos notas musicales.</td></tr>
+        <tr><td><strong>Semitono</strong></td><td>La distancia más pequeña entre dos teclas adyacentes en el piano.</td></tr>
+        <tr><td><strong>Tónica</strong></td><td>La primera nota de una escala y la que da nombre al acorde.</td></tr>
+        <tr><td><strong>Tríada</strong></td><td>Acorde básico compuesto por tres notas (1ª, 3ª y 5ª).</td></tr>
+        <tr><td><strong>Voicing</strong></td><td>Forma de ordenar o distribuir las notas de un acorde entre las manos e instrumentos.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Resumen General</h3>
+    <p style="margin-bottom:0">
+      Aprender acordes con novena requiere comprender la escala mayor, distinguir entre séptimas mayores
+      y menores, y aplicar el voicing profesional <strong>7ª - 9ª - 3ª - 5ª</strong> para la mano derecha
+      mientras la izquierda ejecuta la tónica.
+    </p>
+  </div>
+
+  <div class="card g">
+    <h3 style="margin-top:0">Lista de Conceptos Clave</h3>
+    <ul style="margin-bottom:0">
+      <li><strong>Grado 9:</strong> la novena nota de la escala, equivalente al segundo grado en la octava superior.</li>
+      <li><strong>Séptima Mayor (Maj7):</strong> ubicada a un semitono de la octava; brinda descanso y dulzura.</li>
+      <li><strong>Séptima Menor (7):</strong> ubicada a un tono de la octava; aporta tensión dominante.</li>
+      <li><strong>Voicing:</strong> disposición o acomodo específico de las notas de un acorde.</li>
+    </ul>
+  </div>
+
+  <div class="card r">
+    <h3 style="margin-top:0">Errores que NUNCA Debes Cometer</h3>
+    <ul style="margin-bottom:0">
+      <li>❌ Tocar las notas del acorde amontonadas desde la tónica en la mano derecha.</li>
+      <li>❌ Omitir la séptima al intentar formar un acorde dominante 9 o mayor 9.</li>
+      <li>❌ Usar la tercera mayor <strong>E(III)</strong> cuando el acorde requiere ser menor (debe ser <strong>Eb(bIII)</strong>).</li>
+    </ul>
+  </div>
+
+  <div class="card a">
+    <h3 style="margin-top:0">Recomendaciones para Seguir Aprendiendo</h3>
+    <ul style="margin-bottom:0">
+      <li>Practica la fórmula <strong>7 - 9 - 3 - 5</strong> en las 12 tonalidades armónicas.</li>
+      <li>Aplica estos voicings en canciones reales que contengan secuencias <strong>ii - V - I</strong>.</li>
+      <li>Experimenta invirtiendo las notas de la mano derecha para buscar conducirse con el menor movimiento posible.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ REFERENCIAS ============================ -->
+<section id="referencias" class="section">
+  <div class="section-head">
+    <div class="section-ico">📼</div>
+    <div>
+      <h2>Datos de Referencia del Material de Origen</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Recurso audiovisual y prompts utilizados.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Recurso audiovisual</h3>
+    <div class="credit-grid">
+      <div class="credit-item" style="grid-column:1/-1">
+        <span class="k">Nombre del Video de YouTube</span>
+        <span class="v">Acordes 9 - Sonido de Jazz - Como Se Tocan En El Piano</span>
+      </div>
+      <div class="credit-item" style="grid-column:1/-1">
+        <span class="k">Link URL del Video</span>
+        <span class="v" style="font-weight:600;font-size:.86rem;word-break:break-all">
+          <a href="https://youtube.com/watch?v=3b2eBEC_Gug&amp;is=-2IMyJjg5BKDbEPV"
+             target="_blank" rel="noopener noreferrer"
+             style="color:var(--accent);text-decoration:none">
+            https://youtube.com/watch?v=3b2eBEC_Gug&amp;is=-2IMyJjg5BKDbEPV
+          </a>
+        </span>
+      </div>
+      <div class="credit-item">
+        <span class="k">Canal de Origen</span>
+        <span class="v">Abraham El Nene Segovia</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p">
+    <h3 style="margin-top:0">Prompts de referencia utilizados</h3>
+    <ul style="margin-bottom:0">
+      <li><em>Sintetizar la fórmula teórica y práctica de acordes de novena en el piano.</em></li>
+      <li><em>Estructurar los acordes Cmaj9, C9 y Cm9 con voicings de mano derecha (7 - 9 - 3 - 5).</em></li>
+      <li><em>Explicar paso a paso la diferencia entre tríadas, séptimas y novenas con enfoque en lenguaje claro y accesible.</em></li>
+    </ul>
+  </div>
+
+  <div class="callout advertencia">
+    <span class="ct">Advertencia</span>
+    Todo el contenido teórico y práctico de este tutorial proviene del material de referencia indicado.
+    No se ha añadido información externa.
+  </div>
+</section>
+
+<!-- ============================ CRÉDITOS ============================ -->
+<section id="creditos" class="section">
+  <div class="hero-wrap" id="heroCreditos"></div>
+
+  <span class="badge">🎬 Créditos del tutorial</span>
+  <h2>Acordes de Novena: Guía Teórica y Práctica para Piano</h2>
+
+  <div class="credit-grid">
+    <div class="credit-item">
+      <span class="k">Créditos</span>
+      <span class="v">Rubén Sbarsky</span>
+    </div>
+    <div class="credit-item">
+      <span class="k">Fecha</span>
+      <span class="v">11/09/2026</span>
+    </div>
+    <div class="credit-item">
+      <span class="k">Hora</span>
+      <span class="v">16:22:15</span>
+    </div>
+    <div class="credit-item">
+      <span class="k">Recurso de origen</span>
+      <span class="v" style="font-size:.86rem">Abraham El Nene Segovia</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Indicación educativa</h3>
+    <p style="margin-bottom:0">
+      Este tutorial ha sido elaborado con fines exclusivamente <strong>educativos y de divulgación</strong>.
+      Todo el contenido teórico y práctico proviene del recurso audiovisual de referencia indicado en la
+      sección <em>Referencias</em>. Se recomienda practicar la fórmula <strong>7 - 9 - 3 - 5</strong> en
+      todas las tonalidades y aplicarla en progresiones reales <em>ii - V - I</em> antes de llevarla al
+      repertorio.
+    </p>
+  </div>
+
+  <div class="callout advertencia">
+    <span class="ct">Lema</span>
+    <em>Fiat iustitia, ruat caelum.</em>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+  <p>👨‍💻 Créditos: Rubén Sbarsky</p>
+  <p>📅 FECHA: 11/09/2026</p>
+  <p>Hora: 16:22:15</p>
+  <p class="law">Fiat iustitia, ruat caelum.</p>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ============ NAVEGACIÓN SPA ============ */
+  var navBtns = Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
+  var heroCloned = false;
+
+  function cloneSVGToCredits(){
+    if(heroCloned) return;
+    var src = document.querySelector('#heroHome svg');
+    var dst = document.getElementById('heroCreditos');
+    if(!src || !dst) return;
+
+    var clone = src.cloneNode(true);
+    var map = {};
+    Array.prototype.forEach.call(clone.querySelectorAll('[id]'), function(node){
+      var oldId = node.getAttribute('id');
+      var newId = 'c-' + oldId;
+      map[oldId] = newId;
+      node.setAttribute('id', newId);
+    });
+
+    var refAttrs = ['fill','stroke','marker-end','marker-start','marker-mid','clip-path','mask','filter'];
+    Array.prototype.forEach.call(clone.querySelectorAll('*'), function(node){
+      refAttrs.forEach(function(attr){
+        var v = node.getAttribute(attr);
+        if(v && v.indexOf('url(#') === 0){
+          var id = v.substring(5, v.length - 1);
+          if(map[id]) node.setAttribute(attr, 'url(#' + map[id] + ')');
+        }
+      });
+      var href = node.getAttribute('href') || node.getAttribute('xlink:href');
+      if(href && href.charAt(0) === '#'){
+        var rid = href.substring(1);
+        if(map[rid]){
+          node.setAttribute('href', '#' + map[rid]);
+          if(node.hasAttribute('xlink:href')) node.setAttribute('xlink:href', '#' + map[rid]);
+        }
+      }
+    });
+
+    dst.innerHTML = '';
+    dst.appendChild(clone);
+    heroCloned = true;
+
+    try{
+      var svg = dst.querySelector('svg');
+      if(svg && typeof svg.setCurrentTime === 'function'){ svg.setCurrentTime(0); }
+    }catch(e){}
+  }
+
+  function showSection(id){
+    var found = false;
+    sections.forEach(function(s){
+      if(s.id === id){ s.classList.add('active'); found = true; }
+      else{ s.classList.remove('active'); }
+    });
+    if(!found) return;
+
+    navBtns.forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-target') === id);
+    });
+
+    if(id === 'creditos'){ cloneSVGToCredits(); }
+
+    window.scrollTo(0,0);
+    updateProgress();
+  }
+
+  navBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      showSection(btn.getAttribute('data-target'));
+    });
+  });
+
+  /* ============ PROGRESO ============ */
+  var bar = document.getElementById('progressBar');
+  function updateProgress(){
+    var doc = document.documentElement;
+    var h = doc.scrollHeight - doc.clientHeight;
+    var p = h > 0 ? (doc.scrollTop / h) * 100 : 0;
+    if(p < 0) p = 0;
+    if(p > 100) p = 100;
+    bar.style.width = p.toFixed(2) + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress);
+
+  /* ============ BOTÓN ARRIBA ============ */
+  var toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 380){ toTop.classList.add('show'); }
+    else{ toTop.classList.remove('show'); }
+  }, {passive:true});
+  toTop.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  /* ============ PIANO INTERACTIVO ============ */
+  var WHITE_KEYS = [
+    {id:'C4',  label:'C',  oct:'4'},
+    {id:'D4',  label:'D',  oct:'4'},
+    {id:'E4',  label:'E',  oct:'4'},
+    {id:'F4',  label:'F',  oct:'4'},
+    {id:'G4',  label:'G',  oct:'4'},
+    {id:'A4',  label:'A',  oct:'4'},
+    {id:'B4',  label:'B',  oct:'4'},
+    {id:'C5',  label:'C',  oct:'5'},
+    {id:'D5',  label:'D',  oct:'5'}
+  ];
+
+  var BLACK_KEYS = [
+    {id:'C#4', label:'C#', left:7.67},
+    {id:'D#4', label:'D#', left:18.78},
+    {id:'F#4', label:'F#', left:41.00},
+    {id:'G#4', label:'G#', left:52.11},
+    {id:'A#4', label:'A#', left:63.22},
+    {id:'C#5', label:'C#', left:85.44}
+  ];
+
+  var WHITE_W = 100 / WHITE_KEYS.length;
+
+  var CHORDS = [
+    {
+      key:'maj9',
+      label:'Cmaj9 (I)',
+      notes:['C4','E4','G4','B4','D5'],
+      names:'C(I) – E(III) – G(V) – B(VII) – D(II)',
+      desc:'Reposo, brillo y dulzura. La séptima mayor (B) y la novena (D) sobre la tríada mayor de C.'
+    },
+    {
+      key:'d9',
+      label:'C9 (V)',
+      notes:['C4','E4','G4','A#4','D5'],
+      names:'C(I) – E(III) – G(V) – Bb(bVII) – D(II)',
+      desc:'Tensión dominante con color moderno. La séptima menor (Bb) impulsa la resolución.'
+    },
+    {
+      key:'m9',
+      label:'Cm9 (ii/vi)',
+      notes:['C4','D#4','G4','A#4','D5'],
+      names:'C(I) – Eb(bIII) – G(V) – Bb(bVII) – D(II)',
+      desc:'Suavidad, misterio y melancolía. Tercera menor y séptima menor con novena.'
+    },
+    {
+      key:'voicing',
+      label:'Voicing 7–9–3–5',
+      notes:['B4','D5','E4','G4'],
+      names:'Mano derecha: B(VII) – D(II) – E(III) – G(V)',
+      desc:'Fórmula profesional para la mano derecha en Cmaj9. La tónica queda en la mano izquierda.'
+    },
+    {
+      key:'trad',
+      label:'Tríada Mayor',
+      notes:['C4','E4','G4'],
+      names:'C(I) – E(III) – G(V)',
+      desc:'Tríada básica de tres notas. Punto de partida antes de añadir séptima y novena.'
+    },
+    {
+      key:'tradm',
+      label:'Tríada Menor',
+      notes:['C4','D#4','G4'],
+      names:'C(I) – Eb(bIII) – G(V)',
+      desc:'Tríada menor: la tercera baja un semitono. Base del acorde Cm9.'
+    }
+  ];
+
+  function buildPiano(pianoEl, buttonsEl, infoEl){
+    if(!pianoEl) return;
+
+    WHITE_KEYS.forEach(function(k, i){
+      var d = document.createElement('div');
+      d.className = 'pkey';
+      d.setAttribute('data-note', k.id);
+      d.style.left = (i * WHITE_W) + '%';
+      d.style.width = WHITE_W + '%';
+      d.textContent = k.label + k.oct;
+      pianoEl.appendChild(d);
+    });
+
+    BLACK_KEYS.forEach(function(k){
+      var d = document.createElement('div');
+      d.className = 'pkey black';
+      d.setAttribute('data-note', k.id);
+      d.style.left = k.left + '%';
+      d.style.width = '6.9%';
+      d.textContent = k.label;
+      pianoEl.appendChild(d);
+    });
+
+    var allKeys = Array.prototype.slice.call(pianoEl.querySelectorAll('.pkey'));
+
+    function clearKeys(){
+      allKeys.forEach(function(k){ k.classList.remove('on','amber','purple'); });
+    }
+
+    function highlight(notes){
+      clearKeys();
+      allKeys.forEach(function(k){
+        var n = k.getAttribute('data-note');
+        if(notes.indexOf(n) !== -1){ k.classList.add('on'); }
+      });
+    }
+
+    function selectChord(ch){
+      highlight(ch.notes);
+      if(infoEl){
+        infoEl.innerHTML = '<span class="cn">' + ch.label + '</span>' +
+          '<span class="notes">' + ch.names + '</span>' +
+          '<p style="margin:8px 0 0;font-size:.85rem;color:#94a3b8">' + ch.desc + '</p>';
+      }
+      if(buttonsEl){
+        Array.prototype.slice.call(buttonsEl.children).forEach(function(b){
+          b.classList.toggle('active', b.getAttribute('data-chord') === ch.key);
+        });
+      }
+    }
+
+    if(buttonsEl){
+      CHORDS.forEach(function(ch, idx){
+        var b = document.createElement('button');
+        b.className = 'cbtn' + (idx === 0 ? ' active' : '');
+        b.setAttribute('data-chord', ch.key);
+        b.textContent = ch.label;
+        b.addEventListener('click', function(){ selectChord(ch); });
+        buttonsEl.appendChild(b);
+      });
+    }
+
+    selectChord(CHORDS[0]);
+  }
+
+  buildPiano(
+    document.getElementById('piano'),
+    document.getElementById('chordBtns'),
+    document.getElementById('chordInfo')
+  );
+  buildPiano(
+    document.getElementById('piano2'),
+    document.getElementById('chordBtns2'),
+    document.getElementById('chordInfo2')
+  );
+
+  /* ============ INICIALIZACIÓN ============ */
+  updateProgress();
+
+  if(window.location.hash){
+    var targetId = window.location.hash.substring(1);
+    if(document.getElementById(targetId)){ showSection(targetId); }
+  }
+
+})();
+</script>
+</body>
+</html>
+```
