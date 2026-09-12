@@ -1,0 +1,1722 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teoría y Técnica de los Acordes Suspendidos en Piano — Rubén Sbarsky</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+  --nav-h:58px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+#progressTrack{
+  position:fixed;top:0;left:0;right:0;height:3px;
+  background:rgba(30,58,95,.6);z-index:1200;
+}
+#progressBar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));
+  transition:width .12s linear;
+  box-shadow:0 0 10px rgba(0,212,255,.7);
+}
+#navbar{
+  position:fixed;top:3px;left:0;right:0;height:var(--nav-h);
+  background:rgba(10,14,26,.95);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  z-index:1100;
+  display:flex;align-items:center;
+}
+#navScroll{
+  display:flex;gap:6px;align-items:center;
+  overflow-x:auto;overflow-y:hidden;
+  padding:0 10px;width:100%;height:100%;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+  -webkit-overflow-scrolling:touch;
+}
+#navScroll::-webkit-scrollbar{height:4px}
+#navScroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.nav-brand{
+  flex:0 0 auto;font-weight:800;font-size:.78rem;letter-spacing:.06em;
+  color:var(--accent);padding:0 12px 0 4px;border-right:1px solid var(--border);
+  margin-right:6px;white-space:nowrap;text-transform:uppercase;
+}
+.nav-btn{
+  flex:0 0 auto;
+  background:transparent;border:1px solid transparent;
+  color:var(--muted);font-family:inherit;font-size:.8rem;font-weight:600;
+  padding:8px 13px;border-radius:8px;cursor:pointer;white-space:nowrap;
+  transition:all .2s ease;letter-spacing:.02em;
+}
+.nav-btn:hover{color:var(--text);background:rgba(0,212,255,.07);border-color:var(--border)}
+.nav-btn.active{
+  color:#04121b;background:var(--accent);border-color:var(--accent);
+  box-shadow:0 0 14px rgba(0,212,255,.45);
+}
+main{padding-top:calc(var(--nav-h) + 3px);}
+.section{display:none;padding:18px 16px 70px;max-width:1080px;margin:0 auto;animation:fadeIn .38s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero-wrap{
+  width:100%;border-radius:14px;overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 0 0 1px rgba(0,212,255,.08),0 18px 50px -20px rgba(0,212,255,.35);
+  background:#070b14;
+  margin-bottom:18px;
+}
+.hero-wrap svg{display:block;width:100%;height:auto}
+h1{
+  font-size:clamp(1.6rem,5vw,2.7rem);line-height:1.15;font-weight:800;
+  letter-spacing:-.02em;margin-bottom:12px;
+  background:linear-gradient(120deg,#ffffff 10%,var(--accent) 55%,var(--purple) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+h2{
+  font-size:clamp(1.25rem,3.6vw,1.75rem);font-weight:800;margin:0 0 6px;
+  color:#fff;letter-spacing:-.01em;
+}
+h3{font-size:1.06rem;font-weight:700;color:var(--accent);margin:22px 0 10px;letter-spacing:.01em}
+h4{font-size:.96rem;font-weight:700;color:#cbd5e1;margin:16px 0 8px}
+p{margin-bottom:12px;color:#cbd5e1}
+ul,ol{margin:0 0 14px 20px;color:#cbd5e1}
+li{margin-bottom:7px}
+strong{color:#fff;font-weight:700}
+code{
+  font-family:ui-monospace,'Cascadia Code',Consolas,monospace;
+  background:rgba(0,212,255,.10);color:var(--accent);
+  padding:2px 7px;border-radius:6px;font-size:.88em;border:1px solid rgba(0,212,255,.18);
+}
+.badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.35);
+  color:var(--accent);font-size:.7rem;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;padding:6px 13px;border-radius:999px;margin-bottom:14px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.chip{
+  background:var(--card);border:1px solid var(--border);color:var(--muted);
+  font-size:.72rem;font-weight:700;padding:5px 11px;border-radius:999px;letter-spacing:.04em;
+}
+.chip.b{border-color:rgba(0,212,255,.45);color:var(--accent)}
+.chip.g{border-color:rgba(34,197,94,.45);color:var(--green)}
+.chip.a{border-color:rgba(245,158,11,.45);color:var(--amber)}
+.chip.p{border-color:rgba(168,85,247,.45);color:var(--purple)}
+.chip.r{border-color:rgba(239,68,68,.45);color:var(--red)}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:20px;margin-bottom:18px;position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;width:100%;height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent 65%);opacity:.65;
+}
+.card.p::before{background:linear-gradient(90deg,var(--purple),transparent 65%)}
+.card.g::before{background:linear-gradient(90deg,var(--green),transparent 65%)}
+.card.a::before{background:linear-gradient(90deg,var(--amber),transparent 65%)}
+.card.r::before{background:linear-gradient(90deg,var(--red),transparent 65%)}
+.section-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.section-ico{
+  flex:0 0 auto;width:46px;height:46px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;font-size:1.35rem;
+  background:rgba(0,212,255,.10);border:1px solid rgba(0,212,255,.32);
+}
+.section-ico.p{background:rgba(168,85,247,.10);border-color:rgba(168,85,247,.32)}
+.section-ico.g{background:rgba(34,197,94,.10);border-color:rgba(34,197,94,.32)}
+.section-ico.a{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.32)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:20px 0}
+.metric{
+  background:var(--card);border:1px solid var(--border);border-radius:11px;
+  padding:14px 12px;text-align:center;
+}
+.metric .val{
+  font-size:1.5rem;font-weight:800;color:var(--accent);line-height:1.1;
+  display:block;font-variant-numeric:tabular-nums;
+}
+.metric .lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-top:5px;display:block}
+.quote{
+  border-left:4px solid var(--accent);
+  background:linear-gradient(90deg,rgba(0,212,255,.10),transparent);
+  padding:16px 18px;border-radius:0 11px 11px 0;margin:20px 0;
+  font-style:italic;color:#e2e8f0;font-size:.98rem;
+}
+.quote::before{content:'“';color:var(--accent);font-size:2rem;line-height:0;vertical-align:-.35em;margin-right:5px;font-style:normal}
+.callout{border-left:4px solid;padding:13px 16px;border-radius:9px;margin:15px 0;font-size:.92rem}
+.callout .ct{font-weight:800;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;display:block;margin-bottom:5px}
+.callout.info{border-color:var(--accent);background:rgba(0,212,255,.08)}
+.callout.info .ct{color:var(--accent)}
+.callout.ejemplo{border-color:var(--green);background:rgba(34,197,94,.08)}
+.callout.ejemplo .ct{color:var(--green)}
+.callout.advertencia{border-color:var(--amber);background:rgba(245,158,11,.08)}
+.callout.advertencia .ct{color:var(--amber)}
+.callout.error{border-color:var(--red);background:rgba(239,68,68,.08)}
+.callout.error .ct{color:var(--red)}
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:11px;border:1px solid var(--border);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:520px;font-size:.87rem}
+th{
+  background:#0c1526;color:var(--accent);text-align:left;padding:11px 13px;
+  font-weight:800;font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  border-bottom:1px solid var(--border);white-space:nowrap;
+}
+td{padding:10px 13px;border-bottom:1px solid rgba(30,58,95,.55);color:#cbd5e1;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(0,212,255,.045)}
+.steps{list-style:none;margin:16px 0;padding:0;counter-reset:st}
+.steps li{
+  counter-increment:st;position:relative;padding:13px 14px 13px 52px;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  margin-bottom:10px;
+}
+.steps li::before{
+  content:counter(st);position:absolute;left:13px;top:13px;
+  width:26px;height:26px;border-radius:8px;
+  background:rgba(0,212,255,.14);border:1px solid rgba(0,212,255,.4);
+  color:var(--accent);font-weight:800;font-size:.78rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.steps li .why{display:block;color:var(--muted);font-size:.83rem;margin-top:5px;font-style:italic}
+.check{list-style:none;margin:14px 0;padding:0}
+.check li{
+  position:relative;padding:10px 12px 10px 42px;background:var(--card);
+  border:1px solid var(--border);border-radius:9px;margin-bottom:8px;font-size:.9rem;
+}
+.check li::before{
+  content:'✓';position:absolute;left:12px;top:9px;
+  width:20px;height:20px;border-radius:6px;background:rgba(34,197,94,.14);
+  border:1px solid rgba(34,197,94,.45);color:var(--green);
+  font-size:.72rem;font-weight:900;display:flex;align-items:center;justify-content:center;
+}
+.formula{
+  font-family:ui-monospace,'Cascadia Code',Consolas,monospace;
+  background:#070d18;border:1px dashed rgba(0,212,255,.42);border-radius:10px;
+  padding:13px 16px;color:var(--accent);font-size:.92rem;font-weight:700;
+  margin:13px 0;overflow-x:auto;white-space:nowrap;letter-spacing:.03em;
+}
+.formula.a{border-color:rgba(245,158,11,.45);color:var(--amber)}
+.formula.g{border-color:rgba(34,197,94,.45);color:var(--green)}
+.formula.p{border-color:rgba(168,85,247,.45);color:var(--purple)}
+.degrees{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}
+.deg{
+  flex:1 1 84px;min-width:84px;background:#0c1526;border:1px solid var(--border);
+  border-radius:10px;padding:11px 8px;text-align:center;
+}
+.deg .n{font-size:1.05rem;font-weight:800;color:#fff;display:block}
+.deg .gr{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:700;margin-top:3px;display:block}
+.deg.on-blue{border-color:rgba(0,212,255,.55);background:rgba(0,212,255,.09)}
+.deg.on-blue .n{color:var(--accent)}
+.deg.on-amber{border-color:rgba(245,158,11,.55);background:rgba(245,158,11,.09)}
+.deg.on-amber .n{color:var(--amber)}
+details{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  margin-bottom:10px;overflow:hidden;
+}
+details[open]{border-color:rgba(0,212,255,.42)}
+summary{
+  cursor:pointer;padding:13px 16px;font-weight:700;color:#e2e8f0;
+  list-style:none;display:flex;justify-content:space-between;gap:12px;
+  align-items:center;font-size:.93rem;transition:background .2s;
+}
+summary::-webkit-details-marker{display:none}
+summary:hover{background:rgba(0,212,255,.06)}
+summary::after{
+  content:'+';color:var(--accent);font-weight:900;font-size:1.2rem;line-height:1;
+  flex:0 0 auto;transition:transform .25s;
+}
+details[open] summary::after{content:'−';transform:rotate(180deg)}
+.details-body{padding:2px 16px 16px;color:#cbd5e1;font-size:.9rem;border-top:1px solid rgba(30,58,95,.5);margin-top:2px;padding-top:14px}
+.piano-panel{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:16px;margin:18px 0;
+}
+.piano-panel h4{margin-top:0}
+.chord-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.cbtn{
+  background:#0c1526;border:1px solid var(--border);color:var(--muted);
+  font-family:inherit;font-size:.78rem;font-weight:700;padding:8px 13px;
+  border-radius:9px;cursor:pointer;transition:all .18s;
+}
+.cbtn:hover{border-color:rgba(0,212,255,.5);color:var(--text)}
+.cbtn.active{background:rgba(0,212,255,.14);border-color:var(--accent);color:var(--accent);box-shadow:0 0 12px rgba(0,212,255,.25)}
+.piano{
+  position:relative;height:132px;width:100%;
+  border-radius:8px;overflow:hidden;background:#070b14;
+  border:1px solid var(--border);user-select:none;
+}
+.pkey{
+  position:absolute;bottom:0;top:0;
+  background:linear-gradient(180deg,#f8fafc,#cbd5e1);
+  border-right:1px solid #1e293b;border-radius:0 0 6px 6px;
+  display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:7px;font-size:.62rem;font-weight:800;color:#475569;
+  transition:background .18s,box-shadow .18s;
+  cursor:pointer;pointer-events:none;
+}
+.pkey.black{
+  top:0;height:62%;z-index:3;
+  background:linear-gradient(180deg,#334155,#0f172a);
+  border:1px solid #020617;border-right:none;border-radius:0 0 5px 5px;
+  color:#94a3b8;font-size:.56rem;padding-bottom:5px;
+}
+.pkey.on{background:linear-gradient(180deg,#67e8f9,#00d4ff);color:#04121b;box-shadow:0 0 18px rgba(0,212,255,.75) inset,0 0 14px rgba(0,212,255,.5)}
+.pkey.black.on{background:linear-gradient(180deg,#00d4ff,#0891b2);color:#04121b;box-shadow:0 0 16px rgba(0,212,255,.75)}
+.chord-info{
+  margin-top:13px;padding:12px 14px;border-radius:9px;
+  background:#0c1526;border:1px solid var(--border);font-size:.87rem;
+}
+.chord-info .cn{font-weight:800;color:var(--accent);font-size:1rem;display:block;margin-bottom:4px}
+.chord-info .notes{font-family:ui-monospace,Consolas,monospace;color:var(--green);font-weight:700;letter-spacing:.04em}
+#toTop{
+  position:fixed;right:16px;bottom:16px;width:46px;height:46px;border-radius:12px;
+  background:rgba(0,212,255,.14);border:1px solid rgba(0,212,255,.5);
+  color:var(--accent);font-size:1.25rem;font-weight:900;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;z-index:1000;
+  opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{background:rgba(0,212,255,.26);transform:translateY(-3px)}
+footer{
+  border-top:1px solid var(--border);background:#080c16;
+  padding:26px 16px 34px;text-align:center;color:var(--muted);font-size:.83rem;
+}
+footer p{margin-bottom:6px;color:var(--muted)}
+footer .law{color:var(--amber);font-style:italic;margin-top:12px;font-size:.82rem;letter-spacing:.02em}
+.credit-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin:18px 0}
+.credit-item{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:14px}
+.credit-item .k{font-size:.68rem;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);font-weight:800;display:block;margin-bottom:4px}
+.credit-item .v{font-size:.98rem;color:#fff;font-weight:700;word-break:break-word}
+@media(max-width:640px){
+  .section{padding:14px 11px 60px}
+  .card{padding:15px}
+  .nav-brand{display:none}
+  .metric .val{font-size:1.25rem}
+  .piano{height:112px}
+  .pkey{font-size:.54rem}
+  .pkey.black{font-size:.5rem}
+  table{min-width:460px;font-size:.82rem}
+  th,td{padding:9px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<div id="progressTrack"><div id="progressBar"></div></div>
+
+<nav id="navbar">
+  <div id="navScroll">
+    <span class="nav-brand">🎹 Suspendidos</span>
+    <button class="nav-btn active" data-target="home">Inicio</button>
+    <button class="nav-btn" data-target="recursos">Recursos</button>
+    <button class="nav-btn" data-target="cap1">Cap. 1 · Concepto</button>
+    <button class="nav-btn" data-target="cap2">Cap. 2 · Teoría</button>
+    <button class="nav-btn" data-target="cap3">Cap. 3 · Sus4 / Sus2</button>
+    <button class="nav-btn" data-target="cap4">Cap. 4 · Avanzados</button>
+    <button class="nav-btn" data-target="cap5">Cap. 5 · Técnica</button>
+    <button class="nav-btn" data-target="ejercicios">Ejercicios</button>
+    <button class="nav-btn" data-target="faq">FAQ</button>
+    <button class="nav-btn" data-target="glosario">Glosario</button>
+    <button class="nav-btn" data-target="creditos">Créditos</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================ HOME ============================ -->
+<section id="home" class="section active">
+
+  <div class="hero-wrap" id="heroHome">
+    <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" role="img"
+         aria-label="Animación de un acorde suspendido: la tercera E(III) es sustituida por la cuarta F(IV) y luego resuelve">
+      <defs>
+        <linearGradient id="h-bgGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#070b14"/>
+          <stop offset="45%" stop-color="#0d1526"/>
+          <stop offset="100%" stop-color="#070b14"/>
+        </linearGradient>
+        <linearGradient id="h-keyWhite" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e2e8f0"/>
+          <stop offset="100%" stop-color="#94a3b8"/>
+        </linearGradient>
+        <linearGradient id="h-keyBlack" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#334155"/>
+          <stop offset="100%" stop-color="#020617"/>
+        </linearGradient>
+        <radialGradient id="h-glowBlue">
+          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="h-glowAmber">
+          <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+        </radialGradient>
+        <pattern id="h-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M40 0 L0 0 0 40" fill="none" stroke="#1e3a5f" stroke-width="0.6" opacity="0.35"/>
+        </pattern>
+      </defs>
+
+      <rect x="0" y="0" width="800" height="450" fill="url(#h-bgGrad)"/>
+      <rect x="0" y="0" width="800" height="450" fill="url(#h-grid)"/>
+
+      <text x="34" y="48" font-family="Segoe UI, system-ui, sans-serif" font-size="13"
+            font-weight="800" letter-spacing="4" fill="#00d4ff" opacity="0.9">ARMONÍA APLICADA · PIANO</text>
+      <text x="34" y="82" font-family="Segoe UI, system-ui, sans-serif" font-size="26"
+            font-weight="800" fill="#ffffff" letter-spacing="-0.4">ACORDES SUSPENDIDOS</text>
+      <text x="34" y="106" font-family="Segoe UI, system-ui, sans-serif" font-size="13"
+            font-weight="600" fill="#94a3b8" letter-spacing="1.4">SUS2 · SUS4 · SUS7 · SUS9</text>
+
+      <g>
+        <rect x="586" y="34" width="180" height="34" rx="17" fill="#0f172a" stroke="#1e3a5f"/>
+        <text x="676" y="56" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="12.5" font-weight="800" letter-spacing="2.2" fill="#22c55e">
+          MAYOR · ESTABLE
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="1;1;0;0;1;1"/>
+        </text>
+        <text x="676" y="56" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="12.5" font-weight="800" letter-spacing="2.2" fill="#f59e0b" opacity="0">
+          SUSPENDIDO · SUS4
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="0;0;1;1;0;0"/>
+        </text>
+      </g>
+
+      <ellipse cx="400" cy="180" rx="215" ry="105" fill="url(#h-glowBlue)" opacity="0.9">
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                 keyTimes="0;0.28;0.34;0.70;0.78;1" values="0.9;0.9;0;0;0.9;0.9"/>
+      </ellipse>
+      <ellipse cx="400" cy="180" rx="215" ry="105" fill="url(#h-glowAmber)" opacity="0">
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                 keyTimes="0;0.28;0.34;0.70;0.78;1" values="0;0;0.95;0.95;0;0"/>
+      </ellipse>
+
+      <g stroke="#00d4ff" fill="none" stroke-width="1.6" opacity="0.45">
+        <circle cx="400" cy="180" r="60">
+          <animate attributeName="r" dur="3s" repeatCount="indefinite" values="60;190" keyTimes="0;1"/>
+          <animate attributeName="opacity" dur="3s" repeatCount="indefinite" values="0.55;0" keyTimes="0;1"/>
+        </circle>
+        <circle cx="400" cy="180" r="60">
+          <animate attributeName="r" dur="3s" begin="1s" repeatCount="indefinite" values="60;190" keyTimes="0;1"/>
+          <animate attributeName="opacity" dur="3s" begin="1s" repeatCount="indefinite" values="0.55;0" keyTimes="0;1"/>
+        </circle>
+        <circle cx="400" cy="180" r="60">
+          <animate attributeName="r" dur="3s" begin="2s" repeatCount="indefinite" values="60;190" keyTimes="0;1"/>
+          <animate attributeName="opacity" dur="3s" begin="2s" repeatCount="indefinite" values="0.55;0" keyTimes="0;1"/>
+        </circle>
+      </g>
+
+      <text x="400" y="52" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+            font-size="12" font-weight="800" letter-spacing="2" fill="#f59e0b" opacity="0">
+        SUSTITUCIÓN DE LA TERCERA
+        <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                 keyTimes="0;0.28;0.34;0.70;0.78;1" values="0;0;0.9;0.9;0;0"/>
+      </text>
+
+      <g>
+        <circle cx="240" cy="180" r="52" fill="url(#h-glowBlue)" opacity="0.85"/>
+        <circle cx="240" cy="180" r="40" fill="#0b1424" stroke="#00d4ff" stroke-width="3">
+          <animate attributeName="stroke-width" dur="2.6s" repeatCount="indefinite" values="3;5;3" keyTimes="0;0.5;1"/>
+        </circle>
+        <text x="240" y="175" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="26" font-weight="800" fill="#00d4ff">C</text>
+        <text x="240" y="197" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="13" font-weight="800" fill="#e2e8f0">(I)</text>
+        <text x="240" y="248" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="11.5" font-weight="700" letter-spacing="1.6" fill="#22c55e">TÓNICA</text>
+      </g>
+
+      <g>
+        <circle cx="400" cy="180" r="52" fill="url(#h-glowBlue)" opacity="0.85">
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="0.85;0.85;0;0;0.85;0.85"/>
+        </circle>
+        <circle cx="400" cy="180" r="40" fill="#0b1424" stroke="#00d4ff" stroke-width="3">
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="1;1;0;0;1;1"/>
+          <animate attributeName="stroke-width" dur="2.6s" repeatCount="indefinite" values="3;5;3" keyTimes="0;0.5;1"/>
+        </circle>
+        <g>
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="1;1;0;0;1;1"/>
+          <text x="400" y="175" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+                font-size="26" font-weight="800" fill="#00d4ff">E</text>
+          <text x="400" y="197" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+                font-size="13" font-weight="800" fill="#e2e8f0">(III)</text>
+          <text x="400" y="248" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+                font-size="11.5" font-weight="700" letter-spacing="1.6" fill="#94a3b8">TERCERA</text>
+        </g>
+      </g>
+
+      <g>
+        <circle cx="400" cy="180" r="52" fill="url(#h-glowAmber)" opacity="0">
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="0;0;0.95;0.95;0;0"/>
+        </circle>
+        <g>
+          <animateTransform attributeName="transform" type="translate" dur="3.2s"
+                            repeatCount="indefinite" values="0 0; 0 -8; 0 0" keyTimes="0;0.5;1"/>
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="0;0;1;1;0;0"/>
+          <circle cx="400" cy="180" r="40" fill="#1a1206" stroke="#f59e0b" stroke-width="3"/>
+          <text x="400" y="175" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+                font-size="26" font-weight="800" fill="#f59e0b">F</text>
+          <text x="400" y="197" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+                font-size="13" font-weight="800" fill="#fde68a">(IV)</text>
+          <text x="400" y="248" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+                font-size="11.5" font-weight="700" letter-spacing="1.6" fill="#f59e0b">CUARTA</text>
+        </g>
+      </g>
+
+      <g>
+        <circle cx="560" cy="180" r="52" fill="url(#h-glowBlue)" opacity="0.85"/>
+        <circle cx="560" cy="180" r="40" fill="#0b1424" stroke="#00d4ff" stroke-width="3">
+          <animate attributeName="stroke-width" dur="2.6s" repeatCount="indefinite" values="3;5;3" keyTimes="0;0.5;1"/>
+        </circle>
+        <text x="560" y="175" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="26" font-weight="800" fill="#00d4ff">G</text>
+        <text x="560" y="197" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="13" font-weight="800" fill="#e2e8f0">(V)</text>
+        <text x="560" y="248" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"
+              font-size="11.5" font-weight="700" letter-spacing="1.6" fill="#22c55e">QUINTA</text>
+      </g>
+
+      <line x1="280" y1="180" x2="360" y2="180" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="4 4"/>
+      <line x1="440" y1="180" x2="520" y2="180" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="4 4"/>
+
+      <g>
+        <g fill="url(#h-keyWhite)" stroke="#1e293b" stroke-width="1">
+          <rect x="40"  y="300" width="52" height="96" rx="4"/>
+          <rect x="92"  y="300" width="52" height="96" rx="4"/>
+          <rect x="144" y="300" width="52" height="96" rx="4"/>
+          <rect x="196" y="300" width="52" height="96" rx="4"/>
+          <rect x="248" y="300" width="52" height="96" rx="4"/>
+          <rect x="300" y="300" width="52" height="96" rx="4"/>
+          <rect x="352" y="300" width="52" height="96" rx="4"/>
+          <rect x="404" y="300" width="52" height="96" rx="4"/>
+          <rect x="456" y="300" width="52" height="96" rx="4"/>
+          <rect x="508" y="300" width="52" height="96" rx="4"/>
+          <rect x="560" y="300" width="52" height="96" rx="4"/>
+          <rect x="612" y="300" width="52" height="96" rx="4"/>
+          <rect x="664" y="300" width="52" height="96" rx="4"/>
+          <rect x="716" y="300" width="52" height="96" rx="4"/>
+        </g>
+
+        <rect x="42" y="302" width="48" height="92" rx="4" fill="#00d4ff" opacity="0.85"/>
+        <rect x="250" y="302" width="48" height="92" rx="4" fill="#00d4ff" opacity="0.85"/>
+        <rect x="146" y="302" width="48" height="92" rx="4" fill="#00d4ff" opacity="0.85">
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="0.85;0.85;0;0;0.85;0.85"/>
+        </rect>
+        <rect x="198" y="302" width="48" height="92" rx="4" fill="#f59e0b" opacity="0">
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="0;0;0.9;0.9;0;0"/>
+        </rect>
+
+        <g fill="url(#h-keyBlack)" stroke="#020617" stroke-width="1">
+          <rect x="74"  y="300" width="36" height="60" rx="3"/>
+          <rect x="126" y="300" width="36" height="60" rx="3"/>
+          <rect x="230" y="300" width="36" height="60" rx="3"/>
+          <rect x="282" y="300" width="36" height="60" rx="3"/>
+          <rect x="334" y="300" width="36" height="60" rx="3"/>
+          <rect x="438" y="300" width="36" height="60" rx="3"/>
+          <rect x="490" y="300" width="36" height="60" rx="3"/>
+          <rect x="594" y="300" width="36" height="60" rx="3"/>
+          <rect x="646" y="300" width="36" height="60" rx="3"/>
+          <rect x="698" y="300" width="36" height="60" rx="3"/>
+        </g>
+
+        <text x="66"  y="388" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="11" font-weight="800" fill="#0a0e1a">C</text>
+        <text x="274" y="388" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="11" font-weight="800" fill="#0a0e1a">G</text>
+        <text x="170" y="388" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="11" font-weight="800" fill="#0a0e1a" opacity="0.85">
+          E
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="0.85;0.85;0;0;0.85;0.85"/>
+        </text>
+        <text x="222" y="388" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="11" font-weight="800" fill="#3b2400" opacity="0">
+          F
+          <animate attributeName="opacity" dur="12s" repeatCount="indefinite"
+                   keyTimes="0;0.28;0.34;0.70;0.78;1" values="0;0;0.9;0.9;0;0"/>
+        </text>
+      </g>
+
+      <text x="34" y="432" font-family="Segoe UI, system-ui, sans-serif" font-size="11"
+            font-weight="700" letter-spacing="1.6" fill="#64748b">
+        C(I) – (II ó IV) – G(V)  ·  LA TERCERA NUNCA SUENA
+      </text>
+      <text x="766" y="432" text-anchor="end" font-family="Segoe UI, system-ui, sans-serif"
+            font-size="11" font-weight="700" letter-spacing="1.6" fill="#64748b">
+        RUBÉN SBARSKY
+      </text>
+    </svg>
+  </div>
+
+  <span class="badge">🎹 Tutorial técnico · Armonía aplicada al piano</span>
+  <h1>Teoría y Técnica de los Acordes Suspendidos en Piano</h1>
+  <p style="font-size:1.02rem;color:#94a3b8;max-width:760px">
+    Un recorrido completo —desde el concepto fundamental hasta los arreglos profesionales—
+    por los acordes <strong>sus2</strong>, <strong>sus4</strong>, <strong>sus7</strong> y <strong>sus9</strong>.
+    Aprenderás a sustituir la tercera de la escala, a crear tensión armónica y a resolverla con elegancia.
+  </p>
+
+  <div class="quote">
+    Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><span class="val">5</span><span class="lbl">Capítulos</span></div>
+    <div class="metric"><span class="val">4</span><span class="lbl">Tipos de sus</span></div>
+    <div class="metric"><span class="val">I–IV–V</span><span class="lbl">Fórmula base</span></div>
+    <div class="metric"><span class="val">3</span><span class="lbl">Ejercicios</span></div>
+  </div>
+
+  <div class="chips">
+    <span class="chip b">Sus4</span>
+    <span class="chip g">Sus2</span>
+    <span class="chip p">Sus7</span>
+    <span class="chip a">Sus9</span>
+    <span class="chip">Resolución</span>
+    <span class="chip">Grados I–VII</span>
+    <span class="chip">Sistema americano</span>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">¿Qué vas a encontrar en este tutorial?</h3>
+    <div class="grid g2">
+      <div>
+        <h4>Fundamentos</h4>
+        <p style="font-size:.9rem;margin-bottom:0">
+          Qué es un acorde suspendido, por qué no es mayor ni menor y para qué sirve
+          en la música popular contemporánea.
+        </p>
+      </div>
+      <div>
+        <h4>Construcción</h4>
+        <p style="font-size:.9rem;margin-bottom:0">
+          La regla de oro de la sustitución: eliminar el Grado III y colocar en su lugar
+          el Grado II o el Grado IV.
+        </p>
+      </div>
+      <div>
+        <h4>Aplicación</h4>
+        <p style="font-size:.9rem;margin-bottom:0">
+          Trucos de arreglo, resolución de tensiones y su uso en baladas y bandas sonoras.
+        </p>
+      </div>
+      <div>
+        <h4>Práctica</h4>
+        <p style="font-size:.9rem;margin-bottom:0">
+          Ejercicios con soluciones explicadas, checklist de verificación y un teclado
+          interactivo para visualizar cada acorde.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="piano-panel">
+    <h4>🎹 Teclado interactivo · Visualiza cada acorde</h4>
+    <p style="font-size:.87rem;color:#94a3b8">
+      Pulsa un botón para iluminar las notas del acorde sobre el teclado.
+      Observa cómo la tercera <code>E(III)</code> desaparece y es sustituida por la cuarta <code>F(IV)</code>
+      o la segunda <code>D(II)</code>.
+    </p>
+    <div class="chord-btns" id="chordBtns"></div>
+    <div class="piano" id="piano"></div>
+    <div class="chord-info" id="chordInfo">
+      <span class="cn">Selecciona un acorde</span>
+      <span class="notes">—</span>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="ct">Nomenclatura</span>
+    En este tutorial se utiliza exclusivamente el <strong>sistema americano</strong> de notas
+    (<code>A, B, C, D, E, F, G</code>) junto con el <strong>grado de la escala</strong> en números romanos:
+    <code>C(I), D(II), E(III), F(IV), G(V), A(VI), B(VII)</code>.
+  </div>
+
+</section>
+
+<!-- ============================ RECURSOS ============================ -->
+<section id="recursos" class="section">
+  <div class="section-head">
+    <div class="section-ico">📼</div>
+    <div>
+      <h2>Ficha del Recurso Audiovisual y Referencias</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Origen del material y consultas prácticas de referencia.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Recurso audiovisual</h3>
+    <div class="credit-grid">
+      <div class="credit-item">
+        <span class="k">Nombre del video de YouTube</span>
+        <span class="v">"Acordes Suspendidos Como Tocar? Que Son? sus 2, sus 4, sus 9, sus 7, Clases de Musica"</span>
+      </div>
+      <div class="credit-item">
+        <span class="k">Canal original</span>
+        <span class="v">APRENDE A TOCAR LEO MART</span>
+      </div>
+      <div class="credit-item" style="grid-column:1/-1">
+        <span class="k">Enlace URL del video</span>
+        <span class="v" style="font-weight:600;font-size:.86rem;word-break:break-all">
+          <a href="https://youtube.com/watch?v=FyZf6HGRKa4&amp;is=OWgFo_fZIX-h8MWv"
+             target="_blank" rel="noopener noreferrer"
+             style="color:var(--accent);text-decoration:none">
+            https://youtube.com/watch?v=FyZf6HGRKa4&amp;is=OWgFo_fZIX-h8MWv
+          </a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p">
+    <h3 style="margin-top:0">Prompts de referencia y consulta práctica</h3>
+    <div class="grid g2">
+      <div class="callout info" style="margin:0">
+        <span class="ct">Prompt de búsqueda teórica</span>
+        "¿Cómo se construyen los acordes sus2, sus4, sus7 y sus9 en el piano y cuáles son sus grados?"
+      </div>
+      <div class="callout ejemplo" style="margin:0">
+        <span class="ct">Prompt de aplicación técnica</span>
+        "Genera una rutina de ejercicios paso a paso para sustituir la tercera E(III) por la segunda D(II) y la cuarta F(IV) en el teclado."
+      </div>
+    </div>
+  </div>
+
+  <div class="callout advertencia">
+    <span class="ct">Advertencia</span>
+    Todo el contenido teórico y práctico de este tutorial proviene del material de referencia indicado.
+    No se ha añadido información externa.
+  </div>
+</section>
+
+<!-- ============================ CAP 1 ============================ -->
+<section id="cap1" class="section">
+  <div class="section-head">
+    <div class="section-ico">🎼</div>
+    <div>
+      <h2>Capítulo 1: ¿Qué son los Acordes Suspendidos y para qué sirven?</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Concepto, importancia, usos reales y experimentación auditiva.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">1.1 Concepto fundamental</h3>
+    <p>
+      Un <strong>acorde suspendido</strong> es una estructura armónica especial que no pertenece a la
+      clasificación tradicional de acorde mayor ni de acorde menor. En la armonía estándar, la nota que
+      define si un acorde suena alegre (mayor) o melancólico (menor) es la <strong>tercera de la escala</strong>.
+      En los acordes suspendidos, esa tercera se retira y se reemplaza por otra nota (generalmente la
+      segunda o la cuarta), dejando el sonido "en el aire" o "en suspenso".
+    </p>
+    <p style="margin-bottom:0">
+      Conceptualmente, un acorde suspendido se comporta de manera similar a un acorde disminuido en el
+      sentido de que no tiene una definición fija de mayor o menor, constituyendo una categoría armónica propia.
+    </p>
+  </div>
+
+  <div class="card g">
+    <h3 style="margin-top:0">1.2 ¿Por qué es importante aprenderlos?</h3>
+    <ul style="margin-bottom:0">
+      <li><strong>Modernizan tu sonido:</strong> la música popular contemporánea y las baladas en piano utilizan constantemente acordes suspendidos para crear sonoridades envolventes y sofisticadas.</li>
+      <li><strong>Añaden emoción y sentimiento:</strong> al tocar en el piano, introducir un acorde suspendido aporta un matiz expresivo único que enriquece cualquier arreglo.</li>
+      <li><strong>Desarrollan el oído musical:</strong> experimentar con estas tensiones fortalece la capacidad de escuchar y anticipar cómo resuelve una armonía.</li>
+      <li><strong>Versatilidad instrumental:</strong> aunque se estudien en el teclado, estos principios son aplicables a otros instrumentos de teclado o armónicos.</li>
+    </ul>
+  </div>
+
+  <div class="card a">
+    <h3 style="margin-top:0">1.3 Situaciones reales de uso</h3>
+    <ol style="margin-bottom:0">
+      <li><strong>Acompañamiento en piano:</strong> al acompañar a un cantante o instrumento solista, los acordes suspendidos evitan la monotonía de mantener un acorde mayor o menor estático durante varios compases.</li>
+      <li><strong>Introducciones y finales de canciones:</strong> se usan para crear expectativa justo antes de que comience una melodía o al concluir una frase musical.</li>
+      <li><strong>Arreglos en canciones populares:</strong> canciones emblemáticas como "Castillos de hielo" utilizan acordes sus4 para generar un ambiente sonoro característico.</li>
+    </ol>
+  </div>
+
+  <div class="card p">
+    <h3 style="margin-top:0">1.4 Analogía cotidiana</h3>
+    <p style="margin-bottom:0">
+      Imagina que estás viendo una película de misterio y la música se detiene justo cuando el personaje
+      abre una puerta. Tu mente queda esperando saber qué ocurre después. Un acorde suspendido produce
+      exactamente esa misma sensación auditiva: es una <strong>"pregunta musical"</strong> que deja el sonido
+      flotando hasta que resuelve a un acorde estable.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">1.5 Pasos accionables para experimentar la tensión auditiva</h3>
+    <ol class="steps">
+      <li>
+        <strong>Siéntate frente al piano y ubica la nota C(I) central.</strong>
+        <span class="why">Motivo: establecer la tónica C(I) como punto de partida claro.</span>
+      </li>
+      <li>
+        <strong>Toca la tríada de C(I) mayor combinando C(I), E(III) y G(V).</strong>
+        <span class="why">Motivo: escuchar el sonido estable y definido de un acorde mayor tradicional.</span>
+      </li>
+      <li>
+        <strong>Levanta el dedo que presiona E(III) y presiona en su lugar la nota F(IV). Toca C(I), F(IV) y G(V) simultáneamente.</strong>
+        <span class="why">Motivo: experimentar la "suspensión" o flotación que genera la cuarta F(IV) al reemplazar a la tercera E(III).</span>
+      </li>
+      <li>
+        <strong>Vuelve a presionar E(III) manteniendo C(I) y G(V).</strong>
+        <span class="why">Motivo: sentir el alivio o "resolución" auditiva cuando la suspensión vuelve a la tercera E(III).</span>
+      </li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">1.6 Tabla comparativa de estructuras armónicas</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo de Acorde</th>
+            <th>Notas en C(I)</th>
+            <th>Carácter Auditivo</th>
+            <th>Función Principal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>C(I) Mayor</strong></td>
+            <td><code>C(I) - E(III) - G(V)</code></td>
+            <td>Definido, alegre, estable</td>
+            <td>Reposo o estabilidad armónica</td>
+          </tr>
+          <tr>
+            <td><strong>C(I) Menor</strong></td>
+            <td><code>C(I) - Eb(III) - G(V)</code></td>
+            <td>Melancólico, sombrío</td>
+            <td>Expresión dramática o triste</td>
+          </tr>
+          <tr>
+            <td><strong>C(I) Suspendido (sus4)</strong></td>
+            <td><code>C(I) - F(IV) - G(V)</code></td>
+            <td>Ambiguo, flotante, en tensión</td>
+            <td>Crear expectativa o transición</td>
+          </tr>
+          <tr>
+            <td><strong>C(I) Suspendido (sus2)</strong></td>
+            <td><code>C(I) - D(II) - G(V)</code></td>
+            <td>Etéreo, abierto, moderno</td>
+            <td>Color armónico y movimiento</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Resumen del Capítulo 1</span>
+    Los acordes suspendidos no son mayores ni menores. Se logran quitando la tercera del acorde y
+    sustituyéndola por otro grado (como el segundo o el cuarto). Sirven para enriquecer la música,
+    crear tensión y dar un toque profesional y moderno a las interpretaciones en piano.
+  </div>
+</section>
+
+<!-- ============================ CAP 2 ============================ -->
+<section id="cap2" class="section">
+  <div class="section-head">
+    <div class="section-ico p">🧮</div>
+    <div>
+      <h2>Capítulo 2: Fundamentos Teóricos — La Escala y los Grados Musicales</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Los grados, la regla de oro de la sustitución y su ubicación en el teclado.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">2.1 Los grados musicales explicados de forma sencilla</h3>
+    <p>
+      Para construir cualquier acorde de manera sistemática, la música utiliza <strong>grados</strong>,
+      que no son más que los números asignados a cada nota dentro de una escala empezando desde la tónica.
+    </p>
+    <p>En la escala de C(I) mayor, la numeración de las notas en notación americana es la siguiente:</p>
+    <div class="degrees">
+      <div class="deg on-blue"><span class="n">C</span><span class="gr">Grado I · Tónica</span></div>
+      <div class="deg"><span class="n">D</span><span class="gr">Grado II · Segunda</span></div>
+      <div class="deg"><span class="n">E</span><span class="gr">Grado III · Tercera</span></div>
+      <div class="deg"><span class="n">F</span><span class="gr">Grado IV · Cuarta</span></div>
+      <div class="deg"><span class="n">G</span><span class="gr">Grado V · Quinta</span></div>
+      <div class="deg"><span class="n">A</span><span class="gr">Grado VI · Sexta</span></div>
+      <div class="deg"><span class="n">B</span><span class="gr">Grado VII · Séptima</span></div>
+      <div class="deg"><span class="n">C / D</span><span class="gr">VIII / IX · Octava / Novena</span></div>
+    </div>
+  </div>
+
+  <div class="card a">
+    <h3 style="margin-top:0">2.2 La regla de oro de la sustitución</h3>
+    <p>
+      En una tríada tradicional (mayor o menor), la fórmula estándar es <strong>I - III - V</strong>.
+      Para convertir esa tríada en un acorde suspendido, la regla fundamental consiste en
+      <strong>eliminar el Grado III</strong> y colocar en su lugar el <strong>Grado II</strong> o el
+      <strong>Grado IV</strong>.
+    </p>
+    <div class="formula a">TRÍADA: I – III – V   ⟶   SUSPENDIDO: I – (II ó IV) – V</div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">2.3 Pasos accionables para ubicar los grados en el teclado</h3>
+    <ol class="steps">
+      <li>
+        <strong>Coloca el pulgar de la mano derecha en la tecla C(I).</strong>
+        <span class="why">Motivo: asignar el grado I a la nota base o tónica.</span>
+      </li>
+      <li>
+        <strong>Asigna un dedo consecutivo a cada tecla blanca hacia la derecha:</strong>
+        <span class="why">
+          Dedo 1 (Pulgar): C(I) · Dedo 2 (Índice): D(II) · Dedo 3 (Medio): E(III) ·
+          Dedo 4 (Anular): F(IV) · Dedo 5 (Meñique): G(V)
+        </span>
+      </li>
+      <li>
+        <strong>Presiona únicamente los dedos 1, 3 y 5 (C(I) - E(III) - G(V)).</strong>
+        <span class="why">Motivo: visualizar la tríada base de C(I) mayor.</span>
+      </li>
+      <li>
+        <strong>Mueve el dedo 3 hacia la nota F(IV) (Grado IV) para formar C(I) sus4.</strong>
+        <span class="why">Motivo: aplicar mecánicamente la sustitución del tercer grado por el cuarto.</span>
+      </li>
+    </ol>
+  </div>
+
+  <div class="card g">
+    <h3 style="margin-top:0">2.4 Esquema de grados en la escala de C(I)</h3>
+    <div class="formula g" style="white-space:normal">
+      C(I) [Grado I] ─── D(II) [Grado II] ─── E(III) [Grado III] ─── F(IV) [Grado IV] ─── G(V) [Grado V]
+    </div>
+    <div class="grid g3" style="margin-top:14px">
+      <div class="card" style="margin:0;background:#0c1526">
+        <h4 style="margin-top:0;color:var(--accent)">Tríada Mayor</h4>
+        <p style="margin-bottom:0;font-family:ui-monospace,monospace;color:#fff">C(I) + E(III) + G(V)</p>
+      </div>
+      <div class="card" style="margin:0;background:#0c1526">
+        <h4 style="margin-top:0;color:var(--green)">Acorde Sus2</h4>
+        <p style="margin-bottom:0;font-family:ui-monospace,monospace;color:#fff">C(I) + D(II) + G(V)</p>
+      </div>
+      <div class="card" style="margin:0;background:#0c1526">
+        <h4 style="margin-top:0;color:var(--amber)">Acorde Sus4</h4>
+        <p style="margin-bottom:0;font-family:ui-monospace,monospace;color:#fff">C(I) + F(IV) + G(V)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Resumen del Capítulo 2</span>
+    Los acordes se identifican mediante grados numéricos basados en la escala. Los acordes suspendidos
+    reemplazan la tercera E(III) por la segunda D(II) o la cuarta F(IV), manteniendo siempre la tónica
+    C(I) y la quinta G(V).
+  </div>
+</section>
+
+<!-- ============================ CAP 3 ============================ -->
+<section id="cap3" class="section">
+  <div class="section-head">
+    <div class="section-ico g">🔧</div>
+    <div>
+      <h2>Capítulo 3: Construcción de Acordes Sus4 y Sus2 Paso a Paso</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Fórmulas, ejemplos en distintas tonalidades y errores frecuentes.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="ct">Nomenclatura</span>
+    En la nomenclatura musical, los acordes suspendidos se abrevian con la palabra <strong>sus</strong>
+    seguida del número del grado que sustituye a la tercera.
+  </div>
+
+  <div class="card a">
+    <h3 style="margin-top:0">3.1 Acorde Sus4 (Suspendido en Cuarta)</h3>
+    <h4>Fórmula teórica</h4>
+    <div class="formula a">Grado I + Grado IV + Grado V</div>
+
+    <h4>Construcción práctica en C(I)</h4>
+    <ul>
+      <li><strong>Grado I:</strong> C(I)</li>
+      <li><strong>Grado IV:</strong> F(IV)</li>
+      <li><strong>Grado V:</strong> G(V)</li>
+      <li><strong>Resultado:</strong> <strong>C(I) sus4</strong> con las notas C(I), F(IV) y G(V).</li>
+    </ul>
+
+    <h4>Construcción práctica en D(I)</h4>
+    <ul>
+      <li><strong>Grado I:</strong> D(I)</li>
+      <li><strong>Grado IV:</strong> G(IV)</li>
+      <li><strong>Grado V:</strong> A(V)</li>
+      <li><strong>Resultado:</strong> <strong>D(I) sus4</strong> con las notas D(I), G(IV) y A(V).</li>
+    </ul>
+
+    <h4>Pasos accionables para tocar un acorde Sus4</h4>
+    <ol class="steps">
+      <li><strong>Ubica la nota tónica del acorde (ejemplo: D(I)).</strong><span class="why">Motivo: identificar el primer grado base.</span></li>
+      <li><strong>Cuenta cuatro notas dentro de la escala correspondiente para hallar el cuarto grado (G(IV)).</strong><span class="why">Motivo: obtener la nota de sustitución que genera la suspensión en cuarta.</span></li>
+      <li><strong>Cuenta cinco notas desde la tónica para hallar el quinto grado (A(V)).</strong><span class="why">Motivo: proporcionar el soporte armónico de la quinta justa.</span></li>
+      <li><strong>Presiona simultáneamente D(I), G(IV) y A(V) con la mano.</strong><span class="why">Motivo: ejecutar limpiamente la sonoridad de D(I) sus4.</span></li>
+    </ol>
+  </div>
+
+  <div class="card g">
+    <h3 style="margin-top:0">3.2 Acorde Sus2 (Suspendido en Segunda)</h3>
+    <h4>Fórmula teórica</h4>
+    <div class="formula g">Grado I + Grado II + Grado V</div>
+
+    <h4>Construcción práctica en C(I)</h4>
+    <ul>
+      <li><strong>Grado I:</strong> C(I)</li>
+      <li><strong>Grado II:</strong> D(II)</li>
+      <li><strong>Grado V:</strong> G(V)</li>
+      <li><strong>Resultado:</strong> <strong>C(I) sus2</strong> con las notas C(I), D(II) y G(V).</li>
+    </ul>
+
+    <h4>Construcción práctica en Bb(I)</h4>
+    <ul>
+      <li><strong>Grado I:</strong> Bb(I)</li>
+      <li><strong>Grado II:</strong> C(II)</li>
+      <li><strong>Grado V:</strong> F(V)</li>
+      <li><strong>Resultado:</strong> <strong>Bb(I) sus2</strong> con las notas Bb(I), C(II) y F(V).</li>
+    </ul>
+
+    <h4>Pasos accionables para tocar un acorde Sus2</h4>
+    <ol class="steps">
+      <li><strong>Selecciona la tónica del acorde (ejemplo: C(I)).</strong><span class="why">Motivo: definir la nota raíz.</span></li>
+      <li><strong>Localiza la nota inmediatamente superior dentro de la escala (D(II)).</strong><span class="why">Motivo: añadir la segunda como nota suspendida.</span></li>
+      <li><strong>Ubica la quinta justa (G(V)).</strong><span class="why">Motivo: completar la estructura del acorde.</span></li>
+      <li><strong>Presiona C(I), D(II) y G(V) juntos.</strong><span class="why">Motivo: producir el acorde C(I) sus2 con un sonido dulce y abierto.</span></li>
+    </ol>
+  </div>
+
+  <div class="card r">
+    <h3 style="margin-top:0">3.3 Ejemplos correctos e incorrectos</h3>
+
+    <div class="callout ejemplo" style="margin-top:0">
+      <span class="ct">Correcto — C(I) sus4</span>
+      Tocar C(I) - F(IV) - G(V).
+    </div>
+
+    <div class="callout error">
+      <span class="ct">Incorrecto — Error común</span>
+      Tocar C(I) - E(III) - F(IV) - G(V).
+      <em>Explicación: incluir la tercera E(III) junto con la cuarta F(IV) destruye la suspensión,
+      convirtiendo el acorde en un acorde de cuarta añadida en lugar de un acorde suspendido.</em>
+    </div>
+
+    <div class="callout ejemplo">
+      <span class="ct">Correcto — C(I) sus2</span>
+      Tocar C(I) - D(II) - G(V).
+    </div>
+
+    <div class="callout error" style="margin-bottom:0">
+      <span class="ct">Incorrecto</span>
+      Tocar C(I) - D(II) - E(III) - G(V).
+      <em>Explicación: si mantienes E(III), ya no hay sustitución; estás tocando un acorde add2 o add9.</em>
+    </div>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Resumen del Capítulo 3</span>
+    El acorde sus4 combina los grados I, IV y V. El acorde sus2 combina los grados I, II y V.
+    La clave absoluta para ambos es que <strong>la tercera de la escala nunca debe sonar</strong>
+    simultáneamente con la nota suspendida.
+  </div>
+</section>
+
+<!-- ============================ CAP 4 ============================ -->
+<section id="cap4" class="section">
+  <div class="section-head">
+    <div class="section-ico p">🚀</div>
+    <div>
+      <h2>Capítulo 4: Acordes Suspendidos Avanzados — Sus7 y Sus9</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Extensiones superiores: séptima menor y novena.</p>
+    </div>
+  </div>
+
+  <p>
+    Para músicos que desean enriquecer sus arreglos, los acordes suspendidos pueden combinarse con
+    extensiones superiores como la séptima y la novena.
+  </p>
+
+  <div class="card p">
+    <h3 style="margin-top:0">4.1 Acorde Sus7 (Suspendido en Séptima)</h3>
+    <h4>Fórmula teórica</h4>
+    <div class="formula p">Grado I + Grado IV + Grado V + Grado VII (séptima menor / disminuida)</div>
+
+    <h4>Ejemplos prácticos</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Acorde</th><th>Grado I</th><th>Grado IV</th><th>Grado V</th><th>Grado VII</th><th>Notas combinadas</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>C(I) sus7</strong></td>
+            <td>C(I)</td><td>F(IV)</td><td>G(V)</td><td>Bb(VII)</td>
+            <td><code>C(I) - F(IV) - G(V) - Bb(VII)</code></td>
+          </tr>
+          <tr>
+            <td><strong>G(I) sus7</strong></td>
+            <td>G(I)</td><td>C(IV)</td><td>D(V)</td><td>F(VII)</td>
+            <td><code>G(I) - C(IV) - D(V) - F(VII)</code></td>
+          </tr>
+          <tr>
+            <td><strong>D(I) sus7</strong></td>
+            <td>D(I)</td><td>G(IV)</td><td>A(V)</td><td>C(VII)</td>
+            <td><code>D(I) - G(IV) - A(V) - C(VII)</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Pasos accionables para construir G(I) sus7</h4>
+    <ol class="steps">
+      <li><strong>Coloca el bajo en la nota tónica G(I).</strong><span class="why">Motivo: establecer el cimiento fundamental del acorde.</span></li>
+      <li><strong>Añade la cuarta justa C(IV) y la quinta justa D(V).</strong><span class="why">Motivo: formar el bloque de suspensión sus4 sobre G(I).</span></li>
+      <li><strong>Incorpora la séptima menor F(VII).</strong><span class="why">Motivo: agregar el color y la tensión característica del acorde de séptima de dominante.</span></li>
+      <li><strong>Toca la combinación completa G(I) - C(IV) - D(V) - F(VII) con la mano derecha.</strong><span class="why">Motivo: producir una sonoridad rica, muy utilizada en jazz, pop y música moderna.</span></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">4.2 Acorde Sus9 (Suspendido en Novena)</h3>
+    <h4>Fórmula teórica y concepto</h4>
+    <p>
+      La novena es el noveno grado contado desde la tónica, equivalente a la segunda D(II) pero
+      posicionada una octava más arriba en el teclado.
+    </p>
+    <ul>
+      <li><strong>Estructura típica de C(I) sus9:</strong> Grado I + Grado V + Grado IX (o combinación de Grado IV, V y IX).</li>
+      <li><strong>Notas de C(I) sus9:</strong> C(I) - G(V) - D(IX) posicionada en la octava superior.</li>
+    </ul>
+
+    <h4>Variantes avanzadas</h4>
+    <p style="margin-bottom:0">
+      Existe la posibilidad teórica de ejecutar variaciones como la novena disminuida sobre el acorde
+      suspendido. Aunque estas sonoridades disonantes son menos frecuentes por su carácter inusual,
+      forman parte del espectro cromático avanzado.
+    </p>
+  </div>
+
+  <div class="card a">
+    <h3 style="margin-top:0">4.3 Aplicación en canciones reales</h3>
+    <p style="margin-bottom:0">
+      En producciones baladísticas y bandas sonoras, el uso de acordes sus4 y sus2 permite crear pasajes
+      envolventes. Por ejemplo, en la pieza <strong>"Castillos de hielo"</strong> se utiliza la sonoridad
+      sus4 para generar momentos de alta emotividad armónica.
+    </p>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Resumen del Capítulo 4</span>
+    El acorde sus7 suma la séptima menor (VII) a la estructura del sus4 (I - IV - V - VII).
+    El acorde sus9 traslada la segunda a la octava superior para lograr una sonoridad aún más amplia y clara.
+  </div>
+</section>
+
+<!-- ============================ CAP 5 ============================ -->
+<section id="cap5" class="section">
+  <div class="section-head">
+    <div class="section-ico a">🎯</div>
+    <div>
+      <h2>Capítulo 5: Técnica, Arreglos y Consejos de Expertos</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Integración en canciones, checklist y errores comunes.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">5.1 Cómo integrar acordes suspendidos en tus canciones</h3>
+    <p>No se trata únicamente de memorizar las notas, sino de saber en qué momento aplicarlas para enriquecer tu ejecución en el piano.</p>
+
+    <h4>Truco de arreglo #1: La preparación de la resolución</h4>
+    <p>
+      Cuando una canción permanece durante un compás entero en un acorde mayor (por ejemplo, C(I) mayor),
+      toca los primeros dos tiempos utilizando <strong>C(I) sus4</strong> (C(I) - F(IV) - G(V)) y resuelve
+      en los siguientes dos tiempos a <strong>C(I) mayor</strong> (C(I) - E(III) - G(V)). Esto le otorga
+      inmediatamente dinamismo y elegancia a tu interpretación.
+    </p>
+
+    <h4>Truco de arreglo #2: El color del Sus2</h4>
+    <p style="margin-bottom:0">
+      Usa el acorde sus2 como acorde de paso dulce en baladas. Al cambiar entre C(I) mayor y C(I) sus2
+      (C(I) - D(II) - G(V)), creas un movimiento melódico sutil en las notas superiores.
+    </p>
+  </div>
+
+  <div class="card g">
+    <h3 style="margin-top:0">5.2 Lista de comprobación (Checklist) para tocar acordes suspendidos</h3>
+    <ul class="check">
+      <li><strong>¿Eliminé la tercera?</strong> Verifica que no estés presionando E(III) si estás en la tonalidad de C(I).</li>
+      <li><strong>¿Identifiqué el grado correcto?</strong> Asegúrate de si la canción pide un sus2 (Grado II) o un sus4 (Grado IV).</li>
+      <li><strong>¿La postura de la mano es cómoda?</strong> Mantén los dedos relajados y curvados sobre las teclas.</li>
+      <li><strong>¿Escucho la resolución?</strong> Practica la transición desde el acorde suspendido hacia el acorde mayor o menor correspondiente para entrenar tu oído.</li>
+    </ul>
+  </div>
+
+  <div class="card r">
+    <h3 style="margin-top:0">5.3 Errores comunes y cómo evitarlos</h3>
+
+    <div class="callout error" style="margin-top:0">
+      <span class="ct">Error 1 · Tocar la tercera al mismo tiempo que la nota suspendida</span>
+      <strong>Consecuencia:</strong> se genera una disonancia áspera o se cambia la naturaleza del acorde
+      a un acorde add2 / add4.<br>
+      <strong>Solución:</strong> levantar explícitamente el dedo que presiona la tercera E(III).
+    </div>
+
+    <div class="callout advertencia" style="margin-bottom:0">
+      <span class="ct">Error 2 · Confundir Sus2 con Sus9</span>
+      <strong>Consecuencia:</strong> aunque comparten la misma nota-nombre (D(II) y D(IX)), la disposición
+      en el teclado es distinta y cambia la densidad del sonido.<br>
+      <strong>Solución:</strong> toca D(II) junto a la tónica C(I) para un sus2, o coloca D(IX) en la
+      octava superior para un sus9.
+    </div>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Resumen del Capítulo 5</span>
+    Aplicar acordes suspendidos mejora significativamente los arreglos musicales. La mejor práctica
+    profesional consiste en alternar entre la suspensión y la resolución mayor/menor para mantener el
+    interés auditivo del oyente.
+  </div>
+</section>
+
+<!-- ============================ EJERCICIOS ============================ -->
+<section id="ejercicios" class="section">
+  <div class="section-head">
+    <div class="section-ico g">✏️</div>
+    <div>
+      <h2>Ejercicios Prácticos con Soluciones Explicadas</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Resumen general, conceptos clave y práctica guiada.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Resumen general de todo lo aprendido</h3>
+    <p style="margin-bottom:0">
+      En este tutorial hemos aprendido que los acordes suspendidos son estructuras armónicas únicas que
+      no se clasifican como mayores ni como menores. Su característica principal es la sustitución del
+      tercer grado de la escala por el segundo grado (sus2) o el cuarto grado (sus4). Asimismo, exploramos
+      variantes enriquecidas como el sus7 (que incorpora la séptima menor) y el sus9 (que utiliza la novena
+      en la octava superior). Estos acordes son herramientas fundamentales para desarrollar el oído musical,
+      componer y realizar arreglos profesionales en el piano.
+    </p>
+  </div>
+
+  <div class="card p">
+    <h3 style="margin-top:0">Lista de conceptos clave</h3>
+    <ul style="margin-bottom:0">
+      <li><strong>Acorde Suspendido:</strong> acorde donde la tercera es reemplazada por la segunda o la cuarta, eliminando la definición mayor o menor.</li>
+      <li><strong>Sus4:</strong> estructura formada por los grados I, IV y V.</li>
+      <li><strong>Sus2:</strong> estructura formada por los grados I, II y V.</li>
+      <li><strong>Sus7:</strong> estructura formada por los grados I, IV, V y VII (séptima menor).</li>
+      <li><strong>Sus9:</strong> estructura armónica que posiciona la novena D(IX) en la octava superior.</li>
+      <li><strong>Resolución:</strong> el movimiento armónico de pasar de un acorde suspendido a un acorde estable (mayor o menor).</li>
+    </ul>
+  </div>
+
+  <div class="card r">
+    <h3 style="margin-top:0">Errores que nunca deben cometerse</h3>
+    <ul style="margin-bottom:0">
+      <li><strong>NUNCA</strong> presiones la tercera de la escala al tocar un acorde sus2 o sus4.</li>
+      <li><strong>NUNCA</strong> pienses que un acorde suspendido es triste o alegre por sí mismo; su carácter es neutro y depende de hacia dónde resuelva.</li>
+      <li><strong>NUNCA</strong> limites la práctica a una sola tonalidad; ejercita los acordes sus en C(I), D(I), G(I), Bb(I) y en todas las teclas del piano.</li>
+    </ul>
+  </div>
+
+  <div class="card g">
+    <h3 style="margin-top:0">Recomendaciones para seguir aprendiendo</h3>
+    <ol style="margin-bottom:0">
+      <li><strong>Practica en el teclado todos los días durante 10 minutos</strong> cambiando entre acordes mayores y sus4 en distintas tonalidades.</li>
+      <li><strong>Escucha canciones populares</strong> e intenta identificar de oído cuándo ocurre una suspensión sus4 o sus2.</li>
+      <li><strong>Aplica los acordes a otros instrumentos</strong> de teclado o acompañamiento armónico para comprobar su versatilidad.</li>
+    </ol>
+  </div>
+
+  <h3>Ejercicios resueltos</h3>
+
+  <details open>
+    <summary>Ejercicio 1 · Construcción de C(I) sus4</summary>
+    <div class="details-body">
+      <p><strong>Consigna:</strong> encuentra las notas necesarias para tocar C(I) sus4 en el piano.</p>
+      <p><strong>Paso a paso:</strong></p>
+      <ol>
+        <li>Toma la tónica: C(I).</li>
+        <li>Sustituye la tercera E(III) por la cuarta justa: F(IV).</li>
+        <li>Agrega la quinta justa: G(V).</li>
+      </ol>
+      <div class="callout ejemplo" style="margin-bottom:0">
+        <span class="ct">Solución</span>
+        <code>C(I) - F(IV) - G(V)</code>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>Ejercicio 2 · Construcción de D(I) sus4</summary>
+    <div class="details-body">
+      <p><strong>Consigna:</strong> construye el acorde D(I) sus4.</p>
+      <p><strong>Paso a paso:</strong></p>
+      <ol>
+        <li>Toma la tónica: D(I).</li>
+        <li>Toma la cuarta justa de la escala de D(I): G(IV).</li>
+        <li>Toma la quinta justa: A(V).</li>
+      </ol>
+      <div class="callout ejemplo" style="margin-bottom:0">
+        <span class="ct">Solución</span>
+        <code>D(I) - G(IV) - A(V)</code>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>Ejercicio 3 · Construcción de G(I) sus7</summary>
+    <div class="details-body">
+      <p><strong>Consigna:</strong> toca un acorde de G(I) sus7.</p>
+      <p><strong>Paso a paso:</strong></p>
+      <ol>
+        <li>Identifica la tónica: G(I).</li>
+        <li>Agrega la cuarta justa: C(IV).</li>
+        <li>Agrega la quinta justa: D(V).</li>
+        <li>Incorpora la séptima menor: F(VII).</li>
+      </ol>
+      <div class="callout ejemplo" style="margin-bottom:0">
+        <span class="ct">Solución</span>
+        <code>G(I) - C(IV) - D(V) - F(VII)</code>
+      </div>
+    </div>
+  </details>
+
+  <div class="piano-panel">
+    <h4>🎹 Comprueba sobre el teclado</h4>
+    <p style="font-size:.87rem;color:#94a3b8">
+      Selecciona cada acorde y observa la posición exacta de las notas.
+    </p>
+    <div class="chord-btns" id="chordBtns2"></div>
+    <div class="piano" id="piano2"></div>
+    <div class="chord-info" id="chordInfo2">
+      <span class="cn">Selecciona un acorde</span>
+      <span class="notes">—</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FAQ ============================ -->
+<section id="faq" class="section">
+  <div class="section-head">
+    <div class="section-ico">❓</div>
+    <div>
+      <h2>Preguntas Frecuentes (FAQ)</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Dudas habituales sobre los acordes suspendidos.</p>
+    </div>
+  </div>
+
+  <details open>
+    <summary>¿Un acorde suspendido puede sustituir a cualquier acorde en una canción?</summary>
+    <div class="details-body">
+      Sí, en la mayoría de los casos puedes sustituir temporalmente un acorde mayor o menor por su versión
+      suspendida (sus2 o sus4) durante uno o dos tiempos para agregar interés y color armónico antes de resolver.
+    </div>
+  </details>
+
+  <details>
+    <summary>¿Cuál es la diferencia entre un acorde Sus2 y un acorde Add2?</summary>
+    <div class="details-body">
+      En el acorde <strong>sus2</strong>, la tercera es completamente omitida y reemplazada por la segunda.
+      En el acorde <strong>add2</strong> (o add9), la tercera permanece en la estructura junto con la segunda.
+    </div>
+  </details>
+
+  <div class="callout info">
+    <span class="ct">Recuerda</span>
+    La diferencia esencial entre <code>sus</code> y <code>add</code> es la presencia o ausencia de la tercera.
+    Si la tercera suena, ya no es un acorde suspendido.
+  </div>
+</section>
+
+<!-- ============================ GLOSARIO ============================ -->
+<section id="glosario" class="section">
+  <div class="section-head">
+    <div class="section-ico p">📖</div>
+    <div>
+      <h2>Glosario de Términos Técnicos</h2>
+      <p style="margin-bottom:0;color:#94a3b8">Definiciones esenciales utilizadas a lo largo del tutorial.</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Término</th><th>Definición</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Grado musical</strong></td><td>La posición numérica de una nota dentro de una escala empezando desde la tónica.</td></tr>
+        <tr><td><strong>Tónica (Grado I)</strong></td><td>La nota fundamental sobre la cual se construye un acorde o escala.</td></tr>
+        <tr><td><strong>Tercera (Grado III)</strong></td><td>La nota que define el carácter mayor o menor de un acorde tradicional.</td></tr>
+        <tr><td><strong>Cuarta Justa (Grado IV)</strong></td><td>Intervalo situado a cuatro notas de distancia de la tónica; nota principal usada en acordes sus4.</td></tr>
+        <tr><td><strong>Segunda (Grado II)</strong></td><td>Intervalo situado a dos notas de distancia de la tónica; nota principal usada en acordes sus2.</td></tr>
+        <tr><td><strong>Séptima Menor (Grado VII)</strong></td><td>Intervalo de séptima utilizado para construir acordes de dominante y acordes sus7.</td></tr>
+        <tr><td><strong>Novena (Grado IX)</strong></td><td>Intervalo situado una octava por encima del segundo grado.</td></tr>
+        <tr><td><strong>Resolución</strong></td><td>El paso de un acorde en tensión (como un sus4) hacia un acorde en reposo (como un acorde mayor).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout ejemplo">
+    <span class="ct">Cierre</span>
+    🎹 ¡Sigue practicando estos patrones en tu piano para dominar el arte de los acordes suspendidos y
+    transformar tus composiciones y arreglos!
+  </div>
+</section>
+
+<!-- ============================ CRÉDITOS ============================ -->
+<section id="creditos" class="section">
+  <div class="hero-wrap" id="heroCreditos"></div>
+
+  <span class="badge">🎬 Créditos del tutorial</span>
+  <h2>Teoría y Técnica de los Acordes Suspendidos en Piano</h2>
+
+  <div class="credit-grid">
+    <div class="credit-item">
+      <span class="k">Créditos</span>
+      <span class="v">Rubén Sbarsky</span>
+    </div>
+    <div class="credit-item">
+      <span class="k">Fecha</span>
+      <span class="v">11/09/2026</span>
+    </div>
+    <div class="credit-item">
+      <span class="k">Hora</span>
+      <span class="v">16:22:15</span>
+    </div>
+    <div class="credit-item">
+      <span class="k">Recurso de origen</span>
+      <span class="v" style="font-size:.86rem">APRENDE A TOCAR LEO MART</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Indicación educativa</h3>
+    <p style="margin-bottom:0">
+      Este tutorial ha sido elaborado con fines exclusivamente <strong>educativos y de divulgación</strong>.
+      Todo el contenido teórico y práctico proviene del recurso audiovisual de referencia indicado en la
+      sección <em>Recursos</em>. Se recomienda practicar de forma constante, progresiva y auditiva,
+      alternando siempre la suspensión con su correspondiente resolución.
+    </p>
+  </div>
+
+  <div class="callout advertencia">
+    <span class="ct">Lema</span>
+    <em>Fiat iustitia, ruat caelum.</em>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+  <p>👨‍💻 Créditos: Rubén Sbarsky</p>
+  <p>📅 FECHA: 11/09/2026</p>
+  <p>Hora: 16:22:15</p>
+  <p class="law">Fiat iustitia, ruat caelum.</p>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ==================== NAVEGACIÓN SPA ==================== */
+  var navBtns = Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
+  var heroCloned = false;
+
+  function cloneSVGToCredits(){
+    if(heroCloned) return;
+    var src = document.querySelector('#heroHome svg');
+    var dst = document.getElementById('heroCreditos');
+    if(!src || !dst) return;
+
+    var clone = src.cloneNode(true);
+
+    /* Renombrar IDs para evitar colisiones */
+    var map = {};
+    var all = clone.querySelectorAll('[id]');
+    Array.prototype.forEach.call(all, function(node){
+      var oldId = node.getAttribute('id');
+      var newId = 'c-' + oldId;
+      map[oldId] = newId;
+      node.setAttribute('id', newId);
+    });
+
+    /* Actualizar referencias url(#...) y href */
+    var refAttrs = ['fill','stroke','marker-end','marker-start','marker-mid','clip-path','mask','filter'];
+    Array.prototype.forEach.call(clone.querySelectorAll('*'), function(node){
+      refAttrs.forEach(function(attr){
+        var v = node.getAttribute(attr);
+        if(v && v.indexOf('url(#') === 0){
+          var id = v.substring(5, v.length - 1);
+          if(map[id]) node.setAttribute(attr, 'url(#' + map[id] + ')');
+        }
+      });
+      var href = node.getAttribute('href') || node.getAttribute('xlink:href');
+      if(href && href.charAt(0) === '#'){
+        var rid = href.substring(1);
+        if(map[rid]){
+          node.setAttribute('href', '#' + map[rid]);
+          if(node.hasAttribute('xlink:href')) node.setAttribute('xlink:href', '#' + map[rid]);
+        }
+      }
+    });
+
+    dst.innerHTML = '';
+    dst.appendChild(clone);
+    heroCloned = true;
+
+    /* Reiniciar animaciones SMIL */
+    try{
+      var svg = dst.querySelector('svg');
+      if(svg && typeof svg.setCurrentTime === 'function'){
+        svg.setCurrentTime(0);
+      }
+    }catch(e){}
+  }
+
+  function showSection(id){
+    var found = false;
+    sections.forEach(function(s){
+      if(s.id === id){ s.classList.add('active'); found = true; }
+      else{ s.classList.remove('active'); }
+    });
+    if(!found) return;
+
+    navBtns.forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-target') === id);
+    });
+
+    if(id === 'creditos'){ cloneSVGToCredits(); }
+
+    window.scrollTo(0,0);
+    updateProgress();
+  }
+
+  navBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      showSection(btn.getAttribute('data-target'));
+    });
+  });
+
+  /* ==================== PROGRESO ==================== */
+  var bar = document.getElementById('progressBar');
+  function updateProgress(){
+    var doc = document.documentElement;
+    var h = doc.scrollHeight - doc.clientHeight;
+    var p = h > 0 ? (doc.scrollTop / h) * 100 : 0;
+    if(p < 0) p = 0;
+    if(p > 100) p = 100;
+    bar.style.width = p.toFixed(2) + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress);
+
+  /* ==================== BOTÓN ARRIBA ==================== */
+  var toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', function(){
+    if(window.scrollY > 380){ toTop.classList.add('show'); }
+    else{ toTop.classList.remove('show'); }
+  }, {passive:true});
+  toTop.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  /* ==================== PIANO INTERACTIVO ==================== */
+  var WHITE_KEYS = [
+    {id:'C4',  label:'C',  oct:'4'},
+    {id:'D4',  label:'D',  oct:'4'},
+    {id:'E4',  label:'E',  oct:'4'},
+    {id:'F4',  label:'F',  oct:'4'},
+    {id:'G4',  label:'G',  oct:'4'},
+    {id:'A4',  label:'A',  oct:'4'},
+    {id:'B4',  label:'B',  oct:'4'},
+    {id:'C5',  label:'C',  oct:'5'},
+    {id:'D5',  label:'D',  oct:'5'}
+  ];
+
+  var BLACK_KEYS = [
+    {id:'C#4', label:'C#',  left:7.67},
+    {id:'D#4', label:'D#',  left:18.78},
+    {id:'F#4', label:'F#',  left:41.00},
+    {id:'G#4', label:'G#',  left:52.11},
+    {id:'A#4', label:'A#',  left:63.22},
+    {id:'C#5', label:'C#',  left:85.44}
+  ];
+
+  var WHITE_W = 100 / WHITE_KEYS.length;
+
+  var CHORDS = [
+    {
+      key:'maj',
+      label:'C(I) Mayor',
+      notes:['C4','E4','G4'],
+      names:'C(I) – E(III) – G(V)',
+      desc:'Tríada mayor tradicional. Sonido definido, alegre y estable. Es el punto de reposo armónico.'
+    },
+    {
+      key:'sus4',
+      label:'C(I) sus4',
+      notes:['C4','F4','G4'],
+      names:'C(I) – F(IV) – G(V)',
+      desc:'La tercera E(III) se elimina y se sustituye por la cuarta F(IV). Sonido ambiguo, flotante, en tensión.'
+    },
+    {
+      key:'sus2',
+      label:'C(I) sus2',
+      notes:['C4','D4','G4'],
+      names:'C(I) – D(II) – G(V)',
+      desc:'La tercera E(III) se elimina y se sustituye por la segunda D(II). Sonido etéreo, abierto y moderno.'
+    },
+    {
+      key:'sus7',
+      label:'C(I) sus7',
+      notes:['C4','F4','G4','A#4'],
+      names:'C(I) – F(IV) – G(V) – Bb(VII)',
+      desc:'Estructura sus4 enriquecida con la séptima menor Bb(VII). Muy utilizada en jazz, pop y música moderna.'
+    },
+    {
+      key:'sus9',
+      label:'C(I) sus9',
+      notes:['C4','G4','D5'],
+      names:'C(I) – G(V) – D(IX)',
+      desc:'La novena D(IX) se coloca en la octava superior. Sonoridad amplia y clara.'
+    },
+    {
+      key:'min',
+      label:'C(I) Menor',
+      notes:['C4','D#4','G4'],
+      names:'C(I) – Eb(III) – G(V)',
+      desc:'Tríada menor. La tercera baja medio tono (Eb) y aporta un carácter melancólico y sombrío.'
+    }
+  ];
+
+  function buildPiano(pianoEl, buttonsEl, infoEl){
+    if(!pianoEl) return;
+
+    /* Teclas blancas */
+    WHITE_KEYS.forEach(function(k, i){
+      var d = document.createElement('div');
+      d.className = 'pkey';
+      d.setAttribute('data-note', k.id);
+      d.style.left = (i * WHITE_W) + '%';
+      d.style.width = WHITE_W + '%';
+      d.textContent = k.label + k.oct;
+      pianoEl.appendChild(d);
+    });
+
+    /* Teclas negras */
+    BLACK_KEYS.forEach(function(k){
+      var d = document.createElement('div');
+      d.className = 'pkey black';
+      d.setAttribute('data-note', k.id);
+      d.style.left = k.left + '%';
+      d.style.width = '6.9%';
+      d.textContent = k.label;
+      pianoEl.appendChild(d);
+    });
+
+    var allKeys = Array.prototype.slice.call(pianoEl.querySelectorAll('.pkey'));
+
+    function clearKeys(){
+      allKeys.forEach(function(k){ k.classList.remove('on'); });
+    }
+
+    function highlight(notes){
+      clearKeys();
+      allKeys.forEach(function(k){
+        var n = k.getAttribute('data-note');
+        if(notes.indexOf(n) !== -1){ k.classList.add('on'); }
+      });
+    }
+
+    function selectChord(ch){
+      highlight(ch.notes);
+      if(infoEl){
+        infoEl.innerHTML = '<span class="cn">' + ch.label + '</span>' +
+          '<span class="notes">' + ch.names + '</span>' +
+          '<p style="margin:8px 0 0;font-size:.85rem;color:#94a3b8">' + ch.desc + '</p>';
+      }
+      if(buttonsEl){
+        Array.prototype.slice.call(buttonsEl.children).forEach(function(b){
+          b.classList.toggle('active', b.getAttribute('data-chord') === ch.key);
+        });
+      }
+    }
+
+    /* Crear botones */
+    if(buttonsEl){
+      CHORDS.forEach(function(ch, idx){
+        var b = document.createElement('button');
+        b.className = 'cbtn' + (idx === 0 ? ' active' : '');
+        b.setAttribute('data-chord', ch.key);
+        b.textContent = ch.label;
+        b.addEventListener('click', function(){ selectChord(ch); });
+        buttonsEl.appendChild(b);
+      });
+    }
+
+    /* Estado inicial */
+    selectChord(CHORDS[0]);
+  }
+
+  /* Montar ambos pianos */
+  buildPiano(
+    document.getElementById('piano'),
+    document.getElementById('chordBtns'),
+    document.getElementById('chordInfo')
+  );
+  buildPiano(
+    document.getElementById('piano2'),
+    document.getElementById('chordBtns2'),
+    document.getElementById('chordInfo2')
+  );
+
+  /* ==================== INICIALIZACIÓN ==================== */
+  updateProgress();
+
+  /* Si la página arranca con hash hacia otra sección, activarla */
+  if(window.location.hash){
+    var targetId = window.location.hash.substring(1);
+    if(document.getElementById(targetId)){
+      showSection(targetId);
+    }
+  }
+
+})();
+</script>
+</body>
+</html>
+```
