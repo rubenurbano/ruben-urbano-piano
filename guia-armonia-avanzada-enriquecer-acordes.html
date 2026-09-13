@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía de Armonía Avanzada: Enriquecer Acordes</title>
+<style>
+  :root{
+    --ink:#1b1917;
+    --ink-2:#3d3831;
+    --muted:#6f675c;
+    --rule:#ddd7cc;
+    --rule-2:#c2b9aa;
+    --paper:#fffefb;
+    --bg:#e7e4dd;
+    --accent:#8b5a2b;
+    --accent-2:#c79a63;
+    --panel:#f7f3ec;
+    --panel-2:#efe9de;
+    --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ -webkit-text-size-adjust: 100%; }
+
+  body{
+    margin: 0;
+    padding: 34px 16px 72px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ---------- Estructura de página ---------- */
+
+  .document{
+    display: block;
+    width: 100%;
+  }
+
+  .page{
+    position: relative;
+    width: 100%;
+    max-width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto 30px;
+    padding: 20mm 20mm 18mm;
+    background: var(--paper);
+    border: 1px solid #e5dfd5;
+    border-radius: 2px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.05), 0 14px 34px rgba(0,0,0,.10);
+    overflow: hidden;
+  }
+
+  /* ---------- Encabezado y pie de página ---------- */
+
+  .running-head{
+    font-family: var(--sans);
+    font-size: .66rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 8px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .running-head .rh-right{
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: .16em;
+  }
+
+  .page-foot{
+    position: absolute;
+    left: 20mm;
+    right: 20mm;
+    bottom: 12mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--sans);
+    font-size: .68rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .page-foot .folio{
+    color: var(--ink-2);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ---------- Portada ---------- */
+
+  .cover{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 40mm;
+    padding-bottom: 30mm;
+  }
+
+  .cover-inner{
+    max-width: 150mm;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .cover-mark{
+    font-family: var(--sans);
+    font-size: .74rem;
+    letter-spacing: .45em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 30px;
+  }
+
+  .cover-ornament{
+    width: 58px;
+    height: 1px;
+    background: var(--accent-2);
+    margin: 0 auto 30px;
+  }
+
+  .cover h1{
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 2.05rem;
+    line-height: 1.25;
+    letter-spacing: .005em;
+    color: var(--ink);
+    margin: 0 0 26px;
+    text-transform: uppercase;
+  }
+
+  .cover-rule{
+    width: 90px;
+    height: 1px;
+    background: var(--rule-2);
+    margin: 0 auto 26px;
+  }
+
+  .cover-sub{
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.02rem;
+    color: var(--ink-2);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .cover-bottom{
+    margin-top: 60px;
+    font-family: var(--sans);
+    font-size: .68rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---------- Títulos ---------- */
+
+  h2.section-title{
+    font-family: var(--sans);
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: .045em;
+    color: var(--ink);
+    margin: 34px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent);
+    position: relative;
+  }
+
+  h2.section-title:first-of-type{ margin-top: 0; }
+
+  h2.section-title::before{
+    content: "";
+    display: block;
+    width: 26px;
+    height: 2px;
+    background: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  h3.sub-title{
+    font-family: var(--sans);
+    font-size: .92rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: var(--ink-2);
+    margin: 24px 0 10px;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent-2);
+  }
+
+  /* ---------- Párrafos y texto ---------- */
+
+  p{
+    margin: 0 0 14px;
+    text-align: justify;
+    hyphens: auto;
+    color: var(--ink);
+  }
+
+  p.lead{
+    font-size: 1.02rem;
+    color: var(--ink-2);
+  }
+
+  strong{ color: var(--ink); font-weight: 700; }
+  em{ color: var(--ink-2); }
+
+  /* ---------- Listas ---------- */
+
+  ul, ol{
+    margin: 0 0 16px;
+    padding-left: 22px;
+  }
+
+  ul li, ol li{
+    margin-bottom: 9px;
+    padding-left: 4px;
+    text-align: justify;
+  }
+
+  ul li::marker{ color: var(--accent); }
+  ol li::marker{ color: var(--accent); font-weight: 700; }
+
+  /* ---------- Tablas ---------- */
+
+  .table-wrap{
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 16px 0 24px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: #fff;
+  }
+
+  table{
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+    font-size: .82rem;
+    line-height: 1.55;
+    color: var(--ink);
+    min-width: 560px;
+  }
+
+  table thead th{
+    background: var(--panel-2);
+    color: var(--ink);
+    font-weight: 700;
+    text-align: left;
+    padding: 11px 13px;
+    border-bottom: 1.5px solid var(--rule-2);
+    letter-spacing: .02em;
+    font-size: .78rem;
+    text-transform: uppercase;
+  }
+
+  table tbody td{
+    padding: 11px 13px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  table tbody tr:last-child td{ border-bottom: none; }
+
+  table tbody tr:nth-child(even){
+    background: #fbf9f5;
+  }
+
+  table tbody td:first-child{
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+
+  /* ---------- Índice ---------- */
+
+  .toc{
+    margin: 4px 0 8px;
+    padding: 0;
+    list-style: none;
+    counter-reset: toc;
+  }
+
+  .toc li{
+    counter-increment: toc;
+    margin: 0;
+    border-bottom: 1px dotted var(--rule);
+  }
+
+  .toc li:last-child{ border-bottom: none; }
+
+  .toc a{
+    display: block;
+    padding: 11px 4px;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: .86rem;
+    letter-spacing: .01em;
+    transition: color .15s ease, padding-left .15s ease;
+  }
+
+  .toc a::before{
+    content: counter(toc, decimal-leading-zero);
+    display: inline-block;
+    width: 34px;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: .78rem;
+    letter-spacing: .06em;
+  }
+
+  .toc a:hover{ color: var(--accent); padding-left: 8px; }
+
+  /* ---------- Avisos / destacados ---------- */
+
+  .notice{
+    background: var(--panel);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: .92rem;
+    color: var(--ink-2);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .notice p:last-child{ margin-bottom: 0; }
+
+  /* ---------- Bloque de reglas finales ---------- */
+
+  .rules{
+    list-style: none;
+    padding: 0;
+    margin: 18px 0 8px;
+    counter-reset: rule;
+  }
+
+  .rules li{
+    counter-increment: rule;
+    position: relative;
+    padding: 14px 16px 14px 58px;
+    margin-bottom: 10px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    font-size: .92rem;
+    text-align: left;
+  }
+
+  .rules li::before{
+    content: counter(rule);
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: .82rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  /* ---------- Bloque de código ---------- */
+
+  pre{
+    background: #f4f1ec;
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent-2);
+    border-radius: 2px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-family: var(--mono);
+    font-size: .82rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin: 14px 0 20px;
+  }
+
+  code{
+    font-family: var(--mono);
+    font-size: .86em;
+    background: #f1ece3;
+    padding: 1px 5px;
+    border-radius: 2px;
+    color: var(--ink-2);
+  }
+
+  pre code{
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  /* ---------- Botón imprimir ---------- */
+
+  .print-btn{
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 50;
+    padding: 11px 20px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    font-family: var(--sans);
+    font-size: .76rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(0,0,0,.22);
+    transition: background .18s ease, transform .18s ease;
+  }
+
+  .print-btn:hover{ background: var(--accent); }
+  .print-btn:active{ transform: translateY(1px); }
+
+  /* ---------- Responsive ---------- */
+
+  @media (max-width: 760px){
+    body{
+      padding: 14px 8px 64px;
+      font-size: 15.5px;
+      line-height: 1.68;
+    }
+
+    .page{
+      min-height: 0;
+      padding: 22px 18px 26px;
+      margin-bottom: 16px;
+      border-radius: 2px;
+      box-shadow: 0 1px 1px rgba(0,0,0,.05), 0 8px 20px rgba(0,0,0,.08);
+    }
+
+    .cover{
+      padding-top: 60px;
+      padding-bottom: 50px;
+    }
+
+    .cover h1{ font-size: 1.5rem; }
+    .cover-sub{ font-size: .96rem; }
+    .cover-mark{ letter-spacing: .3em; }
+
+    .page-foot{
+      position: static;
+      margin-top: 22px;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      font-size: .62rem;
+      letter-spacing: .08em;
+    }
+
+    h2.section-title{ font-size: .96rem; }
+
+    table{ font-size: .78rem; min-width: 520px; }
+
+    .print-btn{
+      right: 12px;
+      bottom: 12px;
+      padding: 10px 16px;
+      font-size: .7rem;
+    }
+
+    .rules li{ padding-left: 52px; }
+  }
+
+  @media (max-width: 420px){
+    .page{ padding: 18px 14px 22px; }
+    .cover h1{ font-size: 1.32rem; }
+    .toc a{ font-size: .82rem; }
+  }
+
+  /* ---------- Impresión ---------- */
+
+  @page{
+    size: A4;
+    margin: 18mm 18mm 16mm;
+  }
+
+  @media print{
+    :root{
+      --paper:#ffffff;
+    }
+
+    html, body{
+      background: #fff !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    body{
+      font-size: 10.8pt;
+      line-height: 1.55;
+      color: #000;
+    }
+
+    .print-btn{ display: none !important; }
+
+    .page{
+      width: 100%;
+      max-width: none;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+      border: none !important;
+      border-radius: 0;
+      box-shadow: none !important;
+      background: #fff;
+      page-break-after: always;
+      break-after: page;
+      overflow: visible;
+    }
+
+    .page:last-child{
+      page-break-after: auto;
+      break-after: auto;
+    }
+
+    .cover{
+      padding-top: 55mm;
+      padding-bottom: 30mm;
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .cover h1{ font-size: 20pt; }
+
+    .page-foot{
+      position: static;
+      margin-top: 14mm;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      font-size: 7.5pt;
+      letter-spacing: .08em;
+    }
+
+    .running-head{
+      font-size: 7pt;
+      margin-bottom: 8mm;
+    }
+
+    h2.section-title{
+      font-size: 11pt;
+      margin-top: 8mm;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    h3.sub-title{
+      font-size: 10pt;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    p, li{
+      orphans: 3;
+      widows: 3;
+      text-align: left;
+    }
+
+    .table-wrap{
+      overflow: visible;
+      border: 1px solid #cfc7b8;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      margin: 4mm 0 6mm;
+    }
+
+    table{
+      font-size: 8.6pt;
+      min-width: 0;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    table thead th{
+      background: #efe9de !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    table tbody tr:nth-child(even){
+      background: #faf8f4 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .notice,
+    .rules li{
+      background: #f7f3ec !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .rules li::before{
+      background: #8b5a2b !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    pre{
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .toc a{ padding: 6px 2px; }
+    .toc li{ page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" type="button" onclick="window.print()">Imprimir / Guardar PDF</button>
+
+<main class="document">
+
+  <!-- ============ PORTADA ============ -->
+  <article class="page cover" id="portada">
+    <div class="cover-inner">
+      <div class="cover-mark">Guía</div>
+      <div class="cover-ornament"></div>
+      <h1>Guía de Armonía Avanzada: Enriquecer Acordes</h1>
+      <div class="cover-rule"></div>
+      <p class="cover-sub">Guía para Principiantes | Sistema Americano de Notas A, B, C, D, E, F, G</p>
+      <div class="cover-bottom">Sistema Americano A, B, C, D, E, F, G</div>
+    </div>
+  </article>
+
+  <!-- ============ ÍNDICE + SECCIONES 1 Y 2 ============ -->
+  <article class="page" id="indice">
+
+    <header class="running-head">
+      <span>Guía de Armonía Avanzada y Enriquecimiento de Acordes</span>
+      <span class="rh-right">Técnica de Piano &amp; Voicings</span>
+    </header>
+
+    <h2 class="section-title">Índice</h2>
+
+    <nav aria-label="Índice de contenidos">
+      <ol class="toc">
+        <li><a href="#s1">Introducción: ¿Por qué enriquecer un acorde?</a></li>
+        <li><a href="#s2">La jerarquía de las notas: «menos es más»</a></li>
+        <li><a href="#s3">Las extensiones naturales (el color armónico)</a></li>
+        <li><a href="#s4">Tensiones alteradas (el motor del movimiento)</a></li>
+        <li><a href="#s5">Técnica de voicing al piano (distribución de manos)</a></li>
+        <li><a href="#s6">Laboratorio práctico: evolución de progresión II-V-I en C(I) Mayor</a></li>
+        <li><a href="#resumen">Resumen: las 5 reglas de oro para el día a día al piano</a></li>
+      </ol>
+    </nav>
+
+    <h2 class="section-title" id="s1">1. Introducción: ¿Por qué enriquecer un acorde?</h2>
+
+    <p class="lead">Tocar solo acordes básicos de tres notas (tríadas: fundamental, 3ª y 5ª) suele sonar rígido, escolar y plano en el piano. Enriquecer un acorde no significa añadir teclas al azar, sino entender la función acústica de cada nota: qué notas forman el esqueleto indispensable, cuáles sobran y cuáles aportan color y movimiento.</p>
+
+    <h2 class="section-title" id="s2">2. La jerarquía de las notas: «menos es más»</h2>
+
+    <p>Para entender qué notas enriquecen un acorde, primero hay que ordenarlas por su grado de importancia acústica y armónica:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Jerarquía</th>
+            <th>Nota y Grado</th>
+            <th>Función en el Acorde</th>
+            <th>Regla Práctica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. Fundamental</td>
+            <td>1 (Tónica)</td>
+            <td>Define el nombre del acorde y el centro tonal. Asumida por el bajo/mano izquierda.</td>
+            <td>Indispensable en el bajo</td>
+          </tr>
+          <tr>
+            <td>2. Tonos Guía</td>
+            <td>3ª y 7ª</td>
+            <td>El corazón del acorde. La 3ª define el modo (mayor/menor). La 7ª define la familia armónica.</td>
+            <td>Imprescindibles en M.D./M.I.</td>
+          </tr>
+          <tr>
+            <td>3. Quinta Justa Omite la Quinta Justa (5ª): las extensiones de color.</td>
+            <td>5ª justa ¡Primera Regla de Oro del Piano Moderno!</td>
+            <td>Solo refuerza estabilidad acústica. No define la personalidad del acorde. Al quitarla, limpias el registro medio, evitas que el sonido quede saturado o «embarrado», y dejas sitio libre para Figura 1: Porcentaje de relevancia acústica y presencia en voicings modernos.</td>
+            <td>¡OMITIR! Prescindible</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="page-foot">
+      <span>Guía de Armonía Avanzada — Sistema Americano A, B, C, D, E, F, G</span>
+      <span class="folio">Página 1 de 3</span>
+    </footer>
+
+  </article>
+
+  <!-- ============ SECCIONES 3 Y 4 ============ -->
+  <article class="page" id="extensiones">
+
+    <header class="running-head">
+      <span>Guía de Armonía Avanzada y Enriquecimiento de Acordes</span>
+      <span class="rh-right">Técnica de Piano &amp; Voicings</span>
+    </header>
+
+    <h2 class="section-title" id="s3">3. Las extensiones naturales (el color armónico)</h2>
+
+    <p>Las extensiones son las notas de la escala que van más allá de la séptima apilando terceras (9ª, 11ª, 13ª):</p>
+
+    <p><strong>La Novena (9ª / equivalente a la 2ª una octava arriba):</strong> La extensión más noble y versátil. Aporta dulzura, brillo y aire a cualquier • acorde (mayor, menor o dominante). Ejemplo en C(I) Mayor: la nota D(II). Transforma Cmaj7(I) en Cmaj9(I), o Dm7(II) en Dm9(II).</p>
+
+    <h3 class="sub-title">La Oncena (11ª / equivalente a la 4ª una octava arriba):</h3>
+
+    <ul>
+      <li>En acordes <em>menores</em> (m11): Suena moderna, abierta y limpia (sabor dórico). Ejemplo en Dm7(II): nota G(V).</li>
+      <li>En acordes <em>mayores</em>: ¡Peligro! La 11ª natural (nota F(IV) en C(I) Mayor) choca a distancia de semitono con la 3ª mayor (nota E(III)), creando una disonancia áspera («nota a evitar»).</li>
+      <li><em>Solución Avanzada:</em> Elevarla medio tono a #11 (nota F#(IV#) en C(I) Mayor). Produce el color del Modo Lidio: luminoso, cinematográfico y sofisticado. <strong>La Trecena (13ª / equivalente a la 6ª una octava arriba):</strong> Aporta elegancia y amplitud. Para que suene como una verdadera 13ª • y no como una simple 6ª, el acorde debe contener la 7ª. Ejemplo en Cmaj7(I): nota A(VI) -> Cmaj13(I).</li>
+    </ul>
+
+    <h2 class="section-title" id="s4">4. Tensiones alteradas (el motor del movimiento)</h2>
+
+    <p>Las tensiones alteradas se aplican principalmente a los <strong>Acordes Dominantes (V7)</strong>, cuyo papel es generar tensión para resolver en el acorde de tónica. Las cuatro alteraciones principales son: b9 (2ª menor), #9 (2ª aumentada), #11 (4ª aumentada) y b13 (6ª menor).</p>
+
+    <h3 class="sub-title">Ejemplo Práctico de Resolución Cromática: G7(V) resolviendo a Cmaj7(I)</h3>
+
+    <ul>
+      <li><strong>G7(V) básico:</strong> G(V) - B(VII) - D(II) - F(IV).</li>
+      <li><strong>G7(b9, b13)(V) alterado:</strong> G(V) [bajo] + B(VII), F(IV) [tonos guía] + Ab(VIb) [b9] + Eb(IIIb) [b13].</li>
+      <li><strong>Resolución a Cmaj7(I):</strong> La nota Ab(VIb) (b9) cae medio tono a G(V). La nota Eb(IIIb) (b13) cae medio tono a D(II) o E(III). ¡La resolución suena orgánica y llena de color!</li>
+    </ul>
+
+    <footer class="page-foot">
+      <span>Sistema Americano con Grados de la Escala en Paréntesis</span>
+      <span class="folio">Página 2 de 3</span>
+    </footer>
+
+  </article>
+
+  <!-- ============ SECCIONES 5 Y 6 ============ -->
+  <article class="page" id="voicing">
+
+    <header class="running-head">
+      <span>Guía de Armonía Avanzada y Enriquecimiento de Acordes</span>
+      <span class="rh-right">Técnica de Piano &amp; Voicings</span>
+    </header>
+
+    <h2 class="section-title" id="s5">5. Técnica de voicing al piano (distribución de manos)</h2>
+
+    <p>No toques todas las notas apretadas en una sola mano. Aplica una división estratégica entre ambas manos:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Mano</th>
+            <th>Registro Recomendado</th>
+            <th>Notas a Incluir</th>
+            <th>Propósito Sonoro</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mano Izquierda (M.I.)</td>
+            <td>Entre C2(I) y F3(IV)</td>
+            <td>Tónica (1) + Tono Guía (3ª o 7ª)</td>
+            <td>Cimientos firmes sin enturbiar el registro grave.</td>
+          </tr>
+          <tr>
+            <td>Mano Derecha (M.D.)</td>
+            <td>Registro Medio/Agudo</td>
+            <td>Tono Guía restante + Extensiones (9ª, #11, 13ª)</td>
+            <td>Aporta el color, la sofisticación y la expresión armónica.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title" id="s6">6. Laboratorio práctico: evolución de progresión II-V - I en C(I) Mayor</h2>
+
+    <p>Transformación paso a paso de la progresión más importante de la música moderna: Dm(II) -> G(V) -> C(I).</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nivel / Estilo</th>
+            <th>Acorde Dm(II)</th>
+            <th>Acorde G(V)</th>
+            <th>Acorde C(I)</th>
+            <th>Resultado Sonoro</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Nivel 1: Tríadas (Básico)</td>
+            <td>Dm(II): M.I.: D(II) M.D.: F(IV)-A(VI)-D(II)</td>
+            <td>G(V): M.I.: G(V) M.D.: G(V)-B(VII)-D(II)</td>
+            <td>C(I): M.I.: C(I) M.D.: E(III)-G(V)-C(I)</td>
+            <td>Funciona pero suena rígido y escolar.</td>
+          </tr>
+          <tr>
+            <td>Nivel 2: 7ªs y 9ªs (Pop / Bossa)</td>
+            <td>Dm9(II): M.I.: D(II) M.D.: C(I)(7ª)-E(III)(9ª)-F(IV)(3ª)-A(VI)(5ª)</td>
+            <td>G9(V): M.I.: G(V) M.D.: B(VII)(3ª)-F(IV)(7ª)- A(VI)(9ª)</td>
+            <td>Cmaj9(I): M.I.: C(I) M.D.: B(VII)(7ª)-D(II)(9ª)-E(III)(3ª)-G(V)(5ª)</td>
+            <td>Sonido cálido, amplio y profesional.</td>
+          </tr>
+          <tr>
+            <td>Nivel 3: Sin 5ª y Lidio (Jazz / Neo-Soul)</td>
+            <td>Dm11(II): M.I.: D(II)-C(I) M.D.: F(IV)-G(V)(11ª)-C(I)</td>
+            <td>G13(V): M.I.: G(V)-F(IV) M.D.: B(VII)-E(III)(13ª)-A(VI)(9ª)</td>
+            <td>Cmaj7(#11)(I): M.I.: C(I)-B(VII) M.D.: E(III)-F#(IV#)(#11)-B(VII)-D(II)(9ª)</td>
+            <td>Cero saturación, armonía abierta y moderna.</td>
+          </tr>
+          <tr>
+            <td>Nivel 4: Sustitución Tritonal (Avanzado / Concierto)</td>
+            <td>Dm9(II): M.I.: D(II) M.D.: F(IV)-A(VI)-C(I)-E(III) 7. RECURSOS ARMÓNICOS ESPECIALES</td>
+            <td>Db7(#11) [Sust. de G7]: M.I.: Db(IIb) M.D.: F(IV)-B(VII)-Eb(IIIb) (9ª)-G(V)(#11)</td>
+            <td>Cmaj13(I): M.I.: C(I) M.D.: E(III)-A(VI)(13ª)-B(VII)-D(II)(9ª)</td>
+            <td>Bajo cromático fluido (D->Db->C) y sonoridad sofisticada.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="page-foot">
+      <span>Sistema Americano con Grados de la Escala en Paréntesis</span>
+      <span class="folio">Página 2 de 3</span>
+    </footer>
+
+  </article>
+
+  <!-- ============ RECURSOS ESPECIALES + RESUMEN ============ -->
+  <article class="page" id="recursos">
+
+    <header class="running-head">
+      <span>Guía de Armonía Avanzada y Enriquecimiento de Acordes</span>
+      <span class="rh-right">Técnica de Piano &amp; Voicings</span>
+    </header>
+
+    <ol>
+      <li><strong>Acordes Disminuidos de Paso (Aproximación Cromática):</strong> Unen dos acordes separados por un tono metiendo un disminuido en el semitono intermedio. Ejemplo: Cmaj7(I) -> C#dim7(I#) -> Dm7(II). Contenido de C#dim7(I#): C#(I#) - E(III) - G(V) - Bb(VIIb).</li>
+      <li><strong>Intercambio Modal (El IV menor):</strong> En tonalidad mayor, se toma prestado el cuarto grado menor de la escala menor. Ejemplo en C(I) Mayor: antes de resolver a C(I), toca Fm6(IVm): F(IV) - Ab(VIb) - C(I) - D(II). Aporta un tinte nostálgico, cinematográfico y conmovedor.</li>
+      <li><strong>Suspensiones (sus4 y sus2):</strong> Retrasa la aparición de la 3ª sustituyéndola momentáneamente por la 4ª o 2ª. Crea una respiración rítmica antes de la estabilidad.</li>
+    </ol>
+
+    <h2 class="section-title" id="resumen">Resumen: las 5 reglas de oro para el día a día al piano</h2>
+
+    <ol class="rules">
+      <li><strong>Deshazte de la Quinta Justa (5ª):</strong> Si no está alterada (b5 o #5), ¡no la necesitas!</li>
+      <li><strong>Los Tonos Guía mandan:</strong> Ubica siempre la 3ª y la 7ª antes de buscar cualquier adorno.</li>
+      <li><strong>En acordes mayores, nunca uses la 11ª natural:</strong> Cámbiala siempre por la #11 (Modo Lidio).</li>
+      <li><strong>La Novena (9ª) natural cabe casi en cualquier parte:</strong> Úsala sin miedo en mayores y menores.</li>
+      <li><strong>Reserva las alteraciones (b9, #9, #11, b13) para los dominantes (V7):</strong> Son la gasolina de la resolución emocionante.</li>
+    </ol>
+
+    <footer class="page-foot">
+      <span>Sistema Americano con Grados de la Escala en Paréntesis</span>
+      <span class="folio">Página 3 de 3</span>
+    </footer>
+
+  </article>
+
+</main>
+
+</body>
+</html>
