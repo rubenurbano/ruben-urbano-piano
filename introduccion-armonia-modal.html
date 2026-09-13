@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Introduccion-A-la-Armonia-Modal-MOL-Teoria-Musical.pdf by Rubén Sbarsky</title>
+<style>
+  :root{
+    --bg:#0a0e1a;
+    --card:#0f172a;
+    --border:#1e3a5f;
+    --accent:#00d4ff;
+    --green:#22c55e;
+    --amber:#f59e0b;
+    --red:#ef4444;
+    --purple:#a855f7;
+    --text:#e2e8f0;
+    --text-dim:#94a3b8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  /* Progress bar */
+  #progress-bar{
+    position:fixed; top:0; left:0; height:4px; width:0%;
+    background:linear-gradient(90deg, var(--accent), var(--purple));
+    z-index:1000; transition:width .1s ease-out;
+  }
+
+  /* Navbar */
+  nav{
+    position:sticky; top:4px; z-index:900;
+    background:rgba(10,14,26,0.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:6px;
+    padding:10px 14px; overflow-x:auto; white-space:nowrap;
+  }
+  nav::-webkit-scrollbar{height:5px;}
+  nav::-webkit-scrollbar-thumb{background:var(--border); border-radius:4px;}
+  .home-btn{
+    color:var(--accent); text-decoration:none; font-size:.8rem; font-weight:600;
+    border:1px solid var(--border); border-radius:8px; padding:8px 12px;
+    background:#0d1526; flex-shrink:0;
+  }
+  .nav-btn{
+    background:#0d1526; color:var(--text-dim); border:1px solid var(--border);
+    border-radius:8px; padding:8px 14px; font-size:.82rem; cursor:pointer;
+    flex-shrink:0; transition:all .2s;
+  }
+  .nav-btn:hover{color:var(--text); border-color:var(--accent);}
+  .nav-btn.active{color:var(--bg); background:var(--accent); border-color:var(--accent); font-weight:700;}
+
+  main{max-width:920px; margin:0 auto; padding:24px 18px 90px;}
+  section{display:none; animation:fadeIn .35s ease;}
+  section.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+  h1{font-size:1.9rem; margin-bottom:6px; color:#fff;}
+  h2{font-size:1.4rem; margin:26px 0 12px; color:var(--accent); border-left:4px solid var(--accent); padding-left:12px;}
+  h3{font-size:1.1rem; margin:18px 0 8px; color:#fff;}
+  p{margin-bottom:12px; color:var(--text);}
+  .subtitle{color:var(--text-dim); font-size:1.05rem; margin-bottom:18px;}
+
+  /* Badge */
+  .badge{
+    display:inline-block; background:rgba(0,212,255,.12); color:var(--accent);
+    border:1px solid var(--accent); border-radius:20px; padding:5px 14px;
+    font-size:.72rem; font-weight:700; letter-spacing:1px; text-transform:uppercase;
+    margin-bottom:16px;
+  }
+
+  /* Card */
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:18px; margin-bottom:16px;
+  }
+
+  /* Quote */
+  .quote{
+    border-left:4px solid var(--purple); background:rgba(168,85,247,.07);
+    padding:16px 18px; border-radius:0 10px 10px 0; font-style:italic;
+    color:#f1f5f9; margin:20px 0;
+  }
+
+  /* Metrics */
+  .metrics{display:grid; grid-template-columns:repeat(auto-fit, minmax(120px,1fr)); gap:12px; margin:20px 0;}
+  .metric{background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px; text-align:center;}
+  .metric .num{font-size:1.5rem; font-weight:800; color:var(--accent);}
+  .metric .lbl{font-size:.72rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px;}
+
+  /* SVG wrap */
+  .svg-wrap{
+    width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden;
+    border:1px solid var(--border); background:#060911; margin:18px 0;
+  }
+  .svg-wrap svg{width:100%; height:100%; display:block;}
+
+  /* Tables */
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:.88rem;}
+  th, td{border:1px solid var(--border); padding:8px 10px; text-align:center;}
+  th{background:#101c33; color:var(--accent);}
+  td{background:#0c1424;}
+  .tbl-scroll{overflow-x:auto; border-radius:8px;}
+
+  /* Callouts */
+  .callout{border-radius:10px; padding:14px 16px; margin:16px 0; border-left:5px solid; }
+  .callout .tag{font-weight:800; font-size:.72rem; letter-spacing:1px; display:block; margin-bottom:6px; text-transform:uppercase;}
+  .callout-info{border-color:var(--accent); background:rgba(0,212,255,.07);}
+  .callout-info .tag{color:var(--accent);}
+  .callout-example{border-color:var(--green); background:rgba(34,197,94,.07);}
+  .callout-example .tag{color:var(--green);}
+  .callout-warning{border-color:var(--amber); background:rgba(245,158,11,.07);}
+  .callout-warning .tag{color:var(--amber);}
+  .callout-error{border-color:var(--red); background:rgba(239,68,68,.07);}
+  .callout-error .tag{color:var(--red);}
+
+  ul, ol{margin:10px 0 14px 22px;}
+  li{margin-bottom:6px;}
+  code, .mono{font-family:'Consolas', monospace; background:#101c33; padding:2px 7px; border-radius:5px; color:var(--accent); font-size:.9em;}
+
+  /* Accordion */
+  .accordion-item{border:1px solid var(--border); border-radius:10px; margin-bottom:10px; overflow:hidden; background:var(--card);}
+  .accordion-head{padding:14px 16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-weight:700; color:#fff;}
+  .accordion-head .arrow{transition:transform .25s; color:var(--accent);}
+  .accordion-item.open .arrow{transform:rotate(90deg);}
+  .accordion-body{max-height:0; overflow:hidden; transition:max-height .3s ease; padding:0 16px;}
+  .accordion-item.open .accordion-body{max-height:800px; padding:0 16px 16px;}
+
+  /* Mode brightness bar */
+  .brightness-scale{
+    display:flex; border-radius:10px; overflow:hidden; margin:16px 0; border:1px solid var(--border);
+  }
+  .brightness-scale div{flex:1; padding:14px 6px; text-align:center; font-size:.72rem; font-weight:700; color:#0a0e1a;}
+
+  /* Back to top */
+  #back-top{
+    position:fixed; bottom:22px; right:18px; width:46px; height:46px; border-radius:50%;
+    background:var(--accent); color:#04121a; border:none; font-size:1.2rem; cursor:pointer;
+    display:none; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,212,255,.4);
+    z-index:800;
+  }
+  #back-top.show{display:flex;}
+
+  footer{
+    text-align:center; padding:30px 18px 60px; color:var(--text-dim); font-size:.8rem;
+    border-top:1px solid var(--border); margin-top:40px;
+  }
+  footer p{margin-bottom:6px;}
+  .footer-credit{color:var(--accent); font-weight:700;}
+
+  .credits-box{text-align:center; padding:20px 0;}
+  .credits-box h2{border:none; padding:0;}
+  .fiat{font-style:italic; color:var(--purple); margin-top:20px; font-size:.95rem;}
+
+  @media (max-width:480px){
+    h1{font-size:1.5rem;}
+    h2{font-size:1.2rem;}
+    .nav-btn{padding:7px 10px; font-size:.75rem;}
+    table{font-size:.78rem;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav>
+  <a class="home-btn" href="https://rubenurbano.github.io/">← Inicio</a>
+  <button class="nav-btn" data-target="home">Home</button>
+  <button class="nav-btn" data-target="intro">Introducción</button>
+  <button class="nav-btn" data-target="que-son">¿Qué son los modos?</button>
+  <button class="nav-btn" data-target="construccion">Construcción</button>
+  <button class="nav-btn" data-target="relativos">Relativos / Paralelos</button>
+  <button class="nav-btn" data-target="mayores-menores">Mayores y menores</button>
+  <button class="nav-btn" data-target="notacion">Notación</button>
+  <button class="nav-btn" data-target="formula">Fórmula interválica</button>
+  <button class="nav-btn" data-target="luz-oscuridad">Luz y oscuridad</button>
+  <button class="nav-btn" data-target="nota-caracteristica">Nota característica</button>
+  <button class="nav-btn" data-target="tonal-modal">Tonal vs Modal</button>
+  <button class="nav-btn" data-target="conclusiones">Conclusiones</button>
+  <button class="nav-btn" data-target="creditos">Créditos</button>
+</nav>
+
+<main>
+
+  <!-- HOME -->
+  <section id="home" class="active">
+    <span class="badge">Recurso gratuito · Teoría musical</span>
+    <h1>Introducción a la Armonía Modal</h1>
+    <p class="subtitle">Comprendé cómo se construyen y se relacionan los modos, qué los diferencia y cómo empezar a reconocer su sonoridad.</p>
+
+    <div class="svg-wrap" id="svg-home"></div>
+
+    <div class="quote">"Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."</div>
+
+    <p>Este material recorre las bases necesarias para ordenar el sistema modal: cómo se construyen los siete modos a partir de la escala mayor, qué relaciones existen entre ellos, y qué elementos determinan la sonoridad particular de cada uno.</p>
+
+    <div class="metrics">
+      <div class="metric"><div class="num">7</div><div class="lbl">Modos</div></div>
+      <div class="metric"><div class="num">3</div><div class="lbl">Modos mayores</div></div>
+      <div class="metric"><div class="num">4</div><div class="lbl">Modos menores</div></div>
+      <div class="metric"><div class="num">2</div><div class="lbl">Tipos de relación</div></div>
+    </div>
+
+    <div class="card">
+      <p><strong>Fecha:</strong> 13/09/2026 &nbsp;|&nbsp; <strong>Hora:</strong> 05:22</p>
+      <p>AUTOR: RUBÉN SBARSKY</p>
+    </div>
+  </section>
+
+  <!-- INTRODUCCIÓN -->
+  <section id="intro">
+    <h2>Introducción</h2>
+    <p>Este recurso es una introducción a la armonía modal. La idea no es desarrollar en profundidad cada uno de los modos, sino dar una base clara para comprender cómo funciona este sistema y cómo se diferencia de la lógica tonal mayor-menor.</p>
+    <p>La armonía modal suele abordarse de manera fragmentada o como una simple colección de escalas. Sin embargo, para entenderla realmente es necesario observar cómo se construyen los modos, qué relaciones existen entre ellos y qué elementos determinan su sonoridad particular.</p>
+    <p>Comprender estas relaciones permite dejar de pensar cada modo como una fórmula aislada y empezar a verlos como parte de un mismo sistema. A partir de ahí, conceptos como modos relativos y paralelos, modos mayores y menores, notas características y centro modal empiezan a tener mucho más sentido.</p>
+    <p>A lo largo de este material se recorren esos conceptos fundamentales para poder ordenar el sistema modal, reconocer sus principales características y tener una primera referencia clara de cómo se organiza y cómo puede aparecer en la música.</p>
+  </section>
+
+  <!-- QUE SON LOS MODOS -->
+  <section id="que-son">
+    <h2>¿Qué son los modos?</h2>
+    <p>Los modos son escalas que forman parte de un sistema musical que llamamos <strong>sistema modal</strong>, así como también existen el sistema tonal y el atonal, desarrollados en distintos momentos de la historia de la música.</p>
+    <p>Actualmente solemos estudiar los modos a partir de la escala mayor, tomando cada uno de sus grados como punto de partida. Sin embargo, históricamente la música modal es anterior al sistema tonal. Los modos que utilizamos hoy tienen antecedentes en tradiciones antiguas y medievales, aunque no son exactamente las mismas escalas que se utilizaban en la antigua Grecia.</p>
+    <p>Pensarlos a partir de la escala mayor es, principalmente, una forma práctica y muy eficiente de comprender cómo se relacionan entre sí. De manera similar a como obtenemos una escala menor relativa a partir de una escala mayor, podemos comenzar desde cada uno de sus siete grados y reorganizar las mismas notas.</p>
+    <p>De esta manera obtenemos siete escalas diferentes. Cada una posee una estructura interválica propia, determinada por la ubicación de sus cinco tonos y dos semitonos, y esa estructura genera características melódicas, armónicas y sonoras particulares.</p>
+    <div class="callout callout-info">
+      <span class="tag">Info</span>
+      Los siete modos que estudiaremos son: <strong>Jónico(I), Dórico(II), Frigio(III), Lidio(IV), Mixolidio(V), Eólico(VI), Locrio(VII)</strong>.
+    </div>
+    <p>Este conjunto amplía considerablemente las posibilidades que conocemos desde el sistema tonal mayor-menor y nos permite trabajar con otros tipos de relaciones melódicas, armónicas y sonoras.</p>
+  </section>
+
+  <!-- CONSTRUCCIÓN -->
+  <section id="construccion">
+    <h2>Construcción de los modos</h2>
+    <p>Como vimos anteriormente, una de las formas más prácticas de comprender cómo se construyen los modos es organizar las notas de una escala mayor partiendo desde cada uno de sus grados. De esta manera obtenemos siete escalas diferentes, cada una con una nueva tónica y una estructura interválica propia.</p>
+    <p>Si tomamos como ejemplo la escala de <strong>C mayor</strong> y comenzamos sucesivamente desde cada uno de sus siete grados, obtenemos los siguientes modos:</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>Modo</th><th>Grado</th><th colspan="8">Notas (sistema americano)</th></tr>
+      <tr><td><strong>Jónico</strong></td><td>C(I)</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>A</td><td>B</td><td>C</td></tr>
+      <tr><td><strong>Dórico</strong></td><td>D(II)</td><td>D</td><td>E</td><td>F</td><td>G</td><td>A</td><td>B</td><td>C</td><td>D</td></tr>
+      <tr><td><strong>Frigio</strong></td><td>E(III)</td><td>E</td><td>F</td><td>G</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td></tr>
+      <tr><td><strong>Lidio</strong></td><td>F(IV)</td><td>F</td><td>G</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td></tr>
+      <tr><td><strong>Mixolidio</strong></td><td>G(V)</td><td>G</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td></tr>
+      <tr><td><strong>Eólico</strong></td><td>A(VI)</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>A</td></tr>
+      <tr><td><strong>Locrio</strong></td><td>B(VII)</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>A</td><td>B</td></tr>
+    </table>
+    </div>
+    <p>Cada una posee una estructura interválica propia, determinada por la ubicación de sus cinco tonos y dos semitonos, y esa estructura genera características melódicas, armónicas y sonoras particulares.</p>
+  </section>
+
+  <!-- RELATIVOS Y PARALELOS -->
+  <section id="relativos">
+    <h2>Escalas / Modos relativos</h2>
+    <p>Una escala o modo relativo es aquel que comparte todas sus notas con otra escala o modo, pero tiene una tónica diferente.</p>
+    <p>Vemos esta relación entre C Jónico y A Eólico. Ambos utilizan exactamente las mismas notas, pero están organizadas a partir de una tónica distinta.</p>
+    <p>En C Jónico, la nota A ocupa el VI grado. Si reorganizamos esas mismas notas comenzando desde A, esta pasa a convertirse en el I grado o tónica y obtenemos A Eólico. De esta manera, dos modos pueden compartir el mismo material sonoro y, sin embargo, generar una organización y una sonoridad diferentes debido al cambio de centro o tónica.</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th></th><th colspan="8">Notas</th><th>Grado clave</th></tr>
+      <tr><td>Escala mayor de C: Modo Jónico</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>A</td><td>B</td><td>C</td><td>A = VI</td></tr>
+      <tr><td>Escala menor natural de A: Modo Eólico</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>A</td><td>A = I</td></tr>
+    </table>
+    </div>
+    <div class="callout callout-example">
+      <span class="tag">Ejemplo</span>
+      Ejemplo de escalas relativas mayores y menores, aplicado también a los modos: <span class="mono">MISMAS NOTAS ↔ DISTINTA TÓNICA</span>.
+    </div>
+
+    <h2>Escalas / Modos paralelos</h2>
+    <p>Una escala o modo paralelo es aquel que comparte la misma tónica con otra escala o modo, pero utiliza distintas notas. A diferencia de los modos relativos, que comparten las mismas notas pero parten desde centros diferentes, los modos paralelos parten siempre de una misma tónica y modifican su estructura interválica.</p>
+    <p>Por ejemplo, podemos comparar C Jónico y C Eólico. Ambos tienen a C como tónica, pero varias de sus notas son diferentes. Esa diferencia en la estructura es la que genera una sonoridad propia en cada modo. Pensar los modos de forma paralela resulta especialmente útil porque nos permite comparar directamente qué grados cambian respecto de una misma tónica y reconocer con mayor claridad las características de cada uno.</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th></th><th colspan="8">Notas</th></tr>
+      <tr><td>Escala mayor de C: Modo Jónico</td><td>C</td><td>D</td><td>E</td><td>F</td><td>G</td><td>A</td><td>B</td><td>C</td></tr>
+      <tr><td>Escala menor natural de C: Modo Eólico</td><td>C</td><td>D</td><td>Eb</td><td>F</td><td>G</td><td>Ab</td><td>Bb</td><td>C</td></tr>
+    </table>
+    </div>
+    <div class="callout callout-example">
+      <span class="tag">Ejemplo</span>
+      Ejemplo de escalas paralelas mayores y menores, aplicado también a los modos: <span class="mono">MISMA TÓNICA ↔ DISTINTAS NOTAS</span>.
+    </div>
+
+    <p>Podemos decir, entonces, que entre los modos podemos encontrar dos tipos de relación, al igual que en la tonalidad mayor y menor: relativos y paralelos. En la siguiente tabla vemos los modos relativos y paralelos a C.</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>Modos paralelos ↓ / Modos relativos →</th><th>C Jónico</th><th>D Dórico</th><th>E Frigio</th><th>F Lidio</th><th>G Mixolidio</th><th>A Eólico</th><th>B Locrio</th></tr>
+      <tr><td>C Dórico</td><td colspan="7"></td></tr>
+      <tr><td>C Frigio</td><td colspan="7"></td></tr>
+      <tr><td>C Lidio</td><td colspan="7"></td></tr>
+      <tr><td>C Mixolidio</td><td colspan="7"></td></tr>
+      <tr><td>C Eólico</td><td colspan="7"></td></tr>
+      <tr><td>C Locrio</td><td colspan="7"></td></tr>
+    </table>
+    </div>
+    <p>Es importante comprender que, a su vez, cada modo es relativo y paralelo a otros modos. Todo depende de nuestro punto de partida: la tónica o eje central en el que estemos situados.</p>
+  </section>
+
+  <!-- MAYORES Y MENORES -->
+  <section id="mayores-menores">
+    <h2>Modos mayores y menores</h2>
+    <p>Al igual que sucede en la tonalidad con las escalas mayores y menores, según cómo sea la tercera que se forma a partir de la tónica de cada modo, tendremos modos mayores y modos menores.</p>
+    <p>Al analizar los siete modos, encontramos tres modos mayores y cuatro modos menores:</p>
+    <div style="display:flex; gap:18px; flex-wrap:wrap;">
+      <div class="card" style="flex:1; min-width:220px;">
+        <h3 style="color:var(--green);">Modos mayores</h3>
+        <ul><li>Jónico</li><li>Lidio</li><li>Mixolidio</li></ul>
+      </div>
+      <div class="card" style="flex:1; min-width:220px;">
+        <h3 style="color:var(--amber);">Modos menores</h3>
+        <ul><li>Dórico</li><li>Frigio</li><li>Eólico</li><li>Locrio</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTACIÓN -->
+  <section id="notacion">
+    <h2>Notación</h2>
+    <p>Existen distintas formas de notación interválica y armónica que provienen de diferentes enfoques. Por un lado, encontramos la utilizada en la música académica o clásica y, por otro, la que se utiliza habitualmente en la armonía moderna, proveniente principalmente del lenguaje del jazz y aplicada actualmente a gran parte de la música popular.</p>
+    <p>En este recurso se utiliza este último sistema. Es importante saber que esta notación no se emplea únicamente para los modos, sino también para representar todo tipo de escalas y acordes. Se utiliza de la siguiente manera:</p>
+    <div class="callout callout-info">
+      <span class="tag">Info</span>
+      <ol>
+        <li><strong>Un número:</strong> 1, 2, 3, 4, 5, 6, 7 siempre indicará un intervalo de una escala o acorde.</li>
+        <li><strong>Un número romano:</strong> I, II, III, IV, V, VI, VII siempre indicará un acorde construido sobre un grado de una escala que tendrá su tónica, el I.</li>
+      </ol>
+    </div>
+    <p>Como punto de partida, tanto para la notación de los intervalos como para la de los acordes, utilizaremos la escala mayor o modo Jónico. Sus intervalos con respecto a la tónica son mayores o justos, por lo que funciona como referencia para comprender posteriormente las modificaciones que presentan los demás modos.</p>
+    <div class="card" style="text-align:center;">
+      <p><strong>Fórmula interválica de la escala mayor</strong></p>
+      <p class="mono">Interválica: 1 - 2 - 3 - 4 - 5 - 6 - 7</p>
+      <p class="mono">Grados: I - II - III - IV - V - VI - VII</p>
+    </div>
+    <p>De esta manera, todos los intervalos que sean diferentes de los de la escala mayor, que tomamos como punto de partida, y los acordes construidos sobre esos grados se indicarán en la notación de la siguiente manera:</p>
+    <div class="card" style="text-align:center;">
+      <p class="mono">Intervalos menores, disminuidos y aumentados: b2 - b3 - #4 - b5 - b6 - b7</p>
+      <p class="mono">Grados / Acordes: bII - bIII - #IV - bV - bVI - bVII</p>
+    </div>
+    <p>A los intervalos que se encuentren modificados con respecto a la escala mayor les antepondremos un bemol (b) o un sostenido (#) al número correspondiente. Recordemos que los intervalos de segunda, tercera, sexta y séptima pueden ser menores; la cuarta puede presentarse aumentada y la quinta, disminuida. Por ejemplo, si queremos escribir la fórmula interválica de la escala menor natural o modo Eólico, será la siguiente:</p>
+    <div class="card" style="text-align:center;"><p class="mono">1 - 2 - b3 - 4 - 5 - b6 - b7</p></div>
+    <p>De la misma forma, cuando anotemos los grados de una escala antepondremos el bemol para aclarar que <strong>el acorde se está construyendo sobre un intervalo menor, aumentado o disminuido</strong>. Por ejemplo, la notación para los acordes construidos sobre los grados de la escala mayor (modo Jónico) y la escala menor natural (modo Eólico) sería la siguiente:</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>Notación de grados tonalidad mayor</th><th>Notación de grados tonalidad menor</th></tr>
+      <tr><td class="mono">Imaj7 - IIm7 - IIIm7 - IVmaj7 - V7 - VIm7 - VIIm7(b5)</td><td class="mono">Im7 - IIm7(b5) - bIIImaj7 - IVm7 - Vm7 - bVIm7 - bVII7</td></tr>
+    </table>
+    </div>
+    <p>Con este mismo criterio se construyen las fórmulas interválicas y la notación de los acordes de cada uno de los modos.</p>
+  </section>
+
+  <!-- FORMULA INTERVALICA -->
+  <section id="formula">
+    <h2>Fórmula interválica</h2>
+    <p>Una forma de construir cada modo es partir de su fórmula interválica, como vimos anteriormente. También podemos comprenderlos comparando los modos mayores con la escala mayor o modo Jónico, y los modos menores con la escala menor natural o modo Eólico.</p>
+    <p>De esta manera, podemos observar con claridad las similitudes y diferencias entre sus estructuras y encontrar otra forma práctica de llegar a cada uno de los modos.</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>Modo</th><th>Fórmula interválica</th></tr>
+      <tr><td>Jónico</td><td class="mono">1 - 2 - 3 - 4 - 5 - 6 - 7</td></tr>
+      <tr><td>Dórico</td><td class="mono">1 - 2 - b3 - 4 - 5 - 6 - b7</td></tr>
+      <tr><td>Frigio</td><td class="mono">1 - b2 - b3 - 4 - 5 - b6 - b7</td></tr>
+      <tr><td>Lidio</td><td class="mono">1 - 2 - 3 - #4 - 5 - 6 - 7</td></tr>
+      <tr><td>Mixolidio</td><td class="mono">1 - 2 - 3 - 4 - 5 - 6 - b7</td></tr>
+      <tr><td>Eólico</td><td class="mono">1 - 2 - b3 - 4 - 5 - b6 - b7</td></tr>
+      <tr><td>Locrio</td><td class="mono">1 - b2 - b3 - 4 - b5 - b6 - b7</td></tr>
+    </table>
+    </div>
+
+    <h3>Modos mayores comparados con Jónico</h3>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>Escala mayor = Jónico</th><td class="mono">1 - 2 - 3 - 4 - 5 - 6 - 7</td></tr>
+      <tr><th>Mixolidio</th><td class="mono">1 - 2 - 3 - 4 - 5 - 6 - <strong>b7</strong></td></tr>
+      <tr><th>Lidio</th><td class="mono">1 - 2 - 3 - <strong>#4</strong> - 5 - 6 - 7</td></tr>
+    </table>
+    </div>
+    <p>El modo <strong>Mixolidio</strong> es igual que el Jónico pero con la b7. El modo <strong>Lidio</strong> es igual que el Jónico pero con la #4.</p>
+
+    <h3>Modos menores comparados con Eólico</h3>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>Escala menor antigua = Eólico</th><td class="mono">1 - 2 - b3 - 4 - 5 - b6 - b7</td></tr>
+      <tr><th>Dórico</th><td class="mono">1 - 2 - b3 - 4 - 5 - <strong>6</strong> - b7</td></tr>
+      <tr><th>Frigio</th><td class="mono">1 - <strong>b2</strong> - b3 - 4 - 5 - b6 - b7</td></tr>
+      <tr><th>Locrio</th><td class="mono">1 - <strong>b2</strong> - b3 - 4 - <strong>b5</strong> - b6 - b7</td></tr>
+    </table>
+    </div>
+    <p>El modo <strong>Dórico</strong> es igual que el Eólico pero con la 6 natural, el modo <strong>Frigio</strong> es igual que el Eólico pero con la b2, y el modo <strong>Locrio</strong> es igual que el Eólico pero con la b2 y la b5.</p>
+  </section>
+
+  <!-- LUZ Y OSCURIDAD -->
+  <section id="luz-oscuridad">
+    <h2>Clasificación luz y oscuridad</h2>
+    <p>Al igual que ocurre en la tonalidad, en donde la escala mayor aporta más luminosidad y la escala menor es más sombría, las siete escalas modales se pueden clasificar según este criterio.</p>
+    <p>Es importante comprender que este nivel de luz y oscuridad está dado por los intervalos mayores o menores que se obtienen en cada modo con respecto a su tónica. De esta manera, los modos que tengan mayor cantidad de intervalos mayores o aumentados serán más luminosos y, a medida que los intervalos desciendan y se conviertan en menores o disminuidos, serán más oscuros.</p>
+    <p>¿Para qué nos sirve esta clasificación? En principio, este criterio nos permitirá elegir de antemano un modo según su nivel de luz u oscuridad para aplicarlo de acuerdo con lo que queramos comunicar en nuestra música. Así, si quiero expresar determinada sensación o emoción, puedo partir de un modo que, desde su sonoridad, aporte y coincida con esa emoción o carácter.</p>
+    <div class="callout callout-warning">
+      <span class="tag">Advertencia</span>
+      Esta clasificación no es algo rígido y no implica que el uso de determinado modo exprese automáticamente una determinada emoción. Simplemente, es una guía en cuanto al carácter y la sonoridad de cada modo. El resultado final siempre estará dado por la composición en su totalidad y por la combinación de todos los parámetros que podemos controlar en la música.
+    </div>
+    <p><strong>+ Brillante → + Oscuro</strong></p>
+    <div class="brightness-scale">
+      <div style="background:#fff7ed;">Lidio<br>#4</div>
+      <div style="background:#fde3c2;">Jónico<br>4</div>
+      <div style="background:#fbc98f;">Mixolidio<br>b7</div>
+      <div style="background:#f0a563;">Dórico<br>6</div>
+      <div style="background:#d9793f;">Eólico<br>b6</div>
+      <div style="background:#b8532c;">Frigio<br>b2</div>
+      <div style="background:#8a2f1e;">Locrio<br>b5</div>
+    </div>
+  </section>
+
+  <!-- NOTA CARACTERISTICA -->
+  <section id="nota-caracteristica">
+    <h2>Nota característica de cada modo</h2>
+    <p>Cuando comparamos cada modo mayor con el modo Jónico, que es la escala mayor, y los modos menores con el modo Eólico, que es la escala menor natural, surge una nota que es diferente en cada modo y que le dará a cada uno su sonoridad y personalidad.</p>
+    <p>Hacer uso de esta nota nos ayudará, en un principio, a definir el modo en el cual estemos trabajando. Si ordenamos todos los modos con el criterio de luz y oscuridad, la nota característica siempre será la nota que aparezca por primera vez en cada uno de los modos, en este orden (tomando C como tónica de referencia):</p>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>Orden (+ brillante → + oscuro)</th><th>Modo</th><th>Nota característica</th><th>Nombre</th></tr>
+      <tr><td>1</td><td>Lidio</td><td class="mono">#4 (F#)</td><td>Lidia</td></tr>
+      <tr><td>2</td><td>Jónico</td><td class="mono">4 (F)</td><td>Jónica</td></tr>
+      <tr><td>3</td><td>Mixolidio</td><td class="mono">b7 (Bb)</td><td>Mixolidia</td></tr>
+      <tr><td>4</td><td>Dórico</td><td class="mono">6 (A)</td><td>Dórica</td></tr>
+      <tr><td>5</td><td>Eólico</td><td class="mono">b6 (Ab)</td><td>Eólica</td></tr>
+      <tr><td>6</td><td>Frigio</td><td class="mono">b2 (Db)</td><td>Frigia</td></tr>
+      <tr><td>7</td><td>Locrio</td><td class="mono">b5 (Gb)</td><td>Locria</td></tr>
+    </table>
+    </div>
+  </section>
+
+  <!-- TONAL VS MODAL -->
+  <section id="tonal-modal">
+    <h2>Sistema tonal y sistema modal</h2>
+    <p>Antes de avanzar y conocer cada modo en profundidad, vamos a entender cuáles son las similitudes y diferencias entre ambos sistemas.</p>
+    <p>El sistema tonal se sustenta y se basa sobre dos notas que, desde el punto de vista melódico y armónico, generan cierta tensión e inestabilidad, ya que son atraídas por otras notas estables de la escala mayor o menor. Estas notas son la séptima mayor de la escala, que llamamos <strong>sensible tonal</strong> porque define nuestra tónica al ser atraída por esta, y la cuarta justa, <strong>sensible modal</strong>, llamada así porque define nuestro modo mayor o menor al ser atraída por la tercera de la escala.</p>
+    <p>Este principio de estabilidad e inestabilidad, reposo y tensión de ciertas notas, es desde el cual partimos también para definir la funcionalidad de los acordes dentro de la armonía tonal. Por eso también llamamos a este sistema <strong>tonal-funcional</strong>. Es de aquí de donde surge este concepto y el de armonía funcional, en donde cada acorde cumple un rol y una función según el grado de tensión o reposo que tenga, dado por las notas que lo integran.</p>
+    <p>Estas dos notas constituyen, a su vez, desde el punto de vista armónico, otro concepto base de la tonalidad: el <strong>tritono</strong>, un intervalo inestable de cuarta aumentada o quinta disminuida que conlleva cierta disonancia. Al resolver o conducir estas notas hacia las notas estables que generan consonancia, estabilidad y reposo —tónica y tercera, respectivamente—, esta tensión se disuelve y la tonalidad se define y se constituye.</p>
+    <p>Es esta tensión y distensión, basada en el tritono formado por estas dos notas, la que origina el fenómeno tonal, que luego se amplía con distintos recursos armónicos como dominantes secundarios, sustitutos tritonales, acordes disminuidos y otros recursos que consideramos tonales, ya que todos se basan en este principio.</p>
+
+    <div class="card">
+      <p><strong>Ejemplo en C mayor:</strong></p>
+      <p>Sensible modal: <span class="mono">F</span> (4ta justa) → resuelve a <span class="mono">E</span> (3ra mayor)</p>
+      <p>Sensible tonal: <span class="mono">B</span> (7ma mayor) → resuelve a <span class="mono">C</span> (tónica)</p>
+      <p>Tritono entre <span class="mono">F</span> y <span class="mono">B</span>.</p>
+      <p><strong>V: Dominante (G7) → I: Tónica (C)</strong><br>
+      7ma (F) → 3ra (E) &nbsp;|&nbsp; 3ra (B) → 1ra (C)</p>
+    </div>
+
+    <h3>El sistema modal</h3>
+    <p><strong>En el sistema modal evitaremos todos los aspectos que nos remitan a la tonalidad</strong>, es decir, como cada modo es relativo a una escala mayor que podríamos llamar <strong>escala madre</strong> y al igual que sucede con la escala menor relativa, cada modo compartirá todas sus notas y también todos los acordes con esta escala, corremos el riesgo de que nuestro <strong>eje tonal modal</strong> se desplace muy fácilmente hacia la tónica de la escala madre tonal.</p>
+    <p>Por lo tanto evitaremos el uso de los <strong>acordes que contengan el tritono</strong>, el V7 y VIIm7(b5) de la escala madre mayor, que según el modo se encontrarán desplazados hacia otro grado y con un rol distinto. Otro aspecto muy importante es enfatizar la <strong>nota característica</strong> de cada modo y la utilización de los acordes que contengan esta nota, a estos acordes los llamaremos <strong>acordes característicos del modo</strong>, los cuales nos permitirán establecer y afirmar nuestra tónica modal.</p>
+
+    <div class="card">
+      <p><strong>Puntos importantes a tener en cuenta en el sistema modal:</strong></p>
+      <ol>
+        <li>Los acordes de cada modo son los mismos acordes de su escala madre tonal mayor.</li>
+        <li>En cada modo estos acordes se encontrarán desplazados y tendrán un rol distinto.</li>
+        <li>Cada modo es relativo a una escala mayor y a otros modos ya que comparte todas sus notas.</li>
+        <li>Cada modo es paralelo a una escala mayor y a otro modo ya que comparte su tónica.</li>
+        <li>Evitaremos o daremos un tratamiento cuidadoso a los acordes que contengan el tritono V7 y VIIm7(b5) de la escala madre.</li>
+        <li>Trataremos de utilizar la nota característica, la cual define la sonoridad de cada modo.</li>
+        <li>Usaremos los acordes que contengan la nota característica, acordes característicos cadenciales modales, para definir nuestra tónica modal.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- CONCLUSIONES -->
+  <section id="conclusiones">
+    <h2>Conclusiones</h2>
+    <p>A lo largo de este recurso vimos las bases necesarias para comprender cómo se organiza el sistema modal y cómo se relacionan entre sí los siete modos.</p>
+    <p>Partimos de su construcción a partir de una escala mayor y vimos las diferencias entre modos relativos y paralelos, su clasificación en mayores y menores, la forma de representarlos mediante la notación interválica y las modificaciones que presenta cada uno con respecto a una escala de referencia.</p>
+    <p>También incorporamos dos conceptos importantes para empezar a reconocer su sonoridad: la clasificación según su nivel de luz y oscuridad y la nota característica de cada modo, que nos ayuda a identificar y reforzar su personalidad particular.</p>
+    <p>Finalmente, comparamos algunas de las bases del sistema tonal y del sistema modal, entendiendo que, aunque ambos pueden compartir las mismas notas y acordes, la forma en que estos elementos se organizan y se utilizan responde a lógicas diferentes.</p>
+    <p>A partir de este mapa general, el paso siguiente es profundizar en cada modo de manera individual: conocer su estructura, su armonización, sus acordes característicos y las distintas formas de aplicarlo en la composición, el análisis y el instrumento.</p>
+
+    <h3>Seguí profundizando</h3>
+    <p>Entender cómo se construyen y se relacionan los modos es solo el punto de partida. A partir de ahí, se puede profundizar en la armonización de cada modo, sus notas y acordes característicos, las cadencias modales, el uso de tensiones y extensiones, la relación entre el sistema modal y el tonal, el intercambio modal y la relación escala-acorde para componer, construir melodías e improvisar.</p>
+    <div class="quote">La idea no es aprender siete escalas de memoria, sino comprender un lenguaje y desarrollar un criterio que permita reconocerlo, analizarlo y utilizarlo en música real.</div>
+    <p>Material original: <strong>Curso de Armonía Modal</strong> — MOL Teoría Musical, por Leandro Campis (<span class="mono">molmusica.com</span>).</p>
+  </section>
+
+  <!-- CREDITOS -->
+  <section id="creditos">
+    <div class="credits-box">
+      <h2 style="display:inline-block;">Créditos</h2>
+      <div class="svg-wrap" id="svg-creditos"></div>
+      <h3>Introducción a la Armonía Modal</h3>
+      <p class="footer-credit" style="font-size:1.2rem;">Rubén Sbarsky</p>
+      <p>📅 Fecha: 13/09/2026 &nbsp;|&nbsp; Hora: 05:22</p>
+      <p>📚 Tutorial con fines educativos y de divulgación.</p>
+      <p class="fiat">Fiat iustitia, ruat caelum.</p>
+    </div>
+  </section>
+
+</main>
+
+<button id="back-top" aria-label="Volver arriba">↑</button>
+
+<footer>
+  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+  <p>👨‍💻 Créditos: <span class="footer-credit">Rubén Sbarsky</span></p>
+  <p>📅 FECHA: 13/09/2026 &nbsp; Hora: 05:22</p>
+  <p class="fiat">Fiat iustitia, ruat caelum.</p>
+</footer>
+
+<script>
+/* ---------- SVG temático: rueda de modos / teclado en flujo ---------- */
+const SVG_CONTENT = `
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0e1a"/>
+      <stop offset="100%" stop-color="#101c33"/>
+    </linearGradient>
+    <linearGradient id="brightGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#fff7ed"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#8a2f1e"/>
+    </linearGradient>
+    <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bgGrad)"/>
+
+  <!-- circulo de conexion entre notas -->
+  <g stroke="#1e3a5f" stroke-width="1.5" fill="none" opacity="0.7">
+    <circle cx="400" cy="200" r="140"/>
+  </g>
+
+  <!-- lineas conectando cada nodo al centro, se iluminan en secuencia -->
+  <g id="spokes" stroke="#00d4ff" stroke-width="1" opacity="0.25"></g>
+
+  <!-- nodos: C D E F G A B distribuidos en circulo -->
+  <g id="nodes" font-family="Segoe UI, sans-serif" font-size="16" font-weight="700" text-anchor="middle"></g>
+
+  <!-- indicador rotante marcando la tonica actual -->
+  <g id="rotor">
+    <circle cx="400" cy="60" r="16" fill="url(#nodeGlow)"/>
+    <circle cx="400" cy="60" r="6" fill="#00d4ff"/>
+    <animateTransform attributeName="transform" type="rotate" from="0 400 200" to="360 400 200" dur="14s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- teclado estilizado en la base, representando el flujo armonico -->
+  <g id="keyboard" transform="translate(120,360)"></g>
+
+  <!-- barra de brillo/oscuridad -->
+  <rect x="120" y="415" width="560" height="10" rx="5" fill="url(#brightGrad)"/>
+  <text x="120" y="440" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="12">+ Brillante (Lidio)</text>
+  <text x="680" y="440" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="12" text-anchor="end">+ Oscuro (Locrio)</text>
+
+  <text x="400" y="30" fill="#e2e8f0" font-family="Segoe UI, sans-serif" font-size="20" font-weight="800" text-anchor="middle">SISTEMA MODAL</text>
+</svg>
+`;
+
+function buildDynamicSVGParts(container){
+  const notes = ["C","D","E","F","G","A","B"];
+  const cx=400, cy=200, r=140;
+  const nodesG = container.querySelector('#nodes');
+  const spokesG = container.querySelector('#spokes');
+  notes.forEach((n,i)=>{
+    const angle = (i/7)*2*Math.PI - Math.PI/2;
+    const x = cx + r*Math.cos(angle);
+    const y = cy + r*Math.sin(angle);
+
+    const spoke = document.createElementNS("http://www.w3.org/2000/svg","line");
+    spoke.setAttribute("x1", cx); spoke.setAttribute("y1", cy);
+    spoke.setAttribute("x2", x); spoke.setAttribute("y2", y);
+    const anim = document.createElementNS("http://www.w3.org/2000/svg","animate");
+    anim.setAttribute("attributeName","opacity");
+    anim.setAttribute("values","0.15;0.9;0.15");
+    anim.setAttribute("dur","14s");
+    anim.setAttribute("begin", (i*2)+"s");
+    anim.setAttribute("repeatCount","indefinite");
+    spoke.appendChild(anim);
+    spokesG.appendChild(spoke);
+
+    const circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    circle.setAttribute("cx",x); circle.setAttribute("cy",y); circle.setAttribute("r","20");
+    circle.setAttribute("fill","#0f172a");
+    circle.setAttribute("stroke","#00d4ff");
+    circle.setAttribute("stroke-width","2");
+    nodesG.appendChild(circle);
+
+    const label = document.createElementNS("http://www.w3.org/2000/svg","text");
+    label.setAttribute("x",x); label.setAttribute("y", y+5);
+    label.setAttribute("fill","#e2e8f0");
+    label.textContent = n;
+    nodesG.appendChild(label);
+  });
+
+  // teclado estilizado: 7 teclas blancas con 5 negras, animando un "cursor" de nota que se mueve
+  const kbG = container.querySelector('#keyboard');
+  const whiteW = 80, whiteH = 60;
+  for(let i=0;i<7;i++){
+    const rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
+    rect.setAttribute("x", i*whiteW); rect.setAttribute("y", 0);
+    rect.setAttribute("width", whiteW-2); rect.setAttribute("height", whiteH);
+    rect.setAttribute("fill","#e2e8f0"); rect.setAttribute("stroke","#1e3a5f"); rect.setAttribute("rx","3");
+    kbG.appendChild(rect);
+  }
+  const blackOffsets=[0,1,3,4,5];
+  blackOffsets.forEach(i=>{
+    const rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
+    rect.setAttribute("x", i*whiteW + whiteW*0.65); rect.setAttribute("y", 0);
+    rect.setAttribute("width", whiteW*0.55); rect.setAttribute("height", whiteH*0.62);
+    rect.setAttribute("fill","#0a0e1a"); rect.setAttribute("rx","2");
+    kbG.appendChild(rect);
+  });
+  const cursor = document.createElementNS("http://www.w3.org/2000/svg","rect");
+  cursor.setAttribute("y",0); cursor.setAttribute("width", whiteW-2); cursor.setAttribute("height", whiteH);
+  cursor.setAttribute("fill","#00d4ff"); cursor.setAttribute("opacity","0.55"); cursor.setAttribute("rx","3");
+  const cAnim = document.createElementNS("http://www.w3.org/2000/svg","animate");
+  cAnim.setAttribute("attributeName","x");
+  cAnim.setAttribute("values", [0,1,2,3,4,5,6,0].map(i=>i*whiteW).join(";"));
+  cAnim.setAttribute("dur","7s");
+  cAnim.setAttribute("repeatCount","indefinite");
+  cursor.appendChild(cAnim);
+  kbG.appendChild(cursor);
+}
+
+function mountSVG(targetId){
+  const el = document.getElementById(targetId);
+  el.innerHTML = SVG_CONTENT;
+  buildDynamicSVGParts(el);
+}
+mountSVG('svg-home');
+
+/* ---------- Navegación SPA ---------- */
+const sections = document.querySelectorAll('main > section');
+const navBtns = document.querySelectorAll('.nav-btn');
+
+function showSection(id){
+  sections.forEach(s=> s.classList.toggle('active', s.id===id));
+  navBtns.forEach(b=> b.classList.toggle('active', b.dataset.target===id));
+  if(id === 'creditos'){
+    // re-montar el mismo SVG animado para asegurar que la animacion continue
+    mountSVG('svg-creditos');
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+navBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=> showSection(btn.dataset.target));
+});
+navBtns[0].classList.add('active');
+
+/* ---------- Barra de progreso ---------- */
+const progressBar = document.getElementById('progress-bar');
+function updateProgress(){
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progressBar.style.width = (isFinite(scrolled)? scrolled:0) + '%';
+}
+window.addEventListener('scroll', updateProgress);
+updateProgress();
+
+/* ---------- Volver arriba ---------- */
+const backTop = document.getElementById('back-top');
+window.addEventListener('scroll', ()=>{
+  backTop.classList.toggle('show', window.scrollY > 400);
+});
+backTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+</script>
+
+</body>
+</html>
