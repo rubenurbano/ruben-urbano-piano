@@ -1,0 +1,1122 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía Maestra para Tocar Piano con Partituras de Lead Sheet</title>
+<style>
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --border:#1e3a5f;
+  --accent:#00d4ff; --green:#22c55e; --amber:#f59e0b;
+  --red:#ef4444; --purple:#a855f7;
+  --text:#e2e8f0; --muted:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65;min-height:100vh;padding-bottom:60px;
+  overflow-x:hidden;
+}
+/* PROGRESS BAR */
+#progressBar{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));
+  z-index:1000;transition:width .15s linear;
+  box-shadow:0 0 12px var(--accent);
+}
+/* NAVBAR */
+#navbar{
+  position:fixed;top:3px;left:0;right:0;z-index:999;
+  background:rgba(10,14,26,.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  display:flex;gap:6px;overflow-x:auto;padding:10px 14px;
+  scrollbar-width:thin;scrollbar-color:var(--accent) transparent;
+}
+.nav-inner::-webkit-scrollbar{height:5px}
+.nav-inner::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+.nav-btn{
+  flex:0 0 auto;background:transparent;border:1px solid var(--border);
+  color:var(--muted);padding:7px 14px;border-radius:8px;
+  font-size:.82rem;cursor:pointer;white-space:nowrap;
+  transition:.25s;font-family:inherit;font-weight:500;
+}
+.nav-btn:hover{color:var(--accent);border-color:var(--accent)}
+.nav-btn.active{
+  background:linear-gradient(135deg,rgba(0,212,255,.18),rgba(168,85,247,.18));
+  color:var(--accent);border-color:var(--accent);
+  box-shadow:0 0 14px rgba(0,212,255,.35);
+}
+/* LAYOUT */
+main{max-width:1100px;margin:0 auto;padding:90px 16px 40px}
+section{display:none;animation:fade .45s ease}
+section.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* HOME */
+.hero-badge{
+  display:inline-block;background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(168,85,247,.15));
+  border:1px solid var(--accent);color:var(--accent);
+  padding:5px 14px;border-radius:20px;font-size:.75rem;
+  letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  margin-bottom:14px;
+}
+.hero-title{
+  font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:800;
+  background:linear-gradient(135deg,#00d4ff,#a855f7,#22c55e);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1.2;margin-bottom:10px;
+}
+.hero-sub{color:var(--muted);font-size:1.02rem;margin-bottom:18px;max-width:760px}
+.hero-quote{
+  border-left:3px solid var(--purple);padding:14px 18px;
+  background:linear-gradient(90deg,rgba(168,85,247,.08),transparent);
+  border-radius:0 10px 10px 0;font-style:italic;color:#cbd5e1;
+  margin:20px 0;font-size:.98rem;
+}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:22px 0}
+.metric{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:14px;text-align:center;transition:.3s;
+}
+.metric:hover{border-color:var(--accent);transform:translateY(-2px)}
+.metric-val{font-size:1.4rem;font-weight:800;color:var(--accent);display:block}
+.metric-lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.svg-wrap{
+  width:100%;border-radius:14px;overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(0,212,255,.15),0 10px 40px rgba(0,0,0,.6);
+  margin:20px 0 26px;background:#070b14;
+}
+.svg-wrap svg{display:block;width:100%;height:auto;aspect-ratio:16/9}
+/* CARDS */
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:20px;margin:16px 0;transition:.3s;
+}
+.card:hover{border-color:rgba(0,212,255,.4)}
+.card h3{color:var(--accent);font-size:1.15rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.card h4{color:var(--purple);font-size:1rem;margin:14px 0 8px}
+.sec-title{
+  font-size:clamp(1.4rem,3.5vw,2rem);color:#fff;margin-bottom:6px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.sec-title .icon{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(168,85,247,.2));
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--accent);font-size:1.2rem;
+}
+.sec-sub{color:var(--muted);margin-bottom:20px;font-size:.95rem}
+/* CALLOUTS */
+.callout{
+  border-radius:10px;padding:14px 16px;margin:14px 0;
+  border-left:4px solid;font-size:.93rem;
+}
+.callout.info{background:rgba(0,212,255,.08);border-color:var(--accent)}
+.callout.example{background:rgba(34,197,94,.08);border-color:var(--green)}
+.callout.warn{background:rgba(245,158,11,.08);border-color:var(--amber)}
+.callout.error{background:rgba(239,68,68,.08);border-color:var(--red)}
+.callout .ttl{font-weight:700;font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:5px}
+.callout.info .ttl{color:var(--accent)}
+.callout.example .ttl{color:var(--green)}
+.callout.warn .ttl{color:var(--amber)}
+.callout.error .ttl{color:var(--red)}
+/* TABLES */
+.tbl-wrap{overflow-x:auto;margin:14px 0;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:520px}
+th{background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(168,85,247,.15));color:var(--accent);padding:11px 12px;text-align:left;font-weight:700;font-size:.82rem;letter-spacing:.5px}
+td{padding:10px 12px;border-top:1px solid var(--border);color:#cbd5e1}
+tr:hover td{background:rgba(0,212,255,.04)}
+/* STEP CARDS */
+.step-card{
+  background:linear-gradient(135deg,var(--card),rgba(15,23,42,.6));
+  border:1px solid var(--border);border-radius:12px;
+  padding:20px;margin:18px 0;position:relative;overflow:hidden;
+}
+.step-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,var(--accent),var(--purple));
+}
+.step-num{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:.72rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--accent);font-weight:800;margin-bottom:8px;
+}
+.step-num .circle{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  color:#0a0e1a;display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:.85rem;
+}
+.step-card h3{color:#fff;font-size:1.2rem;margin-bottom:12px}
+.flow-box{
+  background:#070b14;border:1px dashed var(--border);border-radius:8px;
+  padding:12px 14px;font-family:'Courier New',monospace;
+  font-size:.82rem;color:var(--accent);margin:12px 0;overflow-x:auto;
+}
+/* LISTS */
+ul.list,ol.list{padding-left:22px;margin:10px 0}
+ul.list li,ol.list li{margin:7px 0;color:#cbd5e1}
+ul.list li::marker{color:var(--accent)}
+ol.list li::marker{color:var(--purple);font-weight:700}
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{
+  background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.4);
+  color:var(--accent);padding:4px 12px;border-radius:14px;
+  font-size:.78rem;font-weight:600;
+}
+.chip.green{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.4);color:var(--green)}
+.chip.amber{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:var(--amber)}
+.chip.red{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.4);color:var(--red)}
+.chip.purple{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.4);color:var(--purple)}
+/* CHECKLIST */
+.check-item{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:10px 12px;margin:6px 0;background:rgba(15,23,42,.6);
+  border:1px solid var(--border);border-radius:8px;
+  cursor:pointer;transition:.25s;
+}
+.check-item:hover{border-color:var(--accent)}
+.check-item input{margin-top:5px;accent-color:var(--accent);cursor:pointer;flex:0 0 auto}
+.check-item.checked{opacity:.55;text-decoration:line-through}
+/* ACCORDION */
+.acc{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  margin:10px 0;overflow:hidden;
+}
+.acc-head{
+  padding:14px 16px;cursor:pointer;display:flex;
+  justify-content:space-between;align-items:center;
+  font-weight:600;color:var(--text);transition:.25s;
+  background:transparent;border:none;width:100%;text-align:left;
+  font-family:inherit;font-size:.95rem;
+}
+.acc-head:hover{background:rgba(0,212,255,.05);color:var(--accent)}
+.acc-head .arrow{transition:transform .3s;color:var(--accent)}
+.acc.open .acc-head .arrow{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 16px}
+.acc.open .acc-body{max-height:1200px;padding:0 16px 16px}
+/* BACK TO TOP */
+#backTop{
+  position:fixed;right:16px;bottom:16px;z-index:998;
+  width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  border:none;color:#0a0e1a;font-size:1.4rem;font-weight:900;
+  cursor:pointer;display:none;align-items:center;justify-content:center;
+  box-shadow:0 6px 24px rgba(0,212,255,.5);transition:.3s;
+}
+#backTop.show{display:flex}
+#backTop:hover{transform:translateY(-4px) scale(1.05)}
+/* FOOTER */
+footer{
+  border-top:1px solid var(--border);padding:26px 16px;
+  text-align:center;color:var(--muted);font-size:.86rem;
+  background:rgba(7,11,20,.6);margin-top:40px;
+}
+footer p{margin:5px 0}
+footer .latin{color:var(--purple);font-style:italic;font-weight:600;margin-top:12px}
+/* CREDITS */
+.credits-hero{text-align:center;padding:10px 0}
+.credits-title{
+  font-size:clamp(1.3rem,3vw,1.8rem);color:var(--accent);
+  margin:18px 0 10px;font-weight:800;
+}
+.credits-name{
+  font-size:1.3rem;font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin:10px 0;
+}
+.credits-info{color:var(--muted);margin:6px 0;font-size:.95rem}
+/* RESPONSIVE */
+@media(max-width:640px){
+  main{padding:84px 12px 30px}
+  .card{padding:16px}
+  .step-card{padding:16px}
+  th,td{padding:8px 9px;font-size:.82rem}
+  .nav-btn{padding:6px 11px;font-size:.76rem}
+  .sec-title .icon{width:32px;height:32px;font-size:1rem}
+  .metric{padding:11px}
+  .metric-val{font-size:1.15rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<nav id="navbar">
+  <div class="nav-inner" id="navInner">
+    <button class="nav-btn active" data-target="home">🏠 Inicio</button>
+    <button class="nav-btn" data-target="intro">📖 Introducción</button>
+    <button class="nav-btn" data-target="prepaso">🎼 Pre-Paso</button>
+    <button class="nav-btn" data-target="pasos">🚀 Los 6 Pasos</button>
+    <button class="nav-btn" data-target="herramientas">🛠️ Herramientas</button>
+    <button class="nav-btn" data-target="faq">❓ FAQ</button>
+    <button class="nav-btn" data-target="final">🏁 Final del Tutorial</button>
+    <button class="nav-btn" data-target="creditos">✨ Créditos</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================ HOME ============================ -->
+<section id="home" class="active">
+  <div class="svg-wrap">
+    <!-- SVG oculto con símbolo reutilizable -->
+    <svg width="0" height="0" style="position:absolute">
+      <defs>
+        <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#070b14">
+            <animate attributeName="stop-color" values="#070b14;#0a1a2e;#071220;#070b14" dur="9s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="50%" stop-color="#0a0e1a">
+            <animate attributeName="stop-color" values="#0a0e1a;#101f3a;#0a0e1a;#0d1526;#0a0e1a" dur="11s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%" stop-color="#0f172a">
+            <animate attributeName="stop-color" values="#0f172a;#1a2340;#0f172a;#131d33;#0f172a" dur="7s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <radialGradient id="glowC" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glowP" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#a855f7" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glowG" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#22c55e" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+        </radialGradient>
+
+        <linearGradient id="flowLine" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#00d4ff"/>
+          <stop offset="50%" stop-color="#a855f7"/>
+          <stop offset="100%" stop-color="#22c55e"/>
+        </linearGradient>
+
+        <pattern id="gridPat" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e3a5f" stroke-width="0.6"/>
+        </pattern>
+
+        <filter id="glowF" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowStrong" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="6" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+
+        <path id="chordPath" d="M 130 210 Q 280 130 400 200 T 670 210" fill="none"/>
+
+        <symbol id="pianoHero" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet">
+          <!-- BACKGROUND -->
+          <rect width="800" height="450" fill="url(#bgGrad)"/>
+          <rect width="800" height="450" fill="url(#gridPat)" opacity="0.35">
+            <animate attributeName="opacity" values="0.15;0.5;0.15" dur="6s" repeatCount="indefinite"/>
+          </rect>
+
+          <!-- ORBIT RINGS -->
+          <g transform="translate(400,225)" opacity="0.5">
+            <circle r="200" fill="none" stroke="#00d4ff" stroke-width="0.8" stroke-dasharray="6 14" opacity="0.6">
+              <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="26s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+          <g transform="translate(400,225)" opacity="0.4">
+            <circle r="160" fill="none" stroke="#a855f7" stroke-width="0.7" stroke-dasharray="3 10" opacity="0.55">
+              <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="18s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+          <g transform="translate(400,225)" opacity="0.35">
+            <circle r="120" fill="none" stroke="#22c55e" stroke-width="0.6" stroke-dasharray="2 8" opacity="0.5">
+              <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="34s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+
+          <!-- STAFF LINES (pentagrama estilizado) -->
+          <g opacity="0.28" stroke="#94a3b8" stroke-width="0.8">
+            <line x1="60" y1="70" x2="740" y2="70"/>
+            <line x1="60" y1="80" x2="740" y2="80"/>
+            <line x1="60" y1="90" x2="740" y2="90"/>
+            <line x1="60" y1="100" x2="740" y2="100"/>
+            <line x1="60" y1="110" x2="740" y2="110"/>
+          </g>
+
+          <!-- TITLE -->
+          <text x="400" y="52" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="26" font-weight="800" letter-spacing="1.5" fill="#00d4ff">
+            LEAD SHEET · PIANO
+            <animate attributeName="fill" values="#00d4ff;#a855f7;#22c55e;#f59e0b;#00d4ff" dur="8s" repeatCount="indefinite"/>
+          </text>
+          <text x="400" y="128" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11.5" fill="#94a3b8" letter-spacing="4">
+            MELODÍA · CIFRADO · ACOMPAÑAMIENTO
+            <animate attributeName="opacity" values="0.5;1;0.5" dur="3.5s" repeatCount="indefinite"/>
+          </text>
+
+          <!-- CHORD NODES C(I) F(IV) G(V) C(I) -->
+          <g font-family="Segoe UI, sans-serif" font-weight="800" text-anchor="middle">
+            <!-- C(I) -->
+            <g transform="translate(130,210)">
+              <circle r="34" fill="url(#glowC)" opacity="0.6">
+                <animate attributeName="r" values="28;40;28" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <circle r="24" fill="#0f172a" stroke="#00d4ff" stroke-width="2" filter="url(#glowF)">
+                <animate attributeName="stroke-width" values="1.5;3;1.5" dur="2.5s" repeatCount="indefinite"/>
+              </circle>
+              <text y="4" font-size="14" fill="#00d4ff">C</text>
+              <text y="-30" font-size="9" fill="#00d4ff" letter-spacing="1">I</text>
+            </g>
+            <!-- F(IV) -->
+            <g transform="translate(320,150)">
+              <circle r="30" fill="url(#glowP)" opacity="0.55">
+                <animate attributeName="r" values="24;36;24" dur="3.5s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.35;0.75;0.35" dur="3.5s" repeatCount="indefinite"/>
+              </circle>
+              <circle r="22" fill="#0f172a" stroke="#a855f7" stroke-width="2" filter="url(#glowF)">
+                <animate attributeName="stroke-width" values="1.5;3;1.5" dur="2.8s" repeatCount="indefinite"/>
+              </circle>
+              <text y="4" font-size="14" fill="#a855f7">F</text>
+              <text y="-28" font-size="9" fill="#a855f7" letter-spacing="1">IV</text>
+            </g>
+            <!-- G(V) -->
+            <g transform="translate(510,240)">
+              <circle r="30" fill="url(#glowG)" opacity="0.55">
+                <animate attributeName="r" values="24;36;24" dur="3.2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.35;0.75;0.35" dur="3.2s" repeatCount="indefinite"/>
+              </circle>
+              <circle r="22" fill="#0f172a" stroke="#22c55e" stroke-width="2" filter="url(#glowF)">
+                <animate attributeName="stroke-width" values="1.5;3;1.5" dur="2.6s" repeatCount="indefinite"/>
+              </circle>
+              <text y="4" font-size="14" fill="#22c55e">G</text>
+              <text y="-28" font-size="9" fill="#22c55e" letter-spacing="1">V</text>
+            </g>
+            <!-- C(I) final -->
+            <g transform="translate(690,210)">
+              <circle r="34" fill="url(#glowA)" opacity="0.6">
+                <animate attributeName="r" values="28;42;28" dur="3.8s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.4;0.85;0.4" dur="3.8s" repeatCount="indefinite"/>
+              </circle>
+              <circle r="24" fill="#0f172a" stroke="#f59e0b" stroke-width="2.2" filter="url(#glowF)">
+                <animate attributeName="stroke-width" values="1.5;3.5;1.5" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <text y="4" font-size="14" fill="#f59e0b">C</text>
+              <text y="-30" font-size="9" fill="#f59e0b" letter-spacing="1">I</text>
+            </g>
+          </g>
+
+          <!-- CHORD CONNECTING PATH -->
+          <path d="M 130 210 Q 280 130 400 200 T 690 210" fill="none" stroke="url(#flowLine)" stroke-width="2.2" stroke-linecap="round" opacity="0.75" filter="url(#glowF)">
+            <animate attributeName="stroke-dasharray" values="0 600;600 0;0 600" dur="6s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.4;1;0.4" dur="4s" repeatCount="indefinite"/>
+          </path>
+          <path d="M 130 210 Q 280 130 400 200 T 690 210" fill="none" stroke="#00d4ff" stroke-width="1" stroke-dasharray="4 8" opacity="0.6">
+            <animate attributeName="stroke-dashoffset" from="0" to="-120" dur="2.5s" repeatCount="indefinite"/>
+          </path>
+
+          <!-- PARTICLES ALONG CHORD PATH -->
+          <circle r="3.5" fill="#00d4ff" filter="url(#glowF)">
+            <animateMotion dur="5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+              <mpath href="#chordPath"/>
+            </animateMotion>
+            <animate attributeName="r" values="2;4;2" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="3" fill="#a855f7" filter="url(#glowF)">
+            <animateMotion dur="5s" repeatCount="indefinite" begin="1.2s" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+              <mpath href="#chordPath"/>
+            </animateMotion>
+            <animate attributeName="r" values="1.5;3.5;1.5" dur="1.8s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="3" fill="#22c55e" filter="url(#glowF)">
+            <animateMotion dur="5s" repeatCount="indefinite" begin="2.4s" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+              <mpath href="#chordPath"/>
+            </animateMotion>
+            <animate attributeName="r" values="2;4;2" dur="2.2s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="2.6" fill="#f59e0b" filter="url(#glowF)">
+            <animateMotion dur="5s" repeatCount="indefinite" begin="3.6s" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+              <mpath href="#chordPath"/>
+            </animateMotion>
+          </circle>
+
+          <!-- GHOST NOTES (melodía fantasma) -->
+          <g opacity="0.65">
+            <text font-size="22" fill="#00d4ff" filter="url(#glowF)">♪
+              <animateMotion dur="6s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+                <mpath href="#chordPath"/>
+              </animateMotion>
+              <animate attributeName="opacity" values="0;0.9;0.9;0" dur="6s" repeatCount="indefinite"/>
+            </text>
+          </g>
+          <g opacity="0.65">
+            <text font-size="18" fill="#a855f7" filter="url(#glowF)">♫
+              <animateMotion dur="6s" repeatCount="indefinite" begin="1.5s" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+                <mpath href="#chordPath"/>
+              </animateMotion>
+              <animate attributeName="opacity" values="0;0.9;0.9;0" dur="6s" repeatCount="indefinite" begin="1.5s"/>
+            </text>
+          </g>
+          <g opacity="0.65">
+            <text font-size="20" fill="#22c55e" filter="url(#glowF)">♪
+              <animateMotion dur="6s" repeatCount="indefinite" begin="3s" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+                <mpath href="#chordPath"/>
+              </animateMotion>
+              <animate attributeName="opacity" values="0;0.9;0.9;0" dur="6s" repeatCount="indefinite" begin="3s"/>
+            </text>
+          </g>
+
+          <!-- FLOATING NOTES -->
+          <text x="180" y="100" font-size="20" fill="#a855f7" opacity="0.75" filter="url(#glowF)">♪
+            <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="3.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3.5s" repeatCount="indefinite"/>
+          </text>
+          <text x="620" y="95" font-size="18" fill="#00d4ff" opacity="0.75" filter="url(#glowF)">♫
+            <animateTransform attributeName="transform" type="translate" values="0,0;0,-8;0,0" dur="4.2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.9;0.3" dur="4.2s" repeatCount="indefinite"/>
+          </text>
+          <text x="360" y="90" font-size="22" fill="#22c55e" opacity="0.7" filter="url(#glowF)">♩
+            <animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="2.8s" repeatCount="indefinite"/>
+          </text>
+
+          <!-- PIANO KEYBOARD -->
+          <g transform="translate(60,340)">
+            <!-- white keys -->
+            <g fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1">
+              <rect x="0"   y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#00d4ff;#e2e8f0" dur="4s" begin="0s" repeatCount="indefinite"/></rect>
+              <rect x="49"  y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#a855f7;#e2e8f0" dur="4s" begin="0.4s" repeatCount="indefinite"/></rect>
+              <rect x="98"  y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#22c55e;#e2e8f0" dur="4s" begin="0.8s" repeatCount="indefinite"/></rect>
+              <rect x="147" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#00d4ff;#e2e8f0" dur="4s" begin="1.2s" repeatCount="indefinite"/></rect>
+              <rect x="196" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#f59e0b;#e2e8f0" dur="4s" begin="1.6s" repeatCount="indefinite"/></rect>
+              <rect x="245" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#a855f7;#e2e8f0" dur="4s" begin="2s" repeatCount="indefinite"/></rect>
+              <rect x="294" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#22c55e;#e2e8f0" dur="4s" begin="2.4s" repeatCount="indefinite"/></rect>
+              <rect x="343" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#00d4ff;#e2e8f0" dur="4s" begin="2.8s" repeatCount="indefinite"/></rect>
+              <rect x="392" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#a855f7;#e2e8f0" dur="4s" begin="3.2s" repeatCount="indefinite"/></rect>
+              <rect x="441" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#f59e0b;#e2e8f0" dur="4s" begin="3.6s" repeatCount="indefinite"/></rect>
+              <rect x="490" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#22c55e;#e2e8f0" dur="4s" begin="4s" repeatCount="indefinite"/></rect>
+              <rect x="539" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#00d4ff;#e2e8f0" dur="4s" begin="4.4s" repeatCount="indefinite"/></rect>
+              <rect x="588" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#a855f7;#e2e8f0" dur="4s" begin="4.8s" repeatCount="indefinite"/></rect>
+              <rect x="637" y="0" width="48.5" height="70" rx="2"><animate attributeName="fill" values="#e2e8f0;#22c55e;#e2e8f0" dur="4s" begin="5.2s" repeatCount="indefinite"/></rect>
+            </g>
+            <!-- black keys -->
+            <g fill="#0a0e1a">
+              <rect x="32"  y="0" width="30" height="44" rx="2"/>
+              <rect x="81"  y="0" width="30" height="44" rx="2"/>
+              <rect x="179" y="0" width="30" height="44" rx="2"/>
+              <rect x="228" y="0" width="30" height="44" rx="2"/>
+              <rect x="277" y="0" width="30" height="44" rx="2"/>
+              <rect x="375" y="0" width="30" height="44" rx="2"/>
+              <rect x="424" y="0" width="30" height="44" rx="2"/>
+              <rect x="522" y="0" width="30" height="44" rx="2"/>
+              <rect x="571" y="0" width="30" height="44" rx="2"/>
+              <rect x="620" y="0" width="30" height="44" rx="2"/>
+            </g>
+            <!-- keyboard glow line -->
+            <line x1="0" y1="72" x2="685" y2="72" stroke="#00d4ff" stroke-width="1.2" opacity="0.6">
+              <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/>
+            </line>
+          </g>
+
+          <!-- PULSING HALOS around chord nodes -->
+          <circle cx="320" cy="150" r="40" fill="none" stroke="#a855f7" stroke-width="0.8" opacity="0.5">
+            <animate attributeName="r" values="30;55;30" dur="4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0;0.6" dur="4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="690" cy="210" r="45" fill="none" stroke="#f59e0b" stroke-width="0.9" opacity="0.5">
+            <animate attributeName="r" values="34;60;34" dur="4.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.7;0;0.7" dur="4.5s" repeatCount="indefinite"/>
+          </circle>
+
+          <!-- RADIAL PARTICLE BURST -->
+          <g transform="translate(690,210)" opacity="0.9">
+            <g stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round">
+              <line x1="0" y1="0" x2="18" y2="-14">
+                <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="7s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0;1;0" dur="2.5s" repeatCount="indefinite"/>
+              </line>
+              <line x1="0" y1="0" x2="-20" y2="14">
+                <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0;1;0" dur="2.7s" repeatCount="indefinite"/>
+              </line>
+              <line x1="0" y1="0" x2="14" y2="18">
+                <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6.5s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0;1;0" dur="2.3s" repeatCount="indefinite"/>
+              </line>
+              <line x1="0" y1="0" x2="-16" y2="-18">
+                <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="9s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0;1;0" dur="3.2s" repeatCount="indefinite"/>
+              </line>
+            </g>
+          </g>
+
+          <!-- LIVE INDICATOR -->
+          <g transform="translate(740,25)">
+            <circle r="5" fill="#ef4444">
+              <animate attributeName="opacity" values="1;0.2;1" dur="1.5s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle r="10" fill="none" stroke="#ef4444" stroke-width="0.8" opacity="0.5">
+              <animate attributeName="r" values="6;14;6" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.7;0;0.7" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <text x="-16" y="4" text-anchor="end" font-family="Segoe UI, sans-serif" font-size="10" fill="#ef4444" letter-spacing="2" font-weight="700">LIVE</text>
+          </g>
+
+          <!-- FLASH TEXT CLÍMAX -->
+          <text x="400" y="308" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="16" font-weight="900" fill="#f59e0b" letter-spacing="6" filter="url(#glowStrong)">
+            CLÍMAX ARMÓNICO
+            <animate attributeName="opacity" values="0;0;1;1;0;0;0" dur="6s" repeatCount="indefinite"/>
+            <animate attributeName="font-size" values="14;20;14" dur="2s" repeatCount="indefinite"/>
+          </text>
+
+          <!-- SIGNATURE -->
+          <text x="400" y="435" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#94a3b8" letter-spacing="3">
+            RUBÉN SBARSKY · LEAD SHEET MASTER GUIDE
+            <animate attributeName="opacity" values="0.4;1;0.4" dur="4s" repeatCount="indefinite"/>
+          </text>
+        </symbol>
+      </defs>
+    </svg>
+
+    <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" id="heroSvg">
+      <use href="#pianoHero" xlink:href="#pianoHero"/>
+    </svg>
+  </div>
+
+  <div class="hero-badge">Tutorial Interactivo · Piano · Lead Sheet</div>
+  <h1 class="hero-title">Guía Maestra para Tocar Piano con Partituras de Lead Sheet</h1>
+  <p class="hero-sub">Una metodología progresiva de 6 pasos para dominar la lectura de lead sheets en el piano, combinando melodía y cifrado de acordes con libertad interpretativa.</p>
+
+  <div class="hero-quote">
+    "Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><span class="metric-val">6</span><span class="metric-lbl">Pasos</span></div>
+    <div class="metric"><span class="metric-val">8</span><span class="metric-lbl">Checklist</span></div>
+    <div class="metric"><span class="metric-val">2</span><span class="metric-lbl">Ejercicios</span></div>
+    <div class="metric"><span class="metric-val">7</span><span class="metric-lbl">Secciones</span></div>
+  </div>
+
+  <div class="card">
+    <h3>📅 Información del Tutorial</h3>
+    <p><strong>Fecha:</strong> 13/09/2026 &nbsp; · &nbsp; <strong>Hora:</strong> 06:48:16</p>
+    <p style="color:var(--muted);margin-top:8px">Autor de la guía original: <strong style="color:var(--accent)">Rubén Sbarsky</strong></p>
+  </div>
+
+  <div class="card">
+    <h3>🎯 ¿Qué vas a aprender?</h3>
+    <ul class="list">
+      <li>Qué es una partitura <strong>Lead Sheet</strong> y por qué es clave para el pianista moderno.</li>
+      <li>Cómo leer la melodía, el cifrado de acordes y su alineación temporal.</li>
+      <li>Un método de <strong>6 pasos prácticos</strong> para abordar cualquier lead sheet.</li>
+      <li>Cómo evitar el destructivo <em>"hábito de parar y arrancar"</em>.</li>
+      <li>Herramientas: tablas comparativas, checklist, FAQ, ejercicios y glosario.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ INTRO ============================ -->
+<section id="intro">
+  <h2 class="sec-title"><span class="icon">📖</span> Introducción y Fundamentos</h2>
+  <p class="sec-sub">Comprende qué es una lead sheet, por qué transforma tu forma de tocar y en qué contextos reales la usarás.</p>
+
+  <div class="card">
+    <h3>🎼 ¿Qué es una partitura Lead Sheet y para qué sirve?</h3>
+    <p>Una partitura <strong>lead sheet</strong> (o guía de acompañamiento) es una forma simplificada de escribir música. A diferencia de una partitura tradicional de piano que contiene dos pentagramas llenos de notas para la mano derecha y la mano izquierda, una lead sheet contiene únicamente:</p>
+    <ol class="list">
+      <li>La <strong>melodía principal</strong> escrita en el pentagrama de la clave de Sol (treble clef).</li>
+      <li>Los <strong>símbolos de los acordes</strong> escritos sobre el pentagrama.</li>
+    </ol>
+    <p>Sirve como un puente perfecto entre la lectura tradicional estricta y la improvisación libre. Te da la estructura básica de la canción sin decirte exactamente qué nota debe tocar la mano izquierda en cada milisegundo.</p>
+  </div>
+
+  <div class="card">
+    <h3>💡 ¿Por qué es importante aprender a tocar con Lead Sheets?</h3>
+    <p>Aprender a tocar con lead sheets te otorga libertad musical. Te libera de la dependencia de leer partituras completas nota por nota y te enseña a comprender la armonía de la música.</p>
+    <div class="chips">
+      <span class="chip">⏱️ Ahorras tiempo</span>
+      <span class="chip purple">🎨 Fomenta creatividad</span>
+      <span class="chip green">👂 Desarrolla el oído</span>
+    </div>
+    <ul class="list">
+      <li><strong>Ahorras tiempo:</strong> Puedes aprender una canción en minutos en lugar de semanas.</li>
+      <li><strong>Fomenta la creatividad:</strong> Te permite añadir tu propio toque personal y crear arreglos únicos.</li>
+      <li><strong>Desarrolla el oído:</strong> Aprendes a escuchar cómo encajan la melodía y los acordes.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🎤 ¿En qué situaciones reales se utiliza?</h3>
+    <ul class="list">
+      <li><strong>Acompañar a un cantante o solista:</strong> Adaptas el volumen y el ritmo del acompañamiento en tiempo real.</li>
+      <li><strong>Tocar en una banda o grupo de culto:</strong> Sigues el cifrado junto a otros músicos sin depender de una partitura rígida.</li>
+      <li><strong>Tocar canciones populares en reuniones o eventos:</strong> Lees la guía básica y creas un acompañamiento completo al instante.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🚗 Analogía para entender la Lead Sheet</h3>
+    <p>Imagina que estás conduciendo un automóvil hacia un destino:</p>
+    <div class="callout info">
+      <span class="ttl">Partitura tradicional</span>
+      Es como un sistema de conducción autónoma que te exige girar el volante exactamente a 32 grados en cada esquina. No hay margen para tu propia elección.
+    </div>
+    <div class="callout example">
+      <span class="ttl">Lead Sheet</span>
+      Es como un mapa de carreteras o un GPS. Te dice la ruta principal (la melodía) y los puntos de referencia importantes (los acordes), pero tú decides qué carril tomar y a qué velocidad conducir.
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PRE-PASO ============================ -->
+<section id="prepaso">
+  <h2 class="sec-title"><span class="icon">🎼</span> Pre-Paso: Cómo Interpretar los Elementos de una Lead Sheet</h2>
+  <p class="sec-sub">Antes de colocar las manos en el teclado, debemos aprender a leer la estructura visual de la partitura.</p>
+
+  <div class="card">
+    <ol class="list">
+      <li><strong>La Melodía:</strong> Se escribe en el pentagrama superior en clave de Sol (treble clef). Es la línea cantable de la canción.</li>
+      <li><strong>Los Cifrados de Acordes:</strong> Se ubican justo encima de las notas de la melodía.</li>
+      <li><strong>Alineación del Acorde:</strong> El acorde se toca exactamente en el tiempo de la nota que tiene debajo. Por ejemplo, en un compás con un acorde de F(IV) en el tiempo 1 y un acorde de D(II) menor en el tiempo 3, tocarás el acorde de F(IV) en el primer golpe y cambiarás a D(II) menor en el tercer golpe.</li>
+      <li><strong>Compases sin Acorde:</strong> Si ves un compás que no tiene un símbolo de acorde escrito arriba, significa que el acorde del compás anterior continúa sonando.</li>
+      <li><strong>Armadura de Clave y Compás:</strong> La armadura de clave (key signature), el compás (time signature) y los signos de repetición funcionan exactamente igual que en la música tradicional.</li>
+    </ol>
+  </div>
+
+  <div class="callout info">
+    <span class="ttl">Nota sobre notación</span>
+    En esta guía se utiliza el <strong>sistema americano</strong> de notas: <strong>C(I), D(II), E(III), F(IV), G(V), A(VI), B(VII)</strong>. Los grados indican la función armónica dentro de la tonalidad.
+  </div>
+</section>
+
+<!-- ============================ PASOS ============================ -->
+<section id="pasos">
+  <h2 class="sec-title"><span class="icon">🚀</span> Capítulo 1: El Paso a Paso Definitivo</h2>
+  <p class="sec-sub">Marco de 6 pasos prácticos para dominar cualquier lead sheet en el piano.</p>
+
+  <!-- PASO 1 -->
+  <div class="step-card">
+    <div class="step-num"><span class="circle">1</span> Paso 1</div>
+    <h3>Aprender la Melodía por Separado</h3>
+    <div class="flow-box">[Paso 1: Melodía sola (Mano Derecha)] ➔ [Dominar notas, ritmo y digitación]</div>
+    <h4>Acción</h4>
+    <p>Lee y toca únicamente la línea melódica con la mano derecha. Descifra las notas musicales [sistema americano: A(VI), B(VII), C(I), D(II), E(III), F(IV), G(V)], ajusta el ritmo y decide qué digitación (qué dedos usar) es la más cómoda.</p>
+    <h4>Motivo de la Acción</h4>
+    <p>Si intentas agregar acordes con la mano izquierda antes de conocer la melodía, tu cerebro sufrirá una sobrecarga de información. Debes familiarizarte con la melodía hasta que fluya sin esfuerzo.</p>
+    <h4>Errores Frecuentes y Cómo Evitarlos</h4>
+    <ul class="list">
+      <li><strong>Error:</strong> Tocar la melodía con dedos al azar en cada repetición.</li>
+      <li><strong>Solución:</strong> Define una digitación fija desde el primer día para crear memoria muscular.</li>
+    </ul>
+    <h4>Ejemplo Práctico</h4>
+    <div class="callout error"><span class="ttl">Incorrecto</span>Cambiar de mano o tropezar intentando buscar los acordes al mismo tiempo que lees la melodía.</div>
+    <div class="callout example"><span class="ttl">Correcto</span>Tocar la melodía limpia y fluida solo con la mano derecha durante 5 repeticiones seguidas antes de mirar la mano izquierda.</div>
+    <div class="callout info"><span class="ttl">Resumen del Paso 1</span>Domina la melodía, su ritmo y su digitación antes de tocar cualquier acorde con la mano izquierda.</div>
+  </div>
+
+  <!-- PASO 2 -->
+  <div class="step-card">
+    <div class="step-num"><span class="circle">2</span> Paso 2</div>
+    <h3>Tocar la Melodía Junto con las Notas del Bajo</h3>
+    <div class="flow-box">[Mano Derecha: Melodía completa] + [Mano Izquierda: Solo la nota fundamental del bajo]</div>
+    <h4>Acción</h4>
+    <p>En lugar de tocar el acorde completo con la mano izquierda, toca únicamente la nota del bajo (la nota fundamental) de cada acorde junto con la melodía.</p>
+    <p>Si el acorde arriba de la partitura es C(I), tu mano izquierda toca solo la nota C(I). Si el acorde es G(V), toca solo la nota G(V).</p>
+    <h4>Motivo de la Acción</h4>
+    <p>Este paso te permite escuchar cómo encaja la melodía con la base armónica sin la dificultad de formar acordes completos de 3 o 4 notas. Además, suena muy bien por sí solo, lo que representa una excelente parada técnica para principiantes.</p>
+    <h4>Ejemplo Práctico</h4>
+    <p>Si en la partitura tienes un compás con acorde de F(IV) en el tiempo 1 y D(II) menor en el tiempo 3:</p>
+    <ul class="list">
+      <li>En el tiempo 1, la mano izquierda toca la nota del bajo F(IV) mientras la derecha toca la melodía.</li>
+      <li>En el tiempo 3, la mano izquierda cambia a la nota del bajo D(II).</li>
+    </ul>
+    <div class="callout info"><span class="ttl">Resumen del Paso 2</span>Conecta la melodía con la nota del bajo de cada acorde para afianzar la estructura armónica.</div>
+  </div>
+
+  <!-- PASO 3 -->
+  <div class="step-card">
+    <div class="step-num"><span class="circle">3</span> Paso 3</div>
+    <h3>Analizar y Descifrar los Acordes</h3>
+    <h4>Acción</h4>
+    <p>Tómate el tiempo para analizar la partitura y determinar exactamente qué notas componen cada acorde escrito. Puedes escribir las notas en una hoja o identificarlas visualmente en el teclado.</p>
+    <h4>Motivo de la Acción</h4>
+    <p>Analizar los acordes de antemano evita sorpresas mientras estás tocando. No necesitas ser capaz de tocar todos los acordes fluidamente en este punto; el objetivo es comprender su estructura.</p>
+    <h4>Ejemplos de Análisis de Acordes</h4>
+    <div class="chips">
+      <span class="chip">C(I) mayor: C – E – G</span>
+      <span class="chip purple">D(II) menor: D – F – A</span>
+      <span class="chip green">G(V) mayor: G – B – D</span>
+    </div>
+    <ul class="list">
+      <li>Acorde de C(I) mayor: Notas C(I) – E(III) – G(V).</li>
+      <li>Acorde de D(II) menor: Notas D(II) – F(IV) – A(VI).</li>
+      <li>Acorde de G(V) mayor: Notas G(V) – B(VII) – D(II).</li>
+    </ul>
+    <div class="callout info"><span class="ttl">Resumen del Paso 3</span>Investiga e identifica previamente la construcción interna de cada acorde de la pieza.</div>
+  </div>
+
+  <!-- PASO 4 -->
+  <div class="step-card">
+    <div class="step-num"><span class="circle">4</span> Paso 4</div>
+    <h3>Bloquear los Acordes de la Mano Izquierda (Solos y con la Melodía)</h3>
+    <div class="flow-box">[Mano Izquierda: Acordes bloqueados solos] ➔ [Ambas Manos: Melodía + Acordes bloqueados]</div>
+    <h4>Acción</h4>
+    <ol class="list">
+      <li>Toca los acordes bloqueados (todas las notas del acorde presionadas al mismo tiempo) únicamente con la mano izquierda para practicar los saltos de mano.</li>
+      <li>Una vez que la mano izquierda se mueva con soltura, combina la mano izquierda (acordes bloqueados) con la mano derecha (melodía).</li>
+    </ol>
+
+    <div class="callout warn">
+      <span class="ttl">Advertencia Crítica · La Trampa del "Hábito de Parar y Arrancar"</span>
+      El error más destructivo en este paso es detenerse a pensar justo antes de cambiar de acorde.
+      <ul class="list" style="margin-top:8px">
+        <li><strong>Por qué ocurre este error:</strong> Piensas <em>"me detendré a buscar el acorde ahora y luego tocaré fluido cuando lo practique más"</em>. ¡Esa idea es una trampa! Estás entrenando a tu cerebro para hacer una pausa antes de cada acorde nuevo, creando un hábito arraigado del que luego es casi imposible deshacerse.</li>
+        <li><strong>La Solución:</strong> Practica a un <strong>tempo extremadamente lento</strong> desde el primer intento, de modo que tu cerebro tenga tiempo de pensar en el siguiente acorde sin romper el pulso.</li>
+      </ul>
+    </div>
+
+    <h4>Analogía del Atleta de Vallas</h4>
+    <p>Imagina a un corredor de vallas que se detiene por completo frente a cada valla para calcular el salto. Cruzaría la valla, pero su carrera sería lenta y torpe. Un atleta profesional prepara el salto mucho antes de llegar a la valla porque anticipa el movimiento en su mente. En el piano, debes pensar en el siguiente acorde varios tiempos antes de que llegue.</p>
+
+    <h4>Reglas de Simplificación Profesional de Acordes</h4>
+    <p>No estás obligado a tocar todas las notas de un acorde complejo desde el principio:</p>
+    <ul class="list">
+      <li><strong>Acorde de G(V) menor 7:</strong> Puedes simplificarlo tocando solo un acorde de G(V) menor, o incluso solo las notas G(V) y D(II).</li>
+      <li><strong>Acorde de F(IV) dominante 7:</strong> A menudo, la nota de color (la séptima) ya está presente en la melodía de la mano derecha. Al simplificar el acorde de la mano izquierda, la armonía general seguirá sonando completa y rica.</li>
+    </ul>
+
+    <h4>Consejo sobre el Registro del Piano</h4>
+    <p>Al tocar acordes bloqueados completando varias notas en la mano izquierda, elígelos siempre en un <strong>registro medio o agudo del piano</strong> (más hacia el centro). Los acordes completos tocados en las notas graves del piano suenan oscuros, turbios y confusos ("muddiness").</p>
+
+    <div class="callout info"><span class="ttl">Resumen del Paso 4</span>Practica acordes bloqueados a un tempo lento y constante para evitar interrupciones en el pulso, simplificando acordes complejos cuando sea necesario y manteniéndote en el registro medio.</div>
+  </div>
+
+  <!-- PASO 5 -->
+  <div class="step-card">
+    <div class="step-num"><span class="circle">5</span> Paso 5</div>
+    <h3>Elegir y Practicar un Solo Patrón de Acorde</h3>
+    <h4>Acción</h4>
+    <p>Selecciona el patrón de acompañamiento con la mano izquierda más sencillo que se te ocurra y mantén ese mismo patrón a lo largo de toda la canción.</p>
+    <h4>Motivo de la Acción</h4>
+    <p>Intentar probar diez patrones rítmicos distintos a la vez al principio evita que domines ninguno. Si te enfocas en dominar un solo patrón de principio a fin, cada nuevo patrón que intentes en el futuro te resultará mucho más fácil de aprender.</p>
+    <h4>Ejemplos de Patrones Sencillos</h4>
+    <ul class="list">
+      <li><strong>Patrón de Redondas:</strong> Tocar y mantener el acorde bloqueado en el tiempo 1 de cada compás.</li>
+      <li><strong>Patrón de Negras (Pulso continuo):</strong> Pulsar el acorde suavemente en los tiempos 1, 2, 3 y 4.</li>
+      <li><strong>Patrón Bajo-Acorde:</strong> Tocar la nota fundamental del bajo en el tiempo 1 y el acorde completo en los tiempos 2, 3 y 4.</li>
+    </ul>
+    <div class="callout info"><span class="ttl">Resumen del Paso 5</span>Domina un único patrón de acompañamiento simple en toda la pieza antes de intentar variaciones más complejas.</div>
+  </div>
+
+  <!-- PASO 6 -->
+  <div class="step-card">
+    <div class="step-num"><span class="circle">6</span> Paso 6</div>
+    <h3>Experimentar y Agregar tu Toque Personal</h3>
+    <h4>Acción</h4>
+    <p>Una vez que domines la estructura básica, comienza a improvisar y experimentar con el arreglo:</p>
+    <ol class="list">
+      <li>Cambia los ritmos para darle un estilo totalmente distinto a la canción.</li>
+      <li>Asigna la interpretación de partes del acorde a la mano derecha mientras mantiene la melodía.</li>
+      <li>Toca patrones de acordes con ambas manos mientras cantas o tarareas la melodía.</li>
+      <li>Agrega líneas de bajo caminante (walking baseline) o notas de paso entre acordes.</li>
+    </ol>
+    <h4>Fuentes de Inspiración</h4>
+    <p>Utiliza piezas del repertorio clásico o de tus canciones favoritas como inspiración para crear patrones. Prueba aplicar ideas rítmicas de otros estilos a tu partitura.</p>
+    <h4>Regla de Oro</h4>
+    <div class="callout example">
+      <span class="ttl">Regla de Oro</span>
+      Recuerda que no necesitas tocar cada nota de cada acorde; a menudo <strong>lo simple es mejor</strong>. Deja que tu oído sea tu guía y recuerda siempre que <strong>mantener el pulso constante es más importante que tocar todas las notas</strong>.
+    </div>
+    <div class="callout info"><span class="ttl">Resumen del Paso 6</span>Experimenta libremente con ritmos, arreglos y texturas armónicas manteniendo un pulso constante.</div>
+  </div>
+</section>
+
+<!-- ============================ HERRAMIENTAS ============================ -->
+<section id="herramientas">
+  <h2 class="sec-title"><span class="icon">🛠️</span> Tablas Comparativas y Herramientas Prácticas</h2>
+  <p class="sec-sub">Recursos de referencia para consolidar tu aprendizaje.</p>
+
+  <div class="card">
+    <h3>📊 Tabla Comparativa: Partitura Tradicional vs. Lead Sheet</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>Partitura Tradicional</th>
+            <th>Lead Sheet (Guía de Acompañamiento)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Escritura del pentagrama</strong></td><td>Dos pentagramas (Clave de Sol y Clave de Fa)</td><td>Un pentagrama (Clave de Sol para la melodía)</td></tr>
+          <tr><td><strong>Acompañamiento</strong></td><td>Escrito nota por nota de forma rígida</td><td>Indicado mediante cifrado de acordes superior</td></tr>
+          <tr><td><strong>Libertad de interpretación</strong></td><td>Nula / Muy baja (debes tocar lo escrito)</td><td>Alta (permite crear tu propio acompañamiento)</td></tr>
+          <tr><td><strong>Tiempo de aprendizaje</strong></td><td>Alto (requiere memorizar o leer cada nota)</td><td>Rápido (enfocado en estructura y armonía)</td></tr>
+          <tr><td><strong>Uso ideal</strong></td><td>Música clásica, estudios formales</td><td>Jazz, Pop, Música de Acompañamiento, Jam Sessions</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>✅ Lista de Comprobación (Checklist) para Abordar una Lead Sheet</h3>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:10px">Marca cada casilla a medida que avanzas con tu pieza.</p>
+    <div id="checklist">
+      <label class="check-item"><input type="checkbox"><span><strong>1.</strong> ¿He leído la melodía sola con la mano derecha asegurando una digitación cómoda?</span></label>
+      <label class="check-item"><input type="checkbox"><span><strong>2.</strong> ¿Puedo tocar la melodía mientras la mano izquierda toca solo la nota del bajo de cada acorde?</span></label>
+      <label class="check-item"><input type="checkbox"><span><strong>3.</strong> ¿He analizado las notas que componen cada acorde de la partitura?</span></label>
+      <label class="check-item"><input type="checkbox"><span><strong>4.</strong> ¿Puedo tocar los acordes bloqueados sin hacer pausas o detener el pulso rítmico?</span></label>
+      <label class="check-item"><input type="checkbox"><span><strong>5.</strong> En los acordes complejos, ¿he considerado simplificar la estructura [ej. G(V)m7 a G(V)m]?</span></label>
+      <label class="check-item"><input type="checkbox"><span><strong>6.</strong> ¿Están mis acordes colocados en el registro medio del piano para evitar sonidos oscuros/turbios?</span></label>
+      <label class="check-item"><input type="checkbox"><span><strong>7.</strong> ¿He elegido y mantenido un único patrón de acompañamiento claro de principio a fin?</span></label>
+      <label class="check-item"><input type="checkbox"><span><strong>8.</strong> ¿He empezado a experimentar con variaciones rítmicas o arreglos propios?</span></label>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FAQ ============================ -->
+<section id="faq">
+  <h2 class="sec-title"><span class="icon">❓</span> Preguntas Frecuentes (FAQ)</h2>
+  <p class="sec-sub">Respuestas a las dudas más comunes al tocar con lead sheets.</p>
+
+  <div class="acc">
+    <button class="acc-head">1. ¿Qué hago si encuentro un acorde muy difícil que no puedo tocar rápidamente?<span class="arrow">▾</span></button>
+    <div class="acc-body"><p>Simplifícalo. Puedes tocar únicamente la nota fundamental del bajo o la nota fundamental junto con la quinta [ej. G(V) y D(II)]. Muchas veces las notas de color del acorde ya están presentes en la melodía.</p></div>
+  </div>
+
+  <div class="acc">
+    <button class="acc-head">2. ¿Por qué se me frena la mano izquierda justo antes de cambiar de acorde?<span class="arrow">▾</span></button>
+    <div class="acc-body"><p>Estás cayendo en el "hábito de parar y arrancar". Para evitarlo, reduce el tempo a la mitad y acostumbra a tu mente a pensar en la posición del siguiente acorde con 2 o 3 tiempos de anticipación.</p></div>
+  </div>
+
+  <div class="acc">
+    <button class="acc-head">3. ¿Es obligatorio tocar la melodía si hay un cantante?<span class="arrow">▾</span></button>
+    <div class="acc-body"><p>No. Si estás acompañando a un cantante o instrumento solista, puedes usar ambas manos para tocar patrones de acordes y acompañamiento mientras el cantante interpreta la melodía.</p></div>
+  </div>
+</section>
+
+<!-- ============================ FINAL ============================ -->
+<section id="final">
+  <h2 class="sec-title"><span class="icon">🏁</span> Final del Tutorial</h2>
+  <p class="sec-sub">Síntesis de todo lo aprendido, más recursos prácticos para seguir avanzando.</p>
+
+  <div class="card">
+    <h3>📌 1. Resumen de Todo lo Aprendido</h3>
+    <p>En este tutorial aprendimos que las lead sheets son guías de acompañamiento que combinan una línea melódica en la clave de Sol con cifrados de acordes. Para dominar su ejecución sin tropezar, debemos seguir una metodología progresiva de 6 pasos: aprender la melodía sola, añadir notas del bajo, analizar la estructura de los acordes, bloquear acordes cuidando el pulso sin hacer pausas, dominar un patrón de acompañamiento único y, finalmente, experimentar con libertad rítmica y creatividad.</p>
+  </div>
+
+  <div class="card">
+    <h3>🔑 2. Lista de Conceptos Clave</h3>
+    <div class="chips">
+      <span class="chip">Lead Sheet</span>
+      <span class="chip purple">Nota Fundamental / Bajo</span>
+      <span class="chip green">Acordes Bloqueados</span>
+      <span class="chip amber">Hábito de Parar y Arrancar</span>
+      <span class="chip red">Pulso Constante</span>
+      <span class="chip">Registro Medio</span>
+    </div>
+    <ul class="list">
+      <li><strong>Lead Sheet:</strong> Partitura simplificada con melodía y cifrado de acordes.</li>
+      <li><strong>Nota Fundamental / Bajo:</strong> La nota base sobre la que se construye un acorde.</li>
+      <li><strong>Acordes Bloqueados:</strong> Tocar todas las notas de un acorde simultáneamente.</li>
+      <li><strong>Hábito de Parar y Arrancar:</strong> El vicio de pausar el ritmo antes de un cambio de acorde.</li>
+      <li><strong>Pulso Constante:</strong> El tempo uniforme que debe mantenerse durante toda la interpretación.</li>
+      <li><strong>Registro Medio:</strong> Zona central del teclado ideal para que los acordes suenen limpios y definidos.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🚫 3. Errores que Nunca Deben Cometerse</h3>
+    <ol class="list">
+      <li><strong>Tratar de tocar ambas manos con acordes completos desde el primer minuto:</strong> Produce sobrecarga de información e interrupciones constantes.</li>
+      <li><strong>Hacer pausas antes de cada acorde nuevo:</strong> Entrena al cerebro para frenar siempre y destruye la fluidez musical.</li>
+      <li><strong>Tocar acordes densos en las notas muy graves del piano:</strong> Genera una sonoridad turbia y confusa ("muddiness").</li>
+      <li><strong>Probar demasiados patrones rítmicos a la vez:</strong> Impide dominar la consistencia rítmica básica.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>📈 4. Recomendaciones para Seguir Aprendiendo</h3>
+    <ul class="list">
+      <li><strong>Empieza con canciones sencillas:</strong> Elige temas populares o baladas con cambios de acordes lentos (un acorde por compás).</li>
+      <li><strong>Práctica con metrónomo:</strong> Te obligará a pensar con anticipación y a mantener un pulso constante.</li>
+      <li><strong>Escucha activamente:</strong> Oye cómo otros pianistas acompañan usando lead sheets e imita sus patrones rítmicos.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🎯 5. Ejercicios Prácticos con Soluciones Explicadas</h3>
+
+    <h4>Ejercicio 1: Anticipación de Acordes (Evitar el Parar y Arrancar)</h4>
+    <div class="callout info">
+      <span class="ttl">Instrucción</span>
+      Elige dos acordes: C(I) mayor y G(V) mayor. Pon un metrónomo a 50 BPM. Toca C(I) en el tiempo 1. Mientras suena durante los tiempos 2, 3 y 4, mueve tus ojos y prepara la forma de tus dedos para el acorde de G(V) sin dejar de contar.
+    </div>
+    <div class="callout example">
+      <span class="ttl">Solución explicada</span>
+      Al preparar la posición de los dedos durante los tiempos de espera (como el atleta de vallas), lograrás cambiar al acorde de G(V) en el tiempo 1 del siguiente compás sin alterar el pulso constante.
+    </div>
+
+    <h4>Ejercicio 2: Simplificación de Acordes Complejos</h4>
+    <div class="callout info">
+      <span class="ttl">Instrucción</span>
+      Dada la secuencia con acorde de G(V)m7 y F(IV)7, escribe una versión simplificada de 2 notas para la mano izquierda.
+    </div>
+    <div class="callout example">
+      <span class="ttl">Solución explicada</span>
+      Para G(V)m7 toca únicamente las notas G(V) y D(II). Para F(IV)7 toca únicamente las notas F(IV) y C(I). Esto mantiene la base armónica limpia mientras la mano derecha o la voz completan la armonía.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📚 6. Glosario de Términos Técnicos Utilizados</h3>
+    <ul class="list">
+      <li><strong>Clave de Sol (Treble Clef):</strong> Signo musical colocado al inicio del pentagrama que indica la altura de las notas agudas y medias, utilizadas habitualmente para la melodía.</li>
+      <li><strong>Cifrado de Acordes:</strong> Sistema de notación mediante letras y símbolos [ej. C(I), D(II)m, G(V)7] que representan acordes armónicos.</li>
+      <li><strong>Digitación:</strong> Elección y orden de los dedos de la mano que se utilizan para ejecutar un pasaje musical.</li>
+      <li><strong>Registro:</strong> Zona o rango de altura (grave, medio, agudo) del piano.</li>
+      <li><strong>Tempo:</strong> La velocidad de la pulsación regular de una pieza musical.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🎬 7. Información de la Fuente y Referencia Audiovisual</h3>
+    <ul class="list">
+      <li><strong>Nombre del Video de YouTube:</strong> "Simple Step-by-Step Guide for Learning Lead Sheets | Ultimate Roadmap to Piano Chords (7/7)"</li>
+      <li><strong>Enlace URL del Video:</strong> <a href="https://youtube.com/watch?v=fvned4rxkpE&is=WpxiECBmzODJtc4H" target="_blank" rel="noopener" style="color:var(--accent)">https://youtube.com/watch?v=fvned4rxkpE&is=WpxiECBmzODJtc4H</a></li>
+      <li><strong>Canal de YouTube:</strong> Piano Roadmap (Susan)</li>
+      <li><strong>Prompts de referencia utilizados:</strong> <em>"Simple Step-by-Step Guide for Learning Lead Sheets | Ultimate Roadmap to Piano Chords"</em>, <em>"Lead Sheet Roadmap Piano steps, chords, melody, pulse"</em>.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ CRÉDITOS ============================ -->
+<section id="creditos">
+  <h2 class="sec-title"><span class="icon">✨</span> Créditos</h2>
+  <p class="sec-sub">Información del tutorial y reconocimientos.</p>
+
+  <div class="svg-wrap" style="margin-top:6px">
+    <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" id="creditsSvg">
+      <use href="#pianoHero" xlink:href="#pianoHero"/>
+    </svg>
+  </div>
+
+  <div class="card credits-hero">
+    <div class="hero-badge">Tutorial Interactivo</div>
+    <h3 class="credits-title">Guía Maestra para Tocar Piano con Partituras de Lead Sheet</h3>
+    <p class="credits-info">Contenido basado en la guía original de:</p>
+    <p class="credits-name">Rubén Sbarsky</p>
+    <p class="credits-info"><strong>Fecha:</strong> 13/09/2026</p>
+    <p class="credits-info"><strong>Hora:</strong> 06:48:16</p>
+    <div class="callout info" style="margin-top:20px;text-align:left">
+      <span class="ttl">Indicación Educativa</span>
+      Este tutorial ha sido elaborado con fines exclusivamente educativos y de divulgación. Todo el contenido teórico y práctico proviene de la guía fuente y se presenta con una metodología progresiva orientada al aprendizaje del piano mediante partituras de tipo <em>lead sheet</em>, usando el sistema americano de notas (A, B, C, D, E, F, G) y grados de escala (I, II, III, IV, V, VI, VII).
+    </div>
+    <p class="latin" style="font-size:1.05rem;margin-top:18px">Fiat iustitia, ruat caelum.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+  <p>👨‍💻 Créditos: Rubén Sbarsky</p>
+  <p>📅 FECHA: 13/09/2026 &nbsp; · &nbsp; Hora: 06:48:16</p>
+  <p class="latin">Fiat iustitia, ruat caelum.</p>
+</footer>
+
+<button id="backTop" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ========== NAV SPA ========== */
+  const navButtons = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('main > section');
+
+  function showSection(id){
+    sections.forEach(s => s.classList.toggle('active', s.id === id));
+    navButtons.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+    window.scrollTo({top:0, behavior:'smooth'});
+    // Reiniciar SVG en la sección activa
+    const activeSvg = document.querySelector('#' + id + ' svg[id$="Svg"]');
+    if (activeSvg && typeof activeSvg.setCurrentTime === 'function'){
+      try { activeSvg.setCurrentTime(0); } catch(e){}
+    }
+    // Actualizar progreso
+    updateProgress();
+  }
+
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.target;
+      if (target) showSection(target);
+      // desplazar botón activo a la vista en móvil
+      btn.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+    });
+  });
+
+  /* ========== PROGRESS BAR ========== */
+  const progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  /* ========== BACK TO TOP ========== */
+  const backTop = document.getElementById('backTop');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) backTop.classList.add('show');
+    else backTop.classList.remove('show');
+  }, {passive:true});
+  backTop.addEventListener('click', () => {
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  /* ========== ACCORDIONS ========== */
+  document.querySelectorAll('.acc-head').forEach(head => {
+    head.addEventListener('click', () => {
+      const acc = head.parentElement;
+      acc.classList.toggle('open');
+    });
+  });
+
+  /* ========== CHECKLIST ========== */
+  document.querySelectorAll('.check-item input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      cb.closest('.check-item').classList.toggle('checked', cb.checked);
+    });
+  });
+
+  /* ========== REDUCED MOTION ========== */
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion){
+    document.querySelectorAll('svg').forEach(svg => {
+      if (typeof svg.pauseAnimations === 'function') svg.pauseAnimations();
+    });
+  }
+})();
+</script>
+</body>
+</html>
+```
