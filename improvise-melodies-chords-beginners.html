@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía Básica de Improvisación y Melodía en Piano · Método de las Tres C</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --border:#1e3a5f;
+  --cyan:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --txt:#dbe7f5;
+  --muted:#8aa4c8;
+  --radius:12px;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--txt);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.68;
+  -webkit-text-size-adjust:100%;
+  overflow-x:hidden;
+}
+img,svg{max-width:100%}
+
+/* ---------- PROGRESO ---------- */
+#progress{
+  position:fixed;top:0;left:0;height:3px;width:0;
+  background:linear-gradient(90deg,var(--cyan),var(--purple),var(--green));
+  z-index:1002;transition:width .12s linear;
+  box-shadow:0 0 12px rgba(0,212,255,.7);
+}
+
+/* ---------- NAVBAR ---------- */
+nav{
+  position:fixed;top:3px;left:0;right:0;z-index:1000;
+  background:rgba(10,14,26,.94);
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  display:flex;gap:6px;overflow-x:auto;
+  padding:8px 10px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+  -webkit-overflow-scrolling:touch;
+}
+.nav-inner::-webkit-scrollbar{height:5px}
+.nav-inner::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.nav-btn{
+  flex:0 0 auto;
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--muted);
+  padding:8px 13px;
+  border-radius:8px;
+  font-size:12.5px;
+  font-weight:600;
+  font-family:inherit;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all .25s ease;
+  letter-spacing:.3px;
+}
+.nav-btn:hover{color:var(--cyan);border-color:var(--cyan)}
+.nav-btn.active{
+  background:linear-gradient(135deg,rgba(0,212,255,.18),rgba(168,85,247,.18));
+  color:var(--cyan);
+  border-color:var(--cyan);
+  box-shadow:0 0 14px rgba(0,212,255,.35);
+}
+
+/* ---------- MAIN / PAGES ---------- */
+main{padding-top:66px}
+.page{display:none;max-width:1100px;margin:0 auto;padding:22px 15px 70px}
+.page.active{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ---------- HERO SVG ---------- */
+.hero-wrap{
+  width:100%;
+  margin:0 0 22px;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  background:#070b14;
+  box-shadow:0 0 40px rgba(0,212,255,.10),0 0 80px rgba(168,85,247,.06);
+}
+.hero-svg{display:block;width:100%;height:auto;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+
+/* ---------- HOME ---------- */
+.badge{
+  display:inline-block;
+  padding:6px 14px;
+  border:1px solid var(--cyan);
+  border-radius:999px;
+  color:var(--cyan);
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  background:rgba(0,212,255,.07);
+  margin-bottom:16px;
+}
+h1.home-title{
+  font-size:clamp(26px,5.2vw,44px);
+  font-weight:800;
+  line-height:1.18;
+  letter-spacing:-.5px;
+  background:linear-gradient(100deg,#00d4ff,#a855f7 55%,#22c55e);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  margin-bottom:12px;
+}
+.home-sub{
+  font-size:clamp(15px,2.6vw,19px);
+  color:var(--muted);
+  margin-bottom:18px;
+  font-weight:500;
+}
+.home-desc{color:#b9cbe4;font-size:15.5px;max-width:860px;margin-bottom:22px}
+.quote{
+  border-left:4px solid var(--purple);
+  background:linear-gradient(90deg,rgba(168,85,247,.12),transparent);
+  padding:16px 18px;
+  border-radius:0 12px 12px 0;
+  font-style:italic;
+  font-size:16px;
+  color:#e6d9ff;
+  margin:22px 0;
+}
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;
+  margin:22px 0;
+}
+.metric{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px 14px;
+  text-align:center;
+  transition:.25s;
+}
+.metric:hover{border-color:var(--cyan);box-shadow:0 0 20px rgba(0,212,255,.16);transform:translateY(-3px)}
+.metric .num{font-size:26px;font-weight:800;color:var(--cyan);line-height:1.1}
+.metric .lbl{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-top:4px}
+.datetime{
+  display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;
+}
+.dtchip{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:9px 15px;font-size:13.5px;color:var(--muted);
+}
+.dtchip strong{color:var(--cyan)}
+
+/* ---------- SECTION HEADERS ---------- */
+.sec-head{
+  border-left:4px solid var(--cyan);
+  padding:4px 0 4px 16px;
+  margin:6px 0 22px;
+}
+.sec-head .kicker{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--purple);font-weight:700}
+.sec-head h2{font-size:clamp(21px,4vw,30px);font-weight:800;color:#eaf3ff;margin-top:4px;line-height:1.25}
+.sec-head p{color:var(--muted);font-size:14.5px;margin-top:6px}
+
+h3{font-size:19px;font-weight:700;color:var(--cyan);margin:26px 0 12px;display:flex;align-items:center;gap:9px}
+h3::before{content:"";width:5px;height:19px;background:linear-gradient(180deg,var(--cyan),var(--purple));border-radius:3px;display:inline-block}
+h4{font-size:15.5px;font-weight:700;color:#cfe2f7;margin:18px 0 9px}
+p{margin-bottom:12px;color:#c3d3e8;font-size:15px}
+ul,ol{margin:0 0 14px 20px;color:#c3d3e8;font-size:15px}
+li{margin-bottom:7px}
+strong{color:#eaf3ff}
+
+/* ---------- CARDS ---------- */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px;
+  margin-bottom:16px;
+  transition:.25s;
+}
+.card:hover{border-color:#2b5482}
+.card h4{margin-top:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+
+.step{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-left:4px solid var(--cyan);
+  border-radius:var(--radius);
+  padding:16px 18px;
+  margin-bottom:14px;
+}
+.step .step-tag{
+  display:inline-block;
+  font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--cyan);font-weight:800;
+  background:rgba(0,212,255,.1);
+  border:1px solid rgba(0,212,255,.35);
+  border-radius:999px;padding:3px 10px;margin-bottom:9px;
+}
+.step h4{margin:0 0 8px}
+
+/* ---------- CALLOUTS ---------- */
+.callout{
+  border-radius:10px;
+  padding:14px 16px;
+  margin:16px 0;
+  border-left:4px solid;
+  background:var(--card);
+  font-size:14.5px;
+}
+.callout .ct{font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;display:block;margin-bottom:6px}
+.callout.info{border-color:var(--cyan)}
+.callout.info .ct{color:var(--cyan)}
+.callout.ok{border-color:var(--green)}
+.callout.ok .ct{color:var(--green)}
+.callout.warn{border-color:var(--amber)}
+.callout.warn .ct{color:var(--amber)}
+.callout.err{border-color:var(--red)}
+.callout.err .ct{color:var(--red)}
+.callout.pur{border-color:var(--purple)}
+.callout.pur .ct{color:var(--purple)}
+
+/* ---------- TABLES ---------- */
+.tw{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  margin:16px 0;
+  background:var(--card);
+}
+table{width:100%;border-collapse:collapse;min-width:520px;font-size:14px}
+thead th{
+  background:#12203a;color:var(--cyan);text-align:left;
+  padding:11px 13px;font-size:11.5px;text-transform:uppercase;
+  letter-spacing:.9px;font-weight:800;
+  border-bottom:1px solid var(--border);white-space:nowrap;
+}
+tbody td{padding:11px 13px;border-bottom:1px solid rgba(30,58,95,.55);color:#c3d3e8;vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(0,212,255,.04)}
+td .deg{color:var(--amber);font-weight:700}
+td .am{color:var(--cyan)}
+.mono{font-family:ui-monospace,Consolas,monospace;font-size:13.5px}
+
+/* ---------- CHIPS ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{
+  padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:700;
+  border:1px solid var(--border);background:#0b1220;color:var(--muted);
+}
+.chip.c{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,.08)}
+.chip.g{border-color:var(--green);color:var(--green);background:rgba(34,197,94,.08)}
+.chip.a{border-color:var(--amber);color:var(--amber);background:rgba(245,158,11,.08)}
+.chip.p{border-color:var(--purple);color:var(--purple);background:rgba(168,85,247,.08)}
+.chip.r{border-color:var(--red);color:var(--red);background:rgba(239,68,68,.08)}
+
+/* ---------- ACCORDION ---------- */
+.acc{
+  border:1px solid var(--border);border-radius:10px;overflow:hidden;
+  margin-bottom:10px;background:var(--card);
+}
+.acc-h{
+  width:100%;text-align:left;background:transparent;border:none;
+  padding:14px 16px;cursor:pointer;display:flex;justify-content:space-between;
+  align-items:center;gap:12px;font-weight:700;color:var(--txt);
+  font-size:14.5px;font-family:inherit;transition:.2s;
+}
+.acc-h:hover{color:var(--cyan);background:rgba(0,212,255,.05)}
+.acc-h .chev{transition:transform .3s;color:var(--cyan);font-size:13px}
+.acc.open .acc-h .chev{transform:rotate(180deg)}
+.acc-b{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.acc.open .acc-b{max-height:900px}
+.acc-inner{padding:0 16px 16px;color:#b9cbe4;font-size:14.5px}
+
+/* ---------- TABS ---------- */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0}
+.tab{
+  background:#0b1220;border:1px solid var(--border);color:var(--muted);
+  padding:9px 16px;border-radius:9px;cursor:pointer;font-weight:700;
+  font-size:13.5px;font-family:inherit;transition:.22s;
+}
+.tab:hover{color:var(--cyan);border-color:var(--cyan)}
+.tab.active{background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(168,85,247,.2));color:var(--cyan);border-color:var(--cyan)}
+.tabpane{display:none;margin-top:14px}
+.tabpane.active{display:block;animation:fadeUp .3s ease}
+
+/* ---------- PIANO INTERACTIVO ---------- */
+.piano-wrap{
+  background:#0b1220;border:1px solid var(--border);border-radius:var(--radius);
+  padding:14px;margin:18px 0;
+}
+.piano-keys{display:flex;gap:5px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.pkey{
+  flex:0 0 auto;width:58px;height:132px;
+  background:linear-gradient(180deg,#eaf3ff,#b6c9e2);
+  border:1px solid #7f96b5;border-radius:0 0 9px 9px;
+  color:#0a0e1a;display:flex;flex-direction:column;
+  justify-content:flex-end;align-items:center;padding-bottom:9px;
+  cursor:pointer;font-family:inherit;font-weight:800;font-size:13px;
+  transition:.15s;user-select:none;
+}
+.pkey span.deg{font-size:10.5px;font-weight:700;opacity:.75;margin-top:2px}
+.pkey:hover{background:linear-gradient(180deg,#fff,#d6e6ff);transform:translateY(-2px)}
+.pkey.on{
+  background:linear-gradient(180deg,var(--cyan),#0b8fb8);
+  color:#04121c;box-shadow:0 0 22px rgba(0,212,255,.65);
+  transform:translateY(-3px);
+}
+.piano-info{
+  margin-top:12px;background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;min-height:76px;
+}
+.piano-info .pi-note{font-size:22px;font-weight:800;color:var(--cyan)}
+.piano-info .pi-name{color:var(--amber);font-weight:700;font-size:14px;margin-top:2px}
+.piano-info .pi-desc{color:var(--muted);font-size:13.5px;margin-top:6px}
+
+/* ---------- CHECKLIST ---------- */
+.chk{
+  display:flex;gap:11px;width:100%;text-align:left;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;margin-bottom:8px;
+  color:var(--txt);cursor:pointer;font-size:14.5px;
+  font-family:inherit;transition:.2s;align-items:flex-start;line-height:1.5;
+}
+.chk:hover{border-color:var(--cyan)}
+.chk .box{
+  width:22px;height:22px;flex:0 0 22px;border:2px solid var(--border);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  color:transparent;font-size:13px;font-weight:900;transition:.2s;margin-top:1px;
+}
+.chk.on .box{background:var(--green);border-color:var(--green);color:#04120a}
+.chk.on{opacity:.7;border-color:var(--green)}
+
+/* ---------- EXERCISES ---------- */
+.ex{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 18px;margin-bottom:14px;
+}
+.ex .ex-q{margin-bottom:10px;color:#cfe2f7}
+.btn-rev{
+  background:rgba(0,212,255,.1);border:1px solid var(--cyan);color:var(--cyan);
+  padding:8px 15px;border-radius:8px;font-weight:700;font-size:13px;
+  cursor:pointer;font-family:inherit;transition:.22s;
+}
+.btn-rev:hover{background:rgba(0,212,255,.22)}
+.ex-a{
+  display:none;margin-top:12px;padding:13px 15px;
+  border-left:3px solid var(--green);background:rgba(34,197,94,.07);
+  border-radius:0 9px 9px 0;font-size:14.5px;color:#c9e8d6;
+}
+.ex-a.show{display:block;animation:fadeUp .3s ease}
+
+/* ---------- MISC ---------- */
+.kbd{
+  display:inline-block;background:#0b1220;border:1px solid var(--border);
+  border-radius:6px;padding:1px 7px;font-family:ui-monospace,Consolas,monospace;
+  font-size:13px;color:var(--cyan);
+}
+.flow{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  background:#0b1220;border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px;margin:16px 0;
+}
+.flow .node{
+  padding:9px 15px;border-radius:9px;font-weight:800;font-size:14px;
+  border:1px solid;background:#0f172a;
+}
+.flow .arrow{color:var(--muted);font-size:18px;font-weight:800}
+.nc{border-color:var(--cyan);color:var(--cyan)}
+.ng{border-color:var(--green);color:var(--green)}
+.na{border-color:var(--amber);color:var(--amber)}
+.np{border-color:var(--purple);color:var(--purple)}
+
+.summary{
+  background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(168,85,247,.07));
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:16px 18px;margin:20px 0;
+}
+.summary h4{margin-top:0;color:var(--cyan)}
+
+a{color:var(--cyan);text-decoration:none;word-break:break-word}
+a:hover{text-decoration:underline}
+
+/* ---------- TOP BUTTON ---------- */
+#toTop{
+  position:fixed;right:16px;bottom:18px;z-index:999;
+  width:46px;height:46px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  color:#04121c;border:none;cursor:pointer;font-size:20px;font-weight:900;
+  display:none;align-items:center;justify-content:center;
+  box-shadow:0 6px 24px rgba(0,212,255,.4);transition:.25s;
+}
+#toTop.show{display:flex}
+#toTop:hover{transform:translateY(-3px) scale(1.06)}
+
+/* ---------- FOOTER ---------- */
+footer{
+  border-top:1px solid var(--border);
+  padding:26px 16px 34px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13.5px;
+  background:#080c16;
+}
+footer .fline{margin-bottom:7px}
+footer .fiat{color:var(--purple);font-style:italic;margin-top:10px;font-weight:600}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:640px){
+  main{padding-top:62px}
+  .page{padding:16px 11px 64px}
+  .card,.step,.ex{padding:14px}
+  .metric .num{font-size:22px}
+  .pkey{width:50px;height:118px}
+  .nav-btn{padding:7px 11px;font-size:12px}
+  table{font-size:13px}
+  thead th,tbody td{padding:9px 10px}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  .page.active{animation:none}
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav>
+  <div class="nav-inner">
+    <button class="nav-btn active" data-target="home" type="button">🏠 HOME</button>
+    <button class="nav-btn" data-target="intro" type="button">INTRODUCCIÓN</button>
+    <button class="nav-btn" data-target="cap1" type="button">CAP 1 · ESCALA</button>
+    <button class="nav-btn" data-target="cap2" type="button">CAP 2 · CHORDS</button>
+    <button class="nav-btn" data-target="cap3" type="button">CAP 3 · CONNECTING</button>
+    <button class="nav-btn" data-target="cap4" type="button">CAP 4 · COMPING</button>
+    <button class="nav-btn" data-target="recursos" type="button">RECURSOS</button>
+    <button class="nav-btn" data-target="final" type="button">FINAL</button>
+    <button class="nav-btn" data-target="fuentes" type="button">FUENTES</button>
+    <button class="nav-btn" data-target="creditos" type="button">CRÉDITOS</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section class="page active" id="home">
+  <div class="hero-wrap" id="heroHost"></div>
+
+  <span class="badge">Tutorial Interactivo · Piano</span>
+  <h1 class="home-title">Guía Básica de Improvisación y Melodía en Piano</h1>
+  <p class="home-sub">Método de las Tres C (Triple C Method) · Tonalidad de C(I) Mayor · Sistema Americano</p>
+
+  <p class="home-desc">
+    Un recorrido completo, paso a paso, para aprender a improvisar melodías sobre una progresión de acordes
+    partiendo desde cero. Utilizaremos exclusivamente el sistema de notación americano (A–G) con sus grados
+    explícitos —C(I), D(II), E(III), F(IV), G(V), A(VI), B(VII)— y trabajaremos únicamente sobre las teclas
+    blancas del piano en la tonalidad de C(I) mayor.
+  </p>
+
+  <div class="quote">
+    «Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.»
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="num">3</div><div class="lbl">Pilares del Método</div></div>
+    <div class="metric"><div class="num">4</div><div class="lbl">Acordes Base</div></div>
+    <div class="metric"><div class="num">7</div><div class="lbl">Notas de la Escala</div></div>
+    <div class="metric"><div class="num">11</div><div class="lbl">Pasos Accionables</div></div>
+  </div>
+
+  <div class="datetime">
+    <div class="dtchip">📅 Fecha: <strong>15/09/2026</strong></div>
+    <div class="dtchip">🕐 Hora: <strong>07:15:16</strong></div>
+    <div class="dtchip">👨‍💻 Créditos: <strong>Rubén Sbarsky</strong></div>
+  </div>
+
+  <div class="callout info" style="margin-top:24px">
+    <span class="ct">Cómo usar este tutorial</span>
+    Navega con la barra superior. Cada sección es independiente y se muestra en pantalla completa.
+    Los tableros de acordes, el piano interactivo, las listas de comprobación y los ejercicios con solución
+    desplegable están diseñados para que practiques mientras lees.
+  </div>
+</section>
+
+<!-- ============ INTRODUCCIÓN ============ -->
+<section class="page" id="intro">
+  <div class="sec-head">
+    <div class="kicker">Introducción y Capítulo 0</div>
+    <h2>¿Qué es la Improvisación y para qué sirve?</h2>
+    <p>El punto de partida conceptual antes de tocar la primera nota.</p>
+  </div>
+
+  <h3>1. ¿Qué es la improvisación en piano?</h3>
+  <p>
+    La improvisación musical en el piano es la capacidad de crear música en tiempo real, componiendo melodías
+    y ritmos sobre una estructura armónica predefinida sin necesidad de leer una partitura escrita. A diferencia
+    de la ejecución clásica donde se interpreta cada nota tal como fue redactada, la improvisación permite al
+    pianista transformar acordes básicos en expresiones musicales espontáneas mediante patrones melódicos y
+    rítmicos.
+  </p>
+
+  <h3>2. ¿Para qué sirve y por qué es fundamental aprenderla?</h3>
+  <p>Aprender a improvisar en el piano desbloquea la verdadera libertad creativa del músico. Cumple varios propósitos esenciales:</p>
+
+  <div class="grid3">
+    <div class="card">
+      <h4>👂 Oído musical y memoria táctil</h4>
+      <p style="margin:0">Permite conectar lo que escuchas en tu mente directamente con las teclas del piano.</p>
+    </div>
+    <div class="card">
+      <h4>✋ Independencia de manos</h4>
+      <p style="margin:0">Entrena a la mano izquierda para mantener la estructura armónica y el pulso rítmico mientras la mano derecha crea figuras melódicas libres.</p>
+    </div>
+    <div class="card">
+      <h4>🎯 Fluidez y confianza al tocar</h4>
+      <p style="margin:0">Elimina el miedo a cometer errores, enseñándote a resolver desviaciones de forma melódica.</p>
+    </div>
+  </div>
+
+  <h3>3. Aplicación en situaciones reales de la vida cotidiana y profesional</h3>
+  <p>La improvisación no es solo para conciertos de jazz; se utiliza constantemente en situaciones prácticas:</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>🎤 Acompañamiento a cantantes o instrumentos</h4>
+      <p style="margin:0">Ajustar el ritmo y la intensidad según la interpretación del solista.</p>
+    </div>
+    <div class="card">
+      <h4>🎼 Composición de canciones propias</h4>
+      <p style="margin:0">Generar ideas e himnos musicales partiendo de progresiones sencillas.</p>
+    </div>
+    <div class="card">
+      <h4>🎪 Tocar en bandas o eventos</h4>
+      <p style="margin:0">Adaptar la duración de una canción según la respuesta del público o resolver imprevistos en vivo.</p>
+    </div>
+    <div class="card">
+      <h4>🌙 Música ambiental y relajación</h4>
+      <p style="margin:0">Tocar de manera fluida en casa para despejar la mente al finalizar el día.</p>
+    </div>
+  </div>
+
+  <h3>La Metodología Central: El Método de las Tres C (Triple C Method)</h3>
+  <p>
+    Para garantizar que cualquier persona sin conocimientos previos pueda improvisar desde el primer día,
+    utilizaremos el Método de las Tres C (Triple C Method) popularizado por el educador musical
+    <strong>Vincent Penschke</strong>:
+  </p>
+
+  <div class="flow">
+    <div class="node nc">1 · CHORDS</div>
+    <div class="arrow">→</div>
+    <div class="node ng">2 · CONNECTING NOTES</div>
+    <div class="arrow">→</div>
+    <div class="node na">3 · COMPING</div>
+  </div>
+
+  <div class="grid3">
+    <div class="card" style="border-left:4px solid var(--cyan)">
+      <h4 style="color:var(--cyan)">1. CHORDS (Acordes e Inversiones)</h4>
+      <p style="margin:0">Establece la base armónica y las posiciones de la mano.</p>
+    </div>
+    <div class="card" style="border-left:4px solid var(--green)">
+      <h4 style="color:var(--green)">2. CONNECTING NOTES (Notas de Conexión Melódica)</h4>
+      <p style="margin:0">Une las notas superiores de los acordes para crear la melodía.</p>
+    </div>
+    <div class="card" style="border-left:4px solid var(--amber)">
+      <h4 style="color:var(--amber)">3. COMPING (Acompañamiento Rítmico y Patrones)</h4>
+      <p style="margin:0">Agrega pulso, compás de 4/4 e independencia de mano izquierda.</p>
+    </div>
+  </div>
+
+  <div class="callout pur">
+    <span class="ct">Idea clave</span>
+    Todo el método se apoya en la tonalidad de C(I) mayor, lo que significa que durante este tutorial
+    <strong>solo utilizaremos teclas blancas</strong>. Esto elimina la complicación de alterar notas con sostenidos
+    o bemoles y permite enfocarse al 100 % en el ritmo y la melodía.
+  </div>
+</section>
+
+<!-- ============ CAP 1 ============ -->
+<section class="page" id="cap1">
+  <div class="sec-head">
+    <div class="kicker">Capítulo 1</div>
+    <h2>Fundamentos de la Escala y el Sistema Americano</h2>
+    <p>El mapa de teclas blancas y la nomenclatura que usaremos en todo el tutorial.</p>
+  </div>
+
+  <h3>1. El Sistema de Notación Americano</h3>
+  <p>
+    Para este tutorial utilizaremos exclusivamente el sistema de notación americano (letras de la A a la G).
+    Cada nota musical lleva asociada su posición o grado dentro de la escala principal.
+  </p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Nota</th><th>Grado</th><th>Nombre del Grado Musical</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong class="am">C</strong></td><td><span class="deg">(I)</span></td><td>Tónica (Nota raíz / Centro tonal)</td></tr>
+        <tr><td><strong class="am">D</strong></td><td><span class="deg">(II)</span></td><td>Supertónica (Segundo grado)</td></tr>
+        <tr><td><strong class="am">E</strong></td><td><span class="deg">(III)</span></td><td>Mediante (Tercer grado)</td></tr>
+        <tr><td><strong class="am">F</strong></td><td><span class="deg">(IV)</span></td><td>Subdominante (Cuarto grado)</td></tr>
+        <tr><td><strong class="am">G</strong></td><td><span class="deg">(V)</span></td><td>Dominante (Quinto grado)</td></tr>
+        <tr><td><strong class="am">A</strong></td><td><span class="deg">(VI)</span></td><td>Superdominante / Relativo menor (Sexto grado)</td></tr>
+        <tr><td><strong class="am">B</strong></td><td><span class="deg">(VII)</span></td><td>Sensible (Séptimo grado)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2. La Tonalidad de C(I) Mayor: Tu mapa de teclas blancas</h3>
+  <p>
+    Toda nuestra lección se desarrolla en la tonalidad de <strong>C(I) mayor</strong>, lo que significa que
+    únicamente jugaremos con las teclas blancas del piano. Esto elimina la complicación de alterar notas con
+    sostenidos o bemoles y permite enfocarse 100 % en el ritmo y la melodía.
+  </p>
+
+  <div class="card">
+    <h4>Analogía cotidiana</h4>
+    <p style="margin:0">
+      Imagina que las teclas blancas de C(I) mayor son como las letras vocales de un idioma. Al usarlas todas
+      dentro de la misma tonalidad, es imposible decir una "palabra equivocada" o tocar una nota que suene
+      desafinada.
+    </p>
+  </div>
+
+  <h4>Ejemplo práctico (Correcto vs. Incorrecto)</h4>
+  <div class="callout ok">
+    <span class="ct">Correcto</span>
+    Tocar la secuencia de notas <span class="mono">C(I) → D(II) → E(III) → F(IV) → G(V) → A(VI) → B(VII)</span>.
+    Todas pertenecen a la tonalidad y suenan armónicas.
+  </div>
+  <div class="callout err">
+    <span class="ct">Incorrecto</span>
+    Presionar una tecla negra entre C(I) y D(II). Al estar fuera de la escala de C(I) mayor para esta lección,
+    generará una disonancia no deseada.
+  </div>
+
+  <h3>Piano interactivo · Escala de C(I) Mayor</h3>
+  <p>Pulsa cada tecla blanca para identificar su nombre americano y su grado dentro de la escala.</p>
+
+  <div class="piano-wrap">
+    <div class="piano-keys" id="pianoKeys"></div>
+    <div class="piano-info" id="pianoInfo">
+      <div class="pi-note">—</div>
+      <div class="pi-name">Selecciona una tecla</div>
+      <div class="pi-desc">Aquí verás la nota, su grado y el nombre técnico del grado musical.</div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <h4>Resumen del Capítulo 1</h4>
+    <p style="margin:0">
+      La tonalidad de C(I) mayor utiliza solo teclas blancas: C(I), D(II), E(III), F(IV), G(V), A(VI) y B(VII).
+      El sistema americano asigna una letra a cada nota y un número romano a su grado correspondiente.
+    </p>
+  </div>
+</section>
+
+<!-- ============ CAP 2 ============ -->
+<section class="page" id="cap2">
+  <div class="sec-head">
+    <div class="kicker">Capítulo 2 · Primera C</div>
+    <h2>Chords — Acordes e Inversiones</h2>
+    <p>La base armónica sobre la que construiremos toda la melodía.</p>
+  </div>
+
+  <p>
+    Para improvisar una melodía requerimos una progresión de acordes, es decir, un ciclo repetitivo de acordes
+    sobre el cual construiremos las notas.
+  </p>
+
+  <h3>Progresión de acordes principal: Am → F → C → G</h3>
+
+  <div class="flow">
+    <div class="node nc">Am (VI)</div>
+    <div class="arrow">→</div>
+    <div class="node ng">F (IV)</div>
+    <div class="arrow">→</div>
+    <div class="node na">C (I)</div>
+    <div class="arrow">→</div>
+    <div class="node np">G (V)</div>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Acorde</th><th>Grado Principal</th><th>Notas del Acorde</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong class="am">Am (A(VI) menor)</strong></td><td><span class="deg">Grado VI</span></td><td class="mono">A(VI) – C(I) – E(III)</td></tr>
+        <tr><td><strong class="am">F (F(IV) mayor)</strong></td><td><span class="deg">Grado IV</span></td><td class="mono">F(IV) – A(VI) – C(I)</td></tr>
+        <tr><td><strong class="am">C (C(I) mayor)</strong></td><td><span class="deg">Grado I</span></td><td class="mono">C(I) – E(III) – G(V)</td></tr>
+        <tr><td><strong class="am">G (G(V) mayor)</strong></td><td><span class="deg">Grado V</span></td><td class="mono">G(V) – B(VII) – D(II)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Pasos accionables para la Primera C</h3>
+
+  <div class="step">
+    <span class="step-tag">Paso 1</span>
+    <h4>Construir los acordes en Posición Fundamental (Root Position)</h4>
+    <p><strong>Acción:</strong> Coloca tu mano derecha formando una estructura de tres dedos separados por una tecla blanca de distancia (forma de "muñeco de nieve").</p>
+    <p><strong>Motivo:</strong> La posición fundamental establece la forma tríadica más estable para identificar visualmente las notas del acorde.</p>
+    <p><strong>Procedimiento:</strong></p>
+    <ul>
+      <li><strong>Para Am:</strong> Toca A(VI) con el pulgar (dedo 1), C(I) con el medio (dedo 3) y E(III) con el meñique (dedo 5).</li>
+      <li><strong>Para F:</strong> Desplaza la mano hacia F(IV) con el pulgar, A(VI) con el medio y C(I) con el meñique.</li>
+      <li><strong>Para C:</strong> Desplaza hacia abajo a C(I) con el pulgar, E(III) con el medio y G(V) con el meñique.</li>
+      <li><strong>Para G:</strong> Desplaza hacia G(V) con el pulgar, B(VII) con el medio y D(II) con el meñique.</li>
+    </ul>
+    <p style="margin:0">En la mano izquierda, toca la nota tónica en octava (por ejemplo, dos teclas A(VI) separadas por 8 notas tocadas con meñique y pulgar).</p>
+  </div>
+
+  <div class="step">
+    <span class="step-tag">Paso 2</span>
+    <h4>Activar el pedal de sostén (Sustain Pedal)</h4>
+    <p><strong>Acción:</strong> Presiona el pedal derecho del piano al cambiar de acorde y suéltalo brevemente justo al presionar el siguiente.</p>
+    <p style="margin:0"><strong>Motivo:</strong> Mantiene el sonido en el aire, liberando tus manos para desplazarse con suavidad hacia el próximo acorde sin que se corte la música.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-tag">Paso 3</span>
+    <h4>Dominar las dos Inversiones de los Acordes</h4>
+    <p><strong>Acción:</strong> Reorganizar la posición de las tres notas de un acorde de modo que la nota grave cambie de lugar.</p>
+    <p style="margin:0"><strong>Motivo:</strong> Si solo tocamos acordes en posición fundamental, la mano derecha tendría que dar saltos enormes por el teclado. Las inversiones permiten conectar acordes cercanos con suavidad.</p>
+  </div>
+
+  <h4>Regla visual de inversiones para acordes de 3 notas</h4>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Posición</th><th>Regla de Identificación Visual</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Fundamental (Root)</strong></td><td>3 notas distribuidas equitativamente ("muñeco")</td></tr>
+        <tr><td><strong>Primera Inversión</strong></td><td>1 sola nota aislada en la parte SUPERIOR</td></tr>
+        <tr><td><strong>Segunda Inversión</strong></td><td>2 notas agrupadas juntas en la parte SUPERIOR</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Explorador interactivo de inversiones</h3>
+  <div class="tabs">
+    <button class="tab active" data-tab="inv-am" type="button">Am (VI)</button>
+    <button class="tab" data-tab="inv-f" type="button">F (IV)</button>
+    <button class="tab" data-tab="inv-c" type="button">C (I)</button>
+    <button class="tab" data-tab="inv-g" type="button">G (V)</button>
+  </div>
+
+  <div class="tabpane active" id="inv-am">
+    <div class="card">
+      <h4>Acorde de Am (A(VI) menor)</h4>
+      <ul>
+        <li><strong>Fundamental:</strong> <span class="mono">A(VI) – C(I) – E(III)</span></li>
+        <li><strong>1ª Inversión:</strong> <span class="mono">C(I) – E(III) – A(VI)</span> &nbsp;(Nota aislada A(VI) arriba)</li>
+        <li><strong>2ª Inversión:</strong> <span class="mono">E(III) – A(VI) – C(I)</span> &nbsp;(Notas agrupadas A(VI) y C(I) arriba)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tabpane" id="inv-f">
+    <div class="card">
+      <h4>Acorde de F (F(IV) mayor)</h4>
+      <ul>
+        <li><strong>Fundamental:</strong> <span class="mono">F(IV) – A(VI) – C(I)</span></li>
+        <li><strong>1ª Inversión:</strong> <span class="mono">A(VI) – C(I) – F(IV)</span></li>
+        <li><strong>2ª Inversión:</strong> <span class="mono">C(I) – F(IV) – A(VI)</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tabpane" id="inv-c">
+    <div class="card">
+      <h4>Acorde de C (C(I) mayor)</h4>
+      <ul>
+        <li><strong>Fundamental:</strong> <span class="mono">C(I) – E(III) – G(V)</span></li>
+        <li><strong>1ª Inversión:</strong> <span class="mono">E(III) – G(V) – C(I)</span></li>
+        <li><strong>2ª Inversión:</strong> <span class="mono">G(V) – C(I) – E(III)</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tabpane" id="inv-g">
+    <div class="card">
+      <h4>Acorde de G (G(V) mayor)</h4>
+      <ul>
+        <li><strong>Fundamental:</strong> <span class="mono">G(V) – B(VII) – D(II)</span></li>
+        <li><strong>1ª Inversión:</strong> <span class="mono">B(VII) – D(II) – G(V)</span></li>
+        <li><strong>2ª Inversión:</strong> <span class="mono">D(II) – G(V) – B(VII)</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="step">
+    <span class="step-tag">Paso 4</span>
+    <h4>Aplicar el truco visual de cambio rápido entre inversiones</h4>
+    <p><strong>Acción:</strong> Al pasar de posición fundamental a 1ª inversión, observa las dos notas superiores de la posición fundamental y apunta a ellas con tus dedos pulgar (dedo 1) e índice (dedo 2).</p>
+    <p style="margin:0"><strong>Motivo:</strong> Tu meñique caerá de forma automática sobre la nota superior de la nueva inversión sin necesidad de buscarla a ciegas.</p>
+  </div>
+
+  <h3>Errores frecuentes y consejos de experto</h3>
+  <div class="callout err">
+    <span class="ct">Error común</span>
+    Mirar desesperadamente la nota más agudita para encontrar la inversión.
+  </div>
+  <div class="callout ok">
+    <span class="ct">Solución del profesional</span>
+    Fija la vista en las dos notas inferiores de la nueva postura; la mano se acomoda por física natural.
+  </div>
+  <div class="callout warn">
+    <span class="ct">Observación importante</span>
+    Mantén la muñeca relajada y no levantes el pedal tarde para evitar que los sonidos se mezclen de forma sucia.
+  </div>
+
+  <div class="summary">
+    <h4>Resumen del Capítulo 2</h4>
+    <p style="margin:0">
+      La progresión Am → F → C → G se puede tocar en posición fundamental o en sus dos inversiones.
+      Las inversiones mueven la nota inferior al tope, creando la 1ª inversión (1 nota arriba) y la
+      2ª inversión (2 notas arriba).
+    </p>
+  </div>
+</section>
+
+<!-- ============ CAP 3 ============ -->
+<section class="page" id="cap3">
+  <div class="sec-head">
+    <div class="kicker">Capítulo 3 · Segunda C</div>
+    <h2>Connecting Notes — Notas de Conexión y Melodía</h2>
+    <p>Convertir acordes estáticos en una línea cantable.</p>
+  </div>
+
+  <p>
+    Improvisar no es solo tocar acordes estáticos; consiste en conectar los acordes con líneas melódicas fluidas.
+  </p>
+
+  <h3>Pasos accionables para la Segunda C</h3>
+
+  <div class="step">
+    <span class="step-tag">Paso 5</span>
+    <h4>Seleccionar la secuencia de inversiones de enlace</h4>
+    <p><strong>Acción:</strong> Selecciona la siguiente combinación suave de inversiones para la mano derecha:</p>
+    <ul>
+      <li><strong>Am en 2ª Inversión:</strong> notas <span class="mono">E(III) – A(VI) – C(I)</span> (Nota superior: C(I)).</li>
+      <li><strong>F en 2ª Inversión:</strong> notas <span class="mono">C(I) – F(IV) – A(VI)</span> (Nota superior: A(VI)).</li>
+      <li><strong>C en 2ª Inversión:</strong> notas <span class="mono">G(V) – C(I) – E(III)</span> (Nota superior: E(III)).</li>
+      <li><strong>G en 1ª Inversión:</strong> notas <span class="mono">B(VII) – D(II) – G(V)</span> (Nota superior: G(V)).</li>
+    </ul>
+    <p style="margin:0"><strong>Motivo:</strong> Esta combinación mantiene las notas superiores muy cerca unas de otras, permitiendo crear una línea cantable.</p>
+  </div>
+
+  <h4>Conexión de notas superiores en la progresión</h4>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Acorde y Inversión</th><th>Notas de la postura</th><th>Nota Superior (Melódica)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Am (2ª Inversión)</td><td class="mono">E(III) – A(VI) – C(I)</td><td><span class="deg">C(I)</span></td></tr>
+        <tr><td>F (2ª Inversión)</td><td class="mono">C(I) – F(IV) – A(VI)</td><td><span class="deg">A(VI)</span></td></tr>
+        <tr><td>C (2ª Inversión)</td><td class="mono">G(V) – C(I) – E(III)</td><td><span class="deg">E(III)</span></td></tr>
+        <tr><td>G (1ª Inversión)</td><td class="mono">B(VII) – D(II) – G(V)</td><td><span class="deg">G(V)</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="step">
+    <span class="step-tag">Paso 6</span>
+    <h4>Conectar las notas superiores con notas de paso (Connecting Notes)</h4>
+    <p><strong>Acción:</strong> Entre la nota superior del acorde actual y la nota superior del siguiente acorde, toca 2 o 4 notas intermedias pertenecientes a las teclas blancas.</p>
+    <p style="margin:0"><strong>Motivo:</strong> Llena el espacio rítmico creando la ilusión de una voz melódica continua y expresiva.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-tag">Paso 7</span>
+    <h4>Diseñar patrones de movimiento melódico</h4>
+    <p><strong>Opción Descendente (Paso a Paso):</strong> Desde C(I) (nota superior de Am), baja a B(VII) y luego a A(VI) para aterrizar sobre el acorde de F.</p>
+    <p>Notas tocadas: <span class="mono">C(I) → B(VII) → A(VI)</span>.</p>
+    <p><strong>Opción Ascendente o Alternada:</strong> Toca la nota superior C(I) dos veces, o realiza un dibujo que baje y vuelva a subir (<span class="mono">C(I) → B(VII) → C(I) → D(II)</span>) antes de cambiar de acorde.</p>
+    <p style="margin:0"><strong>Regla de Oro de Cantidad:</strong> Usa 2 o 4 notas de conexión por compás. En la música moderna en compás de 4/4, los números pares encajan de forma perfecta con el ritmo.</p>
+  </div>
+
+  <h4>Esquema melódico</h4>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Compás</th><th>Acorde</th><th>Nota superior</th><th>Conexión</th></tr></thead>
+      <tbody>
+        <tr><td>Compás 1</td><td>Am (2ª Inv)</td><td class="mono">C(I)</td><td>Toca C(I) → conecta con B(VII) y A(VI)</td></tr>
+        <tr><td>Compás 2</td><td>F (2ª Inv)</td><td class="mono">A(VI)</td><td>Toca A(VI) → conecta con G(V) y F(IV)</td></tr>
+        <tr><td>Compás 3</td><td>C (2ª Inv)</td><td class="mono">E(III)</td><td>Toca E(III) → conecta con F(IV) y G(V)</td></tr>
+        <tr><td>Compás 4</td><td>G (1ª Inv)</td><td class="mono">G(V)</td><td>Toca G(V) → eleva a A(VI) y regresa</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Ejemplos prácticos (Correcto vs. Incorrecto)</h3>
+  <div class="callout ok">
+    <span class="ct">Caso práctico correcto</span>
+    Tocas el acorde Am en el tiempo 1, dejas sonar las notas y en los tiempos 3 y 4 ejecutas suavemente
+    las teclas blancas B(VII) y A(VI).
+  </div>
+  <div class="callout err">
+    <span class="ct">Caso práctico incorrecto</span>
+    Intentar tocar 5 notas de conexión súper rápido sin mantener la métrica. Esto destruye el pulso del compás
+    y suena desordenado.
+  </div>
+
+  <div class="summary">
+    <h4>Resumen del Capítulo 3</h4>
+    <p style="margin:0">
+      Las notas de conexión (Connecting Notes) son las teclas blancas que unen la nota superior de un acorde
+      con la del siguiente. Usar 2 o 4 notas por compás crea melodías naturales y balanceadas.
+    </p>
+  </div>
+</section>
+
+<!-- ============ CAP 4 ============ -->
+<section class="page" id="cap4">
+  <div class="sec-head">
+    <div class="kicker">Capítulo 4 · Tercera C</div>
+    <h2>Comping — Acompañamiento Rítmico y Patrones de Mano Izquierda</h2>
+    <p>El pulso que sostiene toda la improvisación.</p>
+  </div>
+
+  <p>
+    Comping proviene de acondicionamiento rítmico o acompañamiento (complement / accompaniment). Es la técnica
+    de marcar el tiempo en 4/4 y dar estructura armónica mientras la mano derecha improvisa.
+  </p>
+
+  <h3>Pasos accionables para la Tercera C</h3>
+
+  <div class="step">
+    <span class="step-tag">Paso 8</span>
+    <h4>Establecer la métrica de 4/4 y división de tiempos</h4>
+    <p><strong>Acción:</strong> Cuenta en voz alta: 1 – 2 – 3 – 4 de manera constante a lo largo de cada compás.</p>
+    <p><strong>Distribución de la Mano Derecha:</strong></p>
+    <ul>
+      <li><strong>Tiempos 1 y 2:</strong> Presiona y mantén el acorde con su nota superior.</li>
+      <li><strong>Tiempos 3 y 4:</strong> Toca las 2 notas de conexión melódica.</li>
+    </ul>
+  </div>
+
+  <h4>Estructura rítmica del compás 4/4</h4>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Tiempo 1</th><th>Tiempo 2</th><th>Tiempo 3</th><th>Tiempo 4</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Presionar Acorde<br><small style="color:var(--muted)">(Mano Derecha)</small></td>
+          <td>Mantener Acorde<br><small style="color:var(--muted)">(Mano Derecha)</small></td>
+          <td>Nota Conexión 1<br><small style="color:var(--muted)">(Mano Derecha)</small></td>
+          <td>Nota Conexión 2<br><small style="color:var(--muted)">(Mano Derecha)</small></td>
+        </tr>
+        <tr>
+          <td>Sustentar Tónica<br><small style="color:var(--muted)">(Mano Izquierda)</small></td>
+          <td>Mantener Tónica<br><small style="color:var(--muted)">(Mano Izquierda)</small></td>
+          <td>Mantener Tónica<br><small style="color:var(--muted)">(Mano Izquierda)</small></td>
+          <td>Mantener Tónica<br><small style="color:var(--muted)">(Mano Izquierda)</small></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="step">
+    <span class="step-tag">Paso 9</span>
+    <h4>Construir el Patrón de Mano Izquierda con la Quinta (5ª)</h4>
+    <p><strong>Acción:</strong> Para cada acorde, encuentra su 5ª nota contando 5 teclas blancas hacia arriba desde la nota raíz.</p>
+    <p><strong>Cálculo de Quintas para la Progresión:</strong></p>
+    <ul>
+      <li><strong>En Am:</strong> Tónica A(VI) → 5ª Nota: E(III) &nbsp;<span class="mono">(A(1)-B(2)-C(3)-D(4)-E(5))</span></li>
+      <li><strong>En F:</strong> Tónica F(IV) → 5ª Nota: C(I) &nbsp;<span class="mono">(F(1)-G(2)-A(3)-B(4)-C(5))</span></li>
+      <li><strong>En C:</strong> Tónica C(I) → 5ª Nota: G(V) &nbsp;<span class="mono">(C(1)-D(2)-E(3)-F(4)-G(5))</span></li>
+      <li><strong>En G:</strong> Tónica G(V) → 5ª Nota: D(II) &nbsp;<span class="mono">(G(1)-A(2)-B(3)-C(4)-D(5))</span></li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <span class="step-tag">Paso 10</span>
+    <h4>Tocar el patrón Tónica-Quinta-Octava en la Mano Izquierda</h4>
+    <p><strong>Acción:</strong> Toca la tónica en el tiempo 1, la quinta en el tiempo 2, la octava en el tiempo 3 y regresa a la quinta en el tiempo 4.</p>
+    <p style="margin:0"><strong>Motivo:</strong> Proporciona un acompañamiento elegante y lleno que sostiene toda la improvisación.</p>
+  </div>
+
+  <div class="step">
+    <span class="step-tag">Paso 11</span>
+    <h4>Explorar arpegios de 8 corcheas (Nivel Avanzado)</h4>
+    <p><strong>Acción:</strong> Divide los 4 tiempos del compás en 8 sub-tiempos iguales (1-y-2-y-3-y-4-y) tocando las notas de la mano izquierda en un flujo continuo de arpegio.</p>
+    <p style="margin:0"><strong>Variante pro (Crossover):</strong> Pasa el pulgar de la mano izquierda por encima para alcanzar notas más agudas y crear un arpegio fluido estilo banda sonora de película.</p>
+  </div>
+
+  <div class="summary">
+    <h4>Resumen del Capítulo 4</h4>
+    <p style="margin:0">
+      El Comping organiza el ritmo en compás de 4/4. La mano izquierda sostiene la base usando tónica, 5ª y octava,
+      permitiendo a la mano derecha ejecutar el acorde y las notas de conexión.
+    </p>
+  </div>
+</section>
+
+<!-- ============ RECURSOS ============ -->
+<section class="page" id="recursos">
+  <div class="sec-head">
+    <div class="kicker">Recursos Integrados</div>
+    <h2>Tablas, Listas y Preguntas Frecuentes</h2>
+    <p>Todo el material de consulta rápida reunido en un solo lugar.</p>
+  </div>
+
+  <h3>1. Tabla comparativa completa de los 4 acordes</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th>Acorde</th><th>Grado</th><th>Pos. Fundamental</th><th>1ª Inversión</th><th>2ª Inversión</th><th>5º Grado (M. Izq.)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong class="am">Am</strong></td><td><span class="deg">(VI)</span></td><td class="mono">A(VI)-C(I)-E(III)</td><td class="mono">C(I)-E(III)-A(VI)</td><td class="mono">E(III)-A(VI)-C(I)</td><td class="mono">E(III)</td></tr>
+        <tr><td><strong class="am">F</strong></td><td><span class="deg">(IV)</span></td><td class="mono">F(IV)-A(VI)-C(I)</td><td class="mono">A(VI)-C(I)-F(IV)</td><td class="mono">C(I)-F(IV)-A(VI)</td><td class="mono">C(I)</td></tr>
+        <tr><td><strong class="am">C</strong></td><td><span class="deg">(I)</span></td><td class="mono">C(I)-E(III)-G(V)</td><td class="mono">E(III)-G(V)-C(I)</td><td class="mono">G(V)-C(I)-E(III)</td><td class="mono">G(V)</td></tr>
+        <tr><td><strong class="am">G</strong></td><td><span class="deg">(V)</span></td><td class="mono">G(V)-B(VII)-D(II)</td><td class="mono">B(VII)-D(II)-G(V)</td><td class="mono">D(II)-G(V)-B(VII)</td><td class="mono">D(II)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2. Lista de comprobación para una improvisación exitosa</h3>
+  <p>Pulsa cada punto para marcarlo como completado durante tu práctica.</p>
+
+  <button class="chk" type="button"><span class="box">✓</span><span>¿Estás usando únicamente teclas blancas correspondientes a la tonalidad de C(I) mayor?</span></button>
+  <button class="chk" type="button"><span class="box">✓</span><span>¿Mantiene la mano izquierda el pulso rítmico constante en 4/4?</span></button>
+  <button class="chk" type="button"><span class="box">✓</span><span>¿Usas el pedal de sostenido (sustain) limpiándolo en cada cambio de acorde?</span></button>
+  <button class="chk" type="button"><span class="box">✓</span><span>¿La mano derecha conecta suavemente las notas superiores con 2 o 4 notas de paso?</span></button>
+  <button class="chk" type="button"><span class="box">✓</span><span>¿Estás nombrando cada nota con su sistema americano y grado (C(I), G(V))?</span></button>
+
+  <h3>3. Preguntas frecuentes (FAQ)</h3>
+
+  <div class="acc">
+    <button class="acc-h" type="button">¿Qué hago si me equivoco de tecla al improvisar?<span class="chev">▾</span></button>
+    <div class="acc-b"><div class="acc-inner">
+      En la escala de C(I) mayor no hay notas "malas" entre las teclas blancas. Si una nota suena disonante,
+      simplemente avanza medio paso a la siguiente tecla blanca; se percibirá como una nota de adorno o tensión
+      melódica deliberada.
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <button class="acc-h" type="button">¿Puedo improvisar con otros acordes distintos a Am - F - C - G?<span class="chev">▾</span></button>
+    <div class="acc-b"><div class="acc-inner">
+      ¡Totalmente! Una vez dominada esta progresión, puedes reorganizar el orden (por ejemplo C → G → Am → F)
+      usando el mismo método de inversiones y notas de conexión.
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <button class="acc-h" type="button">¿Cuán rápido debo tocar?<span class="chev">▾</span></button>
+    <div class="acc-b"><div class="acc-inner">
+      Comienza muy lento. Practicar lento con un ritmo constante de 4/4 es mucho más efectivo para la memoria
+      muscular que intentar tocar rápido e interrumpir el compás.
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ FINAL ============ -->
+<section class="page" id="final">
+  <div class="sec-head">
+    <div class="kicker">Final del Tutorial</div>
+    <h2>Síntesis, Errores, Ejercicios y Glosario</h2>
+    <p>El cierre completo del método y el material de práctica.</p>
+  </div>
+
+  <h3>1. Resumen de todo lo aprendido</h3>
+  <p>Hemos aprendido a improvisar melódicamente desde cero utilizando el Método de las Tres C:</p>
+  <div class="grid3">
+    <div class="card" style="border-left:4px solid var(--cyan)">
+      <h4 style="color:var(--cyan)">Chords</h4>
+      <p style="margin:0">Construcción e inversión de los acordes Am, F, C y G en la tonalidad de C(I) mayor.</p>
+    </div>
+    <div class="card" style="border-left:4px solid var(--green)">
+      <h4 style="color:var(--green)">Connecting Notes</h4>
+      <p style="margin:0">Creación de líneas melódicas uniendo las notas superiores mediante notas de paso.</p>
+    </div>
+    <div class="card" style="border-left:4px solid var(--amber)">
+      <h4 style="color:var(--amber)">Comping</h4>
+      <p style="margin:0">Acompañamiento en métrica de 4/4 integrando tónica y 5ª en la mano izquierda.</p>
+    </div>
+  </div>
+
+  <h3>2. Lista de conceptos clave</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Concepto</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tonalidad de C(I) Mayor</strong></td><td>Uso exclusivo de teclas blancas.</td></tr>
+        <tr><td><strong>Sistema Americano</strong></td><td>Notación con letras de A a G acompañadas del grado en paréntesis (C(I), G(V)).</td></tr>
+        <tr><td><strong>Inversiones</strong></td><td>Reagrupación de notas de un acorde para lograr economía de movimiento.</td></tr>
+        <tr><td><strong>Notas de Conexión</strong></td><td>Pasos melódicos entre las notas superiores de dos acordes.</td></tr>
+        <tr><td><strong>Comping</strong></td><td>Base armónica y rítmica sostenida.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3. Errores que NUNCA deben cometerse</h3>
+  <div class="callout err">
+    <span class="ct">Nunca</span>
+    Mires fijamente tus manos buscando saltos grandes: usa las inversiones para mantener la mano derecha
+    en una misma zona del teclado.
+  </div>
+  <div class="callout err">
+    <span class="ct">Nunca</span>
+    Dejes el pedal pegado todo el tiempo: dejar el pedal abajo durante toda la progresión creará una bola
+    de sonido sucia y confusa.
+  </div>
+  <div class="callout err">
+    <span class="ct">Nunca</span>
+    Cambies el tiempo rítmico a la mitad del compás: mantén el conteo 1 – 2 – 3 – 4 firme.
+  </div>
+
+  <h3>4. Recomendaciones para seguir aprendiendo</h3>
+  <ul>
+    <li>Practica 10 a 15 minutos diarios sobre una pista de acompañamiento (backing track) en C(I) mayor.</li>
+    <li>Intenta cantar la melodía que quieres tocar un milisegundo antes de presionar las teclas blancas.</li>
+    <li>Experimenta empezando tu línea melódica desde distintas inversiones de la mano derecha.</li>
+  </ul>
+
+  <h3>5. Ejercicios prácticos con soluciones explicadas</h3>
+
+  <div class="ex">
+    <p class="ex-q"><strong>Ejercicio 1: Identificación de Inversiones</strong><br>
+    <strong>Consigna:</strong> Escribe las notas que componen la 1ª Inversión del acorde de C (C(I) mayor).</p>
+    <button class="btn-rev" type="button">Ver solución explicada ▾</button>
+    <div class="ex-a">
+      <strong>Solución explicada:</strong> La posición fundamental de C es C(I) – E(III) – G(V). Al mover la nota
+      inferior C(I) a la parte superior, la 1ª inversión resulta en: <span class="mono">E(III) – G(V) – C(I)</span>.
+    </div>
+  </div>
+
+  <div class="ex">
+    <p class="ex-q"><strong>Ejercicio 2: Creación de Línea Melódica de Conexión</strong><br>
+    <strong>Consigna:</strong> Conecta la nota superior de Am en 2ª inversión (C(I)) con la nota superior de F
+    en 2ª inversión (A(VI)).</p>
+    <button class="btn-rev" type="button">Ver solución explicada ▾</button>
+    <div class="ex-a">
+      <strong>Solución explicada:</strong> Toca C(I) en el primer tiempo. En los tiempos 3 y 4, toca en orden
+      descendente las teclas blancas B(VII) y A(VI). Así llegas de forma fluida a la nota A(VI) que pertenece
+      al acorde de F.
+    </div>
+  </div>
+
+  <div class="ex">
+    <p class="ex-q"><strong>Ejercicio 3: Patrón de Mano Izquierda</strong><br>
+    <strong>Consigna:</strong> Determina las notas que tocará la mano izquierda para el acorde de G (G(V) mayor)
+    usando el patrón Tónica – 5ª – Octava.</p>
+    <button class="btn-rev" type="button">Ver solución explicada ▾</button>
+    <div class="ex-a">
+      <strong>Solución explicada:</strong> La tónica es G(V). Contando 5 notas blancas hacia arriba
+      (G(1)-A(2)-B(3)-C(4)-D(5)), la 5ª nota es D(II). La octava es G(V). La mano izquierda ejecutará:
+      <span class="mono">G(V) → D(II) → G(V)</span>.
+    </div>
+  </div>
+
+  <h3>6. Glosario técnico de términos sencillos</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Término</th><th>Definición</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Acorde</strong></td><td>Conjunto de tres o más notas tocadas al mismo tiempo.</td></tr>
+        <tr><td><strong>Arpegio</strong></td><td>Tocar las notas de un acorde una tras otra de forma sucesiva en lugar de todas juntas.</td></tr>
+        <tr><td><strong>Compás de 4/4</strong></td><td>Estructura rítmica que divide la música en grupos de 4 tiempos iguales.</td></tr>
+        <tr><td><strong>Inversión</strong></td><td>Cambiar la nota grave de un acorde colocándola en una posición más aguda.</td></tr>
+        <tr><td><strong>Nota Tónica</strong></td><td>La nota principal que da nombre a la escala o al acorde (por ejemplo, C(I) en el acorde de C).</td></tr>
+        <tr><td><strong>Pedal de Sustain</strong></td><td>Pedal derecho del piano que prolonga la resonancia de las notas al soltar las teclas.</td></tr>
+        <tr><td><strong>Progresión Armónica</strong></td><td>Secuencia o cadena de acordes que se repite a lo largo de una pieza musical.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ FUENTES ============ -->
+<section class="page" id="fuentes">
+  <div class="sec-head">
+    <div class="kicker">Documentación</div>
+    <h2>Fuentes</h2>
+    <p>Origen del contenido, prompts de síntesis y enlaces de referencia.</p>
+  </div>
+
+  <h3>Prompts utilizados para la síntesis del tutorial</h3>
+  <div class="card">
+    <ul style="margin-bottom:0">
+      <li>Búsqueda semántica y análisis del método Triple C para improvisación en piano en tonalidad C mayor.</li>
+      <li>Extracción de progresiones de acordes (Am, F, C, G), inversiones, notas de conexión y patrones rítmicos de comping 4/4.</li>
+      <li>Formateo estricto bajo el sistema de notación americano con grados explícitos en paréntesis: A(VI), B(VII), C(I), D(II), E(III), F(IV), G(V).</li>
+    </ul>
+  </div>
+
+  <h3>Información del vídeo de YouTube</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Nombre del Vídeo</strong></td><td>Improvise Melodies over Chords: Start Here for Beginners</td></tr>
+        <tr><td><strong>Canal</strong></td><td>Vincent Penschke | Better Chords Academy</td></tr>
+        <tr><td><strong>Link / URL del Vídeo</strong></td><td><a href="https://www.youtube.com/watch?v=ImproviseMelodiesOverChords" target="_blank" rel="noopener">https://www.youtube.com/watch?v=ImproviseMelodiesOverChords</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Fuentes y sus URLs</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Fuente</th><th>Descripción</th><th>URL</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Fuente Principal</strong></td>
+          <td>Transcript oficial del video "Improvise Melodies over Chords: Start Here for Beginners" por Vincent Penschke (Better Chords Academy).</td>
+          <td><a href="https://www.youtube.com/watch?v=ImproviseMelodiesOverChords" target="_blank" rel="noopener">https://www.youtube.com/watch?v=ImproviseMelodiesOverChords</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ CRÉDITOS ============ -->
+<section class="page" id="creditos">
+  <div class="hero-wrap" id="creditsHost"></div>
+
+  <div class="sec-head">
+    <div class="kicker">Créditos</div>
+    <h2>Guía Básica de Improvisación y Melodía en Piano</h2>
+    <p>Método de las Tres C (Triple C Method) · Tonalidad de C(I) Mayor</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>Autoría y realización</h4>
+      <p><strong>Rubén Sbarsky</strong></p>
+      <p style="margin:0;color:var(--muted)">Diseño, desarrollo y edición del tutorial interactivo.</p>
+    </div>
+    <div class="card">
+      <h4>Registro</h4>
+      <p>📅 <strong>Fecha:</strong> 15/09/2026</p>
+      <p style="margin:0">🕐 <strong>Hora:</strong> 07:15:16</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="ct">Indicación educativa</span>
+    Este tutorial ha sido elaborado exclusivamente con fines educativos y de divulgación. Su objetivo es facilitar
+    el aprendizaje de la improvisación y la melodía en el piano mediante el Método de las Tres C en la tonalidad
+    de C(I) mayor, utilizando el sistema de notación americano con grados explícitos.
+  </div>
+
+  <div class="callout pur" style="text-align:center;font-size:17px">
+    <span class="ct">Lema</span>
+    <strong>Fiat iustitia, ruat caelum.</strong>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="fline">📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div class="fline">👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div class="fline">📅 FECHA: 15/09/2026 · Hora: 07:15:16</div>
+  <div class="fline fiat">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<button id="toTop" type="button" aria-label="Volver arriba">↑</button>
+
+<!-- ================= SVG HERO (plantilla reutilizable) ================= -->
+<template id="heroTemplate">
+<svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="hero-svg" role="img" aria-label="Portada animada del tutorial de improvisación en piano con el Método de las Tres C">
+  <defs>
+    <linearGradient id="bgG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070b14">
+        <animate attributeName="stop-color" values="#070b14;#0d1b33;#170a24;#070b14" dur="14s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="55%" stop-color="#0a0e1a">
+        <animate attributeName="stop-color" values="#0a0e1a;#122040;#1a0f2e;#0a0e1a" dur="11s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#101a30">
+        <animate attributeName="stop-color" values="#101a30;#061225;#0e0820;#101a30" dur="17s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+
+    <pattern id="gridP" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#1e3a5f" stroke-width="1"/>
+    </pattern>
+
+    <radialGradient id="haloC"><stop offset="0%" stop-color="#00d4ff" stop-opacity="0.55"/><stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="haloG"><stop offset="0%" stop-color="#22c55e" stop-opacity="0.5"/><stop offset="100%" stop-color="#22c55e" stop-opacity="0"/></radialGradient>
+    <radialGradient id="haloA"><stop offset="0%" stop-color="#f59e0b" stop-opacity="0.5"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></radialGradient>
+    <radialGradient id="haloP"><stop offset="0%" stop-color="#a855f7" stop-opacity="0.5"/><stop offset="100%" stop-color="#a855f7" stop-opacity="0"/></radialGradient>
+
+    <filter id="glow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowBig" x="-90%" y="-90%" width="280%" height="280%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <path id="mFlow" d="M70 139 L730 139" fill="none"/>
+    <path id="mNoteA" d="M130 176 C 158 240, 198 300, 244 350" fill="none"/>
+    <path id="mNoteB" d="M400 176 C 412 240, 388 300, 400 350" fill="none"/>
+    <path id="mNoteC" d="M670 176 C 632 240, 580 300, 546 350" fill="none"/>
+  </defs>
+
+  <!-- FONDO VIVO -->
+  <rect width="800" height="450" fill="url(#bgG)"/>
+  <rect width="800" height="450" fill="url(#gridP)" opacity="0.22">
+    <animate attributeName="opacity" values="0.10;0.34;0.10" dur="6.5s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- ANILLOS ORBITALES -->
+  <g fill="none" opacity="0.5">
+    <circle cx="400" cy="228" r="118" stroke="#00d4ff" stroke-width="1" stroke-dasharray="3 10">
+      <animateTransform attributeName="transform" type="rotate" from="0 400 228" to="360 400 228" dur="26s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="3 10;14 8;3 10" dur="9s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="400" cy="228" r="162" stroke="#a855f7" stroke-width="1" stroke-dasharray="6 14">
+      <animateTransform attributeName="transform" type="rotate" from="360 400 228" to="0 400 228" dur="21s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="6 14;2 18;6 14" dur="7.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="400" cy="228" r="204" stroke="#22c55e" stroke-width="0.9" stroke-dasharray="1 16">
+      <animateTransform attributeName="transform" type="rotate" from="0 400 228" to="360 400 228" dur="34s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- ONDAS DE CHOQUE -->
+  <g fill="none" stroke-width="2">
+    <circle cx="400" cy="250" r="8" stroke="#00d4ff" opacity="0">
+      <animate attributeName="r" values="8;150" dur="9s" begin="0s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0" dur="9s" begin="0s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="400" cy="250" r="8" stroke="#a855f7" opacity="0">
+      <animate attributeName="r" values="8;150" dur="9s" begin="4.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.42;0" dur="9s" begin="4.5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- FLUJO ARMÓNICO -->
+  <path d="M70 139 L730 139" fill="none" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="5 9" stroke-linecap="round">
+    <animate attributeName="stroke-dashoffset" from="0" to="-28" dur="1.4s" repeatCount="indefinite"/>
+  </path>
+
+  <g>
+    <circle r="4" fill="#00d4ff" filter="url(#glow)">
+      <animateMotion dur="6s" begin="0s" repeatCount="indefinite"><mpath href="#mFlow"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="6s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="3.4" fill="#22c55e" filter="url(#glow)">
+      <animateMotion dur="7.5s" begin="1.2s" repeatCount="indefinite"><mpath href="#mFlow"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="7.5s" begin="1.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="3.8" fill="#f59e0b" filter="url(#glow)">
+      <animateMotion dur="5s" begin="2.4s" repeatCount="indefinite"><mpath href="#mFlow"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="5s" begin="2.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="3.2" fill="#a855f7" filter="url(#glow)">
+      <animateMotion dur="8s" begin="3.1s" repeatCount="indefinite"><mpath href="#mFlow"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="8s" begin="3.1s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="3.6" fill="#ef4444" filter="url(#glow)">
+      <animateMotion dur="6.8s" begin="4.3s" repeatCount="indefinite"><mpath href="#mFlow"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="6.8s" begin="4.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="3" fill="#00d4ff" filter="url(#glow)">
+      <animateMotion dur="9s" begin="5.5s" repeatCount="indefinite"><mpath href="#mFlow"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="9s" begin="5.5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- HALOS -->
+  <ellipse cx="130" cy="139" rx="86" ry="58" fill="url(#haloC)">
+    <animate attributeName="opacity" values="0.22;0.72;0.22" dur="3.5s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="310" cy="139" rx="86" ry="58" fill="url(#haloG)">
+    <animate attributeName="opacity" values="0.65;0.2;0.65" dur="4.2s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="490" cy="139" rx="86" ry="58" fill="url(#haloA)">
+    <animate attributeName="opacity" values="0.25;0.7;0.25" dur="5.1s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="670" cy="139" rx="86" ry="58" fill="url(#haloP)">
+    <animate attributeName="opacity" values="0.68;0.24;0.68" dur="3.9s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- TARJETAS DE ACORDES -->
+  <g>
+    <rect x="70" y="110" width="120" height="58" rx="10" fill="#0f172a" stroke="#00d4ff" stroke-width="1.6">
+      <animate attributeName="stroke-width" values="1.2;3.2;1.2" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite"/>
+    </rect>
+    <text x="130" y="137" text-anchor="middle" font-size="21" font-weight="800" fill="#00d4ff" filter="url(#glow)">Am</text>
+    <text x="130" y="155" text-anchor="middle" font-size="10.5" fill="#8aa4c8" letter-spacing="1">A(VI) MENOR</text>
+  </g>
+  <g>
+    <rect x="250" y="110" width="120" height="58" rx="10" fill="#0f172a" stroke="#22c55e" stroke-width="1.6">
+      <animate attributeName="stroke-width" values="2.8;1.2;2.8" dur="3.6s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-opacity" values="0.55;1;0.55" dur="3.6s" repeatCount="indefinite"/>
+    </rect>
+    <text x="310" y="137" text-anchor="middle" font-size="21" font-weight="800" fill="#22c55e" filter="url(#glow)">F</text>
+    <text x="310" y="155" text-anchor="middle" font-size="10.5" fill="#8aa4c8" letter-spacing="1">F(IV) MAYOR</text>
+  </g>
+  <g>
+    <rect x="430" y="110" width="120" height="58" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.6">
+      <animate attributeName="stroke-width" values="1.2;3;1.2" dur="4.1s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-opacity" values="0.5;1;0.5" dur="4.1s" repeatCount="indefinite"/>
+    </rect>
+    <text x="490" y="137" text-anchor="middle" font-size="21" font-weight="800" fill="#f59e0b" filter="url(#glow)">C</text>
+    <text x="490" y="155" text-anchor="middle" font-size="10.5" fill="#8aa4c8" letter-spacing="1">C(I) MAYOR</text>
+  </g>
+  <g>
+    <rect x="610" y="110" width="120" height="58" rx="10" fill="#0f172a" stroke="#a855f7" stroke-width="1.6">
+      <animate attributeName="stroke-width" values="3;1.2;3" dur="2.6s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-opacity" values="0.5;1;0.5" dur="2.6s" repeatCount="indefinite"/>
+    </rect>
+    <text x="670" y="137" text-anchor="middle" font-size="21" font-weight="800" fill="#a855f7" filter="url(#glow)">G</text>
+    <text x="670" y="155" text-anchor="middle" font-size="10.5" fill="#8aa4c8" letter-spacing="1">G(V) MAYOR</text>
+  </g>
+
+  <!-- ANILLOS ORBITANDO ALREDEDOR DE NODOS CLAVE -->
+  <circle cx="130" cy="139" r="52" fill="none" stroke="#00d4ff" stroke-width="1.2" stroke-dasharray="4 8" opacity="0.75">
+    <animateTransform attributeName="transform" type="rotate" from="0 130 139" to="360 130 139" dur="7s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="670" cy="139" r="52" fill="none" stroke="#a855f7" stroke-width="1.2" stroke-dasharray="2 9" opacity="0.75">
+    <animateTransform attributeName="transform" type="rotate" from="360 670 139" to="0 670 139" dur="8.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="400" cy="139" r="76" fill="none" stroke="#22c55e" stroke-width="0.9" stroke-dasharray="3 12" opacity="0.5">
+    <animateTransform attributeName="transform" type="rotate" from="0 400 139" to="360 400 139" dur="12s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- FLECHAS ENTRE ACORDES -->
+  <g stroke-linecap="round">
+    <line x1="194" y1="139" x2="244" y2="139" stroke="#00d4ff" stroke-width="2" stroke-dasharray="6 6">
+      <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.5s" repeatCount="indefinite"/>
+    </line>
+    <polygon points="246,139 237,135 237,143" fill="#00d4ff"/>
+    <line x1="374" y1="139" x2="424" y2="139" stroke="#22c55e" stroke-width="2" stroke-dasharray="6 6">
+      <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.8s" repeatCount="indefinite"/>
+    </line>
+    <polygon points="426,139 417,135 417,143" fill="#22c55e"/>
+    <line x1="554" y1="139" x2="604" y2="139" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 6">
+      <animate attributeName="stroke-dashoffset" from="0" to="-24" dur="1.3s" repeatCount="indefinite"/>
+    </line>
+    <polygon points="606,139 597,135 597,143" fill="#f59e0b"/>
+  </g>
+
+  <!-- EXPLOSIONES RADIALES -->
+  <g stroke="#00d4ff" stroke-width="2" stroke-linecap="round" filter="url(#glow)">
+    <g transform="translate(130,139) rotate(0)"><line x1="0" y1="-20" x2="0" y2="-32"><animate attributeName="y2" values="-20;-36;-20" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.4s" repeatCount="indefinite"/></line></g>
+    <g transform="translate(130,139) rotate(90)"><line x1="0" y1="-20" x2="0" y2="-32"><animate attributeName="y2" values="-20;-36;-20" dur="2.4s" begin="0.3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="0.3s" repeatCount="indefinite"/></line></g>
+    <g transform="translate(130,139) rotate(180)"><line x1="0" y1="-20" x2="0" y2="-32"><animate attributeName="y2" values="-20;-36;-20" dur="2.4s" begin="0.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="0.6s" repeatCount="indefinite"/></line></g>
+    <g transform="translate(130,139) rotate(270)"><line x1="0" y1="-20" x2="0" y2="-32"><animate attributeName="y2" values="-20;-36;-20" dur="2.4s" begin="0.9s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="0.9s" repeatCount="indefinite"/></line></g>
+  </g>
+  <g stroke="#a855f7" stroke-width="2" stroke-linecap="round" filter="url(#glow)">
+    <g transform="translate(670,139) rotate(45)"><line x1="0" y1="-20" x2="0" y2="-32"><animate attributeName="y2" values="-20;-36;-20" dur="2.8s" begin="0.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.8s" begin="0.4s" repeatCount="indefinite"/></line></g>
+    <g transform="translate(670,139) rotate(135)"><line x1="0" y1="-20" x2="0" y2="-32"><animate attributeName="y2" values="-20;-36;-20" dur="2.8s" begin="0.9s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.8s" begin="0.9s" repeatCount="indefinite"/></line></g>
+    <g transform="translate(670,139) rotate(225)"><line x1="0" y1="-20" x2="0" y2="-32"><animate attributeName="y2" values="-20;-36;-20" dur="2.8s" begin="1.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.8s" begin="1.4s" repeatCount="indefinite"/></line></g>
+    <g transform="translate(670,139) rotate(315)"><line x1="0" y1="-20" x2="0" y2="-32"><animate attributeName="y2" values="-20;-36;-20" dur="2.8s" begin="1.9s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;0" dur="2.8s" begin="1.9s" repeatCount="indefinite"/></line></g>
+  </g>
+
+  <!-- ONDA MELÓDICA -->
+  <path d="M40 250 C 110 200, 170 300, 240 250 S 370 200, 440 250 S 570 300, 640 250 S 740 200, 780 250"
+        fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round"
+        stroke-dasharray="12 10" opacity="0.5" filter="url(#glow)">
+    <animate attributeName="stroke-dashoffset" from="0" to="-220" dur="6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.18;0.65;0.18" dur="7s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- NOTAS FLOTANTES -->
+  <text x="112" y="216" font-size="26" fill="#a855f7" filter="url(#glow)">
+    ♪
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -9;0 0" dur="3.2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.35;1;0.35" dur="3.2s" repeatCount="indefinite"/>
+  </text>
+  <text x="232" y="202" font-size="28" fill="#00d4ff" filter="url(#glow)">
+    ♫
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -11;0 0" dur="4.1s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0.3;1" dur="4.1s" repeatCount="indefinite"/>
+  </text>
+  <text x="330" y="232" font-size="24" fill="#f59e0b" filter="url(#glow)">
+    ♩
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -7;0 0" dur="3.6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="3.6s" repeatCount="indefinite"/>
+  </text>
+  <text x="470" y="206" font-size="30" fill="#22c55e" filter="url(#glow)">
+    ♬
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -12;0 0" dur="4.7s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="4.7s" repeatCount="indefinite"/>
+  </text>
+  <text x="600" y="228" font-size="25" fill="#00d4ff" filter="url(#glow)">
+    ♪
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0" dur="3.9s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;0.35;1" dur="3.9s" repeatCount="indefinite"/>
+  </text>
+  <text x="700" y="212" font-size="27" fill="#a855f7" filter="url(#glow)">
+    ♫
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -10;0 0" dur="4.4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="4.4s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- NOTAS FANTASMA RECORRIENDO LOS PATHS -->
+  <text x="0" y="0" font-size="20" fill="#00d4ff" filter="url(#glow)" opacity="0">♪
+    <animateMotion dur="4.5s" begin="0s" repeatCount="indefinite"><mpath href="#mNoteA"/></animateMotion>
+    <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.72;1" dur="4.5s" begin="0s" repeatCount="indefinite"/>
+  </text>
+  <text x="0" y="0" font-size="18" fill="#22c55e" filter="url(#glow)" opacity="0">♫
+    <animateMotion dur="5.6s" begin="1.4s" repeatCount="indefinite"><mpath href="#mNoteA"/></animateMotion>
+    <animate attributeName="opacity" values="0;0.85;0.85;0" keyTimes="0;0.15;0.72;1" dur="5.6s" begin="1.4s" repeatCount="indefinite"/>
+  </text>
+  <text x="0" y="0" font-size="20" fill="#f59e0b" filter="url(#glow)" opacity="0">♩
+    <animateMotion dur="4.9s" begin="0.8s" repeatCount="indefinite"><mpath href="#mNoteB"/></animateMotion>
+    <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.15;0.72;1" dur="4.9s" begin="0.8s" repeatCount="indefinite"/>
+  </text>
+  <text x="0" y="0" font-size="19" fill="#a855f7" filter="url(#glow)" opacity="0">♬
+    <animateMotion dur="5.3s" begin="2.1s" repeatCount="indefinite"><mpath href="#mNoteC"/></animateMotion>
+    <animate attributeName="opacity" values="0;0.88;0.88;0" keyTimes="0;0.15;0.72;1" dur="5.3s" begin="2.1s" repeatCount="indefinite"/>
+  </text>
+  <text x="0" y="0" font-size="17" fill="#00d4ff" filter="url(#glow)" opacity="0">♪
+    <animateMotion dur="6.1s" begin="3.3s" repeatCount="indefinite"><mpath href="#mNoteC"/></animateMotion>
+    <animate attributeName="opacity" values="0;0.85;0.85;0" keyTimes="0;0.15;0.72;1" dur="6.1s" begin="3.3s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- TECLADO DE PIANO -->
+  <g>
+    <rect x="56" y="346" width="688" height="84" rx="6" fill="#05080f" stroke="#1e3a5f"/>
+    <rect x="60" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="108.5" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="0.32s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="157" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="0.64s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="205.5" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="0.96s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="254" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="1.28s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="302.5" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="1.6s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="351" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="1.92s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="399.5" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="2.24s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="448" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="2.56s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="496.5" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="2.88s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="545" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="3.2s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="593.5" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="3.52s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="642" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="3.84s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="690.5" y="350" width="48.5" height="76" rx="4" fill="#0e1729" stroke="#1e3a5f">
+      <animate attributeName="fill" values="#0e1729;#0e1729;#00d4ff;#0e1729;#0e1729" keyTimes="0;0.55;0.64;0.75;1" dur="9s" begin="4.16s" repeatCount="indefinite"/>
+    </rect>
+
+    <g fill="#05080f" stroke="#12203a">
+      <rect x="94" y="350" width="29" height="48" rx="2"/>
+      <rect x="142.5" y="350" width="29" height="48" rx="2"/>
+      <rect x="239.5" y="350" width="29" height="48" rx="2"/>
+      <rect x="288" y="350" width="29" height="48" rx="2"/>
+      <rect x="336.5" y="350" width="29" height="48" rx="2"/>
+      <rect x="433.5" y="350" width="29" height="48" rx="2"/>
+      <rect x="482" y="350" width="29" height="48" rx="2"/>
+      <rect x="579" y="350" width="29" height="48" rx="2"/>
+      <rect x="627.5" y="350" width="29" height="48" rx="2"/>
+      <rect x="676" y="350" width="29" height="48" rx="2"/>
+    </g>
+
+    <g font-size="11" font-weight="800" text-anchor="middle" fill="#8aa4c8">
+      <text x="84.25" y="410">C</text><text x="132.75" y="410">D</text><text x="181.25" y="410">E</text>
+      <text x="229.75" y="410">F</text><text x="278.25" y="410">G</text><text x="326.75" y="410">A</text>
+      <text x="375.25" y="410">B</text><text x="423.75" y="410">C</text><text x="472.25" y="410">D</text>
+      <text x="520.75" y="410">E</text><text x="569.25" y="410">F</text><text x="617.75" y="410">G</text>
+      <text x="666.25" y="410">A</text><text x="714.75" y="410">B</text>
+    </g>
+    <g font-size="8.5" font-weight="700" text-anchor="middle" fill="#4f6f99">
+      <text x="84.25" y="421">(I)</text><text x="132.75" y="421">(II)</text><text x="181.25" y="421">(III)</text>
+      <text x="229.75" y="421">(IV)</text><text x="278.25" y="421">(V)</text><text x="326.75" y="421">(VI)</text>
+      <text x="375.25" y="421">(VII)</text><text x="423.75" y="421">(I)</text><text x="472.25" y="421">(II)</text>
+      <text x="520.75" y="421">(III)</text><text x="569.25" y="421">(IV)</text><text x="617.75" y="421">(V)</text>
+      <text x="666.25" y="421">(VI)</text><text x="714.75" y="421">(VII)</text>
+    </g>
+  </g>
+
+  <!-- TEXTO CULMINANTE -->
+  <g transform="translate(400,318)">
+    <text x="0" y="0" text-anchor="middle" font-size="34" font-weight="900" letter-spacing="5"
+          fill="#f59e0b" filter="url(#glowBig)" opacity="0">
+      ¡IMPROVISA!
+      <animate attributeName="opacity" values="0;0;0;1;1;0;0" keyTimes="0;0.55;0.62;0.70;0.82;0.88;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <!-- ENCABEZADO -->
+  <text x="22" y="30" font-size="10" font-weight="800" letter-spacing="2.4" fill="#8aa4c8" opacity="0.9">
+    TUTORIAL INTERACTIVO
+    <animate attributeName="opacity" values="0.35;0.95;0.35" dur="5s" repeatCount="indefinite"/>
+  </text>
+
+  <text x="400" y="44" text-anchor="middle" font-size="30" font-weight="800" letter-spacing="3"
+        fill="#00d4ff" filter="url(#glow)">
+    IMPROVISACIÓN
+    <animate attributeName="fill" values="#00d4ff;#a855f7;#22c55e;#f59e0b;#00d4ff" dur="12s" repeatCount="indefinite"/>
+  </text>
+
+  <text x="400" y="67" text-anchor="middle" font-size="12.5" letter-spacing="2.4" fill="#8aa4c8">
+    MÉTODO DE LAS TRES C · PIANO · TONALIDAD C(I) MAYOR
+    <animate attributeName="opacity" values="0.45;1;0.45" dur="4s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- ETIQUETAS DE ESTADO ALTERNANTES -->
+  <text x="400" y="90" text-anchor="middle" font-size="11.5" font-weight="800" letter-spacing="3" fill="#00d4ff" filter="url(#glow)">
+    1 · CHORDS
+    <animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;0.30;0.35;0.95;1" dur="12s" repeatCount="indefinite"/>
+  </text>
+  <text x="400" y="90" text-anchor="middle" font-size="11.5" font-weight="800" letter-spacing="3" fill="#22c55e" filter="url(#glow)">
+    2 · CONNECTING NOTES
+    <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.30;0.36;0.62;0.68;1" dur="12s" repeatCount="indefinite"/>
+  </text>
+  <text x="400" y="90" text-anchor="middle" font-size="11.5" font-weight="800" letter-spacing="3" fill="#f59e0b" filter="url(#glow)">
+    3 · COMPING
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.62;0.68;0.94;1" dur="12s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- INDICADOR LIVE -->
+  <g transform="translate(688,26)">
+    <circle cx="0" cy="0" r="5" fill="#ef4444" filter="url(#glow)">
+      <animate attributeName="r" values="4;7.5;4" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.25;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="13" y="4.5" font-size="10.5" font-weight="800" letter-spacing="2.4" fill="#ef4444">LIVE</text>
+    <text x="66" y="4.5" font-size="10.5" font-weight="600" letter-spacing="1.4" fill="#4f6f99">
+      C(I) MAYOR
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="3.4s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <!-- FIRMA -->
+  <text x="400" y="446" text-anchor="middle" font-size="10.5" letter-spacing="1.6" fill="#a855f7">
+    Rubén Sbarsky · Fiat iustitia, ruat caelum.
+    <animate attributeName="opacity" values="0.35;1;0.35" dur="6.5s" repeatCount="indefinite"/>
+  </text>
+</svg>
+</template>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============ SVG HERO: inyección y reutilización ============ */
+  var heroTpl = document.getElementById('heroTemplate');
+
+  function markupWithPrefix(prefix) {
+    var html = heroTpl.innerHTML.trim();
+    if (prefix) {
+      html = html.replace(/id="([^"]+)"/g, function (m, id) { return 'id="' + prefix + id + '"'; })
+                 .replace(/url\(#([^)]+)\)/g, function (m, id) { return 'url(#' + prefix + id + ')'; })
+                 .replace(/href="#([^"]+)"/g, function (m, id) { return 'href="#' + prefix + id + '"'; });
+    }
+    return html;
+  }
+
+  var heroHost = document.getElementById('heroHost');
+  if (heroHost) heroHost.innerHTML = markupWithPrefix('');
+
+  var creditsHost = document.getElementById('creditsHost');
+
+  function mountCreditsSvg() {
+    if (!creditsHost) return;
+    creditsHost.innerHTML = markupWithPrefix('c-');
+  }
+
+  /* ============ SPA NAVEGACIÓN ============ */
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
+  var navBtns = Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
+
+  function showPage(id) {
+    pages.forEach(function (p) { p.classList.toggle('active', p.id === id); });
+    navBtns.forEach(function (b) { b.classList.toggle('active', b.dataset.target === id); });
+
+    if (id === 'creditos') {
+      mountCreditsSvg();
+    }
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+    updateProgress();
+  }
+
+  navBtns.forEach(function (b) {
+    b.addEventListener('click', function () { showPage(b.dataset.target); });
+  });
+
+  /* ============ BARRA DE PROGRESO ============ */
+  var progressEl = document.getElementById('progress');
+
+  function updateProgress() {
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - doc.clientHeight;
+    var pct = max > 0 ? (doc.scrollTop / max) * 100 : 0;
+    if (pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    progressEl.style.width = pct + '%';
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+
+  /* ============ BOTÓN VOLVER ARRIBA ============ */
+  var toTop = document.getElementById('toTop');
+
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 320) { toTop.classList.add('show'); }
+    else { toTop.classList.remove('show'); }
+  }, { passive: true });
+
+  toTop.addEventListener('click', function () {
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  });
+
+  /* ============ ACORDEONES ============ */
+  document.querySelectorAll('.acc-h').forEach(function (h) {
+    h.addEventListener('click', function () {
+      var acc = h.parentElement;
+      acc.classList.toggle('open');
+    });
+  });
+
+  /* ============ TABS ============ */
+  document.querySelectorAll('.tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      var group = t.parentElement;
+      var target = t.dataset.tab;
+      group.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('active'); });
+      t.classList.add('active');
+
+      var container = group.parentElement;
+      container.querySelectorAll('.tabpane').forEach(function (p) {
+        p.classList.toggle('active', p.id === target);
+      });
+    });
+  });
+
+  /* ============ EJERCICIOS DESPLEGABLES ============ */
+  document.querySelectorAll('.btn-rev').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var ans = b.nextElementSibling;
+      var open = ans.classList.toggle('show');
+      b.textContent = open ? 'Ocultar solución ▴' : 'Ver solución explicada ▾';
+    });
+  });
+
+  /* ============ CHECKLIST ============ */
+  document.querySelectorAll('.chk').forEach(function (c) {
+    c.addEventListener('click', function () { c.classList.toggle('on'); });
+  });
+
+  /* ============ PIANO INTERACTIVO ============ */
+  var NOTE_DATA = [
+    { n: 'C', deg: '(I)',   name: 'Tónica', desc: 'Nota raíz / Centro tonal de la escala de C(I) mayor.' },
+    { n: 'D', deg: '(II)',  name: 'Supertónica', desc: 'Segundo grado de la escala. Actúa como nota de paso y de adorno.' },
+    { n: 'E', deg: '(III)', name: 'Mediante', desc: 'Tercer grado. Define el carácter mayor del acorde de C(I).' },
+    { n: 'F', deg: '(IV)',  name: 'Subdominante', desc: 'Cuarto grado. Base del acorde F(IV), segunda parada de la progresión.' },
+    { n: 'G', deg: '(V)',   name: 'Dominante', desc: 'Quinto grado. Base del acorde G(V) y nota superior de enlace.' },
+    { n: 'A', deg: '(VI)',  name: 'Superdominante / Relativo menor', desc: 'Sexto grado. Nota raíz del acorde Am(VI).' },
+    { n: 'B', deg: '(VII)', name: 'Sensible', desc: 'Séptimo grado. Tiende a resolver hacia la tónica C(I).' }
+  ];
+
+  var pianoKeys = document.getElementById('pianoKeys');
+  var pianoInfo = document.getElementById('pianoInfo');
+
+  if (pianoKeys) {
+    NOTE_DATA.forEach(function (d, i) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pkey';
+      btn.dataset.idx = String(i);
+      btn.innerHTML = d.n + '<span class="deg">' + d.deg + '</span>';
+      btn.addEventListener('click', function () {
+        pianoKeys.querySelectorAll('.pkey').forEach(function (k) { k.classList.remove('on'); });
+        btn.classList.add('on');
+        pianoInfo.innerHTML =
+          '<div class="pi-note">' + d.n + d.deg + '</div>' +
+          '<div class="pi-name">' + d.name + '</div>' +
+          '<div class="pi-desc">' + d.desc + '</div>';
+      });
+      pianoKeys.appendChild(btn);
+    });
+  }
+
+  /* ============ ACCESIBILIDAD: REDUCIR MOVIMIENTO ============ */
+  var rm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function applyReducedMotion() {
+    var svgs = document.querySelectorAll('.hero-svg');
+    svgs.forEach(function (s) {
+      if (typeof s.pauseAnimations === 'function') {
+        if (rm.matches) { s.pauseAnimations(); }
+        else { s.unpauseAnimations(); }
+      }
+    });
+  }
+  if (rm.addEventListener) { rm.addEventListener('change', applyReducedMotion); }
+  else if (rm.addListener) { rm.addListener(applyReducedMotion); }
+
+  setTimeout(applyReducedMotion, 60);
+
+  /* ============ INICIALIZACIÓN ============ */
+  updateProgress();
+})();
+</script>
+</body>
+</html>
