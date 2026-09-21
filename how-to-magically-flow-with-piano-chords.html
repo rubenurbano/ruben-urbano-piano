@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Magically Flow with Piano Chords — Tutorial</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --card2:#131c33;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.65;
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* ---------- Progress bar ---------- */
+#progress-wrap{
+  position:fixed;top:0;left:0;width:100%;height:3px;background:#0d1526;z-index:1000;
+}
+#progress-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#00d4ff 0%,#a855f7 50%,#22c55e 100%);
+  transition:width .1s linear;
+  box-shadow:0 0 12px rgba(0,212,255,.7);
+}
+
+/* ---------- Navbar ---------- */
+nav#navbar{
+  position:fixed;top:3px;left:0;width:100%;
+  background:rgba(10,14,26,.92);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  z-index:999;
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;
+  overflow-x:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+nav#navbar::-webkit-scrollbar{height:5px}
+nav#navbar::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.nav-brand{
+  flex:0 0 auto;
+  font-weight:800;font-size:.85rem;letter-spacing:1.5px;
+  color:var(--accent);
+  padding-right:12px;margin-right:8px;
+  border-right:1px solid var(--border);
+  white-space:nowrap;
+  text-shadow:0 0 10px rgba(0,212,255,.5);
+}
+.nav-link{
+  flex:0 0 auto;
+  padding:7px 13px;border-radius:8px;
+  font-size:.78rem;font-weight:600;letter-spacing:.4px;
+  color:var(--muted);
+  white-space:nowrap;
+  transition:all .2s ease;
+  border:1px solid transparent;
+}
+.nav-link:hover{color:var(--text);background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.25)}
+.nav-link.active{
+  color:#04111f;
+  background:linear-gradient(135deg,#00d4ff,#22c55e);
+  box-shadow:0 0 16px rgba(0,212,255,.5);
+}
+.nav-link.credits-link{color:var(--amber)}
+.nav-link.credits-link.active{color:#1a1200;background:linear-gradient(135deg,#f59e0b,#ef4444)}
+
+/* ---------- Layout ---------- */
+main{
+  max-width:1100px;margin:0 auto;
+  padding:80px 16px 60px;
+}
+.section{display:none;animation:fadeUp .45s ease}
+.section.active{display:block}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ---------- HOME ---------- */
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;border-radius:999px;
+  background:rgba(0,212,255,.1);
+  border:1px solid rgba(0,212,255,.4);
+  color:var(--accent);
+  font-size:.72rem;font-weight:700;letter-spacing:2px;
+  margin-bottom:18px;
+}
+.hero-badge .dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 10px var(--accent);
+  animation:pulseDot 1.6s infinite;
+}
+@keyframes pulseDot{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.4;transform:scale(.7)}
+}
+h1.hero-title{
+  font-size:clamp(1.6rem,5vw,2.7rem);
+  font-weight:800;letter-spacing:-.5px;line-height:1.15;
+  background:linear-gradient(135deg,#00d4ff,#a855f7 55%,#22c55e);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:12px;
+}
+.hero-sub{
+  font-size:clamp(.95rem,2.5vw,1.1rem);
+  color:var(--muted);margin-bottom:18px;font-weight:500;
+}
+.hero-desc{
+  color:#cbd5e1;font-size:.95rem;margin-bottom:22px;max-width:780px;
+}
+.hero-quote{
+  border-left:3px solid var(--accent);
+  padding:14px 18px;margin:22px 0;
+  background:linear-gradient(90deg,rgba(0,212,255,.08),transparent);
+  border-radius:0 10px 10px 0;
+  font-style:italic;color:#bae6fd;
+  font-size:.95rem;
+}
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:12px;margin:24px 0;
+}
+.metric{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:14px 12px;text-align:center;
+  transition:transform .2s,border-color .2s;
+}
+.metric:hover{transform:translateY(-3px);border-color:var(--accent)}
+.metric .val{
+  font-size:1.6rem;font-weight:800;color:var(--accent);
+  display:block;line-height:1;
+  text-shadow:0 0 14px rgba(0,212,255,.5);
+}
+.metric .lbl{
+  font-size:.68rem;letter-spacing:1.5px;color:var(--muted);
+  text-transform:uppercase;margin-top:6px;display:block;
+}
+.meta-line{
+  display:flex;flex-wrap:wrap;gap:16px;
+  font-size:.78rem;color:var(--muted);
+  padding-top:16px;border-top:1px solid var(--border);
+  margin-top:18px;
+}
+.meta-line span{color:var(--accent);font-weight:700}
+
+/* ---------- SVG frame ---------- */
+.svg-frame{
+  width:100%;
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  background:#070b14;
+  box-shadow:0 0 40px rgba(0,212,255,.12),0 0 80px rgba(168,85,247,.06);
+  margin-bottom:22px;
+}
+
+/* ---------- Cards / Sections ---------- */
+.section-head{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:18px;padding-bottom:14px;
+  border-bottom:1px solid var(--border);
+}
+.section-head .ico{
+  width:42px;height:42px;flex:0 0 42px;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,rgba(0,212,255,.18),rgba(168,85,247,.18));
+  border:1px solid rgba(0,212,255,.35);
+  font-size:1.2rem;
+}
+.section-head h2{
+  font-size:clamp(1.15rem,3.2vw,1.55rem);
+  font-weight:800;letter-spacing:-.3px;
+  color:var(--text);
+}
+.section-head .crumb{
+  font-size:.68rem;letter-spacing:2px;color:var(--accent);
+  text-transform:uppercase;font-weight:700;display:block;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px 18px;
+  margin-bottom:16px;
+}
+.card h3{
+  font-size:1.05rem;font-weight:700;color:var(--accent);
+  margin-bottom:10px;letter-spacing:-.2px;
+}
+.card h4{
+  font-size:.92rem;font-weight:700;color:var(--text);
+  margin:14px 0 8px;
+}
+.card p{margin-bottom:10px;color:#cbd5e1;font-size:.92rem}
+.card ul,.card ol{margin:10px 0 10px 20px;color:#cbd5e1;font-size:.92rem}
+.card li{margin-bottom:6px}
+.card strong{color:#e2e8f0}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+
+/* Chord chips */
+.chord-chip{
+  display:inline-block;
+  padding:5px 11px;margin:3px 4px 3px 0;
+  border-radius:8px;
+  font-family:'Segoe UI',monospace;
+  font-weight:700;font-size:.82rem;
+  border:1px solid;
+}
+.chip-D{color:#00d4ff;border-color:#00d4ff;background:rgba(0,212,255,.1)}
+.chip-A{color:#a855f7;border-color:#a855f7;background:rgba(168,85,247,.1)}
+.chip-Bm{color:#f59e0b;border-color:#f59e0b;background:rgba(245,158,11,.1)}
+.chip-G{color:#22c55e;border-color:#22c55e;background:rgba(34,197,94,.1)}
+.chip-note{
+  display:inline-block;padding:3px 8px;margin:2px;
+  border-radius:6px;font-weight:700;font-size:.78rem;
+  background:rgba(0,212,255,.08);color:var(--accent);
+  border:1px solid rgba(0,212,255,.3);
+  font-family:'Segoe UI',monospace;
+}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);margin:12px 0}
+table{
+  width:100%;border-collapse:collapse;font-size:.86rem;
+  min-width:420px;
+}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:#0b1424;color:var(--accent);font-weight:700;letter-spacing:.5px;font-size:.76rem;text-transform:uppercase}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,212,255,.04)}
+td strong{color:var(--accent)}
+
+/* Callouts */
+.callout{
+  border-radius:10px;padding:14px 16px;margin:14px 0;
+  border-left:4px solid;font-size:.9rem;
+}
+.callout .ttl{
+  font-weight:800;letter-spacing:1.5px;font-size:.72rem;
+  text-transform:uppercase;margin-bottom:6px;display:flex;gap:6px;align-items:center;
+}
+.co-info{background:rgba(0,212,255,.07);border-color:#00d4ff}
+.co-info .ttl{color:#00d4ff}
+.co-ex{background:rgba(34,197,94,.07);border-color:#22c55e}
+.co-ex .ttl{color:#22c55e}
+.co-warn{background:rgba(245,158,11,.08);border-color:#f59e0b}
+.co-warn .ttl{color:#f59e0b}
+.co-err{background:rgba(239,68,68,.08);border-color:#ef4444}
+.co-err .ttl{color:#ef4444}
+
+/* Steps */
+.step-list{counter-reset:step;list-style:none;margin:12px 0;padding:0}
+.step-list li{
+  position:relative;padding:12px 14px 12px 52px;margin-bottom:10px;
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:10px;counter-increment:step;font-size:.9rem;
+}
+.step-list li::before{
+  content:counter(step,decimal-leading-zero);
+  position:absolute;left:12px;top:12px;
+  width:28px;height:28px;border-radius:8px;
+  background:linear-gradient(135deg,#00d4ff,#a855f7);
+  color:#04111f;font-weight:800;font-size:.76rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 10px rgba(0,212,255,.4);
+}
+
+/* Accordion */
+.acc{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;margin-bottom:10px;overflow:hidden;
+}
+.acc-h{
+  width:100%;text-align:left;padding:14px 16px;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  font-weight:700;font-size:.9rem;color:var(--text);
+  transition:background .2s;
+}
+.acc-h:hover{background:rgba(0,212,255,.06)}
+.acc-h .mark{color:var(--accent);font-size:1.1rem;transition:transform .25s}
+.acc.open .acc-h .mark{transform:rotate(45deg)}
+.acc-b{
+  max-height:0;overflow:hidden;
+  transition:max-height .3s ease,padding .3s ease;
+  padding:0 16px;
+  font-size:.88rem;color:#cbd5e1;
+}
+.acc.open .acc-b{max-height:600px;padding:0 16px 16px}
+
+/* Piano keys */
+.piano{display:flex;position:relative;height:120px;margin:16px 0;user-select:none}
+.wkey{
+  flex:1;background:linear-gradient(180deg,#f8fafc,#cbd5e1);
+  border:1px solid #94a3b8;border-top:none;
+  border-radius:0 0 6px 6px;
+  display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;
+  padding-bottom:8px;color:#0f172a;font-weight:700;font-size:.75rem;
+  transition:all .15s;position:relative;z-index:1;
+}
+.wkey:hover{background:linear-gradient(180deg,#00d4ff,#0891b2);color:#04111f}
+.wkey .deg{font-size:.62rem;color:#64748b;font-weight:600;display:block;text-align:right;padding-right:8px}
+.wkey:hover .deg{color:#04111f}
+.wkey.hl{background:linear-gradient(180deg,#22c55e,#15803d);color:#fff}
+.wkey.hl .deg{color:#dcfce7}
+.bkey{
+  position:absolute;top:0;width:9%;height:60%;
+  background:linear-gradient(180deg,#1e293b,#020617);
+  border-radius:0 0 4px 4px;z-index:2;
+  color:#e2e8f0;font-size:.65rem;font-weight:700;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;
+  transition:all .15s;
+}
+.bkey:hover{background:linear-gradient(180deg,#a855f7,#7e22ce)}
+@media(max-width:520px){
+  .piano{height:90px}
+  .wkey{font-size:.6rem}
+  .wkey .deg{font-size:.5rem}
+  .bkey{font-size:.5rem}
+}
+
+/* Exec table good/bad */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:600px){.compare{grid-template-columns:1fr}}
+.cmp-good,.cmp-bad{padding:14px;border-radius:10px;font-size:.86rem}
+.cmp-good{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.4)}
+.cmp-good .ttl{color:var(--green);font-weight:800;font-size:.72rem;letter-spacing:1.5px;margin-bottom:8px}
+.cmp-bad{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.4)}
+.cmp-bad .ttl{color:var(--red);font-weight:800;font-size:.72rem;letter-spacing:1.5px;margin-bottom:8px}
+
+/* Checklist */
+.checklist{list-style:none;padding:0;margin:12px 0}
+.checklist li{
+  padding:10px 12px 10px 42px;margin-bottom:8px;
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:8px;position:relative;font-size:.9rem;
+}
+.checklist li::before{
+  content:"✓";position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  width:22px;height:22px;border-radius:6px;
+  background:rgba(34,197,94,.15);color:var(--green);
+  border:1px solid rgba(34,197,94,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.75rem;
+}
+
+/* Chord diagram */
+.chord-diagram{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;margin:14px 0;
+}
+.chord-box{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:10px;padding:14px;text-align:center;
+  transition:all .25s;
+}
+.chord-box:hover{transform:translateY(-3px);box-shadow:0 0 20px rgba(0,212,255,.2)}
+.chord-box .ch-name{font-size:1.4rem;font-weight:800;margin-bottom:4px}
+.chord-box .ch-deg{font-size:.7rem;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px}
+.chord-box .ch-notes{font-family:'Segoe UI',monospace;font-size:.85rem;font-weight:700;color:var(--text)}
+.chord-box.d{border-color:rgba(0,212,255,.5)}.chord-box.d .ch-name{color:#00d4ff}
+.chord-box.a{border-color:rgba(168,85,247,.5)}.chord-box.a .ch-name{color:#a855f7}
+.chord-box.bm{border-color:rgba(245,158,11,.5)}.chord-box.bm .ch-name{color:#f59e0b}
+.chord-box.g{border-color:rgba(34,197,94,.5)}.chord-box.g .ch-name{color:#22c55e}
+
+/* Rhythm grid */
+.rhythm{
+  display:grid;grid-template-columns:repeat(8,1fr);
+  gap:4px;margin:14px 0;
+}
+.beat{
+  padding:10px 4px;text-align:center;
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:8px;font-family:'Segoe UI',monospace;
+  font-weight:700;font-size:.85rem;color:var(--text);
+  transition:all .2s;
+}
+.beat.lh{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.4);color:#7dd3fc}
+.beat.rh{background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.5);color:#e9d5ff}
+.beat.rest{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:#fcd34d}
+@media(max-width:520px){
+  .rhythm{grid-template-columns:repeat(4,1fr)}
+}
+
+/* Credits */
+.credits-card{
+  text-align:center;padding:26px 18px;
+  background:linear-gradient(180deg,var(--card),#0b1424);
+  border:1px solid var(--border);border-radius:12px;margin-bottom:16px;
+}
+.credits-card .name{
+  font-size:1.4rem;font-weight:800;color:var(--accent);
+  text-shadow:0 0 16px rgba(0,212,255,.5);margin:8px 0;
+}
+.credits-card .title{
+  color:var(--muted);font-size:.85rem;margin-bottom:16px;
+}
+.credits-meta{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:10px;margin-top:16px;
+}
+.credits-meta div{
+  padding:10px;background:var(--card2);
+  border:1px solid var(--border);border-radius:8px;
+  font-size:.82rem;
+}
+.credits-meta .k{font-size:.62rem;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px}
+.credits-meta .v{color:var(--accent);font-weight:700}
+.latin{
+  margin-top:20px;padding:14px;
+  border-top:1px solid var(--border);
+  font-style:italic;color:var(--amber);
+  font-size:.9rem;letter-spacing:.5px;
+}
+
+/* Sources */
+.source-item{
+  display:block;padding:16px;margin-bottom:12px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;text-decoration:none;color:inherit;
+  transition:all .2s;
+}
+.source-item:hover{border-color:var(--accent);transform:translateX(3px);box-shadow:0 0 20px rgba(0,212,255,.15)}
+.source-item .tag{
+  display:inline-block;padding:3px 8px;border-radius:6px;
+  font-size:.62rem;letter-spacing:1.5px;font-weight:800;
+  background:rgba(239,68,68,.15);color:#fca5a5;
+  border:1px solid rgba(239,68,68,.4);margin-bottom:8px;
+}
+.source-item .st{font-weight:700;color:var(--text);font-size:.95rem;margin-bottom:4px}
+.source-item .su{font-size:.78rem;color:var(--accent);word-break:break-all;font-family:monospace}
+
+/* Back to top */
+#top-btn{
+  position:fixed;bottom:20px;right:20px;
+  width:46px;height:46px;border-radius:12px;
+  background:linear-gradient(135deg,#00d4ff,#a855f7);
+  color:#04111f;font-weight:800;font-size:1.2rem;
+  display:none;align-items:center;justify-content:center;
+  box-shadow:0 0 20px rgba(0,212,255,.5);
+  z-index:900;transition:transform .2s;
+}
+#top-btn:hover{transform:translateY(-3px) scale(1.05)}
+#top-btn.show{display:flex}
+
+/* Footer */
+footer{
+  max-width:1100px;margin:40px auto 20px;
+  padding:22px 16px;text-align:center;
+  border-top:1px solid var(--border);
+  font-size:.78rem;color:var(--muted);
+}
+footer .line{margin:4px 0}
+footer .latin{color:var(--amber);font-style:italic;margin-top:10px;border:none;padding:0}
+footer strong{color:var(--accent)}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001s!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001s!important;
+  }
+}
+
+@media(max-width:520px){
+  main{padding:76px 12px 50px}
+  .section-head .ico{width:36px;height:36px;flex:0 0 36px;font-size:1rem}
+  .card{padding:14px}
+  .nav-brand{font-size:.75rem}
+  .nav-link{padding:6px 10px;font-size:.72rem}
+}
+</style>
+</head>
+<body>
+
+<div id="progress-wrap"><div id="progress-bar"></div></div>
+
+<nav id="navbar">
+  <div class="nav-brand">◈ PIANO FLOW</div>
+  <button class="nav-link active" data-target="home">HOME</button>
+  <button class="nav-link" data-target="flow">FLOW</button>
+  <button class="nav-link" data-target="progresion">PROGRESIÓN</button>
+  <button class="nav-link" data-target="izquierda">MANO IZQ.</button>
+  <button class="nav-link" data-target="derecha">MANO DER.</button>
+  <button class="nav-link" data-target="sincro">SINCRONÍA</button>
+  <button class="nav-link" data-target="paso">NOTAS DE PASO</button>
+  <button class="nav-link" data-target="practica">PRÁCTICA</button>
+  <button class="nav-link" data-target="fuentes">FUENTES</button>
+  <button class="nav-link credits-link" data-target="creditos">CRÉDITOS</button>
+</nav>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section id="sec-home" class="section active">
+  <div class="svg-frame" id="home-svg-container"></div>
+
+  <div class="hero-badge"><span class="dot"></span> TUTORIAL TÉCNICO · NIVEL 2 DE FLUIDEZ</div>
+  <h1 class="hero-title">How to Magically Flow with Piano Chords</h1>
+  <p class="hero-sub">El arte de convertir una progresión estática en una experiencia sonora viva y orgánica</p>
+  <p class="hero-desc">
+    Un método paso a paso para transformar la rigidez del Nivel 1 en fluidez musical real.
+    Aprenderás a mantener un pulso constante mientras las notas varían de forma creativa,
+    construyendo un acompañamiento cinematográfico con la mano izquierda y una melodía que respira
+    con la mano derecha. Cuando domines el silencio estratégico del último «y», la magia ocurre.
+  </p>
+
+  <div class="hero-quote">
+    «Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.»
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><span class="val">4</span><span class="lbl">Acordes</span></div>
+    <div class="metric"><span class="val">3</span><span class="lbl">Pasos</span></div>
+    <div class="metric"><span class="val">2</span><span class="lbl">Manos</span></div>
+    <div class="metric"><span class="val">1</span><span class="lbl">Flow</span></div>
+  </div>
+
+  <div class="meta-line">
+    <div>📅 Fecha: <span>21/09/2026</span></div>
+    <div>🕒 Hora: <span>09:59:16</span></div>
+    <div>👨‍💻 Créditos: <span>Rubén Sbarsky</span></div>
+  </div>
+</section>
+
+<!-- ============ FLOW ============ -->
+<section id="sec-flow" class="section">
+  <div class="section-head">
+    <div class="ico">🌊</div>
+    <div>
+      <span class="crumb">01 · Introducción</span>
+      <h2>El Concepto de «Flow» en el Piano</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>
+      Fluir con los acordes en el piano es el arte de transformar una progresión estática en
+      una experiencia sonora viva y orgánica. En este nivel, al que denominamos
+      <strong>Nivel 2 de Fluidez</strong>, nos alejamos de la rigidez del Nivel 1.
+    </p>
+    <p>
+      Mientras que en el nivel inicial nos limitamos a repetir patrones de dedos fijos sobre cada acorde,
+      en el <strong>Nivel 2 mantenemos el ritmo constante</strong> pero permitimos que las notas varíen
+      de forma creativa.
+    </p>
+    <p>
+      Este enfoque es lo que separa a un principiante de un músico con un sonido profesional y fluido.
+      Al desarrollar esta flexibilidad rítmica, dejas de ser un ejecutor de teclas para convertirte en
+      un <strong>narrador de historias musicales</strong>.
+    </p>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>◈ Nivel 1 — Rigidez</h3>
+      <ul>
+        <li>Patrones de dedos fijos sobre cada acorde</li>
+        <li>Repetición mecánica y predecible</li>
+        <li>Sonido «apretado» y denso</li>
+        <li>Ejecución de teclas sin narrativa</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>◈ Nivel 2 — Fluidez</h3>
+      <ul>
+        <li>Ritmo constante, notas variables</li>
+        <li>Flexibilidad rítmica creativa</li>
+        <li>Textura abierta y profesional</li>
+        <li>Narración emocional con el instrumento</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout co-info">
+    <div class="ttl">◆ INFO</div>
+    Esta técnica es esencial para tocar de oído, realizar acompañamientos elegantes o simplemente
+    conectar emocionalmente con el instrumento durante una sesión de improvisación relajante.
+    Para lograrlo, primero debemos dominar nuestro mapa: la progresión de acordes.
+  </div>
+</section>
+
+<!-- ============ PROGRESIÓN ============ -->
+<section id="sec-progresion" class="section">
+  <div class="section-head">
+    <div class="ico">🎼</div>
+    <div>
+      <span class="crumb">02 · La base del movimiento</span>
+      <h2>La Progresión de Acordes</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>
+      Utilizaremos una secuencia armónica clásica y sumamente versátil. Conocer las notas individuales
+      de estos acordes es vital, ya que representan los <strong>«puntos de aterrizaje»</strong> seguros
+      para nuestras manos.
+    </p>
+    <p>
+      Notación utilizada: sistema americano (<code>A B C D E F G</code>) con el grado de la escala
+      indicado entre paréntesis (<code>I–VII</code>). La tonalidad de referencia es <strong>D Mayor</strong>.
+    </p>
+  </div>
+
+  <div class="chord-diagram">
+    <div class="chord-box d">
+      <div class="ch-name">D</div>
+      <div class="ch-deg">GRADO I</div>
+      <div class="ch-notes">D · F# · A</div>
+    </div>
+    <div class="chord-box a">
+      <div class="ch-name">A</div>
+      <div class="ch-deg">GRADO V</div>
+      <div class="ch-notes">A · C# · E</div>
+    </div>
+    <div class="chord-box bm">
+      <div class="ch-name">Bm</div>
+      <div class="ch-deg">GRADO VI</div>
+      <div class="ch-notes">B · D · F#</div>
+    </div>
+    <div class="chord-box g">
+      <div class="ch-name">G</div>
+      <div class="ch-deg">GRADO IV</div>
+      <div class="ch-notes">G · B · D</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Tabla de acordes y notas constituyentes</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Acorde</th><th>Grado</th><th>Notas que lo componen</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>D Mayor</strong></td><td>I</td><td>D — F# — A</td></tr>
+          <tr><td><strong>A Mayor</strong></td><td>V</td><td>A — C# — E</td></tr>
+          <tr><td><strong>B menor</strong></td><td>VI</td><td>B — D — F#</td></tr>
+          <tr><td><strong>G Mayor</strong></td><td>IV</td><td>G — B — D</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Escala de D Mayor — Mapa de grados</h3>
+    <div class="piano">
+      <div class="wkey" data-note="D">D<span class="deg">I</span></div>
+      <div class="wkey" data-note="E">E<span class="deg">II</span></div>
+      <div class="wkey" data-note="F#">F#<span class="deg">III</span></div>
+      <div class="wkey" data-note="G">G<span class="deg">IV</span></div>
+      <div class="wkey" data-note="A">A<span class="deg">V</span></div>
+      <div class="wkey" data-note="B">B<span class="deg">VI</span></div>
+      <div class="wkey" data-note="C#">C#<span class="deg">VII</span></div>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted)">
+      Memorizar estas notas nos permite visualizar el teclado no como un conjunto de teclas blancas
+      y negras, sino como un <strong>mapa de destinos melódicos</strong>.
+    </p>
+  </div>
+
+  <div class="callout co-ex">
+    <div class="ttl">◆ EJEMPLO</div>
+    La progresión completa en D Mayor: <strong>D (I) → A (V) → Bm (VI) → G (IV)</strong>.
+    Cada acorde es un destino; las manos viajan de uno a otro sin perder el pulso.
+  </div>
+</section>
+
+<!-- ============ MANO IZQUIERDA ============ -->
+<section id="sec-izquierda" class="section">
+  <div class="section-head">
+    <div class="ico">🖐️</div>
+    <div>
+      <span class="crumb">03 · Paso 1</span>
+      <h2>El Motor de la Mano Izquierda</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Arpegios y ritmo — el cimiento de la interpretación</h3>
+    <p>
+      La mano izquierda es el cimiento de nuestra interpretación; su función es proporcionar un
+      soporte rítmico cinematográfico que llene el espacio sonoro sin saturarlo. Al expandir la mano
+      hacia la octava e incluir la quinta en el centro, evitamos ese sonido <em>«apretado»</em> y denso
+      típico de los principiantes, logrando una <strong>textura profesional y abierta</strong>.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Instrucciones de ejecución</h3>
+    <ol class="step-list">
+      <li><strong>El Patrón Técnico:</strong> para cada acorde, tocaremos la Raíz, la Quinta, la Octava
+        y las siguientes dos notas de la escala, para luego descender.</li>
+      <li><strong>Secuencia de notas (ejemplo en D Mayor):</strong>
+        D → A → D (octava) → E → F# → E → D (octava).</li>
+      <li><strong>El Conteo Rítmico:</strong> mantén un pulso de corcheas constante: «1 y 2 y 3 y 4».</li>
+      <li><strong>El Silencio Estratégico:</strong> es crucial que en el último medio tiempo (el «y»
+        después del 4), la mano izquierda guarde silencio. Este espacio es el hueco necesario para
+        que la mano derecha realice su movimiento mágico.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Mapa rítmico del compás</h3>
+    <div class="rhythm">
+      <div class="beat lh">1</div>
+      <div class="beat lh">y</div>
+      <div class="beat lh">2</div>
+      <div class="beat lh">y</div>
+      <div class="beat lh">3</div>
+      <div class="beat lh">y</div>
+      <div class="beat lh">4</div>
+      <div class="beat rest">y</div>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted)">
+      <span style="color:#7dd3fc">■</span> Corcheas de la mano izquierda ·
+      <span style="color:#fcd34d">■</span> Silencio estratégico (último medio tiempo)
+    </p>
+  </div>
+
+  <div class="callout co-warn">
+    <div class="ttl">◆ ADVERTENCIA</div>
+    No fuerces la mano para alcanzar la octava. Si sientes tensión, aplica la variante del FAQ:
+    omite la octava superior y usa solo raíz y quinta, priorizando siempre la relajación.
+  </div>
+</section>
+
+<!-- ============ MANO DERECHA ============ -->
+<section id="sec-derecha" class="section">
+  <div class="section-head">
+    <div class="ico">✨</div>
+    <div>
+      <span class="crumb">04 · Paso 2</span>
+      <h2>La Melodía Mágica de la Mano Derecha</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>
+      Si la izquierda es el motor, la derecha es el <strong>espíritu melódico</strong>.
+      No buscamos una complejidad abrumadora, sino una <strong>elegancia que respire</strong>.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Instrucciones de ejecución</h3>
+    <ol class="step-list">
+      <li><strong>La Nota de Anclaje:</strong> elige una nota que pertenezca al acorde actual
+        (en D Mayor, puede ser D, F# o A).</li>
+      <li><strong>El Sostén:</strong> toca esa nota y mantenla durante 4 tiempos y medio.</li>
+      <li><strong>El Remate Final:</strong> en el último medio tiempo del compás, justo cuando la mano
+        izquierda hace silencio, toca dos notas rápidas (semicorcheas).</li>
+      <li><strong>El Conteo Verbal:</strong> para dominar este ritmo, debes contar en voz alta:
+        «1 y 2 y 3 y 4 y-a». Las notas rápidas caen exactamente en el «y-a».</li>
+    </ol>
+  </div>
+
+  <div class="callout co-ex">
+    <div class="ttl">◆ LA ANALOGÍA DEL MAESTRO</div>
+    Imagina que la nota larga es como <strong>anclarse firmemente en una orilla segura</strong>,
+    mientras que las dos notas rápidas (el «y-a») son como <strong>saltar ágilmente sobre dos piedras
+    en un río</strong> para aterrizar suavemente en la siguiente orilla (el siguiente acorde).
+  </div>
+
+  <div class="card">
+    <h3>Mapa rítmico de la mano derecha</h3>
+    <div class="rhythm">
+      <div class="beat rh">1</div>
+      <div class="beat rh">y</div>
+      <div class="beat rh">2</div>
+      <div class="beat rh">y</div>
+      <div class="beat rh">3</div>
+      <div class="beat rh">y</div>
+      <div class="beat rh">4</div>
+      <div class="beat rh">y-a</div>
+    </div>
+    <p style="font-size:.82rem;color:var(--muted)">
+      Nota de anclaje sostenida 4 tiempos y medio → dos semicorcheas en el «y-a» final.
+    </p>
+  </div>
+</section>
+
+<!-- ============ SINCRONIZACIÓN ============ -->
+<section id="sec-sincro" class="section">
+  <div class="section-head">
+    <div class="ico">⚙️</div>
+    <div>
+      <span class="crumb">05 · Paso 3</span>
+      <h2>Sincronización y Coordinación Total</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>
+      Coordinar ritmos distintos requiere paciencia. La mano derecha sostiene mientras la izquierda
+      arpegia, y <strong>solo se encuentran activamente en el suspiro final del compás</strong>.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Guía de ejecución</h3>
+    <ul>
+      <li>Ambas manos comienzan simultáneamente en el tiempo <strong>«1»</strong>.</li>
+      <li>La mano izquierda continúa su flujo de corcheas (<code>1 y 2 y 3 y 4</code>).</li>
+      <li>La mano derecha permanece inmóvil hasta el final.</li>
+      <li><strong>El cruce clave:</strong> en el silencio de la mano izquierda, la derecha dispara
+        sus dos semicorcheas (<code>y-a</code>).</li>
+    </ul>
+  </div>
+
+  <div class="compare">
+    <div class="cmp-good">
+      <div class="ttl">✓ EJECUCIÓN CORRECTA</div>
+      Esperar al silencio de la mano izquierda tras el tiempo 4 para tocar las notas rápidas de la derecha.
+    </div>
+    <div class="cmp-bad">
+      <div class="ttl">✗ EJECUCIÓN INCORRECTA</div>
+      Tocar las semicorcheas de la derecha al mismo tiempo que el inicio del arpegio de la izquierda.
+    </div>
+  </div>
+
+  <div class="callout co-info">
+    <div class="ttl">◆ INFO</div>
+    El silencio de la mano izquierda no es un hueco vacío: es <strong>una invitación</strong>
+    para que la mano derecha dibuje el puente hacia el siguiente acorde.
+  </div>
+</section>
+
+<!-- ============ NOTAS DE PASO ============ -->
+<section id="sec-paso" class="section">
+  <div class="section-head">
+    <div class="ico">🌉</div>
+    <div>
+      <span class="crumb">06 · Optimización</span>
+      <h2>El Arte de las Notas de Paso</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>
+      La fluidez no es solo tocar notas correctas, sino <strong>conectarlas con sentido</strong>.
+      Aquí es donde entran las <em>Notas de Paso (Passing notes)</em>.
+    </p>
+  </div>
+
+  <div class="callout co-err">
+    <div class="ttl">◆ LA LECCIÓN DEL EXPERIMENTO FALLIDO</div>
+    Incluso los maestros experimentan. En una ocasión, intenté realizar un salto usando los dedos
+    <strong>5 y 2</strong> para pasar de un acorde a otro de forma mecánica. El resultado fue un sonido
+    <em>«choppy»</em> (entrecortado) y brusco. ¿Por qué? Porque el salto era demasiado grande y no
+    tenía una lógica melódica.
+  </div>
+
+  <div class="card">
+    <h3>El secreto del maestro</h3>
+    <p>
+      Para que la música fluya, las notas de paso deben estar <strong>cerca de la nota de destino</strong>
+      del siguiente acorde. Deben subir o bajar por la escala de forma natural, como una escalera.
+    </p>
+    <p>
+      Si saltas de una nota muy aguda a una muy grave sin transición, <strong>romperás el «flow»</strong>.
+      No temas equivocarte; descubrir qué combinaciones suenan «raras» es lo que educará tu oído
+      para encontrar las que suenan mágicas.
+    </p>
+  </div>
+
+  <div class="grid2">
+    <div class="card" style="border-color:rgba(34,197,94,.4)">
+      <h3 style="color:var(--green)">✓ Paso por escala</h3>
+      <p>La nota de paso se mueve por grados conjuntos hacia el destino. Sensación natural, fluida, de escalera.</p>
+    </div>
+    <div class="card" style="border-color:rgba(239,68,68,.4)">
+      <h3 style="color:var(--red)">✗ Salto mecánico</h3>
+      <p>Saltar de un registro muy agudo a uno muy grave sin transición. Sonido «choppy», se rompe la narrativa.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRÁCTICA ============ -->
+<section id="sec-practica" class="section">
+  <div class="section-head">
+    <div class="ico">🎯</div>
+    <div>
+      <span class="crumb">07 · Cierre</span>
+      <h2>Resumen, FAQ y Práctica Final</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Checklist de Autoevaluación</h3>
+    <ul class="checklist">
+      <li>¿Están mis hombros y manos relajados?</li>
+      <li>¿Estoy contando en voz alta «1 y 2 y 3 y 4 y-a»?</li>
+      <li>¿La mano izquierda se detiene en el último «y» para dejar pasar a la derecha?</li>
+      <li>¿Mis notas rápidas «conducen» melódicamente al siguiente acorde?</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Preguntas Frecuentes (FAQ)</h3>
+
+    <div class="acc">
+      <button class="acc-h">
+        <span>¿Qué hago si no llego cómodamente a la octava con la mano izquierda?</span>
+        <span class="mark">+</span>
+      </button>
+      <div class="acc-b">
+        No fuerces la mano. Puedes <strong>omitir la octava superior</strong> y realizar el patrón usando
+        solo la raíz y la quinta, o incluso solo la raíz, priorizando siempre la relajación.
+      </div>
+    </div>
+
+    <div class="acc">
+      <button class="acc-h">
+        <span>¿Cómo elijo las dos notas rápidas?</span>
+        <span class="mark">+</span>
+      </button>
+      <div class="acc-b">
+        Elígelas basándote en la <strong>proximidad</strong>. Si vas a pasar de D Mayor a A Mayor,
+        intenta que tus dos notas rápidas te dejen «en la puerta» de una nota del acorde de A
+        (por ejemplo, A, C# o E).
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Ejercicios Prácticos (ejemplos sobre D Mayor — D)</h3>
+
+    <div class="callout co-ex">
+      <div class="ttl">◆ VARIACIÓN 1 — ASCENDENTE</div>
+      <strong>Nota larga:</strong> D · <strong>Notas rápidas:</strong> E y F#.<br>
+      <em>Funciona porque sube escalonadamente hacia el siguiente acorde.</em>
+    </div>
+
+    <div class="callout co-ex">
+      <div class="ttl">◆ VARIACIÓN 2 — DESCENDENTE</div>
+      <strong>Nota larga:</strong> A · <strong>Notas rápidas:</strong> G y F#.<br>
+      <em>Funciona porque desciende suavemente hacia la base.</em>
+    </div>
+
+    <div class="callout co-ex">
+      <div class="ttl">◆ VARIACIÓN 3 — DE BORDADURA</div>
+      <strong>Nota larga:</strong> F# · <strong>Notas rápidas:</strong> E y vuelve a F#.<br>
+      <em>Funciona porque crea un adorno melódico que resuelve en la misma nota antes de cambiar.</em>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Glosario</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Término</th><th>Definición</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Arpegio</strong></td><td>Ejecución sucesiva de las notas de un acorde.</td></tr>
+          <tr><td><strong>Nota de Paso</strong></td><td>Notas que sirven de puente entre dos notas principales.</td></tr>
+          <tr><td><strong>Progresión</strong></td><td>Secuencia lógica de acordes.</td></tr>
+          <tr><td><strong>Semicorchea</strong></td><td>Nota que dura un cuarto de tiempo; en este método, usamos dos para llenar el último medio tiempo del compás.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FUENTES ============ -->
+<section id="sec-fuentes" class="section">
+  <div class="section-head">
+    <div class="ico">📺</div>
+    <div>
+      <span class="crumb">08 · Referencias</span>
+      <h2>Fuentes y Referencias</h2>
+    </div>
+  </div>
+
+  <a class="source-item" href="https://youtube.com/watch?v=EyVEI13GvRo" target="_blank" rel="noopener">
+    <span class="tag">VIDEO ORIGINAL</span>
+    <div class="st">How to Magically Flow with Piano Chords — Melodies with Morgan</div>
+    <div class="su">https://youtube.com/watch?v=EyVEI13GvRo</div>
+  </a>
+
+  <div class="card">
+    <h3>Parámetros de estilo aplicados</h3>
+    <ul>
+      <li>Sintetización técnica y pedagógica.</li>
+      <li>Uso de analogías para facilitar la comprensión (el río, el mapa).</li>
+      <li>Estructura de progresión por niveles de dificultad.</li>
+      <li>Enfoque en la corrección de errores comunes (sonido «choppy»).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ CRÉDITOS ============ -->
+<section id="sec-creditos" class="section">
+  <div class="section-head">
+    <div class="ico">🏛️</div>
+    <div>
+      <span class="crumb">09 · Autoría</span>
+      <h2>Créditos</h2>
+    </div>
+  </div>
+
+  <div class="svg-frame" id="credits-svg-container"></div>
+
+  <div class="credits-card">
+    <div class="title">Tutorial</div>
+    <div class="name">How to Magically Flow with Piano Chords</div>
+    <div class="title">Rubén Sbarsky</div>
+    <div class="credits-meta">
+      <div><span class="k">Créditos</span><span class="v">Rubén Sbarsky</span></div>
+      <div><span class="k">Fecha</span><span class="v">21/09/2026</span></div>
+      <div><span class="k">Hora</span><span class="v">09:59:16</span></div>
+      <div><span class="k">Uso</span><span class="v">Educativo</span></div>
+    </div>
+    <div class="latin">Fiat iustitia, ruat caelum.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="line">📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div class="line">👨‍💻 Créditos: <strong>Rubén Sbarsky</strong></div>
+  <div class="line">📅 FECHA: 21/09/2026 &nbsp;·&nbsp; Hora: 09:59:16</div>
+  <div class="latin">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<button id="top-btn" aria-label="Volver arriba">↑</button>
+
+<!-- ================= SVG TEMPLATE ================= -->
+<template id="svg-template">
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"
+     style="width:100%;height:auto;display:block;border-radius:12px">
+  <defs>
+    <!-- Living background gradient -->
+    <radialGradient id="bgRadial" cx="50%" cy="45%" r="78%">
+      <stop offset="0%" stop-color="#13203d">
+        <animate attributeName="stop-color"
+                 values="#13203d;#1a2b52;#0f1e3a;#1a2b52;#13203d" dur="9s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="55%" stop-color="#0a1326">
+        <animate attributeName="stop-color"
+                 values="#0a1326;#0d1830;#0a1326" dur="7s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#05080f">
+        <animate attributeName="stop-color"
+                 values="#05080f;#070b14;#05080f" dur="11s" repeatCount="indefinite"/>
+      </stop>
+    </radialGradient>
+
+    <!-- Title gradient animated -->
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00d4ff">
+        <animate attributeName="stop-color"
+                 values="#00d4ff;#a855f7;#22c55e;#f59e0b;#00d4ff" dur="8s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" stop-color="#a855f7">
+        <animate attributeName="stop-color"
+                 values="#a855f7;#22c55e;#f59e0b;#00d4ff;#a855f7" dur="8s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#22c55e">
+        <animate attributeName="stop-color"
+                 values="#22c55e;#f59e0b;#00d4ff;#a855f7;#22c55e" dur="8s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+
+    <!-- Flow gradient -->
+    <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+
+    <!-- Grid pattern -->
+    <pattern id="gridPat" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e3a5f" stroke-width="0.5"/>
+      <circle cx="40" cy="40" r="0.9" fill="#1e3a5f"/>
+    </pattern>
+
+    <!-- Glow filters -->
+    <filter id="glowSoft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowStrong" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Halos -->
+    <radialGradient id="haloCyan">
+      <stop offset="0%" stop-color="#00d4ff" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="haloPurple">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="haloAmber">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="haloGreen">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Flow path reused by particles -->
+    <path id="flowPath"
+          d="M 110 235 C 190 185, 240 185, 313 230 S 430 280, 506 235 S 620 190, 690 235"
+          fill="none"/>
+
+    <!-- Note glyph -->
+    <symbol id="noteGlyph" viewBox="0 0 24 24">
+      <path d="M10 20V6l8-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="8" cy="20" r="2.6" fill="currentColor"/>
+      <circle cx="16" cy="18" r="2.6" fill="currentColor"/>
+    </symbol>
+  </defs>
+
+  <!-- ============ BACKGROUND ============ -->
+  <rect width="800" height="450" fill="url(#bgRadial)"/>
+  <rect width="800" height="450" fill="url(#gridPat)" opacity="0.35">
+    <animate attributeName="opacity" values="0.15;0.5;0.15" dur="6.5s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Vignette -->
+  <rect width="800" height="450" fill="none" stroke="#1e3a5f" stroke-width="1.5" rx="12" opacity="0.6"/>
+
+  <!-- ============ ORBITAL RINGS ============ -->
+  <g transform="translate(400,225)">
+    <ellipse rx="365" ry="195" fill="none" stroke="#00d4ff" stroke-width="0.6"
+             stroke-dasharray="10 14" opacity="0.4">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="45s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="10 14;4 10;10 14" dur="7s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse rx="305" ry="155" fill="none" stroke="#a855f7" stroke-width="0.6"
+             stroke-dasharray="6 16" opacity="0.35">
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="34s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="6 16;3 10;6 16" dur="5.5s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse rx="245" ry="115" fill="none" stroke="#22c55e" stroke-width="0.5"
+             stroke-dasharray="4 10" opacity="0.3">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="22s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="4 10;2 6;4 10" dur="4.5s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse rx="185" ry="85" fill="none" stroke="#f59e0b" stroke-width="0.4"
+             stroke-dasharray="3 12" opacity="0.25">
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="18s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+
+  <!-- ============ TITLE ============ -->
+  <text x="400" y="52" text-anchor="middle"
+        font-family="'Segoe UI',system-ui,sans-serif"
+        font-size="30" font-weight="800" letter-spacing="6"
+        fill="url(#titleGrad)" filter="url(#glowSoft)">
+    MAGIC FLOW
+  </text>
+  <text x="400" y="76" text-anchor="middle"
+        font-family="'Segoe UI',system-ui,sans-serif"
+        font-size="11" letter-spacing="4" fill="#94a3b8" opacity="0.9">
+    PIANO CHORDS · D (I) → A (V) → Bm (VI) → G (IV)
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="3.5s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- ============ FLOW PATH ============ -->
+  <path d="M 110 235 C 190 185, 240 185, 313 230 S 430 280, 506 235 S 620 190, 690 235"
+        fill="none" stroke="url(#flowGrad)" stroke-width="1.8"
+        stroke-dasharray="9 9" opacity="0.75" filter="url(#glowSoft)">
+    <animate attributeName="stroke-dashoffset" values="0;-36" dur="2.5s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 110 235 C 190 185, 240 185, 313 230 S 430 280, 506 235 S 620 190, 690 235"
+        fill="none" stroke="#00d4ff" stroke-width="0.6" opacity="0.35">
+    <animate attributeName="opacity" values="0.1;0.5;0.1" dur="3s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- ============ PARTICLES ON FLOW PATH ============ -->
+  <g>
+    <circle r="3" fill="#00d4ff" filter="url(#glowSoft)">
+      <animateMotion dur="4s" repeatCount="indefinite"><mpath href="#flowPath"/></animateMotion>
+      <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="3" fill="#a855f7" filter="url(#glowSoft)">
+      <animateMotion dur="5s" begin="1s" repeatCount="indefinite"><mpath href="#flowPath"/></animateMotion>
+      <animate attributeName="r" values="2;4;2" dur="1.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="3" fill="#22c55e" filter="url(#glowSoft)">
+      <animateMotion dur="4.5s" begin="2s" repeatCount="indefinite"><mpath href="#flowPath"/></animateMotion>
+      <animate attributeName="r" values="2;4;2" dur="1.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="3" fill="#f59e0b" filter="url(#glowSoft)">
+      <animateMotion dur="6s" begin="3s" repeatCount="indefinite"><mpath href="#flowPath"/></animateMotion>
+      <animate attributeName="r" values="2;4;2" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2.5" fill="#00d4ff">
+      <animateMotion dur="7s" begin="0.5s" repeatCount="indefinite"><mpath href="#flowPath"/></animateMotion>
+      <animate attributeName="opacity" values="1;0.3;1" dur="2.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2.5" fill="#a855f7">
+      <animateMotion dur="8s" begin="2.5s" repeatCount="indefinite"><mpath href="#flowPath"/></animateMotion>
+      <animate attributeName="opacity" values="1;0.3;1" dur="2.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2" fill="#22c55e">
+      <animateMotion dur="9s" begin="4s" repeatCount="indefinite"><mpath href="#flowPath"/></animateMotion>
+    </circle>
+  </g>
+
+  <!-- ============ GHOST NOTES TRAVELING ============ -->
+  <g opacity="0.75">
+    <g>
+      <animateMotion dur="6s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#flowPath"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0;0.9;0.9;0" dur="6s" repeatCount="indefinite"/>
+      <use href="#noteGlyph" x="-10" y="-10" width="20" height="20" style="color:#00d4ff"/>
+    </g>
+    <g>
+      <animateMotion dur="7.5s" begin="2s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#flowPath"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0;0.8;0.8;0" dur="7.5s" begin="2s" repeatCount="indefinite"/>
+      <use href="#noteGlyph" x="-10" y="-10" width="20" height="20" style="color:#a855f7"/>
+    </g>
+    <g>
+      <animateMotion dur="8.5s" begin="4.5s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#flowPath"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0;0.7;0.7;0" dur="8.5s" begin="4.5s" repeatCount="indefinite"/>
+      <use href="#noteGlyph" x="-10" y="-10" width="20" height="20" style="color:#22c55e"/>
+    </g>
+  </g>
+
+  <!-- ============ CHORD NODE D (I) ============ -->
+  <g>
+    <circle cx="110" cy="235" r="46" fill="url(#haloCyan)" opacity="0.55">
+      <animate attributeName="r" values="40;56;40" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.35;0.75;0.35" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="110" cy="235" r="30" fill="#0f172a" stroke="#00d4ff" stroke-width="1.6" filter="url(#glowSoft)">
+      <animate attributeName="stroke-width" values="1.6;3.2;1.6" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <text x="110" y="232" text-anchor="middle" fill="#00d4ff"
+          font-family="'Segoe UI',sans-serif" font-size="19" font-weight="800">D</text>
+    <text x="110" y="248" text-anchor="middle" fill="#94a3b8"
+          font-family="'Segoe UI',sans-serif" font-size="9" font-weight="600">GRADO I</text>
+    <text x="110" y="290" text-anchor="middle" fill="#7dd3fc"
+          font-family="'Segoe UI',sans-serif" font-size="9" opacity="0.85">
+      D · F# · A
+    </text>
+    <!-- Burst -->
+    <g stroke="#00d4ff" stroke-width="1.4" stroke-linecap="round" opacity="0">
+      <line x1="110" y1="205" x2="110" y2="185"/>
+      <line x1="80" y1="235" x2="60" y2="235"/>
+      <line x1="140" y1="235" x2="160" y2="235"/>
+      <line x1="88" y1="213" x2="74" y2="199"/>
+      <line x1="132" y1="213" x2="146" y2="199"/>
+      <animate attributeName="opacity" values="0;1;0" dur="2.5s" repeatCount="indefinite"/>
+    </g>
+  </g>
+
+  <!-- ============ CHORD NODE A (V) ============ -->
+  <g>
+    <circle cx="313" cy="230" r="46" fill="url(#haloPurple)" opacity="0.55">
+      <animate attributeName="r" values="40;56;40" dur="3.4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.35;0.75;0.35" dur="3.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="313" cy="230" r="30" fill="#0f172a" stroke="#a855f7" stroke-width="1.6" filter="url(#glowSoft)">
+      <animate attributeName="stroke-width" values="1.6;3.2;1.6" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <text x="313" y="227" text-anchor="middle" fill="#a855f7"
+          font-family="'Segoe UI',sans-serif" font-size="19" font-weight="800">A</text>
+    <text x="313" y="243" text-anchor="middle" fill="#94a3b8"
+          font-family="'Segoe UI',sans-serif" font-size="9" font-weight="600">GRADO V</text>
+    <text x="313" y="285" text-anchor="middle" fill="#e9d5ff"
+          font-family="'Segoe UI',sans-serif" font-size="9" opacity="0.85">
+      A · C# · E
+    </text>
+    <g stroke="#a855f7" stroke-width="1.4" stroke-linecap="round" opacity="0">
+      <line x1="313" y1="200" x2="313" y2="180"/>
+      <line x1="283" y1="230" x2="263" y2="230"/>
+      <line x1="343" y1="230" x2="363" y2="230"/>
+      <line x1="291" y1="208" x2="277" y2="194"/>
+      <animate attributeName="opacity" values="0;1;0" dur="3.1s" begin="0.5s" repeatCount="indefinite"/>
+    </g>
+  </g>
+
+  <!-- ============ CHORD NODE Bm (vi) ============ -->
+  <g>
+    <circle cx="506" cy="235" r="46" fill="url(#haloAmber)" opacity="0.55">
+      <animate attributeName="r" values="40;56;40" dur="3.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.35;0.75;0.35" dur="3.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="506" cy="235" r="30" fill="#0f172a" stroke="#f59e0b" stroke-width="1.6" filter="url(#glowSoft)">
+      <animate attributeName="stroke-width" values="1.6;3.2;1.6" dur="2.6s" repeatCount="indefinite"/>
+    </circle>
+    <text x="506" y="232" text-anchor="middle" fill="#f59e0b"
+          font-family="'Segoe UI',sans-serif" font-size="17" font-weight="800">Bm</text>
+    <text x="506" y="248" text-anchor="middle" fill="#94a3b8"
+          font-family="'Segoe UI',sans-serif" font-size="9" font-weight="600">GRADO VI</text>
+    <text x="506" y="290" text-anchor="middle" fill="#fcd34d"
+          font-family="'Segoe UI',sans-serif" font-size="9" opacity="0.85">
+      B · D · F#
+    </text>
+    <g stroke="#f59e0b" stroke-width="1.4" stroke-linecap="round" opacity="0">
+      <line x1="506" y1="205" x2="506" y2="185"/>
+      <line x1="476" y1="235" x2="456" y2="235"/>
+      <line x1="536" y1="235" x2="556" y2="235"/>
+      <line x1="484" y1="213" x2="470" y2="199"/>
+      <animate attributeName="opacity" values="0;1;0" dur="2.9s" begin="1s" repeatCount="indefinite"/>
+    </g>
+  </g>
+
+  <!-- ============ CHORD NODE G (IV) ============ -->
+  <g>
+    <circle cx="690" cy="235" r="46" fill="url(#haloGreen)" opacity="0.55">
+      <animate attributeName="r" values="40;56;40" dur="3.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.35;0.75;0.35" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="690" cy="235" r="30" fill="#0f172a" stroke="#22c55e" stroke-width="1.6" filter="url(#glowSoft)">
+      <animate attributeName="stroke-width" values="1.6;3.2;1.6" dur="2.7s" repeatCount="indefinite"/>
+    </circle>
+    <text x="690" y="232" text-anchor="middle" fill="#22c55e"
+          font-family="'Segoe UI',sans-serif" font-size="19" font-weight="800">G</text>
+    <text x="690" y="248" text-anchor="middle" fill="#94a3b8"
+          font-family="'Segoe UI',sans-serif" font-size="9" font-weight="600">GRADO IV</text>
+    <text x="690" y="290" text-anchor="middle" fill="#bbf7d0"
+          font-family="'Segoe UI',sans-serif" font-size="9" opacity="0.85">
+      G · B · D
+    </text>
+    <g stroke="#22c55e" stroke-width="1.4" stroke-linecap="round" opacity="0">
+      <line x1="690" y1="205" x2="690" y2="185"/>
+      <line x1="660" y1="235" x2="640" y2="235"/>
+      <line x1="720" y1="235" x2="740" y2="235"/>
+      <line x1="668" y1="213" x2="654" y2="199"/>
+      <animate attributeName="opacity" values="0;1;0" dur="3.3s" begin="1.5s" repeatCount="indefinite"/>
+    </g>
+  </g>
+
+  <!-- ============ PIANO KEYS STRIP (decorative) ============ -->
+  <g transform="translate(0,368)" opacity="0.92">
+    <rect x="0" y="0" width="800" height="82" fill="#05080f" opacity="0.85"/>
+    <!-- white keys -->
+    <g>
+      <rect x="40"  y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="86"  y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="132" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="178" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="224" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="270" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="316" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="362" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="408" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="454" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="500" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="546" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="592" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="638" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="684" y="6" width="42" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+      <rect x="730" y="6" width="30" height="70" rx="4" fill="#0f172a" stroke="#1e3a5f"/>
+    </g>
+    <!-- highlighted keys for D F# A -->
+    <rect x="40" y="6" width="42" height="70" rx="4" fill="#00d4ff" opacity="0.35">
+      <animate attributeName="opacity" values="0.1;0.7;0.1" dur="2s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="132" y="6" width="42" height="70" rx="4" fill="#a855f7" opacity="0.35">
+      <animate attributeName="opacity" values="0.1;0.7;0.1" dur="2.5s" begin="0.5s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="224" y="6" width="42" height="70" rx="4" fill="#22c55e" opacity="0.35">
+      <animate attributeName="opacity" values="0.1;0.7;0.1" dur="2.2s" begin="1s" repeatCount="indefinite"/>
+    </rect>
+    <!-- labels -->
+    <text x="61" y="60" text-anchor="middle" fill="#e2e8f0" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="700">D</text>
+    <text x="153" y="60" text-anchor="middle" fill="#e2e8f0" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="700">F#</text>
+    <text x="245" y="60" text-anchor="middle" fill="#e2e8f0" font-family="'Segoe UI',sans-serif" font-size="11" font-weight="700">A</text>
+    <text x="337" y="60" text-anchor="middle" fill="#94a3b8" font-family="'Segoe UI',sans-serif" font-size="10">C#</text>
+    <text x="429" y="60" text-anchor="middle" fill="#94a3b8" font-family="'Segoe UI',sans-serif" font-size="10">E</text>
+    <text x="521" y="60" text-anchor="middle" fill="#94a3b8" font-family="'Segoe UI',sans-serif" font-size="10">G</text>
+    <text x="613" y="60" text-anchor="middle" fill="#94a3b8" font-family="'Segoe UI',sans-serif" font-size="10">B</text>
+  </g>
+
+  <!-- ============ LIVE INDICATOR ============ -->
+  <g transform="translate(710,26)">
+    <rect x="-30" y="-14" width="66" height="26" rx="13" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="1">
+      <animate attributeName="stroke-opacity" values="0.4;1;0.4" dur="1.6s" repeatCount="indefinite"/>
+    </rect>
+    <circle cx="-14" cy="0" r="3.5" fill="#ef4444" filter="url(#glowSoft)">
+      <animate attributeName="r" values="2.5;4.5;2.5" dur="1.4s" repeatCount="indefinite"/>
+    </circle>
+    <text x="8" y="4" text-anchor="middle" fill="#fca5a5"
+          font-family="'Segoe UI',sans-serif" font-size="9" font-weight="800" letter-spacing="1.5">LIVE</text>
+  </g>
+
+  <!-- ============ SIGNATURE ============ -->
+  <text x="782" y="440" text-anchor="end"
+        font-family="'Segoe UI',sans-serif"
+        font-size="9" fill="#94a3b8" font-style="italic" opacity="0.8">
+    Rubén Sbarsky · 2026
+    <animate attributeName="opacity" values="0.4;0.95;0.4" dur="4.5s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- ============ STATUS TAG ============ -->
+  <text x="18" y="440"
+        font-family="'Segoe UI',sans-serif"
+        font-size="9" letter-spacing="2" font-weight="700">
+    <tspan fill="#00d4ff">NIVEL 2</tspan>
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="5s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- ============ CLIMAX FLASH ============ -->
+  <text x="400" y="150" text-anchor="middle"
+        font-family="'Segoe UI',sans-serif"
+        font-size="42" font-weight="900" letter-spacing="14"
+        fill="none" stroke="#00d4ff" stroke-width="0.8" opacity="0">
+    FLOW
+    <animate attributeName="opacity" values="0;0;0.9;0;0" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-width" values="0.5;1.5;0.5" dur="9s" repeatCount="indefinite"/>
+  </text>
+</svg>
+</template>
+
+<script>
+(function(){
+  'use strict';
+
+  // ============ SVG mounting ============
+  function mountSvg(containerId){
+    const c = document.getElementById(containerId);
+    if(!c) return;
+    c.innerHTML = '';
+    const tpl = document.getElementById('svg-template');
+    const clone = tpl.content.cloneNode(true);
+    c.appendChild(clone);
+  }
+
+  // ============ SPA navigation ============
+  const sections = ['home','flow','progresion','izquierda','derecha','sincro','paso','practica','fuentes','creditos'];
+  const svgContainers = { home:'home-svg-container', creditos:'credits-svg-container' };
+  let currentSection = 'home';
+
+  function navigate(id){
+    // Unmount previous SVG (freeze animation off-screen)
+    if(svgContainers[currentSection]){
+      const prev = document.getElementById(svgContainers[currentSection]);
+      if(prev) prev.innerHTML = '';
+    }
+    // Hide all
+    document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+    // Show target
+    const target = document.getElementById('sec-' + id);
+    if(target) target.classList.add('active');
+    // Nav active state
+    document.querySelectorAll('.nav-link').forEach(function(l){
+      l.classList.toggle('active', l.dataset.target === id);
+    });
+    // Mount SVG if needed
+    if(svgContainers[id]) mountSvg(svgContainers[id]);
+    currentSection = id;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.nav-link').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      navigate(btn.dataset.target);
+    });
+  });
+
+  // Initial mount for HOME
+  mountSvg('home-svg-container');
+
+  // ============ Progress bar ============
+  const progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrolled = h.scrollTop || document.body.scrollTop;
+    const total = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    const pct = total > 0 ? (scrolled / total) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  // ============ Back to top ============
+  const topBtn = document.getElementById('top-btn');
+  function updateTopBtn(){
+    const y = window.scrollY || document.documentElement.scrollTop;
+    topBtn.classList.toggle('show', y > 300);
+  }
+  window.addEventListener('scroll', updateTopBtn, { passive: true });
+  topBtn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  updateTopBtn();
+
+  // ============ Accordions ============
+  document.querySelectorAll('.acc-h').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const acc = btn.closest('.acc');
+      acc.classList.toggle('open');
+    });
+  });
+
+  // ============ Piano key highlight on hover (touch friendly tap) ============
+  document.querySelectorAll('.wkey').forEach(function(k){
+    k.addEventListener('click', function(){
+      document.querySelectorAll('.wkey').forEach(function(x){ x.classList.remove('hl'); });
+      k.classList.add('hl');
+      setTimeout(function(){ k.classList.remove('hl'); }, 900);
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
