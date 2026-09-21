@@ -1,0 +1,1579 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Técnicas de Mano Izquierda para Piano · Adornos y Progresiones</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+  --dim:#64748b;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  font-size:16px;
+}
+img,svg{max-width:100%}
+
+/* ============ PROGRESS BAR ============ */
+#progressWrap{
+  position:fixed;top:0;left:0;right:0;height:4px;
+  background:#0b1120;z-index:120;
+}
+#progressBar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#00d4ff,#a855f7,#22c55e,#f59e0b);
+  box-shadow:0 0 12px rgba(0,212,255,.7);
+  transition:width .1s linear;
+}
+
+/* ============ NAVBAR ============ */
+.navbar{
+  position:fixed;top:4px;left:0;right:0;z-index:110;
+  background:rgba(10,14,26,.96);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:4px;
+  padding:8px 10px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  white-space:nowrap;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+}
+.navbar::-webkit-scrollbar{height:4px}
+.navbar::-webkit-scrollbar-thumb{background:#1e3a5f;border-radius:4px}
+.navbar::-webkit-scrollbar-track{background:transparent}
+.nav-btn{
+  flex:0 0 auto;
+  background:transparent;
+  border:1px solid transparent;
+  color:var(--muted);
+  font-family:inherit;
+  font-size:13px;
+  font-weight:600;
+  padding:7px 13px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:all .2s ease;
+  letter-spacing:.3px;
+}
+.nav-btn:hover{color:#fff;background:#131f38;border-color:var(--border)}
+.nav-btn.active{
+  color:#04121c;
+  background:linear-gradient(135deg,#00d4ff,#38bdf8);
+  border-color:#00d4ff;
+  box-shadow:0 0 14px rgba(0,212,255,.5);
+}
+.nav-btn.credits.active{background:linear-gradient(135deg,#a855f7,#7c3aed);border-color:#a855f7;box-shadow:0 0 14px rgba(168,85,247,.5);color:#fff}
+.nav-sep{flex:0 0 auto;width:1px;height:20px;background:var(--border);margin:0 4px}
+
+/* ============ LAYOUT ============ */
+main{padding:76px 14px 60px;max-width:1180px;margin:0 auto}
+.section{display:none;animation:fade .35s ease}
+.section.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ============ HERO ============ */
+.hero-wrap{
+  width:100%;
+  margin:0 auto 26px;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  background:#070b14;
+  box-shadow:0 0 46px rgba(0,212,255,.14), 0 0 0 1px rgba(0,212,255,.05) inset;
+  line-height:0;
+}
+.hero-svg{display:block;width:100%;height:auto;aspect-ratio:16/9}
+
+/* ============ HOME ============ */
+.badge{
+  display:inline-block;
+  font-size:11px;font-weight:700;letter-spacing:1.6px;
+  color:var(--accent);
+  border:1px solid var(--accent);
+  background:rgba(0,212,255,.08);
+  padding:6px 14px;border-radius:999px;
+  margin-bottom:18px;text-transform:uppercase;
+}
+.home-title{
+  font-size:clamp(26px,5.4vw,46px);
+  font-weight:800;
+  line-height:1.15;
+  letter-spacing:-.5px;
+  margin-bottom:12px;
+  background:linear-gradient(120deg,#ffffff,#00d4ff 40%,#a855f7 75%,#22c55e);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.home-sub{
+  font-size:clamp(14px,2.4vw,19px);
+  color:var(--accent);
+  font-weight:600;
+  letter-spacing:.5px;
+  margin-bottom:18px;
+}
+.home-desc{color:var(--muted);font-size:16px;max-width:820px;margin-bottom:24px}
+.quote{
+  border-left:4px solid var(--accent);
+  background:linear-gradient(90deg,rgba(0,212,255,.10),transparent);
+  padding:16px 20px;
+  border-radius:0 12px 12px 0;
+  font-style:italic;
+  color:#cbd5e1;
+  font-size:16px;
+  margin-bottom:26px;
+}
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;margin-bottom:26px;
+}
+.metric{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px 14px;
+  text-align:center;
+  transition:transform .2s ease,border-color .2s ease;
+}
+.metric:hover{transform:translateY(-3px);border-color:var(--accent)}
+.metric .num{
+  display:block;font-size:26px;font-weight:800;
+  color:var(--accent);letter-spacing:-1px;
+}
+.metric .lbl{
+  display:block;font-size:11px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1.2px;margin-top:4px;
+}
+.stamp{
+  display:flex;flex-wrap:wrap;gap:10px;
+  font-size:12.5px;color:var(--dim);
+  border-top:1px dashed var(--border);
+  padding-top:16px;
+}
+.stamp span{
+  background:#0b1220;border:1px solid var(--border);
+  padding:5px 12px;border-radius:8px;
+}
+
+/* ============ SECTION HEADERS ============ */
+.sec-head{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:22px;padding-bottom:14px;
+  border-bottom:1px solid var(--border);
+}
+.sec-icon{
+  flex:0 0 auto;
+  width:46px;height:46px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  background:linear-gradient(135deg,#0f172a,#152241);
+  border:1px solid var(--border);
+  box-shadow:0 0 18px rgba(0,212,255,.12);
+}
+.sec-head h2{
+  font-size:clamp(19px,3.4vw,27px);
+  font-weight:800;letter-spacing:-.4px;line-height:1.2;
+}
+.sec-head .kicker{
+  display:block;font-size:11px;color:var(--accent);
+  letter-spacing:1.8px;text-transform:uppercase;font-weight:700;margin-bottom:3px;
+}
+
+/* ============ CARDS ============ */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:16px;
+  transition:border-color .25s ease, box-shadow .25s ease;
+}
+.card:hover{border-color:#2a5183;box-shadow:0 0 24px rgba(0,212,255,.07)}
+.card h3{
+  font-size:17px;font-weight:700;margin-bottom:10px;
+  color:#f1f5f9;display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+}
+.card h4{font-size:15px;font-weight:700;margin:16px 0 8px;color:var(--accent)}
+.card p{color:#cbd5e1;margin-bottom:10px}
+.card p:last-child{margin-bottom:0}
+.card ul,.card ol{margin:8px 0 10px 20px;color:#cbd5e1}
+.card li{margin-bottom:6px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+
+/* ============ CHIPS / BADGES ============ */
+.chip{
+  display:inline-block;font-size:11px;font-weight:700;
+  padding:3px 10px;border-radius:999px;letter-spacing:.6px;
+  border:1px solid currentColor;
+}
+.chip-cyan{color:var(--accent);background:rgba(0,212,255,.1)}
+.chip-green{color:var(--green);background:rgba(34,197,94,.1)}
+.chip-amber{color:var(--amber);background:rgba(245,158,11,.1)}
+.chip-red{color:var(--red);background:rgba(239,68,68,.1)}
+.chip-purple{color:var(--purple);background:rgba(168,85,247,.1)}
+
+/* ============ CALLOUTS ============ */
+.callout{
+  border-radius:10px;padding:14px 16px 14px 46px;
+  margin:14px 0;position:relative;font-size:15px;
+  border:1px solid;line-height:1.55;
+}
+.callout::before{
+  position:absolute;left:15px;top:13px;font-size:17px;
+}
+.callout strong{display:block;font-size:11.5px;letter-spacing:1.4px;margin-bottom:4px;text-transform:uppercase}
+.co-info{background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.4);color:#bae6fd}
+.co-info::before{content:"ℹ️"}
+.co-info strong{color:var(--accent)}
+.co-ex{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.4);color:#bbf7d0}
+.co-ex::before{content:"🎹"}
+.co-ex strong{color:var(--green)}
+.co-warn{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.4);color:#fde68a}
+.co-warn::before{content:"⚠️"}
+.co-warn strong{color:var(--amber)}
+.co-err{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.4);color:#fecaca}
+.co-err::before{content:"⛔"}
+.co-err strong{color:var(--red)}
+
+/* ============ TABLES ============ */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;min-width:420px;font-size:14px}
+th{
+  background:#111c33;color:var(--accent);
+  text-align:left;padding:11px 13px;font-weight:700;
+  font-size:12px;letter-spacing:1px;text-transform:uppercase;
+  border-bottom:1px solid var(--border);white-space:nowrap;
+}
+td{padding:11px 13px;border-bottom:1px solid #16233c;color:#cbd5e1;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:rgba(0,212,255,.04)}
+.mono{font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-weight:700;color:#e2e8f0}
+
+/* ============ STEPS ============ */
+.steps{counter-reset:st;list-style:none;margin:0;padding:0}
+.steps li{
+  counter-increment:st;position:relative;
+  padding:14px 16px 14px 58px;margin-bottom:12px;
+  background:#0b1424;border:1px solid var(--border);border-radius:10px;
+  color:#cbd5e1;
+}
+.steps li::before{
+  content:counter(st);
+  position:absolute;left:14px;top:13px;
+  width:30px;height:30px;border-radius:9px;
+  background:linear-gradient(135deg,#00d4ff,#0284c7);
+  color:#04121c;font-weight:800;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+}
+.steps li strong{color:#fff}
+
+/* ============ NOTE ROW (chips musicales) ============ */
+.noterow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.note{
+  display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+  min-width:54px;padding:8px 10px;border-radius:10px;
+  background:#0b1424;border:1px solid var(--border);
+  font-weight:800;font-size:15px;color:#e2e8f0;line-height:1.15;
+}
+.note small{font-size:9.5px;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-top:2px}
+.note.target{
+  border-color:var(--accent);color:var(--accent);
+  box-shadow:0 0 16px rgba(0,212,255,.35);
+  background:rgba(0,212,255,.08);
+}
+.note.asc{border-color:var(--green);color:var(--green);background:rgba(34,197,94,.08)}
+.note.desc{border-color:var(--amber);color:var(--amber);background:rgba(245,158,11,.08)}
+.arrow{color:var(--dim);font-weight:800;font-size:16px}
+
+/* ============ ACORDEÓN ============ */
+.acc{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;background:#0b1424}
+.acc-head{
+  width:100%;text-align:left;background:transparent;border:none;
+  color:#e2e8f0;font-family:inherit;font-size:15px;font-weight:600;
+  padding:14px 44px 14px 16px;cursor:pointer;position:relative;
+  transition:background .2s ease;
+}
+.acc-head:hover{background:#101c33}
+.acc-head::after{
+  content:"+";position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  color:var(--accent);font-size:20px;font-weight:700;transition:transform .25s ease;
+}
+.acc.open .acc-head::after{content:"−";transform:translateY(-50%) rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;padding:0 16px}
+.acc.open .acc-body{max-height:600px;padding:0 16px 16px}
+.acc-body p{color:#cbd5e1;font-size:14.5px}
+
+/* ============ CHECKLIST ============ */
+.checklist{list-style:none;margin:0;padding:0}
+.checklist li{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:11px 14px;margin-bottom:8px;
+  background:#0b1424;border:1px solid var(--border);border-radius:10px;
+  cursor:pointer;transition:border-color .2s ease,background .2s ease;
+}
+.checklist li:hover{border-color:#2a5183}
+.checklist li.done{border-color:var(--green);background:rgba(34,197,94,.06)}
+.checklist .box{
+  flex:0 0 auto;width:20px;height:20px;border-radius:6px;
+  border:2px solid var(--border);margin-top:2px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:transparent;transition:all .2s ease;
+}
+.checklist li.done .box{background:var(--green);border-color:var(--green);color:#04121c}
+.checklist .txt{color:#cbd5e1;font-size:14.5px}
+
+/* ============ BOTONES ============ */
+.btn{
+  font-family:inherit;font-size:13px;font-weight:700;
+  padding:9px 16px;border-radius:9px;cursor:pointer;
+  border:1px solid var(--accent);background:rgba(0,212,255,.1);
+  color:var(--accent);transition:all .2s ease;letter-spacing:.3px;
+}
+.btn:hover{background:var(--accent);color:#04121c;box-shadow:0 0 16px rgba(0,212,255,.45)}
+.btn.sel{background:var(--accent);color:#04121c;box-shadow:0 0 16px rgba(0,212,255,.45)}
+.btn.green{border-color:var(--green);color:var(--green);background:rgba(34,197,94,.1)}
+.btn.green:hover,.btn.green.sel{background:var(--green);color:#04121c}
+.btn.amber{border-color:var(--amber);color:var(--amber);background:rgba(245,158,11,.1)}
+.btn.amber:hover,.btn.amber.sel{background:var(--amber);color:#04121c}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.reveal{
+  max-height:0;overflow:hidden;transition:max-height .3s ease,opacity .3s ease,padding .3s ease;
+  opacity:0;padding:0 16px;border-radius:10px;
+}
+.reveal.show{max-height:400px;opacity:1;padding:14px 16px;margin-top:10px}
+.reveal-inner{
+  background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.4);
+  border-radius:10px;padding:13px 16px;color:#bbf7d0;font-size:14.5px;
+}
+
+/* ============ TOOL INTERACTIVO ============ */
+.tool{
+  background:#0b1424;border:1px solid var(--border);
+  border-radius:12px;padding:18px;margin:16px 0;
+}
+.tool .lbl{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
+.tool-out{
+  margin-top:16px;padding:16px;border-radius:10px;
+  background:#070f1d;border:1px dashed var(--border);
+}
+.tool-out .resline{color:var(--muted);font-size:13.5px;margin-top:10px}
+
+/* ============ GLOSARIO ============ */
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.gloss .item{
+  background:var(--card);border:1px solid var(--border);
+  border-left:3px solid var(--purple);
+  border-radius:10px;padding:15px 16px;
+}
+.gloss .item b{display:block;color:var(--purple);font-size:14.5px;margin-bottom:5px;letter-spacing:.3px}
+.gloss .item span{color:#cbd5e1;font-size:14px}
+
+/* ============ FUENTES ============ */
+.source-card{
+  display:flex;gap:16px;align-items:flex-start;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:18px;flex-wrap:wrap;
+}
+.source-card .ic{
+  flex:0 0 auto;width:52px;height:52px;border-radius:12px;
+  background:linear-gradient(135deg,#ef4444,#b91c1c);
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+}
+.source-card .meta{flex:1 1 240px;min-width:0}
+.source-card h4{font-size:16px;color:#fff;margin-bottom:6px;font-weight:700}
+.source-card .who{font-size:13.5px;color:var(--muted);margin-bottom:10px}
+.source-card a{
+  color:var(--accent);text-decoration:none;font-size:13px;
+  word-break:break-all;border-bottom:1px dotted var(--accent);
+}
+.source-card a:hover{color:#7dd3fc}
+
+/* ============ CRÉDITOS ============ */
+.credits-box{
+  text-align:center;background:var(--card);
+  border:1px solid var(--border);border-radius:14px;
+  padding:28px 20px;
+}
+.credits-box h3{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px}
+.credits-box .role{color:var(--accent);font-size:15px;font-weight:700;letter-spacing:1px;margin-bottom:18px}
+.credits-meta{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:18px;
+}
+.credits-meta span{
+  background:#0b1424;border:1px solid var(--border);
+  padding:7px 14px;border-radius:9px;font-size:13px;color:var(--muted);
+}
+.credits-meta span b{color:#e2e8f0}
+.fiat{
+  font-style:italic;color:var(--amber);font-size:14px;
+  border-top:1px dashed var(--border);padding-top:16px;
+}
+.edu-note{
+  font-size:13px;color:var(--muted);margin-top:14px;
+  background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.25);
+  border-radius:10px;padding:12px 16px;display:inline-block;
+}
+
+/* ============ FOOTER ============ */
+.footer{
+  border-top:1px solid var(--border);
+  background:#080d18;
+  padding:28px 16px 34px;
+  text-align:center;
+  margin-top:40px;
+}
+.footer p{color:var(--dim);font-size:13px;margin-bottom:6px}
+.footer .fiat{color:var(--amber);font-style:italic;margin-top:14px;border:none;padding-top:0}
+
+/* ============ BOTÓN ARRIBA ============ */
+#toTop{
+  position:fixed;right:16px;bottom:18px;z-index:115;
+  width:46px;height:46px;border-radius:12px;
+  background:linear-gradient(135deg,#00d4ff,#0284c7);
+  color:#04121c;border:none;cursor:pointer;
+  font-size:20px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;transform:translateY(14px);
+  transition:all .3s ease;
+  box-shadow:0 6px 20px rgba(0,212,255,.4);
+}
+#toTop.show{opacity:1;visibility:visible;transform:translateY(0)}
+#toTop:active{transform:scale(.92)}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:640px){
+  main{padding:70px 10px 50px}
+  .nav-btn{font-size:12px;padding:7px 11px}
+  .card{padding:16px;border-radius:10px}
+  .sec-icon{width:40px;height:40px;font-size:18px}
+  .quote{padding:14px 16px;font-size:15px}
+  .metric .num{font-size:22px}
+  .steps li{padding:13px 13px 13px 52px}
+  .steps li::before{left:12px;top:12px;width:27px;height:27px;font-size:13px}
+  .note{min-width:48px;padding:7px 8px;font-size:14px}
+  table{font-size:13px}
+  th,td{padding:9px 10px}
+  .source-card{padding:14px}
+  #toTop{width:42px;height:42px;right:12px;bottom:14px}
+}
+@media (max-width:380px){
+  body{font-size:15px}
+  .nav-btn{font-size:11.5px;padding:6px 9px}
+  .metric .num{font-size:20px}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  .section{animation:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ SVG MAESTRO (reutilizado en HOME y CRÉDITOS) ============ -->
+<svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+<symbol id="heroSymbol" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="hbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070b14">
+        <animate attributeName="stop-color" values="#070b14;#0a1428;#120a24;#070b14" dur="11s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="55%" stop-color="#0a0e1a">
+        <animate attributeName="stop-color" values="#0a0e1a;#101a33;#0a0e1a" dur="9s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#0f172a">
+        <animate attributeName="stop-color" values="#0f172a;#152046;#1a1030;#0f172a" dur="13s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+
+    <pattern id="hgrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0 H0 V40" fill="none" stroke="#1e3a5f" stroke-width="0.8"/>
+    </pattern>
+
+    <radialGradient id="hhaloC">
+      <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.9"/>
+      <stop offset="55%" stop-color="#00d4ff" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="hhaloP">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.9"/>
+      <stop offset="55%" stop-color="#a855f7" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="hhaloA">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.9"/>
+      <stop offset="55%" stop-color="#f59e0b" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="hhaloG">
+      <stop offset="0%" stop-color="#22c55e" stop-opacity="0.9"/>
+      <stop offset="55%" stop-color="#22c55e" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="hglow" x="-90%" y="-90%" width="280%" height="280%">
+      <feGaussianBlur stdDeviation="3.4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="hglowBig" x="-130%" y="-130%" width="360%" height="360%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <path id="hprog" d="M120 215 Q190 197 260 215 Q330 233 400 215 Q470 197 540 215 Q610 233 680 215" fill="none"/>
+  </defs>
+
+  <!-- FONDO VIVO -->
+  <rect width="800" height="450" fill="url(#hbg)"/>
+  <rect width="800" height="450" fill="url(#hgrid)" opacity="0.4">
+    <animate attributeName="opacity" values="0.16;0.55;0.16" dur="7s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- ANILLOS ORBITALES -->
+  <g transform="translate(400,215)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="26s" repeatCount="indefinite"/>
+      <circle r="140" fill="none" stroke="#00d4ff" stroke-width="1.1" stroke-dasharray="6 14" opacity="0.5">
+        <animate attributeName="stroke-dasharray" values="6 14;26 10;6 14" dur="8s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="18s" repeatCount="indefinite"/>
+      <circle r="105" fill="none" stroke="#a855f7" stroke-width="1.3" stroke-dasharray="3 9" opacity="0.55">
+        <animate attributeName="stroke-dasharray" values="3 9;18 7;3 9" dur="6s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12s" repeatCount="indefinite"/>
+      <circle r="72" fill="none" stroke="#22c55e" stroke-width="1" stroke-dasharray="10 6" opacity="0.5">
+        <animate attributeName="stroke-dasharray" values="10 6;2 12;10 6" dur="4.5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- CAMINO ARMÓNICO (flujo) -->
+  <path d="M120 215 Q190 197 260 215 Q330 233 400 215 Q470 197 540 215 Q610 233 680 215"
+        fill="none" stroke="#00d4ff" stroke-width="2" stroke-dasharray="12 10" opacity="0.55">
+    <animate attributeName="stroke-dashoffset" from="0" to="-220" dur="5s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- PARTÍCULAS VIAJERAS -->
+  <circle r="3.6" fill="#22c55e" filter="url(#hglow)">
+    <animateMotion dur="4s" begin="0s" repeatCount="indefinite"><mpath href="#hprog"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="3.2" fill="#f59e0b" filter="url(#hglow)">
+    <animateMotion dur="5s" begin="-1.3s" repeatCount="indefinite"><mpath href="#hprog"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" dur="5s" begin="-1.3s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="3.8" fill="#a855f7" filter="url(#hglow)">
+    <animateMotion dur="6s" begin="-2.6s" repeatCount="indefinite"><mpath href="#hprog"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" dur="6s" begin="-2.6s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="3.2" fill="#00d4ff" filter="url(#hglow)">
+    <animateMotion dur="3.4s" begin="-0.7s" repeatCount="indefinite"><mpath href="#hprog"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" dur="3.4s" begin="-0.7s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- GHOST: nota fantasma recorriendo el camino completo -->
+  <circle r="13" fill="#a855f7" opacity="0.35" filter="url(#hglow)">
+    <animateMotion dur="9s" begin="0s" repeatCount="indefinite"><mpath href="#hprog"/></animateMotion>
+    <animate attributeName="opacity" values="0;0.5;0.5;0;0" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="8;16;16;10;8" dur="9s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="11" fill="#22c55e" opacity="0.3" filter="url(#hglow)">
+    <animateMotion dur="9s" begin="-4.5s" repeatCount="indefinite"><mpath href="#hprog"/></animateMotion>
+    <animate attributeName="opacity" values="0;0.45;0.45;0;0" dur="9s" begin="-4.5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- NODO 1 · A (I) -->
+  <g transform="translate(120,215)">
+    <circle r="30" fill="url(#hhaloC)" opacity="0.5">
+      <animate attributeName="r" values="26;44;26" dur="3.4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.22;0.65;0.22" dur="3.4s" repeatCount="indefinite"/>
+    </circle>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="3.1s" repeatCount="indefinite"/>
+      <circle r="26" fill="#0f172a" stroke="#00d4ff" stroke-width="2" filter="url(#hglow)">
+        <animate attributeName="stroke-width" values="2;3.6;2" dur="2.6s" repeatCount="indefinite"/>
+      </circle>
+      <text y="2" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="15" font-weight="800" fill="#00d4ff">A</text>
+      <text y="16" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="9" font-weight="700" fill="#7dd3fc">I</text>
+    </g>
+  </g>
+
+  <!-- NODO 2 · C# (III) -->
+  <g transform="translate(260,215)">
+    <circle r="30" fill="url(#hhaloP)" opacity="0.5">
+      <animate attributeName="r" values="26;42;26" dur="3.9s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.2;0.6;0.2" dur="3.9s" repeatCount="indefinite"/>
+    </circle>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="3.6s" repeatCount="indefinite"/>
+      <circle r="26" fill="#0f172a" stroke="#a855f7" stroke-width="2" filter="url(#hglow)">
+        <animate attributeName="stroke-width" values="2;3.6;2" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <text y="2" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="13.5" font-weight="800" fill="#c084fc">C#</text>
+      <text y="16" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="9" font-weight="700" fill="#c084fc">III</text>
+    </g>
+  </g>
+
+  <!-- NODO 3 · D (IV) con anillo orbitando -->
+  <g transform="translate(400,215)">
+    <circle r="34" fill="url(#hhaloA)" opacity="0.5">
+      <animate attributeName="r" values="28;48;28" dur="4.4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.22;0.7;0.22" dur="4.4s" repeatCount="indefinite"/>
+    </circle>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="7s" repeatCount="indefinite"/>
+      <circle r="38" fill="none" stroke="#f59e0b" stroke-width="1.4" stroke-dasharray="4 10" opacity="0.75">
+        <animate attributeName="stroke-dasharray" values="4 10;18 6;4 10" dur="3.5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -5;0 0" dur="2.6s" repeatCount="indefinite"/>
+      <circle r="26" fill="#0f172a" stroke="#f59e0b" stroke-width="2" filter="url(#hglow)">
+        <animate attributeName="stroke-width" values="2;3.8;2" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+      <text y="2" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="15" font-weight="800" fill="#fbbf24">D</text>
+      <text y="16" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="9" font-weight="700" fill="#fbbf24">IV</text>
+    </g>
+  </g>
+
+  <!-- NODO 4 · E (V) -->
+  <g transform="translate(540,215)">
+    <circle r="30" fill="url(#hhaloG)" opacity="0.5">
+      <animate attributeName="r" values="26;43;26" dur="3.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.2;0.62;0.2" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="4.1s" repeatCount="indefinite"/>
+      <circle r="26" fill="#0f172a" stroke="#22c55e" stroke-width="2" filter="url(#hglow)">
+        <animate attributeName="stroke-width" values="2;3.6;2" dur="2.9s" repeatCount="indefinite"/>
+      </circle>
+      <text y="2" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="15" font-weight="800" fill="#4ade80">E</text>
+      <text y="16" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="9" font-weight="700" fill="#4ade80">V</text>
+    </g>
+  </g>
+
+  <!-- NODO 5 · A (I) final + explosión -->
+  <g transform="translate(680,215)">
+    <circle r="30" fill="url(#hhaloC)" opacity="0.5">
+      <animate attributeName="r" values="26;46;26" dur="3.7s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.22;0.7;0.22" dur="3.7s" repeatCount="indefinite"/>
+    </circle>
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="3.3s" repeatCount="indefinite"/>
+      <circle r="26" fill="#0f172a" stroke="#00d4ff" stroke-width="2" filter="url(#hglow)">
+        <animate attributeName="stroke-width" values="2;4;2" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+      <text y="2" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="15" font-weight="800" fill="#00d4ff">A</text>
+      <text y="16" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="9" font-weight="700" fill="#7dd3fc">I</text>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="scale" values="0.2;1.7;1.7" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.95;0;0" dur="4s" repeatCount="indefinite"/>
+      <line x1="0" y1="0" x2="0" y2="-40" stroke="#00d4ff" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="28" y2="-28" stroke="#00d4ff" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="40" y2="0" stroke="#22c55e" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="28" y2="28" stroke="#22c55e" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="0" y2="40" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="-28" y2="28" stroke="#a855f7" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="-40" y2="0" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="-28" y2="-28" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- EXPLOSIÓN EN NODO 3 -->
+  <g transform="translate(400,215)">
+    <g>
+      <animateTransform attributeName="transform" type="scale" values="0.2;1.5;1.5" dur="6s" begin="-2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.7;0;0" dur="6s" begin="-2s" repeatCount="indefinite"/>
+      <line x1="0" y1="0" x2="0" y2="-34" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="24" y2="-24" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="34" y2="0" stroke="#00d4ff" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="24" y2="24" stroke="#00d4ff" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="0" y2="34" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="-24" y2="24" stroke="#a855f7" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="-34" y2="0" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="-24" y2="-24" stroke="#22c55e" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- TECLADO (walking bass) -->
+  <g>
+    <rect x="70" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#00d4ff;#cbd5e1;#cbd5e1" dur="4.5s" begin="0s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="125" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#00d4ff;#cbd5e1;#cbd5e1" dur="4.5s" begin="-0.34s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="180" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#a855f7;#cbd5e1;#cbd5e1" dur="4.5s" begin="-0.68s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="235" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#f59e0b;#cbd5e1;#cbd5e1" dur="4.5s" begin="-1.02s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="290" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#22c55e;#cbd5e1;#cbd5e1" dur="4.5s" begin="-1.36s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="345" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#f59e0b;#cbd5e1;#cbd5e1" dur="4.5s" begin="-1.70s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="400" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#22c55e;#cbd5e1;#cbd5e1" dur="4.5s" begin="-2.04s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="455" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#a855f7;#cbd5e1;#cbd5e1" dur="4.5s" begin="-2.38s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="510" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#00d4ff;#cbd5e1;#cbd5e1" dur="4.5s" begin="-2.72s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="565" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#f59e0b;#cbd5e1;#cbd5e1" dur="4.5s" begin="-3.06s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="620" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#00d4ff;#cbd5e1;#cbd5e1" dur="4.5s" begin="-3.40s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="675" y="372" width="54" height="62" rx="4" fill="#cbd5e1" stroke="#0a0e1a" stroke-width="1">
+      <animate attributeName="fill" values="#cbd5e1;#cbd5e1;#22c55e;#cbd5e1;#cbd5e1" dur="4.5s" begin="-3.74s" repeatCount="indefinite"/>
+    </rect>
+
+    <!-- teclas negras -->
+    <rect x="108.5" y="372" width="33" height="42" rx="3" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1">
+      <animate attributeName="fill" values="#0a0e1a;#0a0e1a;#00d4ff;#0a0e1a;#0a0e1a" dur="5.2s" begin="-0.3s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="163.5" y="372" width="33" height="42" rx="3" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1">
+      <animate attributeName="fill" values="#0a0e1a;#0a0e1a;#a855f7;#0a0e1a;#0a0e1a" dur="5.2s" begin="-0.9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="273.5" y="372" width="33" height="42" rx="3" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1">
+      <animate attributeName="fill" values="#0a0e1a;#0a0e1a;#f59e0b;#0a0e1a;#0a0e1a" dur="5.2s" begin="-1.5s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="328.5" y="372" width="33" height="42" rx="3" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1">
+      <animate attributeName="fill" values="#0a0e1a;#0a0e1a;#22c55e;#0a0e1a;#0a0e1a" dur="5.2s" begin="-2.1s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="383.5" y="372" width="33" height="42" rx="3" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1">
+      <animate attributeName="fill" values="#0a0e1a;#0a0e1a;#00d4ff;#0a0e1a;#0a0e1a" dur="5.2s" begin="-2.7s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="493.5" y="372" width="33" height="42" rx="3" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1">
+      <animate attributeName="fill" values="#0a0e1a;#0a0e1a;#a855f7;#0a0e1a;#0a0e1a" dur="5.2s" begin="-3.3s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="548.5" y="372" width="33" height="42" rx="3" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1">
+      <animate attributeName="fill" values="#0a0e1a;#0a0e1a;#f59e0b;#0a0e1a;#0a0e1a" dur="5.2s" begin="-3.9s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="658.5" y="372" width="33" height="42" rx="3" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1">
+      <animate attributeName="fill" values="#0a0e1a;#0a0e1a;#22c55e;#0a0e1a;#0a0e1a" dur="5.2s" begin="-4.5s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="713.5" y="372" width="33" height="42" rx="3" fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1">
+      <animate attributeName="fill" values="#0a0e1a;#0a0e1a;#00d4ff;#0a0e1a;#0a0e1a" dur="5.2s" begin="-5.1s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- TEXTOS -->
+  <text x="400" y="46" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="26" font-weight="800" letter-spacing="1.5" fill="#00d4ff" filter="url(#hglowBig)">
+    MANO IZQUIERDA · WALKING BASS
+    <animate attributeName="fill" values="#00d4ff;#a855f7;#22c55e;#f59e0b;#00d4ff" dur="12s" repeatCount="indefinite"/>
+  </text>
+
+  <text x="400" y="72" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12.5" letter-spacing="3" fill="#94a3b8">
+    ADORNOS Y PROGRESIONES · ESCALA DE A MAYOR
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="5s" repeatCount="indefinite"/>
+  </text>
+
+  <text x="400" y="308" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="12" font-weight="700" letter-spacing="2.4" fill="#22c55e">
+    DOS NOTAS DE APROXIMACIÓN → TIEMPO FUERTE
+    <animate attributeName="opacity" values="1;0.15;1;0.15;1" dur="3.2s" repeatCount="indefinite"/>
+  </text>
+
+  <text x="400" y="332" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="17" font-weight="900" letter-spacing="4" fill="#00d4ff" filter="url(#hglowBig)">
+    TARGET BASS
+    <animate attributeName="opacity" values="0;0;1;1;0;0" dur="8s" repeatCount="indefinite"/>
+    <animate attributeName="fill" values="#00d4ff;#a855f7;#f59e0b;#00d4ff" dur="8s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- INDICADOR LIVE -->
+  <g transform="translate(700,26)">
+    <circle cx="0" cy="0" r="5" fill="#ef4444">
+      <animate attributeName="r" values="4;7.5;4" dur="1.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.3;1" dur="1.6s" repeatCount="indefinite"/>
+    </circle>
+    <text x="12" y="4" font-family="Segoe UI, system-ui, sans-serif" font-size="11" font-weight="800" fill="#ef4444" letter-spacing="1.5">LIVE</text>
+  </g>
+
+  <!-- FIRMA -->
+  <text x="400" y="447" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-size="10" letter-spacing="2.6" fill="#64748b">
+    RUBÉN SBARSKY
+    <animate attributeName="opacity" values="0.25;0.95;0.25" dur="6s" repeatCount="indefinite"/>
+  </text>
+</symbol>
+</svg>
+
+<!-- ============ PROGRESO ============ -->
+<div id="progressWrap"><div id="progressBar"></div></div>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar" id="navbar">
+  <button class="nav-btn active" data-target="home">Inicio</button>
+  <button class="nav-btn" data-target="intro">Introducción</button>
+  <button class="nav-btn" data-target="escala">Escala</button>
+  <button class="nav-btn" data-target="regla">Regla de Oro</button>
+  <button class="nav-btn" data-target="guia">Guía Práctica</button>
+  <button class="nav-btn" data-target="practica">Perfeccionamiento</button>
+  <button class="nav-btn" data-target="cierre">Cierre y Ejercicios</button>
+  <button class="nav-btn" data-target="glosario">Glosario</button>
+  <span class="nav-sep"></span>
+  <button class="nav-btn" data-target="fuentes">Fuentes</button>
+  <button class="nav-btn credits" data-target="creditos">Créditos</button>
+</nav>
+
+<main>
+
+<!-- ============================================================ HOME -->
+<section id="home" class="section active">
+
+  <div class="hero-wrap">
+    <svg class="hero-svg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Portada animada: conducción de la mano izquierda al piano con notas de aproximación hacia el bajo objetivo">
+      <use href="#heroSymbol" width="800" height="450"/>
+    </svg>
+  </div>
+
+  <span class="badge">Tutorial Técnico · Piano · Armonía Aplicada</span>
+  <h1 class="home-title">Técnicas de Mano Izquierda para Piano</h1>
+  <p class="home-sub">Adornos y Progresiones · Conducción Armónica y Bajo Caminante</p>
+  <p class="home-desc">
+    Un recorrido completo por la técnica que transforma la mano izquierda de un acompañante estático
+    en un motor de dinamismo y narrativa musical. Basado en la escala de A Mayor (I), el sistema de
+    grados y la regla de las dos notas de aproximación hacia el <strong>Target Bass</strong>.
+  </p>
+
+  <div class="quote">
+    «Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.»
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><span class="num">6</span><span class="lbl">Bloques temáticos</span></div>
+    <div class="metric"><span class="num">7</span><span class="lbl">Grados de la escala</span></div>
+    <div class="metric"><span class="num">2</span><span class="lbl">Notas de aproximación</span></div>
+    <div class="metric"><span class="num">5</span><span class="lbl">Pasos de aplicación</span></div>
+  </div>
+
+  <div class="stamp">
+    <span>📅 Fecha: 20/09/2026</span>
+    <span>🕒 Hora: 03:59:16</span>
+    <span>👨‍💻 Créditos: Rubén Sbarsky</span>
+  </div>
+</section>
+
+<!-- ============================================================ 1. INTRODUCCIÓN -->
+<section id="intro" class="section">
+  <div class="sec-head">
+    <div class="sec-icon">🎼</div>
+    <div>
+      <span class="kicker">Capítulo 01</span>
+      <h2>Introducción: El Poder de la Mano Izquierda Dinámica</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>
+      En la interpretación pianística contemporánea, la mano izquierda ha dejado de ser un mero
+      acompañante estático que marca el pulso para convertirse en un motor esencial de dinamismo
+      y narrativa musical. Cuando nos limitamos a tocar la tónica de un acorde en cada compás,
+      la música puede sentirse predecible. Sin embargo, al integrar técnicas de conducción armónica,
+      transformamos la base rítmica en una herramienta que genera expectativa y guía al oyente
+      hacia la resolución.
+    </p>
+    <p>
+      Esta técnica de adornos y progresiones consiste en utilizar aproximaciones escalares y la
+      reubicación del bajo (inversiones) para conectar los acordes de forma fluida hacia un
+      «punto de llegada». Es fundamental porque aporta una sonoridad «grandiosa» y profesional,
+      elevando el nivel de la ejecución en contextos como servicios religiosos, baladas o
+      acompañamiento de solistas. El impacto de pasar de un bajo estático a uno «caminante» es lo
+      que separa a un aficionado de un pianista que realmente conduce la armonía. Para dominar
+      este lenguaje, el primer paso es conocer el mapa sobre el que nos moveremos: la escala.
+    </p>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <h3><span class="chip chip-red">Antes</span></h3>
+      <p>Bajo estático: solo la tónica del acorde en cada compás. La música se siente predecible
+      y sin dirección narrativa.</p>
+    </div>
+    <div class="card">
+      <h3><span class="chip chip-green">Después</span></h3>
+      <p>Bajo caminante: aproximaciones escalares e inversiones que conectan los acordes y
+      generan expectativa hacia la resolución.</p>
+    </div>
+    <div class="card">
+      <h3><span class="chip chip-cyan">Resultado</span></h3>
+      <p>Sonoridad «grandiosa» y profesional, con un «llenado acústico» que da sensación de
+      banda completa al piano solo.</p>
+    </div>
+  </div>
+
+  <div class="callout co-info">
+    <strong>Contextos de aplicación</strong>
+    Servicios religiosos, baladas y acompañamiento de solistas: escenarios donde la conducción
+    armónica de la mano izquierda marca la diferencia entre acompañar y dirigir.
+  </div>
+</section>
+
+<!-- ============================================================ 2. ESCALA -->
+<section id="escala" class="section">
+  <div class="sec-head">
+    <div class="sec-icon">🗺️</div>
+    <div>
+      <span class="kicker">Capítulo 02</span>
+      <h2>Los Cimientos: La Escala de A Mayor y el Lenguaje del Piano</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>
+      Antes de intentar adornar, es imperativo dominar la escala base. Piense en la escala como el
+      mapa de una ciudad: no puede tomar atajos si no conoce las avenidas principales. Utilizaremos
+      la escala de <strong>A Mayor</strong> como nuestro sistema de referencia, integrando el análisis
+      por grados (números romanos) para mantener el rigor profesional.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>La Escala de A Mayor — Grados y Notas</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Grado</th>
+            <th>Nota (sistema americano)</th>
+            <th>Nombre en el documento original</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">I</td><td class="mono">A</td><td>La</td></tr>
+          <tr><td class="mono">II</td><td class="mono">B</td><td>Si</td></tr>
+          <tr><td class="mono">III</td><td class="mono">C#</td><td>Do#</td></tr>
+          <tr><td class="mono">IV</td><td class="mono">D</td><td>Re</td></tr>
+          <tr><td class="mono">V</td><td class="mono">E</td><td>Mi</td></tr>
+          <tr><td class="mono">VI</td><td class="mono">F#</td><td>Fa#</td></tr>
+          <tr><td class="mono">VII</td><td class="mono">G#</td><td>Sol#</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="noterow">
+      <span class="note">A<small>I</small></span>
+      <span class="note">B<small>II</small></span>
+      <span class="note">C#<small>III</small></span>
+      <span class="note">D<small>IV</small></span>
+      <span class="note">E<small>V</small></span>
+      <span class="note">F#<small>VI</small></span>
+      <span class="note">G#<small>VII</small></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Conceptos de Conducción: El Bajo Objetivo</h3>
+    <p>
+      Para que la mano izquierda sea dinámica, debemos entender que el «objetivo» del bajo no siempre
+      es la raíz del acorde. Un acorde puede vestirse de diferentes formas (inversiones) según la nota
+      que elijamos para la mano izquierda.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nota del bajo</th>
+            <th>Grado</th>
+            <th>Función</th>
+            <th>Nombre técnico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="mono">A</td><td class="mono">I</td><td>Raíz / Fundamental</td><td>Estado Fundamental</td></tr>
+          <tr><td class="mono">C#</td><td class="mono">III</td><td>Tercera</td><td>Primera Inversión</td></tr>
+          <tr><td class="mono">E</td><td class="mono">V</td><td>Quinta</td><td>Segunda Inversión</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Establecer puentes melódicos entre estas notas permite que el bajo «camine» de forma natural
+      en lugar de dar saltos bruscos.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================ 3. REGLA DE ORO -->
+<section id="regla" class="section">
+  <div class="sec-head">
+    <div class="sec-icon">🔑</div>
+    <div>
+      <span class="kicker">Capítulo 03</span>
+      <h2>La Regla de Oro: El Secreto de las «Dos Notas de Aproximación»</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <p>
+      El cerebro musical responde a la preparación. Un salto abrupto de un bajo a otro suena tosco;
+      una aproximación gradual genera una tensión lógica que resuelve en el <strong>Acorde de Destino</strong>
+      o <strong>Target Bass</strong>. La clave no es dónde estás, sino hacia dónde vas.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>La Mecánica y su Rítmica</h3>
+    <p>
+      La técnica consiste en tocar dos notas consecutivas de la escala justo antes de llegar a la
+      nota objetivo.
+    </p>
+    <div class="callout co-warn">
+      <strong>Ubicación rítmica</strong>
+      El adorno no ocurre en el tiempo fuerte. Normalmente, las dos notas de aproximación ocupan los
+      pulsos débiles (como el tiempo 2 o el 4, o las síncopas antes del 3 y el 1) para que el bajo
+      objetivo caiga con peso exactamente en el tiempo fuerte (1 o 3).
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Proceso mental del pianista</h3>
+    <ol class="steps">
+      <li><strong>Identificar destino:</strong> ¿A qué nota del bajo me dirijo (Raíz, 3ª o 5ª del siguiente acorde)?</li>
+      <li><strong>Elegir dirección:</strong> ¿Llegaré por debajo (ascendente) o por arriba (descendente)?</li>
+      <li><strong>Seleccionar 2 notas:</strong> Tomar las dos notas de la escala inmediatamente anteriores o posteriores al destino.</li>
+      <li><strong>Resolver:</strong> Presionar la nota objetivo en el tiempo fuerte para liberar la tensión.</li>
+    </ol>
+  </div>
+
+  <div class="tool">
+    <div class="lbl">Herramienta interactiva · Generador de aproximaciones en A Mayor</div>
+    <p style="color:#cbd5e1;font-size:14.5px;margin-bottom:14px">
+      Selecciona una nota objetivo y una dirección. El sistema calcula automáticamente las
+      <strong>dos notas diatónicas</strong> que la aproximan dentro de la escala de A Mayor.
+    </p>
+
+    <div class="lbl">Nota objetivo</div>
+    <div class="btnrow" id="targetBtns">
+      <button class="btn" data-idx="0">A (I)</button>
+      <button class="btn" data-idx="1">B (II)</button>
+      <button class="btn" data-idx="2">C# (III)</button>
+      <button class="btn sel" data-idx="3">D (IV)</button>
+      <button class="btn" data-idx="4">E (V)</button>
+      <button class="btn" data-idx="5">F# (VI)</button>
+      <button class="btn" data-idx="6">G# (VII)</button>
+    </div>
+
+    <div class="lbl">Dirección</div>
+    <div class="btnrow" id="dirBtns">
+      <button class="btn green sel" data-dir="asc">Ascendente (por debajo)</button>
+      <button class="btn amber" data-dir="desc">Descendente (por arriba)</button>
+    </div>
+
+    <div class="tool-out" id="approachOut"></div>
+  </div>
+</section>
+
+<!-- ============================================================ 4. GUÍA PRÁCTICA -->
+<section id="guia" class="section">
+  <div class="sec-head">
+    <div class="sec-icon">🎯</div>
+    <div>
+      <span class="kicker">Capítulo 04</span>
+      <h2>Guía Paso a Paso: Aplicación en la Canción «Hijo de Dios»</h2>
+    </div>
+  </div>
+
+  <div class="callout co-info">
+    <strong>Principio rector</strong>
+    Analizaremos la aplicación real en esta balada en A Mayor (I). Recuerde: la elegancia reside
+    en el equilibrio; no sature cada compás.
+  </div>
+
+  <ol class="steps">
+    <li>
+      <strong>Paso 1: Estabilidad Inicial (I a III).</strong><br>
+      Al comenzar, mantenga la calma. Pase de A Mayor (I) a C# menor (III) de forma sencilla.
+      Es mejor permitir que la canción crezca gradualmente antes de introducir adornos potentes.
+    </li>
+    <li>
+      <strong>Paso 2: Tensión y Resolución (F#sus4 a F# Mayor/A#).</strong><br>
+      Aquí aplicamos un concepto avanzado. Pasamos de un F#sus4 (VI sus4) a un F# Mayor (VI) con bajo
+      en A# (#I). Aunque el A# está fuera de la escala de A Mayor, el oído lo acepta si lo preparamos.
+      <div class="callout co-ex" style="margin-top:10px">
+        <strong>El Adorno</strong>
+        Para llegar al A#, usamos dos notas diatónicas (dentro de la escala): F# (VI) y G# (VII).
+        La línea resultante es: <span class="mono">F# → G# → A# (Objetivo)</span>. El movimiento
+        escalar suaviza la entrada de la nota alterada.
+      </div>
+      <div class="noterow">
+        <span class="note asc">F#<small>VI</small></span>
+        <span class="arrow">→</span>
+        <span class="note asc">G#<small>VII</small></span>
+        <span class="arrow">→</span>
+        <span class="note target">A#<small>#I · Objetivo</small></span>
+      </div>
+    </li>
+    <li>
+      <strong>Paso 3: El toque «Precioso» (F# Aumentado).</strong><br>
+      En momentos de transición, el uso del acorde de F# aumentado (F# – A# – D) crea una tensión
+      armónica exquisita. Este acorde sirve como un puente de gran intensidad antes de resolver a
+      un grado menor.
+    </li>
+    <li>
+      <strong>Paso 4: Suspensión y Preparación al E (V).</strong><br>
+      Antes de llegar al acorde de E Mayor (V), podemos usar una suspensión de D Mayor (IV) con bajo
+      en E (V). Para darle movimiento, podemos aproximar al bajo de G# (la tercera del acorde de E)
+      usando las notas E (V) y F# (VI) de forma ascendente.
+      <div class="noterow">
+        <span class="note asc">E<small>V</small></span>
+        <span class="arrow">→</span>
+        <span class="note asc">F#<small>VI</small></span>
+        <span class="arrow">→</span>
+        <span class="note target">G#<small>VII · Tercera de E</small></span>
+      </div>
+    </li>
+    <li>
+      <strong>Paso 5: Aproximación Descendente hacia el C#m (III).</strong><br>
+      Para entrar al C# menor, utilizamos la aproximación por arriba. Tocamos las notas E (V) y D (IV)
+      de la escala de forma descendente para caer con precisión en el C# (III).
+      <div class="noterow">
+        <span class="note desc">E<small>V</small></span>
+        <span class="arrow">→</span>
+        <span class="note desc">D<small>IV</small></span>
+        <span class="arrow">→</span>
+        <span class="note target">C#<small>III · Objetivo</small></span>
+      </div>
+    </li>
+  </ol>
+
+  <div class="callout co-ex">
+    <strong>Consejo de Experto</strong>
+    Ejecute estos adornos utilizando <strong>octavas</strong> en la mano izquierda. Esto no solo da
+    potencia, sino que produce un «llenado acústico» del espectro sonoro, dando cuerpo y una
+    sensación de «banda completa» al piano solo.
+  </div>
+</section>
+
+<!-- ============================================================ 5. PERFECCIONAMIENTO -->
+<section id="practica" class="section">
+  <div class="sec-head">
+    <div class="sec-icon">🛠️</div>
+    <div>
+      <span class="kicker">Capítulo 05</span>
+      <h2>Perfeccionamiento y Mejores Prácticas</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Errores Frecuentes</h3>
+    <div class="callout co-err">
+      <strong>Pérdida del Tiempo 1</strong>
+      El error más grave es que el adorno «retrase» la llegada al acorde. El objetivo DEBE sonar en
+      el pulso 1 o 3.
+    </div>
+    <div class="callout co-warn">
+      <strong>Saturación</strong>
+      Si adornas todos los cambios, el efecto de «expectativa» desaparece. Usa el adorno para
+      enfatizar momentos de clímax o cambios de sección.
+    </div>
+    <div class="callout co-err">
+      <strong>Descuido Escalar</strong>
+      Tocar notas que no pertenecen a la escala (a menos que sean parte del acorde de destino)
+      genera disonancias no deseadas.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Lista de Comprobación para Práctica</h3>
+    <p style="color:var(--muted);font-size:13.5px">Pulsa cada elemento para marcarlo como completado.</p>
+    <ul class="checklist" id="practiceChecklist">
+      <li><span class="box">✓</span><span class="txt">¿Identifiqué si mi nota objetivo es la Raíz, la 3ª o la 5ª?</span></li>
+      <li><span class="box">✓</span><span class="txt">¿Las dos notas previas pertenecen a la escala de la canción?</span></li>
+      <li><span class="box">✓</span><span class="txt">¿Mi nota de destino cae exactamente en el tiempo fuerte?</span></li>
+      <li><span class="box">✓</span><span class="txt">¿He probado usar octavas para dar más «cuerpo» al adorno?</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Preguntas Frecuentes (FAQ)</h3>
+
+    <div class="acc">
+      <button class="acc-head">¿Puedo usar esto en cualquier género?</button>
+      <div class="acc-body">
+        <p>Sí, es la base del <strong>Walking Bass</strong> en el jazz y de la conducción de voces en
+        la música clásica y el gospel.</p>
+      </div>
+    </div>
+
+    <div class="acc">
+      <button class="acc-head">¿Qué hago si la canción cambia de tono?</button>
+      <div class="acc-body">
+        <p>La lógica es idéntica. Identifica los nuevos grados I, II, III… de esa tonalidad y aplica
+        el mismo principio de «dos notas antes».</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 6. CIERRE -->
+<section id="cierre" class="section">
+  <div class="sec-head">
+    <div class="sec-icon">🏁</div>
+    <div>
+      <span class="kicker">Capítulo 06</span>
+      <h2>Conclusión, Resumen Ejecutivo y Ejercicios</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Conclusión y Recursos de Aprendizaje</h3>
+    <p>
+      Dominar la mano izquierda transforma al estudiante en un conductor armónico. Al dejar de ver el
+      bajo como una nota aislada y empezar a verlo como una línea melódica que prepara el futuro de
+      la canción, se logra una interpretación profesional y emocionante.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Resumen Ejecutivo</h3>
+    <ul>
+      <li>La técnica se centra en el <strong>Bajo Objetivo (Target Bass)</strong>.</li>
+      <li>Se utilizan <strong>dos notas diatónicas</strong> para aproximarse por arriba o por debajo.</li>
+      <li>El adorno se prepara en <strong>tiempos débiles</strong> para resolver en tiempos fuertes.</li>
+      <li>Las <strong>inversiones</strong> son las que dictan el camino del bajo.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Ejercicios Prácticos</h3>
+
+    <div class="card" style="background:#0b1424;margin-bottom:12px">
+      <h4>1 · Hacia el Grado IV (D)</h4>
+      <p>Desde la tónica, llega al bajo en D usando aproximación ascendente.</p>
+      <button class="btn green" data-reveal="sol1">Ver solución</button>
+      <div class="reveal" id="sol1">
+        <div class="reveal-inner">
+          <strong>B (II), C# (III)</strong> y cae en <strong>D (IV)</strong>. Esto crea un efecto de
+          sensible tonal que hace la resolución inevitable.
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#0b1424;margin-bottom:12px">
+      <h4>2 · Hacia el Grado V (E) en 1ª Inversión</h4>
+      <p>El objetivo es G# (VII). Llega desde arriba.</p>
+      <button class="btn amber" data-reveal="sol2">Ver solución</button>
+      <div class="reveal" id="sol2">
+        <div class="reveal-inner">
+          <strong>B (II), A (I)</strong> y cae en <strong>G# (VII)</strong>. El descenso genera una
+          suavidad melódica superior al salto.
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#0b1424">
+      <h4>3 · Hacia el Grado III (C#m)</h4>
+      <p>Usa la aproximación descendente.</p>
+      <button class="btn amber" data-reveal="sol3">Ver solución</button>
+      <div class="reveal" id="sol3">
+        <div class="reveal-inner">
+          <strong>E (V), D (IV)</strong> y cae en <strong>C# (III)</strong>. Útil para dar profundidad
+          a las baladas.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ GLOSARIO -->
+<section id="glosario" class="section">
+  <div class="sec-head">
+    <div class="sec-icon">📖</div>
+    <div>
+      <span class="kicker">Referencia</span>
+      <h2>Glosario</h2>
+    </div>
+  </div>
+
+  <div class="gloss">
+    <div class="item">
+      <b>Aproximación Escalar</b>
+      <span>Movimiento por grados conjuntos de la escala hacia una nota objetivo.</span>
+    </div>
+    <div class="item">
+      <b>Diatónico</b>
+      <span>Notas que pertenecen naturalmente a la escala de la tonalidad en la que se toca.</span>
+    </div>
+    <div class="item">
+      <b>Acorde Aumentado</b>
+      <span>Acorde con la quinta alterada hacia arriba, usado para generar tensión extrema.</span>
+    </div>
+    <div class="item">
+      <b>Conducción Armónica</b>
+      <span>El arte de mover las voces de los acordes de manera fluida y lógica.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ FUENTES -->
+<section id="fuentes" class="section">
+  <div class="sec-head">
+    <div class="sec-icon">🔗</div>
+    <div>
+      <span class="kicker">Referencia documental</span>
+      <h2>Fuentes y Referencias</h2>
+    </div>
+  </div>
+
+  <div class="source-card">
+    <div class="ic">▶️</div>
+    <div class="meta">
+      <h4>Video Tutorial: «No sé qué Hacer con la MANO IZQUIERDA»</h4>
+      <p class="who">Por <strong>Cristian Simancas</strong></p>
+      <a href="https://youtube.com/watch?v=fWpbrhdtMyI&amp;is=6KH8MN-_zt8upxZh" target="_blank" rel="noopener noreferrer">
+        https://youtube.com/watch?v=fWpbrhdtMyI&amp;is=6KH8MN-_zt8upxZh
+      </a>
+    </div>
+  </div>
+
+  <div class="callout co-info" style="margin-top:18px">
+    <strong>Nota</strong>
+    Los enlaces aquí mostrados proceden íntegramente del documento original. No se ha añadido,
+    modificado ni inventado ningún recurso externo adicional.
+  </div>
+</section>
+
+<!-- ============================================================ CRÉDITOS -->
+<section id="creditos" class="section">
+  <div class="sec-head">
+    <div class="sec-icon">👨‍💻</div>
+    <div>
+      <span class="kicker">Información del tutorial</span>
+      <h2>Créditos</h2>
+    </div>
+  </div>
+
+  <div class="hero-wrap" style="margin-bottom:24px">
+    <svg class="hero-svg" id="creditsHeroSvg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Portada animada del tutorial, idéntica a la de la sección de inicio">
+      <use href="#heroSymbol" width="800" height="450"/>
+    </svg>
+  </div>
+
+  <div class="credits-box">
+    <h3>Técnicas de Mano Izquierda para Piano: Adornos y Progresiones</h3>
+    <p class="role">Rubén Sbarsky</p>
+
+    <div class="credits-meta">
+      <span>📅 Fecha: <b>20/09/2026</b></span>
+      <span>🕒 Hora: <b>03:59:16</b></span>
+    </div>
+
+    <div class="edu-note">
+      📚 Tutorial elaborado únicamente con fines educativos y de divulgación.
+    </div>
+
+    <p class="fiat" style="margin-top:20px">Fiat iustitia, ruat caelum.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+  <p>👨‍💻 Créditos: Rubén Sbarsky</p>
+  <p>📅 FECHA: 20/09/2026</p>
+  <p>Hora: 03:59:16</p>
+  <p class="fiat">Fiat iustitia, ruat caelum.</p>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ============ SPA NAV ============ */
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
+  var navBtns  = Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
+  var progress = document.getElementById('progressBar');
+  var toTop    = document.getElementById('toTop');
+  var navbar   = document.getElementById('navbar');
+
+  function updateProgress(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var p = h > 0 ? (y / h) * 100 : 0;
+    if(p < 0) p = 0;
+    if(p > 100) p = 100;
+    progress.style.width = p + '%';
+  }
+
+  function restartHero(){
+    var s = document.getElementById('creditsHeroSvg');
+    if(!s) return;
+    try{
+      if(typeof s.unpauseAnimations === 'function'){ s.unpauseAnimations(); }
+      if(typeof s.setCurrentTime === 'function'){ s.setCurrentTime(0); }
+    }catch(e){ /* silencioso */ }
+  }
+
+  function show(id){
+    sections.forEach(function(s){ s.classList.toggle('active', s.id === id); });
+    navBtns.forEach(function(b){ b.classList.toggle('active', b.dataset.target === id); });
+
+    var active = document.querySelector('.nav-btn.active');
+    if(active && navbar){
+      var bl = active.offsetLeft, bw = active.offsetWidth, nl = navbar.scrollLeft, nw = navbar.clientWidth;
+      if(bl < nl || bl + bw > nl + nw){
+        navbar.scrollLeft = bl - 40;
+      }
+    }
+
+    window.scrollTo(0, 0);
+    if(id === 'creditos'){ restartHero(); }
+    setTimeout(updateProgress, 40);
+  }
+
+  navBtns.forEach(function(b){
+    b.addEventListener('click', function(){ show(b.dataset.target); });
+  });
+
+  window.addEventListener('scroll', function(){
+    updateProgress();
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    if(y > 400){ toTop.classList.add('show'); } else { toTop.classList.remove('show'); }
+  }, {passive:true});
+
+  toTop.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  /* ============ ACORDEÓN ============ */
+  Array.prototype.slice.call(document.querySelectorAll('.acc-head')).forEach(function(h){
+    h.addEventListener('click', function(){
+      h.parentElement.classList.toggle('open');
+    });
+  });
+
+  /* ============ REVEAL EJERCICIOS ============ */
+  Array.prototype.slice.call(document.querySelectorAll('[data-reveal]')).forEach(function(b){
+    b.addEventListener('click', function(){
+      var t = document.getElementById(b.dataset.reveal);
+      if(!t) return;
+      t.classList.toggle('show');
+      b.textContent = t.classList.contains('show') ? 'Ocultar solución' : 'Ver solución';
+    });
+  });
+
+  /* ============ CHECKLIST ============ */
+  Array.prototype.slice.call(document.querySelectorAll('#practiceChecklist li')).forEach(function(li){
+    li.addEventListener('click', function(){ li.classList.toggle('done'); });
+  });
+
+  /* ============ GENERADOR DE APROXIMACIONES ============ */
+  var SCALE = ['A','B','C#','D','E','F#','G#'];
+  var DEG   = ['I','II','III','IV','V','VI','VII'];
+  var state = { target: 3, dir: 'asc' };
+
+  var targetBtns = Array.prototype.slice.call(document.querySelectorAll('#targetBtns .btn'));
+  var dirBtns    = Array.prototype.slice.call(document.querySelectorAll('#dirBtns .btn'));
+  var out        = document.getElementById('approachOut');
+
+  function chip(note, deg, cls){
+    return '<span class="note ' + cls + '">' + note + '<small>' + deg + '</small></span>';
+  }
+
+  function renderApproach(){
+    if(!out) return;
+    var i = state.target;
+    var a, b, clsA, clsB;
+
+    if(state.dir === 'asc'){
+      a = (i - 2 + 7) % 7;
+      b = (i - 1 + 7) % 7;
+      clsA = clsB = 'asc';
+    } else {
+      a = (i + 2) % 7;
+      b = (i + 1) % 7;
+      clsA = clsB = 'desc';
+    }
+
+    var html = '<div class="noterow">'
+      + chip(SCALE[a], DEG[a], clsA)
+      + '<span class="arrow">→</span>'
+      + chip(SCALE[b], DEG[b], clsB)
+      + '<span class="arrow">→</span>'
+      + chip(SCALE[i], DEG[i], 'target')
+      + '</div>';
+
+    var dirTxt = state.dir === 'asc'
+      ? 'Aproximación ascendente (por debajo del objetivo)'
+      : 'Aproximación descendente (por arriba del objetivo)';
+
+    html += '<p class="resline">' + dirTxt + ' · Las dos notas pertenecen a la escala de A Mayor. '
+         +  'El objetivo <strong>' + SCALE[i] + ' (' + DEG[i] + ')</strong> debe caer en el tiempo fuerte.</p>';
+
+    out.innerHTML = html;
+  }
+
+  targetBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      targetBtns.forEach(function(x){ x.classList.remove('sel'); });
+      btn.classList.add('sel');
+      state.target = parseInt(btn.dataset.idx, 10);
+      renderApproach();
+    });
+  });
+
+  dirBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      dirBtns.forEach(function(x){ x.classList.remove('sel'); });
+      btn.classList.add('sel');
+      state.dir = btn.dataset.dir;
+      renderApproach();
+    });
+  });
+
+  renderApproach();
+
+  /* ============ REDUCED MOTION ============ */
+  try{
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      Array.prototype.slice.call(document.querySelectorAll('svg')).forEach(function(s){
+        if(typeof s.pauseAnimations === 'function'){
+          try{ s.pauseAnimations(); }catch(e){}
+        }
+      });
+    }
+  }catch(e){}
+
+})();
+</script>
+</body>
+</html>
