@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Armonía y Escalas — Guía Práctica para la Improvisación Musical | Rubén Sbarsky</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ============ PROGRESS BAR ============ */
+#progress-wrap{
+position:fixed;top:0;left:0;width:100%;height:4px;
+background:rgba(30,58,95,.35);z-index:1200;
+}
+#progress-bar{
+height:100%;width:0%;
+background:linear-gradient(90deg,#00d4ff,#a855f7,#22c55e);
+box-shadow:0 0 12px rgba(0,212,255,.7);
+transition:width .12s linear;
+}
+
+/* ============ NAVBAR ============ */
+#navbar{
+position:fixed;top:4px;left:0;width:100%;
+background:rgba(10,14,26,.92);
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+border-bottom:1px solid var(--border);
+z-index:1100;
+}
+.nav-inner{
+display:flex;align-items:center;gap:6px;
+padding:8px 10px;
+overflow-x:auto;
+overflow-y:hidden;
+scrollbar-width:thin;
+scrollbar-color:#1e3a5f transparent;
+-webkit-overflow-scrolling:touch;
+}
+.nav-inner::-webkit-scrollbar{height:5px;}
+.nav-inner::-webkit-scrollbar-track{background:transparent;}
+.nav-inner::-webkit-scrollbar-thumb{background:#1e3a5f;border-radius:4px;}
+.nav-brand{
+flex:0 0 auto;
+font-size:.72rem;font-weight:800;letter-spacing:.14em;
+color:var(--accent);
+padding:6px 10px 6px 4px;
+border-right:1px solid var(--border);
+margin-right:6px;
+white-space:nowrap;
+text-transform:uppercase;
+}
+.nav-btn{
+flex:0 0 auto;
+background:transparent;
+border:1px solid transparent;
+color:var(--muted);
+font-family:inherit;
+font-size:.78rem;
+font-weight:600;
+padding:7px 12px;
+border-radius:8px;
+cursor:pointer;
+white-space:nowrap;
+transition:all .2s;
+letter-spacing:.02em;
+}
+.nav-btn:hover{
+color:var(--text);
+background:rgba(0,212,255,.08);
+border-color:rgba(0,212,255,.25);
+}
+.nav-btn.active{
+color:#04121c;
+background:linear-gradient(135deg,#00d4ff,#22c55e);
+border-color:transparent;
+box-shadow:0 0 14px rgba(0,212,255,.45);
+}
+.nav-btn.credit{
+color:var(--amber);
+border-color:rgba(245,158,11,.35);
+}
+.nav-btn.credit.active{
+background:linear-gradient(135deg,#f59e0b,#a855f7);
+color:#150c00;
+}
+
+/* ============ LAYOUT ============ */
+main{
+max-width:1180px;
+margin:0 auto;
+padding:74px 16px 60px;
+}
+.page{display:none;animation:fadeIn .45s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(14px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+/* ============ HERO SVG ============ */
+.hero-svg-wrap{
+width:100%;
+border-radius:12px;
+overflow:hidden;
+border:1px solid var(--border);
+background:#070b14;
+box-shadow:0 0 40px rgba(0,212,255,.12),0 18px 50px rgba(0,0,0,.6);
+margin-bottom:22px;
+line-height:0;
+}
+.hero-svg{width:100%;height:auto;display:block;}
+
+/* ============ HOME ============ */
+.badge{
+display:inline-block;
+font-size:.68rem;
+font-weight:800;
+letter-spacing:.2em;
+text-transform:uppercase;
+color:var(--accent);
+border:1px solid rgba(0,212,255,.4);
+background:rgba(0,212,255,.07);
+padding:6px 14px;
+border-radius:999px;
+margin-bottom:18px;
+}
+h1.home-title{
+font-size:clamp(1.7rem,4.6vw,3rem);
+line-height:1.1;
+font-weight:800;
+letter-spacing:-.02em;
+background:linear-gradient(120deg,#00d4ff 0%,#a855f7 45%,#22c55e 100%);
+-webkit-background-clip:text;
+background-clip:text;
+-webkit-text-fill-color:transparent;
+margin-bottom:14px;
+}
+.home-sub{
+font-size:clamp(.95rem,2.2vw,1.18rem);
+color:var(--accent);
+font-weight:600;
+margin-bottom:16px;
+letter-spacing:.01em;
+}
+.home-desc{
+color:var(--muted);
+max-width:820px;
+margin-bottom:26px;
+font-size:1rem;
+}
+.quote{
+border-left:3px solid var(--accent);
+background:linear-gradient(90deg,rgba(0,212,255,.09),transparent);
+padding:16px 20px;
+border-radius:0 10px 10px 0;
+font-style:italic;
+color:#cbd5e1;
+margin-bottom:26px;
+font-size:1.02rem;
+}
+.quote span{color:var(--accent);font-style:normal;font-weight:700;}
+
+.metrics{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:12px;
+margin-bottom:26px;
+}
+.metric{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:var(--radius);
+padding:16px 14px;
+text-align:center;
+transition:transform .25s,border-color .25s,box-shadow .25s;
+}
+.metric:hover{
+transform:translateY(-4px);
+border-color:rgba(0,212,255,.5);
+box-shadow:0 10px 26px rgba(0,212,255,.12);
+}
+.metric .val{
+font-size:1.6rem;
+font-weight:800;
+color:var(--accent);
+line-height:1.1;
+}
+.metric .lbl{
+font-size:.7rem;
+text-transform:uppercase;
+letter-spacing:.13em;
+color:var(--muted);
+margin-top:6px;
+}
+.dt-strip{
+display:flex;flex-wrap:wrap;gap:10px;
+font-size:.8rem;color:var(--muted);
+}
+.dt-strip span{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:999px;
+padding:7px 15px;
+}
+.dt-strip b{color:var(--accent);font-weight:700;}
+
+/* ============ SECTION HEADERS ============ */
+.sec-head{
+border-left:4px solid var(--accent);
+padding:6px 0 6px 18px;
+margin-bottom:26px;
+}
+.sec-head .kicker{
+font-size:.7rem;
+letter-spacing:.2em;
+text-transform:uppercase;
+color:var(--accent);
+font-weight:800;
+}
+.sec-head h2{
+font-size:clamp(1.35rem,3.4vw,2.05rem);
+font-weight:800;
+letter-spacing:-.01em;
+color:#f1f5f9;
+line-height:1.2;
+margin-top:4px;
+}
+.sec-head p{color:var(--muted);font-size:.92rem;margin-top:6px;}
+
+h3{
+font-size:1.15rem;
+font-weight:700;
+color:#e2e8f0;
+margin:30px 0 14px;
+padding-bottom:8px;
+border-bottom:1px solid var(--border);
+letter-spacing:-.01em;
+}
+h4{
+font-size:1rem;
+font-weight:700;
+color:var(--accent);
+margin:20px 0 10px;
+}
+p{margin-bottom:13px;}
+ul,ol{margin:0 0 15px 22px;}
+li{margin-bottom:7px;}
+strong{color:#f1f5f9;font-weight:700;}
+em{color:#cbd5e1;}
+code{
+background:rgba(0,212,255,.1);
+color:var(--accent);
+padding:2px 7px;
+border-radius:5px;
+font-size:.88em;
+font-family:'Consolas','Courier New',monospace;
+white-space:nowrap;
+}
+a{color:var(--accent);word-break:break-word;}
+
+/* ============ CARDS ============ */
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:var(--radius);
+padding:20px;
+margin-bottom:18px;
+transition:border-color .25s;
+}
+.card:hover{border-color:rgba(0,212,255,.35);}
+.card.accent{border-left:3px solid var(--accent);}
+.card.green{border-left:3px solid var(--green);}
+.card.amber{border-left:3px solid var(--amber);}
+.card.purple{border-left:3px solid var(--purple);}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;}
+
+/* ============ STEPS ============ */
+.step{
+position:relative;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:var(--radius);
+padding:18px 18px 18px 60px;
+margin-bottom:14px;
+}
+.step .num{
+position:absolute;
+left:16px;top:17px;
+width:30px;height:30px;
+border-radius:50%;
+background:linear-gradient(135deg,#00d4ff,#a855f7);
+color:#04121c;
+font-weight:800;
+font-size:.85rem;
+display:flex;align-items:center;justify-content:center;
+}
+.step h4{margin-top:0;color:#e2e8f0;}
+
+/* ============ CALLOUTS ============ */
+.callout{
+border-radius:var(--radius);
+padding:15px 18px;
+margin:16px 0;
+border-left:4px solid;
+font-size:.94rem;
+}
+.callout .lbl{
+display:block;
+font-size:.68rem;
+font-weight:800;
+letter-spacing:.16em;
+text-transform:uppercase;
+margin-bottom:6px;
+}
+.callout.info{background:rgba(0,212,255,.07);border-color:var(--accent);}
+.callout.info .lbl{color:var(--accent);}
+.callout.example{background:rgba(34,197,94,.07);border-color:var(--green);}
+.callout.example .lbl{color:var(--green);}
+.callout.warn{background:rgba(245,158,11,.08);border-color:var(--amber);}
+.callout.warn .lbl{color:var(--amber);}
+.callout.err{background:rgba(239,68,68,.08);border-color:var(--red);}
+.callout.err .lbl{color:var(--red);}
+
+/* ============ TABLES ============ */
+.table-scroll{
+overflow-x:auto;
+margin:18px 0;
+border:1px solid var(--border);
+border-radius:var(--radius);
+-webkit-overflow-scrolling:touch;
+}
+table{
+width:100%;
+border-collapse:collapse;
+font-size:.87rem;
+min-width:520px;
+}
+thead th{
+background:#111c33;
+color:var(--accent);
+text-align:left;
+padding:12px 14px;
+font-weight:700;
+font-size:.76rem;
+letter-spacing:.06em;
+text-transform:uppercase;
+border-bottom:1px solid var(--border);
+white-space:nowrap;
+}
+tbody td{
+padding:11px 14px;
+border-bottom:1px solid rgba(30,58,95,.5);
+color:#cbd5e1;
+vertical-align:top;
+}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:nth-child(even){background:rgba(30,58,95,.14);}
+tbody tr:hover{background:rgba(0,212,255,.06);}
+
+/* ============ PRE / SCHEMAS ============ */
+pre{
+background:#070d19;
+border:1px solid var(--border);
+border-left:3px solid var(--purple);
+border-radius:var(--radius);
+padding:16px;
+overflow-x:auto;
+font-family:'Consolas','Courier New',monospace;
+font-size:.78rem;
+line-height:1.55;
+color:#9fd8e8;
+margin:16px 0;
+white-space:pre;
+-webkit-overflow-scrolling:touch;
+}
+
+/* ============ BADGES / CHIPS ============ */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+.chip{
+font-size:.74rem;
+font-weight:700;
+padding:5px 12px;
+border-radius:999px;
+border:1px solid;
+letter-spacing:.03em;
+}
+.chip.c1{color:#00d4ff;border-color:rgba(0,212,255,.45);background:rgba(0,212,255,.08);}
+.chip.c2{color:#22c55e;border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.08);}
+.chip.c3{color:#f59e0b;border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.08);}
+.chip.c4{color:#a855f7;border-color:rgba(168,85,247,.45);background:rgba(168,85,247,.08);}
+.chip.c5{color:#ef4444;border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.08);}
+
+/* ============ ACCORDION ============ */
+.acc{
+border:1px solid var(--border);
+border-radius:var(--radius);
+margin-bottom:10px;
+overflow:hidden;
+background:var(--card);
+}
+.acc-head{
+width:100%;
+background:transparent;
+border:none;
+color:#e2e8f0;
+font-family:inherit;
+font-size:.94rem;
+font-weight:700;
+text-align:left;
+padding:15px 44px 15px 16px;
+cursor:pointer;
+position:relative;
+transition:background .2s;
+}
+.acc-head:hover{background:rgba(0,212,255,.06);}
+.acc-head::after{
+content:'+';
+position:absolute;right:16px;top:50%;
+transform:translateY(-50%);
+color:var(--accent);
+font-size:1.3rem;
+font-weight:400;
+transition:transform .25s;
+}
+.acc.open .acc-head::after{content:'−';}
+.acc-body{
+max-height:0;
+overflow:hidden;
+transition:max-height .35s ease;
+padding:0 16px;
+}
+.acc.open .acc-body{padding-bottom:16px;}
+.acc-body-inner{padding-top:4px;color:var(--muted);font-size:.93rem;}
+
+/* ============ EXERCISE ============ */
+.exercise{
+background:linear-gradient(135deg,rgba(168,85,247,.07),rgba(0,212,255,.04));
+border:1px solid var(--border);
+border-radius:var(--radius);
+padding:18px;
+margin-bottom:16px;
+}
+.exercise h4{color:var(--purple);margin-top:0;}
+.reveal-btn{
+background:linear-gradient(135deg,#a855f7,#00d4ff);
+border:none;
+color:#04121c;
+font-family:inherit;
+font-weight:800;
+font-size:.82rem;
+padding:9px 18px;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+transition:transform .2s,box-shadow .2s;
+letter-spacing:.03em;
+}
+.reveal-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(168,85,247,.35);}
+.reveal-content{
+display:none;
+margin-top:14px;
+padding:14px;
+background:rgba(0,0,0,.3);
+border-radius:8px;
+border-left:3px solid var(--green);
+font-size:.92rem;
+}
+.reveal-content.show{display:block;animation:fadeIn .3s ease;}
+
+/* ============ KEYBOARD / PIANO INTERACTIVE ============ */
+.piano-wrap{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:var(--radius);
+padding:18px;
+margin:18px 0;
+}
+.piano{
+display:flex;
+justify-content:center;
+position:relative;
+height:130px;
+user-select:none;
+margin-bottom:14px;
+max-width:640px;
+margin-left:auto;margin-right:auto;
+}
+.key-white{
+position:relative;
+flex:1 1 0;
+background:linear-gradient(180deg,#e8eef7,#b9c6d8);
+border:1px solid #0b1220;
+border-radius:0 0 6px 6px;
+cursor:pointer;
+display:flex;
+align-items:flex-end;
+justify-content:center;
+padding-bottom:7px;
+font-size:.66rem;
+font-weight:800;
+color:#0b1220;
+transition:background .15s,transform .1s;
+}
+.key-white:hover{background:linear-gradient(180deg,#d3f4ff,#7fd4f5);}
+.key-white.on{background:linear-gradient(180deg,#00d4ff,#0f9fd0);color:#04121c;}
+.key-black{
+position:absolute;
+top:0;
+width:7.4%;
+height:62%;
+background:linear-gradient(180deg,#1b2438,#050a14);
+border:1px solid #000;
+border-radius:0 0 5px 5px;
+z-index:3;
+cursor:pointer;
+transition:background .15s;
+}
+.key-black:hover{background:linear-gradient(180deg,#2b3b5c,#0a1424);}
+.key-black.on{background:linear-gradient(180deg,#a855f7,#5b21b6);}
+.piano-info{
+text-align:center;
+font-size:.86rem;
+color:var(--muted);
+min-height:52px;
+}
+.piano-info b{color:var(--accent);font-size:1rem;}
+.piano-info .deg{color:var(--green);font-weight:800;}
+
+/* ============ SVG LAYOUT DIAGRAM ============ */
+.diagram{
+background:#070d19;
+border:1px solid var(--border);
+border-radius:var(--radius);
+padding:14px;
+margin:18px 0;
+overflow-x:auto;
+}
+.diagram svg{display:block;margin:0 auto;max-width:100%;height:auto;}
+
+/* ============ SOURCES ============ */
+.source-card{
+background:var(--card);
+border:1px solid var(--border);
+border-left:3px solid var(--red);
+border-radius:var(--radius);
+padding:18px;
+margin-bottom:14px;
+}
+.source-card .st{
+font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+color:var(--red);font-weight:800;margin-bottom:8px;
+}
+
+/* ============ CREDITS ============ */
+.credits-box{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:var(--radius);
+padding:26px 20px;
+text-align:center;
+margin-top:20px;
+}
+.credits-box .name{
+font-size:clamp(1.2rem,3.2vw,1.7rem);
+font-weight:800;
+background:linear-gradient(120deg,#00d4ff,#a855f7,#22c55e);
+-webkit-background-clip:text;background-clip:text;
+-webkit-text-fill-color:transparent;
+margin:10px 0;
+}
+.credits-box .meta{
+color:var(--muted);font-size:.86rem;margin:5px 0;
+}
+.credits-box .meta b{color:var(--accent);}
+.latin{
+margin-top:20px;
+font-style:italic;
+color:var(--amber);
+font-size:1.05rem;
+letter-spacing:.04em;
+}
+
+/* ============ BACK TO TOP ============ */
+#toTop{
+position:fixed;
+right:16px;bottom:18px;
+width:46px;height:46px;
+border-radius:50%;
+border:1px solid rgba(0,212,255,.5);
+background:rgba(15,23,42,.92);
+color:var(--accent);
+font-size:1.15rem;
+cursor:pointer;
+display:none;
+align-items:center;justify-content:center;
+z-index:1000;
+backdrop-filter:blur(8px);
+transition:transform .2s,box-shadow .2s;
+}
+#toTop:hover{transform:translateY(-4px);box-shadow:0 0 22px rgba(0,212,255,.45);}
+#toTop.show{display:flex;}
+
+/* ============ FOOTER ============ */
+footer{
+border-top:1px solid var(--border);
+background:rgba(15,23,42,.5);
+padding:26px 16px;
+text-align:center;
+font-size:.84rem;
+color:var(--muted);
+line-height:2;
+}
+footer .latin{font-size:.92rem;margin-top:10px;color:var(--amber);}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:640px){
+main{padding:70px 11px 50px;}
+body{font-size:15px;}
+.card{padding:16px;}
+.step{padding:16px 14px 16px 52px;}
+.step .num{left:12px;width:27px;height:27px;font-size:.78rem;}
+.nav-btn{font-size:.73rem;padding:7px 10px;}
+.piano{height:104px;}
+.key-white{font-size:.56rem;padding-bottom:5px;}
+.metrics{grid-template-columns:repeat(2,1fr);}
+.metric .val{font-size:1.3rem;}
+pre{font-size:.68rem;padding:12px;}
+table{font-size:.79rem;min-width:440px;}
+thead th,tbody td{padding:9px 10px;}
+#toTop{width:42px;height:42px;right:12px;bottom:14px;}
+}
+@media (max-width:380px){
+.metrics{grid-template-columns:1fr;}
+.nav-brand{display:none;}
+}
+
+@media (prefers-reduced-motion: reduce){
+,::before,*::after{
+animation-duration:.001ms !important;
+animation-iteration-count:1 !important;
+transition-duration:.001ms !important;
+}
+html{scroll-behavior:auto;}
+}
+</style>
+
+</head>
+<body>
+
+<div id="progress-wrap"><div id="progress-bar"></div></div>
+
+<nav id="navbar">
+  <div class="nav-inner" id="navInner">
+    <span class="nav-brand">♪ Armonía &amp; Escalas</span>
+    <button class="nav-btn active" data-target="home">Inicio</button>
+    <button class="nav-btn" data-target="intro">Introducción</button>
+    <button class="nav-btn" data-target="cap1">1 · Fundamentos</button>
+    <button class="nav-btn" data-target="cap2">2 · Escala Madre</button>
+    <button class="nav-btn" data-target="cap3">3 · Menores</button>
+    <button class="nav-btn" data-target="cap4">4 · Modal &amp; Truco</button>
+    <button class="nav-btn" data-target="cap5">5 · Dominantes</button>
+    <button class="nav-btn" data-target="cap6">6 · Casos Prácticos</button>
+    <button class="nav-btn" data-target="cierre">Cierre &amp; Ejercicios</button>
+    <button class="nav-btn" data-target="glosario">Glosario</button>
+    <button class="nav-btn" data-target="fuentes">FUENTES</button>
+    <button class="nav-btn credit" data-target="creditos">CRÉDITOS</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ==================== SVG SOURCE (symbol) ==================== -->
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+<symbol id="heroSymbol" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet">
+
+  <defs>
+    <linearGradient id="hBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070b14">
+        <animate attributeName="stop-color" values="#070b14;#0b1730;#061422;#070b14" dur="9s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="55%" stop-color="#0a0e1a">
+        <animate attributeName="stop-color" values="#0a0e1a;#111e38;#0a1a2c;#0a0e1a" dur="11s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#0d1220">
+        <animate attributeName="stop-color" values="#0d1220;#1b1032;#0d2038;#0d1220" dur="13s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+
+  </defs>
+
+  <!-- FONDO -->
+
+  <rect width="800" height="450" fill="url(#hBg)"/>
+  <rect width="800" height="450" fill="url(#hGrid)"/>
+
+  <!-- VIÑETA -->
+
+  <rect width="800" height="450" fill="none" stroke="#1e3a5f" stroke-width="2" opacity="0.8">
+    <animate attributeName="stroke" values="#1e3a5f;#00d4ff;#1e3a5f" dur="8s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- ANILLOS ORBITALES -->
+
+  <g transform="translate(400,228)">
+    <ellipse rx="345" ry="196" fill="none" stroke="#00d4ff" stroke-width="1.1" stroke-dasharray="7 16" opacity="0.38">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="34s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="7 16;22 9;7 16" dur="8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.16;0.5;0.16" dur="7s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse rx="298" ry="164" fill="none" stroke="#a855f7" stroke-width="1.1" stroke-dasharray="3 20" opacity="0.4">
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="26s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="3 20;16 12;3 20" dur="9s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0.15;0.5" dur="6s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse rx="252" ry="134" fill="none" stroke="#22c55e" stroke-width="1" stroke-dasharray="14 10" opacity="0.33">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="20s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="14 10;5 22;14 10" dur="5.5s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse rx="205" ry="106" fill="none" stroke="#f59e0b" stroke-width="0.9" stroke-dasharray="2 14" opacity="0.3">
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="15s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.1;0.45;0.1" dur="4.5s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+
+  <!-- PUNTOS ORBITALES -->
+
+  <g>
+    <circle r="3.4" fill="#00d4ff" filter="url(#hGlowSoft)">
+      <animateMotion dur="16s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#hArcPath1"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="1;0.25;1" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2.6" fill="#a855f7" filter="url(#hGlowSoft)">
+      <animateMotion dur="13s" begin="2s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#hArcPath2"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2.7s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="2.2" fill="#22c55e" filter="url(#hGlowSoft)">
+      <animateMotion dur="19s" begin="4.5s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#hArcPath3"/>
+      </animateMotion>
+    </circle>
+    <circle r="2.8" fill="#f59e0b" filter="url(#hGlowSoft)">
+      <animateMotion dur="11s" begin="1.2s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#hArcPath1"/>
+      </animateMotion>
+    </circle>
+  </g>
+
+  <!-- PENTAGRAMA -->
+
+  <g opacity="0.2">
+    <line x1="40" y1="120" x2="760" y2="120" stroke="#94a3b8" stroke-width="0.9">
+      <animate attributeName="opacity" values="0.25;0.7;0.25" dur="7.5s" repeatCount="indefinite"/>
+    </line>
+    <line x1="40" y1="132" x2="760" y2="132" stroke="#94a3b8" stroke-width="0.9"/>
+    <line x1="40" y1="144" x2="760" y2="144" stroke="#94a3b8" stroke-width="0.9"/>
+    <line x1="40" y1="156" x2="760" y2="156" stroke="#94a3b8" stroke-width="0.9"/>
+    <line x1="40" y1="168" x2="760" y2="168" stroke="#94a3b8" stroke-width="0.9"/>
+  </g>
+
+  <!-- NODOS DE ACORDES: C(I) -> F(IV) -> G(V) -> C(I) -->
+
+  <!-- Nodo 1: C(I) -->
+
+  <g>
+    <circle cx="110" cy="300" r="46" fill="url(#hHaloCyan)" opacity="0.85">
+      <animate attributeName="r" values="34;54;34" dur="3.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.45;1;0.45" dur="3.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="110" cy="300" r="24" fill="#0b1424" stroke="#00d4ff" stroke-width="2" filter="url(#hGlow)">
+      <animate attributeName="stroke-width" values="1.6;3.6;1.6" dur="2.4s" repeatCount="indefinite"/>
+    </circle>
+    <text x="110" y="306" text-anchor="middle" font-family="Consolas,monospace" font-size="17" font-weight="800" fill="#00d4ff">C(I)</text>
+    <g transform="translate(110,300)">
+      <circle r="37" fill="none" stroke="#00d4ff" stroke-width="1" stroke-dasharray="4 9" opacity="0.65">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="9s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <text x="110" y="348" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#64748b" letter-spacing="1.6">TÓNICA</text>
+  </g>
+
+  <!-- Nodo 2: F(IV) -->
+
+  <g>
+    <circle cx="310" cy="222" r="46" fill="url(#hHaloPurple)" opacity="0.85">
+      <animate attributeName="r" values="36;56;36" dur="4.3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0.95;0.4" dur="4.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="310" cy="222" r="23" fill="#0b1424" stroke="#a855f7" stroke-width="2" filter="url(#hGlow)">
+      <animate attributeName="stroke-width" values="1.6;3.4;1.6" dur="3.1s" repeatCount="indefinite"/>
+    </circle>
+    <text x="310" y="228" text-anchor="middle" font-family="Consolas,monospace" font-size="16" font-weight="800" fill="#a855f7">F(IV)</text>
+    <g transform="translate(310,222)">
+      <circle r="35" fill="none" stroke="#a855f7" stroke-width="1" stroke-dasharray="3 11" opacity="0.65">
+        <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="7.5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <text x="310" y="176" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#64748b" letter-spacing="1.6">SUBDOMINANTE</text>
+  </g>
+
+  <!-- Nodo 3: G(V) -->
+
+  <g>
+    <circle cx="490" cy="222" r="46" fill="url(#hHaloGreen)" opacity="0.85">
+      <animate attributeName="r" values="35;55;35" dur="3.9s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.42;1;0.42" dur="3.9s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="490" cy="222" r="23" fill="#0b1424" stroke="#22c55e" stroke-width="2" filter="url(#hGlow)">
+      <animate attributeName="stroke-width" values="1.6;3.4;1.6" dur="2.9s" repeatCount="indefinite"/>
+    </circle>
+    <text x="490" y="228" text-anchor="middle" font-family="Consolas,monospace" font-size="16" font-weight="800" fill="#22c55e">G(V)</text>
+    <g transform="translate(490,222)">
+      <circle r="35" fill="none" stroke="#22c55e" stroke-width="1" stroke-dasharray="5 8" opacity="0.65">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6.5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <text x="490" y="176" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#64748b" letter-spacing="1.6">DOMINANTE</text>
+  </g>
+
+  <!-- Nodo 4: C(I) final -->
+
+  <g>
+    <circle cx="690" cy="300" r="46" fill="url(#hHaloAmber)" opacity="0.85">
+      <animate attributeName="r" values="34;58;34" dur="4.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="4.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="690" cy="300" r="24" fill="#0b1424" stroke="#f59e0b" stroke-width="2" filter="url(#hGlow)">
+      <animate attributeName="stroke-width" values="1.6;3.8;1.6" dur="2.6s" repeatCount="indefinite"/>
+    </circle>
+    <text x="690" y="306" text-anchor="middle" font-family="Consolas,monospace" font-size="17" font-weight="800" fill="#f59e0b">C(I)</text>
+    <g transform="translate(690,300)">
+      <circle r="37" fill="none" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4 9" opacity="0.65">
+        <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="8.5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <text x="690" y="348" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="10" font-weight="700" fill="#64748b" letter-spacing="1.6">RESOLUCIÓN</text>
+  </g>
+
+  <!-- FLUJO PRINCIPAL (stroke-dashoffset animado) -->
+
+<use href="#hFlowPath" stroke="url(#hFlow)" stroke-width="3" stroke-linecap="round"
+stroke-dasharray="14 12" opacity="0.95" filter="url(#hGlowSoft)">
+<animate attributeName="stroke-dashoffset" from="0" to="-260" dur="4.2s" repeatCount="indefinite"/>
+</use>
+<use href="#hFlowPath" stroke="#00d4ff" stroke-width="1" stroke-linecap="round"
+stroke-dasharray="2 22" opacity="0.7">
+<animate attributeName="stroke-dashoffset" from="0" to="-240" dur="2.6s" repeatCount="indefinite"/>
+</use>
+
+  <!-- PARTÍCULAS VIAJERAS SOBRE EL PATH -->
+
+  <circle r="4.4" fill="#00d4ff" filter="url(#hGlow)">
+    <animateMotion dur="5s" repeatCount="indefinite" rotate="auto"><mpath href="#hFlowPath"/></animateMotion>
+    <animate attributeName="r" values="2.4;5.4;2.4" dur="1.3s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="3.6" fill="#a855f7" filter="url(#hGlow)">
+    <animateMotion dur="5s" begin="1.25s" repeatCount="indefinite" rotate="auto"><mpath href="#hFlowPath"/></animateMotion>
+    <animate attributeName="opacity" values="1;0.35;1" dur="2.1s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="3.6" fill="#22c55e" filter="url(#hGlow)">
+    <animateMotion dur="5s" begin="2.5s" repeatCount="indefinite" rotate="auto"><mpath href="#hFlowPath"/></animateMotion>
+  </circle>
+  <circle r="3.6" fill="#f59e0b" filter="url(#hGlow)">
+    <animateMotion dur="5s" begin="3.75s" repeatCount="indefinite" rotate="auto"><mpath href="#hFlowPath"/></animateMotion>
+    <animate attributeName="r" values="1.8;4.6;1.8" dur="1.7s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="2.4" fill="#ef4444" filter="url(#hGlow)">
+    <animateMotion dur="7.5s" begin="0.6s" repeatCount="indefinite" rotate="auto"><mpath href="#hFlowPath"/></animateMotion>
+  </circle>
+
+  <!-- GHOST NOTES: recorren el path y se desvanecen -->
+
+  <g>
+    <text font-size="30" fill="#00d4ff" filter="url(#hGlow)" opacity="0">
+      ♪
+      <animateMotion dur="6s" repeatCount="indefinite" rotate="auto"><mpath href="#hFlowPath"/></animateMotion>
+      <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.08;0.82;1" dur="6s" repeatCount="indefinite"/>
+    </text>
+    <text font-size="26" fill="#a855f7" filter="url(#hGlow)" opacity="0">
+      ♫
+      <animateMotion dur="6s" begin="2s" repeatCount="indefinite" rotate="auto"><mpath href="#hFlowPath"/></animateMotion>
+      <animate attributeName="opacity" values="0;0.85;0.85;0" keyTimes="0;0.08;0.82;1" dur="6s" begin="2s" repeatCount="indefinite"/>
+    </text>
+    <text font-size="24" fill="#22c55e" filter="url(#hGlow)" opacity="0">
+      ♩
+      <animateMotion dur="6s" begin="4s" repeatCount="indefinite" rotate="auto"><mpath href="#hFlowPath"/></animateMotion>
+      <animate attributeName="opacity" values="0;0.85;0.85;0" keyTimes="0;0.08;0.82;1" dur="6s" begin="4s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <!-- NOTAS FLOTANTES (translate Y desincronizado) -->
+
+  <g filter="url(#hGlowSoft)">
+    <text x="60" y="90" font-size="22" fill="#00d4ff" opacity="0.75">
+      ♪
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0" dur="3.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.35;0.95;0.35" dur="4.1s" repeatCount="indefinite"/>
+    </text>
+    <text x="740" y="110" font-size="20" fill="#a855f7" opacity="0.7">
+      ♫
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -10;0 0" dur="4.4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3.3s" repeatCount="indefinite"/>
+    </text>
+    <text x="95" y="200" font-size="18" fill="#22c55e" opacity="0.65">
+      ♩
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -7;0 0" dur="2.7s" repeatCount="indefinite"/>
+    </text>
+    <text x="710" y="205" font-size="19" fill="#f59e0b" opacity="0.65">
+      ♬
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -9;0 0" dur="3.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.28;0.88;0.28" dur="5.1s" repeatCount="indefinite"/>
+    </text>
+    <text x="400" y="72" font-size="21" fill="#00d4ff" opacity="0.6">
+      ♪
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0" dur="3.5s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <!-- EXPLOSIONES RADIALES EN NODOS -->
+
+  <g stroke="#f59e0b" stroke-width="2" stroke-linecap="round" filter="url(#hGlowSoft)">
+    <line x1="690" y1="300" x2="690" y2="300">
+      <animate attributeName="x1" values="690;690;672;690" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="y1" values="300;300;282;300" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="x2" values="690;690;690;690" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="300;300;262;300" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.72;0.8;1" dur="6s" repeatCount="indefinite"/>
+    </line>
+    <line x1="690" y1="300" x2="690" y2="300">
+      <animate attributeName="x2" values="690;690;716;690" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="300;300;278;300" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.72;0.8;1" dur="6s" repeatCount="indefinite"/>
+    </line>
+    <line x1="690" y1="300" x2="690" y2="300">
+      <animate attributeName="x2" values="690;690;668;690" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="300;300;322;300" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.72;0.8;1" dur="6s" repeatCount="indefinite"/>
+    </line>
+    <line x1="690" y1="300" x2="690" y2="300">
+      <animate attributeName="x2" values="690;690;712;690" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="300;300;326;300" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.72;0.8;1" dur="6s" repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- FLASH CLÍMAX -->
+
+  <g transform="translate(400,118)">
+    <text text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="42" font-weight="800"
+          fill="#f59e0b" filter="url(#hGlowBig)" opacity="0" letter-spacing="2">
+      ¡RESOLUCIÓN V7 → I!
+      <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.70;0.76;0.84;0.92;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+    <text text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="42" font-weight="800"
+          fill="#00d4ff" opacity="0" letter-spacing="2">
+      ¡RESOLUCIÓN V7 → I!
+      <animate attributeName="opacity" values="0;0;0.65;0;0" keyTimes="0;0.70;0.76;0.82;1" dur="9s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <!-- TECLADO DE PIANO -->
+
+  <g>
+    <rect x="148" y="392" width="504" height="48" rx="5" fill="#0b1220" stroke="#1e3a5f" stroke-width="1"/>
+    <!-- teclas blancas -->
+    <g>
+      <rect x="150" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="192" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="234" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="276" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="318" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="360" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="402" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="444" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="486" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="528" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="570" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+      <rect x="612" y="394" width="40" height="44" rx="2" fill="#e8eef7" stroke="#0b1220" stroke-width="1"/>
+    </g>
+    <!-- tecla C destacada -->
+    <rect x="150" y="394" width="40" height="44" rx="2" fill="#00d4ff" opacity="0.85">
+      <animate attributeName="opacity" values="0.25;0.95;0.25" dur="2.8s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="402" y="394" width="40" height="44" rx="2" fill="#a855f7" opacity="0.75">
+      <animate attributeName="opacity" values="0.85;0.2;0.85" dur="3.7s" repeatCount="indefinite"/>
+    </rect>
+    <!-- teclas negras -->
+    <g fill="#0a0f1c">
+      <rect x="178" y="394" width="22" height="28" rx="2"/>
+      <rect x="220" y="394" width="22" height="28" rx="2"/>
+      <rect x="304" y="394" width="22" height="28" rx="2"/>
+      <rect x="346" y="394" width="22" height="28" rx="2"/>
+      <rect x="388" y="394" width="22" height="28" rx="2"/>
+      <rect x="472" y="394" width="22" height="28" rx="2"/>
+      <rect x="514" y="394" width="22" height="28" rx="2"/>
+      <rect x="598" y="394" width="22" height="28" rx="2"/>
+      <rect x="640" y="394" width="22" height="28" rx="2"/>
+    </g>
+  </g>
+
+  <!-- INDICADOR LIVE -->
+
+  <g transform="translate(716,34)">
+    <circle r="5" fill="#ef4444" filter="url(#hGlow)">
+      <animate attributeName="r" values="3.4;6.4;3.4" dur="1.4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.35;1" dur="1.4s" repeatCount="indefinite"/>
+    </circle>
+    <text x="-12" y="4" text-anchor="end" font-family="Segoe UI,sans-serif" font-size="10.5"
+          font-weight="800" fill="#ef4444" letter-spacing="2">LIVE</text>
+  </g>
+
+  <!-- TÍTULO ANIMADO -->
+
+  <g transform="translate(400,206)">
+    <text text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="30" font-weight="800"
+          letter-spacing="3.6" fill="#00d4ff" filter="url(#hGlow)" opacity="0.95">
+      ARMONÍA &amp; ESCALAS
+      <animate attributeName="fill" values="#00d4ff;#a855f7;#22c55e;#f59e0b;#00d4ff" dur="10s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <!-- SUBTÍTULO PULSANTE -->
+
+<text x="400" y="238" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="13.5"
+font-weight="600" fill="#94a3b8" letter-spacing="2.6" opacity="0.9">
+GUÍA PRÁCTICA PARA LA IMPROVISACIÓN MUSICAL
+<animate attributeName="opacity" values="0.35;0.95;0.35" dur="4.8s" repeatCount="indefinite"/>
+</text>
+
+  <!-- ETIQUETA DE ESTADO ALTERNANTE -->
+
+  <g transform="translate(400,362)">
+    <text text-anchor="middle" font-family="Consolas,monospace" font-size="12" font-weight="700" fill="#22c55e" letter-spacing="2">
+      <animate attributeName="opacity" values="1;0;0;1" keyTimes="0;0.3;0.6;1" dur="6s" repeatCount="indefinite"/>
+      ▶ ESCALA MADRE ACTIVA
+    </text>
+    <text text-anchor="middle" font-family="Consolas,monospace" font-size="12" font-weight="700" fill="#a855f7" letter-spacing="2">
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.3;0.6;1" dur="6s" repeatCount="indefinite"/>
+      ▶ ARPEGIO ESQUELETO
+    </text>
+    <text text-anchor="middle" font-family="Consolas,monospace" font-size="12" font-weight="700" fill="#f59e0b" letter-spacing="2">
+      <animate attributeName="opacity" values="0;0;1;0" keyTimes="0;0.6;0.8;1" dur="6s" repeatCount="indefinite"/>
+      ▶ LIDIO #11
+    </text>
+  </g>
+
+  <!-- FIRMA -->
+
+<text x="784" y="432" text-anchor="end" font-family="Segoe UI,sans-serif" font-size="11"
+font-weight="600" fill="#475569" letter-spacing="1.4">
+RUBÉN SBARSKY
+<animate attributeName="opacity" values="0.25;0.9;0.25" dur="5.4s" repeatCount="indefinite"/>
+</text>
+
+</symbol>
+</svg>
+
+<!-- ==================== HOME ==================== -->
+
+<section class="page active" id="home">
+
+  <div class="hero-svg-wrap">
+    <svg class="hero-svg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Portada animada: progresión armónica C(I) a F(IV) a G(V) a C(I) con flujo de notas y piano">
+      <use href="#heroSymbol"/>
+    </svg>
+  </div>
+
+<span class="badge">Tutorial Técnico Interactivo · Música</span>
+
+  <h1 class="home-title">Armonía y Escalas</h1>
+  <p class="home-sub">Guía Práctica para la Improvisación Musical</p>
+
+  <p class="home-desc">
+    Un método completo para pianistas e instrumentistas que quieren dejar de adivinar notas y empezar a
+    comprender el contexto armónico. Desde la notación americana y los grados de la escala, pasando por el
+    paradigma de la <strong>Escala Madre</strong>, el <strong>Sistema Menor Compuesto</strong>, la armonía modal,
+    el <strong>Intercambio Modal</strong>, los <strong>Dominantes Secundarios</strong> y el
+    <strong>Sustituto Tritonal</strong>, hasta el análisis real de <em>Pink Floyd</em> y <em>Blue Bossa</em>.
+  </p>
+
+  <div class="quote">
+    <span>“</span>Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.<span>”</span>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="val">6</div><div class="lbl">Capítulos</div></div>
+    <div class="metric"><div class="val">7</div><div class="lbl">Notas A–G</div></div>
+    <div class="metric"><div class="val">I–VII</div><div class="lbl">Grados</div></div>
+    <div class="metric"><div class="val">3</div><div class="lbl">Ejercicios</div></div>
+    <div class="metric"><div class="val">2</div><div class="lbl">Casos reales</div></div>
+    <div class="metric"><div class="val">∞</div><div class="lbl">Improvisación</div></div>
+  </div>
+
+  <div class="dt-strip">
+    <span>📅 Fecha: <b>21/09/2026</b></span>
+    <span>🕐 Hora: <b>09:59:16</b></span>
+    <span>👨‍💻 Créditos: <b>Rubén Sbarsky</b></span>
+  </div>
+
+</section>
+
+<!-- ==================== INTRODUCCIÓN ==================== -->
+
+<section class="page" id="intro">
+
+  <div class="sec-head">
+    <div class="kicker">Punto de partida</div>
+    <h2>Introducción y Propósito del Tutorial</h2>
+    <p>Qué es la selección de escalas, para qué sirve y por qué transforma la forma de improvisar.</p>
+  </div>
+
+  <div class="card accent">
+    <h3 style="margin-top:0;border:none;padding:0;">¿Qué es la selección de escalas y la armonía para la improvisación?</h3>
+    <p>
+      La selección de escalas para la improvisación musical es la herramienta teórica y práctica que permite a un
+      pianista o instrumentista elegir las notas melódicas más expresivas y coherentes sobre una progresión de
+      acordes determinada. En lugar de considerar la improvisación como una adivinanza o un acto puramente
+      intuitivo, la armonía proporciona la estructura lógica para comprender qué está sucediendo en la música
+      en cada segundo.
+    </p>
+  </div>
+
+  <div class="card green">
+    <h3 style="margin-top:0;border:none;padding:0;">¿Para qué sirve?</h3>
+    <p>
+      Este método sirve para eliminar la sobrecarga mental al tocar. Muchos estudiantes intentan memorizar una
+      escala o modo distinto para cada acorde individual, lo que genera confusión, fatiga mental y una ejecución
+      fragmentada. Al comprender la función tonal y el contexto armónico global, el improvisador puede conectar
+      frases melódicas fluidas utilizando una <strong>“escala madre”</strong> y guiándose por las notas del
+      arpegio de cada acorde como esqueleto principal.
+    </p>
+  </div>
+
+<h3>¿Por qué es importante aprenderlo?</h3>
+
+  <div class="grid3">
+    <div class="card purple">
+      <h4 style="margin-top:0;">Evita la “ensalada mixta” modal</h4>
+      <p style="margin:0;font-size:.92rem;color:var(--muted);">
+        Tocar modos aislados sobre cada acorde sin entender el contexto destruye la cohesión armónica de la pieza.
+      </p>
+    </div>
+    <div class="card purple">
+      <h4 style="margin-top:0;">Ahorra cientos de horas de práctica infructuosa</h4>
+      <p style="margin:0;font-size:.92rem;color:var(--muted);">
+        En lugar de memorizar docenas de fórmulas desconectadas, aprendes a pensar en colecciones de notas unificadas.
+      </p>
+    </div>
+    <div class="card purple">
+      <h4 style="margin-top:0;">Desarrolla la libertad expresiva</h4>
+      <p style="margin:0;font-size:.92rem;color:var(--muted);">
+        Al dominar la relación entre acordes y escalas, la mente se libera de la teoría y se enfoca en el ritmo,
+        la articulación y el sentimiento.
+      </p>
+    </div>
+  </div>
+
+<h3>Situaciones reales de uso</h3>
+
+  <div class="step">
+    <div class="num">1</div>
+    <h4>Improvisación en una Jam Session</h4>
+    <p style="margin:0;color:var(--muted);font-size:.92rem;">
+      Cuando te dan una hoja con cifrado de acordes y debes construir un solo coherente al instante.
+    </p>
+  </div>
+  <div class="step">
+    <div class="num">2</div>
+    <h4>Acompañamiento y creación de arreglos al piano</h4>
+    <p style="margin:0;color:var(--muted);font-size:.92rem;">
+      Saber qué notas de paso usar para embellecer un acompañamiento en tiempo real.
+    </p>
+  </div>
+  <div class="step">
+    <div class="num">3</div>
+    <h4>Composición de melodías</h4>
+    <p style="margin:0;color:var(--muted);font-size:.92rem;">
+      Elegir intencionalmente tensiones cromáticas o cambios modales para transmitir emociones específicas en una canción.
+    </p>
+  </div>
+
+  <div class="callout info">
+    <span class="lbl">Nota de notación</span>
+    Todo el tutorial utiliza exclusivamente el <strong>sistema americano de notas</strong>
+    (<code>A, B, C, D, E, F, G</code>) junto con el <strong>grado de la escala</strong> entre paréntesis:
+    <code>C(I), D(II), E(III), F(IV), G(V), A(VI), B(VII)</code>. Las explicaciones están orientadas al piano.
+  </div>
+
+</section>
+
+<!-- ==================== CAPÍTULO 1 ==================== -->
+
+<section class="page" id="cap1">
+
+  <div class="sec-head">
+    <div class="kicker">Capítulo 1</div>
+    <h2>Fundamentos de la Armonía y Notación Americana</h2>
+    <p>Las siete letras, los grados romanos y el arpegio como esqueleto melódico.</p>
+  </div>
+
+<h3>Paso a paso accionable</h3>
+
+  <div class="step">
+    <div class="num">1</div>
+    <h4>Configurar el sistema de notación americano y grados de la escala</h4>
+    <p><strong>Acción:</strong> Asimila las siete letras del sistema americano para nombrar las notas musicales:
+      <code>A, B, C, D, E, F, G</code>. Asocia cada nota a su grado romano dentro de la escala tónica de trabajo.</p>
+    <p><strong>Motivo:</strong> El sistema americano es el estándar internacional para el cifrado de acordes y
+      facilita la lectura rápida durante la ejecución.</p>
+    <p><strong>Ejemplo práctico en la tonalidad de C mayor:</strong></p>
+    <ul>
+      <li>Nota <strong>C(I)</strong>: Grado I (Tónica / Centro tonal).</li>
+      <li>Nota <strong>D(II)</strong>: Grado II (Supertónica).</li>
+      <li>Nota <strong>E(III)</strong>: Grado III (Mediante).</li>
+      <li>Nota <strong>F(IV)</strong>: Grado IV (Subdominante).</li>
+      <li>Nota <strong>G(V)</strong>: Grado V (Dominante).</li>
+      <li>Nota <strong>A(VI)</strong>: Grado VI (Superdominante / Relativo menor).</li>
+      <li>Nota <strong>B(VII)</strong>: Grado VII (Sensible).</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <h4>Construir el arpegio del acorde como esqueleto melódico</h4>
+    <p><strong>Acción:</strong> Antes de tocar cualquier escala rápida, toca el arpegio
+      (tónica, tercera, quinta y séptima) del acorde en el piano.</p>
+    <p><strong>Motivo:</strong> Las notas del acorde son los puntos de apoyo más estables de la melodía.
+      Las demás notas de la escala actúan como notas de paso o bordados.</p>
+    <p><strong>Ejemplo práctico:</strong> En un acorde de <strong>C Maj7</strong> en la tonalidad de C mayor,
+      tus notas esqueleto son <code>C(I), E(III), G(V)</code> y <code>B(VII)</code>. La nota
+      <code>D(II)</code> y la nota <code>A(VI)</code> sirven como notas de paso ideales.</p>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <h4>Asignar números romanos a la progresión de acordes</h4>
+    <p><strong>Acción:</strong> Analiza la progresión de la canción traduciendo los cifrados a números romanos.</p>
+    <p><strong>Motivo:</strong> Los números romanos revelan la función armónica del acorde y te indican si la
+      progresión pertenece a una sola escala madre o si existe algún cambio de color.</p>
+  </div>
+
+  <pre>[ Esquema Visual: Construcción de la Melodía sobre el Arpegio ]
+
+  Notas Esqueleto (Arpegio):     C(I) ----------- E(III) ----------- G(V) ----------- B(VII)
+                                  \               /   \               /   \               /
+  Notas de Paso (Escala Madre):    ---> D(II) --->     ---> F(IV) --->     ---> A(VI) ---></pre>
+
+<h3>Tabla comparativa de la escala de C Mayor</h3>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Nota Americana</th>
+          <th>Grado Escala (C mayor)</th>
+          <th>Función Tonal</th>
+          <th>Rol en el Arpegio de C Maj7</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>C(I)</strong></td><td>I</td><td>Tónica</td><td>Nota fundamental (Esqueleto)</td></tr>
+        <tr><td><strong>D(II)</strong></td><td>II</td><td>Supertónica</td><td>Nota de paso / Tensión disponible</td></tr>
+        <tr><td><strong>E(III)</strong></td><td>III</td><td>Mediante</td><td>Tercera mayor (Esqueleto)</td></tr>
+        <tr><td><strong>F(IV)</strong></td><td>IV</td><td>Subdominante</td><td>Cuarta / Nota a evitar o de paso rápido</td></tr>
+        <tr><td><strong>G(V)</strong></td><td>V</td><td>Dominante</td><td>Quinta justa (Esqueleto)</td></tr>
+        <tr><td><strong>A(VI)</strong></td><td>VI</td><td>Superdominante</td><td>Sexta / Nota de paso</td></tr>
+        <tr><td><strong>B(VII)</strong></td><td>VII</td><td>Sensible</td><td>Séptima mayor (Esqueleto)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+<h3>Mini-teclado interactivo: la escala de C mayor</h3>
+
+  <div class="piano-wrap">
+    <div class="piano" id="piano1"></div>
+    <div class="piano-info" id="piano1Info">Pulsa una tecla para ver su nota americana y su grado en C mayor.</div>
+  </div>
+
+<h3>Lista de comprobación del Capítulo 1</h3>
+
+  <div class="card">
+    <ul style="margin-bottom:0;">
+      <li>☐ Identifico las notas en sistema americano A, B, C, D, E, F, G sin dudar.</li>
+      <li>☐ Sé ubicar el grado de cada nota en paréntesis según la tonalidad del tema.</li>
+      <li>☐ Toco las notas del arpegio del acorde antes de intentar hacer un solo.</li>
+      <li>☐ Puedo etiquetar una progresión con números romanos básicos.</li>
+    </ul>
+  </div>
+
+<h3>Errores comunes y cómo evitarlos</h3>
+
+  <div class="callout err">
+    <span class="lbl">Error</span>
+    Intentar hacer solos tocando únicamente la escala de arriba a abajo de forma consecutiva.
+  </div>
+  <div class="callout example">
+    <span class="lbl">Solución</span>
+    Toca las notas del arpegio en los tiempos fuertes del compás (tiempos 1 y 3) y usa las notas restantes de
+    la escala para conectar las notas del arpegio en los tiempos débiles.
+  </div>
+
+<h3>Resumen del Capítulo 1</h3>
+
+  <div class="card accent">
+    <p style="margin:0;">
+      El sistema americano <strong>A, B, C, D, E, F, G</strong> simplifica la lectura del cifrado. Para improvisar
+      de forma efectiva, las notas del arpegio del acorde forman la estructura principal de la frase, mientras que
+      la escala proporciona las notas de conexión.
+    </p>
+  </div>
+
+</section>
+
+<!-- ==================== CAPÍTULO 2 ==================== -->
+
+<section class="page" id="cap2">
+
+  <div class="sec-head">
+    <div class="kicker">Capítulo 2</div>
+    <h2>El Paradigma de la Escala Madre en Armonía Diatónica Mayor</h2>
+    <p>Una sola escala para toda la sección. Los arpegios hacen el resto.</p>
+  </div>
+
+<h3>Paso a paso accionable</h3>
+
+  <div class="step">
+    <div class="num">1</div>
+    <h4>Analizar la progresión armónica completa en lugar de aislar acordes</h4>
+    <p><strong>Acción:</strong> Observa todos los acordes del pasaje armónico antes de decidir qué escala utilizar.</p>
+    <p><strong>Motivo:</strong> Si todos los acordes pertenecen a la misma tonalidad (armonía diatónica),
+      utilizarás una única “escala madre” para toda la sección.</p>
+    <p><strong>Demostración:</strong> Si tienes la progresión
+      <code>D(I)</code> mayor → <code>E(II)</code> menor → <code>F#(III)</code> menor → <code>G(IV)</code> mayor,
+      todos los acordes utilizan notas pertenecientes a la escala de D mayor.</p>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <h4>Adoptar el enfoque de la Escala Madre</h4>
+    <p><strong>Acción:</strong> Para la progresión en D mayor, utiliza la escala de D mayor como la “escala madre”
+      unificada durante todo el pasaje.</p>
+    <p><strong>Motivo:</strong> Evitas el cansancio mental de pensar en “D Jonio, E Dórico, F# Frigio y G Lidio”,
+      ya que los cuatro modos contienen exactamente la misma colección de notas:
+      <code>D(I), E(II), F#(III), G(IV), A(V), B(VI), C#(VII)</code>.</p>
+  </div>
+
+  <pre>[ Mismo conjunto de notas visto desde dos enfoques ]
+
+Enfoque Complejo ("Ensalada de Modos"):
+- Acorde D  --> Pensar en D Jonio   : D(I)-E(II)-F#(III)-G(IV)-A(V)-B(VI)-C#(VII)
+- Acorde Em --> Pensar en E Dórico  : E(II)-F#(III)-G(IV)-A(V)-B(VI)-C#(VII)-D(I)
+- Acorde F#m--> Pensar en F# Frigio : F#(III)-G(IV)-A(V)-B(VI)-C#(VII)-D(I)-E(II)
+- Acorde G  --> Pensar en G Lidio   : G(IV)-A(V)-B(VI)-C#(VII)-D(I)-E(II)-F#(III)
+
+Enfoque Eficiente ("Escala Madre"):
+- Progresión completa en D Mayor --> Escala Madre de D Mayor: D(I)-E(II)-F#(III)-G(IV)-A(V)-B(VI)-C#(VII)
+  (Ajustando el énfasis a las notas del arpegio de cada acorde en su momento)</pre>
+
+  <div class="step">
+    <div class="num">3</div>
+    <h4>Delinear cada acorde cambiando el énfasis de las notas del arpegio</h4>
+    <p><strong>Acción:</strong> Mantén la escala madre en la mente, pero al cambiar de acorde, haz que tus frases
+      melódicas aterricen en las notas del arpegio del acorde que está sonando en ese instante.</p>
+    <p><strong>Motivo:</strong> Esto garantiza que la melodía suene perfectamente conectada a la armonía sin
+      necesidad de cambiar de escala mentalmente.</p>
+    <p><strong>Ejemplo práctico en tonalidad de D Mayor:</strong></p>
+    <ul>
+      <li>Sobre el acorde <strong>D mayor</strong>: Enfatiza <code>D(I), F#(III), A(V)</code>.</li>
+      <li>Sobre el acorde <strong>E menor</strong>: Enfatiza <code>E(II), G(IV), B(VI)</code>.</li>
+      <li>Sobre el acorde <strong>F# menor</strong>: Enfatiza <code>F#(III), A(V), C#(VII)</code>.</li>
+      <li>Sobre el acorde <strong>G mayor</strong>: Enfatiza <code>G(IV), B(VI), D(I)</code>.</li>
+    </ul>
+  </div>
+
+<h3>Ejemplo Correcto vs. Incorrecto</h3>
+
+  <div class="callout err">
+    <span class="lbl">Ejemplo Incorrecto</span>
+    Cambiar la escala en cada compás pensando: “Ahora toco E Dórico empezando en la nota E(II), luego cambio a
+    F# Frigio empezando en la nota F#(III)…”. <strong>Resultado:</strong> Fórmulas rígidas, desconexión melódica
+    y tropiezos rítmicos.
+  </div>
+  <div class="callout example">
+    <span class="lbl">Ejemplo Correcto</span>
+    Pensar en la escala madre de D mayor durante toda la sección, pero al llegar al acorde de E menor, iniciar o
+    acentuar la frase en la nota E(II) o G(IV) utilizando las notas de D mayor.
+    <strong>Resultado:</strong> Flujo continuo y expresivo.
+  </div>
+
+<h3>Tabla comparativa de enfoques armónicos</h3>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Criterio</th><th>Sistema “Modo por Acorde”</th><th>Sistema “Escala Madre + Arpegio”</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Carga mental</strong></td><td>Muy alta (4 escalas distintas)</td><td>Mínima (1 escala madre)</td></tr>
+        <tr><td><strong>Cohesión de la melodía</strong></td><td>Fragmentada y mecánica</td><td>Fluida y unificada</td></tr>
+        <tr><td><strong>Velocidad de reacción</strong></td><td>Lenta por sobreanálisis</td><td>Rápida e intuitiva</td></tr>
+        <tr><td><strong>Base teórica</strong></td><td>Sistema modal moderno (Post-60s)</td><td>Sistema tonal tradicional</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+<h3>Preguntas Frecuentes (FAQ) del Capítulo 2</h3>
+
+  <div class="acc">
+    <button class="acc-head">¿Los modos griegos no sirven para nada en la armonía mayor?</button>
+    <div class="acc-body"><div class="acc-body-inner">
+      Sirven para clasificar tensiones disponibles y entender el color de cada grado. Sin embargo, para la
+      improvisación diatónica práctica, pensar en la escala madre es infinitamente más rápido y seguro.
+    </div></div>
+  </div>
+
+<h3>Resumen del Capítulo 2</h3>
+
+  <div class="card accent">
+    <p style="margin:0;">
+      En armonía diatónica mayor, no satures tu mente cambiando de modo en cada acorde. Aplica la escala madre de
+      la tonalidad general y utiliza los arpegios de cada acorde como el esqueleto para acentuar las notas
+      correctas en cada compás.
+    </p>
+  </div>
+
+</section>
+
+<!-- ==================== CAPÍTULO 3 ==================== -->
+
+<section class="page" id="cap3">
+
+  <div class="sec-head">
+    <div class="kicker">Capítulo 3</div>
+    <h2>Improvisación en Tonalidades Menores (Sistema Menor Compuesto)</h2>
+    <p>Menor natural para la base, menor armónica para el dominante.</p>
+  </div>
+
+<h3>Paso a paso accionable</h3>
+
+  <div class="step">
+    <div class="num">1</div>
+    <h4>Establecer la base con la Escala Menor Natural</h4>
+    <p><strong>Acción:</strong> En una tonalidad menor, utiliza la escala menor natural (modo eólico) sobre los
+      acordes tónicos y subdominantes (grados I, II, IV, VI).</p>
+    <p><strong>Motivo:</strong> La escala menor natural proporciona el color melancólico característico de la
+      tonalidad menor.</p>
+    <p><strong>Ejemplo en F# menor:</strong> Las notas de F# menor natural son
+      <code>F#(I), G#(II), A(III), B(IV), C#(V), D(VI), E(VII)</code>.</p>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <h4>Cambiar a la Escala Menor Armónica o Melódica al llegar al Acorde Dominante (V7)</h4>
+    <p><strong>Acción:</strong> Tan pronto como la armonía llegue al acorde V7 (dominante mayor o dominante
+      secundario), modifica la séptima menor por una sensible (séptima mayor).</p>
+    <p><strong>Motivo:</strong> El acorde dominante en tonalidad menor requiere la nota sensible para resolver
+      correctamente hacia la tónica.</p>
+    <p><strong>Ejemplo práctico en F# menor:</strong></p>
+    <ul>
+      <li>Sobre el acorde <strong>F#m(I)</strong>, <strong>Bm(IV)</strong> o <strong>D(VI)</strong>:
+        Toca F# menor natural.</li>
+      <li>Sobre el acorde <strong>C#7(V7)</strong>: Modifica la nota <code>E(VII)</code> por la nota
+        <code>E#(VII#)</code> (sensible) aplicando la escala de <strong>F# menor armónica</strong>:
+        <code>F#(I), G#(II), A(III), B(IV), C#(V), D(VI), E#(VII#)</code>.</li>
+    </ul>
+  </div>
+
+  <pre>[ Esquema del Sistema Menor Compuesto en F# Menor ]
+
+  Acordes Tónicos/Subdominantes: F#m(I), Bm(IV), D(VI)
+  --> Usar Escala Menor Natural: F#(I) - G#(II) - A(III) - B(IV) - C#(V) - D(VI) - E(VII)
+                                                                                  |
+                                                                        ¡Cambio de nota!
+                                                                                  v
+  Acorde Dominante: C#7(V7)
+  --> Usar Escala Menor Armónica: F#(I) - G#(II) - A(III) - B(IV) - C#(V) - D(VI) - E#(VII#)</pre>
+
+  <div class="step">
+    <div class="num">3</div>
+    <h4>Comprender la terminología modal sobre el acorde dominante V7</h4>
+    <p><strong>Acción:</strong> Reconoce que aplicar la escala de F# menor armónica sobre el acorde de
+      C#7(V7) equivale a tocar el modo <strong>C# Mixolidio b9 b13</strong> (quinto modo de la menor armónica).</p>
+    <p><strong>Motivo:</strong> Entender la nomenclatura modal sobre el dominante te permite dialogar con músicos
+      de jazz, manteniendo la misma simplicidad técnica en tu ejecución.</p>
+    <p><strong>Notas de C# Mixolidio b9 b13:</strong>
+      <code>C#(V)</code>, <code>D(VI - b9)</code>, <code>E#(VII# - 3ra mayor)</code>, <code>F#(I - 4ta)</code>,
+      <code>G#(II - 5ta)</code>, <code>A(III - b13)</code>, <code>B(IV - 7ma menor)</code>.</p>
+  </div>
+
+  <div class="step">
+    <div class="num">4</div>
+    <h4>Tratar el acorde tónico menor según su extensión (Menor 6 vs. Menor 7)</h4>
+    <p><strong>Acción:</strong></p>
+    <ul>
+      <li>Si la tónica es un acorde menor 7 (ej. Cm7), utiliza el modo <strong>Dórico</strong> o la escala
+        <strong>Menor Natural</strong>.</li>
+      <li>Si la tónica es un acorde menor 6 (ej. Cm6), utiliza la escala <strong>Menor Melódica</strong>.</li>
+    </ul>
+    <p><strong>Motivo:</strong> La escala menor melódica contiene la sexta mayor natural, la cual encaja
+      perfectamente con el acorde menor 6.</p>
+  </div>
+
+<h3>Tabla de selección de escalas en Tonalidad Menor (Ejemplo en F# menor)</h3>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Acorde en la Progresión</th><th>Función Tonal</th><th>Escala Recomendada</th><th>Notas Clave de la Escala</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>F#m(I)</strong></td><td>Tónica Menor</td><td>F# Menor Natural</td><td>F#(I), A(III), C#(V), E(VII)</td></tr>
+        <tr><td><strong>Bm(IV)</strong></td><td>Subdominante</td><td>F# Menor Natural / B Dórico</td><td>B(IV), D(VI), F#(I), A(III)</td></tr>
+        <tr><td><strong>C#7(V7)</strong></td><td>Dominante</td><td>F# Menor Armónica (C# Mix b9 b13)</td><td>C#(V), E#(VII#), G#(II), B(IV), D(VI)</td></tr>
+        <tr><td><strong>D Maj7(VI)</strong></td><td>Subdominante Relativo</td><td>F# Menor Natural / D Lidio</td><td>D(VI), F#(I), A(III), C#(V)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <span class="lbl">Consejo de experto</span>
+    En piezas de jazz o fusión, cuando estés sobre el acorde V7 en tonalidad menor, combina la tercera mayor y la
+    novena aumentada (tercera menor) para obtener la escala reducida o <strong>Mixolidia b9 #9 b13</strong>
+    (escala compuesta). Esto genera una tensión moderna y profesional.
+  </div>
+
+<h3>Resumen del Capítulo 3</h3>
+
+  <div class="card accent">
+    <p style="margin:0;">
+      En tonalidades menores predomina el sistema menor compuesto. Mantén la escala menor natural sobre los
+      acordes tónicos y subdominantes, y cambia a la escala menor armónica o melódica únicamente cuando suene el
+      acorde dominante V7.
+    </p>
+  </div>
+
+</section>
+
+<!-- ==================== CAPÍTULO 4 ==================== -->
+
+<section class="page" id="cap4">
+
+  <div class="sec-head">
+    <div class="kicker">Capítulo 4</div>
+    <h2>Armonía Modal, Intercambio Modal y “El Gran Truco del Vídeo”</h2>
+    <p>Dórico, Mixolidio, Lidio y la regla infalible sobre acordes Maj7 prestados.</p>
+  </div>
+
+<h3>Paso a paso accionable</h3>
+
+  <div class="step">
+    <div class="num">1</div>
+    <h4>Reconocer cuando una progresión es verdaderamente modal</h4>
+    <p><strong>Acción:</strong> Examina si la progresión gravita en torno a un centro tonal que no es ni la escala
+      mayor tradicional (Jonio) ni la menor natural (Eólico).</p>
+    <p><strong>Motivo:</strong> En armonía modal, los grados característicos difieren de la armonía tonal estándar.</p>
+    <p><strong>Ejemplos modales frecuentes:</strong></p>
+    <ul>
+      <li><strong>Modo Dórico:</strong> Tónica menor con un cuarto grado mayor (IV7). Ejemplo en D dórico:
+        <code>Dm(I) → G7(IV7)</code> (con la nota B(VI) natural).</li>
+      <li><strong>Modo Mixolidio:</strong> Tónica mayor con un séptimo grado menor (bVII) o un quinto menor (v7).
+        Ejemplo en F mixolidio: <code>F(I) → Eb Maj7(bVII)</code> o <code>C m7(v7)</code>.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <h4>Identificar un Intercambio Modal en una canción tonal</h4>
+    <p><strong>Acción:</strong> Detecta acordes que contienen notas ajenas a la escala madre de la canción pero
+      que prestan un color momentáneo de un modo paralelo.</p>
+    <p><strong>Motivo:</strong> El intercambio modal añade variedad cromática sin cambiar permanentemente la
+      tonalidad principal de la obra.</p>
+    <p><strong>Ejemplo práctico:</strong> Estás en la tonalidad de C mayor con el acorde C Maj7
+      (notas <code>C(I), E(III), G(V), B(VII)</code>). De repente aparece el acorde <strong>Bb Maj7</strong>
+      (bVII Maj7). La nota Bb es ajena a la escala de C mayor.</p>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <h4>Aplicar “EL GRAN TRUCO DEL VÍDEO” sobre acordes Maj7 de Intercambio Modal</h4>
+    <p><strong>Acción:</strong> Cada vez que aparezca un acorde Maj7 (Max7) fruto de un intercambio modal, aplica
+      de forma directa el <strong>Modo Lidio desde la fundamental de ese acorde</strong>.</p>
+    <p><strong>Motivo:</strong> El modo Lidio tiene la cuarta aumentada (#11), la cual elimina choques armónicos y
+      aporta una sonoridad flotante, moderna y sumamente musical.</p>
+    <p><strong>Ejemplo de aplicación del Gran Truco:</strong></p>
+    <ul>
+      <li>Acorde de intercambio modal: <strong>Bb Maj7</strong> en medio de una canción en C mayor.</li>
+      <li><strong>Regla:</strong> Construye la escala de <strong>Bb Lidio</strong> desde la nota Bb(VIIb).</li>
+      <li><strong>Notas a tocar:</strong> Bb, C, D, E (#11 del acorde Bb), F, G, A.</li>
+      <li><strong>Resultado:</strong> La melodía suena impecable, llena de color y perfectamente integrada.</li>
+    </ul>
+  </div>
+
+  <pre>[ Esquema del Gran Truco del Vídeo para Acordes Maj7 de Intercambio Modal ]
+
+  ¿Aparece un acorde Maj7 que NO pertenece a la tonalidad madre? (Ej: Bb Maj7 o Eb Maj7)
+                                       |
+                                       v
+  ¡Aplica la escala LIDIA desde la fundamental de ESE acorde!
+                                       |
+  Ejemplo con Bb Maj7: Toca Bb Lidio (contiene la 4ta aumentada)
+  --> Notas: Bb - C - D - E(#11) - F - G - A</pre>
+
+<h3>Tabla de Modos y sus Grados Característicos</h3>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Modo</th><th>Estructura Armónica</th><th>Grado o Acorde Característico</th><th>Escala Madre Relativa (Ejemplo en C)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Dórico</strong></td><td>Menor</td><td>Cuarto grado mayor (IV7)</td><td>Escala de Bb Mayor (para D dórico)</td></tr>
+        <tr><td><strong>Mixolidio</strong></td><td>Mayor</td><td>Séptimo grado menor (bVII Maj7)</td><td>Escala de F Mayor (para C mixolidio)</td></tr>
+        <tr><td><strong>Lidio</strong></td><td>Mayor</td><td>Cuarta aumentada (#11) / Intercambio Maj7</td><td>Escala de G Mayor (para C lidio)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+<h3>Resumen del Capítulo 4</h3>
+
+  <div class="card accent">
+    <p style="margin:0;">
+      En armonía modal, el color depende del grado característico del modo. Para los acordes Maj7 inesperados que
+      provienen de un intercambio modal, el truco infalible de los profesionales es tocar el modo Lidio construido
+      sobre la tónica de ese acorde.
+    </p>
+  </div>
+
+</section>
+
+<!-- ==================== CAPÍTULO 5 ==================== -->
+
+<section class="page" id="cap5">
+
+  <div class="sec-head">
+    <div class="kicker">Capítulo 5</div>
+    <h2>Dominantes Secundarios, Sustituto Tritonal y Pentatónicas</h2>
+    <p>Tonicalización temporal, Lidia b7 y la escala que nunca choca.</p>
+  </div>
+
+<h3>Paso a paso accionable</h3>
+
+  <div class="step">
+    <div class="num">1</div>
+    <h4>Identificar el Acorde de Destino de un Dominante Secundario</h4>
+    <p><strong>Acción:</strong> Localiza cualquier acorde dominante (séptima de dominante V7) que no resuelva
+      directamente en el primer grado principal de la canción.</p>
+    <p><strong>Motivo:</strong> Un dominante secundario se crea para tonicalizar temporalmente a un acorde
+      secundario de la progresión.</p>
+    <p><strong>Ejemplo práctico en A mayor:</strong></p>
+    <ul>
+      <li>Progresión: <code>A(I) mayor → F#7(V7/II) → Bm(II) menor → E7(V7) mayor</code>.</li>
+      <li>El acorde F#7 es el dominante secundario cuyo acorde de destino es Bm(II).</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <h4>Seleccionar la Escala para el Dominante Secundario</h4>
+    <p><strong>Acción:</strong> Improvisa sobre el dominante secundario utilizando <strong>la escala del acorde
+      de destino</strong> hacia el cual se dirige.</p>
+    <p><strong>Motivo:</strong> Dado que F#7 va hacia Bm(II) menor, la escala de B menor armónica o melódica
+      contiene las notas ideales (incluida la nota A#(I#) que forma la tercera mayor de F#7).</p>
+    <p><strong>Pasos melódicos:</strong></p>
+    <ul>
+      <li>Sobre <strong>A(I) mayor</strong>: Escala de A mayor.</li>
+      <li>Sobre <strong>F#7(V7/II)</strong>: Escala de <strong>B menor armónica</strong>
+        (B, C#, D, E, F#, G, A#).</li>
+      <li>Sobre <strong>Bm(II) menor</strong>: Escala de A mayor o B menor natural.</li>
+      <li>Sobre <strong>E7(V7) mayor</strong>: Escala de A mayor.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <h4>Manejar el Sustituto Tritonal con la Escala Lidia b7</h4>
+    <p><strong>Acción:</strong> Cuando un acorde dominante es reemplazado por su sustituto a distancia de tritono
+      (por ejemplo, reemplazar E7 por Bb7 para resolver en A mayor), aplica la escala <strong>Lidia b7</strong>
+      (cuarto modo de la menor melódica).</p>
+    <p><strong>Motivo:</strong> La escala Lidia b7 sobre el sustituto tritonal conserva las mismas notas de
+      tensión esenciales del dominante original.</p>
+  </div>
+
+  <div class="step">
+    <div class="num">4</div>
+    <h4>Utilizar la Escala Pentatónica para Simplificar Pasajes Complejos</h4>
+    <p><strong>Acción:</strong> Recurre a la escala pentatónica mayor o menor sobre acordes mayores, menores o
+      modales cuando busques rapidez y solidez melódica.</p>
+    <p><strong>Motivo:</strong> La escala pentatónica omite la 4ta y 7ma (en mayor) o la 2da y 6ta (en menor),
+      evitando notas de choque e integrándose perfectamente sobre modos Jonio, Lidio, Mixolidio, Dórico, Frigio
+      o Eólico.</p>
+  </div>
+
+  <pre>[ Flexibilidad de la Pentatónica Menor ]
+
+  Pentatónica Menor de A: A(I) - C(III) - D(IV) - E(V) - G(VII)
+  (Al no tener 2da ni 6ta, encaja sin choques en:)
+  + Modo A Eólico (6ta menor)
+  + Modo A Dórico (6ta mayor)
+  + Modo A Frigio (2da menor)</pre>
+
+<h3>Resumen del Capítulo 5</h3>
+
+  <div class="card accent">
+    <p style="margin:0;">
+      Para improvisar sobre un dominante secundario, utiliza la escala correspondiente al acorde al que resuelve.
+      Sobre sustitutos tritonales, aplica el modo Lidio b7. Cuando necesites máxima velocidad y fluidez sin
+      tensiones conflictivas, la escala pentatónica es tu mejor aliada.
+    </p>
+  </div>
+
+</section>
+
+<!-- ==================== CAPÍTULO 6 ==================== -->
+
+<section class="page" id="cap6">
+
+  <div class="sec-head">
+    <div class="kicker">Capítulo 6</div>
+    <h2>Casos Prácticos de Análisis y Aplicación Real</h2>
+    <p>Dos obras analizadas acorde por acorde, escala por escala.</p>
+  </div>
+
+<h3>Caso de Estudio 1: “Breathe / Any Colour You Like” — Pink Floyd</h3>
+
+  <div class="chips">
+    <span class="chip c1">E Dórico</span>
+    <span class="chip c2">E Eólico</span>
+    <span class="chip c4">C Lidio</span>
+    <span class="chip c3">F Lidio</span>
+  </div>
+
+  <div class="step">
+    <div class="num">1</div>
+    <h4>Analizar la Estrofa Principal (Em → A7)</h4>
+    <p><strong>Análisis:</strong> La progresión alterna entre el acorde <strong>Em(I menor)</strong> y el acorde
+      <strong>A7(IV mayor)</strong>.</p>
+    <p><strong>Diagnóstico:</strong> Tener un primer grado menor con un cuarto grado mayor indica claramente el
+      modo <strong>E Dórico</strong>.</p>
+    <p><strong>Acción de Improvisación:</strong> Toca la escala de <strong>E Dórico</strong> (mismas notas de
+      D mayor: E, F#, G, A, B, C#, D) durante toda esta sección.</p>
+    <p><strong>Enfoque en Arpegios:</strong> Acentúa la nota <code>C#(VI)</code> (sexta mayor) cuando suene el
+      acorde A7 para resaltar el color dórico característico.</p>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <h4>Analizar el Cambio de Sección hacia C Maj7</h4>
+    <p><strong>Análisis:</strong> De repente la canción pasa al acorde <strong>C Maj7</strong> (bVI Maj7) y luego a
+      <strong>Bm7</strong> (v menor).</p>
+    <p><strong>Diagnóstico:</strong> La nota C natural niega el C# del modo dórico, indicando un cambio al modo
+      <strong>E Eólico</strong> (E menor natural).</p>
+    <p><strong>Acción de Improvisación:</strong> Cambia la mente a <strong>E menor natural</strong>
+      (E, F#, G, A, B, C, D).</p>
+    <p><strong>Aplicación del Gran Truco:</strong> Para el acorde C Maj7 de intercambio modal, puedes pensar en
+      la escala de <strong>C Lidio</strong> (notas: C, D, E, F#, G, A, B), que comparte exactamente la misma
+      colección de notas que E menor natural.</p>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <h4>Analizar el Acorde F Maj7 inesperado</h4>
+    <p><strong>Análisis:</strong> Aparece el acorde <strong>F Maj7</strong> (bII Maj7).</p>
+    <p><strong>Diagnóstico:</strong> Es un acorde de intercambio modal proveniente de la escala de E Frigio.</p>
+    <p><strong>Acción de Improvisación:</strong> Aplica “El Gran Truco del Vídeo” e improvisa utilizando
+      <strong>F Lidio</strong> desde la nota F(bII).</p>
+    <p><strong>Notas a tocar:</strong> F, G, A, B(#11), C, D, E.</p>
+  </div>
+
+<h3>Caso de Estudio 2: “Blue Bossa” — Kenny Dorham</h3>
+
+  <div class="chips">
+    <span class="chip c1">C Menor Melódica</span>
+    <span class="chip c2">C Eólico</span>
+    <span class="chip c3">C Menor Armónica</span>
+    <span class="chip c4">Escala Madre de Db Mayor</span>
+  </div>
+
+  <div class="step">
+    <div class="num">1</div>
+    <h4>Analizar la Sección Principal en Do Menor (Cm6 → Fm7 → Dm7b5 → G7b9 → Cm)</h4>
+    <p><strong>Análisis del Acorde Cm6:</strong> Tónica menor con sexta mayor.</p>
+    <ul>
+      <li><strong>Escala:</strong> C Menor Melódica o C Dórico.</li>
+    </ul>
+    <p><strong>Análisis del Acorde Fm7:</strong> Cuarto grado menor.</p>
+    <ul>
+      <li><strong>Escala:</strong> C Menor Natural (C Eólico).</li>
+    </ul>
+    <p><strong>Análisis del II-V-I Menor (Dm7b5 → G7b9 → Cm):</strong></p>
+    <ul>
+      <li><strong>Escala para Dm7b5 y G7b9:</strong> <strong>C Menor Armónica</strong>
+        (C, D, Eb, F, G, Ab, B). Sobre el acorde G7b9, esta escala equivale al modo
+        <strong>G Mixolidio b9 b13</strong>.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <h4>Analizar la Modulación a Re Bemol Mayor (Ebm7 → Ab7 → Db Maj7)</h4>
+    <p><strong>Análisis:</strong> La canción modula un semitono arriba mediante un II-V-I relativo en Db Mayor.</p>
+    <p><strong>Diagnóstico:</strong> Aunque en jazz se etiqueta a Ebm7 como Dórico, Ab7 como Mixolidio y Db Maj7
+      como Jonio, todos corresponden a la misma tonalidad.</p>
+    <p><strong>Acción de Improvisación:</strong> Aplica la <strong>Escala Madre de Db Mayor</strong>
+      (Db, Eb, F, Gb, Ab, Bb, C) para todo el pasaje modulado.</p>
+    <p><strong>Arpegio de Enfoque:</strong></p>
+    <ul>
+      <li>Sobre <strong>Ebm7</strong>: Enfatiza Eb, Gb, Bb, Db.</li>
+      <li>Sobre <strong>Ab7</strong>: Enfatiza Ab, C, Eb, Gb.</li>
+      <li>Sobre <strong>Db Maj7</strong>: Enfatiza Db, F, Ab, C.</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <h4>Analizar el Retorno a C Menor mediante el acorde G7 alt</h4>
+    <p><strong>Análisis:</strong> Tras el acorde Db Maj7, la canción utiliza un acorde dominante con 8 notas o
+      alterado para re-introducir C menor.</p>
+    <p><strong>Acción de Improvisación:</strong> Utiliza la escala de <strong>C Menor Armónica</strong> o
+      <strong>C Menor Compuesto</strong> para retornar suavemente a la sección A de la pieza.</p>
+  </div>
+
+</section>
+
+<!-- ==================== CIERRE Y EJERCICIOS ==================== -->
+
+<section class="page" id="cierre">
+
+  <div class="sec-head">
+    <div class="kicker">Sección final</div>
+    <h2>Cierre y Consolidación del Aprendizaje</h2>
+    <p>Resumen, conceptos clave, errores que nunca debes cometer y ejercicios resueltos.</p>
+  </div>
+
+<h3>1. Resumen de Todo lo Aprendido</h3>
+
+  <div class="step">
+    <div class="num">1</div>
+    <p style="margin:0;">La improvisación melódica no se basa en memorizar fórmulas aisladas acorde por acorde,
+      sino en comprender el contexto y la función armónica de la progresión.</p>
+  </div>
+  <div class="step">
+    <div class="num">2</div>
+    <p style="margin:0;">En armonía diatónica mayor, utiliza una <strong>Escala Madre</strong> para toda la
+      sección y delinea los cambios de acorde apoyándote en sus arpegios.</p>
+  </div>
+  <div class="step">
+    <div class="num">3</div>
+    <p style="margin:0;">En armonía menor, aplica el sistema menor compuesto: escala menor natural para
+      tónicas/subdominantes y escala menor armónica/melódica para el dominante V7.</p>
+  </div>
+  <div class="step">
+    <div class="num">4</div>
+    <p style="margin:0;">Ante cualquier acorde Maj7 fruto de un intercambio modal, aplica la escala
+      <strong>Lidia</strong> construida desde su fundamental (“El Gran Truco del Vídeo”).</p>
+  </div>
+  <div class="step">
+    <div class="num">5</div>
+    <p style="margin:0;">Para dominantes secundarios, toca la escala del acorde al que resuelves.</p>
+  </div>
+  <div class="step">
+    <div class="num">6</div>
+    <p style="margin:0;">Las escalas pentatónicas permiten tocar solos rápidos, fluidos y sin notas de choque en
+      cualquier estilo.</p>
+  </div>
+
+<h3>2. Lista de Conceptos Clave</h3>
+
+  <div class="grid2">
+    <div class="card accent">
+      <h4 style="margin-top:0;">Escala Madre</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        La escala principal que abarca a todos los acordes diatónicos de una tonalidad.
+      </p>
+    </div>
+    <div class="card accent">
+      <h4 style="margin-top:0;">Arpegio Esqueleto</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Las notas constitutivas del acorde (1, 3, 5, 7) sobre las cuales se sostiene la melodía.
+      </p>
+    </div>
+    <div class="card accent">
+      <h4 style="margin-top:0;">Sistema Menor Compuesto</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        La combinación funcional de la escala menor natural, armónica y melódica dentro de una misma obra menor.
+      </p>
+    </div>
+    <div class="card accent">
+      <h4 style="margin-top:0;">Intercambio Modal</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Utilizar un acorde proveniente de un modo paralelo dentro de una progresión tonal estándar.
+      </p>
+    </div>
+    <div class="card accent">
+      <h4 style="margin-top:0;">Modo Lidio</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Modo mayor con la 4ta aumentada (#11), ideal para acordes Maj7 de intercambio modal.
+      </p>
+    </div>
+    <div class="card accent">
+      <h4 style="margin-top:0;">Dominante Secundario</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Acorde de séptima de dominante que tonicaliza temporalmente a un grado distinto de la tónica principal.
+      </p>
+    </div>
+  </div>
+
+<h3>3. Errores que NUNCA deben cometerse</h3>
+
+  <div class="callout err">
+    <span class="lbl">Nunca</span>
+    <strong>Nunca cambies de modo en cada acorde de una progresión diatónica mayor simple:</strong>
+    Genera sobrecarga mental y desconexión melódica.
+  </div>
+  <div class="callout err">
+    <span class="lbl">Nunca</span>
+    <strong>Nunca toques la cuarta justa sostenida sobre un acorde dominante V7 en tiempo fuerte sin
+    resolución:</strong> Puede chocar con la tercera mayor del acorde.
+  </div>
+  <div class="callout err">
+    <span class="lbl">Nunca</span>
+    <strong>Nunca pienses en las escalas como notas aisladas sin dirección rítmica:</strong>
+    La improvisación requiere frases con aproximaciones cromáticas y acentuación en los arpegios.
+  </div>
+  <div class="callout err">
+    <span class="lbl">Nunca</span>
+    <strong>Nunca ejecutes un solo sin conocer las notas del acorde que está sonando por debajo:</strong>
+    Tocar a ciegas lleva a notas falsas.
+  </div>
+
+<h3>4. Recomendaciones para seguir aprendiendo</h3>
+
+  <div class="step">
+    <div class="num">1</div>
+    <h4>Practica arpegios en 4 octavas al piano</h4>
+    <p style="margin:0;color:var(--muted);font-size:.92rem;">
+      Toca los arpegios de 7ma de cada grado de la escala mayor en todas las tonalidades.
+    </p>
+  </div>
+  <div class="step">
+    <div class="num">2</div>
+    <h4>Canta las líneas antes de tocarlas</h4>
+    <p style="margin:0;color:var(--muted);font-size:.92rem;">
+      Escucha la melodía en tu mente antes de mover los dedos sobre el teclado.
+    </p>
+  </div>
+  <div class="step">
+    <div class="num">3</div>
+    <h4>Analiza estándares de Jazz y canciones de Rock</h4>
+    <p style="margin:0;color:var(--muted);font-size:.92rem;">
+      Etiqueta las progresiones con números romanos y busca intercambios modales o dominantes secundarios.
+    </p>
+  </div>
+
+<h3>5. Ejercicios Prácticos con Soluciones Explicadas</h3>
+
+  <div class="exercise">
+    <h4>Ejercicio 1: Progresión Diatónica en C Mayor</h4>
+    <p><strong>Progresión:</strong> <code>C Maj7(I) → Am7(VI) → Dm7(II) → G7(V)</code></p>
+    <p><strong>Pregunta:</strong> ¿Cuántas escalas debes pensar y cuáles son las notas esqueleto de Dm7?</p>
+    <button class="reveal-btn" data-reveal="sol1">Ver solución explicada</button>
+    <div class="reveal-content" id="sol1">
+      Debes pensar en <strong>1 sola escala madre</strong>: C Mayor (C, D, E, F, G, A, B). Pensar en 4 modos
+      genera cansancio innecesario. Las notas esqueleto del acorde Dm7 son sus notas de arpegio:
+      <code>D(II), F(IV), A(VI)</code> y <code>C(I)</code>.
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4>Ejercicio 2: Intercambio Modal</h4>
+    <p><strong>Progresión:</strong> <code>C Maj7(I) → Ab Maj7(bVI Maj7) → C Maj7(I)</code></p>
+    <p><strong>Pregunta:</strong> ¿Qué escala debes aplicar sobre el acorde Ab Maj7 según “El Gran Truco del Vídeo”?</p>
+    <button class="reveal-btn" data-reveal="sol2">Ver solución explicada</button>
+    <div class="reveal-content" id="sol2">
+      Dado que Ab Maj7 es un acorde Maj7 de intercambio modal, debes aplicar el modo <strong>Ab Lidio</strong>
+      desde su fundamental. Sus notas son Ab, Bb, C, D(#11), Eb, F, G.
+    </div>
+  </div>
+
+  <div class="exercise">
+    <h4>Ejercicio 3: Tonalidad Menor</h4>
+    <p><strong>Progresión:</strong> <code>Am(I) → Dm(IV) → E7(V7) → Am(I)</code></p>
+    <p><strong>Pregunta:</strong> ¿Qué escala se utiliza sobre los primeros dos acordes y qué escala se activa
+      sobre E7?</p>
+    <button class="reveal-btn" data-reveal="sol3">Ver solución explicada</button>
+    <div class="reveal-content" id="sol3">
+      Sobre Am y Dm se utiliza <strong>A menor natural</strong> (A, B, C, D, E, F, G). Al llegar al acorde
+      dominante E7, se activa la escala de <strong>A menor armónica</strong> (A, B, C, D, E, F, G#) para incluir
+      la sensible <code>G#(VII#)</code>.
+    </div>
+  </div>
+
+</section>
+
+<!-- ==================== GLOSARIO ==================== -->
+
+<section class="page" id="glosario">
+
+  <div class="sec-head">
+    <div class="kicker">Referencia</div>
+    <h2>Glosario de Términos Técnicos</h2>
+    <p>Definiciones de todos los conceptos utilizados a lo largo del tutorial.</p>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4 style="margin-top:0;">Arpegio</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Ejecución sucesiva de las notas de un acorde en lugar de sonarlas simultáneamente.
+      </p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;">Cifrado Americano</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Sistema de representación musical mediante letras (A=La, B=Si, C=Do, D=Re, E=Mi, F=Fa, G=Sol).
+      </p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;">Dominante (V7)</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Quinto grado de la escala, caracterizado por su tensión y necesidad de resolver en la tónica.
+      </p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;">Intercambio Modal</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Préstamo armónico de acordes pertenecientes a un modo paralelo con la misma tónica.
+      </p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;">Modo Lidio</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Escala mayor que contiene una cuarta aumentada (#11).
+      </p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;">Notas de Paso</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Notas secundarias utilizadas para conectar melódicamente dos notas principales de un arpegio.
+      </p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;">Sensible</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Séptimo grado mayor de una escala, situado a medio tono de la tónica.
+      </p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0;">Sustituto Tritonal</h4>
+      <p style="margin:0;font-size:.9rem;color:var(--muted);">
+        Reemplazo de un acorde dominante por otro a distancia de tres tonos (tritono).
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==================== FUENTES ==================== -->
+
+<section class="page" id="fuentes">
+
+  <div class="sec-head">
+    <div class="kicker">Documentación</div>
+    <h2>Fuentes</h2>
+    <p>Enlace de referencia utilizado para la elaboración de este tutorial.</p>
+  </div>
+
+<h3>Vídeo de YouTube</h3>
+
+  <div class="source-card">
+    <div class="st">Nombre del vídeo</div>
+    <p style="margin:0 0 12px;font-size:.98rem;font-weight:700;color:#e2e8f0;">
+      ¿Qué ESCALA uso sobre X acorde? 🙄
+    </p>
+    <div class="st">Enlace URL</div>
+    <p style="margin:0;font-size:.9rem;">
+      <a href="https://youtube.com/watch?v=pyKYKglUXAQ&amp;is=wVaIq8pVLr2gmE-r" target="_blank" rel="noopener noreferrer">
+        https://youtube.com/watch?v=pyKYKglUXAQ&amp;is=wVaIq8pVLr2gmE-r
+      </a>
+    </p>
+  </div>
+
+<h3>FUENTES</h3>
+
+  <div class="source-card">
+    <div class="st">URL</div>
+    <p style="margin:0;font-size:.9rem;">
+      <a href="https://youtube.com/watch?v=pyKYKglUXAQ&amp;is=wVaIq8pVLr2gmE-r" target="_blank" rel="noopener noreferrer">
+        https://youtube.com/watch?v=pyKYKglUXAQ&amp;is=wVaIq8pVLr2gmE-r
+      </a>
+    </p>
+  </div>
+
+</section>
+
+<!-- ==================== CRÉDITOS ==================== -->
+
+<section class="page" id="creditos">
+
+  <div class="sec-head">
+    <div class="kicker">Créditos</div>
+    <h2>CRÉDITOS</h2>
+    <p>Autoría, fecha, hora y propósito educativo de este tutorial.</p>
+  </div>
+
+  <div class="hero-svg-wrap">
+    <svg class="hero-svg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Portada animada reutilizada: progresión armónica C(I) a F(IV) a G(V) a C(I)">
+      <use href="#heroSymbol"/>
+    </svg>
+  </div>
+
+  <div class="credits-box">
+    <div style="font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:800;">
+      Tutorial
+    </div>
+    <div class="name">Armonía y Escalas — Guía Práctica para la Improvisación Musical</div>
+    <div class="meta">👨‍💻 Créditos: <b>Rubén Sbarsky</b></div>
+    <div class="meta">📅 Fecha: <b>21/09/2026</b></div>
+    <div class="meta">🕐 Hora: <b>09:59:16</b></div>
+    <div class="meta" style="margin-top:14px;">
+      📚 Tutorial con fines exclusivamente educativos y de divulgación.
+    </div>
+    <div class="latin">Fiat iustitia, ruat caelum.</div>
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+  <div>📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div>👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div>📅 FECHA: 21/09/2026 &nbsp;·&nbsp; Hora: 09:59:16</div>
+  <div class="latin">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba">▲</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ NAVEGACIÓN SPA ============ */
+  var navButtons = Array.prototype.slice.call(document.querySelectorAll('.nav-btn'));
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
+
+  function showPage(id){
+    pages.forEach(function(p){
+      if(p.id === id){ p.classList.add('active'); }
+      else{ p.classList.remove('active'); }
+    });
+    navButtons.forEach(function(b){
+      if(b.getAttribute('data-target') === id){ b.classList.add('active'); }
+      else{ b.classList.remove('active'); }
+    });
+    window.scrollTo({top:0, behavior:'auto'});
+    updateProgress();
+    // Reinicia las animaciones SVG al entrar en la sección
+    restartAnimations();
+  }
+
+  navButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      showPage(btn.getAttribute('data-target'));
+    });
+  });
+
+  /* ============ REINICIO DE ANIMACIONES SVG ============ */
+  function restartAnimations(){
+    var svgs = document.querySelectorAll('svg.hero-svg');
+    svgs.forEach(function(s){
+      try{
+        if(typeof s.setCurrentTime === 'function'){
+          s.setCurrentTime(0);
+        }
+      }catch(e){ /* noop */ }
+    });
+  }
+
+  /* ============ BARRA DE PROGRESO ============ */
+  var progressBar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var doc = document.documentElement;
+    var scrollTop = window.pageYOffset || doc.scrollTop || 0;
+    var scrollHeight = doc.scrollHeight - doc.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    if(pct < 0){ pct = 0; }
+    if(pct > 100){ pct = 100; }
+    progressBar.style.width = pct + '%';
+  }
+
+  /* ============ BOTÓN VOLVER ARRIBA ============ */
+  var toTop = document.getElementById('toTop');
+  function onScroll(){
+    updateProgress();
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+    if(scrollTop > 320){ toTop.classList.add('show'); }
+    else{ toTop.classList.remove('show'); }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  toTop.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  /* ============ ACORDEONES ============ */
+  document.querySelectorAll('.acc-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var acc = head.parentElement;
+      var body = acc.querySelector('.acc-body');
+      var isOpen = acc.classList.contains('open');
+      if(isOpen){
+        body.style.maxHeight = '0px';
+        acc.classList.remove('open');
+      }else{
+        acc.classList.add('open');
+        body.style.maxHeight = body.scrollHeight + 40 + 'px';
+      }
+    });
+  });
+
+  /* ============ REVELAR SOLUCIONES ============ */
+  document.querySelectorAll('.reveal-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = document.getElementById(btn.getAttribute('data-reveal'));
+      if(!target){ return; }
+      if(target.classList.contains('show')){
+        target.classList.remove('show');
+        btn.textContent = 'Ver solución explicada';
+      }else{
+        target.classList.add('show');
+        btn.textContent = 'Ocultar solución';
+      }
+    });
+  });
+
+  /* ============ TECLADO INTERACTIVO ============ */
+  var NOTE_MAP = {
+    'C':'C(I)','C#':'C#(I#)',
+    'D':'D(II)','D#':'D#(II#)',
+    'E':'E(III)',
+    'F':'F(IV)','F#':'F#(IV#)',
+    'G':'G(V)','G#':'G#(V#)',
+    'A':'A(VI)','A#':'A#(VI#)',
+    'B':'B(VII)'
+  };
+  var DEGREE_FUNC = {
+    'C(I)':'Tónica / Centro tonal',
+    'C#(I#)':'Tónica alterada',
+    'D(II)':'Supertónica',
+    'D#(II#)':'Supertónica alterada',
+    'E(III)':'Mediante',
+    'F(IV)':'Subdominante',
+    'F#(IV#)':'Subdominante alterada',
+    'G(V)':'Dominante',
+    'G#(V#)':'Dominante alterada',
+    'A(VI)':'Superdominante / Relativo menor',
+    'A#(VI#)':'Superdominante alterada',
+    'B(VII)':'Sensible'
+  };
+
+  function buildPiano(containerId, infoId){
+    var container = document.getElementById(containerId);
+    var info = document.getElementById(infoId);
+    if(!container){ return; }
+
+    var whiteNotes = ['C','D','E','F','G','A','B','C','D','E','F','G'];
+    var whiteLabels = ['C(I)','D(II)','E(III)','F(IV)','G(V)','A(VI)','B(VII)','C(I)','D(II)','E(III)','F(IV)','G(V)'];
+
+    // Teclas blancas
+    whiteNotes.forEach(function(n, i){
+      var k = document.createElement('div');
+      k.className = 'key-white';
+      k.textContent = whiteLabels[i];
+      k.setAttribute('data-note', n);
+      k.setAttribute('data-label', whiteLabels[i]);
+      k.addEventListener('click', function(){
+        selectKey(container, k);
+        var lbl = k.getAttribute('data-label');
+        var fn = DEGREE_FUNC[lbl] || '';
+        info.innerHTML = '<b>' + n + '</b> &nbsp;·&nbsp; <span class="deg">' + lbl + '</span><br>' +
+                         '<span style="font-size:.8rem;">' + fn + '</span>';
+      });
+      container.appendChild(k);
+    });
+
+    // Teclas negras (posiciones aproximadas)
+    var blackPlan = [
+      {after:0, note:'C#'}, {after:1, note:'D#'},
+      {after:3, note:'F#'}, {after:4, note:'G#'}, {after:5, note:'A#'},
+      {after:7, note:'C#'}, {after:8, note:'D#'},
+      {after:10, note:'F#'}, {after:11, note:'G#'}
+    ];
+    var total = whiteNotes.length;
+    blackPlan.forEach(function(bp){
+      if(bp.after >= total - 1){ return; }
+      var kb = document.createElement('div');
+      kb.className = 'key-black';
+      kb.setAttribute('data-note', bp.note);
+      var leftPct = ((bp.after + 1) / total) * 100 - 3.7;
+      kb.style.left = leftPct + '%';
+      kb.addEventListener('click', function(ev){
+        ev.stopPropagation();
+        selectKey(container, kb);
+        var lbl = NOTE_MAP[bp.note] || bp.note;
+        var fn = DEGREE_FUNC[lbl] || '';
+        info.innerHTML = '<b>' + bp.note + '</b> &nbsp;·&nbsp; <span class="deg">' + lbl + '</span><br>' +
+                         '<span style="font-size:.8rem;">' + fn + '</span>';
+      });
+      container.appendChild(kb);
+    });
+  }
+
+  function selectKey(container, keyEl){
+    container.querySelectorAll('.key-white, .key-black').forEach(function(k){
+      k.classList.remove('on');
+    });
+    keyEl.classList.add('on');
+  }
+
+  buildPiano('piano1', 'piano1Info');
+
+  /* ============ ACCESIBILIDAD: REDUCIR MOVIMIENTO ============ */
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion){
+    document.querySelectorAll('svg').forEach(function(s){
+      try{
+        if(typeof s.pauseAnimations === 'function'){ s.pauseAnimations(); }
+      }catch(e){ /* noop */ }
+    });
+  }
+
+  /* ============ INICIALIZACIÓN ============ */
+  updateProgress();
+  onScroll();
+
+})();
+</script>
+
+</body>
+</html>
