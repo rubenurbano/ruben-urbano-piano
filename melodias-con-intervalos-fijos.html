@@ -1,0 +1,1972 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Melodías con Intervalos Fijos: la técnica de la nota ancla en la mano derecha. Tutorial académico paso a paso.">
+<title>Melodías con Intervalos Fijos — Tutorial</title>
+<style>
+  :root{
+    --bg:#0a0e1a;
+    --bg2:#070b14;
+    --card:#0f172a;
+    --card2:#111c30;
+    --border:#1e3a5f;
+    --border2:#234770;
+    --accent:#00d4ff;
+    --green:#22c55e;
+    --amber:#f59e0b;
+    --red:#ef4444;
+    --purple:#a855f7;
+    --text:#e2e8f0;
+    --text-dim:#8ba3c7;
+    --text-mute:#5b7091;
+    --radius:12px;
+    --radius-sm:8px;
+    --shadow:0 8px 28px rgba(0,0,0,.45);
+    --glow:0 0 18px rgba(0,212,255,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    line-height:1.65;
+    min-height:100vh;
+    overflow-x:hidden;
+    font-size:15.5px;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:rgba(0,212,255,.35);color:#fff;}
+
+  /* ============ PROGRESS BAR ============ */
+  .progress-bar{
+    position:fixed;top:0;left:0;height:3px;width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));
+    z-index:1000;
+    box-shadow:0 0 12px rgba(0,212,255,.7);
+    transition:width .12s linear;
+  }
+
+  /* ============ NAVBAR ============ */
+  .navbar{
+    position:fixed;top:3px;left:0;right:0;
+    background:rgba(10,14,26,.92);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+    z-index:999;
+    height:54px;
+    display:flex;align-items:center;
+  }
+  .nav-scroll{
+    display:flex;gap:4px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:0 12px;
+    height:100%;
+    align-items:center;
+    scrollbar-width:thin;
+    scrollbar-color:var(--border) transparent;
+    width:100%;
+    -webkit-overflow-scrolling:touch;
+  }
+  .nav-scroll::-webkit-scrollbar{height:5px;}
+  .nav-scroll::-webkit-scrollbar-track{background:transparent;}
+  .nav-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+  .nav-btn{
+    flex:0 0 auto;
+    background:transparent;
+    border:1px solid transparent;
+    color:var(--text-dim);
+    font-family:inherit;
+    font-size:12.5px;
+    font-weight:600;
+    padding:7px 12px;
+    border-radius:var(--radius-sm);
+    cursor:pointer;
+    white-space:nowrap;
+    letter-spacing:.3px;
+    transition:all .2s ease;
+    text-transform:uppercase;
+  }
+  .nav-btn:hover{color:var(--accent);background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.25);}
+  .nav-btn.active{
+    color:#0a0e1a;
+    background:linear-gradient(135deg,var(--accent),#39b8e8);
+    border-color:var(--accent);
+    box-shadow:var(--glow);
+  }
+  .nav-btn.credits{border-color:rgba(168,85,247,.4);color:var(--purple);}
+  .nav-btn.credits.active{background:linear-gradient(135deg,var(--purple),#7c3aed);color:#fff;border-color:var(--purple);}
+  .nav-btn.sources{border-color:rgba(34,197,94,.35);color:var(--green);}
+  .nav-btn.sources.active{background:linear-gradient(135deg,var(--green),#16a34a);color:#0a0e1a;border-color:var(--green);}
+
+  /* ============ MAIN ============ */
+  main{
+    padding-top:70px;
+    min-height:calc(100vh - 70px);
+    max-width:1180px;
+    margin:0 auto;
+    padding-left:16px;padding-right:16px;
+    padding-bottom:80px;
+  }
+  .section{display:none;animation:fadeIn .35s ease;}
+  .section.active{display:block;}
+  @keyframes fadeIn{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  /* ============ HOME ============ */
+  .home-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(0,212,255,.1);
+    border:1px solid rgba(0,212,255,.4);
+    color:var(--accent);
+    padding:6px 14px;border-radius:999px;
+    font-size:11.5px;font-weight:700;letter-spacing:1.6px;
+    text-transform:uppercase;margin-bottom:14px;
+  }
+  .home-badge .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 10px var(--green);
+    animation:pulseDot 2s infinite;
+  }
+  @keyframes pulseDot{
+    0%,100%{opacity:1;transform:scale(1);}
+    50%{opacity:.5;transform:scale(.75);}
+  }
+
+  .hero-svg-wrap{
+    width:100%;
+    margin:6px 0 26px;
+    border-radius:var(--radius);
+    overflow:hidden;
+    border:1px solid var(--border);
+    background:#070b14;
+    box-shadow:var(--shadow),inset 0 0 40px rgba(0,212,255,.05);
+    line-height:0;
+  }
+  .hero-svg-wrap svg{width:100%;height:auto;display:block;}
+
+  .home-title{
+    font-size:clamp(26px,4.6vw,44px);
+    font-weight:800;
+    line-height:1.12;
+    letter-spacing:-.5px;
+    background:linear-gradient(135deg,#fff 10%,var(--accent) 55%,var(--purple) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin-bottom:10px;
+  }
+  .home-subtitle{
+    font-size:clamp(14px,2.2vw,19px);
+    color:var(--text-dim);
+    font-weight:500;
+    margin-bottom:20px;
+  }
+  .home-desc{
+    color:var(--text-dim);
+    font-size:15.5px;
+    max-width:880px;
+    margin-bottom:24px;
+  }
+  .quote-card{
+    background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(168,85,247,.06));
+    border:1px solid var(--border);
+    border-left:4px solid var(--accent);
+    border-radius:var(--radius-sm);
+    padding:20px 22px;
+    margin-bottom:26px;
+    position:relative;
+  }
+  .quote-card p{
+    font-size:clamp(15px,2vw,17px);
+    font-style:italic;
+    color:#cbd5e1;
+    line-height:1.55;
+  }
+  .quote-card::before{
+    content:'"';
+    position:absolute;
+    top:-6px;left:14px;
+    font-size:60px;
+    color:rgba(0,212,255,.22);
+    font-family:Georgia,serif;
+    line-height:1;
+  }
+  .quote-card::after{
+    content:'"';
+    position:absolute;
+    bottom:-34px;right:16px;
+    font-size:60px;
+    color:rgba(0,212,255,.22);
+    font-family:Georgia,serif;
+    line-height:1;
+  }
+  .metrics-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;
+    margin-bottom:22px;
+  }
+  .metric{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:14px 16px;
+    transition:all .2s ease;
+  }
+  .metric:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,212,255,.15);}
+  .metric .lbl{
+    font-size:10.5px;font-weight:700;letter-spacing:1.4px;
+    color:var(--text-mute);text-transform:uppercase;margin-bottom:6px;
+  }
+  .metric .val{
+    font-size:14.5px;font-weight:700;color:var(--accent);
+    line-height:1.35;
+  }
+  .metric.green .val{color:var(--green);}
+  .metric.amber .val{color:var(--amber);}
+  .metric.purple .val{color:var(--purple);}
+
+  .date-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;}
+  .chip{
+    display:inline-flex;align-items:center;gap:7px;
+    background:var(--card);border:1px solid var(--border);
+    border-radius:999px;padding:7px 14px;
+    font-size:12.5px;color:var(--text-dim);font-weight:600;
+  }
+  .chip b{color:var(--accent);font-weight:700;}
+
+  /* ============ CONTENT CARDS ============ */
+  .section-header{
+    display:flex;align-items:center;gap:12px;
+    margin-bottom:18px;padding-bottom:14px;
+    border-bottom:2px solid var(--border);
+  }
+  .section-header .num{
+    display:flex;align-items:center;justify-content:center;
+    width:42px;height:42px;flex:0 0 42px;
+    background:linear-gradient(135deg,rgba(0,212,255,.18),rgba(168,85,247,.15));
+    border:1px solid var(--accent);
+    color:var(--accent);
+    font-weight:800;font-size:16px;border-radius:10px;
+    font-family:inherit;
+  }
+  .section-header h2{
+    font-size:clamp(19px,3vw,26px);
+    font-weight:800;color:#fff;line-height:1.2;
+    letter-spacing:-.3px;
+  }
+  .section-header .kicker{
+    font-size:10.5px;font-weight:700;letter-spacing:1.6px;
+    color:var(--text-mute);text-transform:uppercase;
+    margin-bottom:2px;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px 22px;
+    margin-bottom:16px;
+    transition:border-color .2s;
+  }
+  .card:hover{border-color:var(--border2);}
+  .card h3{
+    font-size:17px;font-weight:700;color:#fff;
+    margin-bottom:10px;letter-spacing:-.2px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .card h3 .tag{
+    font-size:10px;font-weight:700;letter-spacing:1.2px;
+    color:var(--accent);background:rgba(0,212,255,.12);
+    border:1px solid rgba(0,212,255,.3);
+    padding:2px 8px;border-radius:999px;text-transform:uppercase;
+  }
+  .card h4{
+    font-size:14.5px;font-weight:700;color:var(--accent);
+    margin:14px 0 8px;
+  }
+  .card p{margin-bottom:10px;color:var(--text);}
+  .card p:last-child{margin-bottom:0;}
+  .card ul,.card ol{margin:8px 0 12px 22px;}
+  .card li{margin-bottom:6px;color:var(--text);}
+  .card li b{color:var(--accent);font-weight:600;}
+  .card strong{color:#fff;font-weight:700;}
+  .card em{color:var(--amber);font-style:normal;font-weight:600;}
+  .card code{
+    background:#050810;color:var(--accent);
+    padding:2px 7px;border-radius:5px;
+    font-family:'Consolas','Monaco',monospace;font-size:13px;
+    border:1px solid var(--border);
+  }
+  .card pre{
+    background:#050810;border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:14px 16px;overflow-x:auto;
+    font-family:'Consolas','Monaco',monospace;font-size:13px;
+    color:var(--accent);line-height:1.6;
+    margin:10px 0;
+  }
+
+  /* ============ CALLOUTS ============ */
+  .callout{
+    border-radius:var(--radius-sm);
+    padding:14px 18px;
+    margin:14px 0;
+    border-left:4px solid;
+    font-size:14.5px;
+    line-height:1.6;
+  }
+  .callout b{font-weight:700;}
+  .callout.info{
+    background:rgba(0,212,255,.07);
+    border-color:var(--accent);
+    color:#cbe9f7;
+  }
+  .callout.info b{color:var(--accent);}
+  .callout.example{
+    background:rgba(34,197,94,.07);
+    border-color:var(--green);
+    color:#c8ead5;
+  }
+  .callout.example b{color:var(--green);}
+  .callout.warning{
+    background:rgba(245,158,11,.08);
+    border-color:var(--amber);
+    color:#f4e2bf;
+  }
+  .callout.warning b{color:var(--amber);}
+  .callout.error{
+    background:rgba(239,68,68,.08);
+    border-color:var(--red);
+    color:#f4cfcf;
+  }
+  .callout.error b{color:var(--red);}
+  .callout.why{
+    background:rgba(168,85,247,.08);
+    border-color:var(--purple);
+    color:#ddd0f7;
+  }
+  .callout.why b{color:var(--purple);}
+
+  /* ============ TABLES ============ */
+  .table-wrap{
+    width:100%;
+    overflow-x:auto;
+    margin:14px 0;
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    -webkit-overflow-scrolling:touch;
+    background:#050810;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+    min-width:520px;
+  }
+  th{
+    background:#0d1a2e;
+    color:var(--accent);
+    font-weight:700;
+    padding:10px 12px;
+    text-align:left;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+    font-size:12.5px;
+    letter-spacing:.3px;
+    text-transform:uppercase;
+  }
+  td{
+    padding:9px 12px;
+    border-bottom:1px solid rgba(30,58,95,.5);
+    color:var(--text);
+    vertical-align:top;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(0,212,255,.04);}
+  td b{color:var(--accent);font-weight:700;}
+  td code{
+    background:#0a1424;color:var(--accent);
+    padding:1px 6px;border-radius:4px;
+    font-family:'Consolas','Monaco',monospace;font-size:12.5px;
+    border:1px solid var(--border);
+  }
+
+  /* ============ STEPS ============ */
+  .step-list{list-style:none;margin:12px 0;padding:0;}
+  .step-list li{
+    display:flex;gap:14px;margin-bottom:12px;
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:14px 16px;
+    align-items:flex-start;
+  }
+  .step-list .step-n{
+    flex:0 0 32px;
+    width:32px;height:32px;border-radius:8px;
+    background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(168,85,247,.15));
+    border:1px solid var(--accent);
+    color:var(--accent);
+    font-weight:800;font-size:14px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step-list .step-content{flex:1;min-width:0;}
+  .step-list .step-content b{color:var(--accent);}
+  .step-list .step-content p{margin-bottom:6px;font-size:14.5px;}
+  .step-list .step-content p:last-child{margin-bottom:0;}
+
+  /* ============ DETAILS / ACCORDION ============ */
+  details{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    margin:10px 0;
+    overflow:hidden;
+    transition:border-color .2s;
+  }
+  details[open]{border-color:var(--accent);}
+  details summary{
+    padding:14px 18px;
+    cursor:pointer;
+    font-weight:600;
+    color:var(--text);
+    list-style:none;
+    display:flex;align-items:center;gap:10px;
+    font-size:14.5px;
+    transition:background .2s;
+    user-select:none;
+  }
+  details summary::-webkit-details-marker{display:none;}
+  details summary::before{
+    content:'▸';
+    color:var(--accent);
+    font-size:14px;
+    transition:transform .2s;
+    display:inline-block;
+    flex:0 0 auto;
+  }
+  details[open] summary::before{transform:rotate(90deg);}
+  details summary:hover{background:rgba(0,212,255,.06);}
+  details .details-body{
+    padding:0 18px 16px 18px;
+    border-top:1px solid var(--border);
+    margin-top:2px;
+    padding-top:14px;
+    color:var(--text-dim);
+    font-size:14.5px;
+    line-height:1.7;
+  }
+  details .details-body b{color:var(--accent);}
+  details .details-body p{margin-bottom:8px;}
+  details .details-body p:last-child{margin-bottom:0;}
+
+  /* ============ Q&A (autoevaluación) ============ */
+  .quiz-q{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-left:3px solid var(--accent);
+    border-radius:var(--radius-sm);
+    padding:16px 18px;
+    margin-bottom:12px;
+  }
+  .quiz-q .q{
+    font-weight:700;color:#fff;
+    margin-bottom:6px;font-size:15px;
+    display:flex;align-items:flex-start;gap:10px;
+  }
+  .quiz-q .q .qn{
+    flex:0 0 24px;
+    width:24px;height:24px;border-radius:6px;
+    background:var(--accent);color:#0a0e1a;
+    font-size:12px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .quiz-q details{background:#050810;margin-top:8px;}
+
+  /* ============ CRÉDITOS ============ */
+  .credits-hero{margin-bottom:26px;}
+  .credits-card{
+    background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(0,212,255,.05));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:26px 28px;
+    margin-bottom:16px;
+    text-align:center;
+  }
+  .credits-card h2{
+    font-size:24px;font-weight:800;color:#fff;
+    margin-bottom:6px;
+  }
+  .credits-card .author{
+    font-size:20px;font-weight:700;
+    background:linear-gradient(135deg,var(--accent),var(--purple));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin:14px 0;
+  }
+  .credits-card .info-line{
+    color:var(--text-dim);
+    font-size:14.5px;margin:6px 0;
+  }
+  .credits-card .info-line b{color:var(--accent);font-weight:700;}
+  .credits-card .latin{
+    font-family:Georgia,serif;
+    font-style:italic;
+    color:var(--purple);
+    font-size:16px;
+    margin-top:16px;
+    letter-spacing:.5px;
+  }
+
+  /* ============ BACK TO TOP ============ */
+  .back-top{
+    position:fixed;
+    bottom:20px;right:20px;
+    width:46px;height:46px;
+    background:linear-gradient(135deg,var(--accent),var(--purple));
+    color:#0a0e1a;
+    border:none;border-radius:12px;
+    cursor:pointer;
+    font-size:20px;font-weight:700;
+    display:none;
+    align-items:center;justify-content:center;
+    box-shadow:0 8px 24px rgba(0,212,255,.4);
+    z-index:998;
+    transition:all .25s ease;
+  }
+  .back-top.show{display:flex;}
+  .back-top:hover{transform:translateY(-3px) scale(1.06);box-shadow:0 12px 30px rgba(0,212,255,.55);}
+  .back-top:active{transform:translateY(0) scale(.98);}
+
+  /* ============ FOOTER ============ */
+  footer{
+    background:#050810;
+    border-top:1px solid var(--border);
+    padding:28px 16px 26px;
+    margin-top:40px;
+    text-align:center;
+  }
+  footer .f-inner{
+    max-width:900px;margin:0 auto;
+  }
+  footer p{
+    color:var(--text-dim);
+    font-size:13.5px;
+    margin:5px 0;
+    line-height:1.6;
+  }
+  footer .f-latin{
+    font-family:Georgia,serif;
+    font-style:italic;
+    color:var(--purple);
+    font-size:14.5px;
+    margin-top:12px;
+    letter-spacing:.5px;
+  }
+  footer .f-credits b{color:var(--accent);}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:720px){
+    body{font-size:15px;}
+    main{padding-left:12px;padding-right:12px;}
+    .navbar{height:50px;}
+    main{padding-top:66px;}
+    .nav-btn{font-size:11px;padding:6px 10px;letter-spacing:.2px;}
+    .card{padding:16px 14px;}
+    .section-header .num{width:36px;height:36px;flex:0 0 36px;font-size:14px;}
+    .section-header h2{font-size:19px;}
+    table{font-size:12.5px;min-width:440px;}
+    th,td{padding:8px 9px;}
+    .home-title{font-size:26px;}
+    .metrics-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
+    .metric{padding:11px 12px;}
+    .metric .val{font-size:13px;}
+    .quote-card{padding:16px 16px 18px 18px;}
+    .back-top{width:42px;height:42px;font-size:18px;bottom:14px;right:14px;}
+    .credits-card{padding:20px 16px;}
+    .credits-card h2{font-size:19px;}
+    .credits-card .author{font-size:17px;}
+    .step-list li{padding:12px;}
+    .callout{padding:12px 14px;font-size:14px;}
+  }
+  @media (max-width:400px){
+    .nav-btn{font-size:10.5px;padding:5px 8px;}
+    .home-title{font-size:23px;}
+    table{min-width:380px;}
+  }
+
+  /* ============ REDUCED MOTION ============ */
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+  }
+
+  /* svg symbol visibility */
+  .svg-hidden-defs{position:absolute;width:0;height:0;overflow:hidden;}
+</style>
+</head>
+<body>
+
+<!-- ============ PROGRESS BAR ============ -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="navbar" aria-label="Navegación principal">
+  <div class="nav-scroll" id="navScroll">
+    <button class="nav-btn active" data-target="home">HOME</button>
+    <button class="nav-btn" data-target="s0">0 · Cómo leer</button>
+    <button class="nav-btn" data-target="s1">1 · Qué es</button>
+    <button class="nav-btn" data-target="s2">2 · Teoría</button>
+    <button class="nav-btn" data-target="s3">3 · Paso 1</button>
+    <button class="nav-btn" data-target="s4">4 · Paso 2</button>
+    <button class="nav-btn" data-target="s5">5 · Paso 3</button>
+    <button class="nav-btn" data-target="s6">6 · Paso 4</button>
+    <button class="nav-btn" data-target="s7">7 · Paso 5</button>
+    <button class="nav-btn" data-target="s8">8 · Práctica</button>
+    <button class="nav-btn" data-target="s9">9 · Yamaha</button>
+    <button class="nav-btn" data-target="s10">10 · Autoevaluación</button>
+    <button class="nav-btn" data-target="s11">11 · Glosario</button>
+    <button class="nav-btn" data-target="s12">12 · Resumen</button>
+    <button class="nav-btn" data-target="s13">13 · Notas</button>
+    <button class="nav-btn sources" data-target="fuentes">FUENTES</button>
+    <button class="nav-btn credits" data-target="creditos">CRÉDITOS</button>
+  </div>
+</nav>
+
+<!-- ============ SVG DEFINITION (Symbol for reuse) ============ -->
+<svg class="svg-hidden-defs" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <symbol id="heroSvg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <!-- Background radial gradient (animated) -->
+      <radialGradient id="bgRad" cx="50%" cy="45%" r="85%">
+        <stop offset="0%" stop-color="#0f172a">
+          <animate attributeName="stop-color" values="#0f172a;#1e3a5f;#0f172a" dur="9s" repeatCount="indefinite"/>
+        </stop>
+        <stop offset="55%" stop-color="#0a0e1a">
+          <animate attributeName="stop-color" values="#0a0e1a;#0d1424;#0a0e1a" dur="9s" repeatCount="indefinite"/>
+        </stop>
+        <stop offset="100%" stop-color="#070b14"/>
+      </radialGradient>
+
+      <linearGradient id="titleGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#00d4ff">
+          <animate attributeName="stop-color" values="#00d4ff;#a855f7;#22c55e;#f59e0b;#00d4ff" dur="12s" repeatCount="indefinite"/>
+        </stop>
+        <stop offset="100%" stop-color="#a855f7">
+          <animate attributeName="stop-color" values="#a855f7;#22c55e;#00d4ff;#a855f7" dur="12s" repeatCount="indefinite"/>
+        </stop>
+      </linearGradient>
+
+      <linearGradient id="pianoGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1e3a5f" stop-opacity=".85"/>
+        <stop offset="100%" stop-color="#0a0e1a" stop-opacity=".9"/>
+      </linearGradient>
+
+      <filter id="glowF" x="-100%" y="-100%" width="300%" height="300%">
+        <feGaussianBlur stdDeviation="2.6" result="b"/>
+        <feMerge>
+          <feMergeNode in="b"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+
+      <filter id="glowStrong" x="-100%" y="-100%" width="300%" height="300%">
+        <feGaussianBlur stdDeviation="6" result="b"/>
+        <feMerge>
+          <feMergeNode in="b"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+
+      <pattern id="gridP" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00d4ff" stroke-width="0.4"/>
+        <animate attributeName="opacity" values="0.05;0.22;0.05" dur="6s" repeatCount="indefinite"/>
+      </pattern>
+
+      <radialGradient id="haloCyan">
+        <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="haloPurple">
+        <stop offset="0%" stop-color="#a855f7" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+      </radialGradient>
+
+      <path id="melPath" d="M 60 150 L 740 150"/>
+      <path id="melPathCurve" d="M 60 150 C 200 110, 350 190, 500 130 S 700 170, 740 150"/>
+      <path id="particlePath" d="M 60 150 L 740 150"/>
+    </defs>
+
+    <!-- Background -->
+    <rect width="800" height="450" fill="url(#bgRad)"/>
+    <rect width="800" height="450" fill="url(#gridP)"/>
+
+    <!-- Orbital rings (3 concentric, different speeds/directions) -->
+    <g transform="translate(400 210)">
+      <circle r="205" fill="none" stroke="#00d4ff" stroke-width="0.7" stroke-dasharray="3 16" opacity="0.22">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="48s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="175" fill="none" stroke="#a855f7" stroke-width="0.7" stroke-dasharray="2 12" opacity="0.28">
+        <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="36s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="145" fill="none" stroke="#22c55e" stroke-width="0.6" stroke-dasharray="5 9 3 9" opacity="0.22">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="58s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="115" fill="none" stroke="#f59e0b" stroke-width="0.5" stroke-dasharray="1 8" opacity="0.18">
+        <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="42s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <!-- Title -->
+    <text x="40" y="48" font-size="19" font-weight="800" fill="url(#titleGrad)" font-family="'Segoe UI', system-ui, sans-serif" letter-spacing="1.2" filter="url(#glowF)">
+      MELODÍAS · INTERVALOS FIJOS
+    </text>
+    <text x="40" y="68" font-size="10" fill="#8ba3c7" font-family="'Segoe UI', system-ui, sans-serif" letter-spacing="2.4" font-weight="600">
+      TÉCNICA DE LA NOTA ANCLA · MANO DERECHA
+      <animate attributeName="opacity" values="0.55;1;0.55" dur="4s" repeatCount="indefinite"/>
+    </text>
+
+    <!-- LIVE indicator -->
+    <g transform="translate(748 38)">
+      <circle r="4.5" fill="#ef4444" filter="url(#glowF)">
+        <animate attributeName="r" values="4;7.5;4" dur="2.2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;0.35;1" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+      <text x="-11" y="4" text-anchor="end" font-size="9" font-weight="800" fill="#ef4444" font-family="'Segoe UI', system-ui, sans-serif" letter-spacing="2.4">LIVE</text>
+    </g>
+
+    <!-- Lane labels -->
+    <text x="40" y="138" font-size="9" font-weight="800" fill="#00d4ff" font-family="'Segoe UI', system-ui, sans-serif" letter-spacing="2">MELODÍA ▲</text>
+    <text x="40" y="253" font-size="9" font-weight="800" fill="#a855f7" font-family="'Segoe UI', system-ui, sans-serif" letter-spacing="2">ANCLA ●</text>
+
+    <!-- Lane lines -->
+    <line x1="40" y1="150" x2="760" y2="150" stroke="#1e3a5f" stroke-width="1" stroke-dasharray="3 5"/>
+    <line x1="40" y1="265" x2="760" y2="265" stroke="#1e3a5f" stroke-width="1" stroke-dasharray="3 5"/>
+
+    <!-- Interval vertical lines (staggered pulse) -->
+    <g stroke="#00d4ff" stroke-width="0.9">
+      <line x1="140" y1="150" x2="140" y2="265" opacity="0">
+        <animate attributeName="opacity" values="0;0.75;0" dur="4.5s" begin="0s" repeatCount="indefinite"/>
+      </line>
+      <line x1="240" y1="150" x2="240" y2="265" opacity="0">
+        <animate attributeName="opacity" values="0;0.75;0" dur="4.5s" begin="0.75s" repeatCount="indefinite"/>
+      </line>
+      <line x1="340" y1="150" x2="340" y2="265" opacity="0">
+        <animate attributeName="opacity" values="0;0.75;0" dur="4.5s" begin="1.5s" repeatCount="indefinite"/>
+      </line>
+      <line x1="440" y1="150" x2="440" y2="265" opacity="0">
+        <animate attributeName="opacity" values="0;0.75;0" dur="4.5s" begin="2.25s" repeatCount="indefinite"/>
+      </line>
+      <line x1="540" y1="150" x2="540" y2="265" opacity="0">
+        <animate attributeName="opacity" values="0;0.75;0" dur="4.5s" begin="3s" repeatCount="indefinite"/>
+      </line>
+      <line x1="640" y1="150" x2="640" y2="265" opacity="0">
+        <animate attributeName="opacity" values="0;0.75;0" dur="4.5s" begin="3.75s" repeatCount="indefinite"/>
+      </line>
+    </g>
+
+    <!-- Interval labels -->
+    <g font-size="9" font-family="'Segoe UI', system-ui, sans-serif" fill="#00d4ff" font-weight="800">
+      <text x="145" y="212" opacity="0">M2<animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="0s" repeatCount="indefinite"/></text>
+      <text x="245" y="212" opacity="0">M3<animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="0.75s" repeatCount="indefinite"/></text>
+      <text x="345" y="212" opacity="0">P4<animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="1.5s" repeatCount="indefinite"/></text>
+      <text x="445" y="212" opacity="0">P5<animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="2.25s" repeatCount="indefinite"/></text>
+      <text x="545" y="212" opacity="0">M6<animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="3s" repeatCount="indefinite"/></text>
+      <text x="645" y="212" opacity="0">M6<animate attributeName="opacity" values="0;1;0" dur="4.5s" begin="3.75s" repeatCount="indefinite"/></text>
+    </g>
+
+    <!-- Anchor note D (pulsing halo + pulse) -->
+    <g transform="translate(400 265)">
+      <circle r="18" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.55">
+        <animate attributeName="r" values="18;36;18" dur="3.2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.55;0;0.55" dur="3.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="24" fill="url(#haloPurple)" opacity="0.45">
+        <animate attributeName="r" values="22;30;22" dur="2.8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="14" fill="#a855f7" filter="url(#glowStrong)"/>
+      <text y="5" text-anchor="middle" font-size="13" font-weight="800" fill="#070b14" font-family="'Segoe UI', system-ui, sans-serif">D</text>
+      <animateTransform attributeName="transform" type="translate" values="400,265;400,262;400,265" dur="4.2s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Melody notes traveling (staggered along horizontal lane) -->
+    <g filter="url(#glowF)">
+      <circle r="10" fill="#00d4ff"/>
+      <animateMotion dur="5.5s" repeatCount="indefinite" begin="0s"><mpath href="#melPath"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="5.5s" repeatCount="indefinite"/>
+    </g>
+    <g filter="url(#glowF)">
+      <circle r="10" fill="#22c55e"/>
+      <animateMotion dur="5.5s" repeatCount="indefinite" begin="1.375s"><mpath href="#melPath"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="5.5s" repeatCount="indefinite"/>
+    </g>
+    <g filter="url(#glowF)">
+      <circle r="10" fill="#f59e0b"/>
+      <animateMotion dur="5.5s" repeatCount="indefinite" begin="2.75s"><mpath href="#melPath"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="5.5s" repeatCount="indefinite"/>
+    </g>
+    <g filter="url(#glowF)">
+      <circle r="10" fill="#a855f7"/>
+      <animateMotion dur="5.5s" repeatCount="indefinite" begin="4.125s"><mpath href="#melPath"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="5.5s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Ghost / afterimage notes (translucent, larger) -->
+    <g opacity="0.35">
+      <circle r="15" fill="none" stroke="#00d4ff" stroke-width="1.5">
+        <animateMotion dur="5.5s" repeatCount="indefinite" begin="1.2s"><mpath href="#melPath"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.45;0.45;0" keyTimes="0;0.1;0.9;1" dur="5.5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <g opacity="0.35">
+      <circle r="15" fill="none" stroke="#a855f7" stroke-width="1.5">
+        <animateMotion dur="5.5s" repeatCount="indefinite" begin="3.4s"><mpath href="#melPath"/></animateMotion>
+        <animate attributeName="opacity" values="0;0.45;0.45;0" keyTimes="0;0.1;0.9;1" dur="5.5s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <!-- Flowing particles along path -->
+    <circle r="2" fill="#00d4ff" filter="url(#glowF)">
+      <animateMotion dur="4s" repeatCount="indefinite" begin="0s"><mpath href="#melPath"/></animateMotion>
+    </circle>
+    <circle r="2" fill="#22c55e" filter="url(#glowF)">
+      <animateMotion dur="4s" repeatCount="indefinite" begin="0.5s"><mpath href="#melPath"/></animateMotion>
+    </circle>
+    <circle r="2" fill="#a855f7" filter="url(#glowF)">
+      <animateMotion dur="4s" repeatCount="indefinite" begin="1s"><mpath href="#melPath"/></animateMotion>
+    </circle>
+    <circle r="2" fill="#f59e0b" filter="url(#glowF)">
+      <animateMotion dur="4s" repeatCount="indefinite" begin="1.5s"><mpath href="#melPath"/></animateMotion>
+    </circle>
+    <circle r="2" fill="#00d4ff" filter="url(#glowF)">
+      <animateMotion dur="4s" repeatCount="indefinite" begin="2s"><mpath href="#melPath"/></animateMotion>
+    </circle>
+    <circle r="2" fill="#22c55e" filter="url(#glowF)">
+      <animateMotion dur="4s" repeatCount="indefinite" begin="2.5s"><mpath href="#melPath"/></animateMotion>
+    </circle>
+    <circle r="2" fill="#a855f7" filter="url(#glowF)">
+      <animateMotion dur="4s" repeatCount="indefinite" begin="3s"><mpath href="#melPath"/></animateMotion>
+    </circle>
+    <circle r="2" fill="#f59e0b" filter="url(#glowF)">
+      <animateMotion dur="4s" repeatCount="indefinite" begin="3.5s"><mpath href="#melPath"/></animateMotion>
+    </circle>
+
+    <!-- Piano keyboard at the bottom -->
+    <g transform="translate(40 348)">
+      <!-- White keys (12) -->
+      <g fill="#e2e8f0" stroke="#070b14" stroke-width="0.9">
+        <rect x="0" y="0" width="60" height="86" rx="2"/>
+        <rect x="60" y="0" width="60" height="86" rx="2"/>
+        <rect x="120" y="0" width="60" height="86" rx="2"/>
+        <rect x="180" y="0" width="60" height="86" rx="2"/>
+        <rect x="240" y="0" width="60" height="86" rx="2"/>
+        <rect x="300" y="0" width="60" height="86" rx="2"/>
+        <rect x="360" y="0" width="60" height="86" rx="2"/>
+        <rect x="420" y="0" width="60" height="86" rx="2"/>
+        <rect x="480" y="0" width="60" height="86" rx="2"/>
+        <rect x="540" y="0" width="60" height="86" rx="2"/>
+        <rect x="600" y="0" width="60" height="86" rx="2"/>
+        <rect x="660" y="0" width="60" height="86" rx="2"/>
+      </g>
+      <!-- Black keys (stylized) -->
+      <g fill="#050810" stroke="#1e3a5f" stroke-width="0.6">
+        <rect x="42" y="0" width="36" height="52" rx="2"/>
+        <rect x="102" y="0" width="36" height="52" rx="2"/>
+        <rect x="222" y="0" width="36" height="52" rx="2"/>
+        <rect x="282" y="0" width="36" height="52" rx="2"/>
+        <rect x="342" y="0" width="36" height="52" rx="2"/>
+        <rect x="462" y="0" width="36" height="52" rx="2"/>
+        <rect x="522" y="0" width="36" height="52" rx="2"/>
+        <rect x="642" y="0" width="36" height="52" rx="2"/>
+      </g>
+      <!-- Keyboard label -->
+      <text x="360" y="106" text-anchor="middle" font-size="9" font-family="'Segoe UI', system-ui, sans-serif" fill="#8ba3c7" font-weight="700" letter-spacing="2">
+        D(I) MAYOR · NOTA ANCLA D4(I)
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="5s" repeatCount="indefinite"/>
+      </text>
+    </g>
+
+    <!-- Big flash text (climax) -->
+    <text x="400" y="110" text-anchor="middle" font-size="44" font-weight="900" font-family="'Segoe UI', system-ui, sans-serif" opacity="0" filter="url(#glowStrong)">
+      INTERVALO FIJO
+      <animate attributeName="opacity" values="0;0;0.95;0;0" keyTimes="0;0.65;0.75;0.85;1" dur="11s" repeatCount="indefinite"/>
+      <animate attributeName="fill" values="#00d4ff;#a855f7;#22c55e;#f59e0b;#00d4ff" dur="11s" repeatCount="indefinite"/>
+    </text>
+
+    <!-- Bottom signature -->
+    <text x="760" y="443" text-anchor="end" font-size="8.5" fill="#8ba3c7" font-family="'Segoe UI', system-ui, sans-serif" opacity="0.7" letter-spacing="1">
+      RUBÉN SBARSKY · TUTORIAL EDUCATIVO
+      <animate attributeName="opacity" values="0.35;0.9;0.35" dur="5.5s" repeatCount="indefinite"/>
+    </text>
+  </symbol>
+</svg>
+
+<!-- ============ MAIN ============ -->
+<main>
+
+  <!-- ============== HOME ============== -->
+  <section id="home" class="section active">
+    <div class="home-badge"><span class="dot"></span> TUTORIAL TÉCNICO · PIANO</div>
+
+    <!-- SVG animado en la parte superior -->
+    <div class="hero-svg-wrap" aria-label="Ilustración animada: técnica de la nota ancla">
+      <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Animación: melodía con intervalo fijo sobre nota ancla">
+        <use href="#heroSvg"/>
+      </svg>
+    </div>
+
+    <h1 class="home-title">Melodías con Intervalos Fijos</h1>
+    <p class="home-subtitle">La técnica de la «nota ancla» en la mano derecha — Tutorial académico paso a paso, con el porqué de cada regla</p>
+
+    <div class="home-desc">
+      <p>Aprende a armonizar cualquier melodía sencilla con intervalos fijos: en vez de tocar la melodía con una sola nota, la mano derecha toca <strong>dos notas</strong> — la melodía arriba y una nota <strong>fija</strong> por debajo (la «ancla»). Así el sonido se llena, la melodía destaca y no necesitas memorizar acordes complicados.</p>
+    </div>
+
+    <div class="quote-card">
+      <p>Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.</p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="lbl">Nivel</div>
+        <div class="val">Principiante–intermedio</div>
+      </div>
+      <div class="metric green">
+        <div class="lbl">Tonalidad de trabajo</div>
+        <div class="val">D(I) mayor</div>
+      </div>
+      <div class="metric amber">
+        <div class="lbl">Duración estimada</div>
+        <div class="val">4 sesiones · 20–30 min</div>
+      </div>
+      <div class="metric purple">
+        <div class="lbl">Notación</div>
+        <div class="val">Sistema americano A–G + grado (I–VII)</div>
+      </div>
+      <div class="metric">
+        <div class="lbl">Instrumento</div>
+        <div class="val">Piano, digital o teclado (Yamaha PSR-SX920)</div>
+      </div>
+      <div class="metric green">
+        <div class="lbl">Al terminar sabrás</div>
+        <div class="val">Armonizar y transportar melodías con intervalos fijos</div>
+      </div>
+    </div>
+
+    <div class="date-chips">
+      <span class="chip">📅 Fecha: <b>24/09/2026</b></span>
+      <span class="chip">🕒 Hora: <b>06:30:16</b></span>
+      <span class="chip">👨‍💻 Créditos: <b>Rubén Sbarsky</b></span>
+    </div>
+  </section>
+
+  <!-- ============== 0. CÓMO LEER ============== -->
+  <section id="s0" class="section">
+    <div class="section-header">
+      <div class="num">0</div>
+      <div>
+        <div class="kicker">Introducción</div>
+        <h2>Cómo leer este tutorial</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>0.1 Notas: solo sistema americano</h3>
+      <p>Las notas se nombran con las siete letras del alfabeto musical (de la A a la G). Un <code>#</code> (sostenido) sube la nota medio tono y una <code>b</code> (bemol) la baja medio tono.</p>
+    </div>
+
+    <div class="card">
+      <h3>0.2 Grados de la escala entre paréntesis</h3>
+      <p>Cada vez que aparece una nota, verás entre paréntesis <strong>su grado (posición) dentro de la escala mayor de la tonalidad que se esté estudiando</strong>, con números romanos. Ejemplo: en la tonalidad de C(I) mayor, la nota G(V) se escribe con ese grado porque es la quinta nota de esa escala.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Grado</th><th>Nombre funcional</th><th>Qué significa (idea sencilla)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>I</td><td>Tónica</td><td>La «casa»: la nota donde la música descansa</td></tr>
+            <tr><td>II</td><td>Supertónica</td><td>Un paso por encima de la casa</td></tr>
+            <tr><td>III</td><td>Mediante</td><td>Define si la escala suena mayor (alegre) o menor</td></tr>
+            <tr><td>IV</td><td>Subdominante</td><td>Una «salida» de la casa, sonido abierto</td></tr>
+            <tr><td>V</td><td>Dominante</td><td>La nota que más «pide» volver a casa</td></tr>
+            <tr><td>VI</td><td>Superdominante (o submediante)</td><td>Sonido cálido, a veces melancólico</td></tr>
+            <tr><td>VII</td><td>Sensible</td><td>Muy cerca de la casa, tira hacia arriba hacia la tónica</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warning"><b>⚠️ Ojo:</b> el grado depende de la tonalidad. La misma nota es A(V) en D(I) mayor, pero A(I) en A(I) mayor. Por eso el grado <strong>siempre</strong> se lee respecto a la tonalidad de la sección donde aparece.</div>
+    </div>
+
+    <div class="card">
+      <h3>0.3 Octavas</h3>
+      <p>El número tras la letra indica la octava. <code>D4(I)</code> es la tecla D(I) de la zona central del teclado: la tecla blanca situada entre las dos teclas negras del grupo de dos que queda más cerca del centro. <code>D3(I)</code> suena una octava más grave y <code>D5(I)</code> una octava más aguda.</p>
+    </div>
+
+    <div class="card">
+      <h3>0.4 Intervalos</h3>
+      <p>Un <strong>intervalo</strong> es la distancia entre dos notas. Abreviaturas: <strong>P</strong> = justa, <strong>M</strong> = mayor, <strong>m</strong> = menor. Ejemplos: M3 = tercera mayor, P5 = quinta justa, m6 = sexta menor.</p>
+    </div>
+
+    <div class="card">
+      <h3>0.5 Acordes</h3>
+      <p>Un acorde se escribe con su nota fundamental y su grado: <code>D(I)</code> es el acorde mayor construido sobre D(I); <code>B(VI)m</code> es el acorde menor construido sobre B(VI) (la «m» indica menor). Los grados de acorde se escriben en romanos: mayúscula si es mayor (IV) y minúscula si es menor (vi).</p>
+    </div>
+
+    <div class="card">
+      <h3>0.6 Iconos</h3>
+      <p><strong>💡 Idea clave</strong> · <strong>⚠️ Cuidado</strong> · <strong>🎯 Práctica</strong> · <strong>🔍 El porqué</strong> · <strong>🎧 Escucha</strong></p>
+    </div>
+  </section>
+
+  <!-- ============== 1. QUÉ ES ============== -->
+  <section id="s1" class="section">
+    <div class="section-header">
+      <div class="num">1</div>
+      <div>
+        <div class="kicker">Parte A · Teoría</div>
+        <h2>¿Qué es esta técnica y por qué existe?</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>1.1 El problema</h3>
+      <p>Cuando tocas una melodía con <strong>una sola nota</strong> en la mano derecha, el resultado es claro pero «delgado». Cuando tocas <strong>acordes completos</strong> en la mano derecha, el resultado es lleno pero la melodía se puede perder, y además exige conocer muchas posiciones.</p>
+    </div>
+
+    <div class="card">
+      <h3>1.2 La idea: una nota que acompaña siempre</h3>
+      <p>Imagina una <strong>gaita</strong>: mientras la melodía sube y baja, hay una nota que suena todo el tiempo por debajo (el «roncón» o bordón). Esa nota constante da cuerpo y carácter a la melodía. La técnica de intervalos fijos hace lo mismo en el piano: una nota constante, la <strong>nota ancla</strong>, acompaña a cada nota de la melodía.</p>
+      <p>En D(I) mayor, la nota ancla es la <strong>tónica</strong>: <code>D4(I)</code>. La melodía se toca <strong>encima</strong> de ella:</p>
+      <pre>        melodía (arriba)  →  F#4(III)
+        nota ancla (abajo) →  D4(I)      → intervalo resultante: M3</pre>
+    </div>
+
+    <div class="card">
+      <h3>1.3 Ventajas</h3>
+      <ol>
+        <li><strong>La melodía destaca</strong>, porque es siempre la nota más aguda.</li>
+        <li><strong>Suena lleno</strong> con solo dos notas.</li>
+        <li><strong>Las posiciones son fijas</strong>: la mano casi no cambia de forma, solo cambia el dedo que toca la melodía.</li>
+        <li><strong>Es universal</strong>: funciona en cualquier tonalidad mayor.</li>
+        <li><strong>Libera la mano izquierda</strong> para llevar el ritmo y los acordes de la canción.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>1.4 Cuándo tiene límites</h3>
+      <ul>
+        <li>Algunos acordes «chocan» con la nota ancla (lo veremos con el semáforo de la sección 2.6).</li>
+        <li>Con melodías en tonalidad menor hay que adaptar las reglas (ver sección 13).</li>
+        <li>No sustituye a las armonizaciones completas cuando quieres un estilo de piano más elaborado.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============== 2. TEORÍA ============== -->
+  <section id="s2" class="section">
+    <div class="section-header">
+      <div class="num">2</div>
+      <div>
+        <div class="kicker">Parte A · Teoría</div>
+        <h2>Fundamentos teóricos: el porqué de cada regla</h2>
+      </div>
+    </div>
+
+    <div class="callout info"><b>💡 Idea clave:</b> esta sección explica <strong>por qué</strong> las posiciones del Paso 1 son las que son. Si entiendes esto, no tendrás que memorizar: podrás deducirlas.</div>
+
+    <div class="card">
+      <h3>2.1 La escala de D(I) mayor</h3>
+      <p>Una escala mayor sigue siempre el mismo patrón de distancias: <strong>tono – tono – semitono – tono – tono – tono – semitono</strong>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Grado</th><th>Nota</th><th>Nombre funcional</th><th>Distancia desde D(I)</th><th>Semitonos desde D(I)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>I</td><td>D(I)</td><td>Tónica</td><td>unísono (8ª: P8)</td><td>0 (12)</td></tr>
+            <tr><td>II</td><td>E(II)</td><td>Supertónica</td><td>2ª mayor (M2)</td><td>2</td></tr>
+            <tr><td>III</td><td>F#(III)</td><td>Mediante</td><td>3ª mayor (M3)</td><td>4</td></tr>
+            <tr><td>IV</td><td>G(IV)</td><td>Subdominante</td><td>4ª justa (P4)</td><td>5</td></tr>
+            <tr><td>V</td><td>A(V)</td><td>Dominante</td><td>5ª justa (P5)</td><td>7</td></tr>
+            <tr><td>VI</td><td>B(VI)</td><td>Superdominante</td><td>6ª mayor (M6)</td><td>9</td></tr>
+            <tr><td>VII</td><td>C#(VII)</td><td>Sensible</td><td>7ª mayor (M7)</td><td>11</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Los pasos entre notas vecinas son: D(I)→E(II) tono, E(II)→F#(III) tono, F#(III)→G(IV) <strong>semitono</strong>, G(IV)→A(V) tono, A(V)→B(VI) tono, B(VI)→C#(VII) tono, C#(VII)→D(I) <strong>semitono</strong>.</p>
+    </div>
+
+    <div class="card">
+      <h3>2.2 Cómo se mide un intervalo</h3>
+      <p>Se cuenta con dos datos:</p>
+      <ol>
+        <li><strong>El número</strong> (2ª, 3ª, 4ª…): cuántas letras/grados abarca, contando la nota de partida como 1.</li>
+        <li><strong>La cualidad</strong> (mayor, menor, justa): cuántos semitonos tiene realmente.</li>
+      </ol>
+      <p>Ejemplo: de D4(I) a F#4(III) hay tres letras (D(I)–E(II)–F#(III)), así que es una <strong>tercera</strong>; y son 4 semitonos, así que es <strong>mayor</strong>: M3.</p>
+    </div>
+
+    <div class="card">
+      <h3>2.3 🔍 La regla de oro: el tamaño del intervalo es el número del grado</h3>
+      <p>Mira la tabla anterior: la distancia desde la tónica D(I) hasta cada nota <strong>coincide con el número de su grado</strong>:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Grado de la melodía</th><th>Intervalo desde el ancla D4(I)</th></tr></thead>
+          <tbody>
+            <tr><td>II</td><td>segunda (M2)</td></tr>
+            <tr><td>III</td><td>tercera (M3)</td></tr>
+            <tr><td>IV</td><td>cuarta (P4)</td></tr>
+            <tr><td>V</td><td>quinta (P5)</td></tr>
+            <tr><td>VI</td><td>sexta (M6)</td></tr>
+            <tr><td>VII</td><td>séptima (M7) ← <strong>problema</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Por eso la técnica es tan fácil de recordar: <strong>la melodía en el grado n se toca junto al ancla formando un intervalo de n</strong>.</p>
+      <p>Además, todos estos intervalos son <strong>mayores o justos</strong> porque cualquier nota de una escala mayor, medida desde su tónica, forma un intervalo mayor o justo. Esa es la razón matemática de que el sonido sea siempre «limpio y luminoso».</p>
+    </div>
+
+    <div class="card">
+      <h3>2.4 🔍 Consonancia y disonancia: por qué existe la excepción C#(VII)</h3>
+      <p>Dos notas suenan <strong>consonantes</strong> cuando sus frecuencias guardan una relación numérica simple (sus vibraciones «encajan»). Suenan <strong>disonantes</strong> cuando esa relación es compleja o cuando las frecuencias están tan cerca que se producen <strong>batimientos</strong> (el oído percibe una aspereza).</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Intervalo</th><th>Relación de frecuencias (entonación justa, aprox.)</th><th>Clasificación tradicional</th><th>Sensación</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>P8</td><td>2 : 1</td><td>Consonancia perfecta</td><td>Misma nota, más aguda</td></tr>
+            <tr><td>P5</td><td>3 : 2</td><td>Consonancia perfecta</td><td>Estable, abierta, potente</td></tr>
+            <tr><td>P4</td><td>4 : 3</td><td>Consonante entre voces agudas; tensa frente al bajo</td><td>Suspendida</td></tr>
+            <tr><td>M3</td><td>5 : 4</td><td>Consonancia imperfecta</td><td>Dulce, brillante</td></tr>
+            <tr><td>M6</td><td>5 : 3</td><td>Consonancia imperfecta</td><td>Cálida, amplia</td></tr>
+            <tr><td>m6</td><td>8 : 5</td><td>Consonancia imperfecta</td><td>Cálida y algo melancólica</td></tr>
+            <tr><td>M2</td><td>9 : 8</td><td>Disonancia suave</td><td>Rozamiento ligero, «color»</td></tr>
+            <tr><td>M7</td><td>15 : 8</td><td>Disonancia</td><td>Tirante, busca resolver</td></tr>
+            <tr><td>m2</td><td>16 : 15</td><td>Disonancia fuerte</td><td>Choque</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><em>(El piano usa afinación temperada, así que las relaciones reales son aproximaciones muy cercanas a estas.)</em></p>
+      <p><strong>¿Qué pasa con D(I) y C#(VII)?</strong> Están separadas por <strong>un solo semitono</strong>. Si C#4(VII) queda debajo de D4(I) forman una m2; si D4(I) queda debajo de C#5(VII) forman una M7. Son la misma pareja de notas «invertida» y el choque es igual de áspero. En números: D4(I) ≈ 293,7 Hz y C#4(VII) ≈ 277,2 Hz; su diferencia (≈ 16 Hz) produce un batimiento rápido que el oído percibe como aspereza.</p>
+      <div class="callout info"><b>💡 Idea clave:</b> el grado VII es la única nota de la escala que está a un semitono de la ancla. Por eso es la única que necesita un tratamiento especial.</div>
+    </div>
+
+    <div class="card">
+      <h3>2.5 🔍 Por qué la melodía va arriba</h3>
+      <p>Cuando el oído escucha varias notas a la vez, tiende a seguir <strong>la más aguda</strong> como si fuera «la voz cantante». Es un efecto muy estudiado en percepción musical. Poner la nota de la melodía arriba y la ancla abajo aprovecha ese efecto: la ancla da cuerpo, pero <strong>no compite</strong> con la melodía.</p>
+      <p>Otra razón práctica: la zona de D4(I) a D5(I) es la tesitura (rango) natural de una voz cantada y queda por encima de la mano izquierda, así que las dos manos no se pisan.</p>
+    </div>
+
+    <div class="card">
+      <h3>2.6 🔍 La nota ancla es una «nota pedal»</h3>
+      <p>En teoría de la música, una <strong>nota pedal</strong> es una nota que se mantiene (o se repite) mientras la armonía cambia a su alrededor. Cuando la nota pedal es la tónica, se llama <strong>pedal de tónica</strong> y produce sensación de estabilidad y unidad.</p>
+      <p>El detalle importante: <strong>la misma nota ancla cambia de función según el acorde que suene en la mano izquierda</strong>. Con la ancla D4(I), en D(I) mayor:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Acorde (grado)</th><th>Notas del acorde</th><th>Papel de la ancla D(I)</th><th>Semáforo</th><th>Cómo suena</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>D(I)</td><td>D(I), F#(III), A(V)</td><td>Fundamental</td><td>🟢</td><td>Muy estable</td></tr>
+            <tr><td>E(II)m</td><td>E(II), G(IV), B(VI)</td><td>7ª menor del acorde</td><td>🟡</td><td>Suave, como un E(II)m7</td></tr>
+            <tr><td>F#(III)m</td><td>F#(III), A(V), C#(VII)</td><td>6ª menor sobre la fundamental (nota ajena al acorde)</td><td>🟠</td><td>Tensión moderada</td></tr>
+            <tr><td>G(IV)</td><td>G(IV), B(VI), D(I)</td><td>5ª del acorde</td><td>🟢</td><td>Muy estable</td></tr>
+            <tr><td>A(V)</td><td>A(V), C#(VII), E(II)</td><td>4ª sobre la fundamental (sonido «sus4»)</td><td>🟡</td><td>Suspendido: pide resolver</td></tr>
+            <tr><td>B(VI)m</td><td>B(VI), D(I), F#(III)</td><td>3ª menor del acorde</td><td>🟢</td><td>Estable y cálido</td></tr>
+            <tr><td>C#(VII) disminuido</td><td>C#(VII), E(II), G(IV)</td><td>Semitono sobre la fundamental</td><td>🔴</td><td>Choque: evitar</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info"><b>💡 Cómo usar el semáforo:</b> 🟢 úsala sin miedo · 🟡 úsala sabiendo que crea «color» o tensión que se resuelve al cambiar de acorde · 🟠 úsala con cuidado, en notas cortas · 🔴 evítala.<br><br>
+      En <strong>cualquier</strong> tonalidad mayor el semáforo se mantiene por grados: los acordes I, IV y vi son verdes; ii y V, amarillos; iii, naranja; vii°, rojo.</div>
+    </div>
+
+    <div class="card">
+      <h3>2.7 🔍 Por qué la excepción es E(II)+C#(VII)</h3>
+      <p>Cuando la melodía toca C#(VII) cambiamos la nota de abajo: en lugar de D(I) usamos <strong>E(II)</strong>. El intervalo E(II)–C#(VII) es una <strong>M6</strong>, consonante y cálida. Además tiene dos ventajas armónicas:</p>
+      <ol>
+        <li><strong>Sobre el acorde A(V)</strong> (A(V), C#(VII), E(II)), E(II) es la quinta y C#(VII) es la tercera: ¡las dos notas <strong>pertenecen al acorde</strong>!</li>
+        <li><strong>Sobre el acorde D(I)</strong>, C#(VII) es la 7ª mayor y E(II) es la 9ª: sonido elegante de «D(I) mayor 7».</li>
+      </ol>
+      <p>Además C#(VII) suele funcionar como <strong>nota sensible</strong>: tiende a subir un semitono hasta D(I). Cuando resuelve, la pareja E(II)–C#(VII) pasa a F#(III)–D(I) (o a D(I) sola): ambas notas se acercan al «reposo».</p>
+    </div>
+
+    <div class="card">
+      <h3>2.8 🔍 La inversión: por qué F#(III)–D(I) también vale para la tónica</h3>
+      <p>El material original propone para la nota D(I) tocarla sola <strong>o</strong> como F#(III)–D(I). Ese intervalo es una <strong>sexta menor (m6)</strong>: F#3(III) sube hasta D4(I) 8 semitonos.</p>
+      <p>Es la <strong>inversión</strong> de la tercera mayor D(I)–F#(III): si tomas la nota grave de un intervalo y la subes una octava, o la aguda y la bajas una octava, el número del intervalo pasa de n a 9 − n (3ª ↔ 6ª) y mayor ↔ menor. Así, la M3 D4(I)–F#4(III) se convierte en la m6 F#4(III)–D5(I). Es la misma «pareja de notas», con la melodía D(I) arriba; suena más suave y cálida que la D(I) sola.</p>
+    </div>
+  </section>
+
+  <!-- ============== 3. PASO 1 ============== -->
+  <section id="s3" class="section">
+    <div class="section-header">
+      <div class="num">3</div>
+      <div>
+        <div class="kicker">Parte B · Los 5 pasos</div>
+        <h2>Paso 1 — La regla de la mano derecha</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>3.1 Tabla de posiciones en D(I) mayor</h3>
+      <p>Ancla: <strong>D4(I)</strong>. La nota de la melodía siempre va <strong>arriba</strong>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Grado</th><th>Nota de la melodía</th><th>Mano derecha (abajo + arriba)</th><th>Intervalo</th><th>Dedos</th><th>Carácter sonoro</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>I</td><td>D4(I)</td><td>D4(I) sola — o F#3(III)+D4(I)</td><td>Unísono — m6</td><td>1 (o 1–5)</td><td>Estable; la m6 es más cálida</td></tr>
+            <tr><td>II</td><td>E4(II)</td><td>D4(I)+E4(II)</td><td>M2</td><td>1–2</td><td>Chispeante, cerrado</td></tr>
+            <tr><td>III</td><td>F#4(III)</td><td>D4(I)+F#4(III)</td><td>M3</td><td>1–3</td><td>Dulce, brillante</td></tr>
+            <tr><td>IV</td><td>G4(IV)</td><td>D4(I)+G4(IV)</td><td>P4</td><td>1–4</td><td>Abierto, ligeramente suspendido</td></tr>
+            <tr><td>V</td><td>A4(V)</td><td>D4(I)+A4(V)</td><td>P5</td><td>1–5</td><td>Vacío, potente</td></tr>
+            <tr><td>VI</td><td>B4(VI)</td><td>D4(I)+B4(VI)</td><td>M6</td><td>1–5</td><td>Cálido, amplio</td></tr>
+            <tr><td>VII</td><td>C#5(VII)</td><td><strong>E4(II)+C#5(VII)</strong></td><td>M6</td><td>1–5</td><td><strong>Excepción</strong> consonante</td></tr>
+            <tr><td>I (octava alta)</td><td>D5(I)</td><td>D4(I)+D5(I) — o F#4(III)+D5(I)</td><td>P8 — m6</td><td>1–5</td><td>Brillante</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>3.2 🎯 Trucos para memorizarlo</h3>
+      <ol class="step-list">
+        <li><div class="step-n">1</div><div class="step-content"><p><b>Dedo = grado (del I al V).</b> La posición de cinco dedos de D(I) mayor es D4(I)–E4(II)–F#4(III)–G4(IV)–A4(V) con los dedos 1–2–3–4–5. El pulgar se queda en la ancla D4(I) y <strong>el dedo que baja es el número del grado</strong>: E(II) con el 2, F#(III) con el 3, G(IV) con el 4, A(V) con el 5.</p></div></li>
+        <li><div class="step-n">2</div><div class="step-content"><p><b>Tamaño = grado.</b> La 2ª para el grado II, la 3ª para el III… (sección 2.3).</p></div></li>
+        <li><div class="step-n">3</div><div class="step-content"><p><b>El VII es el único que cambia la ancla.</b> Cuando aparece C#(VII), la ancla sube a E(II).</p></div></li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>3.3 Equilibrio de volumen (voicing)</h3>
+      <p>La melodía debe sonar <strong>más fuerte</strong> que la ancla. Como referencia, piensa en «70 % melodía / 30 % ancla». Toca con el pulgar muy relajado y deja que el dedo de la melodía «cante».</p>
+      <div class="callout warning"><b>⚠️ Cuidado:</b> si la ancla suena tan fuerte como la melodía, el oído ya no distingue cuál es la línea principal y se pierde el efecto.</div>
+    </div>
+
+    <div class="card">
+      <h3>3.4 Extensión de registro: la «tónica más cercana por debajo»</h3>
+      <p>Si la melodía sale de la zona D4(I)–D5(I), sigue esta regla general: <strong>la ancla es la tónica que queda más cerca por debajo de la nota melódica</strong>. Por ejemplo, para A3(V) la ancla es D3(I); para E5(II) la ancla es D5(I).</p>
+    </div>
+  </section>
+
+  <!-- ============== 4. PASO 2 ============== -->
+  <section id="s4" class="section">
+    <div class="section-header">
+      <div class="num">4</div>
+      <div>
+        <div class="kicker">Parte B · Los 5 pasos</div>
+        <h2>Paso 2 — La mano izquierda</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <p>La mano izquierda <strong>no cambia</strong> por la técnica: mantiene el ritmo y la progresión de acordes de la canción. Se recomienda el patrón <strong>1ª–5ª–8ª</strong> (fundamental – quinta – octava) de cada acorde, con los dedos <strong>5–2–1</strong>.</p>
+
+      <h3>4.1 Patrones en D(I) mayor</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Acorde</th><th>1ª (fundamental)</th><th>5ª</th><th>8ª</th><th>Dedos</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>D(I)</td><td>D2(I)</td><td>A2(V)</td><td>D3(I)</td><td>5–2–1</td></tr>
+            <tr><td>E(II)m</td><td>E2(II)</td><td>B2(VI)</td><td>E3(II)</td><td>5–2–1</td></tr>
+            <tr><td>F#(III)m</td><td>F#2(III)</td><td>C#3(VII)</td><td>F#3(III)</td><td>5–2–1</td></tr>
+            <tr><td>G(IV)</td><td>G2(IV)</td><td>D3(I)</td><td>G3(IV)</td><td>5–2–1</td></tr>
+            <tr><td>A(V)</td><td>A2(V)</td><td>E3(II)</td><td>A3(V)</td><td>5–2–1</td></tr>
+            <tr><td>B(VI)m</td><td>B2(VI)</td><td>F#3(III)</td><td>B3(VI)</td><td>5–2–1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Ritmos posibles (compás de 4/4):</p>
+      <ul>
+        <li><strong>Sencillo:</strong> una nota por tiempo → 1ª, 5ª, 8ª, 5ª.</li>
+        <li><strong>Sostenido:</strong> las tres notas juntas cada dos tiempos.</li>
+        <li><strong>Fluido:</strong> corcheas (1ª–5ª–8ª–5ª–1ª–5ª–8ª–5ª).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>4.2 🔍 Por qué 1ª–5ª–8ª (y no acordes con tercera)</h3>
+      <ol>
+        <li><strong>La quinta y la octava son las consonancias más limpias</strong> y por eso se oyen claras en el registro grave. Los intervalos pequeños (2ªs y 3ªs) en zona grave se vuelven «turbios» (sus armónicos se solapan).</li>
+        <li><strong>No ocupa el espacio de la tercera.</strong> La tercera (que define si el acorde es mayor o menor) la aporta la mano derecha. Ejemplo: en B(VI)m la ancla D4(I) es justo su <strong>tercera menor</strong>; ella sola le da el color menor al acorde.</li>
+        <li><strong>Evita duplicar</strong> las notas de la melodía y confundir al oído.</li>
+        <li><strong>Deja la mano izquierda por debajo de la derecha</strong>: en las octavas 2–3 no pisa la zona D4(I)–D5(I).</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============== 5. PASO 3 ============== -->
+  <section id="s5" class="section">
+    <div class="section-header">
+      <div class="num">5</div>
+      <div>
+        <div class="kicker">Parte B · Los 5 pasos</div>
+        <h2>Paso 3 — Identificar y reemplazar la melodía</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>5.1 Procedimiento</h3>
+      <ol class="step-list">
+        <li><div class="step-n">1</div><div class="step-content"><p><b>Encuentra la tonalidad.</b> Dos sostenidos en la armadura (F#(III) y C#(VII)) indican D(I) mayor. La melodía suele terminar en la tónica.</p></div></li>
+        <li><div class="step-n">2</div><div class="step-content"><p><b>Identifica la melodía.</b> Cántala o tarareala. Anota la secuencia exacta de notas.</p></div></li>
+        <li><div class="step-n">3</div><div class="step-content"><p><b>Conviértela en grados.</b> Escribe cada nota como un número romano (I–VII).</p></div></li>
+        <li><div class="step-n">4</div><div class="step-content"><p><b>Reemplaza nota por nota.</b> Usa la tabla del Paso 1: cada grado tiene su pareja de notas.</p></div></li>
+        <li><div class="step-n">5</div><div class="step-content"><p><b>Vigila el VII.</b> Cada C#(VII) va con E(II) por debajo (M6).</p></div></li>
+        <li><div class="step-n">6</div><div class="step-content"><p><b>Comprueba los acordes</b> con el semáforo de la sección 2.6.</p></div></li>
+        <li><div class="step-n">7</div><div class="step-content"><p><b>Practica</b> manos por separado, lento, y luego juntas.</p></div></li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>5.2 Plantilla de trabajo</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Sílaba / nota</th><th>Nota de la melodía (grado)</th><th>Pareja de la mano derecha</th><th>Acorde de la mano izquierda</th><th>Semáforo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>5.3 Ejemplo resuelto: «Himno a la Alegría» (Beethoven, dominio público)</h3>
+      <p>Compás 4/4, D(I) mayor, primeros 8 compases.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Compás</th><th>Melodía (nota y grado)</th><th>Mano derecha (ancla + melodía)</th><th>Mano izquierda</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>F#4(III) F#4(III) G4(IV) A4(V)</td><td>D4(I)+F#4(III) · D4(I)+F#4(III) · D4(I)+G4(IV) · D4(I)+A4(V)</td><td>D(I)</td></tr>
+            <tr><td>2</td><td>A4(V) G4(IV) F#4(III) E4(II)</td><td>D4(I)+A4(V) · D4(I)+G4(IV) · D4(I)+F#4(III) · D4(I)+E4(II)</td><td>D(I)</td></tr>
+            <tr><td>3</td><td>D4(I) D4(I) E4(II) F#4(III)</td><td>D4(I) · D4(I) · D4(I)+E4(II) · D4(I)+F#4(III)</td><td>D(I)</td></tr>
+            <tr><td>4</td><td>F#4(III) (negra con puntillo) E4(II) (corchea) E4(II) (blanca)</td><td>D4(I)+F#4(III) · D4(I)+E4(II) · D4(I)+E4(II)</td><td>D(I) tiempos 1–2, A(V) tiempos 3–4</td></tr>
+            <tr><td>5</td><td>F#4(III) F#4(III) G4(IV) A4(V)</td><td>igual que el compás 1</td><td>D(I)</td></tr>
+            <tr><td>6</td><td>A4(V) G4(IV) F#4(III) E4(II)</td><td>igual que el compás 2</td><td>D(I)</td></tr>
+            <tr><td>7</td><td>D4(I) D4(I) E4(II) F#4(III)</td><td>igual que el compás 3</td><td>D(I)</td></tr>
+            <tr><td>8</td><td>E4(II) (negra con puntillo) D4(I) (corchea) D4(I) (blanca)</td><td>D4(I)+E4(II) · D4(I) · D4(I)</td><td>A(V) tiempos 1–2, D(I) tiempos 3–4</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>🔍 Qué observar</h4>
+      <ul>
+        <li><strong>Compases 1–3 y 5–7:</strong> la ancla D4(I) suena sobre D(I), donde es la fundamental: todo verde 🟢.</li>
+        <li><strong>Compás 4:</strong> sobre A(V), la pareja D4(I)+E4(II) forma un sonido «sus4» (🟡): suspendido, pide resolver. Se resuelve en el compás 5, cuando vuelve D(I).</li>
+        <li><strong>Compás 8:</strong> la nota D4(I) primero es «sus4» sobre A(V) y luego, <strong>sin moverte</strong>, pasa a ser la fundamental cuando entra D(I). La nota es la misma; <strong>su función cambia</strong> porque cambia el acorde. Esa es la esencia de una nota pedal.</li>
+        <li>No aparece C#(VII) en este fragmento, así que no hay excepción.</li>
+      </ul>
+      <div class="callout example"><b>🎯 Práctica:</b> toca los 8 compases manos por separado a 60 pulsaciones por minuto. Después junta las manos. Objetivo: 80 pulsaciones con la melodía claramente por encima de la ancla.</div>
+    </div>
+  </section>
+
+  <!-- ============== 6. PASO 4 ============== -->
+  <section id="s6" class="section">
+    <div class="section-header">
+      <div class="num">6</div>
+      <div>
+        <div class="kicker">Parte B · Los 5 pasos</div>
+        <h2>Paso 4 — Aplicación práctica: «Dios está aquí» (D(I) mayor)</h2>
+      </div>
+    </div>
+
+    <div class="callout warning"><b>⚠️ Nota sobre la fuente:</b> las melodías de esta sección proceden del material original de este tutorial. Antes de tocarlas, confirma las notas exactas con tu partitura o con la grabación que uses; si alguna nota difiere, aplica la misma regla del Paso 1 y la comprobación del semáforo.</div>
+
+    <div class="card">
+      <h3>6.1 Frase inicial: «Dios es-tá a-quí»</h3>
+      <p>Melodía original: F#4(III) → A4(V) → E4(II) → A4(V) → D4(I).</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Sílaba</th><th>Melodía (grado)</th><th>Mano derecha</th><th>Mano izquierda</th></tr></thead>
+          <tbody>
+            <tr><td>Dios</td><td>F#4(III)</td><td>D4(I)+F#4(III)</td><td>D(I)</td></tr>
+            <tr><td>es</td><td>A4(V)</td><td>D4(I)+A4(V)</td><td>A(V)</td></tr>
+            <tr><td>tá</td><td>E4(II)</td><td>D4(I)+E4(II)</td><td>A(V)</td></tr>
+            <tr><td>a-</td><td>A4(V)</td><td>D4(I)+A4(V)</td><td>A(V)</td></tr>
+            <tr><td>quí</td><td>D4(I)</td><td>D4(I) sola (o F#3(III)+D4(I))</td><td>B(VI)m</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Mano izquierda: patrón 1ª–5ª–8ª en D(I) al inicio (D2(I)–A2(V)–D3(I)), cambio a A(V) (A2(V)–E3(II)–A3(V)) en «está» y entrada a B(VI)m (B2(VI)–F#3(III)–B3(VI)) en «aquí».</p>
+
+      <h4>🔍 Análisis armónico</h4>
+      <ul>
+        <li><strong>«Dios»</strong> sobre D(I): D(I) y F#(III) son fundamental y tercera del acorde → 🟢.</li>
+        <li><strong>«es-tá-a-»</strong> sobre A(V): la ancla D(I) funciona como «sus4» de A(V) → 🟡: crea suspensión.</li>
+        <li><strong>«quí»</strong> sobre B(VI)m: el bajo sube de A(V) a B(VI) y <strong>D(I) se queda quieta</strong>; ahora D(I) es la tercera menor del acorde → 🟢. La tensión se ha resuelto <strong>sin mover la nota</strong>, solo con el cambio de acorde. Un buen ejemplo de la técnica de nota pedal.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>6.2 Sección de repetición: «Tan cierto como el aire…»</h3>
+      <ul>
+        <li><strong>Melodía:</strong> cada nota B(VI) se toca como <strong>D4(I)+B4(VI)</strong> (M6).</li>
+        <li><strong>Mano izquierda:</strong> patrón sobre G(IV): G2(IV)–D3(I)–G3(IV).</li>
+      </ul>
+      <h4>🔍 Por qué suena tan bien</h4>
+      <p>Sobre el acorde G(IV) (G(IV), B(VI), D(I)), B(VI) es la <strong>tercera</strong> y D(I) la <strong>quinta</strong>. La mano derecha toca dos notas del acorde y la izquierda aporta la fundamental: el acorde de G(IV) queda <strong>completo</strong> repartido entre las dos manos. Todo 🟢.</p>
+    </div>
+
+    <div class="card">
+      <h3>6.3 Línea descendente: «Se le-van-ta el sol»</h3>
+      <p>Melodía original: A(V) → G(IV) → F#(III) → E(II) → C#(VII) → D(I).</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Sílaba</th><th>Melodía (grado)</th><th>Mano derecha</th><th>Sonido sobre A(V)</th></tr></thead>
+          <tbody>
+            <tr><td>Se</td><td>A4(V)</td><td>D4(I)+A4(V)</td><td>Fundamental + sus4</td></tr>
+            <tr><td>le</td><td>G4(IV)</td><td>D4(I)+G4(IV)</td><td>7ª menor + sus4 (color «A(V)7sus4»)</td></tr>
+            <tr><td>van</td><td>F#4(III)</td><td>D4(I)+F#4(III)</td><td>6ª añadida + sus4</td></tr>
+            <tr><td>ta</td><td>E4(II)</td><td>D4(I)+E4(II)</td><td>Quinta + sus4</td></tr>
+            <tr><td>el</td><td>C#4(VII)</td><td><strong>E3(II)+C#4(VII)</strong></td><td>Quinta + tercera: A(V) <strong>completo</strong> ✔</td></tr>
+            <tr><td>sol</td><td>D4(I)</td><td>D4(I) sola, o <strong>F#3(III)+D4(I)</strong></td><td>Resolución a la tónica</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout info"><b>💡 Nota:</b> el acorde sobre esta frase no figura en el material original. La tabla asume <strong>A(V)</strong> durante toda la bajada y <strong>D(I)</strong> al llegar a la última nota, que es la armonización más habitual para una línea que desciende hasta la tónica. Ajusta a tu partitura.</div>
+
+      <h4>🔍 Qué enseña esta frase</h4>
+      <ol>
+        <li><strong>Un arco de tensión y resolución.</strong> Al principio hay «sus4» (🟡) y, al llegar a C#(VII), la mano derecha toca el interior del acorde A(V) (E(II) y C#(VII)); después D(I) resuelve.</li>
+        <li><strong>La ancla cambia justo donde debe.</strong> Hasta E4(II) la nota inferior es D4(I); al llegar a C#(VII) pasa a ser E(II). Es la única nota de la frase que exige cambiar de ancla (sección 2.7).</li>
+        <li><strong>Sextas paralelas en el cierre.</strong> E3(II)+C#4(VII) (M6) resuelve en F#3(III)+D4(I) (m6): las dos voces suben (E(II)→F#(III) y C#(VII)→D(I)) y el intervalo pasa de sexta mayor a sexta menor. Es un cierre clásico y muy elegante.</li>
+        <li><strong>Reubicación de la mano.</strong> Como C#(VII) queda por debajo de D4(I), la mano debe bajar a la zona de E3(II). Si prefieres un salto más pequeño, puedes usar <strong>A3(V)+C#4(VII)</strong> (M3), donde ambas notas también son del acorde A(V). Practica el cambio de posición despacio antes de subir el tempo.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============== 7. PASO 5 ============== -->
+  <section id="s7" class="section">
+    <div class="section-header">
+      <div class="num">7</div>
+      <div>
+        <div class="kicker">Parte B · Los 5 pasos</div>
+        <h2>Paso 5 — Transportar a otras tonalidades</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>7.1 Por qué funciona en todas las tonalidades</h3>
+      <p>Toda escala mayor tiene el mismo patrón de tonos y semitonos. Por tanto, <strong>desde la tónica, el grado n siempre forma el mismo tipo de intervalo</strong> (2ª mayor, 3ª mayor, 4ª justa, 5ª justa, 6ª mayor y 7ª mayor). Las letras cambian; las <strong>distancias</strong> no.</p>
+    </div>
+
+    <div class="card">
+      <h3>7.2 El algoritmo (válido para cualquier tonalidad mayor)</h3>
+      <ol class="step-list">
+        <li><div class="step-n">1</div><div class="step-content"><p>Localiza la <b>tónica</b> y conviértela en la ancla.</p></div></li>
+        <li><div class="step-n">2</div><div class="step-content"><p>Escribe la escala con sus grados.</p></div></li>
+        <li><div class="step-n">3</div><div class="step-content"><p>Cada nota de la melodía va <b>arriba</b> de la ancla (grados II–VI).</p></div></li>
+        <li><div class="step-n">4</div><div class="step-content"><p>El <b>grado VII</b> se toca con el <b>grado II</b> por debajo (M6).</p></div></li>
+        <li><div class="step-n">5</div><div class="step-content"><p>El <b>grado I</b> se toca sola, en octava, o con el <b>grado III</b> por debajo (m6).</p></div></li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>7.3 Tabla de posiciones</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Tonalidad</th><th>I (tónica)</th><th>II</th><th>III</th><th>IV</th><th>V</th><th>VI</th><th>VII (excepción)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>C(I) mayor</td><td>C(I) — E(III)+C(I)</td><td>C(I)+D(II)</td><td>C(I)+E(III)</td><td>C(I)+F(IV)</td><td>C(I)+G(V)</td><td>C(I)+A(VI)</td><td>D(II)+B(VII)</td></tr>
+            <tr><td>G(I) mayor</td><td>G(I) — B(III)+G(I)</td><td>G(I)+A(II)</td><td>G(I)+B(III)</td><td>G(I)+C(IV)</td><td>G(I)+D(V)</td><td>G(I)+E(VI)</td><td>A(II)+F#(VII)</td></tr>
+            <tr><td>D(I) mayor</td><td>D(I) — F#(III)+D(I)</td><td>D(I)+E(II)</td><td>D(I)+F#(III)</td><td>D(I)+G(IV)</td><td>D(I)+A(V)</td><td>D(I)+B(VI)</td><td>E(II)+C#(VII)</td></tr>
+            <tr><td>A(I) mayor</td><td>A(I) — C#(III)+A(I)</td><td>A(I)+B(II)</td><td>A(I)+C#(III)</td><td>A(I)+D(IV)</td><td>A(I)+E(V)</td><td>A(I)+F#(VI)</td><td>B(II)+G#(VII)</td></tr>
+            <tr><td>E(I) mayor</td><td>E(I) — G#(III)+E(I)</td><td>E(I)+F#(II)</td><td>E(I)+G#(III)</td><td>E(I)+A(IV)</td><td>E(I)+B(V)</td><td>E(I)+C#(VI)</td><td>F#(II)+D#(VII)</td></tr>
+            <tr><td>F(I) mayor</td><td>F(I) — A(III)+F(I)</td><td>F(I)+G(II)</td><td>F(I)+A(III)</td><td>F(I)+Bb(IV)</td><td>F(I)+C(V)</td><td>F(I)+D(VI)</td><td>G(II)+E(VII)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout why"><b>🔍 Comprobación de la M6 de la excepción:</b> en C(I) mayor, D(II)–B(VII) abarca 9 semitonos (M6). En G(I) mayor, A(II)–F#(VII), también 9. En todas las tonalidades ocurre lo mismo, porque la distancia entre el grado II y el VII siempre es la misma.</div>
+      <div class="callout example"><b>🎯 Práctica de transporte:</b> toca «Himno a la Alegría» en C(I) mayor. La melodía pasa a E(III) E(III) F(IV) G(V) / G(V) F(IV) E(III) D(II) / C(I) C(I) D(II) E(III) / E(III) D(II) D(II). Usa la tabla: E(III) → C(I)+E(III); F(IV) → C(I)+F(IV); G(V) → C(I)+G(V); D(II) → C(I)+D(II).</div>
+    </div>
+  </section>
+
+  <!-- ============== 8. PRÁCTICA ============== -->
+  <section id="s8" class="section">
+    <div class="section-header">
+      <div class="num">8</div>
+      <div>
+        <div class="kicker">Parte C · Práctica</div>
+        <h2>Plan de práctica y errores frecuentes</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>8.1 Plan de 4 sesiones</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Sesión</th><th>Objetivo</th><th>Ejercicios</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Dominar las posiciones</td><td>Escala ascendente y descendente con parejas: D4(I) · D4(I)+E4(II) · D4(I)+F#4(III) · D4(I)+G4(IV) · D4(I)+A4(V) · D4(I)+B4(VI) · E4(II)+C#5(VII) · D4(I)+D5(I). Sube y baja a 60 pulsaciones. Practica la mano izquierda con la tabla de la sección 4.1</td></tr>
+            <tr><td>2</td><td>Primera canción</td><td>«Himno a la Alegría»: compases 1–4, luego 5–8; manos separadas y luego juntas</td></tr>
+            <tr><td>3</td><td>Canción con la excepción</td><td>«Dios está aquí»: las tres frases de la sección 6; ensaya la reubicación de la mano en «el sol»</td></tr>
+            <tr><td>4</td><td>Transporte y creatividad</td><td>Toca el «Himno a la Alegría» en C(I) mayor y en G(I) mayor. Elige otra melodía sencilla y armonízala con la plantilla de la sección 5.2</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>8.2 Lista de comprobación</h3>
+      <ul style="list-style:none;margin-left:0;">
+        <li>☐ ¿La melodía suena claramente <strong>más fuerte</strong> que la ancla?</li>
+        <li>☐ ¿El pulgar está <strong>relajado</strong> y no golpea?</li>
+        <li>☐ ¿Toco C#(VII) con E(II) por debajo (nunca con D(I))?</li>
+        <li>☐ ¿Cambio el acorde de la mano izquierda <strong>a tiempo</strong>?</li>
+        <li>☐ ¿La melodía está <strong>ligada</strong> (legato) donde la partitura lo pide?</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>8.3 Errores frecuentes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Error</th><th>Por qué ocurre</th><th>Solución</th></tr></thead>
+          <tbody>
+            <tr><td>La ancla suena tan fuerte como la melodía</td><td>El pulgar es el dedo más fuerte de la mano</td><td>Relaja el pulgar y tócalo más suave; cultiva el «canto» del dedo de la melodía</td></tr>
+            <tr><td>Tocar D4(I)+C#5(VII)</td><td>Se aplica la regla de «ancla fija» sin comprobar el grado</td><td>Recuerda la excepción: C#(VII) va con E(II)</td></tr>
+            <tr><td>Mano izquierda con terceras graves</td><td>Se confunde «acorde» con «tríada»</td><td>Usa 1ª–5ª–8ª; deja la tercera para la derecha</td></tr>
+            <tr><td>Sonido «sucio» en los cambios de acorde</td><td>El pedal de resonancia no se cambia</td><td>Cambia el pedal <strong>junto con cada acorde</strong></td></tr>
+            <tr><td>La mano se tensa en la M6</td><td>Falta de extensión</td><td>Practica la pareja D4(I)+B4(VI) por separado y estira con calma</td></tr>
+            <tr><td>Perder la melodía en las notas repetidas</td><td>La ancla se queda pegada</td><td>Suelta la ancla justo antes de tocar la nota siguiente</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 9. YAMAHA ============== -->
+  <section id="s9" class="section">
+    <div class="section-header">
+      <div class="num">9</div>
+      <div>
+        <div class="kicker">Parte C · Práctica</div>
+        <h2>Aplicación en el Yamaha PSR-SX920</h2>
+      </div>
+    </div>
+
+    <div class="callout warning"><b>⚠️ Aviso:</b> los nombres exactos de botones y menús pueden variar según la versión del firmware. Confirma cada ajuste en el manual del instrumento.</div>
+
+    <div class="card">
+      <h3>Modo A — Piano con las dos manos (recomendado para empezar)</h3>
+      <ol>
+        <li>Elige una voz de piano para la parte <strong>Right 1</strong>.</li>
+        <li>Deja el acompañamiento automático (<strong>ACMP</strong>) apagado.</li>
+        <li>Toca los patrones 1ª–5ª–8ª con la mano izquierda y las parejas de intervalos con la derecha.</li>
+      </ol>
+      <p><strong>Por qué:</strong> así controlas cada nota y practicas la técnica sin que el estilo interfiera.</p>
+    </div>
+
+    <div class="card">
+      <h3>Modo B — Con acompañamiento automático (estilos)</h3>
+      <ol>
+        <li>Activa <strong>ACMP</strong> y elige un estilo lento (balada o pop suave).</li>
+        <li>La mano izquierda toca los acordes en la zona de acordes (a la izquierda del <strong>punto de división</strong>).</li>
+        <li>La mano derecha toca las parejas de intervalos, siempre <strong>a la derecha del punto de división</strong>.</li>
+      </ol>
+      <p><strong>Por qué:</strong> el teclado reconoce los acordes en la zona izquierda; si la mano derecha se queda a la derecha del punto de división, las parejas de intervalos no confunden al reconocimiento de acordes. Con ACMP conviene tocar <strong>acordes completos</strong> (tríadas) en la zona de acordes y comprobar en el manual cómo interpreta el modo de digitado elegido las quintas solas.</p>
+    </div>
+
+    <div class="card">
+      <h3>Modo C — Capas para dar cuerpo</h3>
+      <p>Añade una voz suave de cuerdas en <strong>Right 2</strong> con volumen bajo, para dar cuerpo a la línea sin tapar la melodía.</p>
+    </div>
+
+    <div class="card">
+      <h3>Consejos</h3>
+      <ul>
+        <li>Conecta un <strong>pedal de resonancia</strong> y cámbialo con cada acorde.</li>
+        <li><strong>Graba</strong> tu interpretación y escúchala: es la mejor forma de comprobar el equilibrio entre la melodía y la ancla.</li>
+        <li>Guarda tus ajustes por canción en la <strong>Registration Memory</strong> para recuperarlos con un botón.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============== 10. AUTOEVALUACIÓN ============== -->
+  <section id="s10" class="section">
+    <div class="section-header">
+      <div class="num">10</div>
+      <div>
+        <div class="kicker">Parte C · Práctica</div>
+        <h2>Autoevaluación</h2>
+      </div>
+    </div>
+
+    <div class="callout info"><b>💡 Idea clave:</b> contesta primero sin mirar. Cada pregunta trae su respuesta desplegable.</div>
+
+    <div class="quiz-q">
+      <div class="q"><span class="qn">1</span><span>En D(I) mayor, ¿qué pareja tocas para la nota A4(V) de la melodía?</span></div>
+      <details><summary>Ver respuesta</summary><div class="details-body"><b>D4(I)+A4(V)</b> (P5). El grado V forma una quinta con la tónica.</div></details>
+    </div>
+
+    <div class="quiz-q">
+      <div class="q"><span class="qn">2</span><span>¿Por qué no se usa D4(I)+C#5(VII)?</span></div>
+      <details><summary>Ver respuesta</summary><div class="details-body">Porque D(I) y C#(VII) están a un semitono de distancia; la pareja forma una M7 (o su inversión, una m2). El batimiento producido es áspero y disonante.</div></details>
+    </div>
+
+    <div class="quiz-q">
+      <div class="q"><span class="qn">3</span><span>¿Qué pareja se usa para C#5(VII)? ¿Qué intervalo forma?</span></div>
+      <details><summary>Ver respuesta</summary><div class="details-body"><b>E4(II)+C#5(VII)</b>, una <b>M6</b>. Sobre el acorde A(V), E(II) es su quinta y C#(VII) su tercera.</div></details>
+    </div>
+
+    <div class="quiz-q">
+      <div class="q"><span class="qn">4</span><span>¿Qué regla relaciona el grado de la melodía con el intervalo?</span></div>
+      <details><summary>Ver respuesta</summary><div class="details-body">El intervalo entre la ancla (grado I) y la nota de la melodía tiene el <b>mismo número que su grado</b>: II → 2ª, III → 3ª, IV → 4ª, V → 5ª, VI → 6ª.</div></details>
+    </div>
+
+    <div class="quiz-q">
+      <div class="q"><span class="qn">5</span><span>¿Qué papel tiene la ancla D(I) sobre el acorde B(VI)m? ¿Y sobre el acorde G(IV)?</span></div>
+      <details><summary>Ver respuesta</summary><div class="details-body">Sobre B(VI)m es su <b>tercera menor</b>; sobre G(IV) es su <b>quinta</b>. En ambos casos es una nota del acorde (🟢).</div></details>
+    </div>
+
+    <div class="quiz-q">
+      <div class="q"><span class="qn">6</span><span>¿Cuál es el único acorde de D(I) mayor sobre el que conviene evitar la ancla D(I)?</span></div>
+      <details><summary>Ver respuesta</summary><div class="details-body">El acorde de <b>C#(VII) disminuido</b>, donde D(I) queda a un semitono de la fundamental C#(VII).</div></details>
+    </div>
+
+    <div class="quiz-q">
+      <div class="q"><span class="qn">7</span><span>¿Por qué la mano izquierda usa 1ª–5ª–8ª y no una tríada completa?</span></div>
+      <details><summary>Ver respuesta</summary><div class="details-body">Porque las quintas y octavas suenan limpias en el registro grave, la mano derecha aporta la tercera (color mayor o menor) y así no se duplican ni se confunden las notas de la melodía.</div></details>
+    </div>
+
+    <div class="quiz-q">
+      <div class="q"><span class="qn">8</span><span>En A(I) mayor, ¿qué pareja tocas para E(V)? ¿Y para G#(VII)?</span></div>
+      <details><summary>Ver respuesta</summary><div class="details-body">Para E(V): <b>A(I)+E(V)</b> (P5). Para G#(VII): <b>B(II)+G#(VII)</b> (M6).</div></details>
+    </div>
+
+    <div class="quiz-q">
+      <div class="q"><span class="qn">9</span><span>¿Qué dedos usas para las parejas de los grados II a V en D(I) mayor?</span></div>
+      <details><summary>Ver respuesta</summary><div class="details-body">Pulgar (1) en la ancla D4(I) y, para la melodía, el dedo <b>2, 3, 4 y 5</b>: el dedo coincide con el número del grado.</div></details>
+    </div>
+
+    <div class="quiz-q">
+      <div class="q"><span class="qn">10</span><span>¿Por qué la melodía va arriba?</span></div>
+      <details><summary>Ver respuesta</summary><div class="details-body">Porque el oído tiende a seguir la voz más aguda como melodía; así la ancla da cuerpo sin competir con ella.</div></details>
+    </div>
+  </section>
+
+  <!-- ============== 11. GLOSARIO ============== -->
+  <section id="s11" class="section">
+    <div class="section-header">
+      <div class="num">11</div>
+      <div>
+        <div class="kicker">Referencia</div>
+        <h2>Glosario</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Término</th><th>Definición sencilla</th></tr></thead>
+          <tbody>
+            <tr><td><b>Intervalo</b></td><td>Distancia entre dos notas</td></tr>
+            <tr><td><b>Semitono</b></td><td>La distancia más pequeña del piano: de una tecla a la vecina inmediata (blanca o negra)</td></tr>
+            <tr><td><b>Tono</b></td><td>Dos semitonos</td></tr>
+            <tr><td><b>Grado</b></td><td>Posición de una nota dentro de la escala (I a VII)</td></tr>
+            <tr><td><b>Tónica</b></td><td>El grado I: la nota «casa» de la tonalidad</td></tr>
+            <tr><td><b>Nota ancla</b></td><td>En este tutorial, la nota fija (la tónica) que suena por debajo de la melodía</td></tr>
+            <tr><td><b>Nota pedal</b></td><td>Nota que se mantiene o repite mientras cambia la armonía</td></tr>
+            <tr><td><b>Consonancia / disonancia</b></td><td>Sonido estable / sonido tenso que pide resolver</td></tr>
+            <tr><td><b>Batimiento</b></td><td>Pulsación producida por dos notas de frecuencia muy cercana; a velocidad alta se oye como aspereza</td></tr>
+            <tr><td><b>Inversión</b></td><td>Cambiar de octava una de las notas de un intervalo: la 3ª se convierte en 6ª, etc.</td></tr>
+            <tr><td><b>Fundamental</b></td><td>La nota sobre la que se construye un acorde</td></tr>
+            <tr><td><b>Tríada</b></td><td>Acorde de tres notas: fundamental, tercera y quinta</td></tr>
+            <tr><td><b>Sus4</b></td><td>Acorde en que la cuarta sustituye a la tercera; suena «suspendido»</td></tr>
+            <tr><td><b>Voicing</b></td><td>Equilibrio de volumen entre las notas que suenan a la vez</td></tr>
+            <tr><td><b>Tesitura</b></td><td>Zona del teclado (rango de notas) en que se toca o canta una línea</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 12. RESUMEN ============== -->
+  <section id="s12" class="section">
+    <div class="section-header">
+      <div class="num">12</div>
+      <div>
+        <div class="kicker">Referencia</div>
+        <h2>Hoja resumen</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>La técnica en 4 líneas</h3>
+      <ol>
+        <li>Ancla = la <strong>tónica</strong> (en D(I) mayor, D4(I)).</li>
+        <li>La melodía va <strong>arriba</strong>; la ancla, <strong>abajo</strong>.</li>
+        <li>Intervalo = <strong>número del grado</strong> (II→2ª, III→3ª, IV→4ª, V→5ª, VI→6ª).</li>
+        <li><strong>Excepción:</strong> el grado VII se toca con el grado II por debajo (M6).</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>Posiciones en D(I) mayor</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Melodía</th><th>Mano derecha</th></tr></thead>
+          <tbody>
+            <tr><td>D(I)</td><td>D4(I) sola — o F#3(III)+D4(I)</td></tr>
+            <tr><td>E(II)</td><td>D4(I)+E4(II)</td></tr>
+            <tr><td>F#(III)</td><td>D4(I)+F#4(III)</td></tr>
+            <tr><td>G(IV)</td><td>D4(I)+G4(IV)</td></tr>
+            <tr><td>A(V)</td><td>D4(I)+A4(V)</td></tr>
+            <tr><td>B(VI)</td><td>D4(I)+B4(VI)</td></tr>
+            <tr><td>C#(VII)</td><td>E4(II)+C#5(VII)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Recordatorios clave</h3>
+      <ul>
+        <li><strong>Mano izquierda:</strong> 1ª–5ª–8ª (dedos 5–2–1) del acorde de cada momento.</li>
+        <li><strong>Semáforo del acorde:</strong> 🟢 I · IV · vi   🟡 ii · V   🟠 iii   🔴 vii°</li>
+        <li><strong>Transportar:</strong> la tónica de la nueva escala pasa a ser la ancla; el grado VII se toca con el grado II por debajo.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============== 13. NOTAS ============== -->
+  <section id="s13" class="section">
+    <div class="section-header">
+      <div class="num">13</div>
+      <div>
+        <div class="kicker">Anexo</div>
+        <h2>Cambios respecto al material original y notas para la versión HTML</h2>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>13.1 Qué se ha mejorado</h3>
+      <ol>
+        <li><strong>Se explica el porqué</strong> de cada regla: tamaño del intervalo = grado; consonancia y disonancia; percepción de la voz aguda; nota pedal; límites de registro.</li>
+        <li><strong>Se corrige una imprecisión:</strong> el material original llama simplemente «sexta» a F#(III)–D(I); en realidad es una <strong>sexta menor (m6)</strong>, la inversión de la tercera mayor D(I)–F#(III). Además se han añadido las cualidades (M, m, P) de todos los intervalos.</li>
+        <li><strong>Se añade el semáforo de acordes</strong>, que anticipa cuándo la ancla choca con el acorde de la mano izquierda.</li>
+        <li><strong>Se incluyen registros y dedos concretos</strong> (octavas 2–3 en la izquierda, D4(I)–D5(I) en la derecha, «dedo = grado»).</li>
+        <li><strong>Se añade una canción de dominio público</strong> («Himno a la Alegría») como ejemplo resuelto, además de las frases de «Dios está aquí».</li>
+        <li><strong>Se detecta y resuelve un caso práctico</strong> del material original: en «Se levanta el sol», C#(VII) queda por debajo de la tónica y obliga a reubicar la mano.</li>
+        <li><strong>Se completa el transporte</strong> con una tabla de seis tonalidades y el algoritmo general.</li>
+        <li><strong>Se añade práctica guiada, errores frecuentes, autoevaluación y glosario.</strong></li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h3>13.2 Qué queda fuera (posibles ampliaciones)</h3>
+      <ul>
+        <li><strong>Tonalidades menores:</strong> los intervalos desde la tónica cambian (3ª y 6ª menores y 7ª menor, que es menos áspera que la 7ª mayor), así que la regla del grado VII y el semáforo deben reformularse.</li>
+        <li><strong>Melodías con notas fuera de la escala:</strong> aplica el mismo criterio (evitar semitonos y 7ªs mayores con la ancla) y decide caso por caso.</li>
+        <li><strong>Variaciones rítmicas</strong> de la mano izquierda (estilos de balada, vals, etc.).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>13.3 Sugerencias para convertir este Markdown en un tutorial HTML</h3>
+      <ul>
+        <li><strong>Estructura:</strong> una página de una sola vista con navegación lateral por las secciones 0–13 (Parte A: teoría; Parte B: pasos; Parte C: práctica).</li>
+        <li><strong>Bloques destacados:</strong> convertir los bloques que empiezan por «💡 Idea clave», «⚠️ Cuidado», «🎯 Práctica» y «🔍 El porqué» en tarjetas de color diferenciado.</li>
+        <li><strong>Tablas:</strong> hacerlas desplazables horizontalmente en móvil; en especial las de las secciones 3.1, 5.3 y 7.3.</li>
+        <li><strong>Teclado interactivo:</strong> dibujar un teclado D3(I)–D5(I) que resalte la pareja de notas (ancla + melodía) al pulsar cada fila de la tabla 3.1; resaltar en otro color la excepción E4(II)+C#5(VII).</li>
+        <li><strong>Semáforo visual:</strong> representar la tabla de la sección 2.6 con círculos de color.</li>
+        <li><strong>Autoevaluación:</strong> convertir las 10 preguntas de la sección 10 en tarjetas con botón «Ver respuesta».</li>
+        <li><strong>Audio (opcional):</strong> grabar los ejemplos (Paso 1 y las frases de la sección 6) para escucharlos antes de tocarlos.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============== FUENTES ============== -->
+  <section id="fuentes" class="section">
+    <div class="section-header">
+      <div class="num">📚</div>
+      <div>
+        <div class="kicker">Referencias</div>
+        <h2>Fuentes</h2>
+      </div>
+    </div>
+
+    <div class="callout info"><b>💡 Nota:</b> el documento original «armonizar-melodias-intervalos-fijos.md» no incluye enlaces externos explícitos. Las referencias y material didáctico se citan a continuación tal como aparecen en el propio contenido.</div>
+
+    <div class="card">
+      <h3>Material original</h3>
+      <ul>
+        <li><strong>Documento fuente:</strong> «Melodías con Intervalos Fijos: la técnica de la nota ancla en la mano derecha» (material original de este tutorial, en formato Markdown).</li>
+        <li><strong>Melodías citadas:</strong> «Himno a la Alegría» (Ludwig van Beethoven, dominio público) y «Dios está aquí» (material original del tutorial).</li>
+        <li><strong>Instrumento de referencia:</strong> Yamaha PSR-SX920 (manual del instrumento, sin enlace externo en el documento original).</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Conceptos teóricos utilizados</h3>
+      <ul>
+        <li>Escala mayor: patrón tono–tono–semitono–tono–tono–tono–semitono.</li>
+        <li>Intervalos: número + cualidad (M, m, P).</li>
+        <li>Consonancia y disonancia: relaciones de frecuencia simples (entonación justa).</li>
+        <li>Nota pedal y pedal de tónica: teoría armónica clásica.</li>
+        <li>Inversión de intervalos: regla n ↔ 9 − n, mayor ↔ menor.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Recursos recomendados por el propio tutorial</h3>
+      <ul>
+        <li>Partitura o grabación personal de las melodías para confirmar las notas exactas antes de tocarlas.</li>
+        <li>Manual del Yamaha PSR-SX920 para verificar nombres exactos de botones y menús (según versión de firmware).</li>
+        <li>Metrónomo (60–80 pulsaciones por minuto) para las sesiones de práctica.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============== CRÉDITOS ============== -->
+  <section id="creditos" class="section">
+    <div class="section-header">
+      <div class="num">👨‍💻</div>
+      <div>
+        <div class="kicker">Reconocimientos</div>
+        <h2>Créditos</h2>
+      </div>
+    </div>
+
+    <!-- Mismo SVG animado de HOME -->
+    <div class="hero-svg-wrap credits-hero" aria-label="Ilustración animada: técnica de la nota ancla">
+      <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Animación: melodía con intervalo fijo sobre nota ancla">
+        <use href="#heroSvg"/>
+      </svg>
+    </div>
+
+    <div class="credits-card">
+      <h2>Melodías con Intervalos Fijos</h2>
+      <p class="info-line">La técnica de la «nota ancla» en la mano derecha</p>
+      <p class="author">Rubén Sbarsky</p>
+      <p class="info-line">📅 Fecha: <b>24/09/2026</b></p>
+      <p class="info-line">🕒 Hora: <b>06:30:16</b></p>
+      <p class="info-line" style="margin-top:16px;">Material educativo y de divulgación</p>
+      <p class="latin">Fiat iustitia, ruat caelum.</p>
+    </div>
+
+    <div class="card">
+      <h3>Nota educativa</h3>
+      <p>Este tutorial ha sido elaborado exclusivamente con fines educativos y de divulgación. Su objetivo es facilitar la comprensión de la técnica de intervalos fijos en el piano mediante explicaciones paso a paso, ejemplos resueltos y autoevaluación.</p>
+      <p>Toda la información conceptual proviene del material original del tutorial. Las transformaciones realizadas son de presentación, organización y estructuración, sin alterar el significado ni el contenido técnico.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="f-inner">
+    <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+    <p class="f-credits">👨‍💻 Créditos: <b>Rubén Sbarsky</b></p>
+    <p>📅 FECHA: 24/09/2026</p>
+    <p>Hora: 06:30:16</p>
+    <p class="f-latin">Fiat iustitia, ruat caelum.</p>
+  </div>
+</footer>
+
+<!-- ============ BACK TO TOP ============ -->
+<button class="back-top" id="backTop" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ============ SPA NAVIGATION ============ */
+  const navButtons = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('.section');
+
+  function showSection(targetId){
+    sections.forEach(s => {
+      s.classList.toggle('active', s.id === targetId);
+    });
+    navButtons.forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-target') === targetId);
+    });
+    window.scrollTo({top:0, behavior:'auto'});
+    updateProgress();
+  }
+
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target');
+      if(target) showSection(target);
+    });
+  });
+
+  /* ============ PROGRESS BAR ============ */
+  const progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  /* ============ BACK TO TOP ============ */
+  const backTop = document.getElementById('backTop');
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 320) backTop.classList.add('show');
+    else backTop.classList.remove('show');
+  }, {passive:true});
+  backTop.addEventListener('click', () => {
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  /* ============ NAV SCROLL CENTERING ON ACTIVE ============ */
+  navButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const scroll = document.getElementById('navScroll');
+      const btnLeft = btn.offsetLeft;
+      const btnWidth = btn.offsetWidth;
+      const scrollWidth = scroll.clientWidth;
+      scroll.scrollTo({
+        left: btnLeft - (scrollWidth / 2) + (btnWidth / 2),
+        behavior: 'smooth'
+      });
+    });
+  });
+
+  /* ============ RESTART SVG ANIMATION ON CREDITS (best effort) ============ */
+  /* The SVG is reused via <symbol>/<use>; animations run automatically.
+     Nothing else required. */
+
+  /* ============ KEYBOARD ACCESSIBILITY ============ */
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){
+      showSection('home');
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
