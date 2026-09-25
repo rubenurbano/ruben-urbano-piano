@@ -1,0 +1,2404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>HARMONIC PATH FINDER</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0;padding:0;background:#14171b;
+    font-family:'Courier New',Courier,monospace;
+    overflow-x:hidden;min-height:100%;
+  }
+  body{
+    display:flex;justify-content:center;align-items:flex-start;
+    padding:10px 8px 34px;
+  }
+  .calc{
+    width:100%;max-width:440px;
+    background:linear-gradient(#5c636b,#3e444c 18%,#333940 55%,#262b31 100%);
+    border-radius:16px 16px 24px 24px;
+    padding:12px 12px 18px;
+    border:1px solid #171b1f;
+    box-shadow:0 14px 34px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.16);
+  }
+  .brand{
+    text-align:center;color:#b9c2cc;font-size:10px;letter-spacing:2px;
+    margin:0 0 8px;font-weight:700;text-shadow:0 1px 0 #000;
+  }
+  .brand span{color:#e8c34a;}
+  .screenwrap{
+    background:#1c2025;border-radius:8px;padding:6px;
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.8);
+    border:1px solid #101317;
+  }
+  .lcd{
+    background:#b9c4a2;
+    background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.035) 0 1px,transparent 1px 3px);
+    border-radius:4px;
+    border:2px solid #0f1317;
+    box-shadow:inset 0 0 16px rgba(0,0,0,.45);
+    padding:7px 9px;
+    color:#1b2410;
+    font-family:'Courier New',Courier,monospace;
+    font-weight:700;
+    height:300px;
+    overflow-y:auto;overflow-x:hidden;
+    position:relative;
+  }
+  .lcd::-webkit-scrollbar{width:5px;}
+  .lcd::-webkit-scrollbar-thumb{background:rgba(0,0,0,.28);border-radius:3px;}
+  #lcdText{
+    margin:0;
+    font-family:inherit;font-weight:inherit;
+    font-size:min(3.4vw,13px);
+    line-height:1.3;
+    white-space:pre;
+    letter-spacing:0;
+  }
+  .piano-wrap{margin-top:10px;display:none;}
+  .piano{position:relative;height:86px;display:flex;width:100%;}
+  .pkey{position:relative;}
+  .pkey.white{
+    flex:1;background:#dbe2c4;border:1px solid #2b3320;border-right:none;
+    border-radius:0 0 3px 3px;display:flex;align-items:flex-end;justify-content:center;
+    font-size:7px;color:#57603f;padding-bottom:2px;font-weight:700;
+  }
+  .pkey.white:last-child{border-right:1px solid #2b3320;}
+  .pkey.white.on{background:#5d6f38;color:#dfe8c0;}
+  .pkey.white.root{background:#25330f;color:#e6efc4;}
+  .pkey.black{
+    position:absolute;top:0;height:58%;background:#232a1c;
+    border-radius:0 0 3px 3px;z-index:2;border:1px solid #0d1108;
+    box-shadow:0 2px 3px rgba(0,0,0,.4);
+  }
+  .pkey.black.on{background:#7d8f4e;}
+
+  /* ======== BUILDER PANEL ======== */
+  .builder{
+    margin-top:10px;
+    background:linear-gradient(#3f454d,#2d333a 60%,#232830);
+    border:1px solid #171b20;
+    border-radius:8px;
+    padding:10px 10px 12px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 2px 4px rgba(0,0,0,.4);
+  }
+  .builder[hidden]{display:none;}
+  .builder-title{
+    color:#e8c34a;
+    font-size:12px;
+    letter-spacing:2px;
+    font-weight:700;
+    margin:0 0 10px;
+    text-align:center;
+    text-shadow:0 1px 0 #000;
+  }
+  .builder-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:7px;
+  }
+  .builder-row label{
+    color:#b9c2cc;
+    font-size:10px;
+    letter-spacing:1px;
+    font-weight:700;
+    flex:0 0 92px;
+    text-transform:uppercase;
+  }
+  .builder-row select,
+  .builder-row input{
+    flex:1;
+    min-width:0;
+    background:#b9c4a2;
+    border:2px solid #0f1317;
+    border-radius:4px;
+    padding:9px 8px;
+    font-family:'Courier New',monospace;
+    font-weight:700;
+    font-size:14px;
+    color:#1b2410;
+    box-shadow:inset 0 2px 5px rgba(0,0,0,.32);
+    -webkit-appearance:none;
+    appearance:none;
+    outline:none;
+  }
+  .builder-row input{
+    padding:9px 8px;
+  }
+  .builder-row select{
+    background-image:
+      linear-gradient(45deg, transparent 50%, #1b2410 50%),
+      linear-gradient(135deg, #1b2410 50%, transparent 50%);
+    background-position:
+      calc(100% - 14px) calc(50% - 2px),
+      calc(100% - 9px) calc(50% - 2px);
+    background-size:5px 5px, 5px 5px;
+    background-repeat:no-repeat;
+    padding-right:26px;
+  }
+  .builder-hint{
+    color:#7d8691;
+    font-size:9.5px;
+    letter-spacing:.5px;
+    margin:-2px 0 8px 100px;
+    text-transform:none;
+  }
+  .builder-error{
+    background:#4a2828;
+    color:#f0b0a0;
+    border:1px solid #6a3838;
+    border-radius:4px;
+    padding:6px 8px;
+    font-size:11px;
+    font-weight:700;
+    margin:0 0 8px;
+    text-align:center;
+  }
+  .builder-error[hidden]{display:none;}
+  .builder-preview{
+    background:#b9c4a2;
+    border:2px solid #0f1317;
+    border-radius:4px;
+    padding:8px 8px 6px;
+    margin:6px 0 10px;
+    box-shadow:inset 0 0 14px rgba(0,0,0,.35);
+    text-align:center;
+  }
+  .builder-preview .preview-label{
+    font-size:9px;
+    color:#3a4a1c;
+    letter-spacing:3px;
+    font-weight:700;
+  }
+  .builder-preview .preview-chord{
+    font-size:24px;
+    color:#0f1a05;
+    font-weight:700;
+    margin:1px 0 0;
+    font-family:'Courier New',monospace;
+    letter-spacing:1px;
+    line-height:1.1;
+  }
+  .builder-preview .preview-degree{
+    font-size:13px;
+    color:#2a3a10;
+    font-weight:700;
+    font-family:'Courier New',monospace;
+    margin-top:2px;
+  }
+  .builder-actions{
+    display:flex;
+    gap:8px;
+  }
+  .builder-actions button{
+    flex:1;
+    background:linear-gradient(#5a7a4a,#3d5a33 60%,#2f4a28);
+    color:#f0f6e0;
+    border:1px solid #1a2810;
+    border-radius:5px;
+    padding:12px 6px;
+    font-family:'Courier New',monospace;
+    font-weight:700;
+    font-size:11.5px;
+    letter-spacing:1px;
+    cursor:pointer;
+    box-shadow:0 2px 0 #14180c, inset 0 1px 0 rgba(255,255,255,.16);
+    text-transform:uppercase;
+  }
+  .builder-actions button.cancel{
+    background:linear-gradient(#5c4a4a,#3d2f2f 60%,#2f2323);
+    color:#f0d8d8;
+    box-shadow:0 2px 0 #180c0c, inset 0 1px 0 rgba(255,255,255,.14);
+  }
+  .builder-actions button:active{
+    transform:translateY(2px);
+    box-shadow:inset 0 1px 4px rgba(0,0,0,.6);
+  }
+
+  /* ======== QUICK ACTIONS ======== */
+  .quickActions{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:6px;
+    margin-top:10px;
+  }
+  .quickActions[hidden]{display:none;}
+  .quickActions button{
+    background:linear-gradient(#565d66,#3a4048 55%,#2d333a);
+    color:#e2e7ec;
+    border:1px solid #1a1e23;
+    border-radius:5px;
+    padding:11px 4px;
+    font-family:'Courier New',monospace;
+    font-weight:700;
+    font-size:10px;
+    letter-spacing:.4px;
+    cursor:pointer;
+    box-shadow:0 2px 0 #14181c, 0 3px 5px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.14);
+    text-align:center;
+    transition:transform .05s,box-shadow .05s;
+  }
+  .quickActions button.primary{
+    background:linear-gradient(#5a7a4a,#3d5a33 60%,#2f4a28);
+    color:#f0f6e0;
+    box-shadow:0 2px 0 #14180c, 0 3px 5px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.16);
+  }
+  .quickActions button:active{
+    transform:translateY(2px);
+    box-shadow:inset 0 1px 4px rgba(0,0,0,.6);
+  }
+
+  /* ======== KEYPAD ======== */
+  .keys{
+    display:grid;grid-template-columns:repeat(5,1fr);
+    gap:6px;margin-top:12px;
+  }
+  .key{
+    background:linear-gradient(#565d66,#3a4048 55%,#2d333a);
+    border:1px solid #1a1e23;border-radius:5px;
+    color:#e2e7ec;font-family:'Courier New',monospace;
+    font-size:min(2.9vw,11.5px);font-weight:700;
+    padding:9px 1px;text-align:center;cursor:pointer;
+    user-select:none;-webkit-user-select:none;
+    box-shadow:0 2px 0 #14181c,0 3px 5px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);
+    transition:transform .05s,box-shadow .05s;
+    line-height:1.05;letter-spacing:0;
+  }
+  .key:active,.key.pressed{
+    transform:translateY(2px);
+    box-shadow:0 0 0 #14181c,inset 0 1px 4px rgba(0,0,0,.65);
+  }
+  .key.k2nd{color:#e8c34a;}
+  .key.kalpha{color:#6fce6f;}
+  .key.kclear{color:#e07a6a;}
+  .key.kdel{color:#e07a6a;}
+  .key.kfun{background:linear-gradient(#4a5a6a,#333f4c 60%,#28323c);color:#cfe2f2;}
+  .key.knote{background:linear-gradient(#5c646e,#3f4650 60%,#303740);color:#f0e8d0;}
+  .key.ktype{background:linear-gradient(#4f4a62,#3a3548 60%,#2d2938);color:#ded4f4;font-size:min(2.6vw,10.5px);}
+  .key.kenter{
+    grid-column:span 5;
+    background:linear-gradient(#5a7a4a,#3d5a33 60%,#2f4a28);
+    color:#f0f6e0;font-size:min(3.2vw,13px);letter-spacing:2px;padding:11px 2px;
+  }
+  .key.kwide{grid-column:span 5;}
+  .foot{
+    text-align:center;color:#6f7883;font-size:9px;margin-top:10px;letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+<div class="calc">
+  <div class="brand">HARMONIC <span>PATH</span> FINDER</div>
+
+  <div class="screenwrap">
+    <div class="lcd" id="lcd">
+      <pre id="lcdText"></pre>
+      <div class="piano-wrap" id="pianoWrap"></div>
+    </div>
+  </div>
+
+  <!-- ============ CHORD BUILDER ============ -->
+  <div class="builder" id="builder" hidden>
+    <div class="builder-title" id="builderTitle">FROM CHORD</div>
+
+    <div class="builder-row">
+      <label>NOTE</label>
+      <select id="builderNote"></select>
+    </div>
+    <div class="builder-row">
+      <label>CHORD TYPE</label>
+      <select id="builderType"></select>
+    </div>
+    <div class="builder-row">
+      <label>DIRECT</label>
+      <input id="builderInput" type="text" autocomplete="off" autocapitalize="off"
+             autocorrect="off" spellcheck="false" placeholder="Cmaj7">
+    </div>
+    <div class="builder-hint">Ej: Cmaj7 · Dm7 · G7 · F#m7b5 · Bbmaj7</div>
+
+    <div class="builder-error" id="builderError" hidden>ACORDE NO RECONOCIDO</div>
+
+    <div class="builder-preview">
+      <div class="preview-label">PREVIEW</div>
+      <div class="preview-chord" id="previewChord">Cmaj7</div>
+      <div class="preview-degree" id="previewDegree">C(I) · C Major</div>
+    </div>
+
+    <div class="builder-actions">
+      <button id="builderAccept" type="button">ENTER / ACCEPT</button>
+      <button id="builderCancel" type="button" class="cancel">CLEAR / CANCEL</button>
+    </div>
+  </div>
+
+  <!-- ============ QUICK ACTIONS ============ -->
+  <div class="quickActions" id="quickActions">
+    <button type="button" id="qFrom">EDIT FROM</button>
+    <button type="button" id="qTo">EDIT TARGET</button>
+    <button type="button" id="qFind" class="primary">FIND PATHS</button>
+  </div>
+
+  <div class="keys" id="keys"></div>
+  <div class="foot">TI-STYLE HARMONIC ENGINE · OFFLINE</div>
+</div>
+
+<script>
+"use strict";
+/* ============================================================
+   HARMONIC PATH FINDER
+   Motor armónico original intacto + CHORD BUILDER guiado
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. MUSIC PRIMITIVES
+   ------------------------------------------------------------ */
+const LETTER_PC = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+const SHARP_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FLAT_NAMES  = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+const ROMAN = ['I','II','III','IV','V','VI','VII'];
+
+function mod12(n){ return ((n % 12) + 12) % 12; }
+function noteName(pc, preferFlat){
+  pc = mod12(pc);
+  return preferFlat ? FLAT_NAMES[pc] : SHARP_NAMES[pc];
+}
+
+/* ------------------------------------------------------------
+   2. CHORD DATABASE
+   ------------------------------------------------------------ */
+const CHORD_TYPES = {
+  maj:    {iv:[0,4,7],          name:'Major',        fam:'major'},
+  maj7:   {iv:[0,4,7,11],       name:'Major 7th',    fam:'major'},
+  maj9:   {iv:[0,4,7,11,14],    name:'Major 9th',    fam:'major'},
+  maj13:  {iv:[0,4,7,11,14,21], name:'Major 13th',   fam:'major'},
+  '6':    {iv:[0,4,7,9],        name:'Major 6th',    fam:'major'},
+  add9:   {iv:[0,4,7,14],       name:'Add 9',        fam:'major'},
+  sus2:   {iv:[0,2,7],          name:'Sus2',         fam:'major'},
+  sus4:   {iv:[0,5,7],          name:'Sus4',         fam:'major'},
+  m:      {iv:[0,3,7],          name:'Minor',        fam:'minor'},
+  m7:     {iv:[0,3,7,10],       name:'Minor 7th',    fam:'minor'},
+  m9:     {iv:[0,3,7,10,14],    name:'Minor 9th',    fam:'minor'},
+  m11:    {iv:[0,3,7,10,14,17], name:'Minor 11th',   fam:'minor'},
+  m6:     {iv:[0,3,7,9],        name:'Minor 6th',    fam:'minor'},
+  madd9:  {iv:[0,3,7,14],       name:'Minor Add 9',  fam:'minor'},
+  m7b5:   {iv:[0,3,6,10],       name:'Half-Diminished', fam:'dim'},
+  dim:    {iv:[0,3,6],          name:'Diminished',   fam:'dim'},
+  dim7:   {iv:[0,3,6,9],        name:'Diminished 7th', fam:'dim'},
+  aug:    {iv:[0,4,8],          name:'Augmented',    fam:'aug'},
+  '7':    {iv:[0,4,7,10],       name:'Dominant 7th', fam:'dom'},
+  '9':    {iv:[0,4,7,10,14],    name:'Dominant 9th', fam:'dom'},
+  '11':   {iv:[0,4,7,10,14,17], name:'Dominant 11th',fam:'dom'},
+  '13':   {iv:[0,4,7,10,14,21], name:'Dominant 13th',fam:'dom'},
+  '7b5':  {iv:[0,4,6,10],       name:'Dominant 7 b5',fam:'dom'},
+  '7#5':  {iv:[0,4,8,10],       name:'Dominant 7 #5',fam:'dom'},
+  '7b9':  {iv:[0,4,7,10,13],    name:'Dominant 7 b9',fam:'dom'},
+  '7#9':  {iv:[0,4,7,10,15],    name:'Dominant 7 #9',fam:'dom'},
+  '7b13': {iv:[0,4,7,10,20],    name:'Dominant 7 b13',fam:'dom'},
+  '7sus4':{iv:[0,5,7,10],       name:'7 Sus4',       fam:'dom'}
+};
+
+const TYPE_SYMBOL = {
+  maj:'', maj7:'maj7', maj9:'maj9', maj13:'maj13', '6':'6', add9:'add9',
+  sus2:'sus2', sus4:'sus4',
+  m:'m', m7:'m7', m9:'m9', m11:'m11', m6:'m6', madd9:'madd9',
+  m7b5:'m7b5', dim:'dim', dim7:'dim7', aug:'aug',
+  '7':'7','9':'9','11':'11','13':'13','7b5':'7b5','7#5':'7#5','7b9':'7b9','7#9':'7#9','7b13':'7b13',
+  '7sus4':'7sus4'
+};
+
+const IV_SIG_TO_TYPE = (function(){
+  const m = {};
+  for(const key of Object.keys(CHORD_TYPES)){
+    const def = CHORD_TYPES[key];
+    const k4 = def.iv.slice(0,4).map(function(x){return mod12(x);}).join(',');
+    if(!(k4 in m)) m[k4] = key;
+    const k3 = def.iv.slice(0,3).map(function(x){return mod12(x);}).join(',');
+    if(!(k3 in m)) m[k3] = key;
+  }
+  return m;
+})();
+
+function identifyType(ivs){
+  const k4 = ivs.slice(0,4).map(function(x){return mod12(x);}).join(',');
+  if(IV_SIG_TO_TYPE[k4]) return IV_SIG_TO_TYPE[k4];
+  const k3 = ivs.slice(0,3).map(function(x){return mod12(x);}).join(',');
+  if(IV_SIG_TO_TYPE[k3]) return IV_SIG_TO_TYPE[k3];
+  return null;
+}
+
+const QUALITY_ALIASES = {
+  '':'maj','maj':'maj','major':'maj','M':'maj','Maj':'maj',
+  'maj7':'maj7','major7':'maj7','M7':'maj7','ma7':'maj7','Maj7':'maj7',
+  'maj9':'maj9','M9':'maj9','Maj9':'maj9',
+  'maj13':'maj13','M13':'maj13','Maj13':'maj13',
+  '6':'6','add9':'add9','add2':'add9',
+  'sus2':'sus2','sus4':'sus4','sus':'sus4',
+  'm':'m','min':'m','minor':'m','-':'m','Min':'m',
+  'm7':'m7','min7':'m7','-7':'m7','Min7':'m7',
+  'm9':'m9','min9':'m9','-9':'m9',
+  'm11':'m11','min11':'m11',
+  'm6':'m6','min6':'m6',
+  'madd9':'madd9','m(add9)':'madd9',
+  'm7b5':'m7b5','min7b5':'m7b5','m7-5':'m7b5','halfdim':'m7b5',
+  'dim':'dim','o':'dim','Dim':'dim',
+  'dim7':'dim7','o7':'dim7','Dim7':'dim7',
+  'aug':'aug','+':'aug','Aug':'aug',
+  '7':'7','dom7':'7',
+  '9':'9','dom9':'9',
+  '11':'11','13':'13',
+  '7b5':'7b5','7-5':'7b5','7#5':'7#5','7+5':'7#5','aug7':'7#5',
+  '7b9':'7b9','7#9':'7#9','7b13':'7b13',
+  '7sus4':'7sus4','7sus':'7sus4'
+};
+
+function resolveQuality(q){
+  let s = String(q || '').trim();
+  if(s === '') return 'maj';
+  if(QUALITY_ALIASES[s] !== undefined) return QUALITY_ALIASES[s];
+  if(/^M\d/.test(s)){ const u = 'maj' + s.slice(1); if(QUALITY_ALIASES[u]) return QUALITY_ALIASES[u]; }
+  if(/^maj/i.test(s)){ const u = 'maj' + s.slice(3); if(QUALITY_ALIASES[u]) return QUALITY_ALIASES[u]; }
+  if(/^min/i.test(s)){ const u = 'm' + s.slice(3); if(QUALITY_ALIASES[u]) return QUALITY_ALIASES[u]; }
+  const low = s.toLowerCase();
+  if(QUALITY_ALIASES[low] !== undefined) return QUALITY_ALIASES[low];
+  return null;
+}
+
+function makeChord(rootPc, type, rootName, preferFlat){
+  const def = CHORD_TYPES[type];
+  if(!def) return null;
+  rootPc = mod12(rootPc);
+  const rn = rootName || noteName(rootPc, preferFlat);
+  const tones = def.iv.map(function(i){ return mod12(rootPc + i); });
+  return {
+    root: rootPc,
+    rootName: rn,
+    type: type,
+    fam: def.fam,
+    iv: def.iv,
+    name: def.name,
+    tones: tones,
+    symbol: rn + (TYPE_SYMBOL[type] || type),
+    id: rootPc + ':' + type
+  };
+}
+
+function parseChord(str){
+  if(typeof str !== 'string') return null;
+  let s = str.trim();
+  if(!s) return null;
+  s = s.replace(/\s+/g,'');
+  s = s.replace(/♯/g,'#').replace(/♭/g,'b').replace(/Δ/g,'maj').replace(/ø/g,'m7b5').replace(/°/g,'dim');
+  const m = s.match(/^([A-Ga-g])([#b]?)(.*)$/);
+  if(!m) return null;
+  const letter = m[1].toUpperCase();
+  const acc = m[2] || '';
+  const rest = m[3] || '';
+  let pc = LETTER_PC[letter];
+  if(acc === '#') pc += 1;
+  if(acc === 'b') pc -= 1;
+  pc = mod12(pc);
+  const rootName = letter + acc;
+  const type = resolveQuality(rest);
+  if(!type || !CHORD_TYPES[type]) return null;
+  return makeChord(pc, type, rootName, acc === 'b');
+}
+
+/* ------------------------------------------------------------
+   3. SCALE ENGINE
+   ------------------------------------------------------------ */
+const SCALES = {
+  major:        {iv:[0,2,4,5,7,9,11], label:'Major'},
+  minor:        {iv:[0,2,3,5,7,8,10], label:'Minor'},
+  dorian:       {iv:[0,2,3,5,7,9,10], label:'Dorian'},
+  phrygian:     {iv:[0,1,3,5,7,8,10], label:'Phrygian'},
+  lydian:       {iv:[0,2,4,6,7,9,11], label:'Lydian'},
+  mixolydian:   {iv:[0,2,4,5,7,9,10], label:'Mixolydian'},
+  aeolian:      {iv:[0,2,3,5,7,8,10], label:'Aeolian'},
+  locrian:      {iv:[0,1,3,5,6,8,10], label:'Locrian'},
+  harmonicMinor:{iv:[0,2,3,5,7,8,11], label:'Harmonic Minor'},
+  melodicMinor: {iv:[0,2,3,5,7,9,11], label:'Melodic Minor'}
+};
+
+/* ------------------------------------------------------------
+   4. ROMAN NUMERAL ENGINE
+   ------------------------------------------------------------ */
+function romanFor(index, fam, type){
+  let r = ROMAN[index];
+  if(fam === 'minor' || fam === 'dim') r = r.toLowerCase();
+  if(fam === 'dim') r += '°';
+  if(fam === 'aug') r += '+';
+  if(type === 'dim7') r += '7';
+  return r;
+}
+
+const _diaCache = new Map();
+function diatonicChords(key){
+  const ck = key.root + ':' + key.mode;
+  if(_diaCache.has(ck)) return _diaCache.get(ck);
+  const sc = SCALES[key.mode] ? SCALES[key.mode].iv : SCALES.major.iv;
+  const out = [];
+  for(let d = 0; d < 7; d++){
+    const tones = [0,1,2,3].map(function(k){
+      const idx = d + k;
+      return sc[idx % 7] + 12 * Math.floor(idx / 7);
+    });
+    const base = tones[0];
+    const ivs = tones.map(function(t){ return t - base; });
+    let type = identifyType(ivs);
+    if(!type) type = 'maj7';
+    const fam = CHORD_TYPES[type].fam;
+    const root = mod12(key.root + base);
+    out.push({
+      index: d,
+      root: root,
+      type: type,
+      fam: fam,
+      roman: romanFor(d, fam, type)
+    });
+  }
+  _diaCache.set(ck, out);
+  return out;
+}
+
+function chromaticDegree(pc, tonic){
+  const d = mod12(pc - tonic);
+  return ['I','♭II','II','♭III','III','IV','♭V','V','♭VI','VI','♭VII','VII'][d];
+}
+
+/* ------------------------------------------------------------
+   5. CHORD ANALYSIS (NOTA + GRADO + FUNCIÓN + PROCEDENCIA)
+   ------------------------------------------------------------ */
+const _analyzeCache = new Map();
+
+function analyzeChord(chord, key){
+  const ck = chord.id + '@' + key.root + ':' + key.mode;
+  if(_analyzeCache.has(ck)) return _analyzeCache.get(ck);
+  const res = _analyze(chord, key);
+  _analyzeCache.set(ck, res);
+  return res;
+}
+
+function _analyze(chord, key){
+  const preferFlat = !!key.preferFlat;
+  const note = chord.rootName || noteName(chord.root, preferFlat);
+  const dia = diatonicChords(key);
+
+  for(let i = 0; i < dia.length; i++){
+    const d = dia[i];
+    if(d.root === chord.root && d.fam === chord.fam){
+      return {
+        kind: 'diatonic', note: note, degree: d.roman,
+        display: note + '(' + d.roman + ')',
+        func: funcName(d.roman, d.fam),
+        origin: key.name,
+        relDegree: d.roman
+      };
+    }
+  }
+
+  if(chord.fam === 'dom'){
+    for(let i = 1; i < dia.length; i++){
+      const d = dia[i];
+      if(mod12(chord.root - d.root) === 7){
+        const rn = 'V/' + d.roman;
+        return {
+          kind: 'secondary', note: note, degree: rn,
+          display: note + '(' + rn + ')',
+          func: 'Secondary Dominant',
+          origin: key.name,
+          target: d.roman,
+          relDegree: chromaticDegree(chord.root, key.root)
+        };
+      }
+    }
+    for(let i = 0; i < dia.length; i++){
+      const d = dia[i];
+      if(mod12(chord.root - d.root) === 1){
+        const rn = 'SubV/' + d.roman;
+        return {
+          kind: 'tritone', note: note, degree: rn,
+          display: note + '(' + rn + ')',
+          func: 'Tritone Substitution',
+          origin: key.name,
+          target: d.roman,
+          relDegree: chromaticDegree(chord.root, key.root)
+        };
+      }
+    }
+  }
+
+  const parName = noteName(key.root, preferFlat) + ' Minor';
+  const par = {root: key.root, mode:'minor', name: parName, preferFlat: preferFlat};
+  const pDia = diatonicChords(par);
+  for(let i = 0; i < pDia.length; i++){
+    const d = pDia[i];
+    if(d.root === chord.root && d.fam === chord.fam){
+      return {
+        kind: 'borrowed', note: note, degree: d.roman,
+        display: note + '(' + d.roman + ')',
+        func: 'Modal Interchange',
+        origin: parName,
+        relDegree: chromaticDegree(chord.root, key.root)
+      };
+    }
+  }
+
+  const otherModes = ['dorian','phrygian','lydian','mixolydian','aeolian','locrian','harmonicMinor','melodicMinor'];
+  for(let mi = 0; mi < otherModes.length; mi++){
+    const mode = otherModes[mi];
+    const mk = {root: key.root, mode: mode,
+                name: noteName(key.root, preferFlat) + ' ' + SCALES[mode].label,
+                preferFlat: preferFlat};
+    const md = diatonicChords(mk);
+    for(let i = 0; i < md.length; i++){
+      const d = md[i];
+      if(d.root === chord.root && d.fam === chord.fam){
+        return {
+          kind: 'borrowed', note: note, degree: d.roman,
+          display: note + '(' + d.roman + ')',
+          func: 'Modal Interchange',
+          origin: mk.name,
+          relDegree: chromaticDegree(chord.root, key.root)
+        };
+      }
+    }
+  }
+
+  for(let r = 0; r < 12; r++){
+    if(r === key.root) continue;
+    const modes = ['major','minor'];
+    for(let mi = 0; mi < modes.length; mi++){
+      const mode = modes[mi];
+      const k2 = {root: r, mode: mode,
+                  name: noteName(r, false) + ' ' + SCALES[mode].label,
+                  preferFlat: false};
+      const kd = diatonicChords(k2);
+      for(let i = 0; i < kd.length; i++){
+        const d = kd[i];
+        if(d.root === chord.root && d.fam === chord.fam){
+          return {
+            kind: 'otherscale', note: note, degree: d.roman,
+            display: note + '(' + d.roman + ')',
+            func: 'From ' + k2.name,
+            origin: k2.name,
+            relDegree: chromaticDegree(chord.root, key.root)
+          };
+        }
+      }
+    }
+  }
+
+  const rel = chromaticDegree(chord.root, key.root);
+  return {
+    kind: 'chromatic', note: note, degree: rel,
+    display: note + '(' + rel + ')',
+    func: 'Chromatic',
+    origin: key.name,
+    relDegree: rel
+  };
+}
+
+function funcName(roman, fam){
+  if(fam === 'dom') return 'Dominant';
+  if(fam === 'minor') return 'Minor Function';
+  if(fam === 'dim') return 'Diminished Function';
+  if(fam === 'aug') return 'Augmented Function';
+  if(roman === 'I') return 'Tonic';
+  if(roman === 'IV') return 'Subdominant';
+  if(roman === 'V') return 'Dominant';
+  return 'Major Function';
+}
+
+/* ------------------------------------------------------------
+   6. KEY DETECTION
+   ------------------------------------------------------------ */
+function determineKey(from, to){
+  const preferFlat = /b/.test(from.rootName) || /b/.test(to.rootName);
+  let best = null;
+  const modes = ['major','minor'];
+  for(let r = 0; r < 12; r++){
+    for(let mi = 0; mi < modes.length; mi++){
+      const mode = modes[mi];
+      const key = {
+        root: r, mode: mode,
+        name: noteName(r, preferFlat) + ' ' + SCALES[mode].label,
+        preferFlat: preferFlat
+      };
+      const dia = diatonicChords(key);
+      let score = 0;
+      const list = [from, to];
+      for(let li = 0; li < list.length; li++){
+        const ch = list[li];
+        let found = false;
+        for(let i = 0; i < dia.length; i++){
+          if(dia[i].root === ch.root){
+            score += (dia[i].fam === ch.fam) ? 4 : 1;
+            found = true;
+            break;
+          }
+        }
+        if(!found) score -= 0.5;
+      }
+      if(from.root === r) score += 2;
+      if(to.root === r) score += 1;
+      if(mode === 'major') score += 0.6;
+      if(best === null || score > best.score) best = {key: key, score: score};
+    }
+  }
+  return best.key;
+}
+
+/* ------------------------------------------------------------
+   7. HARMONIC RELATIONSHIP ENGINE
+   ------------------------------------------------------------ */
+const CAT_LABEL = {
+  'DIATONIC':'DIATONIC', 'DOMINANTS':'DOMINANT', 'TRITONE':'TRITONE SUB',
+  'DIMINISHED':'DIMINISHED', 'II-V':'II-V', 'MODAL':'MODAL',
+  'OTHER':'OTHER SCALE', 'THIRDS':'THIRD REL', 'CHROMATIC':'CHROMATIC'
+};
+
+function motionScore(m){
+  switch(m){
+    case 5: return 4;
+    case 7: return 2;
+    case 2: case 10: return 2;
+    case 3: case 4: case 8: case 9: return 1.5;
+    case 1: case 11: return 1.5;
+    case 6: return 0;
+    default: return 1;
+  }
+}
+
+function motionLabel(m){
+  switch(m){
+    case 0: return 'unison';
+    case 1: return 'up m2';
+    case 2: return 'up M2';
+    case 3: return 'up m3';
+    case 4: return 'up M3';
+    case 5: return 'down P5';
+    case 6: return 'tritone';
+    case 7: return 'up P5';
+    case 8: return 'down m3';
+    case 9: return 'down M3';
+    case 10: return 'down M2';
+    case 11: return 'down m2';
+  }
+  return 'motion';
+}
+
+function computeRelation(a, b, key){
+  const motion = mod12(b.root - a.root);
+  const A = analyzeChord(a, key);
+  const B = analyzeChord(b, key);
+  let common = 0;
+  for(let i = 0; i < a.tones.length; i++){
+    if(b.tones.indexOf(a.tones[i]) >= 0) common++;
+  }
+  let cat = 'CHROMATIC', score = 2, desc = '';
+
+  if(a.type === 'm7' && b.fam === 'dom' && motion === 5){
+    cat = 'II-V'; score = 8;
+    desc = a.symbol + ' -> ' + b.symbol + ' is a ii-V motion.';
+  } else if(a.fam === 'dom' && motion === 5 && B.kind === 'diatonic'){
+    cat = 'DOMINANTS'; score = 9;
+    desc = a.symbol + ' is the dominant of ' + b.symbol + ' (' + B.display + '). It resolves down a fifth.';
+  } else if(b.fam === 'dom' && motion === 7 && A.kind === 'diatonic'){
+    cat = 'DOMINANTS'; score = 8;
+    desc = b.symbol + ' is the V of ' + a.symbol + ' — a secondary dominant.';
+  } else if(b.fam === 'dom' && motion === 1){
+    cat = 'TRITONE'; score = 7;
+    desc = b.symbol + ' is the tritone substitute of the V of ' + a.symbol + '. The bass rises a semitone.';
+  } else if(a.fam === 'dom' && motion === 11 && B.kind === 'diatonic'){
+    cat = 'TRITONE'; score = 7;
+    desc = a.symbol + ' is a tritone substitute resolving down a semitone to ' + b.symbol + '.';
+  } else if(a.fam === 'dim' && (motion === 1 || motion === 2)){
+    cat = 'DIMINISHED'; score = 7;
+    desc = a.symbol + ' approaches ' + b.symbol + ' chromatically from below.';
+  } else if(b.fam === 'dim' && (motion === 1 || motion === 11)){
+    cat = 'DIMINISHED'; score = 5;
+    desc = b.symbol + ' is a chromatic passing diminished chord towards ' + a.symbol + '.';
+  } else if(A.kind === 'diatonic' && B.kind === 'diatonic'){
+    cat = 'DIATONIC'; score = 6 + motionScore(motion);
+    desc = 'Diatonic motion ' + A.display + ' -> ' + B.display + ' inside ' + key.name + '.';
+  } else if(B.kind === 'borrowed'){
+    cat = 'MODAL'; score = 6;
+    desc = b.symbol + ' is borrowed from ' + B.origin + ' (' + B.display + ').';
+  } else if(B.kind === 'secondary'){
+    cat = 'DOMINANTS'; score = 6;
+    desc = b.symbol + ' is ' + B.degree + ', a secondary dominant inside ' + key.name + '.';
+  } else if(B.kind === 'tritone'){
+    cat = 'TRITONE'; score = 6;
+    desc = b.symbol + ' is ' + B.degree + ', a tritone substitution.';
+  } else if(B.kind === 'otherscale'){
+    cat = 'OTHER'; score = 4;
+    desc = b.symbol + ' comes from ' + B.origin + '.';
+  } else if(motion === 3 || motion === 4 || motion === 8 || motion === 9){
+    cat = 'THIRDS'; score = 4;
+    desc = 'Root motion by a third (' + a.rootName + ' -> ' + b.rootName + ').';
+  } else if(motion === 1 || motion === 11){
+    cat = 'CHROMATIC'; score = 4;
+    desc = 'Chromatic root motion ' + a.rootName + ' -> ' + b.rootName + '.';
+  } else {
+    cat = 'CHROMATIC'; score = 2;
+    desc = 'Root motion ' + a.rootName + ' -> ' + b.rootName + ' (' + motionLabel(motion) + ').';
+  }
+
+  score += Math.min(common, 3) * 0.5;
+  return {
+    ok: score >= 2.5,
+    cat: cat,
+    score: score,
+    motion: motion,
+    common: common,
+    desc: desc
+  };
+}
+
+/* ------------------------------------------------------------
+   8. CANDIDATE POOL
+   ------------------------------------------------------------ */
+function buildPool(key, from, to){
+  const pool = new Map();
+  const preferFlat = !!key.preferFlat;
+  function add(pc, type){
+    pc = mod12(pc);
+    const id = pc + ':' + type;
+    if(pool.has(id)) return;
+    const c = makeChord(pc, type, null, preferFlat);
+    if(c) pool.set(id, c);
+  }
+  const t = key.root;
+  const dia = diatonicChords(key);
+  for(let i = 0; i < dia.length; i++) add(dia[i].root, dia[i].type);
+
+  for(let i = 1; i < 7; i++){
+    const r = dia[i].root;
+    add(mod12(r + 7), '7');
+    add(mod12(r + 1), '7');
+  }
+
+  const pmin = {root: t, mode:'minor', name: noteName(t, preferFlat) + ' Minor', preferFlat: preferFlat};
+  const pd = diatonicChords(pmin);
+  for(let i = 0; i < pd.length; i++) add(pd[i].root, pd[i].type);
+
+  add(mod12(t + 1), 'maj7');
+
+  const dimOffsets = [1, 3, 6, 8];
+  for(let i = 0; i < dimOffsets.length; i++) add(mod12(t + dimOffsets[i]), 'dim7');
+
+  const medOffsets = [3, 4, 8, 9];
+  for(let i = 0; i < medOffsets.length; i++) add(mod12(t + medOffsets[i]), 'maj7');
+
+  const v = mod12(t + 7);
+  const altTypes = ['7b9','7#9','7#5','7b5','7b13'];
+  for(let i = 0; i < altTypes.length; i++) add(v, altTypes[i]);
+
+  add(t, 'm7');
+  add(mod12(t + 5), 'm7');
+  add(mod12(t + 10), '7');
+  add(mod12(t + 3), 'maj7');
+  add(mod12(t + 8), 'maj7');
+  add(mod12(t + 3), 'm7');
+  add(mod12(t + 9), 'm7');
+
+  pool.set(from.id, from);
+  pool.set(to.id, to);
+
+  return Array.from(pool.values());
+}
+
+/* ------------------------------------------------------------
+   9. ROUTE GENERATOR
+   ------------------------------------------------------------ */
+const KEEP = 8;
+const MAX_RESULTS = 60;
+const MAX_STEPS = 8;
+
+function pushTop(map, id, path, keep){
+  let arr = map.get(id);
+  if(!arr){ arr = []; map.set(id, arr); }
+  arr.push(path);
+  arr.sort(function(x, y){ return y.score - x.score; });
+  if(arr.length > keep) arr.pop();
+}
+
+function runSearch(from, to, steps, filters){
+  const key = determineKey(from, to);
+  const poolArr = buildPool(key, from, to);
+  const pmap = new Map();
+  for(let i = 0; i < poolArr.length; i++) pmap.set(poolArr[i].id, poolArr[i]);
+
+  const relCache = new Map();
+  function getRel(a, b){
+    const k = a.id + '>' + b.id;
+    let r = relCache.get(k);
+    if(!r){ r = computeRelation(a, b, key); relCache.set(k, r); }
+    return r;
+  }
+  function allowed(cat){ return filters[cat] === true; }
+
+  const T = steps + 1;
+  const m = Math.floor(T / 2);
+  const n = T - m;
+
+  const F = [];
+  const f0 = new Map();
+  f0.set(from.id, [{chords:[from], score:0, rels:[]}]);
+  F.push(f0);
+
+  for(let d = 1; d <= m; d++){
+    const layer = new Map();
+    const prev = F[d-1];
+    prev.forEach(function(paths, cid){
+      const a = pmap.get(cid);
+      if(!a) return;
+      for(let bi = 0; bi < poolArr.length; bi++){
+        const b = poolArr[bi];
+        if(b.id === a.id) continue;
+        if(b.id === to.id) continue;
+        const rel = getRel(a, b);
+        if(!rel.ok || !allowed(rel.cat)) continue;
+        for(let pi = 0; pi < paths.length; pi++){
+          const p = paths[pi];
+          let dup = false;
+          for(let ci = 0; ci < p.chords.length; ci++){
+            if(p.chords[ci].id === b.id){ dup = true; break; }
+          }
+          if(dup) continue;
+          pushTop(layer, b.id, {
+            chords: p.chords.concat([b]),
+            score: p.score + rel.score,
+            rels: p.rels.concat([rel])
+          }, KEEP);
+        }
+      }
+    });
+    F.push(layer);
+  }
+
+  const B = [];
+  const b0 = new Map();
+  b0.set(to.id, [{chords:[to], score:0, rels:[]}]);
+  B.push(b0);
+
+  for(let d = 1; d <= n; d++){
+    const layer = new Map();
+    const prev = B[d-1];
+    prev.forEach(function(paths, cid){
+      const s = pmap.get(cid);
+      if(!s) return;
+      for(let bi = 0; bi < poolArr.length; bi++){
+        const b = poolArr[bi];
+        if(b.id === s.id) continue;
+        if(b.id === from.id && d < n) continue;
+        const rel = getRel(b, s);
+        if(!rel.ok || !allowed(rel.cat)) continue;
+        for(let pi = 0; pi < paths.length; pi++){
+          const p = paths[pi];
+          let dup = false;
+          for(let ci = 0; ci < p.chords.length; ci++){
+            if(p.chords[ci].id === b.id){ dup = true; break; }
+          }
+          if(dup) continue;
+          pushTop(layer, b.id, {
+            chords: [b].concat(p.chords),
+            score: p.score + rel.score,
+            rels: [rel].concat(p.rels)
+          }, KEEP);
+        }
+      }
+    });
+    B.push(layer);
+  }
+
+  const fm = F[m];
+  const bn = B[n];
+  const out = [];
+  const seen = new Set();
+
+  fm.forEach(function(fpaths, cid){
+    const bpaths = bn.get(cid);
+    if(!bpaths) return;
+    for(let fi = 0; fi < fpaths.length; fi++){
+      const fp = fpaths[fi];
+      for(let bi = 0; bi < bpaths.length; bi++){
+        const bp = bpaths[bi];
+        const chords = fp.chords.concat(bp.chords.slice(1));
+        const rels = fp.rels.concat(bp.rels);
+        if(chords.length !== T + 1) continue;
+        const ids = [];
+        for(let ci = 0; ci < chords.length; ci++) ids.push(chords[ci].id);
+        const uniq = new Set(ids);
+        if(uniq.size !== ids.length) continue;
+        const sig = ids.join('|');
+        if(seen.has(sig)) continue;
+        seen.add(sig);
+        out.push({chords: chords, rels: rels, score: fp.score + bp.score});
+      }
+    }
+  });
+
+  out.sort(function(x, y){ return y.score - x.score; });
+  return {key: key, results: out.slice(0, MAX_RESULTS), poolSize: poolArr.length};
+}
+
+/* ------------------------------------------------------------
+   10. ROUTE METRICS / SORTING
+   ------------------------------------------------------------ */
+function routeType(rels){
+  const set = new Set();
+  for(let i = 0; i < rels.length; i++) set.add(rels[i].cat);
+  if(set.size === 0) return 'DIRECT';
+  if(set.size === 1) return CAT_LABEL[Array.from(set)[0]] || 'MIXED';
+  return 'MIXED';
+}
+
+function routeMetrics(r){
+  let common = 0, chromatic = 0, functional = 0, distance = 0;
+  for(let i = 0; i < r.rels.length; i++){
+    const rel = r.rels[i];
+    common += rel.common;
+    if(rel.cat === 'CHROMATIC' || rel.cat === 'DIMINISHED' || rel.cat === 'TRITONE') chromatic++;
+    if(rel.cat === 'DIATONIC' || rel.cat === 'DOMINANTS' || rel.cat === 'II-V') functional++;
+    const d = rel.motion;
+    distance += Math.min(d, 12 - d);
+  }
+  return {common: common, chromatic: chromatic, functional: functional, distance: distance};
+}
+
+function sortResults(results, mode){
+  if(mode === 'VOICE LEADING'){
+    results.sort(function(a, b){ return routeMetrics(b).common - routeMetrics(a).common; });
+  } else if(mode === 'CHROMATIC'){
+    results.sort(function(a, b){ return routeMetrics(b).chromatic - routeMetrics(a).chromatic; });
+  } else if(mode === 'FUNCTIONAL'){
+    results.sort(function(a, b){ return routeMetrics(b).functional - routeMetrics(a).functional; });
+  } else if(mode === 'HARMONIC DISTANCE'){
+    results.sort(function(a, b){ return routeMetrics(a).distance - routeMetrics(b).distance; });
+  } else if(mode === 'RANDOM'){
+    for(let i = results.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = results[i]; results[i] = results[j]; results[j] = t;
+    }
+  } else {
+    results.sort(function(a, b){ return b.score - a.score; });
+  }
+  return results;
+}
+
+/* ------------------------------------------------------------
+   11. RELATED SCALES
+   ------------------------------------------------------------ */
+function relatedScales(chord, preferFlat){
+  const out = [];
+  const order = ['major','minor','harmonicMinor','melodicMinor','dorian','phrygian','lydian','mixolydian','aeolian','locrian'];
+  for(let oi = 0; oi < order.length; oi++){
+    const mode = order[oi];
+    const sc = SCALES[mode].iv;
+    for(let r = 0; r < 12; r++){
+      const notes = sc.map(function(i){ return mod12(r + i); });
+      let all = true;
+      for(let ti = 0; ti < chord.tones.length; ti++){
+        if(notes.indexOf(chord.tones[ti]) < 0){ all = false; break; }
+      }
+      if(all){
+        out.push({name: noteName(r, preferFlat) + ' ' + SCALES[mode].label, mode: mode});
+      }
+      if(out.length > 8) break;
+    }
+    if(out.length > 8) break;
+  }
+  return out;
+}
+
+/* ------------------------------------------------------------
+   12. VOICE LEADING HELPERS
+   ------------------------------------------------------------ */
+function voiceLeading(a, b, preferFlat){
+  const common = [];
+  const onlyA = [];
+  const onlyB = [];
+  for(let i = 0; i < a.tones.length; i++){
+    if(b.tones.indexOf(a.tones[i]) >= 0) common.push(a.tones[i]);
+    else onlyA.push(a.tones[i]);
+  }
+  for(let i = 0; i < b.tones.length; i++){
+    if(a.tones.indexOf(b.tones[i]) < 0) onlyB.push(b.tones[i]);
+  }
+  const chrom = [];
+  for(let i = 0; i < onlyA.length; i++){
+    for(let j = 0; j < onlyB.length; j++){
+      if(mod12(onlyB[j] - onlyA[i]) === 1 || mod12(onlyA[i] - onlyB[j]) === 1){
+        chrom.push(noteName(onlyA[i], preferFlat) + ' -> ' + noteName(onlyB[j], preferFlat));
+      }
+    }
+  }
+  return {
+    common: common.map(function(pc){ return noteName(pc, preferFlat); }),
+    chromatic: chrom
+  };
+}
+
+/* ------------------------------------------------------------
+   13. BUILDER OPTIONS
+   ------------------------------------------------------------ */
+const NOTE_OPTIONS = ['C','C#','Db','D','D#','Eb','E','F','F#','Gb','G','G#','Ab','A','A#','Bb','B'];
+
+const TYPE_OPTIONS = [
+  'maj','maj7','maj9','maj13','6','add9','sus2','sus4',
+  'm','m7','m9','m11','m6','madd9',
+  '7','9','11','13',
+  '7b5','7#5','7b9','7#9','7b13',
+  'm7b5','dim','dim7','aug','7sus4'
+];
+
+function typeLabel(t){
+  const def = CHORD_TYPES[t];
+  if(!def) return t;
+  const sym = TYPE_SYMBOL[t];
+  return (sym ? sym : 'maj') + '  —  ' + def.name;
+}
+
+/* ------------------------------------------------------------
+   14. APP STATE
+   ------------------------------------------------------------ */
+const FILTER_KEYS = ['DIATONIC','DOMINANTS','TRITONE','DIMINISHED','II-V','MODAL','OTHER','THIRDS','CHROMATIC'];
+const FILTER_LABELS = {
+  'DIATONIC':'DIATONIC','DOMINANTS':'DOMINANTS','TRITONE':'TRITONE SUB',
+  'DIMINISHED':'DIMINISHED','II-V':'II-V','MODAL':'MODAL',
+  'OTHER':'OTHER SCALES','THIRDS':'THIRD REL.','CHROMATIC':'CHROMATIC'
+};
+
+const MODES = {
+  'DIATONIC': ['DIATONIC'],
+  'OTHER SCALES': ['DIATONIC','OTHER'],
+  'CHROMATIC': ['DIATONIC','CHROMATIC'],
+  'MODAL': ['DIATONIC','MODAL'],
+  'DOMINANTS': ['DIATONIC','DOMINANTS'],
+  'DIMINISHED': ['DIATONIC','DIMINISHED'],
+  'TRITONE SUB': ['DIATONIC','TRITONE'],
+  'MIXED': ['DIATONIC','DOMINANTS','TRITONE','DIMINISHED','II-V','MODAL','THIRDS'],
+  'ALL': ['DIATONIC','DOMINANTS','TRITONE','DIMINISHED','II-V','MODAL','OTHER','THIRDS','CHROMATIC']
+};
+const MODE_LIST = Object.keys(MODES);
+const SORT_LIST = ['COHERENCE','VOICE LEADING','CHROMATIC','FUNCTIONAL','HARMONIC DISTANCE','RANDOM'];
+
+const state = {
+  screen: 'SEARCH',
+  fromStr: 'Cmaj7',
+  toStr: 'Fmaj7',
+  steps: 3,
+  mode: 'ALL',
+  filters: {},
+  sort: 'COHERENCE',
+  focus: 0,
+  results: [],
+  rIndex: 0,
+  analysisIdx: 0,
+  settingsIdx: 0,
+  transpose: 0,
+  error: '',
+  message: '',
+  key: null,
+  builder: null, /* null | 'FROM' | 'TARGET' */
+  builderChord: null,
+  helpPage: 0
+};
+
+(function initFilters(){
+  for(let i = 0; i < FILTER_KEYS.length; i++) state.filters[FILTER_KEYS[i]] = false;
+  applyModeInternal('ALL');
+})();
+
+function applyModeInternal(mode){
+  const cats = MODES[mode] || [];
+  for(let i = 0; i < FILTER_KEYS.length; i++){
+    state.filters[FILTER_KEYS[i]] = cats.indexOf(FILTER_KEYS[i]) >= 0;
+  }
+}
+
+/* ------------------------------------------------------------
+   15. LOCAL STORAGE
+   ------------------------------------------------------------ */
+const LS_KEY = 'harmonic_path_finder_v2';
+
+function save(){
+  try{
+    const data = {
+      fromStr: state.fromStr,
+      toStr: state.toStr,
+      steps: state.steps,
+      mode: state.mode,
+      filters: state.filters,
+      sort: state.sort,
+      transpose: state.transpose
+    };
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+  }catch(e){ /* storage unavailable */ }
+}
+
+function load(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(typeof d.fromStr === 'string') state.fromStr = d.fromStr;
+    if(typeof d.toStr === 'string') state.toStr = d.toStr;
+    if(typeof d.steps === 'number' && isFinite(d.steps)) state.steps = Math.max(0, Math.min(MAX_STEPS, d.steps | 0));
+    if(typeof d.mode === 'string' && MODES[d.mode]) state.mode = d.mode;
+    if(d.filters && typeof d.filters === 'object'){
+      for(let i = 0; i < FILTER_KEYS.length; i++){
+        const k = FILTER_KEYS[i];
+        if(typeof d.filters[k] === 'boolean') state.filters[k] = d.filters[k];
+      }
+    }
+    if(typeof d.sort === 'string' && SORT_LIST.indexOf(d.sort) >= 0) state.sort = d.sort;
+    if(typeof d.transpose === 'number' && isFinite(d.transpose)) state.transpose = d.transpose;
+  }catch(e){ /* ignore */ }
+}
+
+/* ------------------------------------------------------------
+   16. TEXT HELPERS
+   ------------------------------------------------------------ */
+const W = 36;
+
+function padR(s, n){
+  s = String(s == null ? '' : s);
+  if(s.length >= n) return s.slice(0, n);
+  return s + ' '.repeat(n - s.length);
+}
+function padL(s, n){
+  s = String(s == null ? '' : s);
+  if(s.length >= n) return s.slice(s.length - n);
+  return ' '.repeat(n - s.length) + s;
+}
+function bar(ch){ return (ch || '=').repeat(W); }
+function wrapText(text, width){
+  const words = String(text == null ? '' : text).split(/\s+/);
+  const lines = [];
+  let cur = '';
+  for(let i = 0; i < words.length; i++){
+    const w = words[i];
+    if(!w) continue;
+    const test = cur ? cur + ' ' + w : w;
+    if(test.length > width){
+      if(cur) lines.push(cur);
+      cur = w;
+    } else {
+      cur = test;
+    }
+  }
+  if(cur) lines.push(cur);
+  if(lines.length === 0) lines.push('');
+  return lines;
+}
+
+/* ------------------------------------------------------------
+   17. CONTEXT KEY HELPERS
+   ------------------------------------------------------------ */
+function getContextKey(){
+  const from = parseChord(state.fromStr);
+  if(!from){
+    return {root:0, mode:'major', name:'C Major', preferFlat:false};
+  }
+  const to = parseChord(state.toStr);
+  return determineKey(from, to || from);
+}
+
+/* ------------------------------------------------------------
+   18. SCREEN RENDERERS
+   ------------------------------------------------------------ */
+function render(){
+  const el = document.getElementById('lcdText');
+  const pw = document.getElementById('pianoWrap');
+  pw.style.display = 'none';
+  pw.innerHTML = '';
+
+  /* show/hide builder + quickActions */
+  const builderEl = document.getElementById('builder');
+  const qaEl = document.getElementById('quickActions');
+  if(state.builder){
+    builderEl.hidden = false;
+    qaEl.hidden = true;
+  } else {
+    builderEl.hidden = true;
+    if(state.screen === 'SEARCH') qaEl.hidden = false;
+    else qaEl.hidden = true;
+  }
+
+  let lines = [];
+  switch(state.screen){
+    case 'SEARCH': lines = renderSearch(); break;
+    case 'MENU': lines = renderMenu(); break;
+    case 'RESULTS': lines = renderResults(); break;
+    case 'ANALYSIS': lines = renderAnalysis(); break;
+    case 'CHORD': lines = renderChord(); break;
+    case 'SCALES': lines = renderScales(); break;
+    case 'SETTINGS': lines = renderSettings(); break;
+    case 'TRANSPOSE': lines = renderTranspose(); break;
+    case 'PIANO': lines = renderPianoScreen(); break;
+    case 'HELP': lines = renderHelp(); break;
+    default: lines = renderSearch();
+  }
+  el.textContent = lines.join('\n');
+}
+
+function focusRow(L, idx, text){
+  return (state.focus === idx ? '>' : ' ') + text;
+}
+
+function renderSearch(){
+  const L = [];
+  L.push('HARMONIC PATH FINDER');
+  L.push(bar('='));
+
+  const key = getContextKey();
+  const from = parseChord(state.fromStr);
+  const to = parseChord(state.toStr);
+
+  function chordLine(chord, prefix){
+    if(!chord) return padR(prefix, 12) + '  (sin acorde)';
+    const info = analyzeChord(chord, key);
+    return padR(prefix, 8) + padR(chord.symbol, 10) + info.display;
+  }
+
+  const fromLine = chordLine(from, 'FROM');
+  const toLine = chordLine(to, 'TARGET');
+
+  L.push(focusRow(L, 0, fromLine));
+  L.push(focusRow(L, 1, toLine));
+
+  L.push(bar('-'));
+  L.push(focusRow(L, 2, 'INTERMEDIATE CHORDS: ' + state.steps));
+  L.push(focusRow(L, 3, 'SEARCH MODE: ' + state.mode));
+  L.push(focusRow(L, 4, 'SORT BY: ' + state.sort));
+  L.push(bar('-'));
+  L.push(focusRow(L, 5, '[ENTER] FIND HARMONIC PATHS'));
+  L.push(bar('-'));
+
+  if(state.builder){
+    L.push('> EDITANDO ' + state.builder + ' ...');
+    L.push('Usa los selectores o el campo');
+    L.push('DIRECT y pulsa ACCEPT.');
+  } else {
+    L.push('ENTER en FROM/TARGET = editar');
+    L.push('ENTER en SEARCH = buscar');
+    L.push('^v mover  </> cambiar valor');
+  }
+
+  L.push('');
+  L.push('KEY: ' + key.name);
+  return L;
+}
+
+function renderMenu(){
+  const L = [];
+  L.push('MENU');
+  L.push(bar('='));
+  const items = [
+    'SEARCH', 'RESULTS', 'ANALYSIS', 'SCALES',
+    'SETTINGS', 'TRANSPOSE', 'PIANO', 'HELP'
+  ];
+  for(let i = 0; i < items.length; i++){
+    L.push(' ' + (i + 1) + ': ' + items[i]);
+  }
+  L.push(bar('-'));
+  L.push('FROM: ' + state.fromStr);
+  L.push('TO  : ' + state.toStr);
+  L.push('STEPS: ' + state.steps + '   MODE: ' + state.mode);
+  L.push('RESULTS: ' + state.results.length);
+  L.push(bar('-'));
+  L.push('1-8 SELECT   CLEAR BACK');
+  return L;
+}
+
+function renderResults(){
+  const L = [];
+  if(!state.results.length){
+    L.push('NO RESULTS');
+    L.push(bar('='));
+    L.push('No harmonically valid route');
+    L.push('was found with the current');
+    L.push('filters and step count.');
+    L.push('');
+    L.push('Suggestions:');
+    L.push('- use MODE: ALL');
+    L.push('- reduce STEPS');
+    L.push('- check chord spelling');
+    L.push(bar('-'));
+    L.push('CLEAR BACK   ENTER SEARCH');
+    return L;
+  }
+  const idx = Math.min(state.rIndex, state.results.length - 1);
+  state.rIndex = idx;
+  const r = state.results[idx];
+  const type = routeType(r.rels);
+  const key = state.key || getContextKey();
+
+  L.push('PATH ' + padL(idx + 1, 3) + '/' + padL(state.results.length, 3) + '  ' + type);
+  L.push(bar('='));
+  for(let i = 0; i < r.chords.length; i++){
+    const ch = r.chords[i];
+    const info = analyzeChord(ch, key);
+    L.push(padL(i + 1, 2) + ' ' + padR(ch.symbol, 9) + info.display);
+  }
+  L.push(bar('-'));
+  const fn = r.chords.map(function(ch){
+    const info = analyzeChord(ch, key);
+    return info.degree;
+  }).join('-');
+  L.push('FN: ' + fn);
+  L.push(bar('-'));
+  L.push('^v ROUTE  ENTER WHY?  CLR BACK');
+  return L;
+}
+
+function renderAnalysis(){
+  const L = [];
+  if(!state.results.length){
+    L.push('NO ANALYSIS');
+    L.push(bar('='));
+    L.push('Run a search first.');
+    L.push(bar('-'));
+    L.push('CLEAR BACK');
+    return L;
+  }
+  const r = state.results[state.rIndex];
+  const i = Math.max(0, Math.min(state.analysisIdx, r.rels.length - 1));
+  state.analysisIdx = i;
+  const a = r.chords[i];
+  const b = r.chords[i + 1];
+  const rel = r.rels[i];
+  const key = state.key || getContextKey();
+  const A = analyzeChord(a, key);
+  const B = analyzeChord(b, key);
+  const pf = !!key.preferFlat;
+
+  L.push('WHY?  STEP ' + (i + 1) + '/' + r.rels.length);
+  L.push(bar('='));
+  L.push(a.symbol + '  ->  ' + b.symbol);
+  L.push(bar('-'));
+  L.push(padR(a.symbol, 10) + A.display);
+  L.push('  ' + A.func);
+  L.push('  ' + A.origin);
+  L.push(padR(b.symbol, 10) + B.display);
+  L.push('  ' + B.func);
+  L.push('  ' + B.origin);
+  L.push(bar('-'));
+  L.push('CATEGORY: ' + rel.cat);
+  L.push('BASS: ' + a.rootName + ' -> ' + b.rootName +
+         ' (' + motionLabel(rel.motion) + ')');
+
+  const vl = voiceLeading(a, b, pf);
+  L.push('COMMON TONES: ' + (vl.common.length ? vl.common.join(' ') : 'none'));
+  if(vl.chromatic.length){
+    L.push('SEMITONE MOVES:');
+    for(let k = 0; k < vl.chromatic.length && k < 3; k++){
+      L.push('  ' + vl.chromatic[k]);
+    }
+  }
+  L.push(bar('-'));
+  const desc = wrapText(rel.desc, W);
+  for(let k = 0; k < desc.length; k++) L.push(desc[k]);
+  L.push(bar('-'));
+  L.push('<> STEP  ENTER CHORD  CLR BACK');
+  return L;
+}
+
+function renderChord(){
+  const L = [];
+  if(!state.results.length){
+    L.push('CHORD INFO');
+    L.push(bar('='));
+    L.push('Run a search first.');
+    L.push(bar('-'));
+    L.push('CLEAR BACK');
+    return L;
+  }
+  const r = state.results[state.rIndex];
+  const ci = Math.max(0, Math.min(state.analysisIdx, r.chords.length - 1));
+  const ch = r.chords[ci];
+  const key = state.key || getContextKey();
+  const A = analyzeChord(ch, key);
+  const pf = !!key.preferFlat;
+
+  L.push('CHORD INFO');
+  L.push(bar('='));
+  L.push('CHORD    : ' + ch.symbol);
+  L.push('NOTE     : ' + A.note);
+  L.push('DEGREE   : ' + A.degree);
+  L.push('DISPLAY  : ' + A.display);
+  L.push('FUNCTION : ' + A.func);
+  L.push('KEY      : ' + A.origin);
+  L.push('TYPE     : ' + ch.name);
+  L.push('TONES    : ' + ch.tones.map(function(pc){ return noteName(pc, pf); }).join(' '));
+  L.push('PITCH CL.: ' + ch.tones.join(' '));
+  L.push(bar('-'));
+  L.push('RELATED SCALES:');
+  const sc = relatedScales(ch, pf);
+  if(sc.length === 0){
+    L.push('  (no single scale)');
+  } else {
+    for(let i = 0; i < sc.length && i < 5; i++) L.push('  ' + sc[i].name);
+  }
+  L.push(bar('-'));
+  L.push('ENTER PIANO   CLEAR BACK');
+  return L;
+}
+
+function renderScales(){
+  const L = [];
+  const key = state.key || getContextKey();
+  const pf = !!key.preferFlat;
+  L.push('REFERENCE KEY');
+  L.push(bar('='));
+  L.push('KEY: ' + key.name);
+  L.push(bar('-'));
+  L.push('NOTE  CHORD       DEGREE');
+  L.push(bar('-'));
+  const dia = diatonicChords(key);
+  for(let i = 0; i < dia.length; i++){
+    const d = dia[i];
+    const c = makeChord(d.root, d.type, null, pf);
+    L.push(padR(noteName(d.root, pf), 6) + padR(c ? c.symbol : '?', 12) + d.roman);
+  }
+  L.push(bar('-'));
+  L.push('CHORD MEMBERSHIP vs');
+  L.push('IMPROVISATION SCALE are');
+  L.push('different concepts.');
+  L.push(bar('-'));
+  L.push('CLEAR BACK');
+  return L;
+}
+
+function renderSettings(){
+  const L = [];
+  L.push('SETTINGS / FILTERS');
+  L.push(bar('='));
+  for(let i = 0; i < FILTER_KEYS.length; i++){
+    const k = FILTER_KEYS[i];
+    const on = state.filters[k] ? 'X' : ' ';
+    const sel = (state.settingsIdx === i) ? '>' : ' ';
+    L.push(sel + (i + 1) + ' [' + on + '] ' + FILTER_LABELS[k]);
+  }
+  L.push(bar('-'));
+  L.push('SORT: ' + state.sort);
+  L.push('MODE: ' + state.mode);
+  L.push(bar('-'));
+  L.push('1-9 TOGGLE  ^v MOVE');
+  L.push('</> CHANGE SORT  CLR BACK');
+  return L;
+}
+
+function renderTranspose(){
+  const L = [];
+  const from = parseChord(state.fromStr);
+  const to = parseChord(state.toStr);
+  L.push('TRANSPOSE');
+  L.push(bar('='));
+  L.push('SHIFT: ' + (state.transpose >= 0 ? '+' : '') + state.transpose + ' semitones');
+  L.push(bar('-'));
+  L.push('FROM: ' + state.fromStr);
+  L.push('  ->  ' + (from ? transposeSymbol(from, state.transpose) : '?'));
+  L.push('TO  : ' + state.toStr);
+  L.push('  ->  ' + (to ? transposeSymbol(to, state.transpose) : '?'));
+  L.push(bar('-'));
+  L.push('</> CHANGE SHIFT');
+  L.push('ENTER APPLY TO FIELDS');
+  L.push('CLEAR BACK');
+  return L;
+}
+
+function transposeSymbol(chord, semis){
+  const nr = mod12(chord.root + semis);
+  const prefFlat = (FLAT_NAMES.indexOf(chord.rootName) >= 0) || /b/.test(chord.rootName);
+  const rn = noteName(nr, prefFlat || (semis < 0));
+  return rn + (TYPE_SYMBOL[chord.type] || chord.type);
+}
+
+function renderPianoScreen(){
+  const L = [];
+  let ch = null;
+  if(state.results.length){
+    const r = state.results[state.rIndex];
+    const ci = Math.max(0, Math.min(state.analysisIdx, r.chords.length - 1));
+    ch = r.chords[ci];
+  } else {
+    ch = parseChord(state.fromStr);
+  }
+  L.push('PIANO VIEW');
+  L.push(bar('='));
+  if(ch){
+    const key = state.key || getContextKey();
+    const A = analyzeChord(ch, key);
+    L.push('CHORD : ' + ch.symbol);
+    L.push('TONES : ' + ch.tones.map(function(pc){ return noteName(pc, false); }).join(' '));
+    L.push('DEGREE: ' + A.display);
+    const roles = [];
+    const ivMap = ch.iv;
+    const roleNames = ['ROOT','3rd','5th','7th','9th','11th','13th'];
+    for(let i = 0; i < ivMap.length && i < 7; i++){
+      roles.push(roleNames[i] + '=' + noteName(mod12(ch.root + ivMap[i]), false));
+    }
+    for(let i = 0; i < roles.length && i < 4; i++){
+      L.push('  ' + roles[i]);
+    }
+  } else {
+    L.push('No chord selected.');
+  }
+  L.push(bar('-'));
+  L.push('CLEAR BACK');
+  showPiano(ch);
+  return L;
+}
+
+function renderHelp(){
+  const L = [];
+  L.push('HELP');
+  L.push(bar('='));
+  L.push('1. EDIT FROM o EDIT TARGET');
+  L.push('   Elige NOTE y CHORD TYPE,');
+  L.push('   o escribe directamente el');
+  L.push('   acorde y pulsa ACCEPT.');
+  L.push('');
+  L.push('2. Ajusta INTERMEDIATE CHORDS.');
+  L.push('   STEPS = 3 significa:');
+  L.push('   FROM -> X1 -> X2 -> X3 -> TARGET');
+  L.push('');
+  L.push('3. Pulsa FIND PATHS.');
+  L.push('');
+  L.push('Cada ruta muestra ACORDE +');
+  L.push('NOTA(GRADO) + FUNCION + KEY.');
+  L.push(bar('-'));
+  L.push('CLEAR BACK');
+  return L;
+}
+
+/* ------------------------------------------------------------
+   19. PIANO RENDERER
+   ------------------------------------------------------------ */
+function showPiano(chord){
+  const wrap = document.getElementById('pianoWrap');
+  wrap.innerHTML = '';
+  wrap.style.display = 'block';
+
+  const whitePCs = [0,2,4,5,7,9,11];
+  const blackDefs = [
+    {pc:1, after:0}, {pc:3, after:1}, {pc:6, after:3},
+    {pc:8, after:4}, {pc:10, after:5}
+  ];
+  const octaves = 2;
+  const nWhite = whitePCs.length * octaves;
+  const tones = new Set(chord ? chord.tones : []);
+  const rootPc = chord ? chord.root : -1;
+
+  const container = document.createElement('div');
+  container.className = 'piano';
+
+  const labels = ['C','D','E','F','G','A','B'];
+  for(let o = 0; o < octaves; o++){
+    for(let i = 0; i < 7; i++){
+      const pc = whitePCs[i];
+      const d = document.createElement('div');
+      d.className = 'pkey white';
+      if(tones.has(pc)) d.classList.add('on');
+      if(pc === rootPc) d.classList.add('root');
+      d.textContent = labels[i];
+      container.appendChild(d);
+    }
+  }
+
+  const bw = 100 / nWhite;
+  for(let o = 0; o < octaves; o++){
+    for(let k = 0; k < blackDefs.length; k++){
+      const def = blackDefs[k];
+      const idx = o * 7 + def.after;
+      const d = document.createElement('div');
+      d.className = 'pkey black';
+      d.style.left = ((idx + 1) * bw - bw * 0.3) + '%';
+      d.style.width = (bw * 0.6) + '%';
+      if(tones.has(def.pc)) d.classList.add('on');
+      container.appendChild(d);
+    }
+  }
+  wrap.appendChild(container);
+}
+
+/* ------------------------------------------------------------
+   20. CHORD BUILDER LOGIC
+   ------------------------------------------------------------ */
+function populateBuilderSelects(){
+  const noteSel = document.getElementById('builderNote');
+  const typeSel = document.getElementById('builderType');
+  if(noteSel.options.length === 0){
+    for(let i = 0; i < NOTE_OPTIONS.length; i++){
+      const o = document.createElement('option');
+      o.value = NOTE_OPTIONS[i];
+      o.textContent = NOTE_OPTIONS[i];
+      noteSel.appendChild(o);
+    }
+  }
+  if(typeSel.options.length === 0){
+    for(let i = 0; i < TYPE_OPTIONS.length; i++){
+      const t = TYPE_OPTIONS[i];
+      const o = document.createElement('option');
+      o.value = t;
+      o.textContent = typeLabel(t);
+      typeSel.appendChild(o);
+    }
+  }
+}
+
+function openBuilder(which){
+  if(which !== 'FROM' && which !== 'TARGET') return;
+  state.builder = which;
+  const chord = parseChord(which === 'FROM' ? state.fromStr : state.toStr);
+  const titleEl = document.getElementById('builderTitle');
+  const noteSel = document.getElementById('builderNote');
+  const typeSel = document.getElementById('builderType');
+  const input = document.getElementById('builderInput');
+  const errEl = document.getElementById('builderError');
+
+  titleEl.textContent = which + ' CHORD';
+
+  if(chord){
+    noteSel.value = chord.rootName;
+    typeSel.value = chord.type;
+    input.value = chord.symbol;
+  } else {
+    noteSel.value = 'C';
+    typeSel.value = 'maj7';
+    input.value = 'Cmaj7';
+  }
+  errEl.hidden = true;
+  updateBuilderPreviewFromDropdowns();
+  render();
+}
+
+function closeBuilder(){
+  state.builder = null;
+  document.getElementById('builderError').hidden = true;
+  render();
+}
+
+function updateBuilderPreviewFromDropdowns(){
+  const note = document.getElementById('builderNote').value;
+  const type = document.getElementById('builderType').value;
+  const symbol = note + (TYPE_SYMBOL[type] || type);
+  setBuilderPreview(symbol, true);
+}
+
+function updateBuilderPreviewFromInput(){
+  const input = document.getElementById('builderInput');
+  const raw = input.value;
+  const cleaned = String(raw).replace(/\s+/g, '');
+  if(!cleaned){
+    setBuilderPreviewEmpty();
+    return;
+  }
+  const chord = parseChord(cleaned);
+  if(chord){
+    document.getElementById('builderNote').value = chord.rootName;
+    document.getElementById('builderType').value = chord.type;
+    setBuilderPreview(chord.symbol, true);
+  } else {
+    setBuilderPreview(cleaned, false);
+  }
+}
+
+function setBuilderPreviewEmpty(){
+  document.getElementById('previewChord').textContent = '—';
+  document.getElementById('previewDegree').textContent = 'ACORDE NO RECONOCIDO';
+  document.getElementById('builderError').textContent =
+    'Introduce una nota y un tipo de acorde válidos.';
+  document.getElementById('builderError').hidden = false;
+}
+
+function setBuilderPreview(symbol, valid){
+  const chord = valid ? parseChord(symbol) : null;
+  const previewChordEl = document.getElementById('previewChord');
+  const previewDegreeEl = document.getElementById('previewDegree');
+  const errEl = document.getElementById('builderError');
+
+  if(chord){
+    previewChordEl.textContent = chord.symbol;
+    const otherStr = state.builder === 'FROM' ? state.toStr : state.fromStr;
+    const other = parseChord(otherStr);
+    const key = determineKey(chord, other || chord);
+    const info = analyzeChord(chord, key);
+    previewDegreeEl.textContent = info.display + '  ·  ' + info.origin;
+    errEl.hidden = true;
+  } else {
+    previewChordEl.textContent = symbol || '—';
+    previewDegreeEl.textContent = '—';
+    errEl.textContent = 'ACORDE NO RECONOCIDO · No he podido reconocer "' +
+      symbol + '". Comprueba la nota y el tipo.';
+    errEl.hidden = false;
+  }
+}
+
+function acceptBuilder(){
+  if(!state.builder) return;
+  const note = document.getElementById('builderNote').value;
+  const type = document.getElementById('builderType').value;
+  const symbol = note + (TYPE_SYMBOL[type] || type);
+  const chord = parseChord(symbol);
+  if(!chord){
+    document.getElementById('builderError').textContent =
+      'ACORDE NO RECONOCIDO · Revisa NOTE y CHORD TYPE.';
+    document.getElementById('builderError').hidden = false;
+    return;
+  }
+  if(state.builder === 'FROM') state.fromStr = chord.symbol;
+  else state.toStr = chord.symbol;
+
+  /* reset analysis since context might change */
+  state.results = [];
+  state.rIndex = 0;
+  state.analysisIdx = 0;
+
+  save();
+  state.builder = null;
+  render();
+}
+
+/* ------------------------------------------------------------
+   21. ACTIONS
+   ------------------------------------------------------------ */
+function doSearch(){
+  const from = parseChord(state.fromStr);
+  const to = parseChord(state.toStr);
+  if(!from){
+    state.error = 'FROM: acorde no válido';
+    state.results = [];
+    state.screen = 'SEARCH';
+    render();
+    return;
+  }
+  if(!to){
+    state.error = 'TARGET: acorde no válido';
+    state.results = [];
+    state.screen = 'SEARCH';
+    render();
+    return;
+  }
+  state.error = '';
+  const steps = Math.max(0, Math.min(MAX_STEPS, state.steps | 0));
+  state.steps = steps;
+
+  let out;
+  try{
+    out = runSearch(from, to, steps, state.filters);
+  }catch(err){
+    state.error = 'SEARCH ERROR';
+    state.results = [];
+    state.screen = 'SEARCH';
+    render();
+    return;
+  }
+  state.key = out.key;
+  state.results = sortResults(out.results.slice(), state.sort);
+  state.rIndex = 0;
+  state.analysisIdx = 0;
+  state.screen = 'RESULTS';
+  save();
+  render();
+}
+
+function cycleMode(dir){
+  let i = MODE_LIST.indexOf(state.mode);
+  if(i < 0) i = 0;
+  i = (i + dir + MODE_LIST.length) % MODE_LIST.length;
+  state.mode = MODE_LIST[i];
+  applyModeInternal(state.mode);
+  save();
+}
+
+function cycleSort(dir){
+  let i = SORT_LIST.indexOf(state.sort);
+  if(i < 0) i = 0;
+  i = (i + dir + SORT_LIST.length) % SORT_LIST.length;
+  state.sort = SORT_LIST[i];
+  if(state.results.length) sortResults(state.results, state.sort);
+  save();
+}
+
+function changeRoute(dir){
+  if(!state.results.length) return;
+  const n = state.results.length;
+  state.rIndex = (state.rIndex + dir + n) % n;
+  state.analysisIdx = 0;
+  render();
+}
+
+function applyTranspose(){
+  const from = parseChord(state.fromStr);
+  const to = parseChord(state.toStr);
+  if(from){
+    const nr = mod12(from.root + state.transpose);
+    const prefFlat = /b/.test(from.rootName) || state.transpose < 0;
+    state.fromStr = noteName(nr, prefFlat) + (TYPE_SYMBOL[from.type] || from.type);
+  }
+  if(to){
+    const nr = mod12(to.root + state.transpose);
+    const prefFlat = /b/.test(to.rootName) || state.transpose < 0;
+    state.toStr = noteName(nr, prefFlat) + (TYPE_SYMBOL[to.type] || to.type);
+  }
+  state.transpose = 0;
+  state.results = [];
+  save();
+  render();
+}
+
+/* ------------------------------------------------------------
+   22. KEY PRESS ROUTER
+   ------------------------------------------------------------ */
+function press(act){
+  /* Builder mode intercepts most keys */
+  if(state.builder){
+    if(act === 'ENTER'){ acceptBuilder(); return; }
+    if(act === 'CLEAR'){ closeBuilder(); return; }
+    if(act === 'MENU'){ closeBuilder(); state.screen = 'MENU'; render(); return; }
+    if(act === 'DEL'){
+      const inp = document.getElementById('builderInput');
+      inp.value = inp.value.slice(0, -1);
+      updateBuilderPreviewFromInput();
+      return;
+    }
+    /* alphanumeric and chord type shortcuts go into the input */
+    if(act.length === 1 || act === 'maj7' || act === 'm7' || act === 'dim7' || act === 'm7b5' || act === '7q'){
+      const inp = document.getElementById('builderInput');
+      const add = act === '7q' ? '7' : act;
+      inp.value += add;
+      updateBuilderPreviewFromInput();
+      return;
+    }
+    return;
+  }
+
+  if(act === 'MENU'){ state.screen = 'MENU'; render(); return; }
+  if(act === 'PIANO'){ state.screen = 'PIANO'; render(); return; }
+  if(act === 'SCALES'){ state.screen = 'SCALES'; render(); return; }
+  if(act === 'SETTINGS'){ state.screen = 'SETTINGS'; render(); return; }
+  if(act === 'TRANSPOSE'){ state.screen = 'TRANSPOSE'; render(); return; }
+  if(act === 'SEARCH'){ state.screen = 'SEARCH'; render(); return; }
+  if(act === 'MODE'){ cycleMode(1); render(); return; }
+  if(act === 'SORT'){ cycleSort(1); render(); return; }
+  if(act === 'WHY'){
+    if(state.results.length){
+      state.screen = 'ANALYSIS';
+      state.analysisIdx = 0;
+      render();
+    } else {
+      doSearch();
+    }
+    return;
+  }
+  if(act === '2ND' || act === 'ALPHA'){ return; }
+
+  switch(state.screen){
+    case 'SEARCH': pressSearch(act); break;
+    case 'MENU': pressMenu(act); break;
+    case 'RESULTS': pressResults(act); break;
+    case 'ANALYSIS': pressAnalysis(act); break;
+    case 'CHORD': pressChord(act); break;
+    case 'SCALES': pressScales(act); break;
+    case 'SETTINGS': pressSettings(act); break;
+    case 'TRANSPOSE': pressTranspose(act); break;
+    case 'PIANO': pressPiano(act); break;
+    case 'HELP': pressHelp(act); break;
+  }
+}
+
+function pressSearch(act){
+  const f = state.focus;
+  if(act === 'UP'){ state.focus = (f + 5) % 6; render(); return; }
+  if(act === 'DOWN'){ state.focus = (f + 1) % 6; render(); return; }
+  if(act === 'LEFT' || act === 'RIGHT'){
+    const dir = (act === 'RIGHT') ? 1 : -1;
+    if(f === 2){
+      state.steps = Math.max(0, Math.min(MAX_STEPS, state.steps + dir));
+      save(); render();
+    } else if(f === 3){
+      cycleMode(dir); render();
+    } else if(f === 4){
+      cycleSort(dir); render();
+    }
+    return;
+  }
+  if(act === 'ENTER'){
+    if(f === 0){ openBuilder('FROM'); return; }
+    if(f === 1){ openBuilder('TARGET'); return; }
+    /* any other row: run search */
+    doSearch();
+    return;
+  }
+  if(act === 'CLEAR'){
+    if(f === 0){ state.fromStr = ''; state.error = ''; }
+    else if(f === 1){ state.toStr = ''; state.error = ''; }
+    else if(f === 2){ state.steps = 0; }
+    else if(f === 3){ state.mode = 'ALL'; applyModeInternal('ALL'); }
+    else if(f === 4){ state.sort = 'COHERENCE'; }
+    save(); render();
+    return;
+  }
+  if(act === 'DEL'){
+    if(f === 0){ state.fromStr = state.fromStr.slice(0, -1); state.error = ''; }
+    else if(f === 1){ state.toStr = state.toStr.slice(0, -1); state.error = ''; }
+    save(); render();
+    return;
+  }
+  /* legacy quick-typing on SEARCH: still supported for direct editing */
+  if(f === 0 || f === 1){
+    const prop = (f === 0) ? 'fromStr' : 'toStr';
+    let add = null;
+    if(act === '7q') add = '7';
+    else if(/^[A-G]$/.test(act)) add = act;
+    else if(act === '#' || act === 'b') add = act;
+    else if(/^[0-9]$/.test(act)) add = add === null ? act : add;
+    else if(act === 'maj7' || act === 'm7' || act === 'dim7' || act === 'm7b5') add = act;
+    if(add !== null){
+      if(state[prop].length < 14) state[prop] += add;
+      state.error = '';
+      save(); render();
+    }
+    return;
+  }
+  if(f === 2 && /^[0-9]$/.test(act)){
+    state.steps = Math.min(MAX_STEPS, parseInt(act, 10));
+    save(); render();
+    return;
+  }
+}
+
+function pressMenu(act){
+  if(act === 'CLEAR'){ state.screen = 'SEARCH'; render(); return; }
+  if(act === 'UP' || act === 'DOWN' || act === 'LEFT' || act === 'RIGHT'){ return; }
+  const map = {
+    '1':'SEARCH','2':'RESULTS','3':'ANALYSIS','4':'SCALES',
+    '5':'SETTINGS','6':'TRANSPOSE','7':'PIANO','8':'HELP'
+  };
+  if(map[act]){
+    const target = map[act];
+    if(target === 'RESULTS' && !state.results.length){ doSearch(); return; }
+    if(target === 'ANALYSIS' && !state.results.length){ doSearch(); return; }
+    state.screen = target;
+    state.analysisIdx = 0;
+    render();
+    return;
+  }
+  if(act === 'ENTER'){ state.screen = 'SEARCH'; render(); }
+}
+
+function pressResults(act){
+  if(act === 'UP' || act === 'LEFT'){ changeRoute(-1); return; }
+  if(act === 'DOWN' || act === 'RIGHT'){ changeRoute(1); return; }
+  if(act === 'ENTER'){
+    if(state.results.length){
+      state.screen = 'ANALYSIS';
+      state.analysisIdx = 0;
+      render();
+    }
+    return;
+  }
+  if(act === 'CLEAR'){ state.screen = 'SEARCH'; render(); return; }
+  if(act === 'SEARCH'){ doSearch(); return; }
+  if(/^[0-9]$/.test(act)){
+    if(state.results.length){
+      const idx = parseInt(act, 10);
+      if(idx >= 0 && idx < Math.min(10, state.results.length)){
+        state.rIndex = idx;
+        state.analysisIdx = 0;
+        render();
+      }
+    }
+  }
+}
+
+function pressAnalysis(act){
+  if(!state.results.length){ state.screen = 'RESULTS'; render(); return; }
+  const r = state.results[state.rIndex];
+  const n = r.rels.length;
+  if(act === 'LEFT'){ state.analysisIdx = (state.analysisIdx - 1 + n) % n; render(); return; }
+  if(act === 'RIGHT'){ state.analysisIdx = (state.analysisIdx + 1) % n; render(); return; }
+  if(act === 'UP'){ changeRoute(-1); return; }
+  if(act === 'DOWN'){ changeRoute(1); return; }
+  if(act === 'ENTER'){ state.screen = 'CHORD'; render(); return; }
+  if(act === 'CLEAR'){ state.screen = 'RESULTS'; render(); return; }
+}
+
+function pressChord(act){
+  if(act === 'CLEAR'){ state.screen = 'ANALYSIS'; render(); return; }
+  if(act === 'ENTER'){ state.screen = 'PIANO'; render(); return; }
+  if(act === 'LEFT' || act === 'RIGHT'){
+    if(!state.results.length) return;
+    const r = state.results[state.rIndex];
+    const n = r.chords.length;
+    state.analysisIdx = (state.analysisIdx + (act === 'RIGHT' ? 1 : -1) + n) % n;
+    render();
+    return;
+  }
+}
+
+function pressScales(act){
+  if(act === 'CLEAR'){ state.screen = 'SEARCH'; render(); return; }
+  if(act === 'ENTER'){ state.screen = 'SEARCH'; render(); return; }
+}
+
+function pressSettings(act){
+  if(act === 'CLEAR'){ state.screen = 'SEARCH'; render(); return; }
+  if(act === 'UP'){ state.settingsIdx = (state.settingsIdx + FILTER_KEYS.length - 1) % FILTER_KEYS.length; render(); return; }
+  if(act === 'DOWN'){ state.settingsIdx = (state.settingsIdx + 1) % FILTER_KEYS.length; render(); return; }
+  if(act === 'LEFT' || act === 'RIGHT'){
+    cycleSort(act === 'RIGHT' ? 1 : -1);
+    render();
+    return;
+  }
+  if(/^[1-9]$/.test(act)){
+    const i = parseInt(act, 10) - 1;
+    if(i >= 0 && i < FILTER_KEYS.length){
+      const k = FILTER_KEYS[i];
+      state.filters[k] = !state.filters[k];
+      state.mode = 'CUSTOM';
+      save();
+      render();
+    }
+  }
+}
+
+function pressTranspose(act){
+  if(act === 'LEFT'){ state.transpose = Math.max(-12, state.transpose - 1); render(); return; }
+  if(act === 'RIGHT'){ state.transpose = Math.min(12, state.transpose + 1); render(); return; }
+  if(act === 'UP'){ state.transpose = Math.min(12, state.transpose + 1); render(); return; }
+  if(act === 'DOWN'){ state.transpose = Math.max(-12, state.transpose - 1); render(); return; }
+  if(act === 'ENTER'){ applyTranspose(); return; }
+  if(act === 'CLEAR'){ state.transpose = 0; state.screen = 'SEARCH'; render(); return; }
+}
+
+function pressPiano(act){
+  if(act === 'CLEAR'){ state.screen = 'ANALYSIS'; render(); return; }
+  if(act === 'ENTER'){ state.screen = 'CHORD'; render(); return; }
+  if(act === 'LEFT' || act === 'RIGHT'){
+    if(!state.results.length) return;
+    const r = state.results[state.rIndex];
+    const n = r.chords.length;
+    state.analysisIdx = (state.analysisIdx + (act === 'RIGHT' ? 1 : -1) + n) % n;
+    render();
+    return;
+  }
+}
+
+function pressHelp(act){
+  if(act === 'CLEAR' || act === 'ENTER'){ state.screen = 'MENU'; render(); }
+}
+
+/* expose globals for HTML handlers */
+window.openBuilder = openBuilder;
+window.doSearch = doSearch;
+
+/* ------------------------------------------------------------
+   23. KEYPAD UI
+   ------------------------------------------------------------ */
+const KEY_DEFS = [
+  {k:'2ND',    act:'2ND',      cls:'k2nd'},
+  {k:'ALPHA',  act:'ALPHA',    cls:'kalpha'},
+  {k:'MODE',   act:'MODE'},
+  {k:'MENU',   act:'MENU'},
+  {k:'CLEAR',  act:'CLEAR',    cls:'kclear'},
+
+  {k:'UP',     act:'UP',       cls:'kfun'},
+  {k:'DOWN',   act:'DOWN',     cls:'kfun'},
+  {k:'LEFT',   act:'LEFT',     cls:'kfun'},
+  {k:'RIGHT',  act:'RIGHT',    cls:'kfun'},
+  {k:'DEL',    act:'DEL',      cls:'kdel'},
+
+  {k:'SEARCH', act:'SEARCH',   cls:'kfun'},
+  {k:'WHY?',   act:'WHY',      cls:'kfun'},
+  {k:'PIANO',  act:'PIANO',    cls:'kfun'},
+  {k:'SCALES', act:'SCALES',   cls:'kfun'},
+  {k:'SORT',   act:'SORT',     cls:'kfun'},
+
+  {k:'C', act:'C', cls:'knote'},
+  {k:'D', act:'D', cls:'knote'},
+  {k:'E', act:'E', cls:'knote'},
+  {k:'F', act:'F', cls:'knote'},
+  {k:'G', act:'G', cls:'knote'},
+
+  {k:'A', act:'A', cls:'knote'},
+  {k:'B', act:'B', cls:'knote'},
+  {k:'#', act:'#'},
+  {k:'b', act:'b'},
+  {k:'TRANS', act:'TRANSPOSE', cls:'kfun'},
+
+  {k:'1', act:'1'},
+  {k:'2', act:'2'},
+  {k:'3', act:'3'},
+  {k:'4', act:'4'},
+  {k:'5', act:'5'},
+
+  {k:'6', act:'6'},
+  {k:'7', act:'7'},
+  {k:'8', act:'8'},
+  {k:'9', act:'9'},
+  {k:'0', act:'0'},
+
+  {k:'maj7', act:'maj7', cls:'ktype'},
+  {k:'m7',   act:'m7',   cls:'ktype'},
+  {k:'7',    act:'7q',   cls:'ktype'},
+  {k:'dim7', act:'dim7', cls:'ktype'},
+  {k:'m7b5', act:'m7b5', cls:'ktype'},
+
+  {k:'ENTER', act:'ENTER', cls:'kenter kwide'}
+];
+
+const ARROW_GLYPH = {'UP':'\u25B2','DOWN':'\u25BC','LEFT':'\u25C0','RIGHT':'\u25B6'};
+
+function buildKeypad(){
+  const host = document.getElementById('keys');
+  host.innerHTML = '';
+  for(let i = 0; i < KEY_DEFS.length; i++){
+    const def = KEY_DEFS[i];
+    const btn = document.createElement('div');
+    btn.className = 'key' + (def.cls ? ' ' + def.cls : '');
+    btn.textContent = ARROW_GLYPH[def.k] || def.k;
+    btn.setAttribute('data-act', def.act);
+    btn.addEventListener('click', function(ev){
+      ev.preventDefault();
+      press(def.act);
+    });
+    btn.addEventListener('touchstart', function(ev){
+      btn.classList.add('pressed');
+    }, {passive:true});
+    btn.addEventListener('touchend', function(ev){
+      btn.classList.remove('pressed');
+    }, {passive:true});
+    host.appendChild(btn);
+  }
+}
+
+/* ------------------------------------------------------------
+   24. PHYSICAL KEYBOARD
+   ------------------------------------------------------------ */
+document.addEventListener('keydown', function(e){
+  const ae = document.activeElement;
+  const isFormControl = ae && (
+    ae.tagName === 'INPUT' ||
+    ae.tagName === 'SELECT' ||
+    ae.tagName === 'TEXTAREA'
+  );
+
+  if(isFormControl){
+    /* let native control handle keys, but ESC cancels */
+    if(e.key === 'Escape'){
+      press('CLEAR');
+      e.preventDefault();
+    }
+    return;
+  }
+
+  const k = e.key;
+  if(k === 'ArrowUp'){ press('UP'); e.preventDefault(); return; }
+  if(k === 'ArrowDown'){ press('DOWN'); e.preventDefault(); return; }
+  if(k === 'ArrowLeft'){ press('LEFT'); e.preventDefault(); return; }
+  if(k === 'ArrowRight'){ press('RIGHT'); e.preventDefault(); return; }
+  if(k === 'Enter'){ press('ENTER'); e.preventDefault(); return; }
+  if(k === 'Backspace'){ press('DEL'); e.preventDefault(); return; }
+  if(k === 'Escape'){ press('CLEAR'); e.preventDefault(); return; }
+  if(k === 'Delete'){ press('CLEAR'); e.preventDefault(); return; }
+  if(k === 'Tab'){ press('MODE'); e.preventDefault(); return; }
+  if(k === '#'){ press('#'); e.preventDefault(); return; }
+  if(/^[0-9]$/.test(k)){ press(k); e.preventDefault(); return; }
+  if(/^[A-Ga-g]$/.test(k)){ press(k.toUpperCase()); e.preventDefault(); return; }
+  if(k === 'b' || k === 'B'){ press(k === 'b' ? 'b' : 'B'); e.preventDefault(); return; }
+});
+
+/* ------------------------------------------------------------
+   25. BUILDER UI BINDINGS
+   ------------------------------------------------------------ */
+function bindBuilderUI(){
+  const noteSel = document.getElementById('builderNote');
+  const typeSel = document.getElementById('builderType');
+  const input = document.getElementById('builderInput');
+  const accept = document.getElementById('builderAccept');
+  const cancel = document.getElementById('builderCancel');
+
+  noteSel.addEventListener('change', function(){
+    const note = noteSel.value;
+    const type = typeSel.value;
+    input.value = note + (TYPE_SYMBOL[type] || type);
+    updateBuilderPreviewFromDropdowns();
+  });
+
+  typeSel.addEventListener('change', function(){
+    const note = noteSel.value;
+    const type = typeSel.value;
+    input.value = note + (TYPE_SYMBOL[type] || type);
+    updateBuilderPreviewFromDropdowns();
+  });
+
+  input.addEventListener('input', function(){
+    updateBuilderPreviewFromInput();
+  });
+
+  input.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      acceptBuilder();
+    } else if(e.key === 'Escape'){
+      e.preventDefault();
+      closeBuilder();
+    }
+  });
+
+  accept.addEventListener('click', function(ev){
+    ev.preventDefault();
+    acceptBuilder();
+  });
+
+  cancel.addEventListener('click', function(ev){
+    ev.preventDefault();
+    closeBuilder();
+  });
+
+  /* quick actions */
+  const qFrom = document.getElementById('qFrom');
+  const qTo = document.getElementById('qTo');
+  const qFind = document.getElementById('qFind');
+
+  qFrom.addEventListener('click', function(ev){ ev.preventDefault(); openBuilder('FROM'); });
+  qTo.addEventListener('click', function(ev){ ev.preventDefault(); openBuilder('TARGET'); });
+  qFind.addEventListener('click', function(ev){ ev.preventDefault(); doSearch(); });
+}
+
+/* ------------------------------------------------------------
+   26. BOOT
+   ------------------------------------------------------------ */
+(function boot(){
+  load();
+  populateBuilderSelects();
+  buildKeypad();
+  bindBuilderUI();
+  render();
+
+  /* initial demonstration search */
+  const from = parseChord(state.fromStr);
+  const to = parseChord(state.toStr);
+  if(from && to){
+    try{
+      const out = runSearch(from, to, state.steps, state.filters);
+      state.key = out.key;
+      state.results = sortResults(out.results.slice(), state.sort);
+      state.rIndex = 0;
+      state.analysisIdx = 0;
+    }catch(err){
+      state.results = [];
+    }
+  }
+  render();
+})();
+</script>
+</body>
+</html>
