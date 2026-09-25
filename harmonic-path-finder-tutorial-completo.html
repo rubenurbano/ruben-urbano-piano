@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HARMONIC PATH FINDER — Tutorial Completo</title>
+<style>
+  :root{
+    --bg:#0a0e1a; --card:#0f172a; --border:#1e3a5f;
+    --accent:#00d4ff; --green:#22c55e; --amber:#f59e0b;
+    --red:#ef4444; --purple:#a855f7;
+    --txt:#e2e8f0; --muted:#94a3b8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg); color:var(--txt);
+    line-height:1.6; overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---------- PROGRESS BAR ---------- */
+  #progressBar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));
+    z-index:1000; transition:width .15s linear;
+    box-shadow:0 0 12px var(--accent);
+  }
+  /* ---------- NAVBAR ---------- */
+  nav{
+    position:fixed; top:3px; left:0; right:0;
+    background:rgba(10,14,26,.94);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+    z-index:999;
+  }
+  .nav-scroll{
+    display:flex; gap:6px; overflow-x:auto; padding:10px 14px;
+    scrollbar-width:thin; scrollbar-color:var(--border) transparent;
+  }
+  .nav-scroll::-webkit-scrollbar{height:4px;}
+  .nav-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+  .nav-btn{
+    flex:0 0 auto; padding:8px 14px; border-radius:8px;
+    background:transparent; color:var(--muted);
+    border:1px solid var(--border); cursor:pointer;
+    font-size:.78rem; font-weight:600; letter-spacing:.5px;
+    transition:all .25s ease; font-family:inherit;
+    text-transform:uppercase; white-space:nowrap;
+  }
+  .nav-btn:hover{color:var(--accent); border-color:var(--accent);}
+  .nav-btn.active{
+    background:linear-gradient(135deg,rgba(0,212,255,.18),rgba(168,85,247,.18));
+    color:var(--accent); border-color:var(--accent);
+    box-shadow:0 0 14px rgba(0,212,255,.35);
+  }
+  .nav-btn.credits{color:var(--purple); border-color:var(--purple);}
+  .nav-btn.credits.active{color:#fff;background:rgba(168,85,247,.25);}
+  /* ---------- LAYOUT ---------- */
+  main{padding:100px 18px 60px; max-width:1180px; margin:0 auto;}
+  section{display:none; animation:fadeIn .45s ease;}
+  section.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  h1,h2,h3,h4{font-weight:700; letter-spacing:.2px; line-height:1.25;}
+  h2{
+    font-size:clamp(1.4rem,3.5vw,2rem); color:var(--accent);
+    margin-bottom:6px; display:flex; align-items:center; gap:10px;
+  }
+  h2::before{
+    content:''; width:5px; height:1.1em; border-radius:3px;
+    background:linear-gradient(180deg,var(--accent),var(--purple));
+    box-shadow:0 0 10px var(--accent);
+  }
+  h3{font-size:clamp(1.05rem,2.4vw,1.35rem); color:#fff; margin:18px 0 8px;}
+  h4{font-size:1rem; color:var(--amber); margin:14px 0 6px;}
+  p{margin:8px 0; color:var(--txt);}
+  .sec-head{margin-bottom:22px;}
+  .sec-head .sub{color:var(--muted); font-size:.9rem; margin-top:4px;}
+  .divider{
+    height:1px; background:linear-gradient(90deg,transparent,var(--border),transparent);
+    margin:26px 0;
+  }
+  /* ---------- CARDS ---------- */
+  .card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:18px 20px; margin:14px 0;
+    transition:border-color .3s, transform .3s, box-shadow .3s;
+    position:relative; overflow:hidden;
+  }
+  .card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,var(--accent),var(--purple));
+    opacity:.55;
+  }
+  .card:hover{border-color:var(--accent); transform:translateY(-2px);
+    box-shadow:0 10px 26px rgba(0,212,255,.12);}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px;}
+  .grid-3{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px;}
+  /* ---------- BADGES / CHIPS ---------- */
+  .badge{
+    display:inline-block; padding:3px 10px; border-radius:999px;
+    font-size:.72rem; font-weight:700; letter-spacing:.8px;
+    text-transform:uppercase; border:1px solid;
+  }
+  .b-blue{color:var(--accent);border-color:var(--accent);background:rgba(0,212,255,.1);}
+  .b-green{color:var(--green);border-color:var(--green);background:rgba(34,197,94,.1);}
+  .b-amber{color:var(--amber);border-color:var(--amber);background:rgba(245,158,11,.1);}
+  .b-red{color:var(--red);border-color:var(--red);background:rgba(239,68,68,.1);}
+  .b-purple{color:var(--purple);border-color:var(--purple);background:rgba(168,85,247,.1);}
+  .chip{
+    display:inline-block; padding:5px 11px; margin:4px 4px 4px 0;
+    background:rgba(0,212,255,.09); border:1px solid var(--border);
+    border-radius:999px; font-size:.8rem; color:var(--txt);
+    font-family:'Consolas',monospace;
+  }
+  .chip.p{background:rgba(168,85,247,.12); color:var(--purple);}
+  .chip.g{background:rgba(34,197,94,.12); color:var(--green);}
+  /* ---------- CALLOUTS ---------- */
+  .callout{
+    border-left:4px solid; border-radius:8px; padding:12px 16px;
+    margin:14px 0; background:rgba(15,23,42,.7);
+  }
+  .callout.info{border-color:var(--accent); background:rgba(0,212,255,.08);}
+  .callout.ex{border-color:var(--green); background:rgba(34,197,94,.08);}
+  .callout.warn{border-color:var(--amber); background:rgba(245,158,11,.08);}
+  .callout.err{border-color:var(--red); background:rgba(239,68,68,.08);}
+  .callout .lbl{font-size:.72rem; font-weight:800; letter-spacing:1.2px;
+    text-transform:uppercase; display:block; margin-bottom:4px;}
+  .callout.info .lbl{color:var(--accent);}
+  .callout.ex .lbl{color:var(--green);}
+  .callout.warn .lbl{color:var(--amber);}
+  .callout.err .lbl{color:var(--red);}
+  /* ---------- CODE / MONO ---------- */
+  code{
+    font-family:'Consolas',monospace; background:#0a1428;
+    padding:2px 7px; border-radius:5px; color:var(--accent);
+    font-size:.86em; border:1px solid var(--border);
+  }
+  pre{
+    background:#0a1428; border:1px solid var(--border);
+    border-radius:10px; padding:14px 16px; overflow-x:auto;
+    font-family:'Consolas',monospace; font-size:.86rem;
+    color:var(--txt); margin:10px 0; line-height:1.5;
+  }
+  /* ---------- TABLES ---------- */
+  .tbl-wrap{overflow-x:auto; margin:12px 0; border-radius:10px; border:1px solid var(--border);}
+  table{width:100%; border-collapse:collapse; font-size:.88rem; min-width:340px;}
+  th,td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--border);}
+  th{background:rgba(0,212,255,.1); color:var(--accent);
+    font-weight:700; letter-spacing:.5px; font-size:.76rem; text-transform:uppercase;}
+  tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:rgba(0,212,255,.04);}
+  /* ---------- STEPS ---------- */
+  .step{
+    display:flex; gap:14px; margin:12px 0; align-items:flex-start;
+  }
+  .step .n{
+    flex:0 0 34px; height:34px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--purple));
+    color:#fff; font-weight:800; display:flex; align-items:center;
+    justify-content:center; font-size:.9rem; box-shadow:0 0 12px rgba(0,212,255,.4);
+  }
+  .step .body{flex:1; padding-top:3px;}
+  /* ---------- ACCORDION ---------- */
+  .acc{background:var(--card); border:1px solid var(--border);
+    border-radius:10px; margin:10px 0; overflow:hidden;}
+  .acc-h{
+    padding:13px 16px; cursor:pointer; display:flex;
+    justify-content:space-between; align-items:center;
+    font-weight:600; color:#fff; user-select:none;
+    transition:background .2s;
+  }
+  .acc-h:hover{background:rgba(0,212,255,.06);}
+  .acc-h .arrow{transition:transform .3s; color:var(--accent);}
+  .acc.open .acc-h .arrow{transform:rotate(90deg);}
+  .acc-b{max-height:0; overflow:hidden; transition:max-height .4s ease;
+    padding:0 16px; color:var(--txt); font-size:.94rem;}
+  .acc.open .acc-b{max-height:900px; padding:0 16px 16px;}
+  /* Accordions dentro de la pestaña Ejercicios (soluciones más largas) */
+  .acc.exercise-acc{background:#0a1428; border-color:var(--border);}
+  .acc.exercise-acc .acc-h{background:rgba(0,212,255,.05);}
+  .acc.exercise-acc.open .acc-b{max-height:3200px;}
+  /* ---------- HOME ---------- */
+  .home-badge{
+    display:inline-block; padding:5px 14px; border-radius:999px;
+    background:rgba(0,212,255,.12); border:1px solid var(--accent);
+    color:var(--accent); font-size:.72rem; font-weight:700;
+    letter-spacing:1.5px; text-transform:uppercase; margin-bottom:14px;
+  }
+  .home-title{
+    font-size:clamp(1.9rem,6vw,3.4rem); font-weight:800;
+    line-height:1.05; margin-bottom:10px;
+    background:linear-gradient(120deg,#fff 15%,var(--accent) 55%,var(--purple) 95%);
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent;
+    letter-spacing:-.5px;
+  }
+  .home-sub{
+    font-size:clamp(1rem,2.5vw,1.25rem); color:var(--muted);
+    margin-bottom:16px; font-weight:400;
+  }
+  .home-desc{
+    color:var(--txt); font-size:1rem; max-width:820px;
+    margin-bottom:20px;
+  }
+  .quote{
+    border-left:4px solid var(--accent); padding:14px 20px;
+    background:rgba(0,212,255,.06); border-radius:8px;
+    font-style:italic; color:#cbd5e1; margin:20px 0;
+    font-size:1.02rem;
+  }
+  .metrics{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+    gap:12px; margin:22px 0;
+  }
+  .metric{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:10px; padding:14px; text-align:center;
+    transition:transform .3s, border-color .3s;
+  }
+  .metric:hover{transform:translateY(-3px); border-color:var(--accent);}
+  .metric .v{font-size:1.5rem; font-weight:800; color:var(--accent);
+    display:block; line-height:1;}
+  .metric .l{font-size:.7rem; color:var(--muted); letter-spacing:1px;
+    text-transform:uppercase; margin-top:6px; display:block;}
+  .stamp{
+    display:inline-block; padding:6px 14px; margin:6px 6px 6px 0;
+    background:rgba(15,23,42,.9); border:1px solid var(--border);
+    border-radius:8px; font-size:.78rem; color:var(--muted);
+    font-family:'Consolas',monospace;
+  }
+  /* ---------- SVG WRAP ---------- */
+  .svg-wrap{
+    width:100%; margin:0 0 24px; border-radius:14px;
+    overflow:hidden; border:1px solid var(--border);
+    background:#070b14; box-shadow:0 12px 40px rgba(0,212,255,.14);
+    position:relative;
+  }
+  .svg-wrap svg{display:block; width:100%; height:auto;}
+  /* ---------- PATH DIAGRAM (content) ---------- */
+  .path{
+    display:flex; flex-wrap:wrap; align-items:center;
+    gap:8px; margin:12px 0; padding:14px;
+    background:rgba(10,20,40,.6); border:1px solid var(--border);
+    border-radius:10px; font-family:'Consolas',monospace; font-size:.86rem;
+  }
+  .path .node{
+    padding:6px 12px; border-radius:8px;
+    background:rgba(0,212,255,.1); border:1px solid var(--accent);
+    color:var(--accent); font-weight:600;
+  }
+  .path .node.g{background:rgba(34,197,94,.1); border-color:var(--green); color:var(--green);}
+  .path .node.p{background:rgba(168,85,247,.1); border-color:var(--purple); color:var(--purple);}
+  .path .node.a{background:rgba(245,158,11,.1); border-color:var(--amber); color:var(--amber);}
+  .path .arrow{color:var(--muted); font-weight:700;}
+  /* ---------- CHORD CONSTRUCTOR ---------- */
+  .ctor{
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+    margin:14px 0;
+  }
+  .ctor label{display:block; font-size:.72rem; color:var(--muted);
+    letter-spacing:1px; text-transform:uppercase; margin-bottom:6px;}
+  .ctor select{
+    width:100%; padding:10px 12px; background:#0a1428;
+    border:1px solid var(--border); border-radius:8px;
+    color:var(--txt); font-family:inherit; font-size:.95rem;
+    cursor:pointer;
+  }
+  .ctor select:focus{outline:none; border-color:var(--accent);}
+  .ctor-out{
+    grid-column:1/-1; padding:16px; border-radius:10px;
+    background:linear-gradient(135deg,rgba(0,212,255,.12),rgba(168,85,247,.12));
+    border:1px solid var(--accent); text-align:center;
+  }
+  .ctor-out .big{
+    font-size:1.9rem; font-weight:800; color:#fff;
+    font-family:'Consolas',monospace; letter-spacing:1px;
+    text-shadow:0 0 20px rgba(0,212,255,.6);
+  }
+  .ctor-out .sub{color:var(--muted); font-size:.82rem; margin-top:6px;}
+  /* ---------- FUENTES ---------- */
+  .src-item{
+    display:flex; gap:12px; padding:14px;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:10px; margin:10px 0; align-items:flex-start;
+  }
+  .src-item .ic{
+    flex:0 0 40px; height:40px; border-radius:8px;
+    background:rgba(0,212,255,.12); display:flex;
+    align-items:center; justify-content:center;
+    color:var(--accent); font-size:1.2rem; font-weight:800;
+  }
+  .src-item .bd{flex:1; min-width:0;}
+  .src-item .bd h4{margin:0 0 4px; color:#fff;}
+  .src-item .bd p{margin:0; font-size:.86rem; color:var(--muted); word-break:break-word;}
+  /* ---------- CREDITS ---------- */
+  .credit-box{
+    text-align:center; padding:26px 18px;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:14px; margin-top:20px;
+  }
+  .credit-box .name{
+    font-size:1.4rem; font-weight:800; margin:10px 0;
+    background:linear-gradient(120deg,var(--accent),var(--purple));
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .credit-box .meta{color:var(--muted); font-size:.86rem; margin:4px 0;}
+  .credit-box .latin{
+    font-style:italic; color:var(--amber); margin-top:16px;
+    font-size:.95rem;
+  }
+  /* ---------- BACK TO TOP ---------- */
+  #toTop{
+    position:fixed; right:16px; bottom:16px; width:46px; height:46px;
+    border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--purple));
+    color:#fff; border:none; cursor:pointer; font-size:1.2rem;
+    display:none; align-items:center; justify-content:center;
+    box-shadow:0 8px 24px rgba(0,212,255,.45); z-index:998;
+    transition:transform .3s;
+  }
+  #toTop.show{display:flex;}
+  #toTop:hover{transform:translateY(-3px) scale(1.05);}
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--border); margin-top:40px;
+    padding:26px 18px 40px; text-align:center;
+    color:var(--muted); font-size:.86rem;
+  }
+  footer p{margin:5px 0;}
+  footer .latin{color:var(--amber); font-style:italic; margin-top:10px;}
+  /* ---------- MISC ---------- */
+  .kw{color:var(--accent); font-weight:600;}
+  .kw-g{color:var(--green); font-weight:600;}
+  .kw-a{color:var(--amber); font-weight:600;}
+  .kw-p{color:var(--purple); font-weight:600;}
+  .kw-r{color:var(--red); font-weight:600;}
+  ul,ol{padding-left:22px; margin:8px 0;}
+  li{margin:4px 0;}
+  .small{font-size:.85rem; color:var(--muted);}
+  .ex-badges{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;}
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:520px){
+    main{padding:96px 12px 50px;}
+    .nav-btn{padding:7px 11px; font-size:.7rem;}
+    .card{padding:15px 14px;}
+    .ctor{grid-template-columns:1fr;}
+    .metric .v{font-size:1.25rem;}
+    .step .n{flex:0 0 28px; height:28px; font-size:.8rem;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; animation-iteration-count:1 !important;}
+    section{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<nav>
+  <div class="nav-scroll" id="navScroll">
+    <button class="nav-btn active" data-tab="home">Inicio</button>
+    <button class="nav-btn" data-tab="fund">Fundamentos</button>
+    <button class="nav-btn" data-tab="interfaz">Interfaz</button>
+    <button class="nav-btn" data-tab="grados">Grados</button>
+    <button class="nav-btn" data-tab="busqueda">Búsqueda</button>
+    <button class="nav-btn" data-tab="relaciones">Relaciones</button>
+    <button class="nav-btn" data-tab="analisis">Análisis</button>
+    <button class="nav-btn" data-tab="experimentos">Experimentos</button>
+    <button class="nav-btn" data-tab="estudio">Estudio</button>
+    <button class="nav-btn" data-tab="ejercicios">Ejercicios</button>
+    <button class="nav-btn" data-tab="sintesis">Síntesis</button>
+    <button class="nav-btn" data-tab="fuentes">Fuentes</button>
+    <button class="nav-btn credits" data-tab="creditos">Créditos</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================================================ HOME -->
+<section id="home" class="active">
+
+  <div class="svg-wrap">
+    <svg id="coverSVG" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Portada animada HARMONIC PATH FINDER">
+      <defs>
+        <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#070b14">
+            <animate attributeName="stop-color" values="#070b14;#0b1730;#070b14" dur="8s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="0.5" stop-color="#0a0e1a">
+            <animate attributeName="stop-color" values="#0a0e1a;#11203f;#0a0e1a" dur="9s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="1" stop-color="#070b14">
+            <animate attributeName="stop-color" values="#070b14;#0d1b36;#070b14" dur="7s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+        <radialGradient id="glowBlue" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.85"/>
+          <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glowPurple" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#a855f7" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glowGreen" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#22c55e" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glowAmber" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.85"/>
+          <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="glowF" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowSoft" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="6" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M40 0H0V40" fill="none" stroke="#1e3a5f" stroke-width="0.5"/>
+        </pattern>
+        <!-- Path 1: C -> A7 -->
+        <path id="p1" d="M120 260 C 200 190, 250 190, 320 240" fill="none"/>
+        <!-- Path 2: A7 -> Dm7 -->
+        <path id="p2" d="M330 245 C 380 275, 420 275, 460 245" fill="none"/>
+        <!-- Path 3: Dm7 -> G7 -->
+        <path id="p3" d="M470 245 C 520 215, 560 215, 610 245" fill="none"/>
+        <!-- Path 4: G7 -> Cmaj7 -->
+        <path id="p4" d="M620 245 C 665 275, 690 275, 730 245" fill="none"/>
+        <!-- Narrative arc across top -->
+        <path id="pArc" d="M120 200 C 250 80, 550 80, 730 200" fill="none"/>
+      </defs>
+
+      <!-- FONDO -->
+      <rect width="800" height="450" fill="url(#bgGrad)"/>
+      <rect width="800" height="450" fill="url(#grid)" opacity="0.45">
+        <animate attributeName="opacity" values="0.2;0.6;0.2" dur="6s" repeatCount="indefinite"/>
+      </rect>
+
+      <!-- ANILLOS ORBITALES CONCÉNTRICOS -->
+      <g transform="translate(400,225)">
+        <circle r="205" fill="none" stroke="#00d4ff" stroke-width="1" stroke-dasharray="3 10" opacity="0.35">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="48s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-dasharray" values="3 10;10 5;3 10" dur="12s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="170" fill="none" stroke="#a855f7" stroke-width="0.8" stroke-dasharray="6 6" opacity="0.28">
+          <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="36s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-dasharray" values="6 6;2 14;6 6" dur="9s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="135" fill="none" stroke="#22c55e" stroke-width="0.7" stroke-dasharray="4 8" opacity="0.22">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="28s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- TÍTULO PRINCIPAL -->
+      <g filter="url(#glowF)">
+        <text x="400" y="58" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-weight="800" font-size="30" letter-spacing="3">
+          <tspan fill="#00d4ff">
+            <animate attributeName="fill" values="#00d4ff;#a855f7;#22c55e;#f59e0b;#00d4ff" dur="12s" repeatCount="indefinite"/>
+            HARMONIC PATH FINDER
+          </tspan>
+        </text>
+      </g>
+      <text x="400" y="82" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif" font-weight="400" font-size="12" letter-spacing="4" fill="#94a3b8">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="4s" repeatCount="indefinite"/>
+        EXPLORADOR DE CAMINOS ARMÓNICOS
+      </text>
+
+      <!-- TEXTO ESTADO SUPERIOR IZQUIERDA -->
+      <g transform="translate(20,20)">
+        <rect x="0" y="0" width="86" height="22" rx="11" fill="rgba(239,68,68,0.15)" stroke="#ef4444" stroke-width="1"/>
+        <circle cx="12" cy="11" r="3.5" fill="#ef4444">
+          <animate attributeName="opacity" values="1;0.2;1" dur="1.2s" repeatCount="indefinite"/>
+        </circle>
+        <text x="24" y="15" font-family="Consolas, monospace" font-size="10" fill="#ef4444" font-weight="700">LIVE</text>
+      </g>
+
+      <!-- TEXTO ESTADO SUPERIOR DERECHA -->
+      <g transform="translate(660,20)">
+        <text x="0" y="15" font-family="Consolas, monospace" font-size="10" fill="#22c55e" font-weight="700">
+          <animate attributeName="opacity" values="0.4;1;0.4" dur="2.6s" repeatCount="indefinite"/>
+          ● ANALYZING
+        </text>
+      </g>
+
+      <!-- TECLADO DE PIANO (base) -->
+      <g transform="translate(60,395)" opacity="0.75">
+        <g>
+          <rect x="0" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="24" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="48" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="72" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="96" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="120" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="144" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="168" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="192" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="216" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="240" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="264" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="288" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="312" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="336" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="360" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="384" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="408" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="432" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="456" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="480" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="504" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="528" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="552" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="576" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="600" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="624" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <rect x="648" y="0" width="22" height="34" fill="#e2e8f0" rx="2"/>
+          <!-- Negras -->
+          <rect x="15" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="39" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="87" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="111" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="135" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="183" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="207" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="255" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="279" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="303" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="351" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="375" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="423" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="447" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="471" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="519" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="543" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="591" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="615" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <rect x="639" y="0" width="12" height="22" fill="#0a0e1a" rx="2"/>
+          <!-- Teclas destacadas animadas -->
+          <rect x="48" y="0" width="22" height="34" fill="#00d4ff" rx="2" opacity="0.9">
+            <animate attributeName="opacity" values="0.3;0.95;0.3" dur="3s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="264" y="0" width="22" height="34" fill="#a855f7" rx="2" opacity="0.9">
+            <animate attributeName="opacity" values="0.3;0.95;0.3" dur="2.5s" begin="0.6s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="480" y="0" width="22" height="34" fill="#f59e0b" rx="2" opacity="0.9">
+            <animate attributeName="opacity" values="0.3;0.95;0.3" dur="3.5s" begin="1.2s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="600" y="0" width="22" height="34" fill="#22c55e" rx="2" opacity="0.9">
+            <animate attributeName="opacity" values="0.3;0.95;0.3" dur="4s" begin="0.3s" repeatCount="indefinite"/>
+          </rect>
+        </g>
+      </g>
+
+      <!-- CAMINO NARRATIVO: arco superior flujo continuo -->
+      <path d="M120 200 C 250 80, 550 80, 730 200" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-dasharray="6 8" opacity="0.55" filter="url(#glowF)">
+        <animate attributeName="stroke-dashoffset" values="0;-28" dur="2s" repeatCount="indefinite"/>
+      </path>
+
+      <!-- CAMINOS ENTRE NODOS -->
+      <path d="M120 260 C 200 190, 250 190, 320 240" fill="none" stroke="#00d4ff" stroke-width="1.6" stroke-dasharray="7 7" opacity="0.7" filter="url(#glowF)">
+        <animate attributeName="stroke-dashoffset" values="0;-28" dur="2.2s" repeatCount="indefinite"/>
+      </path>
+      <path d="M330 245 C 380 275, 420 275, 460 245" fill="none" stroke="#22c55e" stroke-width="1.6" stroke-dasharray="7 7" opacity="0.7" filter="url(#glowF)">
+        <animate attributeName="stroke-dashoffset" values="0;-28" dur="2.6s" repeatCount="indefinite"/>
+      </path>
+      <path d="M470 245 C 520 215, 560 215, 610 245" fill="none" stroke="#f59e0b" stroke-width="1.6" stroke-dasharray="7 7" opacity="0.7" filter="url(#glowF)">
+        <animate attributeName="stroke-dashoffset" values="0;-28" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <path d="M620 245 C 665 275, 690 275, 730 245" fill="none" stroke="#a855f7" stroke-width="1.6" stroke-dasharray="7 7" opacity="0.7" filter="url(#glowF)">
+        <animate attributeName="stroke-dashoffset" values="0;-28" dur="3.4s" repeatCount="indefinite"/>
+      </path>
+
+      <!-- PARTÍCULAS VIAJERAS + FANTASMAS -->
+      <g filter="url(#glowF)">
+        <circle r="4" fill="#00d4ff">
+          <animateMotion dur="2.6s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#p1"/>
+          </animateMotion>
+          <animate attributeName="opacity" values="0.2;1;1;0.2" dur="2.6s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="3" fill="#22c55e">
+          <animateMotion dur="3s" begin="0.5s" repeatCount="indefinite">
+            <mpath href="#p2"/>
+          </animateMotion>
+          <animate attributeName="opacity" values="0.2;1;1;0.2" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="4" fill="#f59e0b">
+          <animateMotion dur="3.4s" begin="1s" repeatCount="indefinite">
+            <mpath href="#p3"/>
+          </animateMotion>
+          <animate attributeName="opacity" values="0.2;1;1;0.2" dur="3.4s" begin="1s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="3.5" fill="#a855f7">
+          <animateMotion dur="3.8s" begin="1.6s" repeatCount="indefinite">
+            <mpath href="#p4"/>
+          </animateMotion>
+          <animate attributeName="opacity" values="0.2;1;1;0.2" dur="3.8s" begin="1.6s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Partícula que recorre el arco completo -->
+        <circle r="5" fill="#ffffff">
+          <animateMotion dur="6s" repeatCount="indefinite">
+            <mpath href="#pArc"/>
+          </animateMotion>
+          <animate attributeName="opacity" values="0;1;1;0" dur="6s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- GHOSTS (fantasmas de acorde que recorren los paths) -->
+      <g>
+        <text font-family="Consolas, monospace" font-size="14" font-weight="700" fill="#00d4ff" opacity="0">
+          C(I)
+          <animateMotion dur="5s" repeatCount="indefinite">
+            <mpath href="#pArc"/>
+          </animateMotion>
+          <animate attributeName="opacity" values="0;0.9;0.9;0" dur="5s" repeatCount="indefinite"/>
+        </text>
+        <text font-family="Consolas, monospace" font-size="14" font-weight="700" fill="#a855f7" opacity="0">
+          V/ii
+          <animateMotion dur="4.4s" begin="1.4s" repeatCount="indefinite">
+            <mpath href="#pArc"/>
+          </animateMotion>
+          <animate attributeName="opacity" values="0;0.9;0.9;0" dur="4.4s" begin="1.4s" repeatCount="indefinite"/>
+        </text>
+      </g>
+
+      <!-- NODO 1: C(I) -->
+      <g transform="translate(110,260)">
+        <circle r="30" fill="url(#glowBlue)" opacity="0.55">
+          <animate attributeName="r" values="30;42;30" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.35;0.7;0.35" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="22" fill="#0f172a" stroke="#00d4ff" stroke-width="2" filter="url(#glowF)"/>
+        <text x="0" y="-2" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="800" fill="#00d4ff">C(I)</text>
+        <text x="0" y="10" text-anchor="middle" font-family="Consolas, monospace" font-size="8" fill="#94a3b8">Cmaj7</text>
+        <animateTransform attributeName="transform" type="translate" values="110,260;110,256;110,260" dur="4s" repeatCount="indefinite" additive="replace"/>
+      </g>
+
+      <!-- NODO 2: A7 (V/ii) -->
+      <g transform="translate(325,240)">
+        <circle r="26" fill="url(#glowPurple)" opacity="0.5">
+          <animate attributeName="r" values="26;36;26" dur="3.4s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="19" fill="#0f172a" stroke="#a855f7" stroke-width="2" filter="url(#glowF)"/>
+        <text x="0" y="-2" text-anchor="middle" font-family="Consolas, monospace" font-size="10" font-weight="800" fill="#a855f7">V/ii</text>
+        <text x="0" y="9" text-anchor="middle" font-family="Consolas, monospace" font-size="8" fill="#94a3b8">A7</text>
+        <animateTransform attributeName="transform" type="translate" values="325,240;325,236;325,240" dur="3.5s" repeatCount="indefinite"/>
+      </g>
+
+      <!-- NODO 3: Dm7 (ii) -->
+      <g transform="translate(465,245)">
+        <circle r="24" fill="url(#glowGreen)" opacity="0.5">
+          <animate attributeName="r" values="24;34;24" dur="2.8s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="18" fill="#0f172a" stroke="#22c55e" stroke-width="2" filter="url(#glowF)"/>
+        <text x="0" y="-2" text-anchor="middle" font-family="Consolas, monospace" font-size="10" font-weight="800" fill="#22c55e">ii</text>
+        <text x="0" y="9" text-anchor="middle" font-family="Consolas, monospace" font-size="8" fill="#94a3b8">Dm7</text>
+        <animateTransform attributeName="transform" type="translate" values="465,245;465,241;465,245" dur="4.5s" repeatCount="indefinite"/>
+      </g>
+
+      <!-- NODO 4: G7 (V) -->
+      <g transform="translate(615,245)">
+        <circle r="24" fill="url(#glowAmber)" opacity="0.55">
+          <animate attributeName="r" values="24;34;24" dur="3.2s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="18" fill="#0f172a" stroke="#f59e0b" stroke-width="2" filter="url(#glowF)"/>
+        <text x="0" y="-2" text-anchor="middle" font-family="Consolas, monospace" font-size="10" font-weight="800" fill="#f59e0b">V</text>
+        <text x="0" y="9" text-anchor="middle" font-family="Consolas, monospace" font-size="8" fill="#94a3b8">G7</text>
+        <animateTransform attributeName="transform" type="translate" values="615,245;615,241;615,245" dur="3.8s" repeatCount="indefinite"/>
+      </g>
+
+      <!-- NODO 5: Cmaj7 (I) destino -->
+      <g transform="translate(740,245)">
+        <circle r="30" fill="url(#glowBlue)" opacity="0.6">
+          <animate attributeName="r" values="30;46;30" dur="2.6s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.4;0.85;0.4" dur="2.6s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="22" fill="#0f172a" stroke="#00d4ff" stroke-width="2" filter="url(#glowF)"/>
+        <text x="0" y="-2" text-anchor="middle" font-family="Consolas, monospace" font-size="11" font-weight="800" fill="#00d4ff">I</text>
+        <text x="0" y="10" text-anchor="middle" font-family="Consolas, monospace" font-size="8" fill="#94a3b8">Cmaj7</text>
+        <animateTransform attributeName="transform" type="translate" values="740,245;740,240;740,245" dur="3.6s" repeatCount="indefinite"/>
+      </g>
+
+      <!-- ETIQUETAS FUNCIONALES BAJO CADA NODO -->
+      <text x="110" y="305" text-anchor="middle" font-family="Consolas, monospace" font-size="9" fill="#00d4ff" opacity="0.85">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="2.4s" repeatCount="indefinite"/>
+        FROM
+      </text>
+      <text x="740" y="305" text-anchor="middle" font-family="Consolas, monospace" font-size="9" fill="#22c55e" opacity="0.85">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="2.4s" begin="0.8s" repeatCount="indefinite"/>
+        TARGET
+      </text>
+
+      <!-- EXPLOSIÓN RADIAL EN NODO DESTINO -->
+      <g transform="translate(740,245)" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round" filter="url(#glowF)">
+        <line x1="0" y1="0" x2="0" y2="-8" opacity="0">
+          <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/>
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-40" dur="3s" repeatCount="indefinite"/>
+        </line>
+        <line x1="0" y1="0" x2="8" y2="0" opacity="0">
+          <animate attributeName="opacity" values="0;1;0" dur="3s" begin="0.4s" repeatCount="indefinite"/>
+          <animateTransform attributeName="transform" type="translate" values="0,0;40,0" dur="3s" begin="0.4s" repeatCount="indefinite"/>
+        </line>
+        <line x1="0" y1="0" x2="0" y2="8" opacity="0">
+          <animate attributeName="opacity" values="0;1;0" dur="3s" begin="0.8s" repeatCount="indefinite"/>
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,40" dur="3s" begin="0.8s" repeatCount="indefinite"/>
+        </line>
+        <line x1="0" y1="0" x2="-8" y2="0" opacity="0">
+          <animate attributeName="opacity" values="0;1;0" dur="3s" begin="1.2s" repeatCount="indefinite"/>
+          <animateTransform attributeName="transform" type="translate" values="0,0;-40,0" dur="3s" begin="1.2s" repeatCount="indefinite"/>
+        </line>
+        <line x1="0" y1="0" x2="6" y2="-6" opacity="0">
+          <animate attributeName="opacity" values="0;1;0" dur="3s" begin="0.2s" repeatCount="indefinite"/>
+          <animateTransform attributeName="transform" type="translate" values="0,0;32,-32" dur="3s" begin="0.2s" repeatCount="indefinite"/>
+        </line>
+        <line x1="0" y1="0" x2="-6" y2="6" opacity="0">
+          <animate attributeName="opacity" values="0;1;0" dur="3s" begin="0.6s" repeatCount="indefinite"/>
+          <animateTransform attributeName="transform" type="translate" values="0,0;-32,32" dur="3s" begin="0.6s" repeatCount="indefinite"/>
+        </line>
+      </g>
+
+      <!-- PULSO CLAVE tipo alerta en A7 -->
+      <circle cx="325" cy="240" r="22" fill="none" stroke="#a855f7" stroke-width="1.5" opacity="0.8">
+        <animate attributeName="r" values="22;36;22" dur="2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.9;0;0.9" dur="2s" repeatCount="indefinite"/>
+        <animate attributeName="stroke-width" values="2;0.5;2" dur="2s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- FIRMA AUTOR -->
+      <text x="760" y="440" text-anchor="end" font-family="Segoe UI, system-ui, sans-serif" font-size="10" fill="#a855f7" font-style="italic">
+        Rubén Sbarsky
+        <animate attributeName="opacity" values="0.35;1;0.35" dur="5s" repeatCount="indefinite"/>
+      </text>
+
+      <!-- ETIQUETA INFERIOR ESTADO -->
+      <text x="40" y="440" font-family="Consolas, monospace" font-size="9" fill="#94a3b8" letter-spacing="1">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="3.5s" repeatCount="indefinite"/>
+        ▸ CAMINOS: ∞ · DIATÓNICO · SEC DOM · II–V · CROMÁTICO · MODAL · TRITONE SUB
+      </text>
+    </svg>
+  </div>
+
+  <span class="home-badge">Tutorial Interactivo · Armonía Funcional</span>
+  <h1 class="home-title">HARMONIC PATH FINDER</h1>
+  <p class="home-sub">Tutorial completo paso a paso — Para DUMMIES</p>
+  <p class="home-desc">
+    Una herramienta para explorar cómo ir armónicamente desde un acorde hasta otro.
+    Le dices al programa de qué acorde partes, a qué acorde quieres llegar y cuántos acordes
+    quieres colocar en medio. La calculadora busca diferentes caminos armónicos posibles:
+    diatónicos, dominantes secundarios, intercambio modal, cromáticos, disminuidos,
+    sustituciones de tritono, relaciones II–V, aproximaciones y más.
+  </p>
+
+  <div class="quote">
+    «Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.»
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><span class="v">45</span><span class="l">Secciones</span></div>
+    <div class="metric"><span class="v">7</span><span class="l">Niveles</span></div>
+    <div class="metric"><span class="v">∞</span><span class="l">Caminos</span></div>
+    <div class="metric"><span class="v">A–G</span><span class="l">Notación</span></div>
+    <div class="metric"><span class="v">I–VII</span><span class="l">Grados</span></div>
+  </div>
+
+  <div>
+    <span class="stamp">📅 24/09/2026</span>
+    <span class="stamp">⏱ 16:36:16</span>
+    <span class="stamp">👨‍💻 Rubén Sbarsky</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="grid">
+    <div class="card">
+      <span class="badge b-blue">Módulo 01</span>
+      <h3>Fundamentos</h3>
+      <p class="small">FROM · TARGET · INTERMEDIATE CHORDS · La idea más importante.</p>
+    </div>
+    <div class="card">
+      <span class="badge b-green">Módulo 02</span>
+      <h3>Interfaz</h3>
+      <p class="small">Constructor, Direct Input, NOTE, CHORD TYPE y PREVIEW.</p>
+    </div>
+    <div class="card">
+      <span class="badge b-purple">Módulo 03</span>
+      <h3>Relaciones</h3>
+      <p class="small">Diatónico, dominantes secundarios, modal, cromatismo y tritone sub.</p>
+    </div>
+    <div class="card">
+      <span class="badge b-amber">Módulo 04</span>
+      <h3>Estudio</h3>
+      <p class="small">Siete niveles, experimentos guiados y método de trabajo al piano.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ FUNDAMENTOS -->
+<section id="fund">
+  <div class="sec-head">
+    <h2>01 · Fundamentos</h2>
+    <p class="sub">Qué es HARMONIC PATH FINDER y la idea más importante antes de empezar.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 1</span>
+    <h3>¿Qué es HARMONIC PATH FINDER?</h3>
+    <p>HARMONIC PATH FINDER es una herramienta para explorar cómo podemos ir armónicamente desde un acorde hasta otro.</p>
+    <p>La idea fundamental es muy sencilla:</p>
+    <div class="callout info">
+      <span class="lbl">Idea central</span>
+      «Le digo al programa de qué acorde parto, a qué acorde quiero llegar y cuántos acordes quiero colocar en medio.»
+    </div>
+    <p>Por ejemplo:</p>
+    <div class="path">
+      <span class="node">Cmaj7</span><span class="arrow">→</span>
+      <span class="node p">?</span><span class="arrow">→</span>
+      <span class="node p">?</span><span class="arrow">→</span>
+      <span class="node g">G7</span>
+    </div>
+    <p>La calculadora busca diferentes caminos armónicos posibles.</p>
+    <p>Pero no busca solamente acordes de la misma escala. Puede explorar diferentes tipos de relaciones armónicas, incluyendo:</p>
+    <ul>
+      <li>acordes diatónicos;</li>
+      <li>acordes de otras escalas;</li>
+      <li>dominantes secundarios;</li>
+      <li>intercambio modal;</li>
+      <li>acordes cromáticos;</li>
+      <li>acordes disminuidos;</li>
+      <li>sustituciones de tritono;</li>
+      <li>relaciones II–V;</li>
+      <li>aproximaciones cromáticas;</li>
+      <li>otras relaciones armónicas.</li>
+    </ul>
+    <p>La gran ventaja es que podemos experimentar con la armonía sin tener que calcular manualmente todas las posibilidades.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 2</span>
+    <h3>La idea más importante</h3>
+    <p>Antes de utilizar la aplicación hay que entender tres conceptos:</p>
+    <div class="grid-3">
+      <div class="card" style="margin:0;">
+        <span class="badge b-blue">FROM</span>
+        <p>«¿Desde qué acorde quiero comenzar?»</p>
+        <p class="small">Ejemplo: <code>Cmaj7</code></p>
+      </div>
+      <div class="card" style="margin:0;">
+        <span class="badge b-green">TARGET</span>
+        <p>«¿A qué acorde quiero llegar?»</p>
+        <p class="small">Ejemplo: <code>G7</code></p>
+      </div>
+      <div class="card" style="margin:0;">
+        <span class="badge b-amber">INTERMEDIATE CHORDS</span>
+        <p>«¿Cuántos acordes quiero colocar ENTRE FROM y TARGET?»</p>
+        <p class="small">Ejemplo: <code>2</code></p>
+      </div>
+    </div>
+    <p>Por ejemplo:</p>
+    <pre>FROM = Cmaj7
+INTERMEDIATE CHORDS = 2
+TARGET = G7</pre>
+    <p>La ruta tendrá esta estructura:</p>
+    <div class="path" style="flex-direction:column; align-items:flex-start;">
+      <span class="node">Cmaj7</span>
+      <span class="arrow">↓</span>
+      <span class="node p">ACORDE 1</span>
+      <span class="arrow">↓</span>
+      <span class="node p">ACORDE 2</span>
+      <span class="arrow">↓</span>
+      <span class="node g">G7</span>
+    </div>
+    <div class="callout ex">
+      <span class="lbl">Regla</span>
+      2 acordes intermedios = exactamente 2 acordes entre el principio y el final.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ INTERFAZ -->
+<section id="interfaz">
+  <div class="sec-head">
+    <h2>02 · Interfaz y entrada de acordes</h2>
+    <p class="sub">Cómo abrir la aplicación, introducir FROM, NOTE, CHORD TYPE y usar el Constructor o Direct Input.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 3</span>
+    <h3>Primera vez que abres la aplicación</h3>
+    <p>La aplicación tiene una interfaz inspirada en una calculadora gráfica.</p>
+    <p>La pantalla principal comienza con:</p>
+    <div class="callout info"><span class="lbl">FROM CHORD</span> Aquí vamos a introducir nuestro primer acorde.</div>
+    <p>No debemos empezar intentando entender todas las funciones avanzadas. Primero aprenderemos a construir un acorde.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 4</span>
+    <h3>Introducir el acorde FROM</h3>
+    <p>Tenemos dos maneras principales de introducir un acorde.</p>
+    <h4>Método A — Constructor</h4>
+    <p>El constructor permite seleccionar <span class="kw">NOTE</span> y <span class="kw">CHORD TYPE</span>.</p>
+    <p>Por ejemplo:</p>
+    <pre>NOTE = C
+CHORD TYPE = maj7</pre>
+    <p>La aplicación construye: <code>Cmaj7</code></p>
+    <p>Y en la vista previa aparecerá: <code>Cmaj7</code></p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 5</span>
+    <h3>¿Qué significa NOTE?</h3>
+    <p>NOTE es la nota fundamental del acorde.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Acorde</th><th>Fundamental</th></tr></thead>
+        <tbody>
+          <tr><td>Cmaj7</td><td>C</td></tr>
+          <tr><td>Dm7</td><td>D</td></tr>
+          <tr><td>G7</td><td>G</td></tr>
+          <tr><td>F#m7b5</td><td>F#</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Por tanto: <span class="kw">NOTE = la nota desde la que se construye el acorde.</span></p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 6</span>
+    <h3>¿Qué significa CHORD TYPE?</h3>
+    <p>CHORD TYPE indica qué tipo de acorde queremos construir.</p>
+    <div>
+      <span class="chip">maj</span>
+      <span class="chip">maj7</span>
+      <span class="chip">m</span>
+      <span class="chip">m7</span>
+      <span class="chip">7</span>
+      <span class="chip">m7b5</span>
+      <span class="chip">dim</span>
+      <span class="chip">dim7</span>
+      <span class="chip">aug</span>
+      <span class="chip">sus4</span>
+      <span class="chip">etc.</span>
+    </div>
+    <div class="grid">
+      <pre>NOTE = C
+CHORD TYPE = maj7
+→ Cmaj7</pre>
+      <pre>NOTE = D
+CHORD TYPE = m7
+→ Dm7</pre>
+      <pre>NOTE = G
+CHORD TYPE = 7
+→ G7</pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 7</span>
+    <h3>Primer ejercicio</h3>
+    <p>Vamos a crear: <code>Cmaj7</code></p>
+    <div class="step"><div class="n">1</div><div class="body">Selecciona <span class="kw">NOTE → C</span>.</div></div>
+    <div class="step"><div class="n">2</div><div class="body">Selecciona <span class="kw">CHORD TYPE → maj7</span>.</div></div>
+    <div class="step"><div class="n">3</div><div class="body">Mira <span class="kw">PREVIEW</span>. Debe aparecer: <code>Cmaj7</code>.</div></div>
+    <div class="step"><div class="n">4</div><div class="body">Acepta el acorde. La aplicación debe mostrar además <code>C(I)</code> y <code>C Major</code>.</div></div>
+  </div>
+
+  <!-- CONSTRUCTOR INTERACTIVO -->
+  <div class="card">
+    <span class="badge b-green">Interactivo</span>
+    <h3>Constructor de acordes</h3>
+    <p class="small">Prueba el flujo NOTE + CHORD TYPE de la aplicación real. Verás el acorde generado y su grado en C Major cuando corresponda.</p>
+    <div class="ctor">
+      <div>
+        <label for="ctorNote">NOTE</label>
+        <select id="ctorNote">
+          <option>C</option><option>C#</option><option>D</option><option>D#</option>
+          <option>E</option><option>F</option><option>F#</option><option>G</option>
+          <option>G#</option><option>A</option><option>A#</option><option>B</option>
+        </select>
+      </div>
+      <div>
+        <label for="ctorType">CHORD TYPE</label>
+        <select id="ctorType">
+          <option value="maj">maj</option>
+          <option value="maj7" selected>maj7</option>
+          <option value="m">m</option>
+          <option value="m7">m7</option>
+          <option value="7">7</option>
+          <option value="m7b5">m7b5</option>
+          <option value="dim">dim</option>
+          <option value="dim7">dim7</option>
+          <option value="aug">aug</option>
+          <option value="sus4">sus4</option>
+        </select>
+      </div>
+      <div class="ctor-out">
+        <div class="big" id="ctorResult">Cmaj7</div>
+        <div class="sub" id="ctorSub">C(I) · C Major</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 10</span>
+    <h3>Método B — Direct Input</h3>
+    <p>También podemos introducir directamente un acorde. Por ejemplo:</p>
+    <div>
+      <span class="chip">Cmaj7</span>
+      <span class="chip">Dm7</span>
+      <span class="chip">G7</span>
+      <span class="chip">F#m7b5</span>
+      <span class="chip">Bbmaj7</span>
+    </div>
+    <p>La aplicación muestra ejemplos de este formato en la interfaz.</p>
+    <p>Este método es especialmente útil cuando ya conocemos el nombre exacto del acorde.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 11</span>
+    <h3>¿Cuál de los dos métodos debo usar?</h3>
+    <div class="grid">
+      <div class="callout info" style="margin:0;">
+        <span class="lbl">Si estás aprendiendo</span>
+        <strong>USA EL CONSTRUCTOR.</strong> Porque te obliga a pensar: <code>NOTA + TIPO DE ACORDE</code>.
+      </div>
+      <div class="callout ex" style="margin:0;">
+        <span class="lbl">Si ya sabes el acorde exacto</span>
+        <strong>USA DIRECT.</strong> Por ejemplo <code>F#m7b5</code> es más rápido escribirlo directamente.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ GRADOS -->
+<section id="grados">
+  <div class="sec-head">
+    <h2>03 · Grados y funciones</h2>
+    <p class="sub">Qué significa C(I), cómo leer los grados de una tonalidad y por qué es la parte más importante.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 8</span>
+    <h3>¿Qué significa C(I)?</h3>
+    <p>Esta es una de las partes <strong>MÁS IMPORTANTES</strong> de la aplicación.</p>
+    <p>No quiero aprender solamente:</p>
+    <pre>Cmaj7</pre>
+    <p>Quiero saber qué función ocupa C dentro de la tonalidad.</p>
+    <p>En C Major:</p>
+    <pre>C = I</pre>
+    <p>Por eso:</p>
+    <div class="callout ex">
+      <span class="lbl">Lectura</span>
+      <code>C(I)</code> significa: C = primer grado de C Major.
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 9</span>
+    <h3>Ejemplo con todos los grados de C Major</h3>
+    <p>En C Major tenemos:</p>
+    <div>
+      <span class="chip">C(I)</span>
+      <span class="chip">D(ii)</span>
+      <span class="chip">E(iii)</span>
+      <span class="chip">F(IV)</span>
+      <span class="chip">G(V)</span>
+      <span class="chip">A(vi)</span>
+      <span class="chip">B(vii°)</span>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Acorde</th><th>Grado</th><th>Función</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Cmaj7</td><td>C(I)</td><td>Tónica</td></tr>
+          <tr><td>Dm7</td><td>D(ii)</td><td>Subdominante / preparación</td></tr>
+          <tr><td>Em7</td><td>E(iii)</td><td>Mediante</td></tr>
+          <tr><td>Fmaj7</td><td>F(IV)</td><td>Subdominante</td></tr>
+          <tr><td>G7</td><td>G(V)</td><td>Dominante</td></tr>
+          <tr><td>Am7</td><td>A(vi)</td><td>Relativa menor</td></tr>
+          <tr><td>Bm7b5</td><td>B(vii°)</td><td>Sensible / disminuido</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Esta notación nos permite ver inmediatamente dónde está el acorde dentro de la tonalidad.</p>
+  </div>
+</section>
+
+<!-- ============================================================ BÚSQUEDA -->
+<section id="busqueda">
+  <div class="sec-head">
+    <h2>04 · Búsqueda de caminos</h2>
+    <p class="sub">Introducir TARGET, hacer la primera búsqueda y entender por qué explorar caminos.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 12</span>
+    <h3>Introducir TARGET</h3>
+    <p>Una vez definido FROM debemos definir el acorde de destino.</p>
+    <pre>FROM: Cmaj7
+TARGET: G7</pre>
+    <p>La pregunta que estamos haciendo es:</p>
+    <div class="callout info"><span class="lbl">Pregunta</span> «¿De cuántas maneras puedo ir de Cmaj7 a G7?»</div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 13</span>
+    <h3>Primera búsqueda</h3>
+    <p>Vamos a hacer nuestro primer experimento.</p>
+    <pre>FROM: Cmaj7
+TARGET: G7
+INTERMEDIATE CHORDS: 1</pre>
+    <p>La estructura será:</p>
+    <div class="path" style="flex-direction:column; align-items:flex-start;">
+      <span class="node">Cmaj7</span>
+      <span class="arrow">↓</span>
+      <span class="node p">?</span>
+      <span class="arrow">↓</span>
+      <span class="node g">G7</span>
+    </div>
+    <p>La aplicación buscará diferentes posibilidades para ese único acorde intermedio.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 14</span>
+    <h3>¿Por qué hacer esto?</h3>
+    <p>Porque queremos empezar a pensar en armonía como:</p>
+    <div class="callout ex"><span class="lbl">CAMINOS</span> y no simplemente como «ACORDES AISLADOS».</div>
+    <p>Por ejemplo:</p>
+    <div class="path">
+      <span class="node">Cmaj7</span><span class="arrow">→</span>
+      <span class="node g">Dm7</span><span class="arrow">→</span>
+      <span class="node a">G7</span>
+    </div>
+    <p>es un camino. Pero puede haber otras posibilidades. La aplicación permite explorar esas alternativas.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 15</span>
+    <h3>Segundo experimento</h3>
+    <pre>FROM: Cmaj7
+TARGET: Cmaj7
+INTERMEDIATE CHORDS: 1</pre>
+    <p>Esto parece absurdo. ¿Por qué buscar un camino desde Cmaj7 hasta Cmaj7?</p>
+    <p>Precisamente porque sirve para descubrir algo interesante:</p>
+    <div class="callout info"><span class="lbl">Idea</span> Podemos salir de C y volver a C pasando por diferentes relaciones armónicas.</div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 16</span>
+    <h3>Tres acordes intermedios</h3>
+    <pre>FROM: Cmaj7
+TARGET: Cmaj7
+INTERMEDIATE CHORDS: 3</pre>
+    <p>La estructura será:</p>
+    <div class="path" style="flex-direction:column; align-items:flex-start;">
+      <span class="node">Cmaj7</span>
+      <span class="arrow">↓</span>
+      <span class="node p">?</span>
+      <span class="arrow">↓</span>
+      <span class="node p">?</span>
+      <span class="arrow">↓</span>
+      <span class="node p">?</span>
+      <span class="arrow">↓</span>
+      <span class="node g">Cmaj7</span>
+    </div>
+    <p>Aquí empiezan a aparecer caminos mucho más interesantes.</p>
+  </div>
+</section>
+
+<!-- ============================================================ RELACIONES -->
+<section id="relaciones">
+  <div class="sec-head">
+    <h2>05 · Relaciones armónicas</h2>
+    <p class="sub">Diatónico, dominantes secundarios, II–V, intercambio modal, cromatismo, disminuidos, tritone sub y otras tonalidades.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 17</span>
+    <h3>Diatónico</h3>
+    <p>Una de las primeras categorías que debemos aprender es: <span class="kw-g">DIATÓNICO</span>.</p>
+    <p>Un acorde diatónico pertenece a la escala que estamos utilizando.</p>
+    <p>En C Major:</p>
+    <div>
+      <span class="chip g">Cmaj7</span>
+      <span class="chip g">Dm7</span>
+      <span class="chip g">Em7</span>
+      <span class="chip g">Fmaj7</span>
+      <span class="chip g">G7</span>
+      <span class="chip g">Am7</span>
+      <span class="chip g">Bm7b5</span>
+    </div>
+    <p>son los acordes diatónicos de séptima. Por eso podemos construir caminos utilizando únicamente acordes de C Major.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 18</span>
+    <h3>Ejercicio diatónico</h3>
+    <p>Busca caminos entre <code>Cmaj7</code> y <code>G7</code> utilizando varios acordes intermedios.</p>
+    <p>Observa especialmente:</p>
+    <div>
+      <span class="chip">C(I)</span>
+      <span class="chip">D(ii)</span>
+      <span class="chip">E(iii)</span>
+      <span class="chip">F(IV)</span>
+      <span class="chip">G(V)</span>
+    </div>
+    <div class="callout warn"><span class="lbl">Pregúntate</span> «¿Qué camino utiliza únicamente acordes de C Major?»</div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 19</span>
+    <h3>Ahora salimos de la escala</h3>
+    <p>Aquí empieza lo interesante. La armonía real no está limitada a los siete acordes de una escala.</p>
+    <p>Podemos utilizar acordes procedentes de:</p>
+    <ul>
+      <li>otras tonalidades;</li>
+      <li>otras escalas;</li>
+      <li>intercambio modal;</li>
+      <li>dominantes secundarios;</li>
+      <li>cromatismo;</li>
+      <li>disminuidos;</li>
+      <li>sustituciones.</li>
+    </ul>
+    <p>Esto permite crear movimientos mucho más ricos.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 20</span>
+    <h3>Dominantes secundarios</h3>
+    <p>Supongamos que estamos en C Major. Tenemos:</p>
+    <pre>Dm7 → D(ii)</pre>
+    <p>Podemos colocar delante: <code>A7</code></p>
+    <p>¿Por qué? Porque A7 es dominante de D. Por eso podemos interpretar:</p>
+    <pre>A7 → A(V/ii)</pre>
+    <p>Es decir: «dominante del segundo grado.»</p>
+    <div class="path">
+      <span class="node">Cmaj7</span><span class="arrow">→</span>
+      <span class="node p">A7</span><span class="arrow">→</span>
+      <span class="node g">Dm7</span>
+    </div>
+    <p>Esto es mucho más interesante que simplemente utilizar acordes diatónicos.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 21</span>
+    <h3>II–V</h3>
+    <p>Otra relación fundamental:</p>
+    <pre>Dm7 → G7 → Cmaj7</pre>
+    <p>En C Major:</p>
+    <pre>Dm7 = ii
+G7 = V
+Cmaj7 = I</pre>
+    <p>Por tanto:</p>
+    <pre>ii → V → I</pre>
+    <p>o:</p>
+    <pre>D(ii) → G(V) → C(I)</pre>
+    <div class="callout ex"><span class="lbl">Fundamental</span> Esta es una de las progresiones fundamentales de la armonía tonal.</div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 22</span>
+    <h3>Construir un II–V–I</h3>
+    <pre>FROM: Dm7
+TARGET: Cmaj7
+INTERMEDIATE CHORDS: 1</pre>
+    <p>Debería resultar posible encontrar:</p>
+    <div class="path" style="flex-direction:column; align-items:flex-start;">
+      <span class="node g">Dm7</span>
+      <span class="arrow">↓</span>
+      <span class="node a">G7</span>
+      <span class="arrow">↓</span>
+      <span class="node">Cmaj7</span>
+    </div>
+    <p>Es decir: <code>ii → V → I</code>.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 23</span>
+    <h3>Dominantes secundarios + II–V</h3>
+    <p>Ahora podemos ampliar la idea. En lugar de:</p>
+    <pre>Dm7 → G7 → Cmaj7</pre>
+    <p>podemos crear cadenas como:</p>
+    <pre>A7 → Dm7 → G7 → Cmaj7</pre>
+    <p>Aquí tenemos:</p>
+    <pre>V/ii → ii → V → I</pre>
+    <p>La aplicación resulta especialmente útil para descubrir este tipo de cadenas.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 24</span>
+    <h3>Intercambio modal</h3>
+    <p>No todos los acordes que utilizamos tienen que pertenecer a C Major. Podemos tomar acordes de C Minor y utilizarlos dentro de C Major.</p>
+    <p>Esto se denomina:</p>
+    <div class="callout info"><span class="lbl">MODAL INTERCHANGE</span> o <strong>INTERCAMBIO MODAL</strong>.</div>
+    <p>Por ejemplo, acordes como <code>Abmaj7</code> pueden aparecer en un contexto de C Major procedentes del modo menor.</p>
+    <p>La aplicación debe identificar este tipo de relación cuando corresponda.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-red">Sección 25</span>
+    <h3>Acordes cromáticos</h3>
+    <p>También podemos utilizar acordes que no pertenecen directamente a la tonalidad. Esto permite crear movimientos por semitono.</p>
+    <pre>Cmaj7
+↓
+C#...
+↓
+Dm7</pre>
+    <p>El interés está en observar cómo el cromatismo puede conectar dos acordes.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-red">Sección 26</span>
+    <h3>Acordes disminuidos</h3>
+    <p>Los acordes disminuidos son excelentes conectores. Pueden funcionar como acordes de aproximación.</p>
+    <pre>Cmaj7
+↓
+C#dim7
+↓
+Dm7</pre>
+    <p>El movimiento puede resultar muy natural porque algunas notas se desplazan por semitono.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 27</span>
+    <h3>Sustitución de tritono</h3>
+    <p>Otra posibilidad avanzada es la: <strong>TRITONE SUBSTITUTION</strong>.</p>
+    <p>Un dominante puede ser sustituido por otro dominante situado a distancia de tritono. Esto genera movimientos cromáticos muy interesantes.</p>
+    <p>Por ejemplo, alrededor de <code>G7</code> puede aparecer:</p>
+    <pre>Ab7</pre>
+    <p>como sustituto de tritono.</p>
+    <div class="callout warn"><span class="lbl">Nota</span> La aplicación debe mostrar la función contextual en lugar de inventar un grado diatónico.</div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 28</span>
+    <h3>Otras tonalidades</h3>
+    <p>Una de las posibilidades más importantes es utilizar acordes procedentes de otras escalas o tonalidades.</p>
+    <p>Por ejemplo: <code>C Major</code> puede relacionarse temporalmente con acordes procedentes de:</p>
+    <div>
+      <span class="chip">C Minor</span>
+      <span class="chip">D Major</span>
+      <span class="chip">Eb Major</span>
+      <span class="chip">etc.</span>
+    </div>
+    <p>Lo importante es no pensar:</p>
+    <div class="callout err"><span class="lbl">Error común</span> «Este acorde no pertenece a C Major, por tanto está mal.»</div>
+    <p>La pregunta correcta es:</p>
+    <div class="callout ex"><span class="lbl">Buena pregunta</span> «¿De dónde puede proceder este acorde y qué función cumple aquí?»</div>
+  </div>
+</section>
+
+<!-- ============================================================ ANÁLISIS -->
+<section id="analisis">
+  <div class="sec-head">
+    <h2>06 · Análisis de rutas</h2>
+    <p class="sub">Cómo leer los resultados y qué preguntas hacerle a cada camino.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 29</span>
+    <h3>Leer los resultados</h3>
+    <p>Cuando aparezca una ruta, no debemos mirar solamente los nombres de los acordes.</p>
+    <p>Hay que leer:</p>
+    <ol>
+      <li>El acorde.</li>
+      <li>La nota.</li>
+      <li>El grado.</li>
+      <li>La función.</li>
+      <li>El origen tonal/modal cuando exista.</li>
+      <li>La relación con el acorde siguiente.</li>
+    </ol>
+    <p>Por ejemplo:</p>
+    <div class="path" style="flex-direction:column; align-items:flex-start; font-size:.9rem;">
+      <span class="node">Cmaj7 · C(I)</span>
+      <span class="arrow">↓</span>
+      <span class="node p">A7 · A(V/ii)</span>
+      <span class="arrow">↓</span>
+      <span class="node g">Dm7 · D(ii)</span>
+      <span class="arrow">↓</span>
+      <span class="node a">G7 · G(V)</span>
+      <span class="arrow">↓</span>
+      <span class="node">Cmaj7 · C(I)</span>
+    </div>
+    <p class="small">Esto cuenta una historia armónica.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 30</span>
+    <h3>Cómo estudiar una ruta</h3>
+    <p>Cuando encuentres una ruta interesante: <strong>NO</strong> la memorices inmediatamente. Haz estas preguntas:</p>
+    <div class="grid">
+      <div class="callout info" style="margin:0;"><span class="lbl">Pregunta 1</span> ¿Dónde estoy? Ejemplo: <code>C(I)</code>.</div>
+      <div class="callout info" style="margin:0;"><span class="lbl">Pregunta 2</span> ¿A dónde voy? Ejemplo: <code>D(ii)</code>.</div>
+      <div class="callout info" style="margin:0;"><span class="lbl">Pregunta 3</span> ¿Por qué aparece el acorde intermedio? Ejemplo: <code>A(V/ii)</code>.</div>
+      <div class="callout info" style="margin:0;"><span class="lbl">Pregunta 4</span> ¿De qué escala procede?</div>
+      <div class="callout info" style="margin:0;"><span class="lbl">Pregunta 5</span> ¿Qué notas se mueven por semitono?</div>
+      <div class="callout info" style="margin:0;"><span class="lbl">Pregunta 6</span> ¿Existe una relación dominante?</div>
+      <div class="callout info" style="margin:0;"><span class="lbl">Pregunta 7</span> ¿Existe una relación II–V?</div>
+      <div class="callout info" style="margin:0;"><span class="lbl">Pregunta 8</span> ¿Es diatónico o cromático?</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ EXPERIMENTOS -->
+<section id="experimentos">
+  <div class="sec-head">
+    <h2>07 · Experimentos guiados</h2>
+    <p class="sub">Buscar muchos caminos, mismo destino con distintos orígenes, mismo origen con distintos destinos, cromatismo, canciones y turnarounds.</p>
+  </div>
+
+  <div class="acc">
+    <div class="acc-h"><span><span class="badge b-blue">Sección 31</span> &nbsp;Experimento: buscar muchos caminos</span><span class="arrow">▶</span></div>
+    <div class="acc-b">
+      <p>Una de las mejores maneras de aprender a utilizar HARMONIC PATH FINDER es mantener constantes FROM y TARGET y cambiar solamente el número de acordes intermedios.</p>
+      <pre>FROM: Cmaj7
+TARGET: Cmaj7</pre>
+      <p>Prueba: 1 acorde intermedio. Después: 2. Después: 3. Después: 4. Después: 5.</p>
+      <p>Observa cómo aumenta el número y la complejidad de las posibilidades.</p>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-h"><span><span class="badge b-green">Sección 32</span> &nbsp;Experimento: mismo destino, distintos orígenes</span><span class="arrow">▶</span></div>
+    <div class="acc-b">
+      <p>Compara:</p>
+      <pre>Cmaj7 → G7
+Dm7 → G7
+Am7 → G7
+Abmaj7 → G7
+C#dim7 → G7</pre>
+      <p>La pregunta es: «¿Qué tipo de camino necesita cada acorde para llegar a G7?»</p>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-h"><span><span class="badge b-amber">Sección 33</span> &nbsp;Experimento: mismo origen, distintos destinos</span><span class="arrow">▶</span></div>
+    <div class="acc-b">
+      <pre>Cmaj7 → Dm7
+Cmaj7 → Em7
+Cmaj7 → Fmaj7
+Cmaj7 → G7
+Cmaj7 → Am7</pre>
+      <p>Compara las rutas. Esto ayuda a comprender las relaciones entre los grados de la tonalidad.</p>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-h"><span><span class="badge b-purple">Sección 34</span> &nbsp;Experimento cromático</span><span class="arrow">▶</span></div>
+    <div class="acc-b">
+      <p>Busca caminos entre dos acordes separados por una relación difícil. Por ejemplo:</p>
+      <pre>Cmaj7 → Dbmaj7</pre>
+      <p>Utiliza varios acordes intermedios. No busques solamente una solución. Busca diferentes soluciones.</p>
+      <p>Después analiza: cromatismo, dominantes, acordes disminuidos, intercambio modal, aproximaciones.</p>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-h"><span><span class="badge b-blue">Sección 35</span> &nbsp;Experimento con una canción</span><span class="arrow">▶</span></div>
+    <div class="acc-b">
+      <p>Podemos utilizar la aplicación para estudiar una progresión real. Supongamos que una canción contiene:</p>
+      <pre>Cmaj7 → Am7 → Dm7 → G7</pre>
+      <p>Podemos estudiar cada conexión por separado:</p>
+      <pre>Cmaj7 → Am7
+Am7 → Dm7
+Dm7 → G7</pre>
+      <p>Después podemos pedir rutas alternativas. La pregunta pasa a ser: «¿Cómo podría conectar estos acordes de otra manera?»</p>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-h"><span><span class="badge b-green">Sección 36</span> &nbsp;Crear turnarounds</span><span class="arrow">▶</span></div>
+    <div class="acc-b">
+      <p>Una aplicación especialmente interesante es utilizarla para estudiar: <strong>TURNAROUNDS</strong>.</p>
+      <pre>I → vi → ii → V → I</pre>
+      <p>En C:</p>
+      <pre>Cmaj7 → Am7 → Dm7 → G7 → Cmaj7</pre>
+      <p>Podemos pedir rutas alternativas entre los puntos importantes.</p>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-h"><span><span class="badge b-amber">Sección 37</span> &nbsp;Crear caminos de jazz</span><span class="arrow">▶</span></div>
+    <div class="acc-b">
+      <p>Para estudiar jazz podemos buscar:</p>
+      <ul>
+        <li>II–V;</li>
+        <li>II–V–I;</li>
+        <li>dominantes secundarios;</li>
+        <li>sustituciones de tritono;</li>
+        <li>acordes disminuidos;</li>
+        <li>dominantes alterados;</li>
+        <li>cromatismos.</li>
+      </ul>
+      <p>Después podemos comparar diferentes caminos que llegan al mismo objetivo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ ESTUDIO -->
+<section id="estudio">
+  <div class="sec-head">
+    <h2>08 · Método de estudio</h2>
+    <p class="sub">Usar la calculadora como profesor, tocar al piano, transformar rutas, los 7 niveles y la regla de oro.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 38</span>
+    <h3>Utilizar la calculadora como profesor</h3>
+    <p>Una de las mejores formas de utilizarla no es preguntar:</p>
+    <div class="callout err"><span class="lbl">Mal</span> «¿Cuál es el camino correcto?»</div>
+    <p>Sino:</p>
+    <div class="callout ex"><span class="lbl">Bien</span> «¿Qué caminos existen?»</div>
+    <p>Después analizamos cada uno. Así la aplicación se convierte en una herramienta de descubrimiento armónico.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 39</span>
+    <h3>Utilizarla con el piano</h3>
+    <p>Una vez obtenida una ruta:</p>
+    <div class="step"><div class="n">1</div><div class="body">Toca el primer acorde.</div></div>
+    <div class="step"><div class="n">2</div><div class="body">Toca el siguiente.</div></div>
+    <div class="step"><div class="n">3</div><div class="body">Escucha el movimiento.</div></div>
+    <div class="step"><div class="n">4</div><div class="body">Toca el siguiente.</div></div>
+    <div class="step"><div class="n">5</div><div class="body">Escucha dónde aparece la tensión.</div></div>
+    <div class="step"><div class="n">6</div><div class="body">Toca el acorde de destino.</div></div>
+    <p>Después repite la progresión. Finalmente intenta tocarla en otra tonalidad.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 40</span>
+    <h3>Aprender a transformar una ruta</h3>
+    <p>Supongamos:</p>
+    <pre>Cmaj7 → Am7 → Dm7 → G7 → Cmaj7</pre>
+    <p>Ahora intenta modificar solamente un acorde. Por ejemplo:</p>
+    <pre>Cmaj7 → A7 → Dm7 → G7 → Cmaj7</pre>
+    <p>Pregunta: ¿Qué ha cambiado?</p>
+    <p>Hemos convertido <code>Am7</code> en <code>A7</code>. Y ahora A7 puede funcionar como <code>V/ii</code>.</p>
+    <p>La aplicación permite descubrir estas transformaciones sistemáticamente.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 41</span>
+    <h3>Método de estudio recomendado</h3>
+    <p>Utiliza la aplicación en este orden:</p>
+    <div class="grid">
+      <div class="card" style="margin:0;">
+        <span class="badge b-blue">NIVEL 1</span>
+        <h4>Fundamentos</h4>
+        <p class="small">FROM, TARGET, NOTE, CHORD TYPE, PREVIEW, grados.</p>
+      </div>
+      <div class="card" style="margin:0;">
+        <span class="badge b-green">NIVEL 2</span>
+        <h4>Diatónico</h4>
+        <p class="small">I · ii · iii · IV · V · vi · vii°</p>
+      </div>
+      <div class="card" style="margin:0;">
+        <span class="badge b-blue">NIVEL 3</span>
+        <h4>II–V–I</h4>
+        <p class="small">ii → V → I</p>
+      </div>
+      <div class="card" style="margin:0;">
+        <span class="badge b-amber">NIVEL 4</span>
+        <h4>Dominantes secundarios</h4>
+        <p class="small">V/ii · V/iii · V/IV · V/V · V/vi</p>
+      </div>
+      <div class="card" style="margin:0;">
+        <span class="badge b-red">NIVEL 5</span>
+        <h4>Cromatismo</h4>
+        <p class="small">Aproximaciones cromáticas, disminuidos, movimientos por semitono.</p>
+      </div>
+      <div class="card" style="margin:0;">
+        <span class="badge b-purple">NIVEL 6</span>
+        <h4>Modal</h4>
+        <p class="small">Intercambio modal, acordes prestados.</p>
+      </div>
+      <div class="card" style="margin:0;">
+        <span class="badge b-purple">NIVEL 7</span>
+        <h4>Jazz</h4>
+        <p class="small">Sustituciones de tritono, dominantes alterados, cadenas de dominantes, II–V encadenados.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 42</span>
+    <h3>La regla de oro</h3>
+    <p>No te limites a mirar las rutas. Cada vez que encuentres una ruta interesante, intenta explicar:</p>
+    <div class="callout info"><span class="lbl">Pregunta</span> «¿Por qué este acorde está aquí?»</div>
+    <p>Si puedes responder esa pregunta, estás aprendiendo armonía.</p>
+    <div class="grid">
+      <div class="callout warn" style="margin:0;">
+        <span class="lbl">Memorizar</span>
+        Si solamente memorizas <code>Cmaj7 → A7 → Dm7 → G7 → Cmaj7</code> estás memorizando una progresión.
+      </div>
+      <div class="callout ex" style="margin:0;">
+        <span class="lbl">Entender</span>
+        Si entiendes <code>I → V/ii → ii → V → I</code> estás entendiendo la estructura armónica.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ EJERCICIOS -->
+<section id="ejercicios">
+  <div class="sec-head">
+    <h2>Ejercicios</h2>
+    <p class="sub">Diez ejercicios prácticos, ordenados por dificultad, para aplicar sobre el motor HARMONIC PATH FINDER todo lo aprendido en el tutorial.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Cómo usar esta sección</span>
+    <h3>Antes de empezar</h3>
+    <p>Cada ejercicio reproduce un caso real del motor. La idea es <strong>intentar resolverlo primero</strong> y después abrir la solución.</p>
+    <p>Pulsa sobre <strong>«Ver solución paso a paso»</strong> en cada tarjeta cuando quieras comprobar tu respuesta. Dentro encontrarás tres bloques:</p>
+    <ul>
+      <li><strong>Solución paso a paso</strong> — el razonamiento completo.</li>
+      <li><strong>Por qué (Explicación causal)</strong> — la regla que activa el motor.</li>
+      <li><strong>Error típico a evitar</strong> — la confusión más frecuente.</li>
+    </ul>
+    <h4>Niveles de dificultad</h4>
+    <div>
+      <span class="badge b-green">Fácil</span>
+      <span class="badge b-amber">Media</span>
+      <span class="badge b-red">Difícil</span>
+    </div>
+    <h4>Tipos de ejercicio</h4>
+    <div>
+      <span class="chip">Opción múltiple</span>
+      <span class="chip">Análisis escrito</span>
+      <span class="chip">Construcción de ruta</span>
+      <span class="chip">Detección de error</span>
+      <span class="chip">Voice leading</span>
+      <span class="chip">Uso de la interfaz</span>
+      <span class="chip">Intercambio modal / Transposición</span>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 1 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-blue">Opción múltiple</span>
+      <span class="badge b-green">Fácil</span>
+    </div>
+    <h3>Ejercicio 1 · Análisis de Dm7 en Do mayor</h3>
+    <p><strong>Enunciado.</strong> En Do mayor, el motor analiza el acorde <code>Dm7</code>. ¿Cuál es la salida correcta para nota, grado, función y procedencia?</p>
+    <ul>
+      <li><strong>A)</strong> D, ii, Minor Function, diatónico de Do mayor.</li>
+      <li><strong>B)</strong> D, V/ii, Secondary Dominant, Do mayor.</li>
+      <li><strong>C)</strong> D, IV, Subdominant, diatónico de Do mayor.</li>
+      <li><strong>D)</strong> D, ♭II, Chromatic, Do mayor.</li>
+    </ul>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p><code>Dm7</code> tiene fundamental D (pc 2) y calidad <code>m7</code>, familia minor. En Do mayor, el segundo grado diatónico es <code>Dm7</code>. <code>analyzeChord</code> lo encuentra como diatónico, con grado romano <code>ii</code>, función <strong>Minor Function</strong> y origen <strong>C Major</strong>. Por tanto, la opción correcta es <strong>A</strong>.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          El acorde pertenece a la familia minor y su fundamental coincide con el segundo grado de la escala mayor. Al ser diatónico, no se activa la búsqueda de dominantes secundarios ni de préstamos modales; el motor le asigna la función propia del <code>ii</code>, que es predominante menor.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Confundir <code>Dm7</code> con <code>V/ii</code>. <code>V/ii</code> en Do mayor sería <code>A7</code>, no <code>Dm7</code>. También es incorrecto llamarlo <code>IV</code> porque <code>IV</code> es <code>Fmaj7</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 2 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-blue">Opción múltiple</span>
+      <span class="badge b-amber">Media</span>
+    </div>
+    <h3>Ejercicio 2 · Categoría del motor para Dm7 → G7</h3>
+    <p><strong>Enunciado.</strong> En Do mayor, ¿qué categoría asigna el motor a la relación <code>Dm7 → G7</code>?</p>
+    <ul>
+      <li><strong>A)</strong> DIATONIC</li>
+      <li><strong>B)</strong> DOMINANTS</li>
+      <li><strong>C)</strong> II-V</li>
+      <li><strong>D)</strong> TRITONE</li>
+    </ul>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p><code>Dm7</code> es <code>ii</code> y <code>G7</code> es <code>V7</code> en Do mayor. La fundamental se mueve de D (pc 2) a G (pc 7): movimiento = 7 − 2 = 5 semitonos. El motor evalúa primero la condición <code>a.type === 'm7' &amp;&amp; b.fam === 'dom' &amp;&amp; motion === 5</code>, que se cumple. Por tanto, categoría = <strong>II-V</strong>. Opción correcta: <strong>C</strong>.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          El motor reconoce el encadenamiento ii–V como una unidad funcional específica antes de clasificarlo como simple movimiento diatónico o dominante. La relación se define por la calidad <code>m7</code> del primero, la familia <code>dom</code> del segundo y el movimiento de fundamental de cuarta justa ascendente.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Marcarla como <strong>DIATONIC</strong> porque ambos acordes son diatónicos, o como <strong>DOMINANTS</strong> porque <code>G7</code> es un dominante. El motor prioriza la categoría <strong>II-V</strong> cuando detecta exactamente ii–V.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 3 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-purple">Análisis escrito</span>
+      <span class="badge b-green">Fácil</span>
+    </div>
+    <h3>Ejercicio 3 · Análisis de Fmaj7 en Do mayor</h3>
+    <p><strong>Enunciado.</strong> Analiza <code>Fmaj7</code> en Do mayor: indica nota, grado, función y procedencia según el motor.</p>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p><code>Fmaj7</code> tiene fundamental F (pc 5), calidad <code>maj7</code>, familia major. En Do mayor, el cuarto grado diatónico es <code>Fmaj7</code>. <code>analyzeChord</code> lo clasifica como diatónico, grado <code>IV</code>, función <strong>Subdominant</strong>, origen <strong>C Major</strong>. La representación mostrada sería <code>F(IV)</code>.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          El acorde se forma sobre el IV grado de la escala mayor. La familia major y el grado IV determinan función subdominante, porque el IV aleja de la tónica y prepara el retorno o la cadencia.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Llamarlo dominante por error o confundirlo con <code>Fm7</code>. <code>Fm7</code> no es diatónico de Do mayor; sería un préstamo modal de Do menor.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 4 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-purple">Análisis escrito</span>
+      <span class="badge b-red">Difícil</span>
+    </div>
+    <h3>Ejercicio 4 · Análisis de E7 en Do mayor</h3>
+    <p><strong>Enunciado.</strong> Analiza <code>E7</code> en Do mayor: nota, grado, función y procedencia. Indica si es diatónico, secundario, tritono o cromático.</p>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p><code>E7</code> tiene fundamental E (pc 4), calidad <code>7</code>, familia dom. En Do mayor no es diatónico: el V diatónico es <code>G7</code>. El motor busca dominantes secundarios. El vi grado de Do mayor es <code>Am7</code>, con fundamental A (pc 9). Movimiento E → A: 9 − 4 = 5, o bien 4 − 9 = −5 ≡ 7 mod 12. Como E7 está una quinta justa por encima de A, es <code>V/vi</code>. Resultado: nota E, grado <code>V/vi</code>, función <strong>Secondary Dominant</strong>, procedencia <strong>C Major</strong>, tipo <em>secondary</em>.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          E7 es el dominante del vi grado (<code>Am7</code>). No pertenece a la escala de Do mayor, pero sí se explica como dominante secundario porque su fundamental resuelve una quinta descendente hacia A. No es tritono porque no sustituye al V; no es préstamo modal porque no proviene directamente del modo paralelo.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Confundir <code>E7</code> con <code>Em7</code>, que sí es el iii diatónico de Do mayor. También es incorrecto llamarlo <code>V/IV</code>; <code>V/IV</code> sería <code>C7</code>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 5 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-green">Construcción de ruta</span>
+      <span class="badge b-amber">Media</span>
+    </div>
+    <h3>Ejercicio 5 · Cmaj7 → Fmaj7 con filtro DIATONIC</h3>
+    <p><strong>Enunciado.</strong> FROM <code>Cmaj7</code>, TARGET <code>Fmaj7</code>, pasos intermedios = 1, filtro activo solo <strong>DIATONIC</strong>. Propón una ruta válida y verifica cada relación.</p>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p>Ruta válida:</p>
+        <div class="path">
+          <span class="node">Cmaj7</span><span class="arrow">→</span>
+          <span class="node g">Dm7</span><span class="arrow">→</span>
+          <span class="node p">Fmaj7</span>
+        </div>
+        <p>En Do mayor: <code>Cmaj7 = I</code>, <code>Dm7 = ii</code>, <code>Fmaj7 = IV</code>.</p>
+        <ul>
+          <li><strong>Relación Cmaj7 → Dm7:</strong> movimiento C(0) → D(2) = 2 semitonos. Ambos son diatónicos; categoría <strong>DIATONIC</strong>.</li>
+          <li><strong>Relación Dm7 → Fmaj7:</strong> movimiento D(2) → F(5) = 3 semitonos. Ambos son diatónicos; categoría <strong>DIATONIC</strong>.</li>
+        </ul>
+        <p>Hay exactamente 1 acorde intermedio: <code>Dm7</code>.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          El filtro solo permite enlaces <strong>DIATONIC</strong>. Como los tres acordes pertenecen a Do mayor, cualquier enlace entre ellos que no active una categoría especial (II-V, DOMINANTS, etc.) cae en DIATONIC. Aquí no hay ii–V ni V–I, por lo que ambos pasos quedan como <strong>DIATONIC</strong>.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Proponer <code>Cmaj7 → G7 → Fmaj7</code>. Aunque <code>G7</code> es diatónico, la relación <code>Cmaj7 → G7</code> se clasifica como <strong>DOMINANTS</strong>, no como DIATONIC, y el filtro la bloquearía.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 6 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-green">Construcción de ruta</span>
+      <span class="badge b-red">Difícil</span>
+    </div>
+    <h3>Ejercicio 6 · Dm7 → Cmaj7 con filtros DIATONIC y DOMINANTS</h3>
+    <p><strong>Enunciado.</strong> FROM <code>Dm7</code>, TARGET <code>Cmaj7</code>, pasos intermedios = 2, filtros activos <strong>DIATONIC</strong> y <strong>DOMINANTS</strong>. Propón una ruta válida y clasifica cada enlace.</p>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p>Ruta válida:</p>
+        <div class="path">
+          <span class="node g">Dm7</span><span class="arrow">→</span>
+          <span class="node p">Fmaj7</span><span class="arrow">→</span>
+          <span class="node a">G7</span><span class="arrow">→</span>
+          <span class="node">Cmaj7</span>
+        </div>
+        <p>En Do mayor: <code>Dm7 = ii</code>, <code>Fmaj7 = IV</code>, <code>G7 = V7</code>, <code>Cmaj7 = I</code>.</p>
+        <ul>
+          <li><strong>Enlace Dm7 → Fmaj7:</strong> D(2) → F(5) = 3 semitonos. Ambos diatónicos; categoría <strong>DIATONIC</strong>.</li>
+          <li><strong>Enlace Fmaj7 → G7:</strong> F(5) → G(7) = 2 semitonos. Ambos diatónicos; categoría <strong>DIATONIC</strong>.</li>
+          <li><strong>Enlace G7 → Cmaj7:</strong> G(7) → C(0) = 5 semitonos. G7 es familia dom y Cmaj7 es diatónico; el motor lo clasifica como <strong>DOMINANTS</strong>.</li>
+        </ul>
+        <p>Hay exactamente 2 intermedios: <code>Fmaj7</code> y <code>G7</code>.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          El motor permite los enlaces DIATONIC y DOMINANTS. <code>Fmaj7</code> funciona como puente diatónico entre ii y V. El último paso es un V–I, que el motor etiqueta como DOMINANTS porque el primer acorde es dominante y resuelve una quinta descendente hacia un acorde diatónico.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Creer que <code>G7 → Cmaj7</code> es DIATONIC. Aunque ambos son diatónicos, el motor prioriza DOMINANTS cuando detecta un dominante resolviendo una quinta justa descendente. También es error usar <code>Dm7 → G7 → Cmaj7</code>, porque <code>Dm7 → G7</code> sería II-V, categoría no activada en este filtro.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 7 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-red">Detección de error</span>
+      <span class="badge b-amber">Media</span>
+    </div>
+    <h3>Ejercicio 7 · Afirmación incompatible con el motor</h3>
+    <p><strong>Enunciado.</strong> Dada la relación <code>E7 → Am7</code> en Do mayor, ¿cuál de estas afirmaciones es incompatible con el motor?</p>
+    <ul>
+      <li><strong>A)</strong> La categoría es DOMINANTS.</li>
+      <li><strong>B)</strong> <code>E7</code> actúa como <code>V/vi</code>.</li>
+      <li><strong>C)</strong> El movimiento de fundamental es E → A, que equivale a una cuarta justa ascendente.</li>
+      <li><strong>D)</strong> <code>Am7</code> es el dominante de <code>E7</code>.</li>
+    </ul>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p><code>E7</code> tiene familia dom. <code>Am7</code> es diatónico de Do mayor como <code>vi</code>. Movimiento E(4) → A(9) = 5 semitonos. El motor activa <code>a.fam === 'dom' &amp;&amp; motion === 5 &amp;&amp; B.kind === 'diatonic'</code>, por lo que categoría = <strong>DOMINANTS</strong>. E7 es <code>V/vi</code>. La opción <strong>D</strong> invierte la función: el dominante es E7, no Am7. Por tanto, la afirmación incompatible es <strong>D</strong>.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          Un dominante se define por resolver una quinta justa descendente hacia su tónica. E7 resuelve hacia Am7; por tanto, E7 es el dominante y Am7 es la tónica local. Am7 no puede ser dominante de E7 porque no tiene familia dom ni la dirección de resolución correcta.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Invertir la dirección del dominante o confundir <code>V/vi</code> con ii–V. En ii–V, el primer acorde sería m7 y el segundo dom; aquí es al contrario.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 8 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-amber">Voice leading</span>
+      <span class="badge b-green">Fácil</span>
+    </div>
+    <h3>Ejercicio 8 · Notas comunes y semitonos entre Cmaj7 y G7</h3>
+    <p><strong>Enunciado.</strong> Calcula notas comunes y movimientos por semitono entre <code>Cmaj7</code> y <code>G7</code> en Do mayor, según el motor de voice leading.</p>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <pre>Cmaj7: C(0), E(4), G(7), B(11).
+G7:    G(7), B(11), D(2), F(5).</pre>
+        <ul>
+          <li><strong>Notas comunes:</strong> G y B.</li>
+          <li><strong>Notas solo de Cmaj7:</strong> C, E.</li>
+          <li><strong>Notas solo de G7:</strong> D, F.</li>
+          <li><strong>Movimientos por semitono entre notas no comunes:</strong> E(4) → F(5), que es un semitono ascendente. El motor reporta ese movimiento.</li>
+        </ul>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          El voice leading se calcula comparando las pitch classes de ambos acordes. Las notas que coinciden se mantienen; las que no coinciden se emparejan y se detecta si su distancia es exactamente 1 semitono. E→F cumple esa condición.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Incluir D o F como notas comunes. No lo son: D y F pertenecen a G7, pero no a Cmaj7. También es error decir que C→B es el único semitono; el motor solo empareja notas no comunes, y B ya es común.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 9 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-blue">Uso de la interfaz</span>
+      <span class="badge b-amber">Media</span>
+    </div>
+    <h3>Ejercicio 9 · Secuencia en pantalla SEARCH</h3>
+    <p><strong>Enunciado.</strong> Desde la pantalla SEARCH, describe la secuencia exacta para cambiar FROM a <code>Bb13</code>, mantener TARGET <code>Fmaj7</code>, fijar 2 acordes intermedios y ejecutar la búsqueda. Usa teclas/pantallas de la app.</p>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <ol>
+          <li>En SEARCH, con UP/DOWN llevar el foco a FROM (fila 0).</li>
+          <li>Pulsar ENTER para abrir el CHORD BUILDER «FROM CHORD».</li>
+          <li>En NOTE elegir <code>Bb</code>; en CHORD TYPE elegir <code>13</code>; verificar que el preview muestre <code>Bb13</code>.</li>
+          <li>Pulsar ENTER / ACCEPT para aceptar el acorde.</li>
+          <li>De vuelta en SEARCH, mover el foco a TARGET (fila 1) y pulsar ENTER.</li>
+          <li>En el builder TARGET elegir NOTE <code>F</code> y CHORD TYPE <code>maj7</code>; pulsar ENTER / ACCEPT.</li>
+          <li>Mover el foco a INTERMEDIATE CHORDS (fila 2) y con LEFT/RIGHT o pulsando <code>2</code> fijar el valor <code>2</code>.</li>
+          <li>Mover el foco a <code>[ENTER] FIND HARMONIC PATHS</code> (fila 5) y pulsar ENTER.</li>
+        </ol>
+        <p><strong>Alternativa:</strong> usar los botones EDIT FROM, EDIT TARGET y FIND PATHS.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          El builder intercepta ENTER para aceptar y CLEAR para cancelar. En SEARCH, ENTER sobre FROM o TARGET abre el editor; ENTER sobre FIND ejecuta la búsqueda. El número de pasos se controla en la fila INTERMEDIATE CHORDS y determina cuántos acordes intermedios insertará el motor entre FROM y TARGET.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Pulsar ENTER en FROM sin abrir el builder, o aceptar el builder y luego olvidar fijar los pasos. También es error buscar antes de aceptar el segundo acorde, porque se usaría el valor anterior.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 10 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-purple">Intercambio modal / Transposición</span>
+      <span class="badge b-red">Difícil</span>
+    </div>
+    <h3>Ejercicio 10 · Análisis de Abmaj7 en Do mayor</h3>
+    <p><strong>Enunciado.</strong> En Do mayor, analiza <code>Abmaj7</code>: nota, grado mostrado por el motor, función y procedencia. Explica teóricamente su origen y descarta que sea un dominante secundario o una sustitución de tritono.</p>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p><code>Abmaj7</code> tiene fundamental Ab (pc 8), calidad <code>maj7</code>, familia major. En Do mayor no es diatónico. El motor revisa el modo paralelo Do menor. En Do menor natural, el VI grado es <code>Abmaj7</code>. Por tanto, <code>analyzeChord</code> lo clasifica como <em>borrowed</em>, grado <code>VI</code>, función <strong>Modal Interchange</strong>, origen <strong>C Minor</strong>. La representación mostrada sería <code>Ab(VI)</code>. En relación a Do mayor, su grado cromático relativo es <code>♭VI</code>. En una ruta, la categoría sería <strong>MODAL</strong>.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          Abmaj7 se toma prestado del modo paralelo menor. No es un dominante secundario porque su familia es major y no resuelve como dominante. No es una sustitución de tritono porque no es un acorde dominante que reemplaza a otro dominante; su función es de color modal, no de resolución dominante.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Confundir <code>Abmaj7</code> con <code>SubV/V</code>. <code>SubV/V</code> en Do mayor sería <code>Bb7</code>, un dominante con fundamental a un semitono del V. También es error llamarlo <code>♭VI</code> cromático sin reconocer que proviene de Do menor.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ============================================================ SÍNTESIS -->
+<section id="sintesis">
+  <div class="sec-head">
+    <h2>09 · Reto final y síntesis</h2>
+    <p class="sub">Checklist de aprendizaje y la idea final del tutorial.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 43</span>
+    <h3>Reto final</h3>
+    <p>Introduce:</p>
+    <pre>FROM: Cmaj7
+TARGET: Cmaj7</pre>
+    <p>Busca rutas con: <code>1 · 2 · 3 · 4 · 5</code> acordes intermedios.</p>
+    <p>Después clasifica manualmente las rutas que encuentres:</p>
+    <div>
+      <span class="chip g">DIATÓNICA</span>
+      <span class="chip p">DOMINANTE SECUNDARIO</span>
+      <span class="chip">II–V</span>
+      <span class="chip">CROMÁTICA</span>
+      <span class="chip">DISMINUIDA</span>
+      <span class="chip">INTERCAMBIO MODAL</span>
+      <span class="chip">TRITONE SUB</span>
+      <span class="chip">MIXTA</span>
+    </div>
+    <p>Después toca tus tres rutas favoritas en el piano. Finalmente intenta trasladarlas a:</p>
+    <div>
+      <span class="chip g">G Major</span>
+      <span class="chip g">F Major</span>
+      <span class="chip g">Bb Major</span>
+      <span class="chip g">Ab Major</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 44</span>
+    <h3>¿Qué deberías haber aprendido?</h3>
+    <p>Después de completar este tutorial deberías poder:</p>
+    <div class="grid">
+      <div>✓ introducir un acorde FROM;</div>
+      <div>✓ introducir un acorde TARGET;</div>
+      <div>✓ utilizar NOTE;</div>
+      <div>✓ utilizar CHORD TYPE;</div>
+      <div>✓ utilizar DIRECT INPUT;</div>
+      <div>✓ interpretar la vista PREVIEW;</div>
+      <div>✓ entender C(I);</div>
+      <div>✓ entender D(ii);</div>
+      <div>✓ entender G(V);</div>
+      <div>✓ distinguir acordes diatónicos y no diatónicos;</div>
+      <div>✓ buscar caminos entre dos acordes;</div>
+      <div>✓ controlar el número de acordes intermedios;</div>
+      <div>✓ reconocer II–V–I;</div>
+      <div>✓ reconocer dominantes secundarios;</div>
+      <div>✓ reconocer intercambio modal;</div>
+      <div>✓ reconocer cromatismos;</div>
+      <div>✓ reconocer acordes disminuidos;</div>
+      <div>✓ entender la idea de sustitución de tritono;</div>
+      <div>✓ analizar una ruta armónica;</div>
+      <div>✓ llevar las rutas al piano;</div>
+      <div>✓ utilizar la aplicación como herramienta de estudio de armonía.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 45</span>
+    <h3>La idea final</h3>
+    <p>HARMONIC PATH FINDER no debe utilizarse solamente como:</p>
+    <div class="callout err"><span class="lbl">Uso limitado</span> «una calculadora que me dice qué acorde poner.»</div>
+    <p>La forma más potente de utilizarla es:</p>
+    <div class="path" style="flex-direction:column; align-items:flex-start;">
+      <span class="node">ACORDE DE PARTIDA</span>
+      <span class="arrow">↓</span>
+      <span class="node p">EXPLORAR POSIBILIDADES</span>
+      <span class="arrow">↓</span>
+      <span class="node a">ANALIZAR LAS RELACIONES</span>
+      <span class="arrow">↓</span>
+      <span class="node g">ESCUCHARLAS EN EL PIANO</span>
+      <span class="arrow">↓</span>
+      <span class="node">COMPRENDER LA FUNCIÓN</span>
+      <span class="arrow">↓</span>
+      <span class="node g">CREAR TU PROPIA PROGRESIÓN</span>
+    </div>
+    <div class="callout ex">
+      <span class="lbl">Cierre</span>
+      La calculadora encuentra caminos. <strong>Tú aprendes por qué esos caminos funcionan.</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ FUENTES -->
+<section id="fuentes">
+  <div class="sec-head">
+    <h2>Fuentes</h2>
+    <p class="sub">Documento base a partir del cual se ha elaborado este tutorial interactivo.</p>
+  </div>
+
+  <div class="src-item">
+    <div class="ic">📄</div>
+    <div class="bd">
+      <h4>HARMONIC-PATH-FINDER.txt</h4>
+      <p>Documento fuente del tutorial: «HARMONIC PATH FINDER — Tutorial completo paso a paso — Para DUMMIES». Contenido íntegro reproducido y transformado en las secciones de este tutorial HTML.</p>
+    </div>
+  </div>
+
+  <div class="src-item">
+    <div class="ic">📄</div>
+    <div class="bd">
+      <h4>ejercicios calc path.txt</h4>
+      <p>Documento fuente de la pestaña <strong>Ejercicios</strong>: diez casos prácticos sobre análisis de acordes, categorización de relaciones, construcción de rutas, voice leading, uso de la interfaz e intercambio modal. Contenido reproducido en la sección Ejercicios de este tutorial.</p>
+    </div>
+  </div>
+
+  <div class="src-item">
+    <div class="ic">📚</div>
+    <div class="bd">
+      <h4>Contenido musical de referencia</h4>
+      <p>Armonía funcional tonal y jazzística: grados diatónicos, dominantes secundarios, relaciones II–V–I, intercambio modal, cromatismo, acordes disminuidos y sustitución de tritono.</p>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="lbl">Nota</span>
+    Este tutorial no incorpora fuentes externas ni enlaces de Internet. Todo el contenido proviene de los documentos fuente proporcionados por el usuario.
+  </div>
+</section>
+
+<!-- ============================================================ CRÉDITOS -->
+<section id="creditos">
+  <div class="sec-head">
+    <h2>Créditos</h2>
+    <p class="sub">Autoría, fecha de edición y nota educativa del tutorial.</p>
+  </div>
+
+  <div class="svg-wrap" id="creditSvgWrap">
+    <!-- El SVG de HOME se inserta aquí vía JS (mismo nodo, misma animación) -->
+  </div>
+
+  <div class="credit-box">
+    <span class="badge b-blue">Tutorial</span>
+    <h3 style="margin-top:10px; color:#fff;">HARMONIC PATH FINDER — Tutorial Completo</h3>
+    <div class="name">Rubén Sbarsky</div>
+    <p class="meta">📅 Fecha: 24/09/2026</p>
+    <p class="meta">⏱ Hora: 16:36:16</p>
+    <p class="meta" style="margin-top:12px;">📚 Tutorial solo con fines Educativos y Divulgación</p>
+    <p class="latin">Fiat iustitia, ruat caelum.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+  <p>👨‍💻 Créditos: Rubén Sbarsky</p>
+  <p>📅 FECHA: 24/09/2026</p>
+  <p>Hora: 16:36:16</p>
+  <p class="latin">Fiat iustitia, ruat caelum.</p>
+</footer>
+
+<button id="toTop" aria-label="Volver arriba">▲</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- SPA NAVIGATION ---------- */
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('main > section');
+  const navScroll = document.getElementById('navScroll');
+
+  function activateTab(id){
+    sections.forEach(s => s.classList.toggle('active', s.id === id));
+    navBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+    // Scroll activo dentro del navbar
+    const activeBtn = document.querySelector('.nav-btn.active');
+    if(activeBtn && navScroll){
+      const br = activeBtn.getBoundingClientRect();
+      const nr = navScroll.getBoundingClientRect();
+      if(br.left < nr.left || br.right > nr.right){
+        activeBtn.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+      }
+    }
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  navBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = btn.dataset.tab;
+      activateTab(target);
+      // Re-mount SVG animation when entering credits (same node, restart time)
+      if(target === 'creditos'){
+        mountCreditsSvg();
+        const svg = document.getElementById('coverSVG');
+        if(svg && svg.setCurrentTime){
+          try{ svg.setCurrentTime(0); }catch(e){}
+        }
+      }
+    });
+  });
+
+  /* ---------- MOVE SAME SVG TO CRÉDITOS ---------- */
+  function mountCreditsSvg(){
+    const wrap = document.getElementById('creditSvgWrap');
+    const svg = document.getElementById('coverSVG');
+    if(wrap && svg && !wrap.contains(svg)){
+      wrap.appendChild(svg);
+    }
+  }
+  function mountHomeSvg(){
+    const homeWrap = document.querySelector('#home .svg-wrap');
+    const svg = document.getElementById('coverSVG');
+    if(homeWrap && svg && !homeWrap.contains(svg)){
+      homeWrap.appendChild(svg);
+    }
+  }
+  // Patch activateTab: if going away from credits, bring SVG back home
+  const originalActivate = activateTab;
+  activateTab = function(id){
+    if(id !== 'creditos'){ mountHomeSvg(); }
+    originalActivate(id);
+  };
+  // Re-bind buttons to the patched version
+  navBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = btn.dataset.tab;
+      activateTab(target);
+      if(target === 'creditos'){
+        mountCreditsSvg();
+        const svg = document.getElementById('coverSVG');
+        if(svg && svg.setCurrentTime){ try{ svg.setCurrentTime(0); }catch(e){} }
+      }
+    });
+  });
+
+  /* ---------- PROGRESS BAR ---------- */
+  const pb = document.getElementById('progressBar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollH = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    const pct = scrollH > 0 ? (scrollTop / scrollH) * 100 : 0;
+    pb.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+
+  /* ---------- BACK TO TOP ---------- */
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', ()=>{
+    if(window.scrollY > 320){ toTop.classList.add('show'); }
+    else{ toTop.classList.remove('show'); }
+  }, {passive:true});
+  toTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+  /* ---------- ACCORDIONS ---------- */
+  document.querySelectorAll('.acc').forEach(acc=>{
+    const head = acc.querySelector('.acc-h');
+    head.addEventListener('click', ()=> acc.classList.toggle('open'));
+  });
+
+  /* ---------- CHORD CONSTRUCTOR (Sección 7) ---------- */
+  const noteSel = document.getElementById('ctorNote');
+  const typeSel = document.getElementById('ctorType');
+  const result = document.getElementById('ctorResult');
+  const sub = document.getElementById('ctorSub');
+
+  // Grados diatónicos en C Major (sin alteraciones de escala)
+  const cMajorDegree = {
+    'C':'I', 'D':'ii', 'E':'iii', 'F':'IV', 'G':'V', 'A':'vi', 'B':'vii°'
+  };
+
+  function updateCtor(){
+    const note = noteSel.value;
+    const type = typeSel.value;
+    const chord = note + type;
+    result.textContent = chord;
+    const deg = cMajorDegree[note];
+    if(deg && /^[A-G]$/.test(note)){
+      sub.textContent = note + '(' + deg + ') · C Major';
+    } else {
+      sub.textContent = 'Fuera de C Major — relación cromática / modal';
+    }
+  }
+  noteSel.addEventListener('change', updateCtor);
+  typeSel.addEventListener('change', updateCtor);
+  updateCtor();
+
+  /* ---------- INITIAL STATE ---------- */
+  updateProgress();
+})();
+</script>
+</body>
+</html>
