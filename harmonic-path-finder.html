@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>HARMONIC PATH FINDER</title>
+<title>HARMONIC PATH FINDER V003.2</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{
@@ -221,7 +221,7 @@
   /* ======== QUICK ACTIONS ======== */
   .quickActions{
     display:grid;
-    grid-template-columns:1fr 1fr 1fr;
+    grid-template-columns:1fr 1fr;
     gap:6px;
     margin-top:10px;
   }
@@ -291,7 +291,7 @@
 </head>
 <body>
 <div class="calc">
-  <div class="brand">HARMONIC <span>PATH</span> FINDER</div>
+  <div class="brand">HARMONIC <span>PATH</span> FINDER <span>V003.2</span></div>
 
   <div class="screenwrap">
     <div class="lcd" id="lcd">
@@ -338,17 +338,19 @@
     <button type="button" id="qFrom">EDIT FROM</button>
     <button type="button" id="qTo">EDIT TARGET</button>
     <button type="button" id="qFind" class="primary">FIND PATHS</button>
+    <button type="button" id="qContext">MUSICAL CONTEXT</button>
   </div>
 
   <div class="keys" id="keys"></div>
-  <div class="foot">TI-STYLE HARMONIC ENGINE · OFFLINE</div>
+  <div class="foot">TI-STYLE HARMONIC ENGINE · OFFLINE · V003.2</div>
 </div>
 
 <script>
 "use strict";
 /* ============================================================
-   HARMONIC PATH FINDER
-   Motor armónico original intacto + CHORD BUILDER guiado
+   HARMONIC PATH FINDER V003.2
+   Motor armónico V002 intacto + MUSICAL CONTEXT (opcional)
+   + HARMONIC DENSITY + COMPARE + CONTEXT screen
    ============================================================ */
 
 /* ------------------------------------------------------------
@@ -366,7 +368,7 @@ function noteName(pc, preferFlat){
 }
 
 /* ------------------------------------------------------------
-   2. CHORD DATABASE
+   2. CHORD DATABASE (INTACTO)
    ------------------------------------------------------------ */
 const CHORD_TYPES = {
   maj:    {iv:[0,4,7],          name:'Major',        fam:'major'},
@@ -506,7 +508,7 @@ function parseChord(str){
 }
 
 /* ------------------------------------------------------------
-   3. SCALE ENGINE
+   3. SCALE ENGINE (INTACTO)
    ------------------------------------------------------------ */
 const SCALES = {
   major:        {iv:[0,2,4,5,7,9,11], label:'Major'},
@@ -522,7 +524,7 @@ const SCALES = {
 };
 
 /* ------------------------------------------------------------
-   4. ROMAN NUMERAL ENGINE
+   4. ROMAN NUMERAL ENGINE (INTACTO)
    ------------------------------------------------------------ */
 function romanFor(index, fam, type){
   let r = ROMAN[index];
@@ -568,7 +570,7 @@ function chromaticDegree(pc, tonic){
 }
 
 /* ------------------------------------------------------------
-   5. CHORD ANALYSIS (NOTA + GRADO + FUNCIÓN + PROCEDENCIA)
+   5. CHORD ANALYSIS (INTACTO)
    ------------------------------------------------------------ */
 const _analyzeCache = new Map();
 
@@ -712,7 +714,7 @@ function funcName(roman, fam){
 }
 
 /* ------------------------------------------------------------
-   6. KEY DETECTION
+   6. KEY DETECTION (INTACTO)
    ------------------------------------------------------------ */
 function determineKey(from, to){
   const preferFlat = /b/.test(from.rootName) || /b/.test(to.rootName);
@@ -751,7 +753,7 @@ function determineKey(from, to){
 }
 
 /* ------------------------------------------------------------
-   7. HARMONIC RELATIONSHIP ENGINE
+   7. HARMONIC RELATIONSHIP ENGINE (INTACTO)
    ------------------------------------------------------------ */
 const CAT_LABEL = {
   'DIATONIC':'DIATONIC', 'DOMINANTS':'DOMINANT', 'TRITONE':'TRITONE SUB',
@@ -858,7 +860,7 @@ function computeRelation(a, b, key){
 }
 
 /* ------------------------------------------------------------
-   8. CANDIDATE POOL
+   8. CANDIDATE POOL (INTACTO)
    ------------------------------------------------------------ */
 function buildPool(key, from, to){
   const pool = new Map();
@@ -911,7 +913,7 @@ function buildPool(key, from, to){
 }
 
 /* ------------------------------------------------------------
-   9. ROUTE GENERATOR
+   9. ROUTE GENERATOR (INTACTO)
    ------------------------------------------------------------ */
 const KEEP = 8;
 const MAX_RESULTS = 60;
@@ -1046,7 +1048,7 @@ function runSearch(from, to, steps, filters){
 }
 
 /* ------------------------------------------------------------
-   10. ROUTE METRICS / SORTING
+   10. ROUTE METRICS / SORTING (INTACTO + DENSITY)
    ------------------------------------------------------------ */
 function routeType(rels){
   const set = new Set();
@@ -1078,6 +1080,15 @@ function sortResults(results, mode){
     results.sort(function(a, b){ return routeMetrics(b).functional - routeMetrics(a).functional; });
   } else if(mode === 'HARMONIC DISTANCE'){
     results.sort(function(a, b){ return routeMetrics(a).distance - routeMetrics(b).distance; });
+  } else if(mode === 'CONTEXT MATCH'){
+    results.sort(function(a,b){
+      const am=contextMetrics(a), bm=contextMetrics(b);
+      return (bm.max ? bm.score/bm.max : -1) - (am.max ? am.score/am.max : -1);
+    });
+  } else if(mode === 'DENSITY'){
+    /* With a fixed INTERMEDIATE CHORDS count, density is identical for every route.
+       Keep the option visible but do not pretend it can rank equal-density routes. */
+    results.sort(function(a,b){ return b.score - a.score; });
   } else if(mode === 'RANDOM'){
     for(let i = results.length - 1; i > 0; i--){
       const j = Math.floor(Math.random() * (i + 1));
@@ -1090,7 +1101,7 @@ function sortResults(results, mode){
 }
 
 /* ------------------------------------------------------------
-   11. RELATED SCALES
+   11. RELATED SCALES (INTACTO)
    ------------------------------------------------------------ */
 function relatedScales(chord, preferFlat){
   const out = [];
@@ -1115,7 +1126,7 @@ function relatedScales(chord, preferFlat){
 }
 
 /* ------------------------------------------------------------
-   12. VOICE LEADING HELPERS
+   12. VOICE LEADING HELPERS (INTACTO)
    ------------------------------------------------------------ */
 function voiceLeading(a, b, preferFlat){
   const common = [];
@@ -1143,7 +1154,7 @@ function voiceLeading(a, b, preferFlat){
 }
 
 /* ------------------------------------------------------------
-   13. BUILDER OPTIONS
+   13. BUILDER OPTIONS (INTACTO)
    ------------------------------------------------------------ */
 const NOTE_OPTIONS = ['C','C#','Db','D','D#','Eb','E','F','F#','Gb','G','G#','Ab','A','A#','Bb','B'];
 
@@ -1162,8 +1173,229 @@ function typeLabel(t){
   return (sym ? sym : 'maj') + '  —  ' + def.name;
 }
 
+/* ============================================================
+   V003.1: MUSICAL CONTEXT (OPCIONAL) — CAPA ADICIONAL
+   ============================================================ */
+
+const SECTION_OPTIONS = ['NONE','INTRO','VERSE','PRE-CHORUS','CHORUS','BRIDGE','INSTRUMENTAL','TURNAROUND','OUTRO','CUSTOM'];
+const SPACE_OPTIONS   = ['NONE','INSTANT','1 BEAT','2 BEATS','1 BAR','2 BARS','4 BARS','FREE'];
+const ROLE_OPTIONS    = ['NONE','CHORD TONE','EXTENSION','SUSPENSION','PASSING','UNKNOWN'];
+const POSITION_OPTIONS = ['ROUTE','FROM','TARGET'];
+const INTENTION_OPTIONS = ['NONE','SMOOTH','INCREASE TENSION','RELEASE TENSION','SURPRISE','CHROMATIC COLOR','STRONG ARRIVAL','KEEP MELODY','STRONG BASS MOTION','EXPERIMENTAL'];
+const CONTEXT_NOTE_OPTIONS = ['NONE','C','C#','Db','D','D#','Eb','E','F','F#','Gb','G','G#','Ab','A','A#','Bb','B'];
+
+/* space -> "beats" (descriptive only; not a musical rule) */
+const SPACE_UNITS = {
+  'NONE': null,
+  'INSTANT': 0.5,
+  '1 BEAT': 1,
+  '2 BEATS': 2,
+  '1 BAR': 4,
+  '2 BARS': 8,
+  '4 BARS': 16,
+  'FREE': null
+};
+
+function parseNotePC(name){
+  if(!name || name === 'NONE') return null;
+  const m = String(name).match(/^([A-G])([#b]?)$/);
+  if(!m) return null;
+  let pc = LETTER_PC[m[1]];
+  if(m[2] === '#') pc += 1;
+  else if(m[2] === 'b') pc -= 1;
+  return mod12(pc);
+}
+
+function contextActive(){
+  const c = state.context;
+  if(!c) return false;
+  return c.section !== 'NONE' ||
+         c.harmonicSpace !== 'NONE' ||
+         c.melodyNote !== 'NONE' ||
+         c.bassNote !== 'NONE' ||
+         c.intention !== 'NONE' ||
+         (c.section === 'CUSTOM' && (c.customSection || '').length > 0);
+}
+
+function resetContext(){
+  state.context = {
+    section: 'NONE',
+    customSection: '',
+    harmonicSpace: 'NONE',
+    melodyNote: 'NONE',
+    melodyRole: 'NONE',
+    melodyPosition: 'TARGET',
+    bassNote: 'NONE',
+    bassPosition: 'TARGET',
+    intention: 'NONE'
+  };
+  state.contextIdx = 0;
+}
+
+function sectionLabelForDisplay(){
+  const c = state.context;
+  if(c.section === 'CUSTOM'){
+    return c.customSection ? ('CUSTOM:' + c.customSection) : 'CUSTOM';
+  }
+  return c.section;
+}
+
+/* HARMONIC DENSITY: descriptiva, nunca inventa una regla musical */
+function computeDensity(route){
+  const units = SPACE_UNITS[state.context.harmonicSpace];
+  if(!units) return null;
+  const changes = Math.max(0, route.chords.length - 1);
+  return changes / units;
+}
+
+function densityLabel(d){
+  if(d === null || d === undefined) return 'N/A';
+  if(d >= 2)      return 'VERY HIGH';
+  if(d >= 1)      return 'HIGH';
+  if(d >= 0.5)    return 'MED-HIGH';
+  if(d >= 0.25)   return 'MEDIUM';
+  return 'LOW';
+}
+
+function densityDescription(d){
+  if(d === null || d === undefined) return 'NO SPACE SET';
+  if(d >= 2) return 'VERY DENSE';
+  if(d >= 1) return 'DENSE';
+  if(d >= 0.5) return 'MODERATE';
+  return 'SPARSE';
+}
+
+function melodyRelation(chord, pc){
+  if(pc === null) return 'NONE';
+  if(chord.tones.indexOf(pc) >= 0){
+    const iv = mod12(pc - chord.root);
+    /* triad members */
+    if(iv === 0 || iv === 3 || iv === 4 || iv === 7 || iv === 8) return 'CHORD TONE';
+    /* common 7th/extended chord members */
+    return 'EXTENSION';
+  }
+  const iv = mod12(pc - chord.root);
+  if(iv === 1 || iv === 2 || iv === 5 || iv === 6) return 'SUSPENSION';
+  return 'PASSING';
+}
+
+function positionIndexes(route, position){
+  const n = route.chords.length;
+  if(position === 'FROM') return [0];
+  if(position === 'TARGET') return [n - 1];
+  const out = [];
+  for(let i=0;i<n;i++) out.push(i);
+  return out;
+}
+
+/* Melody fit now respects NOTE + ROLE + POSITION. */
+function melodyFit(route){
+  const c = state.context;
+  const pc = parseNotePC(c.melodyNote);
+  if(pc === null) return null;
+  const indexes = positionIndexes(route, c.melodyPosition || 'TARGET');
+  let hits = 0;
+  const details = [];
+  for(let j=0;j<indexes.length;j++){
+    const i = indexes[j];
+    const rel = melodyRelation(route.chords[i], pc);
+    const ok = c.melodyRole === 'NONE' || c.melodyRole === 'UNKNOWN' || rel === c.melodyRole;
+    if(ok) hits++;
+    details.push({index:i, relation:rel, ok:ok});
+  }
+  return {
+    hits:hits,
+    total:indexes.length,
+    pc:pc,
+    position:c.melodyPosition || 'TARGET',
+    role:c.melodyRole || 'NONE',
+    details:details
+  };
+}
+
+function bassFitForChord(chord){
+  const pc = parseNotePC(state.context.bassNote);
+  if(pc === null) return null;
+  if(pc === chord.root) return 'ROOT';
+  if(chord.tones.indexOf(pc) >= 0) return 'CHORD TONE';
+  return 'NON-CHORD';
+}
+
+function bassFit(route){
+  const c = state.context;
+  const pc = parseNotePC(c.bassNote);
+  if(pc === null) return null;
+  const indexes = positionIndexes(route, c.bassPosition || 'TARGET');
+  let hits = 0;
+  const details=[];
+  for(let j=0;j<indexes.length;j++){
+    const i=indexes[j];
+    const fit=bassFitForChord(route.chords[i]);
+    const ok=fit==='ROOT' || fit==='CHORD TONE';
+    if(ok) hits++;
+    details.push({index:i,fit:fit,ok:ok});
+  }
+  return {hits:hits,total:indexes.length,position:c.bassPosition||'TARGET',details:details};
+}
+
+/* Context match is descriptive and used only to prioritize compatible routes. */
+function contextMetrics(route){
+  const mf = melodyFit(route);
+  const bf = bassFit(route);
+  let score = 0, max = 0;
+  if(mf){
+    max += mf.total;
+    score += mf.hits;
+  }
+  if(bf){
+    max += bf.total;
+    score += bf.hits;
+  }
+  const d = computeDensity(route);
+  let densityFit = null;
+  if(d !== null){
+    /* There is no universal correct chords-per-beat rule. This only flags density. */
+    densityFit = densityDescription(d);
+  }
+  return {score:score,max:max,density:d,densityFit:densityFit,melody:mf,bass:bf};
+}
+
+function contextMatchLabel(m){
+  if(!m || m.max === 0) return 'N/A';
+  const pct = Math.round((m.score/m.max)*100);
+  if(pct >= 100) return 'FULL';
+  if(pct >= 75) return 'HIGH';
+  if(pct >= 50) return 'PARTIAL';
+  return 'LOW';
+}
+
+function applyIntentionSort(results, intention){
+  if(!results.length || !intention || intention === 'NONE') return results;
+  if(intention === 'SMOOTH'){
+    results.sort(function(a,b){ return routeMetrics(b).common - routeMetrics(a).common; });
+  } else if(intention === 'KEEP MELODY'){
+    results.sort(function(a,b){
+      const am=contextMetrics(a), bm=contextMetrics(b);
+      return (bm.melody ? bm.melody.hits : 0) - (am.melody ? am.melody.hits : 0);
+    });
+  } else if(intention === 'STRONG BASS MOTION'){
+    results.sort(function(a,b){ return routeMetrics(b).distance - routeMetrics(a).distance; });
+  } else if(intention === 'INCREASE TENSION' || intention === 'CHROMATIC COLOR'){
+    results.sort(function(a,b){ return routeMetrics(b).chromatic - routeMetrics(a).chromatic; });
+  } else if(intention === 'RELEASE TENSION' || intention === 'STRONG ARRIVAL'){
+    results.sort(function(a,b){ return routeMetrics(b).functional - routeMetrics(a).functional; });
+  } else if(intention === 'SURPRISE' || intention === 'EXPERIMENTAL'){
+    /* Random exploration is explicitly exploratory, not a quality score. */
+    for(let i = results.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = results[i]; results[i] = results[j]; results[j] = t;
+    }
+  }
+  return results;
+}
+
 /* ------------------------------------------------------------
-   14. APP STATE
+   14. APP STATE (V002 + campos V003)
    ------------------------------------------------------------ */
 const FILTER_KEYS = ['DIATONIC','DOMINANTS','TRITONE','DIMINISHED','II-V','MODAL','OTHER','THIRDS','CHROMATIC'];
 const FILTER_LABELS = {
@@ -1184,7 +1416,9 @@ const MODES = {
   'ALL': ['DIATONIC','DOMINANTS','TRITONE','DIMINISHED','II-V','MODAL','OTHER','THIRDS','CHROMATIC']
 };
 const MODE_LIST = Object.keys(MODES);
-const SORT_LIST = ['COHERENCE','VOICE LEADING','CHROMATIC','FUNCTIONAL','HARMONIC DISTANCE','RANDOM'];
+
+/* V003: añadido DENSITY al final sin alterar el resto */
+const SORT_LIST = ['COHERENCE','VOICE LEADING','CHROMATIC','FUNCTIONAL','HARMONIC DISTANCE','CONTEXT MATCH','DENSITY','RANDOM'];
 
 const state = {
   screen: 'SEARCH',
@@ -1203,9 +1437,24 @@ const state = {
   error: '',
   message: '',
   key: null,
-  builder: null, /* null | 'FROM' | 'TARGET' */
+  builder: null,
   builderChord: null,
-  helpPage: 0
+  helpPage: 0,
+  /* ---- V003 MUSICAL CONTEXT ---- */
+  context: {
+    section: 'NONE',
+    customSection: '',
+    harmonicSpace: 'NONE',
+    melodyNote: 'NONE',
+    melodyRole: 'NONE',
+    melodyPosition: 'TARGET',
+    bassNote: 'NONE',
+    bassPosition: 'TARGET',
+    intention: 'NONE'
+  },
+  contextIdx: 0,
+  compareA: -1,
+  compareB: -1
 };
 
 (function initFilters(){
@@ -1221,9 +1470,9 @@ function applyModeInternal(mode){
 }
 
 /* ------------------------------------------------------------
-   15. LOCAL STORAGE
+   15. LOCAL STORAGE (V002 + contexto V003)
    ------------------------------------------------------------ */
-const LS_KEY = 'harmonic_path_finder_v2';
+const LS_KEY = 'harmonic_path_finder_v2'; /* misma clave: compatibilidad */
 
 function save(){
   try{
@@ -1234,7 +1483,9 @@ function save(){
       mode: state.mode,
       filters: state.filters,
       sort: state.sort,
-      transpose: state.transpose
+      transpose: state.transpose,
+      /* V003 */
+      context: state.context
     };
     localStorage.setItem(LS_KEY, JSON.stringify(data));
   }catch(e){ /* storage unavailable */ }
@@ -1257,11 +1508,26 @@ function load(){
     }
     if(typeof d.sort === 'string' && SORT_LIST.indexOf(d.sort) >= 0) state.sort = d.sort;
     if(typeof d.transpose === 'number' && isFinite(d.transpose)) state.transpose = d.transpose;
+    /* V003: contexto (validación estricta para no romper V002) */
+    if(d.context && typeof d.context === 'object'){
+      const c = d.context;
+      if(SECTION_OPTIONS.indexOf(c.section) >= 0) state.context.section = c.section;
+      if(typeof c.customSection === 'string') state.context.customSection = c.customSection.slice(0, 32);
+      if(SPACE_OPTIONS.indexOf(c.harmonicSpace) >= 0) state.context.harmonicSpace = c.harmonicSpace;
+      if(CONTEXT_NOTE_OPTIONS.indexOf(c.melodyNote) >= 0) state.context.melodyNote = c.melodyNote;
+      if(ROLE_OPTIONS.indexOf(c.melodyRole) >= 0) state.context.melodyRole = c.melodyRole;
+      if(POSITION_OPTIONS.indexOf(c.melodyPosition) >= 0) state.context.melodyPosition = c.melodyPosition;
+      if(CONTEXT_NOTE_OPTIONS.indexOf(c.bassNote) >= 0) state.context.bassNote = c.bassNote;
+      if(POSITION_OPTIONS.indexOf(c.bassPosition) >= 0) state.context.bassPosition = c.bassPosition;
+      if(INTENTION_OPTIONS.indexOf(c.intention) >= 0) state.context.intention = c.intention;
+      if(!state.context.melodyPosition) state.context.melodyPosition = 'TARGET';
+      if(!state.context.bassPosition) state.context.bassPosition = 'TARGET';
+    }
   }catch(e){ /* ignore */ }
 }
 
 /* ------------------------------------------------------------
-   16. TEXT HELPERS
+   16. TEXT HELPERS (INTACTO)
    ------------------------------------------------------------ */
 const W = 36;
 
@@ -1297,7 +1563,7 @@ function wrapText(text, width){
 }
 
 /* ------------------------------------------------------------
-   17. CONTEXT KEY HELPERS
+   17. CONTEXT KEY HELPERS (INTACTO)
    ------------------------------------------------------------ */
 function getContextKey(){
   const from = parseChord(state.fromStr);
@@ -1317,7 +1583,6 @@ function render(){
   pw.style.display = 'none';
   pw.innerHTML = '';
 
-  /* show/hide builder + quickActions */
   const builderEl = document.getElementById('builder');
   const qaEl = document.getElementById('quickActions');
   if(state.builder){
@@ -1341,6 +1606,8 @@ function render(){
     case 'TRANSPOSE': lines = renderTranspose(); break;
     case 'PIANO': lines = renderPianoScreen(); break;
     case 'HELP': lines = renderHelp(); break;
+    case 'CONTEXT': lines = renderContext(); break;   /* V003 */
+    case 'COMPARE': lines = renderCompare(); break;   /* V003 */
     default: lines = renderSearch();
   }
   el.textContent = lines.join('\n');
@@ -1379,6 +1646,11 @@ function renderSearch(){
   L.push(focusRow(L, 5, '[ENTER] FIND HARMONIC PATHS'));
   L.push(bar('-'));
 
+  /* V003: indicador de contexto */
+  if(contextActive()){
+    L.push('CONTEXT ACTIVE: ' + (state.context.section !== 'NONE' ? sectionLabelForDisplay() : 'YES'));
+  }
+
   if(state.builder){
     L.push('> EDITANDO ' + state.builder + ' ...');
     L.push('Usa los selectores o el campo');
@@ -1400,18 +1672,20 @@ function renderMenu(){
   L.push(bar('='));
   const items = [
     'SEARCH', 'RESULTS', 'ANALYSIS', 'SCALES',
-    'SETTINGS', 'TRANSPOSE', 'PIANO', 'HELP'
+    'SETTINGS', 'TRANSPOSE', 'PIANO', 'HELP',
+    'CONTEXT', 'COMPARE' /* V003 */
   ];
   for(let i = 0; i < items.length; i++){
-    L.push(' ' + (i + 1) + ': ' + items[i]);
+    L.push(' ' + (i + 1 <= 9 ? (i + 1) : 0) + ': ' + items[i]);
   }
   L.push(bar('-'));
   L.push('FROM: ' + state.fromStr);
   L.push('TO  : ' + state.toStr);
   L.push('STEPS: ' + state.steps + '   MODE: ' + state.mode);
   L.push('RESULTS: ' + state.results.length);
+  L.push('CTX: ' + (contextActive() ? 'ACTIVE' : 'NONE'));
   L.push(bar('-'));
-  L.push('1-8 SELECT   CLEAR BACK');
+  L.push('1-9,0 SELECT   CLEAR BACK');
   return L;
 }
 
@@ -1451,8 +1725,32 @@ function renderResults(){
     return info.degree;
   }).join('-');
   L.push('FN: ' + fn);
+
+  /* V003: línea compacta de contexto si está activo */
+  if(contextActive()){
+    const c = state.context;
+    L.push(bar('-'));
+    const parts1 = [];
+    if(c.section !== 'NONE') parts1.push('SEC:' + sectionLabelForDisplay());
+    if(c.harmonicSpace !== 'NONE') parts1.push('SPACE:' + c.harmonicSpace);
+    if(c.melodyNote !== 'NONE') parts1.push('MEL:' + c.melodyNote);
+    if(c.bassNote !== 'NONE') parts1.push('BASS:' + c.bassNote);
+    if(parts1.length) L.push(parts1.join(' '));
+
+    const parts2 = [];
+    const d = computeDensity(r);
+    if(d !== null) parts2.push('DENS:' + densityLabel(d));
+    const mf = melodyFit(r);
+    if(mf) parts2.push('MEL ' + mf.hits + '/' + mf.total + ' ' + mf.position);
+    const cm = contextMetrics(r);
+    if(cm.max) parts2.push('MATCH:' + contextMatchLabel(cm));
+    if(parts2.length) L.push(parts2.join('  '));
+  }
+
   L.push(bar('-'));
-  L.push('^v ROUTE  ENTER WHY?  CLR BACK');
+  /* V003: marcar A/B para COMPARE */
+  L.push('^v ROUTE  ENTER WHY?');
+  L.push('2ND=A  ALPHA=B  CLR BACK');
   return L;
 }
 
@@ -1500,6 +1798,40 @@ function renderAnalysis(){
       L.push('  ' + vl.chromatic[k]);
     }
   }
+
+  /* V003: bloque de contexto descriptivo */
+  if(contextActive()){
+    const c = state.context;
+    L.push(bar('-'));
+    L.push('MUSICAL CONTEXT');
+    if(c.section !== 'NONE') L.push(' SECTION: ' + sectionLabelForDisplay());
+    if(c.harmonicSpace !== 'NONE') L.push(' SPACE  : ' + c.harmonicSpace);
+    if(c.melodyNote !== 'NONE') L.push(' MELODY : ' + c.melodyNote + ' @' + (c.melodyPosition || 'TARGET') + (c.melodyRole !== 'NONE' ? ' (' + c.melodyRole + ')' : ''));
+    if(c.bassNote !== 'NONE') L.push(' BASS   : ' + c.bassNote + ' @' + (c.bassPosition || 'TARGET'));
+    if(c.intention !== 'NONE') L.push(' INTENT : ' + c.intention);
+    L.push('-');
+    L.push('CONTEXT FIT:');
+
+    const melPc = parseNotePC(c.melodyNote);
+    if(melPc !== null){
+      L.push(' Melody role A: ' + melodyRelation(a, melPc));
+      L.push(' Melody role B: ' + melodyRelation(b, melPc));
+      L.push(' Melody target: ' + (c.melodyPosition || 'TARGET'));
+    }
+    const bassPc = parseNotePC(c.bassNote);
+    if(bassPc !== null){
+      const fa = bassFitForChord(a) || '-';
+      const fb = bassFitForChord(b) || '-';
+      L.push(' Bass fit A: ' + fa + ' / B: ' + fb);
+      L.push(' Bass position: ' + (c.bassPosition || 'TARGET'));
+      L.push(' Bass motion: ' + a.rootName + ' -> ' + b.rootName);
+    }
+    const cm = contextMetrics(r);
+    L.push(' Context match: ' + contextMatchLabel(cm));
+    const d = computeDensity(r);
+    L.push(' Route density: ' + densityLabel(d) + (d !== null ? ' (' + densityDescription(d) + ')' : ''));
+  }
+
   L.push(bar('-'));
   const desc = wrapText(rel.desc, W);
   for(let k = 0; k < desc.length; k++) L.push(desc[k]);
@@ -1670,6 +2002,13 @@ function renderHelp(){
   L.push('');
   L.push('3. Pulsa FIND PATHS.');
   L.push('');
+  L.push('4. V003: MENU -> CONTEXT para');
+  L.push('   describir SECCION, ESPACIO,');
+  L.push('   MELODIA, BAJO e INTENCION.');
+  L.push('   El contexto es OPCIONAL: si');
+  L.push('   todo esta en NONE el motor');
+  L.push('   se comporta como en V002.');
+  L.push('');
   L.push('Cada ruta muestra ACORDE +');
   L.push('NOTA(GRADO) + FUNCION + KEY.');
   L.push(bar('-'));
@@ -1678,7 +2017,198 @@ function renderHelp(){
 }
 
 /* ------------------------------------------------------------
-   19. PIANO RENDERER
+   V003.1: CONTEXT SCREEN
+   ------------------------------------------------------------ */
+function contextFields(){
+  const f = [{key:'section', label:'SECTION'}];
+  if(state.context.section === 'CUSTOM'){
+    f.push({key:'customSection', label:'CUSTOM TEXT'});
+  }
+  f.push({key:'harmonicSpace', label:'SPACE'});
+  f.push({key:'melodyNote',    label:'MELODY'});
+  f.push({key:'melodyRole',    label:'MELODY ROLE'});
+  f.push({key:'melodyPosition',label:'MELODY POS'});
+  f.push({key:'bassNote',      label:'BASS'});
+  f.push({key:'bassPosition',  label:'BASS POS'});
+  f.push({key:'intention',     label:'INTENTION'});
+  return f;
+}
+
+function renderContext(){
+  const L = [];
+  L.push('MUSICAL CONTEXT');
+  L.push(bar('='));
+  const fields = contextFields();
+  if(state.contextIdx >= fields.length) state.contextIdx = 0;
+  for(let i = 0; i < fields.length; i++){
+    const f = fields[i];
+    let val = state.context[f.key];
+    if(f.key === 'customSection') val = val || '(vacio)';
+    const sel = (state.contextIdx === i) ? '>' : ' ';
+    L.push(sel + padR(f.label, 12) + ': ' + val);
+  }
+  L.push(bar('-'));
+  L.push('CTX ACTIVE: ' + (contextActive() ? 'YES' : 'NO'));
+  L.push('');
+  L.push('COMO USARLO:');
+  L.push('1) ^v ELIGE UN CAMPO.');
+  L.push('2) </> CAMBIA SU VALOR.');
+  L.push('3) ENTER TAMBIEN CAMBIA VALOR.');
+  L.push('4) MENU VUELVE AL BUSCADOR.');
+  L.push('5) FIND PATHS BUSCA CON CONTEXTO.');
+  L.push('');
+  L.push('MELODY POS / BASS POS:');
+  L.push('FROM = acorde inicial.');
+  L.push('TARGET = acorde final.');
+  L.push('ROUTE = cualquier acorde de la ruta.');
+  L.push('');
+  L.push('SPACE SOLO DESCRIBE DENSIDAD.');
+  L.push('No impone acordes por pulso.');
+  L.push('CLEAR = BORRAR TODO EL CONTEXTO.');
+  L.push('Sin contexto, motor como V002.');
+  return L;
+}
+
+function cycleContextField(key, dir){
+  const c = state.context;
+  function cycleArr(arr, cur, dir){
+    let i = arr.indexOf(cur);
+    if(i < 0) i = 0;
+    i = (i + dir + arr.length) % arr.length;
+    return arr[i];
+  }
+  if(key === 'section')             c.section = cycleArr(SECTION_OPTIONS, c.section, dir);
+  else if(key === 'harmonicSpace')  c.harmonicSpace = cycleArr(SPACE_OPTIONS, c.harmonicSpace, dir);
+  else if(key === 'melodyNote')     c.melodyNote = cycleArr(CONTEXT_NOTE_OPTIONS, c.melodyNote, dir);
+  else if(key === 'melodyRole')     c.melodyRole = cycleArr(ROLE_OPTIONS, c.melodyRole, dir);
+  else if(key === 'melodyPosition') c.melodyPosition = cycleArr(POSITION_OPTIONS, c.melodyPosition, dir);
+  else if(key === 'bassNote')       c.bassNote = cycleArr(CONTEXT_NOTE_OPTIONS, c.bassNote, dir);
+  else if(key === 'bassPosition')   c.bassPosition = cycleArr(POSITION_OPTIONS, c.bassPosition, dir);
+  else if(key === 'intention')      c.intention = cycleArr(INTENTION_OPTIONS, c.intention, dir);
+  save();
+}
+
+function pressContext(act){
+  const fields = contextFields();
+  if(state.contextIdx >= fields.length) state.contextIdx = 0;
+
+  if(act === 'UP'){
+    state.contextIdx = (state.contextIdx + fields.length - 1) % fields.length;
+    render(); return;
+  }
+  if(act === 'DOWN'){
+    state.contextIdx = (state.contextIdx + 1) % fields.length;
+    render(); return;
+  }
+  if(act === 'LEFT' || act === 'RIGHT'){
+    const dir = (act === 'RIGHT') ? 1 : -1;
+    cycleContextField(fields[state.contextIdx].key, dir);
+    render(); return;
+  }
+  if(act === 'ENTER'){
+    cycleContextField(fields[state.contextIdx].key, 1);
+    render(); return;
+  }
+  if(act === 'CLEAR'){
+    resetContext();
+    state.results = [];
+    state.rIndex = 0;
+    state.analysisIdx = 0;
+    save();
+    render(); return;
+  }
+  if(act === 'DEL'){
+    if(fields[state.contextIdx].key === 'customSection'){
+      state.context.customSection = state.context.customSection.slice(0, -1);
+      save();
+      render();
+    }
+    return;
+  }
+  /* texto libre para CUSTOM TEXT */
+  if(fields[state.contextIdx].key === 'customSection'){
+    if(typeof act === 'string' && act.length === 1 && /^[A-Za-z0-9 _\-#]$/.test(act)){
+      if(state.context.customSection.length < 24){
+        state.context.customSection += act.toUpperCase();
+        save();
+        render();
+      }
+    }
+    return;
+  }
+}
+
+/* ------------------------------------------------------------
+   V003.1: COMPARE SCREEN
+   ------------------------------------------------------------ */
+function routeAsShort(r){
+  return r.chords.map(function(c){ return c.symbol; }).join(' > ');
+}
+
+function renderCompare(){
+  const L = [];
+  L.push('COMPARE');
+  L.push(bar('='));
+  if(state.compareA < 0 || state.compareB < 0 || !state.results.length){
+    L.push('Select two routes first.');
+    L.push('');
+    L.push('From RESULTS screen:');
+    L.push('  2ND   -> mark current as A');
+    L.push('  ALPHA -> mark current as B');
+    L.push('');
+    L.push('A: ' + (state.compareA >= 0 ? (state.compareA + 1) : '-'));
+    L.push('B: ' + (state.compareB >= 0 ? (state.compareB + 1) : '-'));
+    L.push(bar('-'));
+    L.push('CLEAR BACK');
+    return L;
+  }
+  const a = state.results[state.compareA];
+  const b = state.results[state.compareB];
+  if(!a || !b){
+    L.push('Slots out of range.');
+    L.push('CLEAR BACK');
+    return L;
+  }
+  L.push('A: ' + (state.compareA + 1) + '  B: ' + (state.compareB + 1));
+  L.push(bar('-'));
+
+  const mA = routeMetrics(a);
+  const mB = routeMetrics(b);
+  const dA = computeDensity(a);
+  const dB = computeDensity(b);
+  const fA = melodyFit(a);
+  const fB = melodyFit(b);
+
+  L.push('ROUTE A (' + (a.chords.length - 1) + ' steps)');
+  const aLines = wrapText(routeAsShort(a), W);
+  for(const x of aLines) L.push(' ' + x);
+  L.push('  chrom:' + mA.chromatic + ' common:' + mA.common +
+         ' funct:' + mA.functional + ' dist:' + mA.distance);
+  L.push('  density:' + densityLabel(dA) + (fA ? ' mel:' + fA.hits + '/' + fA.total : '') + ' match:' + contextMatchLabel(contextMetrics(a)));
+
+  L.push(bar('-'));
+  L.push('ROUTE B (' + (b.chords.length - 1) + ' steps)');
+  const bLines = wrapText(routeAsShort(b), W);
+  for(const x of bLines) L.push(' ' + x);
+  L.push('  chrom:' + mB.chromatic + ' common:' + mB.common +
+         ' funct:' + mB.functional + ' dist:' + mB.distance);
+  L.push('  density:' + densityLabel(dB) + (fB ? ' mel:' + fB.hits + '/' + fB.total : '') + ' match:' + contextMatchLabel(contextMetrics(b)));
+
+  L.push(bar('-'));
+  L.push('No se declara "mejor": el');
+  L.push('usuario decide que historia');
+  L.push('armonica prefiere.');
+  L.push(bar('-'));
+  L.push('2ND/ALPHA REMARK   CLR BACK');
+  return L;
+}
+
+function pressCompare(act){
+  if(act === 'CLEAR'){ state.screen = 'MENU'; render(); return; }
+}
+
+/* ------------------------------------------------------------
+   19. PIANO RENDERER (INTACTO)
    ------------------------------------------------------------ */
 function showPiano(chord){
   const wrap = document.getElementById('pianoWrap');
@@ -1728,7 +2258,7 @@ function showPiano(chord){
 }
 
 /* ------------------------------------------------------------
-   20. CHORD BUILDER LOGIC
+   20. CHORD BUILDER LOGIC (INTACTO)
    ------------------------------------------------------------ */
 function populateBuilderSelects(){
   const noteSel = document.getElementById('builderNote');
@@ -1855,7 +2385,6 @@ function acceptBuilder(){
   if(state.builder === 'FROM') state.fromStr = chord.symbol;
   else state.toStr = chord.symbol;
 
-  /* reset analysis since context might change */
   state.results = [];
   state.rIndex = 0;
   state.analysisIdx = 0;
@@ -1866,7 +2395,7 @@ function acceptBuilder(){
 }
 
 /* ------------------------------------------------------------
-   21. ACTIONS
+   21. ACTIONS (V002 + V003: applyIntentionSort)
    ------------------------------------------------------------ */
 function doSearch(){
   const from = parseChord(state.fromStr);
@@ -1901,6 +2430,14 @@ function doSearch(){
   }
   state.key = out.key;
   state.results = sortResults(out.results.slice(), state.sort);
+
+  /* V003: si hay intención musical, se aplica como criterio de prioridad
+     SOBRE una métrica objetiva ya existente (voice-leading / chromatic /
+     functional / distance / random). No inventa puntuaciones nuevas. */
+  if(state.context && state.context.intention !== 'NONE'){
+    applyIntentionSort(state.results, state.context.intention);
+  }
+
   state.rIndex = 0;
   state.analysisIdx = 0;
   state.screen = 'RESULTS';
@@ -1954,10 +2491,9 @@ function applyTranspose(){
 }
 
 /* ------------------------------------------------------------
-   22. KEY PRESS ROUTER
+   22. KEY PRESS ROUTER (V002 + V003)
    ------------------------------------------------------------ */
 function press(act){
-  /* Builder mode intercepts most keys */
   if(state.builder){
     if(act === 'ENTER'){ acceptBuilder(); return; }
     if(act === 'CLEAR'){ closeBuilder(); return; }
@@ -1968,7 +2504,6 @@ function press(act){
       updateBuilderPreviewFromInput();
       return;
     }
-    /* alphanumeric and chord type shortcuts go into the input */
     if(act.length === 1 || act === 'maj7' || act === 'm7' || act === 'dim7' || act === 'm7b5' || act === '7q'){
       const inp = document.getElementById('builderInput');
       const add = act === '7q' ? '7' : act;
@@ -1985,6 +2520,7 @@ function press(act){
   if(act === 'SETTINGS'){ state.screen = 'SETTINGS'; render(); return; }
   if(act === 'TRANSPOSE'){ state.screen = 'TRANSPOSE'; render(); return; }
   if(act === 'SEARCH'){ state.screen = 'SEARCH'; render(); return; }
+  if(act === 'CONTEXT'){ state.screen = 'CONTEXT'; state.contextIdx = 0; render(); return; }
   if(act === 'MODE'){ cycleMode(1); render(); return; }
   if(act === 'SORT'){ cycleSort(1); render(); return; }
   if(act === 'WHY'){
@@ -1997,7 +2533,15 @@ function press(act){
     }
     return;
   }
-  if(act === '2ND' || act === 'ALPHA'){ return; }
+  /* V003: marcar ruta A/B en RESULTS para COMPARE */
+  if(act === '2ND' || act === 'ALPHA'){
+    if(state.screen === 'RESULTS' && state.results.length){
+      if(act === '2ND') state.compareA = state.rIndex;
+      else state.compareB = state.rIndex;
+      render();
+    }
+    return;
+  }
 
   switch(state.screen){
     case 'SEARCH': pressSearch(act); break;
@@ -2010,6 +2554,8 @@ function press(act){
     case 'TRANSPOSE': pressTranspose(act); break;
     case 'PIANO': pressPiano(act); break;
     case 'HELP': pressHelp(act); break;
+    case 'CONTEXT': pressContext(act); break;   /* V003 */
+    case 'COMPARE': pressCompare(act); break;   /* V003 */
   }
 }
 
@@ -2032,7 +2578,6 @@ function pressSearch(act){
   if(act === 'ENTER'){
     if(f === 0){ openBuilder('FROM'); return; }
     if(f === 1){ openBuilder('TARGET'); return; }
-    /* any other row: run search */
     doSearch();
     return;
   }
@@ -2051,7 +2596,6 @@ function pressSearch(act){
     save(); render();
     return;
   }
-  /* legacy quick-typing on SEARCH: still supported for direct editing */
   if(f === 0 || f === 1){
     const prop = (f === 0) ? 'fromStr' : 'toStr';
     let add = null;
@@ -2079,7 +2623,8 @@ function pressMenu(act){
   if(act === 'UP' || act === 'DOWN' || act === 'LEFT' || act === 'RIGHT'){ return; }
   const map = {
     '1':'SEARCH','2':'RESULTS','3':'ANALYSIS','4':'SCALES',
-    '5':'SETTINGS','6':'TRANSPOSE','7':'PIANO','8':'HELP'
+    '5':'SETTINGS','6':'TRANSPOSE','7':'PIANO','8':'HELP',
+    '9':'CONTEXT','0':'COMPARE'
   };
   if(map[act]){
     const target = map[act];
@@ -2087,6 +2632,7 @@ function pressMenu(act){
     if(target === 'ANALYSIS' && !state.results.length){ doSearch(); return; }
     state.screen = target;
     state.analysisIdx = 0;
+    if(target === 'CONTEXT') state.contextIdx = 0;
     render();
     return;
   }
@@ -2195,12 +2741,11 @@ function pressHelp(act){
   if(act === 'CLEAR' || act === 'ENTER'){ state.screen = 'MENU'; render(); }
 }
 
-/* expose globals for HTML handlers */
 window.openBuilder = openBuilder;
 window.doSearch = doSearch;
 
 /* ------------------------------------------------------------
-   23. KEYPAD UI
+   23. KEYPAD UI (INTACTO)
    ------------------------------------------------------------ */
 const KEY_DEFS = [
   {k:'2ND',    act:'2ND',      cls:'k2nd'},
@@ -2280,7 +2825,7 @@ function buildKeypad(){
 }
 
 /* ------------------------------------------------------------
-   24. PHYSICAL KEYBOARD
+   24. PHYSICAL KEYBOARD (INTACTO)
    ------------------------------------------------------------ */
 document.addEventListener('keydown', function(e){
   const ae = document.activeElement;
@@ -2291,7 +2836,6 @@ document.addEventListener('keydown', function(e){
   );
 
   if(isFormControl){
-    /* let native control handle keys, but ESC cancels */
     if(e.key === 'Escape'){
       press('CLEAR');
       e.preventDefault();
@@ -2316,7 +2860,7 @@ document.addEventListener('keydown', function(e){
 });
 
 /* ------------------------------------------------------------
-   25. BUILDER UI BINDINGS
+   25. BUILDER UI BINDINGS (INTACTO)
    ------------------------------------------------------------ */
 function bindBuilderUI(){
   const noteSel = document.getElementById('builderNote');
@@ -2363,27 +2907,30 @@ function bindBuilderUI(){
     closeBuilder();
   });
 
-  /* quick actions */
   const qFrom = document.getElementById('qFrom');
   const qTo = document.getElementById('qTo');
   const qFind = document.getElementById('qFind');
+  const qContext = document.getElementById('qContext');
 
   qFrom.addEventListener('click', function(ev){ ev.preventDefault(); openBuilder('FROM'); });
   qTo.addEventListener('click', function(ev){ ev.preventDefault(); openBuilder('TARGET'); });
   qFind.addEventListener('click', function(ev){ ev.preventDefault(); doSearch(); });
+  qContext.addEventListener('click', function(ev){ ev.preventDefault(); state.screen = 'CONTEXT'; state.contextIdx = 0; render(); });
 }
 
 /* ------------------------------------------------------------
-   26. BOOT
+   26. BOOT (INTACTO + V003: resetContext defensivo)
    ------------------------------------------------------------ */
 (function boot(){
+  /* V003: garantizar forma de contexto antes de load (defensivo) */
+  if(!state.context) resetContext();
+
   load();
   populateBuilderSelects();
   buildKeypad();
   bindBuilderUI();
   render();
 
-  /* initial demonstration search */
   const from = parseChord(state.fromStr);
   const to = parseChord(state.toStr);
   if(from && to){
@@ -2391,6 +2938,10 @@ function bindBuilderUI(){
       const out = runSearch(from, to, state.steps, state.filters);
       state.key = out.key;
       state.results = sortResults(out.results.slice(), state.sort);
+      /* V003: aplicar intención si existe */
+      if(state.context && state.context.intention !== 'NONE'){
+        applyIntentionSort(state.results, state.context.intention);
+      }
       state.rIndex = 0;
       state.analysisIdx = 0;
     }catch(err){
