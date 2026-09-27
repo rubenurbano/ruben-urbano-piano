@@ -542,7 +542,10 @@ function diatonicChords(key){
   const sc = SCALES[key.mode] ? SCALES[key.mode].iv : SCALES.major.iv;
   const out = [];
   for(let d = 0; d < 7; d++){
-    const tones = [0,1,2,3].map(function(k){
+    /* FIX 2026-09-26: apilar por terceras (grados 1-3-5-7 de la escala),
+       no grados consecutivos. [0,1,2,3] hacia que todo grado cayera en
+       el fallback maj7 (ningun acorde salia diatonico salvo I y IV). */
+    const tones = [0,2,4,6].map(function(k){
       const idx = d + k;
       return sc[idx % 7] + 12 * Math.floor(idx / 7);
     });
@@ -1033,8 +1036,18 @@ function runSearch(from, to, steps, filters){
         if(chords.length !== T + 1) continue;
         const ids = [];
         for(let ci = 0; ci < chords.length; ci++) ids.push(chords[ci].id);
-        const uniq = new Set(ids);
-        if(uniq.size !== ids.length) continue;
+        /* FIX 2026-09-26: antes esto exigia TODOS los ids distintos, lo
+           que hacia imposible cualquier busqueda con FROM === TARGET
+           (el acorde de partida y el de llegada son, por definicion,
+           el mismo id). Ahora solo se permite esa coincidencia exacta
+           en los extremos (indice 0 y ultimo indice); cualquier otra
+           repeticion -entre intermedios, o de un intermedio con un
+           extremo- se sigue descartando igual que antes. */
+        const lastIdx = ids.length - 1;
+        const firstEqualsLast = ids[0] === ids[lastIdx];
+        const core = firstEqualsLast ? ids.slice(0, lastIdx) : ids.slice();
+        const uniq = new Set(core);
+        if(uniq.size !== core.length) continue;
         const sig = ids.join('|');
         if(seen.has(sig)) continue;
         seen.add(sig);
