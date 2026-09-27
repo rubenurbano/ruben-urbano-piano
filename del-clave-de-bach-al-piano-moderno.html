@@ -1,0 +1,1795 @@
+
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Del clave de Bach al piano moderno — Tutorial Interactivo</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --text:#e2e8f0;
+  --text-dim:#94a3b8;
+  --font:'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+}
+/* PROGRESS BAR */
+#progressBar{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--purple));
+  z-index:9999;transition:width .15s ease;
+  box-shadow:0 0 10px var(--accent);
+}
+/* NAVBAR */
+#navbar{
+  position:fixed;top:3px;left:0;right:0;z-index:9998;
+  background:rgba(10,14,26,.92);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:6px;
+  padding:8px 10px;
+  overflow-x:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--accent) transparent;
+}
+#navbar::-webkit-scrollbar{height:4px}
+#navbar::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px}
+#navbar::-webkit-scrollbar-track{background:transparent}
+.nav-brand{
+  font-weight:700;font-size:.78rem;color:var(--accent);
+  white-space:nowrap;padding:4px 10px;
+  border:1px solid var(--border);border-radius:8px;
+  letter-spacing:.5px;flex-shrink:0;
+  background:rgba(0,212,255,.05);
+}
+.nav-btn{
+  background:transparent;border:1px solid transparent;
+  color:var(--text-dim);font-family:var(--font);
+  font-size:.72rem;padding:6px 12px;border-radius:8px;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:all .25s ease;
+}
+.nav-btn:hover{color:var(--text);background:rgba(0,212,255,.08);border-color:var(--border)}
+.nav-btn.active{
+  color:var(--accent);background:rgba(0,212,255,.12);
+  border-color:var(--accent);font-weight:600;
+  box-shadow:0 0 12px rgba(0,212,255,.25);
+}
+/* SECTIONS */
+.section{display:none;padding:80px 16px 40px;max-width:1100px;margin:0 auto}
+.section.active{display:block;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+/* HEADERS */
+.sec-header{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:24px;padding-bottom:16px;
+  border-bottom:2px solid var(--border);
+}
+.sec-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;flex-shrink:0;
+  background:rgba(0,212,255,.1);
+  border:1px solid var(--border);
+}
+.sec-title{font-size:1.35rem;font-weight:700;color:#fff;line-height:1.2}
+.sec-sub{font-size:.8rem;color:var(--text-dim);margin-top:2px}
+/* HOME */
+.hero-badge{
+  display:inline-block;padding:5px 14px;border-radius:20px;
+  background:rgba(0,212,255,.1);border:1px solid var(--accent);
+  color:var(--accent);font-size:.7rem;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;
+}
+.hero-title{
+  font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800;
+  line-height:1.15;margin-bottom:10px;
+  background:linear-gradient(135deg,#fff 0%,var(--accent) 50%,var(--purple) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero-sub{font-size:clamp(.9rem,2vw,1.1rem);color:var(--text-dim);margin-bottom:20px;max-width:700px}
+.hero-desc{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:18px 20px;margin-bottom:20px;
+  font-size:.88rem;color:var(--text-dim);
+}
+.hero-quote{
+  border-left:3px solid var(--amber);padding:12px 18px;
+  background:rgba(245,158,11,.06);border-radius:0 8px 8px 0;
+  font-style:italic;color:var(--amber);font-size:.88rem;margin-bottom:24px;
+}
+.metrics-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:12px;margin-bottom:24px;
+}
+.metric-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:14px;text-align:center;
+}
+.metric-val{font-size:1.4rem;font-weight:800;color:var(--accent)}
+.metric-lbl{font-size:.68rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-top:4px}
+.hero-meta{
+  display:flex;flex-wrap:wrap;gap:10px;font-size:.75rem;color:var(--text-dim);
+  margin-bottom:24px;
+}
+.hero-meta span{
+  background:var(--card);border:1px solid var(--border);
+  padding:5px 12px;border-radius:8px;
+}
+/* CARDS */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:18px;margin-bottom:16px;
+}
+.card-title{
+  font-size:1rem;font-weight:700;color:#fff;
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+/* CALLOUTS */
+.callout{
+  border-radius:10px;padding:14px 16px;margin:14px 0;
+  font-size:.85rem;border-left:4px solid;
+}
+.callout.info{background:rgba(0,212,255,.07);border-color:var(--accent);color:#bae6fd}
+.callout.example{background:rgba(34,197,94,.07);border-color:var(--green);color:#bbf7d0}
+.callout.warn{background:rgba(245,158,11,.07);border-color:var(--amber);color:#fde68a}
+.callout.error{background:rgba(239,68,68,.07);border-color:var(--red);color:#fecaca}
+.callout strong{display:block;margin-bottom:4px;font-size:.75rem;text-transform:uppercase;letter-spacing:.8px}
+/* TABLES */
+.table-wrap{overflow-x:auto;margin:14px 0;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:400px}
+th{
+  background:rgba(0,212,255,.08);color:var(--accent);
+  padding:10px 12px;text-align:left;font-weight:600;
+  font-size:.72rem;text-transform:uppercase;letter-spacing:.6px;
+  border-bottom:1px solid var(--border);
+}
+td{padding:10px 12px;border-bottom:1px solid rgba(30,58,95,.5);color:var(--text-dim)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,212,255,.03)}
+/* PATTERN DIAGRAM */
+.pattern-block{
+  background:#080c16;border:1px solid var(--border);
+  border-radius:10px;padding:14px;margin:12px 0;
+  font-family:'Courier New',monospace;font-size:.78rem;
+  overflow-x:auto;color:var(--green);line-height:1.8;
+  white-space:pre;
+}
+.pattern-block .label{color:var(--accent)}
+.pattern-block .note{color:var(--green)}
+.pattern-block .finger{color:var(--amber)}
+.pattern-block .dim{color:#64748b}
+/* BADGES */
+.badge{
+  display:inline-block;padding:3px 10px;border-radius:6px;
+  font-size:.68rem;font-weight:600;letter-spacing:.5px;
+  text-transform:uppercase;
+}
+.badge.blue{background:rgba(0,212,255,.15);color:var(--accent);border:1px solid var(--accent)}
+.badge.green{background:rgba(34,197,94,.15);color:var(--green);border:1px solid var(--green)}
+.badge.amber{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid var(--amber)}
+.badge.purple{background:rgba(168,85,247,.15);color:var(--purple);border:1px solid var(--purple)}
+.badge.red{background:rgba(239,68,68,.15);color:var(--red);border:1px solid var(--red)}
+/* STEPS */
+.steps{counter-reset:step}
+.step{
+  position:relative;padding:12px 12px 12px 52px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;margin-bottom:10px;font-size:.84rem;
+}
+.step::before{
+  counter-increment:step;content:counter(step);
+  position:absolute;left:12px;top:12px;
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(0,212,255,.15);border:1px solid var(--accent);
+  color:var(--accent);font-weight:700;font-size:.75rem;
+  display:flex;align-items:center;justify-content:center;
+}
+.step strong{color:#fff}
+/* ACCORDION */
+.acc-item{
+  border:1px solid var(--border);border-radius:10px;
+  margin-bottom:10px;overflow:hidden;background:var(--card);
+}
+.acc-head{
+  padding:14px 16px;cursor:pointer;display:flex;
+  justify-content:space-between;align-items:center;
+  font-size:.86rem;font-weight:600;color:var(--text);
+  transition:background .2s;user-select:none;
+}
+.acc-head:hover{background:rgba(0,212,255,.05)}
+.acc-head::after{content:'▸';color:var(--accent);transition:transform .3s;font-size:1rem}
+.acc-item.open .acc-head::after{transform:rotate(90deg)}
+.acc-body{
+  max-height:0;overflow:hidden;transition:max-height .4s ease;
+  padding:0 16px;
+}
+.acc-item.open .acc-body{max-height:6000px;padding:0 16px 16px}
+/* EXERCISES */
+.ex-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:12px;margin:14px 0;
+}
+.ex-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:16px;
+}
+.ex-level{
+  font-size:.65rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:8px;padding:3px 10px;
+  border-radius:6px;display:inline-block;
+}
+.lvl1{background:rgba(34,197,94,.15);color:var(--green)}
+.lvl2{background:rgba(0,212,255,.15);color:var(--accent)}
+.lvl3{background:rgba(245,158,11,.15);color:var(--amber)}
+.lvl4{background:rgba(168,85,247,.15);color:var(--purple)}
+.lvl5{background:rgba(239,68,68,.15);color:var(--red)}
+.ex-card ol{padding-left:18px;font-size:.82rem;color:var(--text-dim)}
+.ex-card li{margin-bottom:8px}
+/* SVG */
+.svg-container{
+  width:100%;margin-bottom:24px;border-radius:12px;
+  overflow:hidden;border:1px solid var(--border);
+  background:#070b14;
+}
+.svg-container svg{display:block;width:100%;height:auto}
+/* CREDITS */
+.credits-box{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:24px;text-align:center;margin-top:20px;
+}
+.credits-name{font-size:1.5rem;font-weight:800;color:var(--accent);margin:8px 0}
+.credits-detail{font-size:.85rem;color:var(--text-dim);margin:4px 0}
+.credits-latin{
+  margin-top:16px;font-style:italic;color:var(--amber);
+  font-size:.85rem;letter-spacing:.5px;
+}
+/* SOURCES */
+.source-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:16px;margin-bottom:12px;
+}
+.source-title{font-weight:700;color:#fff;font-size:.9rem;margin-bottom:6px}
+.source-link{
+  color:var(--accent);font-size:.78rem;text-decoration:none;
+  word-break:break-all;
+}
+.source-link:hover{text-decoration:underline}
+/* BACK TO TOP */
+#backTop{
+  position:fixed;bottom:20px;right:20px;z-index:9997;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(0,212,255,.15);border:1px solid var(--accent);
+  color:var(--accent);font-size:1.2rem;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  transition:all .3s;backdrop-filter:blur(8px);
+}
+#backTop:hover{background:rgba(0,212,255,.3);transform:translateY(-3px)}
+#backTop.show{display:flex}
+/* FOOTER */
+footer{
+  text-align:center;padding:24px 16px;font-size:.72rem;
+  color:var(--text-dim);border-top:1px solid var(--border);
+  margin-top:40px;
+}
+footer p{margin:4px 0}
+/* RESPONSIVE */
+@media(max-width:600px){
+  .section{padding:72px 12px 30px}
+  .sec-title{font-size:1.1rem}
+  .hero-title{font-size:1.4rem}
+  .nav-btn{font-size:.65rem;padding:5px 9px}
+  .nav-brand{font-size:.68rem;padding:4px 8px}
+  .metric-val{font-size:1.1rem}
+  .table-wrap table{min-width:320px;font-size:.75rem}
+  .pattern-block{font-size:.68rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:0.001s!important;animation-iteration-count:1!important;transition-duration:0.001s!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<nav id="navbar">
+  <span class="nav-brand">🎹 BACH→POP</span>
+  <button class="nav-btn active" data-sec="home">Inicio</button>
+  <button class="nav-btn" data-sec="parte1">Patrones Bach</button>
+  <button class="nav-btn" data-sec="parte2">Transformación</button>
+  <button class="nav-btn" data-sec="parte3">Ejemplos</button>
+  <button class="nav-btn" data-sec="parte4">Diagramas</button>
+  <button class="nav-btn" data-sec="parte5">Ejercicios</button>
+  <button class="nav-btn" data-sec="parte6">Combinación</button>
+  <button class="nav-btn" data-sec="parte7">Modificaciones</button>
+  <button class="nav-btn" data-sec="parte8">Completos</button>
+  <button class="nav-btn" data-sec="parte9">Composición</button>
+  <button class="nav-btn" data-sec="ejercicios">Ejercicios</button>
+  <button class="nav-btn" data-sec="glosario">Glosario</button>
+  <button class="nav-btn" data-sec="fuentes">Fuentes</button>
+  <button class="nav-btn" data-sec="creditos">Créditos</button>
+</nav>
+
+<!-- ========== SVG SYMBOL (shared) ========== -->
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<symbol id="svgPortada" viewBox="0 0 800 450">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="75%">
+      <stop offset="0%" stop-color="#0f172a">
+        <animate attributeName="stop-color" values="#0f172a;#1a1030;#0f172a" dur="8s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="60%" stop-color="#0a0e1a">
+        <animate attributeName="stop-color" values="#0a0e1a;#0d1525;#0a0e1a" dur="8s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#070b14"/>
+    </radialGradient>
+    <linearGradient id="keyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="flowGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+    <linearGradient id="baroqueGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowBig" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+
+  <rect width="800" height="450" fill="url(#bgGrad)" rx="12"/>
+  <rect width="800" height="450" fill="none" stroke="#1e3a5f" stroke-width="1.5" rx="12"/>
+
+  <!-- Animated grid -->
+
+  <g opacity="0.12">
+    <animate attributeName="opacity" values="0.08;0.18;0.08" dur="6s" repeatCount="indefinite"/>
+    <line x1="0" y1="50" x2="800" y2="50" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="0" y1="100" x2="800" y2="100" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="0" y1="150" x2="800" y2="150" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="0" y1="200" x2="800" y2="200" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="0" y1="250" x2="800" y2="250" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="0" y1="300" x2="800" y2="300" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="0" y1="350" x2="800" y2="350" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="0" y1="400" x2="800" y2="400" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="100" y1="0" x2="100" y2="450" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="200" y1="0" x2="200" y2="450" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="300" y1="0" x2="300" y2="450" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="400" y1="0" x2="400" y2="450" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="500" y1="0" x2="500" y2="450" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="600" y1="0" x2="600" y2="450" stroke="#00d4ff" stroke-width="0.5"/>
+    <line x1="700" y1="0" x2="700" y2="450" stroke="#00d4ff" stroke-width="0.5"/>
+  </g>
+
+  <!-- Orbital rings -->
+
+  <g transform="translate(400,225)">
+    <circle r="180" fill="none" stroke="#00d4ff" stroke-width="0.8" stroke-dasharray="8 12" opacity="0.3">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="20s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="8 12;14 6;8 12" dur="5s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="150" fill="none" stroke="#a855f7" stroke-width="0.6" stroke-dasharray="4 16" opacity="0.25">
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="15s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="210" fill="none" stroke="#22c55e" stroke-width="0.5" stroke-dasharray="2 20" opacity="0.15">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="28s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+
+  <!-- TITLE -->
+
+  <text x="400" y="52" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="22" font-weight="800" fill="#00d4ff" filter="url(#glowBig)">
+    Del clave de Bach al piano moderno
+    <animate attributeName="fill" values="#00d4ff;#a855f7;#22c55e;#00d4ff" dur="9s" repeatCount="indefinite"/>
+  </text>
+  <text x="400" y="74" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="11" fill="#94a3b8" opacity="0.8">
+    Patrones de mano izquierda para baladas pop y rock progresivo
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="4s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- LEFT: BAROQUE (Bach) -->
+
+  <g transform="translate(0,0)">
+    <text x="120" y="115" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="10" fill="#f59e0b" font-weight="700" letter-spacing="1">
+      BACH · BARROCO
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+    </text>
+
+  </g>
+
+  <!-- RIGHT: MODERN PIANO -->
+
+  <g transform="translate(560,0)">
+    <text x="120" y="115" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="10" fill="#22c55e" font-weight="700" letter-spacing="1">
+      PIANO MODERNO
+      <animate attributeName="opacity" values="1;0.6;1" dur="3.5s" repeatCount="indefinite"/>
+    </text>
+
+  </g>
+
+  <!-- CENTER: FLOW ARROWS -->
+
+  <g>
+    <!-- Main flow path -->
+    <path id="mainFlow" d="M210,165 C290,110 340,110 400,165 C460,220 510,220 590,165" fill="none" stroke="url(#flowGrad)" stroke-width="2.5" stroke-dasharray="12 8" filter="url(#glow)">
+      <animate attributeName="stroke-dashoffset" from="0" to="-40" dur="2s" repeatCount="indefinite"/>
+    </path>
+
+  </g>
+
+  <!-- CENTER LABEL -->
+
+  <g transform="translate(400,230)">
+    <circle r="42" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.3" stroke-dasharray="6 8">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="32" fill="#0f172a" stroke="#00d4ff" stroke-width="1.5" opacity="0.9"/>
+    <text x="0" y="-5" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="9" fill="#00d4ff" font-weight="700">BACH</text>
+    <text x="0" y="8" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="8" fill="#94a3b8">→ POP</text>
+    <animateTransform attributeName="transform" type="translate" values="400,230;400,225;400,230" dur="3s" repeatCount="indefinite" additive="replace"/>
+  </g>
+
+  <!-- Impact bursts -->
+
+  <g transform="translate(400,165)">
+    <line x1="0" y1="0" x2="0" y2="-12" stroke="#00d4ff" stroke-width="1.5" opacity="0">
+      <animate attributeName="opacity" values="0;0.8;0" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="y2" values="-5;-15;-5" dur="3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="0" y1="0" x2="10" y2="-8" stroke="#a855f7" stroke-width="1.5" opacity="0">
+      <animate attributeName="opacity" values="0;0.8;0" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+    </line>
+    <line x1="0" y1="0" x2="-10" y2="-8" stroke="#22c55e" stroke-width="1.5" opacity="0">
+      <animate attributeName="opacity" values="0;0.8;0" dur="3s" repeatCount="indefinite" begin="1s"/>
+    </line>
+    <line x1="0" y1="0" x2="12" y2="0" stroke="#f59e0b" stroke-width="1.5" opacity="0">
+      <animate attributeName="opacity" values="0;0.8;0" dur="3s" repeatCount="indefinite" begin="1.5s"/>
+    </line>
+    <line x1="0" y1="0" x2="-12" y2="0" stroke="#ef4444" stroke-width="1.5" opacity="0">
+      <animate attributeName="opacity" values="0;0.8;0" dur="3s" repeatCount="indefinite" begin="2s"/>
+    </line>
+  </g>
+
+  <!-- LIVE indicator -->
+
+  <g transform="translate(720,30)">
+    <circle r="5" fill="#ef4444">
+      <animate attributeName="opacity" values="1;0.2;1" dur="1.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="8" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.4">
+      <animate attributeName="r" values="8;14;8" dur="1.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0;0.4" dur="1.2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="14" y="4" font-family="'Segoe UI',system-ui,sans-serif" font-size="8" fill="#ef4444" font-weight="700" letter-spacing="1">LIVE</text>
+  </g>
+
+  <!-- Status labels -->
+
+  <g transform="translate(400,300)">
+    <text x="0" y="0" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="10" fill="#00d4ff" font-weight="600">
+      ARPEGIOS · BAJO CONTINUO · CONTRAPUNTO · PEDAL · NOTAS DE PASO
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="3s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <g transform="translate(400,325)">
+    <text x="0" y="0" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="9" fill="#a855f7">
+      <animate attributeName="fill" values="#a855f7;#00d4ff;#22c55e;#a855f7" dur="7s" repeatCount="indefinite"/>
+      COMPOSICIÓN · TRANSFORMACIÓN · GROOVE · EXPRESIÓN
+    </text>
+  </g>
+
+  <!-- Gradient bars -->
+
+  <g transform="translate(140,370)">
+    <rect x="0" y="0" width="520" height="4" rx="2" fill="url(#flowGrad)" opacity="0.4">
+      <animate attributeName="width" values="400;520;400" dur="5s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+
+  <!-- Signature -->
+
+  <text x="400" y="410" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="9" fill="#64748b" font-style="italic">
+    Rubén Sbarsky · Tutorial Educativo
+    <animate attributeName="opacity" values="0.4;0.9;0.4" dur="4s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- Big climax text -->
+
+  <text x="400" y="440" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="16" font-weight="900" fill="#00d4ff" filter="url(#glowBig)" opacity="0">
+    ♪ BACH → POP → ROCK PROGRESIVO ♪
+    <animate attributeName="opacity" values="0;0;0;0.9;0" dur="6s" repeatCount="indefinite"/>
+    <animate attributeName="fill" values="#00d4ff;#a855f7;#22c55e;#00d4ff" dur="6s" repeatCount="indefinite"/>
+  </text>
+
+  <!-- Corner decorations -->
+
+  <path d="M20,20 L60,20" stroke="#00d4ff" stroke-width="1.5" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.2;0.5" dur="3s" repeatCount="indefinite"/>
+  </path>
+  <path d="M20,20 L20,60" stroke="#00d4ff" stroke-width="1.5" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.2;0.5" dur="3s" repeatCount="indefinite"/>
+  </path>
+  <path d="M780,430 L740,430" stroke="#00d4ff" stroke-width="1.5" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.2;0.5" dur="3.5s" repeatCount="indefinite"/>
+  </path>
+  <path d="M780,430 L780,390" stroke="#00d4ff" stroke-width="1.5" opacity="0.5">
+    <animate attributeName="opacity" values="0.5;0.2;0.5" dur="3.5s" repeatCount="indefinite"/>
+  </path>
+</symbol>
+</svg>
+
+<!-- ========== HOME ========== -->
+
+<section id="home" class="section active">
+  <div class="svg-container">
+    <svg viewBox="0 0 800 450" width="100%"><use href="#svgPortada"/></svg>
+  </div>
+
+  <div style="text-align:center">
+    <span class="hero-badge">Tutorial Interactivo · Piano & Composición</span>
+  </div>
+
+  <h1 class="hero-title">Del clave de Bach al piano moderno</h1>
+  <p class="hero-sub">Cómo usar los patrones de mano izquierda de Bach para componer baladas pop y rock progresivo</p>
+
+  <div class="hero-desc">
+    <strong style="color:#fff">🎹 Tutorial práctico</strong> — Pensado para tocarlo sentado al piano, no para leerlo solamente. Cada patrón se explica primero <strong style="color:#f59e0b">tal como lo usaba Bach</strong> (con la pieza real de la que proviene) y después se muestra <strong style="color:#22c55e">la adaptación moderna</strong> que puedes usar hoy mismo en una balada pop o en un pasaje de rock progresivo.
+  </div>
+
+  <div class="hero-quote">
+    "Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-card"><div class="metric-val">5</div><div class="metric-lbl">Patrones Bach</div></div>
+    <div class="metric-card"><div class="metric-val">5</div><div class="metric-lbl">Palancas modernas</div></div>
+    <div class="metric-card"><div class="metric-val">4</div><div class="metric-lbl">Progresiones</div></div>
+    <div class="metric-card"><div class="metric-val">12</div><div class="metric-lbl">Ejercicios</div></div>
+  </div>
+
+  <div class="hero-meta">
+    <span>📅 27/09/2026</span>
+    <span>🕐 04:22:16</span>
+    <span>👨‍💻 Rubén Sbarsky</span>
+    <span>📚 Educativo</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📖 Cómo usar este tutorial</div>
+    <p style="font-size:.85rem;color:var(--text-dim)">
+      Este es un tutorial práctico. Cada patrón se explica primero tal como lo usaba Bach y después se muestra la adaptación moderna. Los patrones de mano izquierda se muestran en <strong style="color:#22c55e">diagramas de tiempo</strong> (no en partitura tradicional), indicando qué nota suena en cada parte del compás. Todos los ejemplos de Bach citados son piezas de dominio público. Las transcripciones son simplificaciones pedagógicas propias.
+    </p>
+  </div>
+
+  <div class="callout info">
+    <strong>ℹ️ Convenciones</strong>
+    Notas en sistema americano: C D E F G A B (Do Re Mi Fa Sol La Si). Cada nota lleva su grado: C(I), E(III), G(V). Acordes con cifrado americano: C, Am, G/B, Dm7. El grado del acorde va en números romanos: I, vi, IV, V. Si la nota es alterada, se marca así: Eb(bIII).
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ Atribución histórica importante</strong>
+    El llamado "bajo Alberti" (grave-agudo-medio-agudo) es una figura que se popularizó con Domenico Alberti y los compositores clásicos (Mozart, Haydn) <strong>después</strong> de Bach. Bach no usó exactamente ese patrón, aunque sí usó otros tipos de acordes quebrados (arpegios) muy emparentados con él. En este tutorial se explica con claridad qué es genuinamente de Bach/Barroco y qué es una adaptación o un patrón de otra época que se incluye porque es útil y suena "clásico" al oído moderno.
+  </div>
+
+  <div class="card">
+    <div class="card-title">🗂️ Estructura del tutorial</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Parte</th><th>Contenido</th></tr>
+        <tr><td>Parte 1</td><td>Los patrones de mano izquierda de Bach, explicados de forma sencilla</td></tr>
+        <tr><td>Parte 2</td><td>Cómo transformar cada patrón en un acompañamiento moderno</td></tr>
+        <tr><td>Parte 3</td><td>Ejemplos prácticos en distintas tonalidades y progresiones</td></tr>
+        <tr><td>Parte 4</td><td>Diagramas de mano izquierda: qué tocar exactamente</td></tr>
+        <tr><td>Parte 5</td><td>Ejercicios progresivos (de principiante a intermedio)</td></tr>
+        <tr><td>Parte 6</td><td>Cómo combinar estos patrones con la mano derecha</td></tr>
+        <tr><td>Parte 7</td><td>Modificaciones: inversiones, octavas, síncopas, notas de paso y variaciones rítmicas</td></tr>
+        <tr><td>Parte 8</td><td>Ejemplos completos, paso a paso</td></tr>
+        <tr><td>Parte 9</td><td>Ejercicios de composición original</td></tr>
+        <tr><td>Glosario</td><td>Términos clave del tutorial</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PARTE 1 ========== -->
+
+<section id="parte1" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(245,158,11,.1)">🎼</div>
+    <div><div class="sec-title">Parte 1 — Los patrones de mano izquierda de Bach</div><div class="sec-sub">Explicados de forma sencilla</div></div>
+  </div>
+
+  <div class="callout info">
+    <strong>ℹ️ Contexto</strong>
+    Bach escribía casi siempre a dos, tres o cuatro voces independientes (contrapunto). Su mano izquierda casi nunca es un simple "relleno armónico": normalmente es una <strong>línea con vida propia</strong>, que a veces es melódica y a veces es un acompañamiento de acordes quebrados. Vamos a ver los cinco patrones más útiles para nuestro propósito.
+  </div>
+
+  <!-- 1.1 -->
+
+  <div class="acc-item open">
+    <div class="acc-head" onclick="toggleAcc(this)">1.1 — Acordes quebrados ascendentes (estilo Preludio en Do mayor, BWV 846)</div>
+    <div class="acc-body">
+      <p style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px"><strong style="color:#f59e0b">Origen histórico:</strong> el <em>Preludio en Do mayor</em> (el primero de <em>El clave bien temperado</em>, Libro I, 1722) es el ejemplo más famoso de la historia del piano de este recurso: un acorde se "abre" en el tiempo, nota por nota, en lugar de tocarse todo junto. En la pieza original, de hecho, son <strong>las dos manos juntas</strong> las que arpegia el acorde en un patrón continuo de semicorcheas (nota grave, nota media, nota aguda, nota media, repetido), cubriendo casi dos octavas. Aquí simplificamos ese mecanismo para una sola mano izquierda, que es como se usa hoy normalmente en canciones.</p>
+      <div class="pattern-block"><span class="label">Tiempo:</span>   <span class="note">1       &       2       &</span>
+<span class="label">Nota:</span>     <span class="note">C(I)    E(III)  G(V)    C(I) [octava arriba]</span>
+<span class="label">Dedo:</span>     <span class="finger">5       2       1       1 (pulgar sube)</span></div>
+      <p style="font-size:.82rem;color:var(--text-dim)">Es decir: fundamental — tercera — quinta — fundamental (octava arriba), repetido. Es un arpegio simple de abajo hacia arriba.</p>
+    </div>
+  </div>
+
+  <!-- 1.2 -->
+
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">1.2 — Bajo en corcheas continuas / "moto perpetuo" barroco</div>
+    <div class="acc-body">
+      <p style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px"><strong style="color:#f59e0b">Origen histórico:</strong> en muchísimas piezas de Bach (por ejemplo, secciones del <em>Concierto italiano</em>, los <em>Preludios</em> de las suites, o el bajo continuo de sus arias), la mano izquierda mantiene un pulso constante de corcheas (u ocho notas iguales por compás), casi nunca se detiene, y se mueve mayormente por grados conjuntos o saltando dentro del acorde. Es el antepasado directo del "walking bass" que hoy asociamos al jazz, pero en Bach nace de la práctica del <strong>bajo continuo</strong>: un bajo que sostiene la armonía con movimiento constante mientras las voces superiores dialogan.</p>
+      <div class="pattern-block"><span class="dim">Compás 1 (acorde C):</span>
+<span class="label">Tiempo:</span>  <span class="note">1      &      2      &      3      &      4      &</span>
+<span class="label">Nota:</span>    <span class="note">C(I)   E(III) G(V)   C(I)   E(III) G(V)   C(I)    E(III)</span>
+
+<span class="dim">Compás 2 (acorde G):</span>
+<span class="label">Tiempo:</span>  <span class="note">1      &      2      &      3      &      4      &</span>
+<span class="label">Nota:</span>    <span class="note">G(V)   B(VII) D(II)  G(V)   B(VII) D(II)  G(V)    D(II)</span></div>
+</div>
+
+  </div>
+
+  <!-- 1.3 -->
+
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">1.3 — Contrapunto a dos voces (estilo Invenciones a dos voces)</div>
+    <div class="acc-body">
+      <p style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px"><strong style="color:#f59e0b">Origen histórico:</strong> en las <em>Invenciones a dos voces</em> (BWV 772–786), Bach le da a la mano izquierda una <strong>melodía propia</strong>, tan importante como la de la derecha. No es acompañamiento: es una segunda voz que imita, responde o se mueve en dirección contraria a la voz principal (movimiento contrario). Esto es lo más alejado de un "acompañamiento de acordes" y lo más cercano a una segunda melodía.</p>
+      <p style="font-size:.82rem;color:var(--text-dim)"><strong style="color:#00d4ff">La idea simplificada:</strong> en vez de tocar un acorde quebrado, la mano izquierda toca una línea melódica corta (2 o 4 compases) que se puede repetir, imitar un compás después con la derecha, o moverse en dirección opuesta a la melodía principal.</p>
+    </div>
+  </div>
+
+  <!-- 1.4 -->
+
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">1.4 — Bajo de pedal (pedal point)</div>
+    <div class="acc-body">
+      <p style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px"><strong style="color:#f59e0b">Origen histórico:</strong> Bach usa constantemente el recurso de sostener (o repetir) una sola nota grave —normalmente la tónica <code>I</code> o la dominante <code>V</code>— mientras la armonía de arriba cambia por encima. Aparece, por ejemplo, en los compases finales de muchos de sus preludios y fugas, creando tensión que se resuelve al final. Es uno de los recursos más antiguos de la música occidental (viene del órgano medieval y renacentista), pero Bach lo lleva a su máxima expresión armónica.</p>
+      <div class="pattern-block"><span class="dim">Bajo (mano izquierda), nota fija repetida:</span>
+<span class="label">Compás 1 (armonía C):</span>  <span class="note">C(I)  C(I)  C(I)  C(I)</span>
+<span class="label">Compás 2 (armonía F):</span>  <span class="note">C(I)  C(I)  C(I)  C(I)</span>   <span class="dim">&lt;- nota fija aunque el acorde de arriba cambie a F</span>
+<span class="label">Compás 3 (armonía G):</span>  <span class="note">C(I)  C(I)  C(I)  C(I)</span>   <span class="dim">&lt;- sigue fija, crea tensión (C es la 4ª del acorde G)</span>
+<span class="label">Compás 4 (resolución):</span> <span class="note">C(I)  C(I)  C(I)  C(I)</span></div>
+    </div>
+  </div>
+
+  <!-- 1.5 -->
+
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">1.5 — Nota de paso y movimiento por grados conjuntos en el bajo</div>
+    <div class="acc-body">
+      <p style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px"><strong style="color:#f59e0b">Origen histórico:</strong> cuando Bach conecta un acorde con otro, casi nunca "salta" bruscamente: suele rellenar el hueco con una nota de paso (una nota que no pertenece al acorde, pero que conecta melódicamente la nota anterior con la siguiente por grados conjuntos). Esto convierte una línea de bajo simple en una línea de bajo que canta.</p>
+      <div class="pattern-block"><span class="dim">Ejemplo simplificado (bajo entre C(I) y F(IV), pasando por D(II) como nota de paso):</span>
+<span class="label">Tiempo:</span>  <span class="note">1        2        3        4</span>
+<span class="label">Nota:</span>    <span class="note">C(I)     D(II)    E(III)   F(I del acorde F)</span>
+<span class="dim">                  (nota de paso, no pertenece al acorde de C)</span></div>
+    </div>
+  </div>
+
+  <!-- 1.6 -->
+
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">1.6 — Sobre el "bajo Alberti" (aclaración histórica importante)</div>
+    <div class="acc-body">
+      <p style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">Como se explicó arriba, el patrón grave–agudo–medio–agudo que hoy se llama "bajo Alberti" se popularizó con Domenico Alberti y los compositores del Clasicismo (Mozart, Haydn), <strong>una generación después</strong> de Bach. No es, estrictamente, un patrón de Bach. Sin embargo, se incluye en este tutorial porque:</p>
+      <ol style="font-size:.82rem;color:var(--text-dim);padding-left:20px;margin-bottom:10px">
+        <li>Es un pariente cercano y muy natural del arpegio ascendente de Bach (1.1): solo cambia el orden de las notas.</li>
+        <li>Es extremadamente útil en baladas pop modernas porque suena "clásico" sin ser denso.</li>
+        <li>Te permite entender la diferencia entre el sonido barroco (más lineal, más contrapuntístico) y el sonido clásico (más de acompañamiento puro), lo cual te da más recursos como compositor.</li>
+      </ol>
+      <div class="pattern-block"><span class="label">Tiempo:</span>  <span class="note">1      &      2      &</span>
+<span class="label">Nota:</span>    <span class="note">C(I)   G(V)   E(III) G(V)</span>
+<span class="label">Dedo:</span>    <span class="finger">5      1      2      1</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PARTE 2 ========== -->
+
+<section id="parte2" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(0,212,255,.1)">🔄</div>
+    <div><div class="sec-title">Parte 2 — Cómo transformar cada patrón en un acompañamiento moderno</div><div class="sec-sub">Las cinco palancas de la modernización</div></div>
+  </div>
+
+  <p style="font-size:.86rem;color:var(--text-dim);margin-bottom:16px">La transformación de barroco a pop/rock progresivo se apoya en <strong>cinco palancas</strong>. No necesitas usarlas todas a la vez: incluso cambiar una sola ya moderniza el patrón.</p>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Palanca</th><th>Qué cambia</th><th>Efecto</th></tr>
+      <tr><td><span class="badge blue">Ritmo</span></td><td>De corcheas/semicorcheas iguales a patrones con síncopa, corcheas con "swing", o células rítmicas repetidas (ej. corchea-dos semicorcheas)</td><td>Da groove, deja de sonar "a máquina"</td></tr>
+      <tr><td><span class="badge green">Densidad armónica</span></td><td>Se simplifican los acordes (Bach modula y cromatiza mucho; el pop suele usar triadas y tétradas más estables)</td><td>Más espacio para la voz y la melodía</td></tr>
+      <tr><td><span class="badge amber">Registro y octavas</span></td><td>Se abre el patrón en octavas (bajo grave + acorde quebrado una octava arriba) en vez de mantenerlo compacto</td><td>Sonido más "de piano de balada", más ancho</td></tr>
+      <tr><td><span class="badge purple">Textura de la mano derecha</span></td><td>En vez de una segunda voz contrapuntística, la derecha toca acordes en bloque, una melodía cantada o un patrón rítmico</td><td>El patrón de Bach pasa a ser "solo" acompañamiento, dejando protagonismo a la melodía/voz</td></tr>
+      <tr><td><span class="badge red">Métrica</span></td><td>Se pasa de 4/4 barroco a compases de balada (6/8, 12/8) o a métricas irregulares (7/8, 5/4) típicas del rock progresivo</td><td>Cambia completamente el carácter emocional</td></tr>
+    </table>
+  </div>
+
+<h3 style="font-size:.95rem;color:#fff;margin:20px 0 12px">Transformaciones específicas</h3>
+
+  <div class="card">
+    <div class="card-title"><span class="badge amber">2.1</span> De "arpegio ascendente estilo BWV 846" a acompañamiento de balada</div>
+    <p style="font-size:.83rem;color:var(--text-dim);margin-bottom:10px"><strong>Original:</strong> semicorcheas continuas, ambas manos, sin pausas.</p>
+    <p style="font-size:.83rem;color:var(--text-dim);margin-bottom:10px"><strong>Transformación:</strong> se reduce a corcheas (la mitad de velocidad relativa), se toca solo con la izquierda, y se le da forma de "ola" (sube y baja) en vez de solo subir. Se abre a dos octavas de registro para sonar más "orquestal" en el piano.</p>
+    <div class="pattern-block"><span class="dim">BALADA EN DO MAYOR — acorde C, compás de 4/4, corcheas</span>
+<span class="label">Tiempo:</span>  <span class="note">1      &      2      &      3      &      4      &</span>
+<span class="label">Nota:</span>    <span class="note">C(I)   G(V)   E(III) G(V)   C(I)    G(V)   E(III) G(V)</span>
+<span class="dim">                (versión "ola": sube y baja en vez de solo subir)</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge blue">2.2</span> De "bajo continuo en corcheas" a bajo de balada con síncopa</div>
+    <p style="font-size:.83rem;color:var(--text-dim);margin-bottom:10px"><strong>Original:</strong> corcheas rectas, sin acentos especiales.</p>
+    <p style="font-size:.83rem;color:var(--text-dim);margin-bottom:10px"><strong>Transformación:</strong> se quita una nota y se sustituye por un silencio o una ligadura, generando síncopa. Esto es la base de casi cualquier "balada pop al piano" moderna.</p>
+    <div class="pattern-block"><span class="dim">BALADA — acorde C, compás de 4/4</span>
+<span class="label">Tiempo:</span>  <span class="note">1      &      2      &      3      &      4      &</span>
+<span class="label">Nota:</span>    <span class="note">C(I)   —      E(III) G(V)   —       C(I)   E(III) G(V)</span>
+<span class="dim">                (el "&" del tiempo 1 y el "3" quedan en silencio = síncopa)</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge purple">2.3</span> De "contrapunto a dos voces" a línea de bajo melódica de rock progresivo</div>
+    <p style="font-size:.83rem;color:var(--text-dim)"><strong>Original:</strong> dos melodías independientes, sin jerarquía de "acompañamiento".</p>
+    <p style="font-size:.83rem;color:var(--text-dim);margin-top:8px"><strong>Transformación:</strong> se mantiene la idea de que la mano izquierda <strong>no</strong> es un simple relleno armónico, sino una línea con carácter propio (muy típico del rock progresivo, donde el bajo/la mano izquierda dialoga con la melodía). Se combina con síncopas y saltos de octava para dar energía.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge green">2.4</span> De "pedal de tónica" a pedal moderno con acordes cambiantes arriba</div>
+    <p style="font-size:.83rem;color:var(--text-dim)"><strong>Original:</strong> nota grave sostenida, armonía barroca arriba.</p>
+    <p style="font-size:.83rem;color:var(--text-dim);margin-top:8px"><strong>Transformación:</strong> se mantiene igual de efectiva en el pop y el rock progresivo. Es uno de los recursos que <strong>menos</strong> hace falta cambiar: solo se adapta el voicing de los acordes de arriba (más abiertos, con séptimas o sus2/sus4 típicos del pop).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge red">2.5</span> Del "bajo Alberti" a acompañamiento pop clásico</div>
+    <p style="font-size:.83rem;color:var(--text-dim)"><strong>Original:</strong> grave-agudo-medio-agudo, en corcheas rectas.</p>
+    <p style="font-size:.83rem;color:var(--text-dim);margin-top:8px"><strong>Transformación:</strong> se acelera a semicorcheas para baladas más rítmicas, o se deja en corcheas para baladas lentas. Es, literalmente, uno de los acompañamientos más usados hoy en covers de piano de canciones pop (Adele, Ed Sheeran, Coldplay usan variantes de este recurso constantemente).</p>
+  </div>
+</section>
+
+<!-- ========== PARTE 3 ========== -->
+
+<section id="parte3" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(34,197,94,.1)">🎵</div>
+    <div><div class="sec-title">Parte 3 — Ejemplos prácticos</div><div class="sec-sub">Distintas tonalidades y progresiones</div></div>
+  </div>
+
+  <p style="font-size:.86rem;color:var(--text-dim);margin-bottom:16px">Cuatro progresiones muy comunes en pop, balada y rock progresivo, cada una con dos patrones de Bach adaptados.</p>
+
+  <div class="card">
+    <div class="card-title"><span class="badge blue">3.1</span> Do mayor: I–V–vi–IV (C–G–Am–F)</div>
+    <p style="font-size:.82rem;color:var(--text-dim);margin-bottom:10px">La progresión pop más usada del mundo.</p>
+    <p style="font-size:.8rem;color:var(--accent);font-weight:600;margin-bottom:6px">Con arpegio ascendente (2.1), corcheas, 4/4:</p>
+    <div class="pattern-block"><span class="label">Acorde C:</span>   <span class="note">C(I)  E(III) G(V)  E(III)  |  C(I)  E(III) G(V)  E(III)</span>
+<span class="label">Acorde G:</span>   <span class="note">G(V)  B(VII) D(II) B(VII)  |  G(V)  B(VII) D(II) B(VII)</span>
+<span class="label">Acorde Am:</span>  <span class="note">A(VI) C(I)   E(III) C(I)   |  A(VI) C(I)   E(III) C(I)</span>
+<span class="label">Acorde F:</span>   <span class="note">F(IV) A(VI)  C(I)  A(VI)   |  F(IV) A(VI)  C(I)  A(VI)</span></div>
+    <p style="font-size:.8rem;color:var(--green);font-weight:600;margin:10px 0 6px">Con bajo Alberti adaptado (2.5), síncopa cada dos compases:</p>
+    <div class="pattern-block"><span class="label">Acorde C:</span>   <span class="note">C(I)  G(V)  E(III)  G(V)   |  C(I)  —     E(III)  G(V)</span>
+<span class="label">Acorde G:</span>   <span class="note">G(V)  D(II) B(VII)  D(II)  |  G(V)  —     B(VII)  D(II)</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge green">3.2</span> Sol mayor: vi–IV–I–V (Em–C–G–D) — balada emotiva</div>
+    <p style="font-size:.8rem;color:var(--amber);font-weight:600;margin-bottom:6px">Con pedal de dominante (2.4), tónica de la sección en el bajo sostenida:</p>
+    <div class="pattern-block"><span class="label">Acorde Em:</span>  <span class="note">E(VI)  E(VI)  E(VI)  E(VI)</span>   <span class="dim">[bajo fijo, armonía Em arriba]</span>
+<span class="label">Acorde C:</span>   <span class="note">E(VI)  E(VI)  E(VI)  E(VI)</span>   <span class="dim">[bajo sigue en E aunque el acorde de arriba sea C -> C/E]</span>
+<span class="label">Acorde G:</span>   <span class="note">G(I)   G(I)   G(I)   G(I)</span>    <span class="dim">[aquí el bajo se mueve a la fundamental, resolviendo la tensión]</span>
+<span class="label">Acorde D:</span>   <span class="note">D(V)   D(V)   D(V)   D(V)</span></div>
+    <div class="callout info" style="margin-top:10px">
+      <strong>ℹ️ Nota</strong>
+      Este ejemplo muestra cómo un pedal se puede combinar con inversiones de acorde — C/E — un recurso muy propio del pop de piano moderno (ver Parte 7).
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge purple">3.3</span> Re mayor: I–IV–V con línea de bajo por grados conjuntos (rock progresivo, compás 7/8)</div>
+    <p style="font-size:.82rem;color:var(--text-dim);margin-bottom:10px">Aquí adaptamos el recurso 1.5 (nota de paso) a una métrica irregular, muy característica del rock progresivo.</p>
+    <div class="pattern-block"><span class="dim">Compás en 7/8 (agrupado 2+2+3), acordes D - G - A:</span>
+<span class="label">Tiempo:</span>   <span class="note">1    2    3    4    5    6    7</span>
+<span class="label">Nota:</span>     <span class="note">D(I) E(II) F#(III) G(IV) A(V) B(VI) A(V)</span>
+<span class="dim">                (línea de bajo ascendente y descendente que conecta D con A por grados conjuntos)</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge red">3.4</span> La menor: i–VI–III–VII (Am–F–C–G) — rock progresivo / balada oscura</div>
+    <p style="font-size:.82rem;color:var(--text-dim);margin-bottom:10px"><strong>Con contrapunto simplificado (2.3):</strong> la izquierda responde a la derecha un compás después (imitación a distancia de un compás), típico de secciones instrumentales de rock progresivo.</p>
+    <div class="pattern-block"><span class="label">Mano derecha (melodía), compás 1:</span>   <span class="note">A - C - E - C</span>   <span class="dim">(motivo)</span>
+<span class="label">Mano izquierda, compás 2 (imita):</span>   <span class="note">A - C - E - C</span>   <span class="dim">(una octava abajo)</span></div>
+  </div>
+</section>
+
+<!-- ========== PARTE 4 ========== -->
+
+<section id="parte4" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(168,85,247,.1)">📐</div>
+    <div><div class="sec-title">Parte 4 — Diagramas de mano izquierda</div><div class="sec-sub">Qué tocar exactamente</div></div>
+  </div>
+
+  <p style="font-size:.86rem;color:var(--text-dim);margin-bottom:16px">Resumen de referencia rápida con digitación sugerida para los cinco patrones base, en Do mayor (transpón mentalmente para otras tonalidades usando siempre los mismos grados I, III, V).</p>
+
+  <div class="card">
+    <div class="card-title"><span class="badge amber">Patrón A</span> Arpegio ascendente (estilo Bach BWV 846)</div>
+    <div class="pattern-block"><span class="label">Nota:</span>  <span class="note">C(I) - E(III) - G(V) - C(I, octava arriba)</span>
+<span class="label">Dedo:</span>  <span class="finger">5    - 3       - 1    - 1 (pasa el pulgar)</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge blue">Patrón B</span> Bajo Alberti adaptado</div>
+    <div class="pattern-block"><span class="label">Nota:</span>  <span class="note">C(I) - G(V) - E(III) - G(V)</span>
+<span class="label">Dedo:</span>  <span class="finger">5    - 1     - 3      - 1</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge green">Patrón C</span> Bajo continuo/caminante</div>
+    <div class="pattern-block"><span class="label">Nota:</span>  <span class="note">C(I) - D(II) - E(III) - G(V)</span>
+<span class="label">Dedo:</span>  <span class="finger">5    - 4      - 3      - 1</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge purple">Patrón D</span> Pedal de tónica</div>
+    <div class="pattern-block"><span class="label">Nota:</span>  <span class="note">C(I) - C(I) - C(I) - C(I)</span>   <span class="dim">(repetido, dedo 5 fijo, o alternando 5 y 3 para no cansar la muñeca)</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge red">Patrón E</span> Nota de paso conectando I y IV</div>
+    <div class="pattern-block"><span class="label">Nota:</span>  <span class="note">C(I) - D(II, paso) - E(III) - F(I del siguiente acorde)</span>
+<span class="label">Dedo:</span>  <span class="finger">5    - 4            - 3      - 2</span></div>
+  </div>
+</section>
+
+<!-- ========== PARTE 5 ========== -->
+
+<section id="parte5" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(239,68,68,.1)">🏋️</div>
+    <div><div class="sec-title">Parte 5 — Ejercicios progresivos</div><div class="sec-sub">De principiante a intermedio</div></div>
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ Método</strong>
+    Practica cada ejercicio primero muy lento, con metrónomo, y solo con la mano izquierda. No pases al siguiente hasta poder tocarlo sin mirar el teclado.
+  </div>
+
+  <div class="ex-grid">
+    <div class="ex-card">
+      <div class="ex-level lvl1">Nivel 1 — Fundamentos</div>
+      <ol>
+        <li>Toca el Patrón A (arpegio ascendente) en Do mayor, 8 veces seguidas, sin parar, a 60 bpm.</li>
+        <li>Repite el ejercicio 1 en Sol mayor y en Fa mayor.</li>
+        <li>Toca el Patrón D (pedal de tónica) en Do mayor mientras cuentas en voz alta "1-2-3-4".</li>
+      </ol>
+    </div>
+    <div class="ex-card">
+      <div class="ex-level lvl2">Nivel 2 — Cambios de acorde</div>
+      <ol start="4">
+        <li>Alterna el Patrón A entre C y G (dos compases cada uno), 4 veces.</li>
+        <li>Toca la progresión C–G–Am–F completa (3.1) usando el Patrón A, muy lento.</li>
+        <li>Repite el ejercicio 5 pero ahora con el Patrón B (bajo Alberti).</li>
+      </ol>
+    </div>
+    <div class="ex-card">
+      <div class="ex-level lvl3">Nivel 3 — Independencia de manos</div>
+      <ol start="7">
+        <li>Mano derecha: toca solo la fundamental del acorde en redondas (una nota por compás). Mano izquierda: Patrón A. Progresión C–G–Am–F.</li>
+        <li>Igual que el 7, pero la mano derecha toca ahora el acorde completo en bloque (las tres notas juntas) en el tiempo 1 de cada compás.</li>
+      </ol>
+    </div>
+    <div class="ex-card">
+      <div class="ex-level lvl4">Nivel 4 — Síncopa y groove</div>
+      <ol start="9">
+        <li>Toca el Patrón B (bajo Alberti) con la síncopa del ejemplo 3.1 (silencio en el "&" del tiempo 1).</li>
+        <li>Improvisa tu propia síncopa: elige una nota del patrón para "callar" y sustitúyela por silencio, en cada compás distinto.</li>
+      </ol>
+    </div>
+    <div class="ex-card">
+      <div class="ex-level lvl5">Nivel 5 — Expresión y estilo</div>
+      <ol start="11">
+        <li>Toca la progresión 3.2 (Sol mayor) con el pedal de dominante, prestando atención a mantener el mismo volumen en la nota grave mientras las notas de arriba respiran.</li>
+        <li>Toca el ejemplo 3.3 (compás de 7/8) contando en voz alta "1-2, 1-2, 1-2-3" hasta sentir el pulso de forma natural.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PARTE 6 ========== -->
+
+<section id="parte6" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(0,212,255,.1)">🤲</div>
+    <div><div class="sec-title">Parte 6 — Combinación con la mano derecha</div><div class="sec-sub">Tres combinaciones típicas</div></div>
+  </div>
+
+  <p style="font-size:.86rem;color:var(--text-dim);margin-bottom:16px">La relación entre las dos manos define el estilo final. Aquí tienes tres combinaciones típicas, de más simple a más avanzada:</p>
+
+  <div class="card">
+    <div class="card-title"><span class="badge green">6.1</span> Acordes en bloque (la más común en baladas pop)</div>
+    <p style="font-size:.83rem;color:var(--text-dim)">La mano izquierda toca cualquiera de los patrones A, B o C. La mano derecha toca el acorde completo (3 o 4 notas) en el primer tiempo de cada compás, o repite el acorde en cada tiempo para dar pulso. Esto deja espacio para una voz cantando la melodía por encima.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge blue">6.2</span> Melodía cantada por la mano derecha</div>
+    <p style="font-size:.83rem;color:var(--text-dim)">La mano izquierda mantiene el patrón elegido de forma <strong>constante y predecible</strong> (muy importante: si la izquierda cambia mucho de patrón, distrae de la melodía). La mano derecha toca la línea melódica de la canción, nota a nota, con su propio ritmo independiente del de la izquierda.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge purple">6.3</span> Diálogo contrapuntístico (rock progresivo)</div>
+    <p style="font-size:.83rem;color:var(--text-dim)">Ambas manos tienen material melódico. Aquí es donde se usa el Patrón C (contrapunto, sección 1.3/2.3): la mano derecha propone una frase corta, la izquierda responde imitándola, invirtiéndola (subiendo donde la derecha bajó) o completándola. Es más exigente, pero es el recurso que más recuerda al Bach original y el que más caracteriza al rock progresivo instrumental (piensa en bandas como Yes, Genesis o Dream Theater, donde el piano/teclado dialoga con otros instrumentos igual que las voces de una fuga).</p>
+  </div>
+</section>
+
+<!-- ========== PARTE 7 ========== -->
+
+<section id="parte7" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(245,158,11,.1)">🔧</div>
+    <div><div class="sec-title">Parte 7 — Modificaciones</div><div class="sec-sub">Inversiones, octavas, síncopas, notas de paso y variaciones rítmicas</div></div>
+  </div>
+
+  <p style="font-size:.86rem;color:var(--text-dim);margin-bottom:16px">Estas son las herramientas para que un mismo patrón no suene repetitivo a lo largo de toda una canción.</p>
+
+  <div class="card">
+    <div class="card-title"><span class="badge blue">7.1</span> Inversiones</div>
+    <p style="font-size:.83rem;color:var(--text-dim);margin-bottom:10px">En vez de empezar el patrón siempre con la fundamental en el bajo, se puede usar la tercera o la quinta como nota más grave. Esto crea las llamadas "notas de bajo con barra" (<code>C/E</code>, <code>C/G</code>) muy comunes en pop.</p>
+    <div class="pattern-block"><span class="label">C en posición fundamental:</span>  <span class="note">C(I) - E(III) - G(V)</span>
+<span class="label">C/E (primera inversión):</span>    <span class="note">E(III) - G(V) - C(I)</span>
+<span class="label">C/G (segunda inversión):</span>    <span class="note">G(V) - C(I) - E(III)</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge green">7.2</span> Cambios de octava</div>
+    <p style="font-size:.83rem;color:var(--text-dim)">Tocar el mismo patrón una octava más grave da un carácter más solemne y "orquestal" (útil en clímax de baladas o rock progresivo); una octava más aguda lo hace más íntimo y "de caja de música" (útil en introducciones o puentes suaves).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge amber">7.3</span> Síncopas</div>
+    <p style="font-size:.83rem;color:var(--text-dim)">Ya vistas en la Parte 2. Regla práctica: quita una nota de cada cuatro (normalmente el "&" del tiempo 1 o el tiempo 3) y sustitúyela por silencio o por prolongar la nota anterior.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge purple">7.4</span> Notas de paso</div>
+    <p style="font-size:.83rem;color:var(--text-dim)">Ya vistas en 1.5. Regla práctica: cuando el bajo tenga que saltar más de una tercera entre dos acordes, prueba a rellenar el salto con una o dos notas intermedias por grados conjuntos.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge red">7.5</span> Variaciones rítmicas</div>
+    <p style="font-size:.83rem;color:var(--text-dim)">Sustituye corcheas iguales por combinaciones como corchea + dos semicorcheas, o por un tresillo, para romper la monotonía sin cambiar las notas. Esto es exactamente lo que hacía Bach dentro de una misma pieza para mantener el interés (compara, por ejemplo, distintos compases dentro de una misma Invención: las notas del acorde suelen repetirse, pero el orden y el ritmo interno varían).</p>
+  </div>
+</section>
+
+<!-- ========== PARTE 8 ========== -->
+
+<section id="parte8" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(34,197,94,.1)">🎹</div>
+    <div><div class="sec-title">Parte 8 — Ejemplos completos, paso a paso</div><div class="sec-sub">Construidos desde cero</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge green">8.1</span> Balada moderna en Do mayor, construida desde cero</div>
+    <div class="steps">
+      <div class="step"><strong>Paso 1 — Elige la progresión:</strong> C – G – Am – F (I–V–vi–IV), la progresión pop más usada.</div>
+      <div class="step"><strong>Paso 2 — Elige el patrón base para la mano izquierda:</strong> Patrón B (bajo Alberti adaptado), porque da un carácter cálido y "de piano de balada" sin ser denso.</div>
+      <div class="step"><strong>Paso 3 — Añade síncopa (7.3) para que no suene mecánico:</strong>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Acorde C:</span>  <span class="note">C(I)  G(V)  —      G(V)   |  E(III)  G(V)  C(I)   —</span></div>
+      </div>
+      <div class="step"><strong>Paso 4 — Añade la mano derecha con acordes en bloque (6.1)</strong> en el primer tiempo de cada compás, dejando el resto del compás en silencio para que "respire" (típico de intro de balada).</div>
+      <div class="step"><strong>Paso 5 — En el estribillo, sube el patrón a la octava superior (7.2) y añade el Patrón A (arpegio ascendente)</strong> en vez del Alberti, para dar sensación de apertura y clímax.</div>
+      <div class="step"><strong>Paso 6 — En el puente, usa un pedal de tónica (Patrón D) bajo un acorde que cambia arriba</strong> (por ejemplo, C pedal bajo los acordes F y G, creando tensión antes de volver al estribillo).</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="badge purple">8.2</span> Pasaje de rock progresivo en La menor, construido desde cero</div>
+    <div class="steps">
+      <div class="step"><strong>Paso 1 — Elige la progresión:</strong> Am – F – C – G (i–VI–III–VII), con carácter oscuro/heroico típico del género.</div>
+      <div class="step"><strong>Paso 2 — Elige el compás:</strong> 7/8 (agrupado 2+2+3), para dar la sensación de "tropiezo" característica del rock progresivo.</div>
+      <div class="step"><strong>Paso 3 — Usa el Patrón E (nota de paso) para conectar cada acorde con el siguiente,</strong> en vez de saltar directamente, generando una línea de bajo melódica y no solo armónica.</div>
+      <div class="step"><strong>Paso 4 — Añade un motivo de contrapunto (6.3):</strong> la mano derecha toca una frase de 3 notas en el compás 1; la mano izquierda la repite una octava abajo en el compás 2, mientras la derecha continúa con material nuevo.</div>
+      <div class="step"><strong>Paso 5 — En la sección más intensa, dobla el patrón de la izquierda en octavas</strong> (7.2) para dar más peso sonoro, imitando el efecto de un bajo eléctrico grave acompañando al piano.</div>
+      <div class="step"><strong>Paso 6 — Cierra la sección con un pedal de dominante</strong> (nota E sostenida en el bajo, grado V de La menor) que resuelve finalmente en el acorde de Am, creando la sensación de "llegada" tan típica del género.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PARTE 9 ========== -->
+
+<section id="parte9" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(168,85,247,.1)">✍️</div>
+    <div><div class="sec-title">Parte 9 — Ejercicios de composición original</div><div class="sec-sub">Crea los tuyos propios</div></div>
+  </div>
+
+  <p style="font-size:.86rem;color:var(--text-dim);margin-bottom:16px">Ya no se trata de repetir los ejemplos, sino de crear los tuyos. Sigue estos pasos con papel y lápiz (o directamente al piano) para cada ejercicio:</p>
+
+  <div class="steps">
+    <div class="step"><strong>Elige tu propia progresión de 4 acordes</strong> en una tonalidad mayor que no hayamos usado en este tutorial (por ejemplo, Mi mayor o Si bemol mayor). Escribe los grados de cada acorde.</div>
+    <div class="step"><strong>Aplica el Patrón A (arpegio ascendente)</strong> a toda la progresión, sin ningún cambio todavía.</div>
+    <div class="step"><strong>Transforma el patrón anterior</strong> aplicando al menos dos de las cinco palancas de la Parte 2 (ritmo, densidad, registro, textura, métrica). Anota qué cambiaste y por qué.</div>
+    <div class="step"><strong>Compón una línea de bajo de 4 compases usando notas de paso</strong> (1.5/7.4) que conecte los cuatro acordes de tu progresión de forma melódica, sin quedarte solo con las notas del acorde.</div>
+    <div class="step"><strong>Escribe un motivo corto de 2 compases</strong> para la mano derecha y crea una respuesta contrapuntística para la mano izquierda (6.3), como si fuera un fragmento de rock progresivo instrumental.</div>
+    <div class="step"><strong>Combina todo lo anterior</strong> en una estructura de 16 compases: 4 de introducción (patrón simple), 8 de estrofa/verso (patrón con síncopa), 4 de clímax o puente (pedal o contrapunto). Tócalo de principio a fin sin parar.</div>
+    <div class="step"><strong>Graba tu resultado</strong> (con el móvil basta) y escúchalo al día siguiente con oídos frescos: ¿qué patrón de Bach reconoces dentro de tu propia composición?</div>
+  </div>
+</section>
+
+<!-- ========== EJERCICIOS ========== -->
+
+<section id="ejercicios" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(168,85,247,.1)">🎯</div>
+    <div><div class="sec-title">Ejercicios</div><div class="sec-sub">15 ejercicios del clave de Bach al piano moderno</div></div>
+  </div>
+
+  <div class="callout info">
+    <strong>ℹ️ Cómo funciona esta sección</strong>
+    Cada ejercicio está diseñado para que aprendas <strong>haciendo</strong>. Primero una breve explicación, después la tarea concreta y, por último, la solución paso a paso, la explicación causal y el error típico a evitar. Trabaja en orden, respetando la progresión de dificultad.
+  </div>
+
+  <!-- Ejercicio 1 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 1 — Reconociendo el arpegio del Preludio</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge blue">Identificación / análisis</span> <span class="badge green">Principiante</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Observa el siguiente diagrama de tiempo y responde:</p>
+        <div class="pattern-block"><span class="label">Tiempo:</span>   <span class="note">1       &       2       &</span>
+<span class="label">Nota:</span>     <span class="note">C(I)    E(III)  G(V)    C(I, octava arriba)</span>
+<span class="label">Dedo:</span>     <span class="finger">5       2       1       1</span></div>
+        <ol style="padding-left:18px;margin-bottom:10px">
+          <li>¿A qué patrón de los cinco vistos en la Parte 1 corresponde?</li>
+          <li>¿De qué obra de Bach proviene el recurso original y qué número de catálogo tiene?</li>
+          <li>¿Qué diferencia hay entre el original de Bach y esta versión simplificada?</li>
+        </ol>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ol style="padding-left:18px;margin-top:6px">
+          <li>Corresponde al patrón 1.1 — Acordes quebrados ascendentes, también llamado arpegio ascendente.</li>
+          <li>Proviene del Preludio en Do mayor, BWV 846, primera pieza de <em>El clave bien temperado</em>, Libro I (1722).</li>
+          <li>En el original, ambas manos arpegia el acorde en un patrón continuo de semicorcheas cubriendo casi dos octavas. Aquí se simplifica a una sola mano izquierda, con corcheas, que es como se usa hoy en canciones.</li>
+        </ol>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        El patrón funciona porque descompone un acorde en el tiempo: en lugar de tocar C–E–G simultáneamente, se "abre" nota por nota. Esto crea movimiento continuo y permite que la armonía se escuche sin que la mano izquierda compita con la melodía de la derecha. Bach lo usó para generar una textura fluida e ininterrumpida; el pop lo usa para crear un colchón armónico predecible que sostiene la voz.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Confundir este patrón con el bajo Alberti. El arpegio del Preludio sube (C–E–G–C), mientras que el Alberti hace grave–agudo–medio–agudo (C–G–E–G). Reconocerlo: si la segunda nota es la quinta, es Alberti; si es la tercera, es arpegio ascendente.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 2 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 2 — El bajo Alberti y su verdadera historia</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge blue">Auditivo-teórico / corrección de errores históricos</span> <span class="badge green">Principiante-Intermedio</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Un compañero de clase afirma: "El bajo Alberti es un patrón que Bach inventó y usó en todas sus obras para teclado." Responde:</p>
+        <ol style="padding-left:18px;margin-bottom:10px">
+          <li>¿Es correcta esa afirmación? Justifica.</li>
+          <li>¿Quién popularizó realmente este patrón y en qué período?</li>
+          <li>Nombra dos compositores representativos de ese período.</li>
+          <li>¿Por qué el tutorial incluye este patrón si no es de Bach?</li>
+        </ol>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ol style="padding-left:18px;margin-top:6px">
+          <li>No es correcta. Bach no usó exactamente ese patrón, aunque sí usó otros acordes quebrados emparentados con él.</li>
+          <li>Lo popularizó Domenico Alberti, y se difundió en el Clasicismo, una generación después de Bach.</li>
+          <li>Mozart y Haydn.</li>
+          <li>Porque es un pariente cercano del arpegio ascendente de Bach (solo cambia el orden de las notas), es muy útil en baladas pop modernas, y permite entender la diferencia entre el sonido barroco (lineal, contrapuntístico) y el clásico (acompañamiento puro).</li>
+        </ol>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        La confusión es frecuente porque ambos patrones usan las mismas notas del acorde (fundamental, tercera, quinta) y ambos son "acordes quebrados". La diferencia está en el orden y en el contexto estilístico: Bach prioriza la línea independiente (contrapunto), mientras que el Alberti clásico prioriza el acompañamiento homofónico. Saber esto evita atribuir a Bach un recurso que pertenece a otra época.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Atribuir a Bach todo patrón de acorde quebrado. Reconocerlo: si el patrón es grave–agudo–medio–agudo en corcheas rectas y suena "de acompañamiento", probablemente sea clásico, no barroco.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 3 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 3 — Aplicando el patrón A en Sol mayor</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge blue">Aplicación / ejecución al piano</span> <span class="badge green">Principiante</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Toca el Patrón A (arpegio ascendente) en la tonalidad de Sol mayor, aplicado al acorde de Sol (G). Escribe el diagrama de tiempo con las notas y los grados correspondientes, y ejecútalo 8 veces seguidas a 60 bpm.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>El acorde de Sol mayor está formado por G (I), B (III), D (V).</li>
+          <li>El Patrón A asciende: fundamental → tercera → quinta → fundamental una octava arriba.</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Tiempo:</span>   <span class="note">1       &       2       &</span>
+<span class="label">Nota:</span>     <span class="note">G(I)    B(III)  D(V)    G(I, octava arriba)</span>
+<span class="label">Dedo:</span>     <span class="finger">5       2       1       1 (pasa el pulgar)</span></div>
+        <p style="margin-top:6px">Ejecutar 8 veces seguidas, manteniendo pulso constante a 60 bpm.</p>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        El patrón A funciona en cualquier tonalidad porque se basa en los grados del acorde (I–III–V–I), no en notas fijas. Al transportarlo a Sol mayor, la estructura interválica se mantiene (fundamental, tercera mayor, quinta justa, octava), por lo que el efecto sonoro es idéntico al de Do mayor, solo cambia la altura. Esto demuestra que el patrón es una forma musical, no una secuencia de notas.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Tocar B como si fuera bemol (Bb) por inercia de otras tonalidades. Reconocerlo: en Sol mayor, la tercera del acorde es B natural; si suena "oscuro", probablemente se tocó Bb.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 4 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 4 — Transformación con la palanca de RITMO</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge blue">Transformación con palancas</span> <span class="badge green">Principiante-Intermedio</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Toma el Patrón B (bajo Alberti adaptado) en Do mayor:</p>
+        <div class="pattern-block"><span class="label">Tiempo:</span>   <span class="note">1      &      2      &</span>
+<span class="label">Nota:</span>     <span class="note">C(I)   G(V)   E(III) G(V)</span>
+<span class="label">Dedo:</span>     <span class="finger">5      1      3      1</span></div>
+        <p>Aplica la palanca de RITMO para convertirlo en un acompañamiento de balada pop con síncopa. Escribe el nuevo diagrama de tiempo e indica qué nota queda en silencio.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>La palanca de RITMO consiste en introducir síncopa, swing o células rítmicas repetidas.</li>
+          <li>Una transformación posible: silenciar el "&" del tiempo 1 y prolongar la nota del tiempo 1, o silenciar el tiempo 2.</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Tiempo:</span>   <span class="note">1      &      2      &</span>
+<span class="label">Nota:</span>     <span class="note">C(I)   —      E(III) G(V)</span>
+<span class="label">Dedo:</span>     <span class="finger">5      —      3      1</span></div>
+        <p style="margin-top:6px">La nota G(V) del "&" del tiempo 1 queda en silencio, creando síncopa.</p>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        La síncopa rompe la regularidad del pulso y genera sensación de "respiración" o "balanceo". En una balada pop, esto evita que el acompañamiento suene mecánico y deja espacio para que la voz o la melodía respire. El silencio en un lugar inesperado crea tensión que se resuelve en la siguiente nota, produciendo groove.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Silenciar una nota pero acelerar el pulso para "compensar". Reconocerlo: si el metrónomo marca 60 bpm y el pie sigue marcando el pulso, el silencio debe sentirse como pausa, no como prisa.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 5 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 5 — El pedal point en Sol mayor (vi–IV–I–V)</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge blue">Aplicación / análisis</span> <span class="badge amber">Intermedio</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Usa la progresión vi–IV–I–V en Sol mayor (Em–C–G–D). Aplica el Patrón D (pedal point) manteniendo la nota E como bajo fijo durante los dos primeros acordes, y luego muévete a la fundamental en los dos últimos. Escribe el diagrama de tiempo completo (4 compases) e indica en qué compás se resuelve la tensión.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>Acorde Em (vi): bajo E fijo.</li>
+          <li>Acorde C (IV): bajo E fijo (crea C/E, inversión).</li>
+          <li>Acorde G (I): bajo G (fundamental).</li>
+          <li>Acorde D (V): bajo D (fundamental).</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Acorde Em:</span>   <span class="note">E(VI)  E(VI)  E(VI)  E(VI)</span>
+<span class="label">Acorde C:</span>    <span class="note">E(VI)  E(VI)  E(VI)  E(VI)</span>   <span class="dim">[C/E]</span>
+<span class="label">Acorde G:</span>    <span class="note">G(I)   G(I)   G(I)   G(I)</span>
+<span class="label">Acorde D:</span>    <span class="note">D(V)   D(V)   D(V)   D(V)</span></div>
+        <p style="margin-top:6px">La tensión se resuelve en el compás 3, cuando el bajo se mueve a G (fundamental de la tónica).</p>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        El pedal point funciona porque una nota grave sostenida genera expectativa: el oído espera que esa nota se convierta en fundamental o que resuelva. Mientras el bajo se mantiene en E bajo el acorde C, se crea una inversión (C/E) que suena estable pero no conclusiva. Al moverse a G, el bajo coincide con la fundamental del acorde, produciendo una sensación de llegada y reposo.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Mover el bajo antes de tiempo "porque suena raro". Reconocerlo: la tensión del pedal es intencional; si se resuelve demasiado pronto, se pierde el efecto.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 6 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 6 — Nota de paso en Re mayor (7/8)</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge blue">Aplicación / ejecución al piano</span> <span class="badge amber">Intermedio</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> En la tonalidad de Re mayor, construye una línea de bajo de 7 corcheas en compás de 7/8 (agrupado 2+2+3) que conecte el acorde de D (I) con el acorde de A (V) usando notas de paso por grados conjuntos. Escribe el diagrama de tiempo con notas y grados.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>D mayor: D (I), F# (III), A (V).</li>
+          <li>A mayor: A (V), C# (III), E (V).</li>
+          <li>Línea de bajo ascendente por grados conjuntos: D → E → F# → G → A → B → A.</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Tiempo:</span>   <span class="note">1    2    3    4    5    6    7</span>
+<span class="label">Nota:</span>     <span class="note">D(I) E(II) F#(III) G(IV) A(V) B(VI) A(V)</span></div>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        La nota de paso rellena el salto entre dos acordes con notas intermedias que no pertenecen al acorde, pero que conectan melódicamente por grados conjuntos. Esto convierte una línea de bajo armónica (solo fundamentales) en una línea melódica que canta. En 7/8, la agrupación 2+2+3 da un pulso irregular que caracteriza al rock progresivo, y la línea de bajo por grados conjuntos mantiene la cohesión a pesar de la métrica irregular.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Tocar las notas del acorde en lugar de las notas de paso. Reconocerlo: si el bajo solo toca D, F#, A, suena armónico pero no melódico; si aparecen E, G, B, está funcionando la nota de paso.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 7 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 7 — Corrección de errores: patrón mal digitado</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge red">Corrección de errores</span> <span class="badge green">Principiante</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Un estudiante escribe el siguiente diagrama para el Patrón A en Do mayor:</p>
+        <div class="pattern-block"><span class="label">Tiempo:</span>   <span class="note">1       &       2       &</span>
+<span class="label">Nota:</span>     <span class="note">C(I)    E(III)  G(V)    C(I, octava arriba)</span>
+<span class="label">Dedo:</span>     <span class="finger">1       2       3       4</span></div>
+        <p>Identifica el error de digitación y escribe la digitación correcta según el tutorial. Explica por qué la digitación incorrecta dificulta la ejecución.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>Error: la digitación 1-2-3-4 es incorrecta. El tutorial indica 5-2-1-1.</li>
+          <li>Digitación correcta:</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Tiempo:</span>   <span class="note">1       &       2       &</span>
+<span class="label">Nota:</span>     <span class="note">C(I)    E(III)  G(V)    C(I, octava arriba)</span>
+<span class="label">Dedo:</span>     <span class="finger">5       2       1       1 (pasa el pulgar)</span></div>
+        <p style="margin-top:6px">La digitación 5-2-1-1 permite que el pulgar (dedo 1) toque la octava superior, reutilizando el mismo dedo que tocó G. La digitación 1-2-3-4 obliga a estirar la mano de forma antinatural y no permite alcanzar la octava con comodidad.</p>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        La digitación 5-2-1-1 está diseñada para que la mano se mantenga en una posición cómoda: el dedo 5 toca la nota más grave, el 2 y el 1 tocan las notas medias, y el 1 se reutiliza para la octava. Esto evita saltos innecesarios y permite tocar el patrón de forma fluida y repetible. La digitación 1-2-3-4 cruza el pulgar por debajo de los otros dedos, lo que genera tensión y rompe la continuidad.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Usar el pulgar para la nota más grave "porque es más fácil". Reconocerlo: si al tocar la octava superior la mano se tensa o el pulgar queda atrapado, la digitación es incorrecta.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 8 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 8 — Transformación con la palanca de TEXTURA</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge purple">Transformación con palancas</span> <span class="badge amber">Intermedio</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Toma el Patrón C (bajo continuo/caminante) en Do mayor:</p>
+        <div class="pattern-block"><span class="label">Tiempo:</span>   <span class="note">1      &      2      &</span>
+<span class="label">Nota:</span>     <span class="note">C(I)   D(II)  E(III) G(V)</span>
+<span class="label">Dedo:</span>     <span class="finger">5      4      3      1</span></div>
+        <p>Aplica la palanca de TEXTURA DE MANO DERECHA para convertirlo en un acompañamiento de balada pop donde la mano derecha toca una melodía cantada. Describe qué hace cada mano y por qué esta combinación funciona.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>La palanca de TEXTURA cambia lo que hace la mano derecha: en lugar de una segunda voz contrapuntística, toca una melodía cantada.</li>
+          <li>Mano izquierda: mantiene el Patrón C constante y predecible (C–D–E–G).</li>
+          <li>Mano derecha: toca la línea melódica de la canción, nota a nota, con su propio ritmo independiente.</li>
+          <li>La combinación funciona porque la izquierda es predecible y no compite con la melodía; la derecha tiene libertad para cantar.</li>
+        </ul>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        En el contrapunto barroco, ambas manos tienen igual importancia y dialogan. En la balada pop, la jerarquía cambia: la mano derecha (o la voz) es protagonista, y la izquierda es acompañamiento. Al mantener la izquierda constante y predecible, se libera la atención del oyente para seguir la melodía. Si la izquierda cambiara mucho de patrón, distraería de la melodía.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Hacer que la mano izquierda "compita" con la melodía tocando notas agudas o cambios rítmicos inesperados. Reconocerlo: si al escuchar no se distingue cuál es la melodía, la textura está mal balanceada.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 9 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 9 — Inversiones en La menor (i–VI–III–VII)</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge blue">Análisis / aplicación</span> <span class="badge amber">Intermedio</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> En la progresión Am–F–C–G (i–VI–III–VII) en La menor, aplica el Patrón A (arpegio ascendente) pero usando inversiones para el acorde de F y el acorde de C. Escribe los diagramas de tiempo de los cuatro acordes e indica qué inversión usaste en cada caso.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>Am: posición fundamental → A(I) – C(III) – E(V) – A(I).</li>
+          <li>F: primera inversión (F/A) → A(III) – C(V) – F(I) – A(III).</li>
+          <li>C: segunda inversión (C/G) → G(V) – C(I) – E(III) – G(V).</li>
+          <li>G: posición fundamental → G(I) – B(III) – D(V) – G(I).</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Am:</span>  <span class="note">A(I)  C(III) E(V)  A(I)</span>
+<span class="label">F:</span>   <span class="note">A(III) C(V)  F(I)  A(III)</span>   <span class="dim">[F/A]</span>
+<span class="label">C:</span>   <span class="note">G(V)  C(I)  E(III) G(V)</span>    <span class="dim">[C/G]</span>
+<span class="label">G:</span>   <span class="note">G(I)  B(III) D(V)  G(I)</span></div>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        Las inversiones permiten que el bajo se mueva por grados conjuntos o se mantenga en una nota común, creando una línea de bajo más suave y melódica. En este caso, el bajo de F/A es A, que conecta con el A del acorde de Am anterior; el bajo de C/G es G, que conecta con el G del acorde de G siguiente. Esto evita saltos bruscos y da continuidad a la progresión.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Tocar todas las inversiones sin criterio, creando un bajo errático. Reconocerlo: si el bajo salta más de una tercera entre acordes, probablemente la inversión no está cumpliendo su función de conectar.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 10 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 10 — Combinación 6.1: acordes en bloque en Do mayor</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge blue">Combinación mano derecha/izquierda</span> <span class="badge green">Principiante-Intermedio</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Usa la progresión C–G–Am–F (I–V–vi–IV) en Do mayor. La mano izquierda toca el Patrón B (bajo Alberti adaptado) y la mano derecha toca acordes en bloque en el primer tiempo de cada compás. Escribe el diagrama de tiempo de la mano izquierda para los cuatro acordes e indica qué acorde toca la mano derecha en cada compás.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>Mano izquierda (Patrón B en cada acorde):</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">C:</span>   <span class="note">C(I)  G(V)  E(III) G(V)</span>
+<span class="label">G:</span>   <span class="note">G(V)  D(II) B(VII) D(II)</span>
+<span class="label">Am:</span>  <span class="note">A(VI) E(III) C(I)   E(III)</span>
+<span class="label">F:</span>   <span class="note">F(IV) C(I)  A(VI)  C(I)</span></div>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>Mano derecha (acordes en bloque en el tiempo 1):
+            <ul style="padding-left:16px">
+              <li>Compás 1: C (Do mayor)</li>
+              <li>Compás 2: G (Sol mayor)</li>
+              <li>Compás 3: Am (La menor)</li>
+              <li>Compás 4: F (Fa mayor)</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        Esta combinación funciona porque la mano izquierda mantiene el movimiento armónico (el bajo Alberti da pulso constante) mientras la mano derecha marca los cambios de acorde con claridad. Los acordes en bloque en el tiempo 1 refuerzan la armonía y dejan el resto del compás libre para que la voz o la melodía se desarrollen. Es la combinación más común en baladas pop porque es estable y predecible.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Tocar los acordes en bloque en cada tiempo, saturando el sonido. Reconocerlo: si el acompañamiento suena "pesado" o no deja espacio para la melodía, hay demasiadas notas.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 11 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 11 — Combinación 6.3: diálogo contrapuntístico en La menor</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge blue">Combinación mano derecha/izquierda</span> <span class="badge purple">Intermedio-Avanzado</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> En La menor, crea un diálogo contrapuntístico de 4 compases donde la mano derecha propone un motivo de 4 notas y la mano izquierda lo imita una octava abajo en el compás siguiente. Escribe el diagrama de tiempo de ambos compases e indica qué tipo de movimiento usa la imitación.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>Motivo de la mano derecha (compás 1): A – C – E – C.</li>
+          <li>Imitación de la mano izquierda (compás 2): A – C – E – C (una octava abajo).</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Mano derecha (compás 1):</span>   <span class="note">A - C - E - C</span>
+<span class="label">Mano izquierda (compás 2):</span> <span class="note">A - C - E - C (octava abajo)</span></div>
+        <p style="margin-top:6px">Tipo de movimiento: imitación directa a distancia de un compás.</p>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        El diálogo contrapuntístico funciona porque crea la ilusión de dos voces que conversan. La mano derecha presenta una idea, y la izquierda la responde, generando continuidad y coherencia. Este recurso es característico del rock progresivo (Yes, Genesis, Dream Theater), donde el piano o el teclado dialoga con otros instrumentos igual que las voces de una fuga. La imitación a distancia de un compás da tiempo al oyente para procesar el motivo antes de escucharlo de nuevo.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Imitar el motivo con notas incorrectas o en un ritmo diferente. Reconocerlo: si la imitación no suena como "eco" del motivo original, probablemente se alteró alguna nota o el ritmo.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 12 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 12 — Variación rítmica en 6/8</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge purple">Transformación con palancas</span> <span class="badge amber">Intermedio</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Toma el Patrón A (arpegio ascendente) en Do mayor y transfórmalo a compás de 6/8. Aplica la palanca de MÉTRICA y la palanca de RITMO para crear una variación que suene a balada en 6/8. Escribe el diagrama de tiempo con las 6 corcheas del compás.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>En 6/8, el compás tiene 6 corcheas agrupadas en 2 grupos de 3.</li>
+          <li>Patrón A original: C–E–G–C.</li>
+          <li>Transformación a 6/8: se repite el patrón para cubrir las 6 corcheas.</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Tiempo:</span>   <span class="note">1      &      2      &      3      &</span>
+<span class="label">Nota:</span>     <span class="note">C(I)   E(III) G(V)   C(I)   E(III) G(V)</span></div>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>Variación rítmica: se puede convertir la primera corchea de cada grupo en corchea con puntillo, o añadir un tresillo.</li>
+        </ul>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        El compás de 6/8 tiene un pulso binario compuesto (2 tiempos de 3 corcheas cada uno), lo que da una sensación de balanceo o "hamaca". Al adaptar el arpegio a 6/8, se mantiene la estructura armónica pero cambia el carácter emocional: suena más fluido y danzante que en 4/4. La variación rítmica (corchea con puntillo, tresillo) rompe la monotonía sin cambiar las notas.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Contar 6/8 como 6 tiempos independientes en lugar de 2 tiempos de 3. Reconocerlo: si el pie marca 6 pulsos por compás, la métrica está mal sentida; deben ser 2 pulsos.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 13 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 13 — Corrección de errores: pedal point mal resuelto</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge red">Corrección de errores</span> <span class="badge amber">Intermedio</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Un estudiante escribe el siguiente pedal point en Do mayor:</p>
+        <div class="pattern-block"><span class="label">Compás 1 (C):</span>  <span class="note">C(I)  C(I)  C(I)  C(I)</span>
+<span class="label">Compás 2 (F):</span>  <span class="note">C(I)  C(I)  C(I)  C(I)</span>
+<span class="label">Compás 3 (G):</span>  <span class="note">C(I)  C(I)  C(I)  C(I)</span>
+<span class="label">Compás 4 (C):</span>  <span class="note">C(I)  C(I)  C(I)  C(I)</span></div>
+        <p>Identifica el error y corrige el compás 4 para que el pedal resuelva correctamente. Explica por qué la versión del estudiante no funciona.</p>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>Error: en el compás 4, el bajo sigue en C, pero la armonía es C. El pedal no resuelve porque nunca se mueve.</li>
+          <li>Corrección: en el compás 4, el bajo debe moverse a G (V) o mantenerse en C pero con la armonía resolviendo a C. Sin embargo, para que haya sensación de resolución, el pedal debe haber creado tensión antes.</li>
+          <li>Una corrección posible: en el compás 3 (G), el bajo se mantiene en C (creando tensión porque C es la 4ª del acorde G), y en el compás 4 (C), el bajo se mueve a G (V) o se mantiene en C pero con la armonía resolviendo a C.</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Compás 1 (C):</span>  <span class="note">C(I)  C(I)  C(I)  C(I)</span>
+<span class="label">Compás 2 (F):</span>  <span class="note">C(I)  C(I)  C(I)  C(I)</span>   <span class="dim">[C/F, tensión]</span>
+<span class="label">Compás 3 (G):</span>  <span class="note">C(I)  C(I)  C(I)  C(I)</span>   <span class="dim">[C/G, tensión máxima]</span>
+<span class="label">Compás 4 (C):</span>  <span class="note">G(V)  G(V)  G(V)  G(V)</span>   <span class="dim">[resolución a la dominante]</span></div>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        El pedal point funciona creando tensión armónica: una nota grave se mantiene mientras la armonía cambia, generando expectativa. Si el pedal nunca se mueve, no hay resolución y la tensión se vuelve estática. Al mover el bajo en el compás 4, se libera la tensión acumulada y se produce la sensación de llegada.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Mantener el pedal durante toda la progresión sin resolver. Reconocerlo: si al terminar la progresión no se siente "cierre", el pedal no resolvió.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 14 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 14 — Composición original: balada en Mi mayor</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge purple">Composición original</span> <span class="badge purple">Intermedio-Avanzado</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Compón una balada de 16 compases en Mi mayor usando una progresión de 4 acordes de tu elección. Sigue estos pasos:</p>
+        <ol style="padding-left:18px">
+          <li>Elige la progresión y escribe los grados.</li>
+          <li>Aplica el Patrón A a la progresión.</li>
+          <li>Transforma el patrón aplicando al menos dos palancas de la Parte 2.</li>
+          <li>Añade una línea de bajo con notas de paso.</li>
+          <li>Escribe un motivo de 2 compases para la mano derecha y crea una respuesta contrapuntística para la izquierda.</li>
+          <li>Combina todo en una estructura de 16 compases: 4 de introducción, 8 de estrofa, 4 de clímax.</li>
+          <li>Graba tu resultado y escúchalo al día siguiente.</li>
+        </ol>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso (ejemplo)</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>Progresión elegida: E–B–C#m–A (I–V–vi–IV) en Mi mayor.</li>
+          <li>Patrón A en Mi mayor: E(I)–G#(III)–B(V)–E(I).</li>
+          <li>Transformación: aplicar palanca de RITMO (síncopa) y palanca de REGISTRO (subir una octava en el clímax).</li>
+          <li>Línea de bajo con notas de paso: E–F#–G#–A entre E y A.</li>
+          <li>Motivo de mano derecha: E–G#–B–G# (2 compases).</li>
+          <li>Respuesta contrapuntística: misma frase una octava abajo en la izquierda.</li>
+          <li>Estructura: compases 1–4 introducción (Patrón A simple), 5–12 estrofa (Patrón A con síncopa), 13–16 clímax (Patrón A en octava superior + pedal).</li>
+        </ul>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        La composición funciona porque sigue una progresión armónica coherente (I–V–vi–IV es la más usada en pop), aplica transformaciones que mantienen el interés (síncopa, cambios de registro), y usa el contrapunto para dar profundidad. La estructura de 16 compases permite desarrollar la idea sin que se vuelva repetitiva.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Cambiar de patrón constantemente sin criterio. Reconocerlo: si la mano izquierda cambia de patrón cada 2 compases, el oyente pierde la referencia y la música suena errática.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ejercicio 15 -->
+  <div class="acc-item">
+    <div class="acc-head" onclick="toggleAcc(this)">Ejercicio 15 — Composición original: rock progresivo en La menor (7/8)</div>
+    <div class="acc-body">
+      <div style="font-size:.84rem;color:var(--text-dim);margin-bottom:10px">
+        <p><span class="badge purple">Composición original</span> <span class="badge purple">Intermedio-Avanzado</span></p>
+        <p style="margin-top:8px"><strong style="color:#fff">Enunciado:</strong> Compón un pasaje de rock progresivo de 16 compases en La menor usando compás de 7/8 (agrupado 2+2+3). Sigue estos pasos:</p>
+        <ol style="padding-left:18px">
+          <li>Elige la progresión Am–F–C–G (i–VI–III–VII).</li>
+          <li>Usa el Patrón E (nota de paso) para conectar cada acorde con el siguiente.</li>
+          <li>Añade un motivo de contrapunto: la mano derecha toca una frase de 3 notas en el compás 1; la mano izquierda la repite una octava abajo en el compás 2.</li>
+          <li>En la sección más intensa, dobla el patrón de la izquierda en octavas.</li>
+          <li>Cierra la sección con un pedal de dominante (nota E sostenida) que resuelva en Am.</li>
+        </ol>
+      </div>
+      <div class="callout example">
+        <strong>Solución paso a paso (ejemplo)</strong>
+        <ul style="padding-left:18px;margin-top:6px">
+          <li>Progresión: Am–F–C–G.</li>
+          <li>Patrón E en La menor: A(I)–B(II)–C(III)–D(IV) para conectar Am con F.</li>
+          <li>Motivo de mano derecha (compás 1): A–C–E.</li>
+          <li>Imitación de mano izquierda (compás 2): A–C–E (octava abajo).</li>
+          <li>Sección intensa: doblar el patrón en octavas.</li>
+          <li>Cierre: pedal de E (V) que resuelve en Am.</li>
+        </ul>
+        <div class="pattern-block" style="margin-top:8px"><span class="label">Compás 15:</span>  <span class="note">E(V)  E(V)  E(V)  E(V)  E(V)  E(V)  E(V)</span>
+<span class="label">Compás 16:</span>  <span class="note">A(I)  A(I)  A(I)  A(I)  A(I)  A(I)  A(I)</span></div>
+      </div>
+      <div class="callout info">
+        <strong>Por qué (Explicación causal)</strong>
+        El rock progresivo se caracteriza por métricas irregulares (7/8), contrapunto entre instrumentos y cambios de textura. La progresión i–VI–III–VII es oscura y heroica, típica del género. El pedal de dominante al final crea tensión que resuelve en la tónica, dando sensación de "llegada" después de un pasaje complejo.
+      </div>
+      <div class="callout warn">
+        <strong>Error típico a evitar</strong>
+        Perder el pulso en 7/8 y tocar como si fuera 4/4 + 3/4. Reconocerlo: si el pie marca 7 pulsos pero la mano acelera o frena, la métrica está mal sentida.
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla resumen -->
+  <div class="card" style="margin-top:24px">
+    <div class="card-title">📋 Tabla resumen de ejercicios</div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Nº</th><th>Tipo</th><th>Dificultad</th><th>Subtema(s) del tutorial cubierto(s)</th></tr>
+        <tr><td>1</td><td>Identificación / análisis</td><td>Principiante</td><td>1.1 Arpegio ascendente, BWV 846</td></tr>
+        <tr><td>2</td><td>Auditivo-teórico / corrección</td><td>Principiante-Intermedio</td><td>1.6 Bajo Alberti, Bach vs. Clasicismo</td></tr>
+        <tr><td>3</td><td>Aplicación / ejecución</td><td>Principiante</td><td>Patrón A, tonalidad de Sol mayor</td></tr>
+        <tr><td>4</td><td>Transformación con palancas</td><td>Principiante-Intermedio</td><td>Palanca RITMO, síncopa, Patrón B</td></tr>
+        <tr><td>5</td><td>Aplicación / análisis</td><td>Intermedio</td><td>Patrón D (pedal), progresión vi–IV–I–V en G</td></tr>
+        <tr><td>6</td><td>Aplicación / ejecución</td><td>Intermedio</td><td>1.5 Nota de paso, 7/8, Re mayor</td></tr>
+        <tr><td>7</td><td>Corrección de errores</td><td>Principiante</td><td>Patrón A, digitación 5-2-1-1</td></tr>
+        <tr><td>8</td><td>Transformación con palancas</td><td>Intermedio</td><td>Palanca TEXTURA, Patrón C, melodía cantada</td></tr>
+        <tr><td>9</td><td>Análisis / aplicación</td><td>Intermedio</td><td>7.1 Inversiones, progresión i–VI–III–VII en Am</td></tr>
+        <tr><td>10</td><td>Combinación mano derecha/izquierda</td><td>Principiante-Intermedio</td><td>6.1 Acordes en bloque, Patrón B, C–G–Am–F</td></tr>
+        <tr><td>11</td><td>Combinación mano derecha/izquierda</td><td>Intermedio-Avanzado</td><td>6.3 Diálogo contrapuntístico, La menor</td></tr>
+        <tr><td>12</td><td>Transformación con palancas</td><td>Intermedio</td><td>Palanca MÉTRICA, 6/8, Patrón A</td></tr>
+        <tr><td>13</td><td>Corrección de errores</td><td>Intermedio</td><td>Patrón D (pedal), resolución</td></tr>
+        <tr><td>14</td><td>Composición original</td><td>Intermedio-Avanzado</td><td>Parte 9, balada en Mi mayor</td></tr>
+        <tr><td>15</td><td>Composición original</td><td>Intermedio-Avanzado</td><td>Parte 9, rock progresivo en La menor, 7/8</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ========== GLOSARIO ========== -->
+
+<section id="glosario" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(0,212,255,.1)">📚</div>
+    <div><div class="sec-title">Glosario rápido</div><div class="sec-sub">Términos clave del tutorial</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr><th>Término</th><th>Definición</th></tr>
+      <tr><td><strong style="color:#fff">Acorde quebrado / arpegio</strong></td><td>Notas de un acorde tocadas una tras otra en vez de simultáneamente.</td></tr>
+      <tr><td><strong style="color:#fff">Bajo continuo</strong></td><td>Práctica barroca de sostener la armonía con una línea de bajo constante mientras se improvisan acordes por encima (origen de muchos patrones de este tutorial).</td></tr>
+      <tr><td><strong style="color:#fff">Contrapunto</strong></td><td>Técnica de combinar dos o más líneas melódicas independientes que suenan bien juntas.</td></tr>
+      <tr><td><strong style="color:#fff">Nota de paso</strong></td><td>Nota que no pertenece al acorde, usada para conectar melódicamente dos notas del acorde por grados conjuntos.</td></tr>
+      <tr><td><strong style="color:#fff">Pedal (nota pedal / pedal point)</strong></td><td>Nota grave sostenida o repetida mientras la armonía de arriba cambia.</td></tr>
+      <tr><td><strong style="color:#fff">Inversión de acorde</strong></td><td>Cuando la nota más grave del acorde no es la fundamental, sino la tercera o la quinta.</td></tr>
+      <tr><td><strong style="color:#fff">Síncopa</strong></td><td>Acentuar o sostener una nota en un lugar del compás donde normalmente no se esperaría, rompiendo la regularidad rítmica.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ========== FUENTES ========== -->
+
+<section id="fuentes" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(34,197,94,.1)">🔗</div>
+    <div><div class="sec-title">Fuentes</div><div class="sec-sub">Referencias y enlaces</div></div>
+  </div>
+
+  <div class="callout info">
+    <strong>ℹ️ Sobre las fuentes</strong>
+    Este tutorial está basado en el contenido proporcionado por el usuario. Los ejemplos de Bach citados son piezas de dominio público. Las transcripciones son simplificaciones pedagógicas propias. No se han utilizado fuentes externas para completar el tutorial.
+  </div>
+
+  <div class="source-card">
+    <div class="source-title">📄 Documento base del tutorial</div>
+    <p style="font-size:.8rem;color:var(--text-dim);margin:6px 0">Contenido original: <em>Del clave de Bach al piano moderno — Cómo usar los patrones de mano izquierda de Bach para componer baladas pop y rock progresivo</em></p>
+    <p style="font-size:.75rem;color:var(--text-dim)">Archivo: tutorial_bach_piano_moderno.md</p>
+  </div>
+
+  <div class="source-card">
+    <div class="source-title">🎼 Obras de Johann Sebastian Bach citadas</div>
+    <ul style="font-size:.8rem;color:var(--text-dim);padding-left:18px;margin-top:6px">
+      <li><em>El clave bien temperado, Libro I</em> — Preludio en Do mayor, BWV 846 (1722)</li>
+      <li><em>Invenciones a dos voces</em>, BWV 772–786</li>
+      <li><em>Concierto italiano</em>, BWV 971</li>
+      <li>Suites para teclado (Preludios)</li>
+      <li>Arias con bajo continuo</li>
+    </ul>
+  </div>
+
+  <div class="source-card">
+    <div class="source-title">📖 Referencias históricas</div>
+    <ul style="font-size:.8rem;color:var(--text-dim);padding-left:18px;margin-top:6px">
+      <li>Domenico Alberti (c. 1710–1740) — Popularizó el "bajo Alberti"</li>
+      <li>Compositores del Clasicismo: Mozart, Haydn</li>
+      <li>Práctica del bajo continuo barroco</li>
+    </ul>
+  </div>
+
+  <div class="source-card">
+    <div class="source-title">💡 Influencias modernas mencionadas</div>
+    <ul style="font-size:.8rem;color:var(--text-dim);padding-left:18px;margin-top:6px">
+      <li>Adele, Ed Sheeran, Coldplay — Variantes del bajo Alberti en pop</li>
+      <li>Yes, Genesis, Dream Theater — Contrapunto en rock progresivo</li>
+    </ul>
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ Nota sobre atribución</strong>
+    El "bajo Alberti" no es estrictamente un patrón de Bach, sino una figura popularizada por Domenico Alberti y los compositores clásicos posteriores. Se incluye en este tutorial por su utilidad y su relación con los arpegios de Bach, como se explica en la sección 1.6.
+  </div>
+</section>
+
+<!-- ========== CRÉDITOS ========== -->
+
+<section id="creditos" class="section">
+  <div class="sec-header">
+    <div class="sec-icon" style="background:rgba(245,158,11,.1)">🏆</div>
+    <div><div class="sec-title">Créditos</div><div class="sec-sub">Información del tutorial</div></div>
+  </div>
+
+  <div class="svg-container">
+    <svg viewBox="0 0 800 450" width="100%"><use href="#svgPortada"/></svg>
+  </div>
+
+  <div class="credits-box">
+    <div style="font-size:.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Tutorial</div>
+    <div style="font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:16px">Del clave de Bach al piano moderno</div>
+    <div style="font-size:.8rem;color:var(--text-dim);margin-bottom:16px">Cómo usar los patrones de mano izquierda de Bach para componer baladas pop y rock progresivo</div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+    <div class="credits-name">Rubén Sbarsky</div>
+    <div class="credits-detail">📅 27/09/2026</div>
+    <div class="credits-detail">🕐 04:22:16</div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+    <div class="credits-detail" style="color:var(--accent);font-weight:600">📚 Tutorial solo con fines Educativos y Divulgación</div>
+    <div class="credits-latin">Fiat iustitia, ruat caelum.</div>
+  </div>
+</section>
+
+<!-- BACK TO TOP -->
+
+<button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- FOOTER -->
+
+<footer>
+  <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
+  <p>👨‍💻 Créditos: Rubén Sbarsky</p>
+  <p>📅 FECHA: 27/09/2026</p>
+  <p>Hora: 04:22:16</p>
+  <p style="color:var(--amber);font-style:italic;margin-top:8px">Fiat iustitia, ruat caelum.</p>
+</footer>
+
+<script>
+// ===== SPA NAVIGATION =====
+const navBtns = document.querySelectorAll('.nav-btn');
+const sections = document.querySelectorAll('.section');
+
+function showSection(id){
+  sections.forEach(s => s.classList.remove('active'));
+  navBtns.forEach(b => b.classList.remove('active'));
+  const target = document.getElementById(id);
+  if(target) target.classList.add('active');
+  const btn = document.querySelector(`.nav-btn[data-sec="${id}"]`);
+  if(btn) btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+navBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sec = btn.dataset.sec;
+    showSection(sec);
+    // Reset SVG animation on credits
+    if(sec === 'creditos'){
+      const svgs = document.querySelectorAll('#creditos svg');
+      svgs.forEach(svg => {
+        try {
+          const anims = svg.querySelectorAll('animate, animateTransform, animateMotion');
+          anims.forEach(a => {
+            if(a.beginElement) try{a.beginElement();}catch(e){}
+          });
+        } catch(e){}
+      });
+    }
+  });
+});
+
+// ===== PROGRESS BAR =====
+const progressBar = document.getElementById('progressBar');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  progressBar.style.width = pct + '%';
+  // Back to top
+  const bt = document.getElementById('backTop');
+  if(scrollTop > 400) bt.classList.add('show');
+  else bt.classList.remove('show');
+}, {passive:true});
+
+// ===== ACCORDION =====
+function toggleAcc(head){
+  const item = head.parentElement;
+  item.classList.toggle('open');
+}
+
+// ===== KEYBOARD NAV =====
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'ArrowRight'){
+    const active = document.querySelector('.nav-btn.active');
+    if(active){
+      const idx = Array.from(navBtns).indexOf(active);
+      if(idx < navBtns.length - 1) navBtns[idx+1].click();
+    }
+  } else if(e.key === 'ArrowLeft'){
+    const active = document.querySelector('.nav-btn.active');
+    if(active){
+      const idx = Array.from(navBtns).indexOf(active);
+      if(idx > 0) navBtns[idx-1].click();
+    }
+  }
+});
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  showSection('home');
+});
+</script>
+
+</body>
+</html>
