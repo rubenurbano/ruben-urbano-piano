@@ -368,6 +368,8 @@
     <button class="nav-btn" data-tab="busqueda">Búsqueda</button>
     <button class="nav-btn" data-tab="relaciones">Relaciones</button>
     <button class="nav-btn" data-tab="analisis">Análisis</button>
+    <button class="nav-btn" data-tab="pantallas">Pantallas</button>
+    <button class="nav-btn" data-tab="contexto">Contexto</button>
     <button class="nav-btn" data-tab="experimentos">Experimentos</button>
     <button class="nav-btn" data-tab="estudio">Estudio</button>
     <button class="nav-btn" data-tab="ejercicios">Ejercicios</button>
@@ -751,7 +753,13 @@
     Le dices al programa de qué acorde partes, a qué acorde quieres llegar y cuántos acordes
     quieres colocar en medio. La calculadora busca diferentes caminos armónicos posibles:
     diatónicos, dominantes secundarios, intercambio modal, cromáticos, disminuidos,
-    sustituciones de tritono, relaciones II–V, aproximaciones y más.
+    sustituciones de tritono, relaciones II–V, relaciones por terceras y más — y te deja
+    elegir el modo de búsqueda, filtrar categorías una a una y ordenar los resultados de
+    ocho formas distintas. También incluye pantallas propias para ver un acorde en detalle,
+    consultar la escala de referencia, visualizar el teclado, transportar y comparar dos
+    rutas cara a cara, más una capa opcional de <strong>Contexto Musical</strong>
+    (sección de la canción, espacio armónico, melodía, bajo e intención) para afinar
+    qué camino encaja mejor con lo que estás tocando.
   </p>
 
   <div class="quote">
@@ -759,16 +767,16 @@
   </div>
 
   <div class="metrics">
-    <div class="metric"><span class="v">45</span><span class="l">Secciones</span></div>
-    <div class="metric"><span class="v">7</span><span class="l">Niveles</span></div>
+    <div class="metric"><span class="v">71</span><span class="l">Secciones</span></div>
+    <div class="metric"><span class="v">12</span><span class="l">Pantallas</span></div>
     <div class="metric"><span class="v">∞</span><span class="l">Caminos</span></div>
     <div class="metric"><span class="v">A–G</span><span class="l">Notación</span></div>
     <div class="metric"><span class="v">I–VII</span><span class="l">Grados</span></div>
   </div>
 
   <div>
-    <span class="stamp">📅 24/09/2026</span>
-    <span class="stamp">⏱ 16:36:16</span>
+    <span class="stamp">📅 26/09/2026</span>
+    <span class="stamp">🔄 Actualizado para V005</span>
     <span class="stamp">👨‍💻 Rubén Sbarsky</span>
   </div>
 
@@ -832,6 +840,7 @@
       <li>acordes disminuidos;</li>
       <li>sustituciones de tritono;</li>
       <li>relaciones II–V;</li>
+      <li>relaciones por terceras (mediantes);</li>
       <li>aproximaciones cromáticas;</li>
       <li>otras relaciones armónicas.</li>
     </ul>
@@ -877,6 +886,24 @@ TARGET = G7</pre>
       <span class="lbl">Regla</span>
       2 acordes intermedios = exactamente 2 acordes entre el principio y el final.
     </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 46</span>
+    <h3>La tonalidad (KEY) se detecta sola</h3>
+    <p>No existe ningún botón ni campo para «fijar la tonalidad». La línea <code>KEY:</code> que aparece en pantalla se calcula automáticamente cada vez que cambias <strong>FROM</strong> o <strong>TARGET</strong>.</p>
+    <p>El motor prueba las 24 tonalidades posibles (12 notas × mayor/menor) y elige la que mejor explica los dos acordes como grados diatónicos de esa tonalidad, con una pequeña preferencia por que <strong>FROM</strong> sea la tónica y por las tonalidades mayores.</p>
+    <div class="callout warn">
+      <span class="lbl">Consecuencia práctica</span>
+      Si cambias FROM o TARGET, la tonalidad detectada puede cambiar — y con ella, los grados con los que se etiquetan los acordes. Revisa siempre la línea <code>KEY:</code> antes de interpretar un grado; no la des por supuesta de un intento anterior.
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 47</span>
+    <h3>Una capa opcional: Contexto Musical y Comparar</h3>
+    <p>Además de FROM, TARGET e INTERMEDIATE CHORDS, la calculadora tiene una capa completamente <strong>opcional</strong>: el <strong>Contexto Musical</strong> (sección de la canción, espacio armónico, nota de melodía, nota de bajo e intención). Si no la tocas, la búsqueda funciona exactamente igual que sin ella.</p>
+    <p>También existe una pantalla <strong>COMPARE</strong> para poner dos rutas encontradas una junto a otra y ver sus métricas objetivas sin que el programa declare ninguna «mejor». Ambas se explican con detalle en el capítulo <strong>08 · Contexto musical y COMPARE</strong>, más adelante.</p>
   </div>
 </section>
 
@@ -1032,6 +1059,49 @@ CHORD TYPE = 7
       </div>
     </div>
   </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 48</span>
+    <h3>Los botones QUICK ACTIONS</h3>
+    <p>Encima del teclado, mientras estás en la pantalla principal (SEARCH), hay cuatro botones siempre visibles:</p>
+    <div class="grid-3">
+      <div class="card" style="margin:0;"><span class="badge b-blue">EDIT FROM</span><p class="small">Abre el Constructor sobre el acorde de partida.</p></div>
+      <div class="card" style="margin:0;"><span class="badge b-green">EDIT TARGET</span><p class="small">Abre el Constructor sobre el acorde de llegada.</p></div>
+      <div class="card" style="margin:0;"><span class="badge b-amber">FIND PATHS</span><p class="small">Lanza la búsqueda, igual que <code>ENTER</code> sobre la fila de búsqueda.</p></div>
+      <div class="card" style="margin:0;"><span class="badge b-purple">MUSICAL CONTEXT</span><p class="small">Salta directamente a la pantalla de Contexto Musical (capítulo 08).</p></div>
+    </div>
+    <p class="small">Son un atajo: hacen exactamente lo mismo que navegar con las flechas hasta esa fila y pulsar <code>ENTER</code>, pero en un solo toque.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 49</span>
+    <h3>Un tercer método: escribir directamente con el teclado de la calculadora</h3>
+    <p>Sin abrir el Constructor, con el foco sobre la fila FROM o TARGET en la pantalla SEARCH, puedes teclear el acorde carácter a carácter usando las teclas físicas de la calculadora:</p>
+    <ul>
+      <li>las teclas de nota <code>C D E F G A B</code>;</li>
+      <li><code>#</code> y <code>b</code> para alteraciones;</li>
+      <li>los dígitos <code>0-9</code>;</li>
+      <li>los botones rápidos de tipo de acorde <code>maj7 · m7 · 7 · dim7 · m7b5</code>.</li>
+    </ul>
+    <p><code>DEL</code> borra el último carácter del campo; <code>CLEAR</code> lo vacía por completo.</p>
+    <div class="callout warn">
+      <span class="lbl">Ventaja y riesgo</span>
+      Es el método más rápido una vez que dominas la notación, pero a diferencia del Constructor, aquí <strong>no hay PREVIEW en vivo</strong> ni aviso de «acorde no reconocido» mientras escribes — solo lo sabrás al lanzar la búsqueda. Para empezar, usa el Constructor (Método A) o Direct Input (Método B).
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 50</span>
+    <h3>Cuando el acorde no se reconoce, y atajos de teclado físico</h3>
+    <p>Si en el campo <strong>DIRECT</strong> del Constructor escribes algo que no encaja con ningún acorde válido (por ejemplo una errata), el PREVIEW se sustituye por un aviso de <strong>«acorde no reconocido»</strong> y el botón de aceptar no hace nada hasta corregirlo.</p>
+    <p>Además de tocar los botones en pantalla, la calculadora responde a estas teclas del teclado físico: las flechas, <code>Enter</code>, <code>Backspace</code> (equivale a <code>DEL</code>), <code>Escape</code> o <code>Delete</code> (equivale a <code>CLEAR</code>), <code>Tab</code> (cicla el SEARCH MODE), las letras <code>A-G</code>, <code>#</code> y los dígitos.</p>
+    <p class="small">No todas las funciones tienen atajo físico: <code>WHY?</code>, <code>PIANO</code>, <code>SCALES</code>, <code>SORT</code>, <code>2ND</code>, <code>ALPHA</code>, <code>MENU</code>, <code>TRANS</code> y los botones rápidos de tipo de acorde solo se pueden pulsar en pantalla.</p>
+  </div>
+
+  <div class="callout info">
+    <span class="lbl">Todavía quedan más pantallas</span>
+    MENU, SCALES, SETTINGS, TRANSPOSE, PIANO, HELP, CONTEXT y COMPARE se explican con detalle en los capítulos <strong>07 · Otras pantallas</strong> y <strong>08 · Contexto musical y COMPARE</strong>, más adelante.
+  </div>
 </section>
 
 <!-- ============================================================ GRADOS -->
@@ -1169,6 +1239,79 @@ INTERMEDIATE CHORDS: 3</pre>
       <span class="node g">Cmaj7</span>
     </div>
     <p>Aquí empiezan a aparecer caminos mucho más interesantes.</p>
+    <div class="callout info">
+      <span class="lbl">Rango de INTERMEDIATE CHORDS</span>
+      Va de <code>0</code> a <code>8</code>. Con <code>0</code> intermedios el motor evalúa un único salto directo FROM → TARGET (tipo de ruta <code>DIRECT</code> en RESULTS); por eso <code>0</code> intermedios con FROM = TARGET no devuelve ninguna ruta — no hay ningún salto que dar.
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 51</span>
+    <h3>SEARCH MODE: nueve preajustes de búsqueda</h3>
+    <p>En la fila SEARCH MODE de la pantalla principal (se cicla con <code>LEFT</code>/<code>RIGHT</code>, o con la tecla física <code>Tab</code>) eliges qué categorías de relación puede usar el motor. Cada modo activa un conjunto fijo de categorías; el resto queda desactivado.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>SEARCH MODE</th><th>Categorías que activa</th></tr></thead>
+        <tbody>
+          <tr><td><code>DIATONIC</code></td><td>DIATONIC</td></tr>
+          <tr><td><code>OTHER SCALES</code></td><td>DIATONIC, OTHER</td></tr>
+          <tr><td><code>CHROMATIC</code></td><td>DIATONIC, CHROMATIC</td></tr>
+          <tr><td><code>MODAL</code></td><td>DIATONIC, MODAL</td></tr>
+          <tr><td><code>DOMINANTS</code></td><td>DIATONIC, DOMINANTS</td></tr>
+          <tr><td><code>DIMINISHED</code></td><td>DIATONIC, DIMINISHED</td></tr>
+          <tr><td><code>TRITONE SUB</code></td><td>DIATONIC, TRITONE</td></tr>
+          <tr><td><code>MIXED</code></td><td>DIATONIC, DOMINANTS, TRITONE, DIMINISHED, II-V, MODAL, THIRDS</td></tr>
+          <tr><td><code>ALL</code> (por defecto)</td><td>Las nueve categorías, incluida OTHER y CHROMATIC</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warn">
+      <span class="lbl">Detalle exacto</span>
+      Fíjate en <code>MIXED</code>: a pesar del nombre, <strong>no</strong> incluye OTHER SCALES ni CHROMATIC — solo <code>ALL</code> las incluye todas. Si buscas y no aparece el tipo de relación que esperabas, revisa primero el SEARCH MODE activo.
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 52</span>
+    <h3>SETTINGS / FILTERS: elegir categorías una por una</h3>
+    <p>Si ningún preajustado te sirve, entra en <code>MENU → 5</code> para abrir la pantalla SETTINGS. Ahí ves las nueve categorías como casillas independientes, navegables con <code>UP</code>/<code>DOWN</code> y que se activan o desactivan con el dígito correspondiente (<code>1</code>-<code>9</code>):</p>
+    <div>
+      <span class="chip">1 DIATONIC</span>
+      <span class="chip">2 DOMINANTS</span>
+      <span class="chip">3 TRITONE SUB</span>
+      <span class="chip">4 DIMINISHED</span>
+      <span class="chip">5 II-V</span>
+      <span class="chip">6 MODAL</span>
+      <span class="chip">7 OTHER SCALES</span>
+      <span class="chip">8 THIRD REL.</span>
+      <span class="chip">9 CHROMATIC</span>
+    </div>
+    <p>En cuanto tocas cualquiera de estas casillas a mano, el SEARCH MODE pasa a mostrar <code>CUSTOM</code> — es solo la etiqueta que indica «combinación hecha a mano», no un décimo preajuste con el que puedas ciclar.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 53</span>
+    <h3>SORT BY: ocho formas de ordenar los resultados</h3>
+    <p>La fila SORT BY (se cicla igual que MODE, con <code>LEFT</code>/<code>RIGHT</code> con el foco sobre ella) decide en qué orden aparecen las rutas encontradas. Por defecto: <code>COHERENCE</code>.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>SORT BY</th><th>Qué prioriza primero</th></tr></thead>
+        <tbody>
+          <tr><td><code>COHERENCE</code></td><td>Puntuación total de las relaciones de la ruta (el criterio por defecto).</td></tr>
+          <tr><td><code>VOICE LEADING</code></td><td>Mayor número de notas comunes entre acordes consecutivos.</td></tr>
+          <tr><td><code>CHROMATIC</code></td><td>Más pasos de categoría cromática, disminuida o de tritono.</td></tr>
+          <tr><td><code>FUNCTIONAL</code></td><td>Más pasos diatónicos, dominantes o II–V.</td></tr>
+          <tr><td><code>HARMONIC DISTANCE</code></td><td>Menor movimiento total de fundamental en semitonos (el bajo más «suave»).</td></tr>
+          <tr><td><code>CONTEXT MATCH</code></td><td>Mejor compatibilidad con el Contexto Musical (capítulo 08). Sin contexto activo no reordena nada.</td></tr>
+          <tr><td><code>DENSITY</code></td><td>Pensado para priorizar según el espacio armónico del contexto.</td></tr>
+          <tr><td><code>RANDOM</code></td><td>Mezcla aleatoria de las rutas encontradas.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warn">
+      <span class="lbl">Honestidad sobre DENSITY</span>
+      Con el número de acordes intermedios fijado por INTERMEDIATE CHORDS, todas las rutas de una misma búsqueda tienen la misma cantidad de acordes — así que hoy por hoy <code>DENSITY</code> no tiene nada que reordenar de forma distinta a <code>COHERENCE</code> y el orden que verás es prácticamente el mismo. No es un fallo que debas «solucionar»: es simplemente lo que hace esta opción en la versión actual del motor.
+    </div>
   </div>
 </section>
 
@@ -1260,6 +1403,10 @@ Cmaj7 = I</pre>
     <p>o:</p>
     <pre>D(ii) → G(V) → C(I)</pre>
     <div class="callout ex"><span class="lbl">Fundamental</span> Esta es una de las progresiones fundamentales de la armonía tonal.</div>
+    <div class="callout warn">
+      <span class="lbl">Regla exacta del motor</span>
+      El motor etiqueta un paso como <strong>II-V</strong> solo cuando el primer acorde es literalmente de tipo <code>m7</code> (no <code>m9</code>, ni <code>m11</code>, ni <code>m6</code>) y el segundo pertenece a la familia dominante, con la fundamental bajando una quinta justa (subiendo una cuarta). Si alguna de esas tres condiciones falla, el motor no lo clasifica como II-V aunque «suene» a uno.
+    </div>
   </div>
 
   <div class="card">
@@ -1352,6 +1499,13 @@ Dm7</pre>
     <p>La pregunta correcta es:</p>
     <div class="callout ex"><span class="lbl">Buena pregunta</span> «¿De dónde puede proceder este acorde y qué función cumple aquí?»</div>
   </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 54</span>
+    <h3>Una categoría de reserva: relación por terceras (THIRDS)</h3>
+    <p>Antes de asignar cualquier relación, el motor comprueba primero, en este orden, si es II-V, dominante secundario, sustitución de tritono, acorde disminuido de paso, diatónico, préstamo modal (intercambio modal) u «otra tonalidad». <strong>THIRDS</strong> solo entra en juego cuando un acorde no encaja en <em>ninguna</em> de esas categorías anteriores y, aun así, su fundamental está a distancia de tercera (mayor o menor) del acorde anterior.</p>
+    <p>En la práctica aparece muy pocas veces: casi cualquier acorde de tríada o séptima «normal» termina encajando como diatónico, préstamo modal o acorde de alguna otra tonalidad antes de llegar a esta categoría de reserva. Si la ves en pantalla WHY?, significa que el motor no ha encontrado ninguna explicación más específica — solo el movimiento de fundamental.</p>
+  </div>
 </section>
 
 <!-- ============================================================ ANÁLISIS -->
@@ -1404,12 +1558,192 @@ Dm7</pre>
       <div class="callout info" style="margin:0;"><span class="lbl">Pregunta 8</span> ¿Es diatónico o cromático?</div>
     </div>
   </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 55</span>
+    <h3>Moverte por RESULTS y por la pantalla WHY?</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Pantalla</th><th>Control</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td>RESULTS</td><td><code>UP</code>/<code>LEFT</code> · <code>DOWN</code>/<code>RIGHT</code></td><td>Cambia de ruta (de las hasta 60 encontradas).</td></tr>
+          <tr><td>RESULTS</td><td>dígito <code>0-9</code></td><td>Salta directamente a esa ruta (solo entre las 10 primeras).</td></tr>
+          <tr><td>RESULTS</td><td><code>ENTER</code></td><td>Entra en ANALYSIS (pantalla WHY?) sobre la ruta actual.</td></tr>
+          <tr><td>RESULTS</td><td><code>2ND</code> / <code>ALPHA</code></td><td>Marca la ruta actual como A o B para COMPARE (capítulo 08).</td></tr>
+          <tr><td>ANALYSIS (WHY?)</td><td><code>LEFT</code>/<code>RIGHT</code></td><td>Avanza o retrocede un paso dentro de la ruta.</td></tr>
+          <tr><td>ANALYSIS (WHY?)</td><td><code>UP</code>/<code>DOWN</code></td><td>Cambia de ruta sin salir de la pantalla.</td></tr>
+          <tr><td>ANALYSIS (WHY?)</td><td><code>ENTER</code></td><td>Abre la pantalla CHORD con el detalle del acorde de ese paso.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Desde CHORD (y desde PIANO) puedes seguir con <code>LEFT</code>/<code>RIGHT</code> para recorrer todos los acordes de la ruta, no solo los de un paso. Se explica en el próximo capítulo.</p>
+  </div>
+</section>
+
+<!-- ============================================================ PANTALLAS -->
+<section id="pantallas">
+  <div class="sec-head">
+    <h2>07 · Otras pantallas: CHORD INFO, SCALES, PIANO, TRANSPOSE, MENU y HELP</h2>
+    <p class="sub">Todo lo que hay más allá de SEARCH, RESULTS y WHY? — y cómo se llega a cada sitio.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 56</span>
+    <h3>Mapa de navegación</h3>
+    <p>La calculadora tiene doce pantallas en total. Solo algunas tienen una tecla directa en el teclado físico de la aplicación; el resto se alcanzan desde <code>MENU</code>.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Pantalla</th><th>Cómo se llega</th><th>CLEAR</th></tr></thead>
+        <tbody>
+          <tr><td>SEARCH</td><td>Tecla <code>SEARCH</code>, o <code>MENU → 1</code></td><td>Vacía el campo con el foco</td></tr>
+          <tr><td>MENU</td><td>Tecla <code>MENU</code></td><td>Vuelve a SEARCH</td></tr>
+          <tr><td>RESULTS</td><td><code>MENU → 2</code> (lanza la búsqueda si no hay resultados)</td><td>Vuelve a SEARCH</td></tr>
+          <tr><td>ANALYSIS (WHY?)</td><td>Tecla <code>WHY?</code>, <code>ENTER</code> desde RESULTS, o <code>MENU → 3</code></td><td>Vuelve a SEARCH</td></tr>
+          <tr><td>CHORD</td><td><code>ENTER</code> desde ANALYSIS o desde PIANO</td><td>Vuelve a ANALYSIS</td></tr>
+          <tr><td>SCALES</td><td>Tecla <code>SCALES</code>, o <code>MENU → 4</code></td><td>Vuelve a SEARCH</td></tr>
+          <tr><td>SETTINGS</td><td><code>MENU → 5</code> (sin tecla directa)</td><td>Vuelve a SEARCH</td></tr>
+          <tr><td>TRANSPOSE</td><td>Tecla <code>TRANS</code>, o <code>MENU → 6</code></td><td>Cancela el desplazamiento y vuelve a SEARCH</td></tr>
+          <tr><td>PIANO</td><td>Tecla <code>PIANO</code>, <code>ENTER</code> desde CHORD, o <code>MENU → 7</code></td><td>Vuelve a ANALYSIS</td></tr>
+          <tr><td>HELP</td><td><code>MENU → 8</code> (sin tecla directa)</td><td>Vuelve a MENU</td></tr>
+          <tr><td>CONTEXT</td><td>Botón MUSICAL CONTEXT, o <code>MENU → 9</code> (sin tecla directa)</td><td>Resetea todo el contexto</td></tr>
+          <tr><td>COMPARE</td><td><code>MENU → 0</code> (sin tecla directa)</td><td>Vuelve a MENU</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warn">
+      <span class="lbl">Un atajo de MENU que sorprende</span>
+      Si entras en RESULTS o en ANALYSIS desde MENU y todavía no habías pulsado FIND PATHS, la calculadora lanza la búsqueda automáticamente por ti con los valores que tengas puestos.
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 57</span>
+    <h3>CHORD: el detalle de un solo acorde</h3>
+    <p>Muestra, para el acorde seleccionado: CHORD (símbolo), NOTE, DEGREE, DISPLAY, FUNCTION, KEY (tonalidad de referencia), TYPE (nombre completo del tipo de acorde), TONES (notas), PITCH CLASSES (números 0-11) y hasta cinco RELATED SCALES — escalas/modos que contienen todas las notas del acorde.</p>
+    <p><code>LEFT</code>/<code>RIGHT</code> recorren <strong>todos</strong> los acordes de la ruta actual, uno a uno — no los pasos de la relación, los acordes en sí.</p>
+    <div class="callout warn">
+      <span class="lbl">Un detalle que puede despistar</span>
+      Si entras en CHORD pulsando <code>ENTER</code> desde un paso concreto de ANALYSIS, la pantalla muestra el <strong>primer</strong> acorde de ese paso (el de origen), no el de llegada. Si querías el de llegada, pulsa <code>RIGHT</code> una vez.
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 58</span>
+    <h3>SCALES: la escala de referencia</h3>
+    <p>Muestra los siete acordes diatónicos de la tonalidad detectada (nota, acorde y grado), la misma tabla que ya viste en el capítulo 03 para C Major. Se accede con la tecla <code>SCALES</code> o con <code>MENU → 4</code>.</p>
+    <div class="callout info">
+      <span class="lbl">Aviso que da la propia aplicación</span>
+      Que un acorde use notas de una escala no significa que esa sea automáticamente la mejor escala para improvisar sobre él — son dos preguntas distintas. SCALES responde solo a la primera.
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 59</span>
+    <h3>PIANO: un diagrama visual, sin sonido</h3>
+    <p>Dibuja dos octavas de teclado y resalta las teclas que forman parte del acorde seleccionado, marcando la fundamental de forma distinta al resto. Se accede con la tecla <code>PIANO</code>, con <code>ENTER</code> desde CHORD, o con <code>MENU → 7</code>. <code>LEFT</code>/<code>RIGHT</code> recorren los acordes de la ruta, igual que en CHORD.</p>
+    <div class="callout err">
+      <span class="lbl">Importante: no hay audio</span>
+      HARMONIC PATH FINDER no reproduce ningún sonido en ninguna pantalla. PIANO es un diagrama puramente visual. Para escuchar de verdad el acorde, toca esas mismas teclas en tu propio piano o teclado mientras miras el diagrama en pantalla.
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge b-red">Sección 60</span>
+    <h3>TRANSPOSE: la misma ruta, otra tonalidad</h3>
+    <p>Se accede con la tecla <code>TRANS</code> o con <code>MENU → 6</code>. Muestra un desplazamiento en semitonos (de -12 a +12) y una vista previa de cómo quedarían FROM y TARGET transportados. <code>LEFT</code>/<code>DOWN</code> bajan un semitono; <code>RIGHT</code>/<code>UP</code> suben uno.</p>
+    <ul>
+      <li><code>ENTER</code> aplica el transporte: reescribe FROM y TARGET, borra los resultados anteriores (hay que volver a buscar) y el desplazamiento vuelve a 0.</li>
+      <li><code>CLEAR</code> cancela: pone el desplazamiento de nuevo en 0 y vuelve a SEARCH sin tocar FROM ni TARGET.</li>
+    </ul>
+    <p class="small">Útil para practicar la misma forma de ruta (por ejemplo un ii–V–I) en varias tonalidades sin tener que reescribir los acordes a mano.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 61</span>
+    <h3>MENU y HELP</h3>
+    <p>MENU es la lista numerada 1-9 y 0 que resume FROM, TARGET, INTERMEDIATE CHORDS, SEARCH MODE, número de resultados y si hay Contexto Musical activo, con acceso directo a cualquier pantalla por su número (ver la tabla de la Sección 56).</p>
+    <p>HELP (<code>MENU → 8</code>) es la ayuda breve integrada en la propia aplicación: cuatro notas rápidas sobre cómo editar FROM/TARGET, qué es INTERMEDIATE CHORDS, el botón FIND PATHS y la existencia de MUSICAL CONTEXT.</p>
+    <div class="callout info">
+      <span class="lbl">Este tutorial va más allá de HELP</span>
+      HELP es un recordatorio para cuando ya conoces la aplicación, no una guía de aprendizaje — no menciona SETTINGS, TRANSPOSE, SCALES, COMPARE ni el detalle de SEARCH MODE/SORT BY. Para eso está este tutorial completo.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CONTEXTO -->
+<section id="contexto">
+  <div class="sec-head">
+    <h2>08 · Contexto musical y COMPARE</h2>
+    <p class="sub">La capa opcional para afinar qué ruta encaja mejor con la canción — y cómo poner dos rutas cara a cara.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 62</span>
+    <h3>¿Qué es el Contexto Musical?</h3>
+    <p>Es un conjunto de datos opcionales sobre la canción y la interpretación que, una vez rellenados, hacen que RESULTS y ANALYSIS muestren información extra (densidad, compatibilidad de melodía y bajo, ajuste de contexto) y que <code>SORT BY → CONTEXT MATCH</code> y la INTENTION tengan algo que hacer.</p>
+    <div class="callout info">
+      <span class="lbl">Regla de oro</span>
+      Si dejas todos los campos en NONE, la búsqueda se comporta exactamente igual que si el Contexto Musical no existiera. No es obligatorio usarlo.
+    </div>
+    <p>Se abre con el botón MUSICAL CONTEXT (capítulo 02) o con <code>MENU → 9</code>. Dentro, <code>UP</code>/<code>DOWN</code> cambian de campo y <code>LEFT</code>/<code>RIGHT</code> — y también <code>ENTER</code>, que aquí <strong>no confirma y sale</strong>, sino que avanza el valor igual que <code>RIGHT</code> — ciclan las opciones de cada campo.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-green">Sección 63</span>
+    <h3>Los siete campos</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Campo</th><th>Opciones</th><th>Para qué sirve</th></tr></thead>
+        <tbody>
+          <tr><td>SECTION</td><td>NONE, INTRO, VERSE, PRE-CHORUS, CHORUS, BRIDGE, INSTRUMENTAL, TURNAROUND, OUTRO, CUSTOM</td><td>Etiqueta descriptiva de en qué parte de la canción estás. Con CUSTOM aparece un campo de texto libre (máx. 24 caracteres) que se escribe con las mismas teclas de nota/dígitos.</td></tr>
+          <tr><td>HARMONIC SPACE</td><td>NONE, INSTANT, 1 BEAT, 2 BEATS, 1 BAR, 2 BARS, 4 BARS, FREE</td><td>Cuánto tiempo musical tienes para la ruta. Se usa solo para calcular la DENSITY (ver más abajo).</td></tr>
+          <tr><td>MELODY</td><td>NONE o cualquier nota A-G con # / b</td><td>La nota de melodía que quieres que encaje con algún acorde de la ruta.</td></tr>
+          <tr><td>MELODY ROLE</td><td>NONE, CHORD TONE, EXTENSION, SUSPENSION, PASSING, UNKNOWN</td><td>Qué relación quieres que tenga esa nota con el acorde: nota del acorde, extensión, suspensión, de paso...</td></tr>
+          <tr><td>MELODY POS</td><td>ROUTE, FROM, TARGET (por defecto TARGET)</td><td>En qué acorde(s) de la ruta debe cumplirse eso.</td></tr>
+          <tr><td>BASS</td><td>NONE o cualquier nota A-G con # / b</td><td>Igual que MELODY pero para la nota de bajo.</td></tr>
+          <tr><td>BASS POS</td><td>ROUTE, FROM, TARGET (por defecto TARGET)</td><td>Igual que MELODY POS pero para el bajo.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small">Hay un octavo campo, INTENTION, que se explica aparte por lo que hace con el orden de resultados.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-purple">Sección 64</span>
+    <h3>HARMONIC SPACE no es una regla, es una etiqueta para calcular DENSITY</h3>
+    <p>El motor no impone ningún «número correcto de acordes por compás». HARMONIC SPACE solo le da al programa una duración aproximada en tiempos (INSTANT = medio tiempo, 1 BEAT = 1, 2 BEATS = 2, 1 BAR = 4, 2 BARS = 8, 4 BARS = 16) para dividir entre ella el número de cambios de acorde de la ruta y mostrarte una <strong>DENSITY</strong> orientativa en RESULTS y ANALYSIS. Con NONE o FREE no hay ningún número que calcular y se muestra N/A.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-amber">Sección 65</span>
+    <h3>INTENTION: reordena resultados, no inventa una puntuación nueva</h3>
+    <p>Cuando pones INTENTION en algo distinto de NONE (SMOOTH, INCREASE TENSION, RELEASE TENSION, SURPRISE, CHROMATIC COLOR, STRONG ARRIVAL, KEEP MELODY, STRONG BASS MOTION, EXPERIMENTAL), el motor reordena los resultados <strong>después</strong> de la búsqueda y del SORT BY normal.</p>
+    <p>No crea ninguna métrica nueva: cada intención reutiliza una de las métricas objetivas que ya conoces de SORT BY (notas comunes, aciertos de melodía, distancia armónica, pasos cromáticos, pasos funcionales) — salvo SURPRISE y EXPERIMENTAL, que simplemente barajan.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-red">Sección 66</span>
+    <h3>CONTEXT MATCH: compatibilidad, no una nota de calidad</h3>
+    <p>Es el porcentaje de criterios de contexto que la ruta cumple (aciertos de melodía + aciertos de bajo, sobre el total de comprobaciones activas), mostrado como N/A, LOW, PARTIAL, HIGH o FULL. No significa que una ruta con MATCH más alto sea «mejor música» — solo que encaja más con lo que pediste en MELODY/BASS.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-blue">Sección 67</span>
+    <h3>COMPARE: dos rutas, una junto a otra</h3>
+    <p>Desde RESULTS, con una ruta seleccionada, pulsa <code>2ND</code> para marcarla como <strong>A</strong> y navega a otra ruta y pulsa <code>ALPHA</code> para marcarla como <strong>B</strong>. Luego entra en COMPARE con <code>MENU → 0</code>.</p>
+    <p>Verás, para cada ruta: la cadena de acordes, número de pasos cromáticos, notas comunes totales, pasos funcionales, distancia armónica, densidad y — si hay MELODY activa — el ajuste de melodía y el CONTEXT MATCH.</p>
+    <div class="callout ex">
+      <span class="lbl">Filosofía</span>
+      COMPARE no declara ninguna ruta «mejor». Te da las mismas métricas objetivas para las dos, una al lado de la otra, y la decisión de qué historia armónica prefieres es tuya.
+    </div>
+    <p class="small">Si todavía no has marcado A y B, COMPARE se limita a recordarte cómo hacerlo.</p>
+  </div>
 </section>
 
 <!-- ============================================================ EXPERIMENTOS -->
 <section id="experimentos">
   <div class="sec-head">
-    <h2>07 · Experimentos guiados</h2>
+    <h2>09 · Experimentos guiados</h2>
     <p class="sub">Buscar muchos caminos, mismo destino con distintos orígenes, mismo origen con distintos destinos, cromatismo, canciones y turnarounds.</p>
   </div>
 
@@ -1499,12 +1833,42 @@ Dm7 → G7</pre>
       <p>Después podemos comparar diferentes caminos que llegan al mismo objetivo.</p>
     </div>
   </div>
+
+  <div class="acc">
+    <div class="acc-h"><span><span class="badge b-red">Sección 68</span> &nbsp;Experimento: la misma búsqueda, nueve filtros distintos</span><span class="arrow">▶</span></div>
+    <div class="acc-b">
+      <p>Deja fija esta búsqueda:</p>
+      <pre>FROM: Cmaj7
+TARGET: Cmaj7
+INTERMEDIATE CHORDS: 3</pre>
+      <p>Y ve cambiando solo el SEARCH MODE: prueba <code>DIATONIC</code>, luego <code>DOMINANTS</code>, luego <code>MODAL</code>, luego <code>MIXED</code> y por último <code>ALL</code>. Anota cuántos resultados da cada uno y qué tipo de acordes intermedios aparecen.</p>
+      <p>Después entra en SETTINGS (<code>MENU → 5</code>) y activa a mano solo DIATONIC + THIRD REL. — una combinación que ningún preajuste ofrece directamente. Observa que SEARCH MODE pasa a mostrar CUSTOM.</p>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-h"><span><span class="badge b-purple">Sección 69</span> &nbsp;Experimento: pedirle una melodía concreta</span><span class="arrow">▶</span></div>
+    <div class="acc-b">
+      <p>Con la misma búsqueda de siempre:</p>
+      <pre>FROM: Cmaj7
+TARGET: G7
+INTERMEDIATE CHORDS: 1</pre>
+      <p>Abre MUSICAL CONTEXT y pon MELODY = <code>E</code>, MELODY ROLE = <code>CHORD TONE</code> y MELODY POS = <code>TARGET</code>. Busca. Cambia SORT BY a <code>CONTEXT MATCH</code> y compara el orden con el que tenías antes en COHERENCE. Después prueba MELODY ROLE = <code>EXTENSION</code> y observa cómo cambia qué rutas suben al principio.</p>
+    </div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-h"><span><span class="badge b-blue">Sección 70</span> &nbsp;Experimento: comparar dos historias armónicas</span><span class="arrow">▶</span></div>
+    <div class="acc-b">
+      <p>Busca <code>Dm7 → Cmaj7</code> con 2 acordes intermedios y SEARCH MODE = <code>ALL</code>. En RESULTS, marca como <strong>A</strong> (tecla <code>2ND</code>) la ruta más diatónica que encuentres, y como <strong>B</strong> (tecla <code>ALPHA</code>) la más cromática. Entra en COMPARE (<code>MENU → 0</code>) y compara pasos cromáticos, notas comunes y distancia armónica de las dos. Decide tú cuál prefieres para el contexto musical que tengas en mente — el programa no lo va a decidir por ti.</p>
+    </div>
+  </div>
 </section>
 
 <!-- ============================================================ ESTUDIO -->
 <section id="estudio">
   <div class="sec-head">
-    <h2>08 · Método de estudio</h2>
+    <h2>10 · Método de estudio</h2>
     <p class="sub">Usar la calculadora como profesor, tocar al piano, transformar rutas, los 7 niveles y la regla de oro.</p>
   </div>
 
@@ -1529,6 +1893,10 @@ Dm7 → G7</pre>
     <div class="step"><div class="n">5</div><div class="body">Escucha dónde aparece la tensión.</div></div>
     <div class="step"><div class="n">6</div><div class="body">Toca el acorde de destino.</div></div>
     <p>Después repite la progresión. Finalmente intenta tocarla en otra tonalidad.</p>
+    <div class="callout err">
+      <span class="lbl">Recuerda</span>
+      «Toca» y «escucha» aquí significan en tu propio piano o teclado — la aplicación no reproduce sonido, solo te muestra qué notas tocar (pantalla PIANO, capítulo 07). Y para «tocarla en otra tonalidad» sin reescribir los acordes a mano, usa TRANSPOSE (capítulo 07).
+    </div>
   </div>
 
   <div class="card">
@@ -1939,12 +2307,84 @@ G7:    G(7), B(11), D(2), F(5).</pre>
     </div>
   </div>
 
+  <!-- EJERCICIO 11 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-blue">Uso de la interfaz</span>
+      <span class="badge b-green">Fácil</span>
+    </div>
+    <h3>Ejercicio 11 · SETTINGS y el modo CUSTOM</h3>
+    <p><strong>Enunciado.</strong> Entras en SETTINGS (<code>MENU → 5</code>) y activas a mano solo las casillas <code>1 DIATONIC</code> y <code>5 II-V</code>, dejando el resto desactivadas. ¿Qué pasa con el valor de SEARCH MODE en la pantalla principal, y qué categorías puede usar ahora la búsqueda?</p>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p>En cuanto tocas cualquier casilla de SETTINGS a mano, <code>state.mode</code> pasa a <code>'CUSTOM'</code> — ese es el texto que verás en la fila SEARCH MODE. Como <code>CUSTOM</code> no forma parte de la lista de nueve preajustes, no puedes «ciclar» hasta él con <code>LEFT</code>/<code>RIGHT</code>: solo se llega tocando SETTINGS. Las categorías activas para la búsqueda son exactamente las que dejaste marcadas: <strong>DIATONIC</strong> y <strong>II-V</strong>, ninguna más.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          SEARCH MODE es solo una etiqueta sobre el conjunto de filtros activos. Los nueve preajustes escriben una combinación concreta en <code>state.filters</code>; tocar SETTINGS a mano rompe esa correspondencia con cualquier preajuste, así que la etiqueta pasa a <code>CUSTOM</code> para reflejar que ya no coincide con ninguno de ellos.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Pensar que hay que volver a poner SEARCH MODE en <code>ALL</code> para que SETTINGS «funcione». Es al revés: SETTINGS manda mientras SEARCH MODE muestre CUSTOM; para volver a un preajuste hay que ciclar MODE, lo que reescribe los filtros de SETTINGS.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 12 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-purple">Análisis escrito</span>
+      <span class="badge b-amber">Media</span>
+    </div>
+    <h3>Ejercicio 12 · Calcular la DENSITY de una ruta</h3>
+    <p><strong>Enunciado.</strong> Encuentras una ruta con 2 acordes intermedios (4 acordes en total: FROM + 2 + TARGET) y tienes MUSICAL CONTEXT activo con HARMONIC SPACE = <code>1 BAR</code>. ¿Qué DENSITY numérica y qué etiqueta muestran RESULTS y ANALYSIS?</p>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p>El motor calcula <code>density = cambios de acorde / unidades del HARMONIC SPACE</code>. Con 4 acordes en la ruta hay 3 cambios (FROM→1, 1→2, 2→TARGET). <code>1 BAR</code> equivale a 4 tiempos. <code>density = 3 / 4 = 0.75</code>. Como <code>0.75</code> está entre <code>0.5</code> y <code>1</code>, la etiqueta es <strong>MED-HIGH</strong> (descripción interna: MODERATE).</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          HARMONIC SPACE no impone ninguna regla musical; solo fija un número de tiempos de referencia (INSTANT=0.5, 1 BEAT=1, 2 BEATS=2, 1 BAR=4, 2 BARS=8, 4 BARS=16) para poder expresar «cuántos cambios de acorde por tiempo» como un número comparable entre rutas.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Contar 4 «cambios» en vez de 3 — el número de cambios es siempre (acordes de la ruta − 1), no el número de acordes. También es un error suponer que HARMONIC SPACE = NONE o FREE dan un número: en esos dos casos DENSITY muestra N/A.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 13 -->
+  <div class="card">
+    <div class="ex-badges">
+      <span class="badge b-red">Detección de error</span>
+      <span class="badge b-amber">Media</span>
+    </div>
+    <h3>Ejercicio 13 · Usar COMPARE correctamente</h3>
+    <p><strong>Enunciado.</strong> Un alumno busca <code>Dm7 → Cmaj7</code>, va directamente a <code>MENU → 0</code> (COMPARE) sin pasar antes por RESULTS, y se queja de que «la pantalla no compara nada, solo da instrucciones». ¿Qué ha hecho mal, y cuáles son los dos pasos que le faltan?</p>
+    <div class="acc exercise-acc">
+      <div class="acc-h"><span>Ver solución paso a paso</span><span class="arrow">▶</span></div>
+      <div class="acc-b">
+        <p>COMPARE solo puede mostrar algo cuando existen una ruta marcada como <strong>A</strong> y otra marcada como <strong>B</strong>. Esas marcas se hacen exclusivamente desde RESULTS, con la ruta deseada seleccionada: <code>2ND</code> para marcarla A, <code>ALPHA</code> para marcarla B (normalmente sobre dos rutas distintas). Como el alumno saltó directamente a COMPARE sin marcar nada, <code>state.compareA</code> y <code>state.compareB</code> siguen en su valor inicial (-1) y la pantalla se limita a recordar cómo marcarlas.</p>
+        <div class="callout info">
+          <span class="lbl">Por qué (Explicación causal)</span>
+          COMPARE no vuelve a ejecutar ninguna búsqueda ni elige rutas por su cuenta: solo lee los índices que el usuario marcó previamente en RESULTS. Es una pantalla de lectura, no de búsqueda.
+        </div>
+        <div class="callout warn">
+          <span class="lbl">Error típico a evitar</span>
+          Marcar la misma ruta como A y como B (compararla consigo misma) o esperar que COMPARE declare una ruta «mejor»: solo expone las métricas objetivas de cada una, una junto a la otra.
+        </div>
+      </div>
+    </div>
+  </div>
+
 </section>
 
 <!-- ============================================================ SÍNTESIS -->
 <section id="sintesis">
   <div class="sec-head">
-    <h2>09 · Reto final y síntesis</h2>
+    <h2>11 · Reto final y síntesis</h2>
     <p class="sub">Checklist de aprendizaje y la idea final del tutorial.</p>
   </div>
 
@@ -1973,6 +2413,20 @@ TARGET: Cmaj7</pre>
       <span class="chip g">Bb Major</span>
       <span class="chip g">Ab Major</span>
     </div>
+    <p class="small">Puedes trasladarlas a mano o usar TRANSPOSE (capítulo 07) para no reescribir los acordes.</p>
+  </div>
+
+  <div class="card">
+    <span class="badge b-red">Sección 71</span>
+    <h3>Reto avanzado (opcional)</h3>
+    <p>Si ya dominas lo anterior, prueba esto:</p>
+    <ol>
+      <li>Busca <code>Dm7 → Cmaj7</code> con 2 intermedios y SEARCH MODE en <code>ALL</code>.</li>
+      <li>Ve a SETTINGS y desactiva todo salvo DIATONIC y MODAL.</li>
+      <li>Activa MUSICAL CONTEXT con una MELODY y un BASS a tu elección, e INTENTION = <code>SMOOTH</code>.</li>
+      <li>Marca tu ruta favorita como A y otra distinta como B, y compáralas en COMPARE.</li>
+    </ol>
+    <p class="small">Si completas los cuatro pasos, ya has tocado las doce pantallas de la aplicación.</p>
   </div>
 
   <div class="card">
@@ -2000,6 +2454,13 @@ TARGET: Cmaj7</pre>
       <div>✓ entender la idea de sustitución de tritono;</div>
       <div>✓ analizar una ruta armónica;</div>
       <div>✓ llevar las rutas al piano;</div>
+      <div>✓ utilizar SEARCH MODE y SETTINGS/FILTERS para acotar la búsqueda;</div>
+      <div>✓ elegir un criterio de SORT BY adecuado;</div>
+      <div>✓ consultar CHORD, SCALES y PIANO (sabiendo que PIANO no suena);</div>
+      <div>✓ usar TRANSPOSE para cambiar de tonalidad sin reescribir;</div>
+      <div>✓ moverte por MENU y saber cuándo hace falta MENU en vez de una tecla directa;</div>
+      <div>✓ activar Contexto Musical y entender qué es DENSITY y CONTEXT MATCH;</div>
+      <div>✓ comparar dos rutas con COMPARE sin esperar un «ganador»;</div>
       <div>✓ utilizar la aplicación como herramienta de estudio de armonía.</div>
     </div>
   </div>
@@ -2061,9 +2522,17 @@ TARGET: Cmaj7</pre>
     </div>
   </div>
 
+  <div class="src-item">
+    <div class="ic">🔧</div>
+    <div class="bd">
+      <h4>HARMONIC_PATH_FINDER_V005.html (código fuente, actualización 26/09/2026)</h4>
+      <p>Esta revisión del tutorial se elaboró leyendo directamente el HTML/CSS/JavaScript de la calculadora, no solo su interfaz: cada pantalla, tecla, filtro y fórmula descritos aquí se comprobó ejecutando el propio motor. Se detectaron y corrigieron dos errores puntuales antes de documentar el comportamiento: (1) <code>diatonicChords()</code> apilaba grados consecutivos de la escala en vez de terceras, por lo que ningún acorde salía diatónico salvo I y IV; (2) la comprobación de rutas sin acordes repetidos impedía cualquier búsqueda con FROM = TARGET. Ambos se corrigieron con el cambio mínimo necesario, dejando el resto del motor intacto, y el resto de este tutorial describe la aplicación ya corregida.</p>
+    </div>
+  </div>
+
   <div class="callout info">
     <span class="lbl">Nota</span>
-    Este tutorial no incorpora fuentes externas ni enlaces de Internet. Todo el contenido proviene de los documentos fuente proporcionados por el usuario.
+    Este tutorial no incorpora fuentes externas ni enlaces de Internet. Todo el contenido proviene de los documentos fuente proporcionados por el usuario y del análisis directo del código de la calculadora.
   </div>
 </section>
 
@@ -2082,8 +2551,8 @@ TARGET: Cmaj7</pre>
     <span class="badge b-blue">Tutorial</span>
     <h3 style="margin-top:10px; color:#fff;">HARMONIC PATH FINDER — Tutorial Completo</h3>
     <div class="name">Rubén Sbarsky</div>
-    <p class="meta">📅 Fecha: 24/09/2026</p>
-    <p class="meta">⏱ Hora: 16:36:16</p>
+    <p class="meta">📅 Fecha original: 24/09/2026</p>
+    <p class="meta">🔄 Actualizado para V005: 26/09/2026</p>
     <p class="meta" style="margin-top:12px;">📚 Tutorial solo con fines Educativos y Divulgación</p>
     <p class="latin">Fiat iustitia, ruat caelum.</p>
   </div>
@@ -2094,8 +2563,7 @@ TARGET: Cmaj7</pre>
 <footer>
   <p>📚 Tutorial solo con fines Educativos y Divulgación</p>
   <p>👨‍💻 Créditos: Rubén Sbarsky</p>
-  <p>📅 FECHA: 24/09/2026</p>
-  <p>Hora: 16:36:16</p>
+  <p>📅 Original: 24/09/2026 · Actualizado para V005: 26/09/2026</p>
   <p class="latin">Fiat iustitia, ruat caelum.</p>
 </footer>
 
