@@ -1,0 +1,2054 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Mano Izquierda de Beethoven — Tutorial Interactivo</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  overflow-x:hidden;
+  padding-top:64px;
+}
+/* PROGRESS BAR */
+.progress-bar{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));
+  z-index:9999;transition:width .1s linear;
+  box-shadow:0 0 8px var(--accent);
+}
+/* NAVBAR */
+.navbar{
+  position:fixed;top:3px;left:0;right:0;height:61px;
+  background:rgba(10,14,26,.95);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px);
+  z-index:9998;
+}
+.nav-inner{
+  display:flex;align-items:center;gap:12px;
+  padding:0 16px;height:100%;max-width:1400px;margin:0 auto;
+}
+.nav-brand{
+  font-weight:700;color:var(--accent);font-size:.95rem;white-space:nowrap;
+  display:flex;align-items:center;gap:6px;
+}
+.nav-links{
+  display:flex;gap:4px;overflow-x:auto;flex:1;
+  scrollbar-width:none;padding:4px 0;
+}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link{
+  background:transparent;border:1px solid transparent;
+  color:var(--muted);padding:7px 14px;border-radius:8px;
+  cursor:pointer;font-family:inherit;font-size:.85rem;font-weight:600;
+  white-space:nowrap;transition:all .2s;
+}
+.nav-link:hover{color:var(--text);background:rgba(0,212,255,.08)}
+.nav-link.active{
+  color:var(--accent);background:rgba(0,212,255,.12);
+  border-color:rgba(0,212,255,.35);
+}
+/* SECTIONS */
+.section{display:none;padding:24px 16px 60px;max-width:1200px;margin:0 auto;animation:fadeIn .4s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* HERO SVG */
+.hero-svg{
+  width:100%;max-width:1000px;margin:0 auto 24px;
+  border-radius:12px;overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(0,212,255,.15),0 0 80px rgba(168,85,247,.08);
+  background:#070b14;
+}
+.hero-svg svg{width:100%;height:auto;display:block}
+/* HOME */
+.badge{
+  display:inline-block;background:rgba(0,212,255,.12);
+  color:var(--accent);border:1px solid rgba(0,212,255,.35);
+  padding:6px 14px;border-radius:99px;font-size:.75rem;
+  font-weight:700;letter-spacing:.1em;margin-bottom:14px;
+}
+h1{
+  font-size:clamp(1.6rem,4.5vw,2.8rem);
+  background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  line-height:1.2;margin-bottom:12px;
+}
+.subtitle{font-size:clamp(.95rem,2vw,1.15rem);color:var(--muted);margin-bottom:16px}
+.description{color:var(--text);margin-bottom:20px;font-size:.95rem}
+blockquote{
+  border-left:3px solid var(--accent);padding:14px 18px;
+  background:rgba(0,212,255,.05);border-radius:0 8px 8px 0;
+  font-style:italic;color:var(--accent);margin:20px 0;
+  font-size:clamp(.9rem,2vw,1rem);
+}
+.metrics{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:12px;margin:20px 0;
+}
+.metric{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:14px;text-align:center;
+}
+.metric .num{font-size:1.6rem;font-weight:800;color:var(--accent)}
+.metric .lbl{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.date-time{
+  display:inline-block;margin-top:12px;color:var(--muted);
+  font-size:.8rem;font-family:monospace;
+  border:1px dashed var(--border);padding:6px 12px;border-radius:6px;
+}
+/* MODULE HEADERS */
+.mod-header{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:20px;padding-bottom:14px;
+  border-bottom:2px solid var(--border);
+}
+.mod-num{
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  color:#070b14;font-weight:800;width:44px;height:44px;
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.mod-header h2{font-size:clamp(1.15rem,3vw,1.6rem);color:var(--text)}
+.mod-header .mod-sub{color:var(--muted);font-size:.8rem;margin-top:2px}
+/* CARDS */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:18px;margin-bottom:16px;
+  transition:border-color .2s,transform .2s;
+}
+.card:hover{border-color:rgba(0,212,255,.4)}
+.card-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:1.05rem;font-weight:700;color:var(--accent);
+  margin-bottom:12px;
+}
+.pattern-card{border-left:3px solid var(--purple)}
+.pattern-num{
+  background:rgba(168,85,247,.15);color:var(--purple);
+  border:1px solid rgba(168,85,247,.4);
+  padding:3px 10px;border-radius:6px;font-size:.75rem;font-weight:700;
+}
+.pattern-title{color:var(--text);font-size:1rem;font-weight:700}
+/* CALLOUTS */
+.callout{
+  border-radius:8px;padding:12px 14px;margin:10px 0;
+  border-left:4px solid;font-size:.9rem;
+}
+.callout .co-title{
+  font-weight:700;font-size:.72rem;letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px;
+}
+.callout-info{background:rgba(0,212,255,.07);border-color:var(--accent)}
+.callout-info .co-title{color:var(--accent)}
+.callout-example{background:rgba(34,197,94,.07);border-color:var(--green)}
+.callout-example .co-title{color:var(--green)}
+.callout-warn{background:rgba(245,158,11,.07);border-color:var(--amber)}
+.callout-warn .co-title{color:var(--amber)}
+.callout-error{background:rgba(239,68,68,.07);border-color:var(--red)}
+.callout-error .co-title{color:var(--red)}
+.callout p{margin:4px 0}
+/* LISTS */
+.steps{list-style:none;counter-reset:s;margin:10px 0}
+.steps li{
+  counter-increment:s;position:relative;
+  padding:8px 0 8px 40px;font-size:.9rem;
+  border-bottom:1px dashed rgba(30,58,95,.5);
+}
+.steps li:last-child{border-bottom:none}
+.steps li::before{
+  content:counter(s);position:absolute;left:0;top:8px;
+  width:26px;height:26px;border-radius:50%;
+  background:rgba(0,212,255,.15);color:var(--accent);
+  border:1px solid rgba(0,212,255,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.75rem;
+}
+/* CODE / NOTES */
+.note{
+  display:inline-block;background:rgba(0,212,255,.1);
+  color:var(--accent);padding:2px 8px;border-radius:5px;
+  font-family:'Courier New',monospace;font-size:.85rem;
+  border:1px solid rgba(0,212,255,.25);
+}
+.progression{
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+  background:rgba(168,85,247,.06);border:1px dashed rgba(168,85,247,.3);
+  padding:10px 12px;border-radius:8px;margin:8px 0;
+  font-family:'Courier New',monospace;font-size:.85rem;
+}
+.progression .p-node{
+  background:rgba(168,85,247,.18);color:#d8b4fe;
+  padding:4px 10px;border-radius:6px;font-weight:700;
+}
+.progression .p-arrow{color:var(--muted)}
+/* GRID */
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+/* TRAINING PLAN */
+.plan-flow{
+  display:flex;flex-direction:column;gap:8px;
+  align-items:center;margin:20px 0;
+}
+.plan-node{
+  background:var(--card);border:1px solid var(--border);
+  padding:12px 18px;border-radius:10px;
+  font-weight:600;font-size:.9rem;text-align:center;
+  min-width:260px;color:var(--text);
+  position:relative;
+}
+.plan-node .pn-num{
+  color:var(--accent);font-weight:800;margin-right:8px;
+}
+.plan-arrow{color:var(--accent);font-size:1.4rem;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+/* SOURCES */
+.source-item{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:14px;margin-bottom:12px;
+  border-left:3px solid var(--accent);
+}
+.source-item .src-name{font-weight:700;color:var(--accent);margin-bottom:6px;font-size:.95rem}
+.source-item .src-desc{color:var(--muted);font-size:.85rem;margin-bottom:8px}
+.source-item a{
+  color:var(--green);text-decoration:none;font-size:.82rem;
+  font-family:monospace;word-break:break-all;
+  border-bottom:1px dashed rgba(34,197,94,.4);
+}
+.source-item a:hover{color:#4ade80}
+/* CREDITS */
+.credits-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:24px;text-align:center;margin-top:20px;
+}
+.credits-card .c-title{font-size:1.1rem;color:var(--accent);margin-bottom:8px;font-weight:700}
+.credits-card .c-author{font-size:1.3rem;color:var(--text);font-weight:800;margin:12px 0}
+.credits-card .c-info{color:var(--muted);font-size:.85rem;margin:6px 0;font-family:monospace}
+.credits-card .c-motto{
+  margin-top:16px;font-style:italic;color:var(--purple);
+  font-size:.95rem;border-top:1px dashed var(--border);padding-top:14px;
+}
+/* FOOTER */
+footer{
+  background:#070b14;border-top:1px solid var(--border);
+  padding:24px 16px;text-align:center;color:var(--muted);
+  font-size:.8rem;line-height:1.9;
+}
+footer .f-line{margin:2px 0}
+footer .f-motto{color:var(--purple);font-style:italic;margin-top:8px}
+/* BACK TO TOP */
+.back-to-top{
+  position:fixed;bottom:20px;right:20px;
+  width:46px;height:46px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  color:#070b14;border:none;font-size:1.2rem;font-weight:800;
+  cursor:pointer;box-shadow:0 4px 16px rgba(0,212,255,.35);
+  opacity:0;visibility:hidden;transition:all .3s;
+  z-index:9997;
+}
+.back-to-top.show{opacity:1;visibility:visible}
+.back-to-top:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,212,255,.55)}
+/* MOBILE */
+@media(max-width:640px){
+  body{padding-top:60px}
+  .nav-brand{font-size:.8rem}
+  .nav-link{padding:6px 10px;font-size:.78rem}
+  .section{padding:16px 12px 50px}
+  .card{padding:14px}
+  .mod-header h2{font-size:1.05rem}
+  .mod-num{width:38px;height:38px;font-size:.95rem}
+  .pattern-card{padding:14px}
+  .plan-node{min-width:100%;font-size:.85rem}
+  .back-to-top{width:42px;height:42px;bottom:16px;right:16px}
+}
+/* REDUCED MOTION */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+/* EJERCICIOS - Estilos específicos integrados */
+.ejercicio-card {
+  border-left: 3px solid var(--amber);
+}
+.ejercicio-num {
+  background: rgba(245, 158, 11, .15);
+  color: var(--amber);
+  border: 1px solid rgba(245, 158, 11, .4);
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: .75rem;
+  font-weight: 700;
+}
+.ejercicio-tipo {
+  display: inline-block;
+  background: rgba(168, 85, 247, .12);
+  color: #d8b4fe;
+  border: 1px solid rgba(168, 85, 247, .3);
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+.ejercicio-dificultad {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 99px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+.dif-basica { background: rgba(34,197,94,.15); color: var(--green); border: 1px solid rgba(34,197,94,.35); }
+.dif-intermedia { background: rgba(245,158,11,.15); color: var(--amber); border: 1px solid rgba(245,158,11,.35); }
+.dif-avanzada { background: rgba(239,68,68,.15); color: var(--red); border: 1px solid rgba(239,68,68,.35); }
+.ejercicio-enunciado {
+  background: rgba(0,212,255,.04);
+  border: 1px dashed rgba(0,212,255,.2);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 10px 0;
+  font-size: .9rem;
+}
+.ejercicio-enunciado strong {
+  color: var(--accent);
+}
+.solucion-paso {
+  background: rgba(34,197,94,.04);
+  border-left: 3px solid var(--green);
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  margin: 10px 0;
+  font-size: .88rem;
+}
+.solucion-paso .sol-title {
+  font-weight: 700;
+  color: var(--green);
+  font-size: .75rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.porque-causal {
+  background: rgba(168,85,247,.04);
+  border-left: 3px solid var(--purple);
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  margin: 10px 0;
+  font-size: .88rem;
+}
+.porque-causal .por-title {
+  font-weight: 700;
+  color: var(--purple);
+  font-size: .75rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.error-tipico {
+  background: rgba(239,68,68,.04);
+  border-left: 3px solid var(--red);
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  margin: 10px 0;
+  font-size: .88rem;
+}
+.error-tipico .err-title {
+  font-weight: 700;
+  color: var(--red);
+  font-size: .75rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.ejercicio-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-brand">🎹 Beethoven · LH</div>
+    <div class="nav-links" id="navLinks">
+      <button class="nav-link active" data-section="home">Inicio</button>
+      <button class="nav-link" data-section="mod1">Técnica Fundamental</button>
+      <button class="nav-link" data-section="mod2">12 Patrones Magistrales</button>
+      <button class="nav-link" data-section="mod3">Plan de Entrenamiento</button>
+      <button class="nav-link" data-section="ejercicios">Ejercicios</button>
+      <button class="nav-link" data-section="fuentes">Fuentes</button>
+      <button class="nav-link" data-section="creditos">Créditos</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ================= HOME ================= -->
+<section id="home" class="section active">
+
+  <!-- SVG ANIMADO 16:9 -->
+  <div class="hero-svg">
+    <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-label="Animación: arquitectura armónica de la mano izquierda de Beethoven">
+      <defs>
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#070b14">
+            <animate attributeName="stop-color" values="#070b14;#0d1424;#0a0e1a;#070b14" dur="9s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="50%" stop-color="#0a0e1a">
+            <animate attributeName="stop-color" values="#0a0e1a;#070b14;#0d1424;#0a0e1a" dur="7s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%" stop-color="#0d1424">
+            <animate attributeName="stop-color" values="#0d1424;#0a0e1a;#070b14;#0d1424" dur="8s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+
+        <pattern id="gridP" width="34" height="34" patternUnits="userSpaceOnUse">
+          <path d="M 34 0 L 0 0 0 34" fill="none" stroke="#1e3a5f" stroke-width="0.55"/>
+        </pattern>
+
+        <filter id="glowC" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="3.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glowStrong" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="6" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+
+        <radialGradient id="haloCyan">
+          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="haloPurple">
+          <stop offset="0%" stop-color="#a855f7" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="haloGreen">
+          <stop offset="0%" stop-color="#22c55e" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="haloAmber">
+          <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="haloRed">
+          <stop offset="0%" stop-color="#ef4444" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+        </radialGradient>
+
+        <path id="pA" d="M 60 175 Q 230 85 400 175 T 740 175" fill="none"/>
+        <path id="pB" d="M 60 235 Q 230 325 400 235 T 740 235" fill="none"/>
+        <path id="pC" d="M 60 295 Q 230 205 400 295 T 740 295" fill="none"/>
+        <path id="pGhost" d="M 60 175 Q 230 85 400 175 T 740 175" fill="none"/>
+      </defs>
+
+      <!-- FONDO -->
+      <rect width="800" height="450" fill="url(#bgGrad)"/>
+      <rect width="800" height="450" fill="url(#gridP)" opacity="0.4">
+        <animate attributeName="opacity" values="0.25;0.65;0.25" dur="6s" repeatCount="indefinite"/>
+      </rect>
+
+      <!-- ANILLOS ORBITALES -->
+      <g transform="translate(400,200)">
+        <circle r="180" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.28" stroke-dasharray="6 10">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="24s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-dasharray" values="6 10;18 6;6 10" dur="5s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="150" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.25" stroke-dasharray="4 8">
+          <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="18s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-dasharray" values="4 8;14 4;4 8" dur="7s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="120" fill="none" stroke="#22c55e" stroke-width="0.9" opacity="0.22" stroke-dasharray="3 6">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="90" fill="none" stroke="#f59e0b" stroke-width="0.8" opacity="0.18" stroke-dasharray="2 5">
+          <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="11s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <!-- HALOS PULSANTES -->
+      <circle cx="400" cy="175" r="30" fill="url(#haloCyan)">
+        <animate attributeName="r" values="22;42;22" dur="3.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.4;0.9;0.4" dur="3.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="230" cy="235" r="24" fill="url(#haloPurple)">
+        <animate attributeName="r" values="18;34;18" dur="4.2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.3;0.85;0.3" dur="4.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="570" cy="235" r="24" fill="url(#haloGreen)">
+        <animate attributeName="r" values="18;34;18" dur="5.1s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.3;0.85;0.3" dur="5.1s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="400" cy="295" r="22" fill="url(#haloAmber)">
+        <animate attributeName="r" values="16;30;16" dur="4.7s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.3;0.8;0.3" dur="4.7s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- FLUJOS NARRATIVOS (paths con dash animado) -->
+      <path d="M 60 175 Q 230 85 400 175 T 740 175" fill="none" stroke="#00d4ff" stroke-width="1.6" opacity="0.55" stroke-dasharray="10 8" filter="url(#glowC)">
+        <animate attributeName="stroke-dashoffset" from="0" to="-36" dur="2s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 60 235 Q 230 325 400 235 T 740 235" fill="none" stroke="#a855f7" stroke-width="1.6" opacity="0.5" stroke-dasharray="10 8">
+        <animate attributeName="stroke-dashoffset" from="0" to="-36" dur="2.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 60 295 Q 230 205 400 295 T 740 295" fill="none" stroke="#f59e0b" stroke-width="1.4" opacity="0.45" stroke-dasharray="10 8">
+        <animate attributeName="stroke-dashoffset" from="0" to="-36" dur="3s" repeatCount="indefinite"/>
+      </path>
+
+      <!-- PARTÍCULAS VIAJERAS -->
+      <circle r="4" fill="#00d4ff" filter="url(#glowC)">
+        <animateMotion dur="5s" repeatCount="indefinite">
+          <mpath href="#pA"/>
+        </animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="5s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3.5" fill="#22c55e" filter="url(#glowC)">
+        <animateMotion dur="6.5s" begin="1.2s" repeatCount="indefinite">
+          <mpath href="#pA"/>
+        </animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="6.5s" begin="1.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3.5" fill="#a855f7" filter="url(#glowC)">
+        <animateMotion dur="5.8s" repeatCount="indefinite">
+          <mpath href="#pB"/>
+        </animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="5.8s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3" fill="#f59e0b" filter="url(#glowC)">
+        <animateMotion dur="7.2s" begin="2s" repeatCount="indefinite">
+          <mpath href="#pB"/>
+        </animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="7.2s" begin="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3.5" fill="#00d4ff" filter="url(#glowC)">
+        <animateMotion dur="6.8s" begin="0.6s" repeatCount="indefinite">
+          <mpath href="#pC"/>
+        </animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="6.8s" begin="0.6s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- GHOST NOTE: nota fantasma viajando -->
+      <g opacity="0.75" filter="url(#glowC)">
+        <text font-size="22" fill="#00d4ff" text-anchor="middle" dominant-baseline="middle">♪</text>
+        <animateMotion dur="8s" repeatCount="indefinite">
+          <mpath href="#pGhost"/>
+        </animateMotion>
+        <animate attributeName="opacity" values="0;0.9;0.9;0.9;0" dur="8s" repeatCount="indefinite"/>
+      </g>
+
+      <!-- NOTAS FLOTANTES (con animateTransform translate Y) -->
+      <g font-family="serif" filter="url(#glowC)">
+        <text x="110" y="140" font-size="30" fill="#00d4ff" opacity="0.85">♪
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 -3;0 0" dur="3s" repeatCount="indefinite"/>
+        </text>
+        <text x="200" y="110" font-size="24" fill="#a855f7" opacity="0.75">♫
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="3.7s" repeatCount="indefinite"/>
+        </text>
+        <text x="320" y="95" font-size="22" fill="#22c55e" opacity="0.7">♩
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 -2;0 0" dur="4.3s" repeatCount="indefinite"/>
+        </text>
+        <text x="500" y="105" font-size="28" fill="#f59e0b" opacity="0.8">♪
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 -3;0 0" dur="2.8s" repeatCount="indefinite"/>
+        </text>
+        <text x="640" y="130" font-size="26" fill="#00d4ff" opacity="0.75">♬
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="3.5s" repeatCount="indefinite"/>
+        </text>
+      </g>
+
+      <!-- NODOS CLAVE CON PULSO (casillas destacadas) -->
+      <g>
+        <rect x="378" y="153" width="44" height="44" rx="6" fill="none" stroke="#00d4ff" stroke-width="2" filter="url(#glowC)">
+          <animate attributeName="opacity" values="0.4;1;0.4" dur="2.2s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-width" values="1.5;3;1.5" dur="2.2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="208" y="213" width="44" height="44" rx="6" fill="none" stroke="#a855f7" stroke-width="1.8">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="2.8s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-width" values="1.3;2.8;1.3" dur="2.8s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="548" y="213" width="44" height="44" rx="6" fill="none" stroke="#22c55e" stroke-width="1.8">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="3.2s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-width" values="1.3;2.8;1.3" dur="3.2s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="378" y="273" width="44" height="44" rx="6" fill="none" stroke="#f59e0b" stroke-width="1.8">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="2.5s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+
+      <!-- TECLADO DE PIANO -->
+      <g transform="translate(100,388)">
+        <!-- White keys -->
+        <rect x="0"    y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="40"   y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="80"   y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="120"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="160"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="200"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="240"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="280"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="320"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="360"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="400"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="440"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="480"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="520"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="560"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <!-- Black keys -->
+        <rect x="28"  y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="68"  y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="148" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="188" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="228" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="308" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="348" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="428" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="468" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="508" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="588" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <!-- Highlighted keys (left-hand notes pulsing) -->
+        <rect x="80" y="0" width="40" height="52" fill="none" stroke="#00d4ff" stroke-width="2" rx="2">
+          <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="240" y="0" width="40" height="52" fill="none" stroke="#a855f7" stroke-width="2" rx="2">
+          <animate attributeName="opacity" values="0;1;0" dur="3.5s" begin="0.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="440" y="0" width="40" height="52" fill="none" stroke="#22c55e" stroke-width="2" rx="2">
+          <animate attributeName="opacity" values="0;1;0" dur="4s" begin="1s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+
+      <!-- INDICADOR LIVE -->
+      <g transform="translate(700,30)">
+        <circle cx="0" cy="0" r="5" fill="#ef4444" filter="url(#glowC)">
+          <animate attributeName="opacity" values="1;0.2;1" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <text x="12" y="4" font-family="monospace" font-size="11" fill="#ef4444" font-weight="700" letter-spacing="1.5">
+          LIVE
+          <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
+        </text>
+      </g>
+
+      <!-- TEXTOS ANIMADOS -->
+      <text x="400" y="42" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="20" font-weight="800" letter-spacing="2" filter="url(#glowC)">
+        BEETHOVEN
+        <animate attributeName="fill" values="#00d4ff;#a855f7;#22c55e;#f59e0b;#00d4ff" dur="10s" repeatCount="indefinite"/>
+      </text>
+      <text x="400" y="62" text-anchor="middle" font-family="monospace" font-size="10" fill="#94a3b8" letter-spacing="4">
+        MANO IZQUIERDA · ARQUITECTURA ARMÓNICA
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="4s" repeatCount="indefinite"/>
+      </text>
+
+      <!-- Etiquetas de estado alternantes -->
+      <g transform="translate(60,428)">
+        <text font-family="monospace" font-size="9" fill="#22c55e" letter-spacing="1">
+          <animate attributeName="opacity" values="1;0;0;1" dur="6s" repeatCount="indefinite"/>
+          ● DOCUMENTADO · URTEXT
+        </text>
+      </g>
+      <g transform="translate(300,428)">
+        <text font-family="monospace" font-size="9" fill="#f59e0b" letter-spacing="1">
+          <animate attributeName="opacity" values="0;1;0;0" dur="6s" repeatCount="indefinite"/>
+          ● ANÁLISIS ARMÓNICO
+        </text>
+      </g>
+      <g transform="translate(560,428)">
+        <text font-family="monospace" font-size="9" fill="#a855f7" letter-spacing="1">
+          <animate attributeName="opacity" values="0;0;1;0" dur="6s" repeatCount="indefinite"/>
+          ● ADAPTACIÓN MODERNA
+        </text>
+      </g>
+
+      <!-- FLASH + TEXTO CULMINANTE -->
+      <rect x="0" y="0" width="800" height="450" fill="#00d4ff" opacity="0">
+        <animate attributeName="opacity" values="0;0;0;0.08;0;0" dur="9s" repeatCount="indefinite"/>
+      </rect>
+      <text x="400" y="430" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="12" fill="#00d4ff" font-weight="700" letter-spacing="4" opacity="0">
+        CLAVE · 12 PATRONES
+        <animate attributeName="opacity" values="0;0;0;1;1;0" dur="9s" repeatCount="indefinite"/>
+      </text>
+
+      <!-- Firma -->
+      <text x="770" y="445" text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="8" fill="#64748b" font-style="italic">
+        Rubén Sbarsky
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="5s" repeatCount="indefinite"/>
+      </text>
+    </svg>
+  </div>
+
+  <div style="max-width:900px;margin:0 auto;text-align:center">
+    <div class="badge">CLASE MAGISTRAL · PIANO · BALADA MODERNA</div>
+    <h1>La Mano Izquierda de Beethoven</h1>
+    <p class="subtitle">Cómo la mano izquierda de Ludwig van Beethoven contiene la arquitectura perfecta para crear acompañamientos inolvidables en la balada moderna.</p>
+    <p class="description">A menudo nos enfocamos en las hermosas melodías que toca la mano derecha, pero la verdadera magia emocional, la textura y el impulso de una canción nacen en la mano izquierda. Beethoven fue un visionario que transformó el rol del bajo y los arpejos en el piano.</p>
+
+    <blockquote>"Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."</blockquote>
+
+    <div class="metrics">
+      <div class="metric"><div class="num">12</div><div class="lbl">Patrones</div></div>
+      <div class="metric"><div class="num">3</div><div class="lbl">Dimensiones</div></div>
+      <div class="metric"><div class="num">4</div><div class="lbl">Módulos</div></div>
+      <div class="metric"><div class="num">4</div><div class="lbl">Fases</div></div>
+    </div>
+
+    <div class="date-time">27/09/2026 · 04:22:16</div>
+
+    <div class="callout callout-info" style="margin-top:24px;text-align:left">
+      <div class="co-title">◆ MÉTODO DE ESTUDIO</div>
+      <p>Para abordar este estudio con rigor y claridad pedagógica, dividiremos cada descubrimiento en <strong>tres dimensiones fundamentales</strong>:</p>
+      <ul style="margin-top:8px;padding-left:20px;font-size:.88rem">
+        <li><span class="note">HECHO DOCUMENTADO</span> — La estructura exacta de la partitura original en edición Urtext (compases, nota grave, ritmo y tonalidad).</li>
+        <li style="margin-top:6px"><span class="note">ANÁLISIS MUSICAL</span> — La función armónica, textural y expresiva en la obra clásica.</li>
+        <li style="margin-top:6px"><span class="note">ADAPTACIÓN MODERNA</span> — Cómo transformar esa idea en un patrón actual para baladas pop, R&B, indie o cinematográficas.</li>
+      </ul>
+    </div>
+
+    <div class="callout callout-warn" style="text-align:left">
+      <div class="co-title">⚠ REGLA DE ORO DE LA CLASE</div>
+      <p>Usaremos exclusivamente la notación americana de notas <strong>A, B, C, D, E, F, G</strong>. Cada vez que nombremos una nota individual, verás entre paréntesis el grado correspondiente a la escala en la que estamos trabajando (por ejemplo, <span class="note">C(I)</span> o <span class="note">G(V)</span> en la escala de <span class="note">C(I)</span> mayor).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MÓDULO 1 ================= -->
+<section id="mod1" class="section">
+  <div class="mod-header">
+    <div class="mod-num">01</div>
+    <div>
+      <h2>La Técnica Fundamental de la Mano Izquierda</h2>
+      <div class="mod-sub">Postura, sonido y control antes de tocar los patrones</div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="co-title">◆ INTRODUCCIÓN</div>
+    <p>Antes de tocar los patrones, debes dominar tres principios de postura y sonido que aplicaba el propio Beethoven y que son vitales para la balada moderna.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🎚 1. El Balance de Capas (Plano Sonoro)</div>
+      <p style="font-size:.9rem">La mano izquierda debe cantar con sonoridad llena pero mantener un nivel dinámico <em>piano</em> o <em>pianissimo</em> respecto a la mano derecha. Tu mano no debe "golpear" las teclas, sino transferir el peso del brazo hacia el fondo de las teclas de manera relajada.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔄 2. La Muñeca Flexible (Movimiento de Rotación)</div>
+      <p style="font-size:.9rem">En los arpegios continuos, no estires ni fuerces los dedos. Usa un suave balanceo de muñeca de izquierda a derecha para guiar la mano.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎛 3. El Control del Pedal de Resonancia</div>
+      <p style="font-size:.9rem">Levanta y renueva el pedal exactamente en el cambio de cada acorde para evitar que los bajos profundos se vuelvan oscuros o barrocos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MÓDULO 2 ================= -->
+<section id="mod2" class="section">
+  <div class="mod-header">
+    <div class="mod-num">02</div>
+    <div>
+      <h2>Desglose de los 12 Patrones Magistrales</h2>
+      <div class="mod-sub">Cada patrón: Hecho Documentado · Análisis Musical · Adaptación Moderna</div>
+    </div>
+  </div>
+
+  <!-- PATRÓN 1 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 1</span>
+      <span class="pattern-title">El Triplete Hipnótico de la Penumbra</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Sonata No. 14 en <span class="note">C#(I)</span> menor, Op. 27 No. 2 ("Moonlight"), 1.er mov. (<em>Adagio sostenuto</em>), compases 1–5. La mano izquierda mantiene octavas graves sostenidas en <span class="note">C#(I)</span> mientras la voz intermedia ejecuta tresillos de corchea continuos con las notas <span class="note">C#(I)</span> – <span class="note">E(III)</span> – <span class="note">G#(V)</span>. Compás de 2/2 (<em>Alla breve</em>).</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Prolongación del acorde de tónica en modo menor mediante un arpegiado continuo que genera una atmósfera contemplativa y serena.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>Excelente para baladas cinematográficas en 4/4 o 2/4.</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">C(I)</span> mayor (donde <span class="note">C</span> es <span class="note">I</span>, <span class="note">D</span> es <span class="note">II</span>, <span class="note">E</span> es <span class="note">III</span>, <span class="note">F</span> es <span class="note">IV</span>, <span class="note">G</span> es <span class="note">V</span>, <span class="note">A</span> es <span class="note">VI</span>, <span class="note">B</span> es <span class="note">VII</span>).</p>
+      <div class="progression">
+        <span class="p-node">C(I)</span><span class="p-arrow">→</span>
+        <span class="p-node">G(V)</span><span class="p-arrow">→</span>
+        <span class="p-node">A(VI)m</span><span class="p-arrow">→</span>
+        <span class="p-node">F(IV)</span>
+      </div>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>C(add9):</strong> Toca la octava grave <span class="note">C(I)</span> en el tiempo 1. Mientras se sostiene, arpegia en tresillos: <span class="note">G(V)</span> – <span class="note">D(II)</span> – <span class="note">E(III)</span>.</li>
+      <li><strong>G(add9):</strong> Octava grave en <span class="note">G(V)</span>; tresillos: <span class="note">D(II)</span> – <span class="note">A(VI)</span> – <span class="note">B(VII)</span>.</li>
+      <li><strong>A(VI)m9:</strong> Octava grave en <span class="note">A(VI)</span>; tresillos: <span class="note">E(III)</span> – <span class="note">B(VII)</span> – <span class="note">C(I)</span>.</li>
+      <li><strong>F(IV)maj7:</strong> Octava grave en <span class="note">F(IV)</span>; tresillos: <span class="note">C(I)</span> – <span class="note">G(V)</span> – <span class="note">E(III)</span>.</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 2 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 2</span>
+      <span class="pattern-title">El Pulso Latido (Heartbeat Pulse)</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Sonata No. 31 en <span class="note">Ab(I)</span> mayor, Op. 110, 3.er mov. (<em>Arioso dolente</em>), compases 9–20. Compás de 12/16. La mano izquierda ataca la nota grave <span class="note">Eb(V)</span> en el tiempo fuerte y sostiene un pulso obstinado de acordes en semicorcheas con las notas <span class="note">Eb(V)</span> – <span class="note">Gb(VII)</span> – <span class="note">Bb(II)</span>.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Un latido rítmico incesante que imita la respiración o el sollozo humano, aportando una contención dramática profunda.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>El famoso "driving pulse" utilizado en baladas pop contemporáneas de artistas como Adele o Lewis Capaldi.</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">A(I)</span> menor (en <span class="note">A(I)</span> menor: <span class="note">A</span> es <span class="note">I</span>, <span class="note">B</span> es <span class="note">II</span>, <span class="note">C</span> es <span class="note">III</span>, <span class="note">D</span> es <span class="note">IV</span>, <span class="note">E</span> es <span class="note">V</span>, <span class="note">F</span> es <span class="note">VI</span>, <span class="note">G</span> es <span class="note">VII</span>).</p>
+      <div class="progression">
+        <span class="p-node">A(I)m</span><span class="p-arrow">→</span>
+        <span class="p-node">F(VI)</span><span class="p-arrow">→</span>
+        <span class="p-node">C(III)</span><span class="p-arrow">→</span>
+        <span class="p-node">G(VII)</span>
+      </div>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>A(I)m7:</strong> Bajo grave <span class="note">A(I)</span> en tiempo 1. A continuación, pulsa acordes continuos en corcheas con la voz media: <span class="note">C(III)</span> – <span class="note">E(V)</span> – <span class="note">G(VII)</span>.</li>
+      <li><strong>F(VI)maj7:</strong> Bajo grave <span class="note">F(VI)</span>; pulsa el acorde <span class="note">A(I)</span> – <span class="note">C(III)</span> – <span class="note">E(V)</span>.</li>
+      <li><strong>C(III)add9:</strong> Bajo grave <span class="note">C(III)</span>; pulsa el acorde <span class="note">E(V)</span> – <span class="note">G(VII)</span> – <span class="note">D(II)</span>.</li>
+      <li><strong>G(VII)sus4:</strong> Bajo grave <span class="note">G(VII)</span>; pulsa <span class="note">C(III)</span> – <span class="note">D(II)</span> – <span class="note">G(VII)</span> resolviendo a <span class="note">B(II)</span> – <span class="note">D(II)</span> – <span class="note">G(VII)</span>.</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 3 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 3</span>
+      <span class="pattern-title">El Bajo Cantabile con Relleno Intermedio</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Sonata No. 8 en <span class="note">C(I)</span> menor, Op. 13 ("Pathétique"), 2.º mov. (<em>Adagio cantabile</em>), compases 1–8 en <span class="note">Ab(I)</span> mayor. Compás de 2/4. El bajo toca la nota pedal en el tiempo fuerte (<span class="note">Ab(I)</span> en tiempo 1, <span class="note">Eb(V)</span> en tiempo 2), mientras la voz media ejecuta un relleno arpegiado en semicorcheas: <span class="note">Eb(V)</span> – <span class="note">Ab(I)</span> – <span class="note">C(III)</span> – <span class="note">Ab(I)</span>.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Estructura polifónica en tres capas bien delimitadas: cimiento grave, relleno armónico medio y melodía cantabile en la mano derecha.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>Base elegante y equilibrada para baladas pop y R&B suave.</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">C(I)</span> mayor.</p>
+      <div class="progression">
+        <span class="p-node">C(I)</span><span class="p-arrow">→</span>
+        <span class="p-node">A(VI)m7</span><span class="p-arrow">→</span>
+        <span class="p-node">F(IV)add9</span><span class="p-arrow">→</span>
+        <span class="p-node">G(V)11</span>
+      </div>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>C(I):</strong> Toca el bajo <span class="note">C(I)</span> en tiempo 1 y la nota <span class="note">G(V)</span> en tiempo 2. En la voz media arpegia semicorcheas: <span class="note">G(V)</span> – <span class="note">C(I)</span> – <span class="note">E(III)</span> – <span class="note">D(II)</span>.</li>
+      <li><strong>A(VI)m7:</strong> Bajo <span class="note">A(VI)</span> en tiempo 1 y <span class="note">E(III)</span> en tiempo 2. Relleno: <span class="note">E(III)</span> – <span class="note">A(VI)</span> – <span class="note">C(I)</span> – <span class="note">G(V)</span>.</li>
+      <li><strong>F(IV)add9:</strong> Bajo <span class="note">F(IV)</span> en tiempo 1 y <span class="note">C(I)</span> en tiempo 2. Relleno: <span class="note">C(I)</span> – <span class="note">F(IV)</span> – <span class="note">A(VI)</span> – <span class="note">G(V)</span>.</li>
+      <li><strong>G(V)11:</strong> Bajo <span class="note">G(V)</span> en tiempo 1 y <span class="note">D(II)</span> en tiempo 2. Relleno: <span class="note">D(II)</span> – <span class="note">F(IV)</span> – <span class="note">A(VI)</span> – <span class="note">C(I)</span>.</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 4 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 4</span>
+      <span class="pattern-title">El Arpegio Ascendente Expandido (1–5–8–10)</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Bagatela en <span class="note">A(I)</span> menor, WoO 59 ("Für Elise"), compases 1–8. Compás de 3/8. Arpegio ascendente continuo en semicorcheas: fundamental <span class="note">A(I)</span>, quinta <span class="note">E(V)</span>, octava <span class="note">A(I)</span> y décima/tercera <span class="note">C(III)</span>.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Expansión del acorde sobrepasando el límite de la octava para dar la sensación de una arpa o un flujo continuo.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>El patrón rey de la balada pianística neoclásica (estilo Yiruma o Ludovico Einaudi).</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">A(I)</span> menor.</p>
+      <div class="progression">
+        <span class="p-node">A(I)m</span><span class="p-arrow">→</span>
+        <span class="p-node">F(VI)</span><span class="p-arrow">→</span>
+        <span class="p-node">C(III)</span><span class="p-arrow">→</span>
+        <span class="p-node">G(VII)</span>
+      </div>
+      <p style="margin-top:6px">en 3/4 o 6/8. <strong>Fórmula extendida:</strong> <span class="note">1 – 5 – 9 – 3</span> (añadiendo la novena para dar un color moderno).</p>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>A(I)m9:</strong> Arpegio ascendente: <span class="note">A(I)</span> – <span class="note">E(V)</span> – <span class="note">B(II)</span> – <span class="note">C(III)</span>.</li>
+      <li><strong>F(VI)maj7/9:</strong> Arpegio ascendente: <span class="note">F(VI)</span> – <span class="note">C(III)</span> – <span class="note">G(VII)</span> – <span class="note">E(V)</span>.</li>
+      <li><strong>C(III)add9:</strong> Arpegio ascendente: <span class="note">C(III)</span> – <span class="note">G(VII)</span> – <span class="note">D(II)</span> – <span class="note">E(V)</span>.</li>
+      <li><strong>G(VII)11:</strong> Arpegio ascendente: <span class="note">G(VII)</span> – <span class="note">D(II)</span> – <span class="note">A(I)</span> – <span class="note">F(VI)</span>.</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 5 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 5</span>
+      <span class="pattern-title">El Bajo Pedal Pastorale (Drone)</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Sonata No. 15 en <span class="note">D(I)</span> mayor, Op. 28 ("Pastoral"), 1.er mov. (<em>Allegro</em>), compases 1–24. Compás de 3/4. Mantiene una nota pedal continua de bajo en <span class="note">D(I)</span> en pulso de negras mientras la mano derecha cambia las notas superiores.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Un punto pedal hipnótico de inspiración rústica o gaita que genera una inmensa paz y estabilidad.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>Ideal para baladas indie-folk y pasajes introspectivos donde la armonía superior cambia sobre una nota grave fija.</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">C(I)</span> mayor.</p>
+      <div class="progression">
+        <span class="p-node">C(I)</span><span class="p-arrow">→</span>
+        <span class="p-node">F(IV)/C(I)</span><span class="p-arrow">→</span>
+        <span class="p-node">A(VI)m/C(I)</span><span class="p-arrow">→</span>
+        <span class="p-node">G(V)/C(I)</span>
+      </div>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li>Tu mano izquierda mantiene la nota <span class="note">C(I)</span> rebasando el grave repitiéndose suavemente en cada compás.</li>
+      <li><strong>Compás 1:</strong> Bajo en <span class="note">C(I)</span> con acorde superior <span class="note">E(III)</span> – <span class="note">G(V)</span> – <span class="note">D(II)</span> [<strong>C(I)add9</strong>].</li>
+      <li><strong>Compás 2:</strong> Bajo en <span class="note">C(I)</span> con acorde superior <span class="note">F(IV)</span> – <span class="note">A(VI)</span> – <span class="note">C(I)</span> [<strong>F(IV)add9/C(I)</strong>].</li>
+      <li><strong>Compás 3:</strong> Bajo en <span class="note">C(I)</span> con acorde superior <span class="note">E(III)</span> – <span class="note">A(VI)</span> – <span class="note">C(I)</span> [<strong>A(VI)m7/C(I)</strong>].</li>
+      <li><strong>Compás 4:</strong> Bajo en <span class="note">C(I)</span> con acorde superior <span class="note">D(II)</span> – <span class="note">G(V)</span> – <span class="note">B(VII)</span> [<strong>G(V)/C(I)</strong>].</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 6 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 6</span>
+      <span class="pattern-title">Bajo Creador de Paso + Contratiempo</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Sonata No. 15 en <span class="note">D(I)</span> mayor, Op. 28 ("Pastoral"), 2.º mov. (<em>Andante</em>), compases 1–8 en <span class="note">D(I)</span> menor. Compás de 2/4. Bajo picado en corcheas <span class="note">D(I)</span> – <span class="note">C#(VII)</span> – <span class="note">D(I)</span> – <span class="note">F(III)</span> seguido de un acorde corto en voz media tocado a contratiempo en las notas <span class="note">F(III)</span> – <span class="note">A(V)</span> – <span class="note">D(I)</span>.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Imita el movimiento pizzicato de un contrabajo, aportando una suave propulsión rítmica sin sobrecargar la textura.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>Perfecto para dar un "groove" sutil y elegante a baladas de estilo R&B, Neo-Soul o Pop acústico.</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">C(I)</span> mayor.</p>
+      <div class="progression">
+        <span class="p-node">D(II)m7</span><span class="p-arrow">→</span>
+        <span class="p-node">G(V)7</span><span class="p-arrow">→</span>
+        <span class="p-node">C(I)maj7</span><span class="p-arrow">→</span>
+        <span class="p-node">A(VI)m7</span>
+      </div>
+      <p style="margin-top:4px">en 4/4.</p>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>D(II)m7:</strong> Toca el bajo <span class="note">D(II)</span> en el tiempo 1. Justo en el contratiempo (el "and" del tiempo 1) toca el acorde <span class="note">F(IV)</span> – <span class="note">A(VI)</span> – <span class="note">C(I)</span>.</li>
+      <li><strong>G(V)7:</strong> Toca el bajo <span class="note">G(V)</span> en el tiempo 1; acorde a contratiempo: <span class="note">F(IV)</span> – <span class="note">A(VI)</span> – <span class="note">B(VII)</span>.</li>
+      <li><strong>C(I)maj7:</strong> Toca el bajo <span class="note">C(I)</span> en el tiempo 1; acorde a contratiempo: <span class="note">E(III)</span> – <span class="note">G(V)</span> – <span class="note">B(VII)</span>.</li>
+      <li><strong>A(VI)m7:</strong> Toca el bajo <span class="note">A(VI)</span> en el tiempo 1; acorde a contratiempo: <span class="note">G(V)</span> – <span class="note">C(I)</span> – <span class="note">E(III)</span>.</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 7 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 7</span>
+      <span class="pattern-title">Bajo de Octavas Quebradas (Tremolo / Murky Bass)</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Sonata No. 8 en <span class="note">C(I)</span> menor, Op. 13 ("Pathétique"), 1.er mov. (<em>Allegro molto e con brio</em>), compases 11–27. Compás de 2/2 (<em>Alla breve</em>). La mano izquierda realiza octavas quebradas en corcheas rápidas alternando la nota grave y aguda de la octava: <span class="note">C(I)</span> grave – <span class="note">C(I)</span> agudo – <span class="note">C(I)</span> grave – <span class="note">C(I)</span> agudo.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Derivado del "basso tremolando" de las oberturas orquestales. Genera una energía dramática, ansiosa y electrizante.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>El recurso definitivo para construir la intensidad y la tensión del <em>crescendo</em> justo antes del estribillo en una balada de rock o pop dramático.</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">A(I)</span> menor.</p>
+      <div class="progression">
+        <span class="p-node">A(I)m</span><span class="p-arrow">→</span>
+        <span class="p-node">F(VI)</span><span class="p-arrow">→</span>
+        <span class="p-node">C(III)</span><span class="p-arrow">→</span>
+        <span class="p-node">G(VII)</span>
+      </div>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>A(I)m:</strong> Alterna rápidamente en corcheas la nota de bajo <span class="note">A(I)</span> grave y <span class="note">A(I)</span> octava arriba.</li>
+      <li><strong>F(VI):</strong> Alterna la nota <span class="note">F(VI)</span> grave y <span class="note">F(VI)</span> octava arriba.</li>
+      <li><strong>C(III):</strong> Alterna la nota <span class="note">C(III)</span> grave y <span class="note">C(III)</span> octava arriba.</li>
+      <li><strong>G(VII):</strong> Alterna la nota <span class="note">G(VII)</span> grave y <span class="note">G(VII)</span> octava arriba.</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 8 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 8</span>
+      <span class="pattern-title">Arpegio Gran Onda Multi-Octava</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Sonata No. 23 en <span class="note">F(I)</span> menor, Op. 57 ("Appassionata"), 1.er mov. (<em>Allegro assai</em>), compases 1–4. Compás de 12/8. Arpegio que recorre más de dos octavas: <span class="note">F(I)</span> – <span class="note">C(V)</span> – <span class="note">F(I)</span> – <span class="note">Ab(III)</span> – <span class="note">C(V)</span> – <span class="note">F(I)</span>.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Explotación de todo el rango grave y medio del piano para crear un espacio tridimensional amplio y épico.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>Imprescindible para baladas épicas cinematográficas y bandas sonoras (estilo Hans Zimmer).</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">A(I)</span> menor en 6/8.</p>
+      <div class="progression">
+        <span class="p-node">A(I)m</span><span class="p-arrow">→</span>
+        <span class="p-node">F(VI)</span><span class="p-arrow">→</span>
+        <span class="p-node">D(IV)m</span><span class="p-arrow">→</span>
+        <span class="p-node">E(V)</span>
+      </div>
+      <p style="margin-top:4px"><strong>Fórmula:</strong> <span class="note">1 – 5 – 1 – 3 – 5 – 1</span> (abarcando dos octavas).</p>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>A(I)m:</strong> Toca en movimiento ascendente fluido: <span class="note">A(I)</span> grave – <span class="note">E(V)</span> – <span class="note">A(I)</span> – <span class="note">C(III)</span> – <span class="note">E(V)</span> – <span class="note">A(I)</span> agudo.</li>
+      <li><strong>F(VI):</strong> Toca: <span class="note">F(VI)</span> grave – <span class="note">C(III)</span> – <span class="note">F(VI)</span> – <span class="note">A(I)</span> – <span class="note">C(III)</span> – <span class="note">F(VI)</span> agudo.</li>
+      <li><strong>D(IV)m:</strong> Toca: <span class="note">D(IV)</span> grave – <span class="note">A(I)</span> – <span class="note">D(IV)</span> – <span class="note">F(VI)</span> – <span class="note">A(I)</span> – <span class="note">D(IV)</span> agudo.</li>
+      <li><strong>E(V):</strong> Toca: <span class="note">E(V)</span> grave – <span class="note">B(II)</span> – <span class="note">E(V)</span> – <span class="note">G#(VII)</span> – <span class="note">B(II)</span> – <span class="note">E(V)</span> agudo.</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 9 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 9</span>
+      <span class="pattern-title">El Bajo Alberti Reinterpretado</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Sonata No. 1 en <span class="note">F(I)</span> menor, Op. 2 No. 1, 1.er mov. (<em>Allegro</em>), compases 20–25. Compás de 2/2. Figura de acorde quebrado: nota más grave, nota más aguda, nota media, nota más aguda: <span class="note">Ab(III)</span> – <span class="note">Eb(VII)</span> – <span class="note">C(V)</span> – <span class="note">Eb(VII)</span>.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Evolución del bajo Alberti clásico hacia un motor armónico fluido y expresivo.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>Al sustituir la tercera por la novena (<span class="note">1 – 5 – 9 – 5</span>), convertimos una figuración clásica tradicional en un acompañamiento moderno increíblemente fresco.</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">C(I)</span> mayor.</p>
+      <div class="progression">
+        <span class="p-node">C(I)</span><span class="p-arrow">→</span>
+        <span class="p-node">G(V)/B(VII)</span><span class="p-arrow">→</span>
+        <span class="p-node">A(VI)m</span><span class="p-arrow">→</span>
+        <span class="p-node">F(IV)</span>
+      </div>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>C(I)add9:</strong> Toca la secuencia continua de corcheas: <span class="note">C(I)</span> grave – <span class="note">G(V)</span> – <span class="note">D(II)</span> – <span class="note">G(V)</span>.</li>
+      <li><strong>G(V)/B(VII):</strong> Toca: <span class="note">B(VII)</span> grave – <span class="note">G(V)</span> – <span class="note">D(II)</span> – <span class="note">G(V)</span>.</li>
+      <li><strong>A(VI)m9:</strong> Toca: <span class="note">A(VI)</span> grave – <span class="note">E(III)</span> – <span class="note">B(VII)</span> – <span class="note">E(III)</span>.</li>
+      <li><strong>F(IV)add9:</strong> Toca: <span class="note">F(IV)</span> grave – <span class="note">C(I)</span> – <span class="note">G(V)</span> – <span class="note">C(I)</span>.</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 10 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 10</span>
+      <span class="pattern-title">El Marco Espacial Minimalista</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Sonata No. 4 en <span class="note">Eb(I)</span> mayor, Op. 7, 2.º mov. (<em>Largo con gran espressione</em>), compases 25–32 en <span class="note">C(I)</span> mayor. Compás de 3/4. La mano izquierda toca únicamente la nota grave <span class="note">C(I)</span> en el tiempo 1 y deja silencios o espacio resonante en los tiempos 2 y 3.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Uso de la arquitectura del silencio y la resonancia natural del instrumento como elemento de profunda majestuosidad.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>La base de la balada intimista y minimalista contemporánea (estilo Billie Eilish o Ludovico Einaudi), donde menos es más.</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">C(I)</span> mayor.</p>
+      <div class="progression">
+        <span class="p-node">C(I)</span><span class="p-arrow">→</span>
+        <span class="p-node">E(III)m</span><span class="p-arrow">→</span>
+        <span class="p-node">F(IV)</span><span class="p-arrow">→</span>
+        <span class="p-node">F(IV)m</span>
+      </div>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>C(I):</strong> Toca la nota grave <span class="note">C(I)</span> en el tiempo 1 con pedal pisado. Deja que el sonido resuene en silencio durante los tiempos 2 y 3.</li>
+      <li><strong>E(III)m:</strong> Toca la nota grave <span class="note">E(III)</span> en el tiempo 1; silencio en tiempos 2 y 3.</li>
+      <li><strong>F(IV):</strong> Toca la nota grave <span class="note">F(IV)</span> en el tiempo 1; silencio en tiempos 2 y 3.</li>
+      <li><strong>F(IV)m:</strong> Toca la nota grave <span class="note">F(IV)</span> en el tiempo 1 mientras la mano derecha cambia el color a menor.</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 11 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 11</span>
+      <span class="pattern-title">La Onda Ondulante en 6/8</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>Sonata No. 17 en <span class="note">D(I)</span> menor, Op. 31 No. 2 ("Tempest"), 3.er mov. (<em>Allegretto</em>), compases 1–8. Compás de 3/8. Semicorcheas oscilantes continuas: <span class="note">D(I)</span> – <span class="note">A(V)</span> – <span class="note">F(III)</span> – <span class="note">A(V)</span> – <span class="note">D(I)</span> – <span class="note">A(V)</span>.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Movimiento perpetuo mecedor que genera un flujo constante e ininterrumpido como olas del mar.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>El acompañamiento perfecto para baladas escritas en compás compuesto de 6/8 o vals lento (estilo "Hallelujah" o "Perfect" de Ed Sheeran).</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">C(I)</span> mayor en 6/8.</p>
+      <div class="progression">
+        <span class="p-node">C(I)</span><span class="p-arrow">→</span>
+        <span class="p-node">A(VI)m</span><span class="p-arrow">→</span>
+        <span class="p-node">F(IV)</span><span class="p-arrow">→</span>
+        <span class="p-node">G(V)</span>
+      </div>
+      <p style="margin-top:4px"><strong>Fórmula:</strong> <span class="note">1 – 5 – 8 – 5 – 3 – 5</span> en 6/8.</p>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>C(I):</strong> Toca el patrón de 6 corcheas: <span class="note">C(I)</span> grave – <span class="note">G(V)</span> – <span class="note">C(I)</span> agudo – <span class="note">G(V)</span> – <span class="note">E(III)</span> – <span class="note">G(V)</span>.</li>
+      <li><strong>A(VI)m:</strong> Toca: <span class="note">A(VI)</span> grave – <span class="note">E(III)</span> – <span class="note">A(VI)</span> agudo – <span class="note">E(III)</span> – <span class="note">C(I)</span> – <span class="note">E(III)</span>.</li>
+      <li><strong>F(IV):</strong> Toca: <span class="note">F(IV)</span> grave – <span class="note">C(I)</span> – <span class="note">F(IV)</span> agudo – <span class="note">C(I)</span> – <span class="note">A(VI)</span> – <span class="note">C(I)</span>.</li>
+      <li><strong>G(V):</strong> Toca: <span class="note">G(V)</span> grave – <span class="note">D(II)</span> – <span class="note">G(V)</span> agudo – <span class="note">D(II)</span> – <span class="note">B(VII)</span> – <span class="note">D(II)</span>.</li>
+    </ol>
+  </div>
+
+  <!-- PATRÓN 12 -->
+  <div class="card pattern-card">
+    <div class="card-title">
+      <span class="pattern-num">PATRÓN 12</span>
+      <span class="pattern-title">El Bajo de Lamento Cromático (Passacaglia)</span>
+    </div>
+    <div class="callout callout-info">
+      <div class="co-title">◆ HECHO DOCUMENTADO</div>
+      <p>32 Variaciones en <span class="note">C(I)</span> menor, WoO 80, compases 1–8. Compás de 3/4. Línea cromática descendente paso a paso en el bajo: <span class="note">C(I)</span> – <span class="note">B(VII)</span> – <span class="note">Bb(VII)</span> – <span class="note">A(VI)</span> – <span class="note">Ab(VI)</span> – <span class="note">G(V)</span>.</p>
+    </div>
+    <div class="callout callout-example">
+      <div class="co-title">◆ ANÁLISIS MUSICAL</div>
+      <p>Estructura barroca de Chaconne/Passacaglia utilizada para expresar máxima gravedad y melancolía.</p>
+    </div>
+    <div class="callout callout-warn">
+      <div class="co-title">◆ ADAPTACIÓN MODERNA</div>
+      <p>Una de las progresiones más apasionantes en la balada pop/rock y soul contemporánea.</p>
+      <p style="margin-top:6px"><strong>Tonalidad de trabajo:</strong> <span class="note">A(I)</span> menor.</p>
+      <div class="progression">
+        <span class="p-node">A(I)m</span><span class="p-arrow">→</span>
+        <span class="p-node">A(I)m/G#(VII)</span><span class="p-arrow">→</span>
+        <span class="p-node">A(I)m/G(VII)</span><span class="p-arrow">→</span>
+        <span class="p-node">F#(VI)°</span><span class="p-arrow">→</span>
+        <span class="p-node">F(VI)maj7</span><span class="p-arrow">→</span>
+        <span class="p-node">E(V)7</span>
+      </div>
+    </div>
+    <div style="font-size:.85rem;font-weight:700;color:var(--accent);margin-top:10px;margin-bottom:4px">CÓMO TOCARLO</div>
+    <ol class="steps">
+      <li><strong>Compás 1:</strong> Toca el bajo <span class="note">A(I)</span> junto con el acorde medio <span class="note">C(III)</span> – <span class="note">E(V)</span>.</li>
+      <li><strong>Compás 2:</strong> Bajo descendente en <span class="note">G#(VII)</span> manteniendo la armonía <span class="note">C(III)</span> – <span class="note">E(V)</span>.</li>
+      <li><strong>Compás 3:</strong> Bajo descendente en <span class="note">G(VII)</span> manteniendo <span class="note">C(III)</span> – <span class="note">E(V)</span>.</li>
+      <li><strong>Compás 4:</strong> Bajo en <span class="note">F#(VI)</span> con el acorde <span class="note">C(III)</span> – <span class="note">Eb(III)</span> – <span class="note">A(I)</span>.</li>
+      <li><strong>Compás 5:</strong> Bajo en <span class="note">F(VI)</span> con el acorde <span class="note">C(III)</span> – <span class="note">E(V)</span> – <span class="note">A(I)</span>.</li>
+      <li><strong>Compás 6:</strong> Bajo en <span class="note">E(V)</span> con la resolución <span class="note">B(II)</span> – <span class="note">D(IV)</span> – <span class="note">G#(VII)</span>.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= MÓDULO 3 ================= -->
+<section id="mod3" class="section">
+  <div class="mod-header">
+    <div class="mod-num">03</div>
+    <div>
+      <h2>Tu Plan de Entrenamiento de 4 Fases</h2>
+      <div class="mod-sub">Para dominar el piano y llevar los patrones a tus propias canciones</div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="co-title">◆ RUTINA ESTRUCTURADA</div>
+    <p>Para que no te quedes solo con la teoría y puedas llevar estos patrones a tus propias canciones, sigue esta rutina de práctica estructurada.</p>
+  </div>
+
+  <div class="plan-flow">
+    <div class="plan-node"><span class="pn-num">FASE 1</span> Aislamiento Técnico</div>
+    <div class="plan-arrow">▼</div>
+    <div class="plan-node"><span class="pn-num">FASE 2</span> Reducción Armónica</div>
+    <div class="plan-arrow">▼</div>
+    <div class="plan-node"><span class="pn-num">FASE 3</span> Círculo de Quintas (12 Tonalidades)</div>
+    <div class="plan-arrow">▼</div>
+    <div class="plan-node"><span class="pn-num">FASE 4</span> Aplicación y Creación Creativa</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Fase 1: Aislamiento Técnico y Peso (Semana 1)</div>
+    <ul class="steps">
+      <li>Trabaja exclusivamente la mano izquierda de cada patrón a tempo lento (50 BPM).</li>
+      <li>Enfócate en el relajamiento de hombro y codo. Siente cómo la fuerza nace del peso del brazo y no de la tensión de los dedos.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Fase 2: Reducción Armónica (Semana 2)</div>
+    <ul class="steps">
+      <li>Antes de hacer los arpegios o ritmos, toca los acordes en bloque.</li>
+      <li>Esto entrena a tu cerebro para visualizar la forma del acorde en el teclado antes de desplegar las notas.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Fase 3: Rutina de Transportación por Círculo de Quintas (Semana 3)</div>
+    <p style="font-size:.9rem;margin-bottom:8px">Toma un patrón abstracto (por ejemplo, el <span class="note">1 – 5 – 9 – 3</span> del Patrón 4) y transpórtalo sistemáticamente:</p>
+    <ol class="steps">
+      <li><strong>Tonalidades sin alteraciones:</strong> <span class="note">C(I)</span> mayor y <span class="note">A(I)</span> menor.</li>
+      <li><strong>Tonalidades con sostenidos:</strong> <span class="note">G(V)</span> mayor, <span class="note">D(II)</span> mayor, <span class="note">A(VI)</span> mayor.</li>
+      <li><strong>Tonalidades con bemoles:</strong> <span class="note">F(IV)</span> mayor, <span class="note">Bb(II)</span> mayor, <span class="note">Eb(III)</span> mayor.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Fase 4: Integración Melódica y Creación (Semana 4)</div>
+    <ul class="steps">
+      <li>Pon el metrónomo en un ritmo suave de balada.</li>
+      <li>Toca el patrón adaptado en la mano izquierda mientras tu mano derecha improvisa notas sencillas de la escala pentatónica o canta una línea melódica encima.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= EJERCICIOS ================= -->
+<section id="ejercicios" class="section">
+  <div class="mod-header">
+    <div class="mod-num">📝</div>
+    <div>
+      <h2>Ejercicios de Aplicación y Análisis</h2>
+      <div class="mod-sub">15 ejercicios progresivos para dominar la mano izquierda de Beethoven en la balada moderna</div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="co-title">◆ CÓMO USAR ESTA SECCIÓN</div>
+    <p>Cada ejercicio incluye el enunciado completo, la solución paso a paso, la explicación causal y el error típico a evitar. Trabájalos en orden de dificultad: Básica → Intermedia → Avanzada. Están diseñados para reforzar los conceptos del tutorial mediante la práctica activa.</p>
+  </div>
+
+  <!-- EJERCICIO 1 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 1</span>
+      <span class="ejercicio-tipo">Opción múltiple</span>
+      <span class="ejercicio-dificultad dif-basica">Básica</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Balance de Capas (Plano Sonoro)</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> En el Módulo 1 se describen tres principios técnicos fundamentales para la mano izquierda. ¿Cuál de las siguientes afirmaciones describe correctamente el principio de "Balance de Capas (Plano Sonoro)"?
+      <div style="margin-top:10px;padding-left:16px;font-size:.88rem">
+        <p>A) La mano izquierda debe tocar con la misma intensidad que la mano derecha para lograr un unísono perfecto.</p>
+        <p>B) La mano izquierda debe cantar con sonoridad llena pero mantenerse en un plano dinámico inferior (piano o pianissimo) respecto a la mano derecha, transfiriendo el peso del brazo de manera relajada.</p>
+        <p>C) La mano izquierda debe golpear las teclas con fuerza para garantizar que los bajos se escuchen por encima de la melodía.</p>
+        <p>D) La mano izquierda debe mantener un volumen constante e invariable sin importar la dinámica de la mano derecha.</p>
+      </div>
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>La opción correcta es la <strong>B</strong>. El tutorial indica que la mano izquierda debe cantar con sonoridad llena pero mantener un nivel dinámico piano o pianissimo respecto a la mano derecha. Además, señala que no debe "golpear" las teclas, sino transferir el peso del brazo hacia el fondo de las teclas de manera relajada. Las opciones A, C y D contradicen directamente estos principios.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>En la balada moderna y en el repertorio clásico, la jerarquía textural exige que la melodía (habitualmente en la mano derecha) predomine. Si la mano izquierda iguala o supera en volumen a la melodía, se pierde la claridad de capas y la expresividad. El peso del brazo, en lugar de la tensión digital, permite un sonido profundo sin percusión.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Confundir "sonoridad llena" con "volumen alto". La mano izquierda puede sonar rica y profunda sin opacar la melodía. Evítese también el golpeo de teclas, que produce un ataque duro y antiestético.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 2 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 2</span>
+      <span class="ejercicio-tipo">Verdadero-Falso</span>
+      <span class="ejercicio-dificultad dif-basica">Básica</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Arpegios Continuos y Movimiento de Muñeca</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> En el Módulo 1 se afirma que, durante los arpegios continuos, se debe estirar y forzar los dedos para alcanzar las notas extremas, evitando el movimiento de muñeca.
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p><strong>Falso</strong>. El tutorial indica explícitamente que, en los arpegios continuos, no se deben estirar ni forzar los dedos, sino usar un suave balanceo de muñeca de izquierda a derecha para guiar la mano. El movimiento de rotación de la muñeca es el principio técnico número 2.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>Forzar los dedos y la mano para abarcar intervalos amplios genera tensión, fatiga y riesgo de lesión. La rotación de muñeca distribuye el esfuerzo y permite fluidez en los arpegios, especialmente en patrones como el Arpegio Gran Onda Multi-Octava (Patrón 8) o el Arpegio Ascendente Expandido (Patrón 4).</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Creer que la técnica pianística se basa en la fuerza digital. La relajación y el uso inteligente del peso y la rotación son pilares del sonido profesional.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 3 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 3</span>
+      <span class="ejercicio-tipo">Aplicación</span>
+      <span class="ejercicio-dificultad dif-intermedia">Intermedia</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Control del Pedal en el Patrón 1 (A menor)</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> Un estudiante está trabajando el Patrón 1 (Triplete Hipnótico de la Penumbra) en la tonalidad de A menor. Debe aplicar el control del pedal de resonancia según el Módulo 1. Indica en qué momento exacto debe levantar y renovar el pedal, y justifica brevemente por qué.
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>Según el Módulo 1, el pedal debe levantarse y renovarse exactamente en el cambio de cada acorde. En el Patrón 1 aplicado a A menor, la progresión de trabajo es A(I)m → F(VI) → C(III) → G(VII) (adaptación moderna del patrón). Por lo tanto, el pedal se renueva al cambiar de A(I)m a F(VI), de F(VI) a C(III) y de C(III) a G(VII). La justificación es evitar que los bajos profundos se vuelvan oscuros o barrocos por acumulación de resonancias.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>El pedal de resonancia acumula todas las vibraciones de las cuerdas. Si no se renueva en cada cambio armónico, los sonidos de acordes anteriores se mezclan con los nuevos, creando disonancias no deseadas y emborronando la textura. En texturas arpegiadas y con octavas graves, este efecto es especialmente nocivo.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Mantener el pedal pisado durante varios compases o cambiarlo a mitad del arpegio. El cambio debe coincidir con el ataque del nuevo bajo.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 4 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 4</span>
+      <span class="ejercicio-tipo">Emparejamiento</span>
+      <span class="ejercicio-dificultad dif-basica">Básica</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Patrones, Obras de Origen y Compases</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> Relaciona cada patrón con su obra de origen y su compás correspondiente, según el tutorial.
+      <div style="margin-top:10px">
+        <p><strong>Patrones:</strong></p>
+        <p>1. Pulso Latido (Heartbeat Pulse)</p>
+        <p>2. Bajo Pedal Pastorale (Drone)</p>
+        <p>3. Onda Ondulante en 6/8</p>
+        <p>4. Bajo de Lamento Cromático (Passacaglia)</p>
+        <p style="margin-top:8px"><strong>Obras/Compases:</strong></p>
+        <p>A. Op. 28 ("Pastoral"), 1er mov. — 3/4</p>
+        <p>B. WoO 80 — 3/4</p>
+        <p>C. Op. 110, 3er mov. — 12/16</p>
+        <p>D. Op. 31 No. 2 ("Tempest"), 3er mov. — 3/8</p>
+      </div>
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p><strong>1-C; 2-A; 3-D; 4-B</strong>. El Patrón 2 (Pulso Latido) proviene de la Sonata Op. 110, 3er mov., en compás de 12/16. El Patrón 5 (Bajo Pedal Pastorale) proviene de la Sonata Op. 28, 1er mov., en 3/4. El Patrón 11 (Onda Ondulante en 6/8) proviene de la Sonata Op. 31 No. 2 ("Tempest"), 3er mov., en 3/8 (aunque el título menciona 6/8, el compás documentado es 3/8). El Patrón 12 (Bajo de Lamento Cromático) proviene de las 32 Variaciones WoO 80, en 3/4.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>Cada patrón está anclado a una obra y compás específicos que condicionan su carácter rítmico y textural. Reconocer estas correspondencias es esencial para interpretar con estilo y para transportar correctamente las fórmulas a otros contextos.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Confundir el compás de 3/8 con 6/8 en el Patrón 11, o atribuir el Pulso Latido a una sonata diferente. La precisión documental es parte del rigor pedagógico.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 5 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 5</span>
+      <span class="ejercicio-tipo">Análisis</span>
+      <span class="ejercicio-dificultad dif-intermedia">Intermedia</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Análisis del Patrón 3 (Bajo Cantabile) en G mayor</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> Analiza el Patrón 3 (Bajo Cantabile con Relleno Intermedio) en la tonalidad de G mayor. Describe la estructura de capas, el compás y la función armónica de la progresión G(I) → E(VI)m7 → C(IV)add9 → D(V)11. Explica cómo se distribuye el bajo y el relleno en cada acorde.
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>El Patrón 3 se documenta en compás de 2/4 (aunque el tutorial lo cita en 2/4 para el ejemplo de Ab mayor, se mantiene el compás para la adaptación). La estructura es polifónica en tres capas: cimiento grave (bajo), relleno armónico medio (semicorcheas) y melodía en la mano derecha.</p>
+      <p style="margin-top:8px">Para <strong>G(I)</strong>: bajo en G(I) en tiempo 1 y D(V) en tiempo 2; relleno en semicorcheas: D(V) – G(I) – B(III) – A(II).</p>
+      <p>Para <strong>E(VI)m7</strong>: bajo en E(VI) en tiempo 1 y B(III) en tiempo 2; relleno: B(III) – E(VI) – G(I) – D(V).</p>
+      <p>Para <strong>C(IV)add9</strong>: bajo en C(IV) en tiempo 1 y G(I) en tiempo 2; relleno: G(I) – C(IV) – E(III) – D(V).</p>
+      <p>Para <strong>D(V)11</strong>: bajo en D(V) en tiempo 1 y A(II) en tiempo 2; relleno: A(II) – C(IV) – E(III) – G(I).</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>El Patrón 3 se basa en la separación funcional de capas: el bajo define la fundamental del acorde en el tiempo fuerte y la quinta en el débil, mientras el relleno arpegiado en semicorcheas completa la armonía. Esta distribución permite que la mano derecha cante sin competir con el acompañamiento.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Tocar el relleno en un registro demasiado grave o demasiado agudo, o descuidar la independencia de capas. El bajo debe ser profundo y sostenido; el relleno, ligero y articulado.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 6 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 6</span>
+      <span class="ejercicio-tipo">Transporte</span>
+      <span class="ejercicio-dificultad dif-avanzada">Avanzada</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Transporte del Patrón 4 a D menor</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> Transporta el Patrón 4 (Arpegio Ascendente Expandido 1–5–8–10) a la tonalidad de D menor. Escribe la fórmula extendida 1–5–9–3 para los acordes D(I)m, Bb(VI), F(III) y C(VII) en 3/4 o 6/8, indicando las notas con notación americana y grado entre paréntesis.
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>En D menor, la escala es D(I) – E(II) – F(III) – G(IV) – A(V) – Bb(VI) – C(VII).</p>
+      <p style="margin-top:8px">Para <strong>D(I)m9</strong>: arpegio ascendente D(I) – A(V) – E(II) – F(III).</p>
+      <p>Para <strong>Bb(VI)maj7/9</strong>: Bb(VI) – F(III) – C(VII) – A(V).</p>
+      <p>Para <strong>F(III)add9</strong>: F(III) – C(VII) – G(IV) – A(V).</p>
+      <p>Para <strong>C(VII)11</strong>: C(VII) – G(IV) – D(I) – Bb(VI).</p>
+      <p>La fórmula 1–5–9–3 se aplica añadiendo la novena (II grado) y la tercera (III grado) según la escala de D menor.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>El Patrón 4 expande el acorde más allá de la octava, incorporando la novena para dar color moderno. La fórmula 1–5–9–3 garantiza que el arpegio abarque un rango amplio y expresivo, ideal para baladas neoclásicas. El transporte a D menor exige ajustar los grados a la nueva escala.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Usar la tercera mayor en acordes menores o confundir el grado VI con VI mayor cuando en D menor es Bb(VI) mayor. Verificar siempre la calidad de cada acorde según la escala.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 7 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 7</span>
+      <span class="ejercicio-tipo">Composición breve</span>
+      <span class="ejercicio-dificultad dif-intermedia">Intermedia</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Patrón 6 en F mayor: Progresión de 4 compases</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> Usando el Patrón 6 (Bajo Creador de Paso + Contratiempo) en la tonalidad de F mayor, compón una progresión de 4 compases en 4/4 que incluya los acordes Bb(II)m7, C(V)7, F(I)maj7 y D(VI)m7. Indica el bajo en el tiempo 1 y el acorde a contratiempo (el "and" del tiempo 1) para cada uno.
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>Progresión: Bb(II)m7 → C(V)7 → F(I)maj7 → D(VI)m7.</p>
+      <p style="margin-top:8px">Para <strong>Bb(II)m7</strong>: bajo Bb(II) en tiempo 1; acorde a contratiempo: D(IV) – F(VI) – A(I).</p>
+      <p>Para <strong>C(V)7</strong>: bajo C(V) en tiempo 1; acorde a contratiempo: Bb(II) – D(IV) – E(VII).</p>
+      <p>Para <strong>F(I)maj7</strong>: bajo F(I) en tiempo 1; acorde a contratiempo: A(III) – C(V) – E(VII).</p>
+      <p>Para <strong>D(VI)m7</strong>: bajo D(VI) en tiempo 1; acorde a contratiempo: C(V) – F(I) – A(III).</p>
+      <p>Todos los acordes a contratiempo se tocan en el "and" del tiempo 1, creando el efecto de propulsión rítmica.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>El Patrón 6 imita el pizzicato del contrabajo con un bajo picado y un acorde corto a contratiempo. Esta distribución genera un groove sutil y elegante, ideal para R&B, Neo-Soul o Pop acústico. La progresión elegida (II–V–I–VI) es común en estos estilos.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Tocar el acorde a contratiempo demasiado fuerte o largo, o descuidar la independencia entre el bajo y el acorde. El bajo debe ser claro y definido; el acorde, corto y ligero.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 8 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 8</span>
+      <span class="ejercicio-tipo">Identificación auditiva escrita</span>
+      <span class="ejercicio-dificultad dif-avanzada">Avanzada</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Identificación del Patrón 7 (Octavas Quebradas)</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> Se te presenta una grabación de un acompañamiento de mano izquierda que consiste en octavas quebradas rápidas en corcheas, alternando la nota grave y aguda de la octava, con una energía dramática y ansiosa. Identifica el patrón del tutorial al que corresponde, nombra la obra de Beethoven en la que se documenta y describe su función en la adaptación moderna.
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>El patrón es el <strong>n.º 7: Bajo de Octavas Quebradas (Tremolo / Murky Bass)</strong>. Se documenta en la Sonata No. 8 en C menor, Op. 13 ("Pathétique"), 1er mov. (Allegro molto e con brio), compases 11–27, en compás de 2/2 (Alla breve). Su función en la adaptación moderna es construir la intensidad y la tensión del crescendo justo antes del estribillo en una balada de rock o pop dramático. Se transporta comúnmente a A menor con la progresión A(I)m → F(VI) → C(III) → G(VII).</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>Las octavas quebradas generan una energía dramática derivada del "basso tremolando" orquestal. Su repetición rápida en corcheas crea una sensación de ansiedad y electrización que empuja la música hacia adelante. Es un recurso de tensión, no de reposo.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Confundir este patrón con el Bajo Alberti Reinterpretado (Patrón 9) o con el Pulso Latido (Patrón 2). Las octavas quebradas alternan la misma nota en dos octavas, no acordes completos.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 9 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 9</span>
+      <span class="ejercicio-tipo">Opción múltiple</span>
+      <span class="ejercicio-dificultad dif-intermedia">Intermedia</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Patrón con Línea Cromática Descendente</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> ¿Cuál de los siguientes patrones del tutorial utiliza una línea cromática descendente en el bajo y se asocia con la estructura barroca de Chaconne/Passacaglia?
+      <div style="margin-top:10px;padding-left:16px;font-size:.88rem">
+        <p>A) Patrón 5: Bajo Pedal Pastorale (Drone)</p>
+        <p>B) Patrón 10: Marco Espacial Minimalista</p>
+        <p>C) Patrón 12: Bajo de Lamento Cromático (Passacaglia)</p>
+        <p>D) Patrón 8: Arpegio Gran Onda Multi-Octava</p>
+      </div>
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>La opción correcta es la <strong>C</strong>. El Patrón 12 se documenta en las 32 Variaciones en C menor, WoO 80, y consiste en una línea cromática descendente paso a paso en el bajo: C(I) – B(VII) – Bb(VII) – A(VI) – Ab(VI) – G(V). Se asocia con la estructura barroca de Chaconne/Passacaglia y expresa máxima gravedad y melancolía.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>La Passacaglia se basa en un bajo ostinato que se repite y varía. El descenso cromático es un recurso expresivo de gran peso emocional, muy utilizado en el Barroco y retomado en la balada pop/rock y soul contemporánea. Los otros patrones no presentan esta característica.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Confundir el Bajo Pedal Pastorale (que mantiene una nota fija) con el Bajo de Lamento Cromático (que desciende por semitonos). La diferencia es funcional y expresiva.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 10 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 10</span>
+      <span class="ejercicio-tipo">Análisis</span>
+      <span class="ejercicio-dificultad dif-avanzada">Avanzada</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Patrón 8 en E menor: Fórmula Multi-Octava</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> Analiza el Patrón 8 (Arpegio Gran Onda Multi-Octava) en la tonalidad de E menor. Escribe la fórmula 1–5–1–3–5–1 para los acordes E(I)m, C(VI), A(IV)m y B(V) en 6/8, indicando las notas con notación americana y grado entre paréntesis. Explica qué efecto textural se logra.
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>En E menor, la escala es E(I) – F#(II) – G(III) – A(IV) – B(V) – C(VI) – D(VII).</p>
+      <p style="margin-top:8px">Para <strong>E(I)m</strong>: E(I) grave – B(V) – E(I) – G(III) – B(V) – E(I) agudo.</p>
+      <p>Para <strong>C(VI)</strong>: C(VI) grave – G(III) – C(VI) – E(I) – G(III) – C(VI) agudo.</p>
+      <p>Para <strong>A(IV)m</strong>: A(IV) grave – E(I) – A(IV) – C(VI) – E(I) – A(IV) agudo.</p>
+      <p>Para <strong>B(V)</strong>: B(V) grave – F#(II) – B(V) – D(VII) – F#(II) – B(V) agudo.</p>
+      <p>El efecto textural es la explotación de todo el rango grave y medio del piano para crear un espacio tridimensional amplio y épico.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>El arpegio multi-octava expande el acorde a lo largo de dos octavas, generando una sensación de amplitud y profundidad. Es ideal para baladas épicas cinematográficas y bandas sonoras, donde se busca un sonido grandioso y envolvente.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Descuidar la uniformidad del sonido a lo largo del arpegio, o tocar las notas graves con demasiada fuerza en relación con las agudas. El equilibrio dinámico es esencial.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 11 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 11</span>
+      <span class="ejercicio-tipo">Verdadero-Falso</span>
+      <span class="ejercicio-dificultad dif-basica">Básica</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Patrón 9: Bajo Alberti Reinterpretado</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> El Patrón 9 (Bajo Alberti Reinterpretado) se basa en la figura clásica del Bajo Alberti, pero en su adaptación moderna se sustituye la tercera por la novena, dando lugar a la fórmula 1–5–9–5.
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p><strong>Verdadero</strong>. El tutorial indica que el Patrón 9 es una evolución del bajo Alberti clásico. En su adaptación moderna, al sustituir la tercera por la novena (1–5–9–5), se convierte una figuración clásica tradicional en un acompañamiento moderno increíblemente fresco. El ejemplo de trabajo en C mayor muestra la secuencia C(I) – G(V) – D(II) – G(V) para C(I)add9.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>La sustitución de la tercera por la novena añade color y ambigüedad tonal, muy apreciada en la música popular contemporánea. La fórmula 1–5–9–5 mantiene la claridad del bajo y la quinta, pero enriquece la textura con la novena.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Creer que el Patrón 9 es idéntico al Bajo Alberti tradicional. La reinterpretación moderna es precisamente lo que lo distingue.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 12 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 12</span>
+      <span class="ejercicio-tipo">Emparejamiento</span>
+      <span class="ejercicio-dificultad dif-intermedia">Intermedia</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Patrones y sus Fórmulas Numéricas</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> Relaciona cada patrón con su fórmula numérica o característica rítmica principal, según el tutorial.
+      <div style="margin-top:10px">
+        <p><strong>Patrones:</strong></p>
+        <p>1. Patrón 4: Arpegio Ascendente Expandido</p>
+        <p>2. Patrón 8: Arpegio Gran Onda Multi-Octava</p>
+        <p>3. Patrón 11: Onda Ondulante en 6/8</p>
+        <p>4. Patrón 7: Bajo de Octavas Quebradas</p>
+        <p style="margin-top:8px"><strong>Características:</strong></p>
+        <p>A. 1–5–1–3–5–1 (dos octavas)</p>
+        <p>B. 1–5–8–10 (o 1–5–9–3 extendido)</p>
+        <p>C. Octavas quebradas en corcheas rápidas</p>
+        <p>D. 1–5–8–5–3–5 en 6/8</p>
+      </div>
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p><strong>1-B; 2-A; 3-D; 4-C</strong>. El Patrón 4 utiliza la fórmula 1–5–8–10, extendida a 1–5–9–3. El Patrón 8 utiliza 1–5–1–3–5–1. El Patrón 11 utiliza 1–5–8–5–3–5 en 6/8. El Patrón 7 se caracteriza por octavas quebradas en corcheas rápidas.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>Cada patrón tiene una fórmula o característica rítmica que lo define y lo distingue de los demás. Reconocerlas permite identificarlos auditivamente y aplicarlos correctamente en la composición.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Confundir la fórmula del Patrón 4 con la del Patrón 8. Ambas expanden el arpegio, pero la primera se centra en la décima y la novena, mientras la segunda abarca dos octavas completas.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 13 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 13</span>
+      <span class="ejercicio-tipo">Aplicación</span>
+      <span class="ejercicio-dificultad dif-avanzada">Avanzada</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Patrón 10 (Marco Espacial Minimalista) en A menor</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> Un estudiante debe aplicar el Patrón 10 (Marco Espacial Minimalista) en la tonalidad de A menor. Escribe la progresión A(I)m → C(III) → D(IV)m → E(V)7 y describe cómo debe tocar la mano izquierda en cada acorde, indicando el tiempo fuerte y los silencios.
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>En A menor, la progresión es A(I)m → C(III) → D(IV)m → E(V)7.</p>
+      <p style="margin-top:8px">Para <strong>A(I)m</strong>: tocar la nota grave A(I) en el tiempo 1 con pedal pisado; silencio en tiempos 2 y 3.</p>
+      <p>Para <strong>C(III)</strong>: tocar la nota grave C(III) en el tiempo 1; silencio en tiempos 2 y 3.</p>
+      <p>Para <strong>D(IV)m</strong>: tocar la nota grave D(IV) en el tiempo 1; silencio en tiempos 2 y 3.</p>
+      <p>Para <strong>E(V)7</strong>: tocar la nota grave E(V) en el tiempo 1; silencio en tiempos 2 y 3.</p>
+      <p>En todos los casos, el pedal se mantiene para permitir la resonancia natural.</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>El Patrón 10 se basa en la arquitectura del silencio y la resonancia. Al tocar solo la nota grave en el tiempo 1 y dejar silencios en los tiempos 2 y 3, se crea un marco espacial que permite que la mano derecha cante con total libertad y que el sonido del piano resuene naturalmente. Es la base de la balada intimista y minimalista.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Llenar los silencios con notas adicionales o tocar las notas graves con demasiada fuerza. El silencio es parte esencial del patrón; la resonancia debe ser natural, no forzada.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 14 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 14</span>
+      <span class="ejercicio-tipo">Opción múltiple</span>
+      <span class="ejercicio-dificultad dif-intermedia">Intermedia</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Fase 3 del Plan de Entrenamiento</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> En el plan de entrenamiento de 4 fases, ¿qué se trabaja específicamente en la Fase 3?
+      <div style="margin-top:10px;padding-left:16px;font-size:.88rem">
+        <p>A) Aislamiento técnico y peso del brazo a tempo lento (50 BPM).</p>
+        <p>B) Reducción armónica: tocar los acordes en bloque antes de arpegiarlos.</p>
+        <p>C) Rutina de transportación por círculo de quintas, aplicando un patrón abstracto a 12 tonalidades.</p>
+        <p>D) Integración melódica: improvisar con la mano derecha sobre el patrón en la izquierda.</p>
+      </div>
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>La opción correcta es la <strong>C</strong>. La Fase 3 se titula "Rutina de Transportación por Círculo de Quintas (Semana 3)" y consiste en tomar un patrón abstracto (por ejemplo, el 1–5–9–3 del Patrón 4) y transportarlo sistemáticamente a tonalidades sin alteraciones (C mayor y A menor), con sostenidos (G, D, A mayores) y con bemoles (F, Bb, Eb mayores).</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>La transportación por círculo de quintas desarrolla la flexibilidad tonal y la comprensión profunda de las fórmulas. Permite al estudiante interiorizar los patrones más allá de una tonalidad específica, facilitando su aplicación creativa en cualquier contexto.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Confundir la Fase 3 con la Fase 2 (reducción armónica) o con la Fase 4 (integración melódica). Cada fase tiene un objetivo pedagógico distinto y secuencial.</p>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 15 -->
+  <div class="card ejercicio-card">
+    <div class="ejercicio-meta">
+      <span class="ejercicio-num">EJERCICIO N.º 15</span>
+      <span class="ejercicio-tipo">Análisis integrador</span>
+      <span class="ejercicio-dificultad dif-avanzada">Avanzada</span>
+    </div>
+    <div class="card-title" style="color:var(--amber);font-size:.95rem">Patrón para Pre-Estribillo en Balada Dramática</div>
+    <div class="ejercicio-enunciado">
+      <strong>ENUNCIADO:</strong> Integra los conocimientos del tutorial respondiendo: ¿Qué patrón de la mano izquierda de Beethoven sería más adecuado para el pre-estribillo de una balada pop dramática en A menor que necesita construir tensión progresiva? Justifica tu elección comparándolo con al menos otro patrón del tutorial, y menciona una fuente académica que respalde el análisis de la obra original.
+    </div>
+    <div class="solucion-paso">
+      <div class="sol-title">◆ SOLUCIÓN PASO A PASO</div>
+      <p>El patrón más adecuado es el <strong>n.º 7: Bajo de Octavas Quebradas (Tremolo / Murky Bass)</strong>, documentado en la Sonata Op. 13 ("Pathétique"), 1er mov. Su función es generar energía dramática, ansiosa y electrizante, ideal para construir la intensidad y la tensión del crescendo justo antes del estribillo.</p>
+      <p style="margin-top:8px">En comparación, el Patrón 10 (Marco Espacial Minimalista) produce un efecto de reposo y contemplación, opuesto a la tensión requerida. El Patrón 5 (Bajo Pedal Pastorale) genera estabilidad y paz, tampoco adecuado.</p>
+      <p>La fuente académica que respalda el análisis de la obra original es la edición Urtext de las 32 Sonatas para piano de Beethoven (Breitkopf & Härtel, Henle Urtext), disponible en IMSLP, o los manuscritos autógrafos en Beethoven-Haus Bonn. También se puede citar a Charles Rosen, <em>Beethoven's Piano Sonatas: A Short Companion</em> (Yale University Press).</p>
+    </div>
+    <div class="porque-causal">
+      <div class="por-title">◆ POR QUÉ (EXPLICACIÓN CAUSAL)</div>
+      <p>El pre-estribillo de una balada dramática requiere un aumento gradual de la tensión armónica y rítmica. Las octavas quebradas en corcheas rápidas crean un efecto de urgencia y ansiedad que empuja hacia el estribillo. Otros patrones, como el Marco Espacial Minimalista o el Bajo Pedal Pastorale, tienen funciones expresivas opuestas (reposo, estabilidad), por lo que no servirían para este propósito.</p>
+    </div>
+    <div class="error-tipico">
+      <div class="err-title">⚠ ERROR TÍPICO A EVITAR</div>
+      <p>Elegir un patrón por su popularidad sin considerar su función expresiva. El análisis debe basarse en la correspondencia entre el efecto deseado (tensión) y las características del patrón (ritmo rápido, repetición, dramatismo).</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= FUENTES ================= -->
+<section id="fuentes" class="section">
+  <div class="mod-header">
+    <div class="mod-num">📚</div>
+    <div>
+      <h2>Fuentes Académicas y Recursos</h2>
+      <div class="mod-sub">Respaldo documental de la investigación</div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="co-title">◆ RESPALDO MUSICOLÓGICO</div>
+    <p>Esta investigación y sus partituras originales han sido respaldadas por ediciones de alta fidelidad y estudios musicológicos consultables.</p>
+  </div>
+
+  <div class="source-item">
+    <div class="src-name">1. IMSLP / Petrucci Music Library</div>
+    <div class="src-desc">Ediciones Urtext de las 32 Sonatas para piano de Ludwig van Beethoven (Breitkopf & Härtel, Henle Urtext).</div>
+    <a href="https://imslp.org/wiki/Category:Beethoven,_Ludwig_van" target="_blank" rel="noopener">https://imslp.org/wiki/Category:Beethoven,_Ludwig_van</a>
+  </div>
+
+  <div class="source-item">
+    <div class="src-name">2. Beethoven-Haus Bonn (Archivos Digitales)</div>
+    <div class="src-desc">Manuscritos autógrafos y borradores originales del compositor.</div>
+    <a href="https://www.beethoven.de" target="_blank" rel="noopener">https://www.beethoven.de</a>
+  </div>
+
+  <div class="source-item">
+    <div class="src-name">3. CUNY Academic Works / Tesis Doctorales de Análisis Musical</div>
+    <div class="src-desc">Trabajos de investigación sobre la textura y el estilo tardío de Beethoven.</div>
+    <a href="https://academicworks.cuny.edu" target="_blank" rel="noopener">https://academicworks.cuny.edu</a>
+  </div>
+
+  <div class="source-item">
+    <div class="src-name">4. Fuentes Pedagógicas Históricas</div>
+    <div class="src-desc">Carl Czerny, <em>Op. 500: Escuela Completa Teórica y Práctica de Piano</em> (Capítulo sobre la interpretación de Beethoven); Charles Rosen, <em>Beethoven's Piano Sonatas: A Short Companion</em> (Yale University Press).</div>
+  </div>
+</section>
+
+<!-- ================= CRÉDITOS ================= -->
+<section id="creditos" class="section">
+  <div class="mod-header">
+    <div class="mod-num">🎓</div>
+    <div>
+      <h2>Créditos</h2>
+      <div class="mod-sub">Información del tutorial y autoría</div>
+    </div>
+  </div>
+
+  <!-- SVG IDÉNTICO AL HOME -->
+  <div class="hero-svg" id="creditsSvgContainer">
+    <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-label="Animación: arquitectura armónica de la mano izquierda de Beethoven">
+      <defs>
+        <linearGradient id="bgGradC" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#070b14">
+            <animate attributeName="stop-color" values="#070b14;#0d1424;#0a0e1a;#070b14" dur="9s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="50%" stop-color="#0a0e1a">
+            <animate attributeName="stop-color" values="#0a0e1a;#070b14;#0d1424;#0a0e1a" dur="7s" repeatCount="indefinite"/>
+          </stop>
+          <stop offset="100%" stop-color="#0d1424">
+            <animate attributeName="stop-color" values="#0d1424;#0a0e1a;#070b14;#0d1424" dur="8s" repeatCount="indefinite"/>
+          </stop>
+        </linearGradient>
+        <pattern id="gridPC" width="34" height="34" patternUnits="userSpaceOnUse">
+          <path d="M 34 0 L 0 0 0 34" fill="none" stroke="#1e3a5f" stroke-width="0.55"/>
+        </pattern>
+        <filter id="glowCC" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="3.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <radialGradient id="haloCyanC">
+          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="haloPurpleC">
+          <stop offset="0%" stop-color="#a855f7" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="haloGreenC">
+          <stop offset="0%" stop-color="#22c55e" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="haloAmberC">
+          <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+        </radialGradient>
+        <path id="pAC" d="M 60 175 Q 230 85 400 175 T 740 175" fill="none"/>
+        <path id="pBC" d="M 60 235 Q 230 325 400 235 T 740 235" fill="none"/>
+        <path id="pCC" d="M 60 295 Q 230 205 400 295 T 740 295" fill="none"/>
+      </defs>
+
+      <rect width="800" height="450" fill="url(#bgGradC)"/>
+      <rect width="800" height="450" fill="url(#gridPC)" opacity="0.4">
+        <animate attributeName="opacity" values="0.25;0.65;0.25" dur="6s" repeatCount="indefinite"/>
+      </rect>
+
+      <g transform="translate(400,200)">
+        <circle r="180" fill="none" stroke="#00d4ff" stroke-width="1" opacity="0.28" stroke-dasharray="6 10">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="24s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-dasharray" values="6 10;18 6;6 10" dur="5s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="150" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.25" stroke-dasharray="4 8">
+          <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="18s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-dasharray" values="4 8;14 4;4 8" dur="7s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="120" fill="none" stroke="#22c55e" stroke-width="0.9" opacity="0.22" stroke-dasharray="3 6">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="90" fill="none" stroke="#f59e0b" stroke-width="0.8" opacity="0.18" stroke-dasharray="2 5">
+          <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="11s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+
+      <circle cx="400" cy="175" r="30" fill="url(#haloCyanC)">
+        <animate attributeName="r" values="22;42;22" dur="3.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.4;0.9;0.4" dur="3.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="230" cy="235" r="24" fill="url(#haloPurpleC)">
+        <animate attributeName="r" values="18;34;18" dur="4.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="570" cy="235" r="24" fill="url(#haloGreenC)">
+        <animate attributeName="r" values="18;34;18" dur="5.1s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="400" cy="295" r="22" fill="url(#haloAmberC)">
+        <animate attributeName="r" values="16;30;16" dur="4.7s" repeatCount="indefinite"/>
+      </circle>
+
+      <path d="M 60 175 Q 230 85 400 175 T 740 175" fill="none" stroke="#00d4ff" stroke-width="1.6" opacity="0.55" stroke-dasharray="10 8" filter="url(#glowCC)">
+        <animate attributeName="stroke-dashoffset" from="0" to="-36" dur="2s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 60 235 Q 230 325 400 235 T 740 235" fill="none" stroke="#a855f7" stroke-width="1.6" opacity="0.5" stroke-dasharray="10 8">
+        <animate attributeName="stroke-dashoffset" from="0" to="-36" dur="2.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M 60 295 Q 230 205 400 295 T 740 295" fill="none" stroke="#f59e0b" stroke-width="1.4" opacity="0.45" stroke-dasharray="10 8">
+        <animate attributeName="stroke-dashoffset" from="0" to="-36" dur="3s" repeatCount="indefinite"/>
+      </path>
+
+      <circle r="4" fill="#00d4ff" filter="url(#glowCC)">
+        <animateMotion dur="5s" repeatCount="indefinite"><mpath href="#pAC"/></animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="5s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3.5" fill="#22c55e" filter="url(#glowCC)">
+        <animateMotion dur="6.5s" begin="1.2s" repeatCount="indefinite"><mpath href="#pAC"/></animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="6.5s" begin="1.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3.5" fill="#a855f7" filter="url(#glowCC)">
+        <animateMotion dur="5.8s" repeatCount="indefinite"><mpath href="#pBC"/></animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="5.8s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3" fill="#f59e0b" filter="url(#glowCC)">
+        <animateMotion dur="7.2s" begin="2s" repeatCount="indefinite"><mpath href="#pBC"/></animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="7.2s" begin="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3.5" fill="#00d4ff" filter="url(#glowCC)">
+        <animateMotion dur="6.8s" begin="0.6s" repeatCount="indefinite"><mpath href="#pCC"/></animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" dur="6.8s" begin="0.6s" repeatCount="indefinite"/>
+      </circle>
+
+      <g font-family="serif" filter="url(#glowCC)">
+        <text x="110" y="140" font-size="30" fill="#00d4ff" opacity="0.85">♪
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 -3;0 0" dur="3s" repeatCount="indefinite"/>
+        </text>
+        <text x="200" y="110" font-size="24" fill="#a855f7" opacity="0.75">♫
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="3.7s" repeatCount="indefinite"/>
+        </text>
+        <text x="320" y="95" font-size="22" fill="#22c55e" opacity="0.7">♩
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 -2;0 0" dur="4.3s" repeatCount="indefinite"/>
+        </text>
+        <text x="500" y="105" font-size="28" fill="#f59e0b" opacity="0.8">♪
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 -3;0 0" dur="2.8s" repeatCount="indefinite"/>
+        </text>
+        <text x="640" y="130" font-size="26" fill="#00d4ff" opacity="0.75">♬
+          <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="3.5s" repeatCount="indefinite"/>
+        </text>
+      </g>
+
+      <g transform="translate(100,388)">
+        <rect x="0"   y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="40"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="80"  y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="120" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="160" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="200" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="240" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="280" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="320" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="360" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="400" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="440" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="480" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="520" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="560" y="0" width="40" height="52" fill="#e2e8f0" stroke="#0a0e1a" stroke-width="1" rx="2"/>
+        <rect x="28"  y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="68"  y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="148" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="188" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="228" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="308" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="348" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="428" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="468" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="508" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="588" y="0" width="24" height="32" fill="#0a0e1a" stroke="#1e3a5f" rx="2"/>
+        <rect x="80" y="0" width="40" height="52" fill="none" stroke="#00d4ff" stroke-width="2" rx="2">
+          <animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="240" y="0" width="40" height="52" fill="none" stroke="#a855f7" stroke-width="2" rx="2">
+          <animate attributeName="opacity" values="0;1;0" dur="3.5s" begin="0.5s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="440" y="0" width="40" height="52" fill="none" stroke="#22c55e" stroke-width="2" rx="2">
+          <animate attributeName="opacity" values="0;1;0" dur="4s" begin="1s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+
+      <g transform="translate(700,30)">
+        <circle cx="0" cy="0" r="5" fill="#ef4444" filter="url(#glowCC)">
+          <animate attributeName="opacity" values="1;0.2;1" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <text x="12" y="4" font-family="monospace" font-size="11" fill="#ef4444" font-weight="700" letter-spacing="1.5">
+          LIVE
+          <animate attributeName="opacity" values="1;0.5;1" dur="1.5s" repeatCount="indefinite"/>
+        </text>
+      </g>
+
+      <text x="400" y="42" text-anchor="middle" font-family="'Segoe UI',sans-serif" font-size="20" font-weight="800" letter-spacing="2" filter="url(#glowCC)">
+        BEETHOVEN
+        <animate attributeName="fill" values="#00d4ff;#a855f7;#22c55e;#f59e0b;#00d4ff" dur="10s" repeatCount="indefinite"/>
+      </text>
+      <text x="400" y="62" text-anchor="middle" font-family="monospace" font-size="10" fill="#94a3b8" letter-spacing="4">
+        MANO IZQUIERDA · ARQUITECTURA ARMÓNICA
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="4s" repeatCount="indefinite"/>
+      </text>
+
+      <text x="770" y="445" text-anchor="end" font-family="'Segoe UI',sans-serif" font-size="8" fill="#64748b" font-style="italic">
+        Rubén Sbarsky
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="5s" repeatCount="indefinite"/>
+      </text>
+    </svg>
+  </div>
+
+  <div class="credits-card">
+    <div class="c-title">TUTORIAL INTERACTIVO</div>
+    <div style="font-size:1.4rem;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin:10px 0">
+      La Mano Izquierda de Beethoven
+    </div>
+    <div style="color:var(--muted);font-size:.85rem;margin-bottom:14px">Arquitectura armónica para la balada moderna</div>
+    <div class="c-author">👨‍💻 Rubén Sbarsky</div>
+    <div class="c-info">📅 Fecha: 27/09/2026</div>
+    <div class="c-info">🕐 Hora: 04:22:16</div>
+    <div class="c-info" style="margin-top:12px">📚 Tutorial solo con fines Educativos y Divulgación</div>
+    <div class="c-motto">Fiat iustitia, ruat caelum.</div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="f-line">📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div class="f-line">👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div class="f-line">📅 FECHA: 27/09/2026</div>
+  <div class="f-line">Hora: 04:22:16</div>
+  <div class="f-line f-motto">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  'use strict';
+
+  // ===== SPA NAVIGATION =====
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('.section');
+
+  function showSection(id){
+    sections.forEach(s => s.classList.remove('active'));
+    navLinks.forEach(l => l.classList.remove('active'));
+    const target = document.getElementById(id);
+    if(target){
+      target.classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+    const link = document.querySelector('.nav-link[data-section="'+id+'"]');
+    if(link) link.classList.add('active');
+
+    // Reiniciar animación del SVG en créditos
+    if(id === 'creditos'){
+      const svg = document.querySelector('#creditsSvgContainer svg');
+      if(svg && svg.setCurrentTime){
+        try{ svg.setCurrentTime(0); }catch(e){}
+      }
+    }
+  }
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const id = link.getAttribute('data-section');
+      showSection(id);
+    });
+  });
+
+  // ===== PROGRESS BAR =====
+  const progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = h.scrollHeight - h.clientHeight;
+    const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  // ===== BACK TO TOP =====
+  const backBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 300){
+      backBtn.classList.add('show');
+    } else {
+      backBtn.classList.remove('show');
+    }
+  }, {passive:true});
+
+  backBtn.addEventListener('click', () => {
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // ===== KEYBOARD NAV =====
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Home'){ window.scrollTo({top:0, behavior:'smooth'}); }
+  });
+
+})();
+</script>
+</body>
+</html>
