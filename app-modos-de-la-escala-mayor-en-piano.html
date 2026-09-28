@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0" name="viewport"/>
+<title>Modos de la Escala Mayor en Piano - by Rubén Sbarsky</title>
+<style>
+  :root {
+    --bg-dark: #090f1d;
+    --bg-card: #152238;
+    --bg-card-subtle: #1c2e4c;
+    --bg-input: #0b1528;
+    --primary: #38bdf8;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #2c4265;
+    --key-white-bg: #f8fafc;
+    --key-white-border: #cbd5e1;
+    --key-black-bg: #1e293b;
+    --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  body.theme-light {
+    --bg-dark: #f1f5f9; --bg-card: #ffffff; --bg-card-subtle: #f8fafc; --bg-input: #e2e8f0;
+    --primary: #0284c7; --accent: #d97706; --success: #059669; --danger: #dc2626;
+    --text-main: #0f172a; --text-muted: #475569; --border: #cbd5e1;
+    --key-white-bg: #ffffff; --key-white-border: #94a3b8; --key-black-bg: #0f172a;
+  }
+  body.theme-high-contrast {
+    --bg-dark: #000; --bg-card: #080808; --bg-card-subtle: #141414; --bg-input: #000;
+    --primary: #00ffff; --accent: #ffff00; --success: #00ff66; --danger: #ff3333;
+    --text-main: #fff; --text-muted: #e2e8f0; --border: #fff;
+    --key-white-bg: #fff; --key-white-border: #000; --key-black-bg: #000;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background-color: var(--bg-dark); color: var(--text-main); font-family: var(--font); font-size: 15px; line-height: 1.45; padding-bottom: 70px; transition: background 0.2s, color 0.2s; }
+  header { background: linear-gradient(135deg, #050a14, #152238); padding: 10px 14px; border-bottom: 2px solid rgba(56, 189, 248, 0.35); text-align: center; position: sticky; top: 0; z-index: 60; }
+  .header-content { max-width: 1050px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .badge-author { display: inline-block; background: rgba(56, 189, 248, 0.15); color: var(--primary); font-size: 0.8rem; font-weight: 700; padding: 2px 10px; border-radius: 9999px; border: 1px solid rgba(56, 189, 248, 0.35); }
+  h1 { font-size: 1.25rem; font-weight: 800; color: #fff; }
+  body.theme-light h1 { color: #0f172a; }
+
+  /* Master Bar */
+  .master-bar { background: #0b1322; border-bottom: 1px solid var(--border); padding: 6px 12px; font-size: 0.8rem; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
+  body.theme-light .master-bar { background: #e2e8f0; }
+  .master-control { display: flex; align-items: center; gap: 6px; }
+
+  /* Navigation */
+  nav.tab-nav { display: flex; overflow-x: auto; background: #0b1220; padding: 6px; gap: 6px; position: sticky; top: 76px; z-index: 50; border-bottom: 1px solid var(--border); scrollbar-width: none; }
+  nav.tab-nav::-webkit-scrollbar { display: none; }
+  .tab-btn { flex: 0 0 auto; background: transparent; border: 1px solid transparent; color: var(--text-muted); padding: 7px 11px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s ease; white-space: nowrap; }
+  .tab-btn:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-main); }
+  .tab-btn.active { background: var(--primary); color: #041021; font-weight: 800; }
+  .tab-btn.tab-btn-accent.active { background: var(--accent); color: #1e1302; }
+
+  .container { padding: 12px; max-width: 1050px; margin: 0 auto; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn 0.15s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.25); }
+  .card-title { font-size: 1.05rem; font-weight: 800; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+
+  /* Piano C3 - C6 (36 blancas + 25 negras = 61 teclas completas) */
+  .piano-outer-container { position: relative; width: 100%; margin-bottom: 10px; }
+  .piano-wrapper { position: relative; background: #060b14; border-radius: 10px; padding: 12px 8px; border: 2px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; user-select: none; }
+  .piano-keys { position: relative; height: 165px; display: flex; margin: 0 auto; }
+
+  .key-white {
+    width: 36px; height: 100%; background: var(--key-white-bg); border: 1px solid var(--key-white-border);
+    border-radius: 0 0 5px 5px; position: relative; cursor: pointer; display: flex; flex-direction: column;
+    justify-content: flex-end; align-items: center; padding-bottom: 6px; font-size: 10px; font-weight: 800;
+    color: #334155; flex-shrink: 0; z-index: 2;
+  }
+  .key-white:active, .key-white.active { background: #bae6fd !important; transform: translateY(2px); }
+
+  .key-black {
+    width: 24px; height: 60%; background: var(--key-black-bg); position: absolute;
+    border-radius: 0 0 4px 4px; cursor: pointer; z-index: 5; display: flex; flex-direction: column;
+    justify-content: flex-end; align-items: center; padding-bottom: 5px; font-size: 9px; font-weight: 700;
+    color: #cbd5e1;
+  }
+  .key-black:active, .key-black.active { background: #0284c7 !important; transform: translateY(2px); }
+
+  /* Accessible Tags on Keys (T, M, C) */
+  .key-badge-role {
+    position: absolute; bottom: 22px; font-size: 8px; font-weight: 900; line-height: 1; padding: 2px 4px;
+    border-radius: 3px; pointer-events: none;
+  }
+  .role-tonic { background: #ca8a04; color: #fff; }
+  .role-char { background: #e11d48; color: #fff; }
+  .role-mode { background: #0284c7; color: #fff; }
+
+  .key-white.highlight-tonic { background: #fde047 !important; color: #713f12 !important; border-bottom: 4px solid #ca8a04; }
+  .key-white.highlight-char  { background: #fb7185 !important; color: #ffffff !important; border-bottom: 4px solid #e11d48; }
+  .key-white.highlight-mode  { background: #7dd3fc !important; color: #0c4a6e !important; }
+  .key-white.highlight-lh    { background: #fed7aa !important; color: #7c2d12 !important; border-bottom: 4px solid #ea580c; }
+  .key-white.highlight-penta { background: #a5f3fc !important; color: #083344 !important; }
+
+  .key-black.highlight-tonic { background: #d97706 !important; color: #fff !important; }
+  .key-black.highlight-char  { background: #e11d48 !important; color: #fff !important; }
+  .key-black.highlight-mode  { background: #0284c7 !important; color: #fff !important; }
+  .key-black.highlight-lh    { background: #ea580c !important; color: #fff !important; }
+  .key-black.highlight-penta { background: #0891b2 !important; color: #fff !important; }
+
+  .key-qwerty-hint { position: absolute; top: 4px; font-size: 8px; font-weight: 800; color: #64748b; }
+  .key-black .key-qwerty-hint { color: #94a3b8; }
+  .finger-badge { position: absolute; top: 20px; width: 18px; height: 18px; border-radius: 50%; background: #090d16; border: 1.5px solid #f59e0b; color: #fef08a; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; z-index: 8; pointer-events: none; }
+  .pass-indicator { position: absolute; top: 40px; font-size: 7px; font-weight: 800; background: #e11d48; color: #fff; padding: 1px 3px; border-radius: 3px; z-index: 8; pointer-events: none; }
+
+  /* Buttons & Grids */
+  .btn { background: #24344d; color: #fff; border: 1px solid var(--border); padding: 7px 12px; border-radius: 7px; font-size: 0.83rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+  .btn:hover { filter: brightness(1.1); }
+  .btn-primary { background: var(--primary); color: #041021; border-color: var(--primary); }
+  .btn-accent { background: var(--accent); color: #1e1302; border-color: var(--accent); }
+  .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-sm { padding: 5px 9px; font-size: 0.77rem; border-radius: 6px; }
+  .btn-xs { padding: 3px 6px; font-size: 0.72rem; border-radius: 4px; }
+
+  .selector-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px; margin-bottom: 10px; }
+  .mode-pill { background: var(--bg-card-subtle); border: 1.5px solid var(--border); border-radius: 8px; padding: 8px; text-align: center; cursor: pointer; }
+  .mode-pill:hover { border-color: var(--primary); }
+  .mode-pill.active { border-color: var(--primary); background: rgba(56, 189, 248, 0.18); }
+  .mode-pill .mode-name { font-weight: 800; font-size: 0.88rem; display: block; color: var(--text-main); }
+  .mode-pill .mode-feel { font-size: 0.73rem; color: var(--text-muted); }
+
+  .chromatic-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; margin-bottom: 10px; }
+  @media (max-width: 600px) { .chromatic-grid { grid-template-columns: repeat(6, 1fr); } }
+  .root-btn { background: var(--bg-card-subtle); border: 1.5px solid var(--border); color: var(--text-main); padding: 7px 2px; border-radius: 6px; font-size: 0.8rem; font-weight: 800; cursor: pointer; text-align: center; }
+  .root-btn.active { background: var(--accent); color: #1e1302; border-color: var(--accent); }
+
+  .step-box { border-left: 4px solid var(--primary); background: rgba(56, 189, 248, 0.06); padding: 10px 12px; border-radius: 0 8px 8px 0; margin-bottom: 10px; }
+  .step-title { font-weight: 800; color: #fff; font-size: 0.9rem; margin-bottom: 3px; }
+  body.theme-light .step-title { color: #0f172a; }
+
+  .staff-container { background: #ffffff; border-radius: 8px; padding: 6px; margin: 8px 0; border: 1px solid #cbd5e1; }
+  .staff-svg { width: 100%; height: 95px; display: block; }
+  .songs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px; margin-top: 8px; }
+  .song-card { background: var(--bg-card-subtle); border: 1px solid var(--border); border-radius: 8px; padding: 9px; font-size: 0.81rem; }
+  .math-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 6px; }
+  .math-table th, .math-table td { border: 1px solid var(--border); padding: 6px 8px; text-align: left; }
+  .math-table th { background: rgba(56, 189, 248, 0.1); color: var(--primary); }
+
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+  .modal-box { background: var(--bg-card); border: 2px solid var(--primary); border-radius: 12px; max-width: 500px; width: 100%; padding: 18px; max-height: 90vh; overflow-y: auto; }
+
+  @media print {
+    body { background: #fff !important; color: #000 !important; }
+    header, nav.tab-nav, .master-bar, .piano-controls, .btn, .modal-overlay { display: none !important; }
+    .card { border: 1px solid #000; box-shadow: none !important; break-inside: avoid; }
+    .tab-content { display: block !important; }
+  }
+</style>
+</head>
+<script>
+  /* ==================== BANCO MAESTRO DE LICKS MODALES ==================== */
+  const LICKS_DATABASE = [
+    /* JÓNICO */
+    {
+      id: 'ion-1', modeIdx: 0, title: "Bill Evans Maj9 Lyricism", style: "Jazz",
+      desc: "Frase lírica clásica de jazz impresionista. Resuelve fluidamente de la 9ª a la 3ª con apoyaturas diatónicas elegantes.",
+      colorNote: "7ª Mayor (B) y 9ª (D)",
+      rhNotes: [
+        { midi: 62, name: "D4", finger: 2, role: "mode" },
+        { midi: 64, name: "E4", finger: 3, role: "mode" },
+        { midi: 67, name: "G4", finger: 4, role: "mode" },
+        { midi: 71, name: "B4", finger: 5, role: "char" },
+        { midi: 72, name: "C5", finger: 1, role: "tonic" },
+        { midi: 74, name: "D5", finger: 3, role: "mode" },
+        { midi: 72, name: "C5", finger: 2, role: "tonic" },
+        { midi: 64, name: "E4", finger: 1, role: "mode" }
+      ],
+      lhNotes: [
+        { midi: 48, name: "C3", finger: 5, role: "tonic" },
+        { midi: 55, name: "G3", finger: 3, role: "mode" },
+        { midi: 59, name: "B3", finger: 2, role: "char" },
+        { midi: 64, name: "E4", finger: 1, role: "mode" }
+      ]
+    },
+    {
+      id: 'ion-2', modeIdx: 0, title: "Gospel / Pop Triad Cascade", style: "Neo-Soul",
+      desc: "Superposición de triadas mayores descendentes (F y G sobre pedal de C), generando la sonoridad canónica de himno contemporáneo.",
+      colorNote: "Triadas de C y F sobre C",
+      rhNotes: [
+        { midi: 65, name: "F4", finger: 1, role: "char" },
+        { midi: 69, name: "A4", finger: 3, role: "mode" },
+        { midi: 72, name: "C5", finger: 5, role: "tonic" },
+        { midi: 67, name: "G4", finger: 2, role: "mode" },
+        { midi: 71, name: "B4", finger: 4, role: "char" },
+        { midi: 74, name: "D5", finger: 5, role: "mode" },
+        { midi: 72, name: "C5", finger: 3, role: "tonic" }
+      ],
+      lhNotes: [
+        { midi: 48, name: "C3", finger: 5, role: "tonic" },
+        { midi: 55, name: "G3", finger: 1, role: "mode" }
+      ]
+    },
+    /* DÓRICO */
+    {
+      id: 'dor-1', modeIdx: 1, title: "Miles & Coltrane 'So What' Run", style: "Jazz",
+      desc: "Arpegio pentatónico menor a +1 tono que desemboca en la 6ª mayor (B natural), capturando de inmediato el sonido icónico del disco Kind of Blue.",
+      colorNote: "6ª Mayor (B4)",
+      rhNotes: [
+        { midi: 62, name: "D4", finger: 1, role: "tonic" },
+        { midi: 65, name: "F4", finger: 2, role: "mode" },
+        { midi: 69, name: "A4", finger: 3, role: "mode" },
+        { midi: 71, name: "B4", finger: 4, role: "char" },
+        { midi: 72, name: "C5", finger: 5, role: "mode" },
+        { midi: 69, name: "A4", finger: 3, role: "mode" },
+        { midi: 67, name: "G4", finger: 2, role: "mode" },
+        { midi: 62, name: "D4", finger: 1, role: "tonic" }
+      ],
+      lhNotes: [
+        { midi: 50, name: "D3", finger: 5, role: "tonic" },
+        { midi: 57, name: "A3", finger: 3, role: "mode" },
+        { midi: 60, name: "C4", finger: 2, role: "mode" },
+        { midi: 65, name: "F4", finger: 1, role: "mode" }
+      ]
+    },
+    {
+      id: 'dor-2', modeIdx: 1, title: "Santana Oye Como Va Vamp Line", style: "Blues/Rock",
+      desc: "Melodía sincopada latina/funk que enfatiza la tensión entre la 3ª menor (F) y la 6ª natural de brillo (B).",
+      colorNote: "6ª Mayor (B4) vs 3ª menor",
+      rhNotes: [
+        { midi: 69, name: "A4", finger: 3, role: "mode" },
+        { midi: 71, name: "B4", finger: 4, role: "char" },
+        { midi: 72, name: "C5", finger: 5, role: "mode" },
+        { midi: 71, name: "B4", finger: 4, role: "char" },
+        { midi: 69, name: "A4", finger: 3, role: "mode" },
+        { midi: 65, name: "F4", finger: 2, role: "mode" },
+        { midi: 62, name: "D4", finger: 1, role: "tonic" }
+      ],
+      lhNotes: [
+        { midi: 50, name: "D3", finger: 5, role: "tonic" },
+        { midi: 59, name: "B3", finger: 2, role: "char" },
+        { midi: 62, name: "D4", finger: 1, role: "tonic" }
+      ]
+    },
+    /* FRIGIO */
+    {
+      id: 'phr-1', modeIdx: 2, title: "Flamenco Andalusian Flourish", style: "World/Classical",
+      desc: "Rápido adorno melódico de bordadura con el semitono característico de entrada (F natural sobre E), dando el dramatismo andaluz puro.",
+      colorNote: "2ª menor (F4) y b6 (C5)",
+      rhNotes: [
+        { midi: 64, name: "E4", finger: 1, role: "tonic" },
+        { midi: 65, name: "F4", finger: 2, role: "char" },
+        { midi: 64, name: "E4", finger: 1, role: "tonic" },
+        { midi: 67, name: "G4", finger: 3, role: "mode" },
+        { midi: 65, name: "F4", finger: 2, role: "char" },
+        { midi: 72, name: "C5", finger: 5, role: "mode" },
+        { midi: 71, name: "B4", finger: 4, role: "mode" },
+        { midi: 64, name: "E4", finger: 1, role: "tonic" }
+      ],
+      lhNotes: [
+        { midi: 52, name: "E3", finger: 5, role: "tonic" },
+        { midi: 59, name: "B3", finger: 2, role: "mode" },
+        { midi: 65, name: "F4", finger: 1, role: "char" }
+      ]
+    },
+    {
+      id: 'phr-2', modeIdx: 2, title: "Dark Metal Phrygian Ostinato", style: "Blues/Rock",
+      desc: "Patrón rítmico pesado en pedal de tónica baja con el punzante semitono b2, creando tensión incesante.",
+      colorNote: "2ª Menor (F3 - F4)",
+      rhNotes: [
+        { midi: 64, name: "E4", finger: 1, role: "tonic" },
+        { midi: 65, name: "F4", finger: 2, role: "char" },
+        { midi: 67, name: "G4", finger: 3, role: "mode" },
+        { midi: 65, name: "F4", finger: 2, role: "char" },
+        { midi: 64, name: "E4", finger: 1, role: "tonic" },
+        { midi: 60, name: "C4", finger: 3, role: "mode" },
+        { midi: 59, name: "B3", finger: 2, role: "mode" },
+        { midi: 52, name: "E3", finger: 1, role: "tonic" }
+      ],
+      lhNotes: [
+        { midi: 40, name: "E2", finger: 5, role: "tonic" },
+        { midi: 47, name: "B2", finger: 1, role: "mode" }
+      ]
+    },
+    /* LIDIO */
+    {
+      id: 'lyd-1', modeIdx: 3, title: "Steely Dan & Joe Satriani Space Ascent", style: "Blues/Rock",
+      desc: "Subida arpegiada etérea que destaca la 4ª aumentada (B natural sobre F), quitando toda sensación de peso terrenal.",
+      colorNote: "4ª Aumentada / #11 (B4 y B5)",
+      rhNotes: [
+        { midi: 65, name: "F4", finger: 1, role: "tonic" },
+        { midi: 69, name: "A4", finger: 2, role: "mode" },
+        { midi: 71, name: "B4", finger: 3, role: "char" },
+        { midi: 72, name: "C5", finger: 1, role: "mode" },
+        { midi: 76, name: "E5", finger: 3, role: "mode" },
+        { midi: 77, name: "F5", finger: 4, role: "tonic" },
+        { midi: 83, name: "B5", finger: 5, role: "char" }
+      ],
+      lhNotes: [
+        { midi: 53, name: "F3", finger: 5, role: "tonic" },
+        { midi: 60, name: "C4", finger: 3, role: "mode" },
+        { midi: 64, name: "E4", finger: 2, role: "mode" },
+        { midi: 71, name: "B4", finger: 1, role: "char" }
+      ]
+    },
+    {
+      id: 'lyd-2', modeIdx: 3, title: "Lydian Film Soundtrack Cadence", style: "World/Classical",
+      desc: "Armonía orquestal cinematográfica inspirada en Jerry Goldsmith y John Williams. Movimiento paralelo II-I.",
+      colorNote: "#11 (B4) y 9ª (G4)",
+      rhNotes: [
+        { midi: 67, name: "G4", finger: 1, role: "mode" },
+        { midi: 71, name: "B4", finger: 2, role: "char" },
+        { midi: 74, name: "D5", finger: 4, role: "mode" },
+        { midi: 77, name: "F5", finger: 5, role: "tonic" },
+        { midi: 76, name: "E5", finger: 4, role: "mode" },
+        { midi: 72, name: "C5", finger: 2, role: "mode" },
+        { midi: 69, name: "A4", finger: 1, role: "mode" }
+      ],
+      lhNotes: [
+        { midi: 53, name: "F3", finger: 5, role: "tonic" },
+        { midi: 60, name: "C4", finger: 2, role: "mode" },
+        { midi: 65, name: "F4", finger: 1, role: "tonic" }
+      ]
+    },
+    /* MIXOLIDIO */
+    {
+      id: 'mix-1', modeIdx: 4, title: "Bluesy Soul Dominant Riff", style: "Blues/Rock",
+      desc: "Frase clásica de Hammond/Piano en blues y rock sureño que oscila entre la 3ª mayor y la 7ª bemol relajada.",
+      colorNote: "7ª Menor (F4) sobre G",
+      rhNotes: [
+        { midi: 67, name: "G4", finger: 1, role: "tonic" },
+        { midi: 71, name: "B4", finger: 2, role: "mode" },
+        { midi: 74, name: "D5", finger: 3, role: "mode" },
+        { midi: 77, name: "F5", finger: 5, role: "char" },
+        { midi: 74, name: "D5", finger: 3, role: "mode" },
+        { midi: 71, name: "B4", finger: 2, role: "mode" },
+        { midi: 65, name: "F4", finger: 1, role: "char" },
+        { midi: 67, name: "G4", finger: 2, role: "tonic" }
+      ],
+      lhNotes: [
+        { midi: 43, name: "G2", finger: 5, role: "tonic" },
+        { midi: 50, name: "D3", finger: 2, role: "mode" },
+        { midi: 53, name: "F3", finger: 1, role: "char" }
+      ]
+    },
+    {
+      id: 'mix-2', modeIdx: 4, title: "Neo-Soul 13th Cluster Hook", style: "Neo-Soul",
+      desc: "Color contemporáneo sofisticado que aprovecha la 13ª (E) y la novena suspendida sin el tritono punzante de dominante tradicional.",
+      colorNote: "13ª (E5) y b7 (F4)",
+      rhNotes: [
+        { midi: 65, name: "F4", finger: 1, role: "char" },
+        { midi: 69, name: "A4", finger: 2, role: "mode" },
+        { midi: 72, name: "C5", finger: 3, role: "mode" },
+        { midi: 76, name: "E5", finger: 5, role: "mode" },
+        { midi: 74, name: "D5", finger: 4, role: "mode" },
+        { midi: 67, name: "G4", finger: 1, role: "tonic" }
+      ],
+      lhNotes: [
+        { midi: 43, name: "G2", finger: 5, role: "tonic" },
+        { midi: 53, name: "F3", finger: 2, role: "char" },
+        { midi: 59, name: "B3", finger: 1, role: "mode" }
+      ]
+    },
+    /* EÓLICO */
+    {
+      id: 'aeo-1', modeIdx: 5, title: "Chopin & Rachmaninoff Elegiac Sigh", style: "World/Classical",
+      desc: "Suspiro melódico nostálgico con apoyatura descendente en la 6ª menor (F natural a E), quintaesencia del menor natural.",
+      colorNote: "6ª Menor (F4 a E4)",
+      rhNotes: [
+        { midi: 69, name: "A4", finger: 1, role: "tonic" },
+        { midi: 72, name: "C5", finger: 2, role: "mode" },
+        { midi: 76, name: "E5", finger: 4, role: "mode" },
+        { midi: 77, name: "F5", finger: 5, role: "char" },
+        { midi: 76, name: "E5", finger: 4, role: "mode" },
+        { midi: 72, name: "C5", finger: 2, role: "mode" },
+        { midi: 65, name: "F4", finger: 1, role: "char" },
+        { midi: 64, name: "E4", finger: 1, role: "mode" }
+      ],
+      lhNotes: [
+        { midi: 45, name: "A2", finger: 5, role: "tonic" },
+        { midi: 52, name: "E3", finger: 3, role: "mode" },
+        { midi: 57, name: "A3", finger: 1, role: "tonic" }
+      ]
+    },
+    {
+      id: 'aeo-2', modeIdx: 5, title: "Led Zeppelin & Rock Ballad Descent", style: "Blues/Rock",
+      desc: "Línea en bajo caminante descendente y acorde menor natural que transmite solemnidad y misterio medieval.",
+      colorNote: "6ª Menor (F4)",
+      rhNotes: [
+        { midi: 69, name: "A4", finger: 3, role: "tonic" },
+        { midi: 72, name: "C5", finger: 5, role: "mode" },
+        { midi: 67, name: "G4", finger: 2, role: "mode" },
+        { midi: 65, name: "F4", finger: 1, role: "char" },
+        { midi: 64, name: "E4", finger: 2, role: "mode" },
+        { midi: 60, name: "C4", finger: 1, role: "mode" },
+        { midi: 57, name: "A3", finger: 2, role: "tonic" }
+      ],
+      lhNotes: [
+        { midi: 45, name: "A2", finger: 5, role: "tonic" },
+        { midi: 52, name: "E3", finger: 2, role: "mode" },
+        { midi: 60, name: "C4", finger: 1, role: "mode" }
+      ]
+    },
+    /* LOCRIO */
+    {
+      id: 'loc-1', modeIdx: 6, title: "Wayne Shorter Half-Diminished Tension", style: "Jazz",
+      desc: "Exploración armónica sobre m7b5 que expone la fricción del tritono (F sobre B) y resuelve a la tercera menor sin asperezas.",
+      colorNote: "5ª Disminuida (F4) y b2 (C5)",
+      rhNotes: [
+        { midi: 71, name: "B4", finger: 1, role: "tonic" },
+        { midi: 72, name: "C5", finger: 2, role: "mode" },
+        { midi: 74, name: "D5", finger: 3, role: "mode" },
+        { midi: 77, name: "F5", finger: 5, role: "char" },
+        { midi: 74, name: "D5", finger: 3, role: "mode" },
+        { midi: 65, name: "F4", finger: 1, role: "char" },
+        { midi: 71, name: "B4", finger: 4, role: "tonic" }
+      ],
+      lhNotes: [
+        { midi: 47, name: "B2", finger: 5, role: "tonic" },
+        { midi: 53, name: "F3", finger: 2, role: "char" },
+        { midi: 59, name: "B3", finger: 1, role: "tonic" }
+      ]
+    },
+    {
+      id: 'loc-2', modeIdx: 6, title: "Heavy Tritone Drone Riff", style: "Blues/Rock",
+      desc: "Ostinato tétrico utilizado en metal progresivo y bandas sonoras de terror para enfatizar el diabolus in musica.",
+      colorNote: "Tritono B - F",
+      rhNotes: [
+        { midi: 71, name: "B4", finger: 1, role: "tonic" },
+        { midi: 77, name: "F5", finger: 5, role: "char" },
+        { midi: 76, name: "E5", finger: 4, role: "mode" },
+        { midi: 74, name: "D5", finger: 3, role: "mode" },
+        { midi: 72, name: "C5", finger: 2, role: "mode" },
+        { midi: 71, name: "B4", finger: 1, role: "tonic" }
+      ],
+      lhNotes: [
+        { midi: 47, name: "B2", finger: 5, role: "tonic" },
+        { midi: 53, name: "F3", finger: 1, role: "char" }
+      ]
+    }
+  ];
+
+  let curLickMode = 0;
+  let curLickId = 'ion-1';
+  let curLickFilter = 'all';
+
+  function stopPractice() {
+    practiceSeq = [];
+    practiceStep = 0;
+    stopAll();
+    const msg = document.getElementById('practice-msg');
+    if (msg) msg.innerText = "Práctica detenida. Presiona 'Iniciar Desafío' cuando desees reanudar.";
+  }
+
+  function initLicks() {
+    buildKeyboard("piano-licks");
+    renderLickModeGrid();
+    renderLicksList();
+    selectLick('ion-1');
+  }
+
+  function renderLickModeGrid() {
+    const g = document.getElementById("licks-mode-grid");
+    if (!g) return;
+    g.innerHTML = "";
+    MODES_DATA.forEach((m, idx) => {
+      const p = document.createElement("div");
+      p.className = `mode-pill ${idx === curLickMode ? 'active' : ''}`;
+      p.id = `lkm-${idx}`;
+      p.innerHTML = `<span class="mode-name">${m.deg}. ${m.name}</span><span class="mode-feel">${NOTE_NAMES[m.tonic]} natural</span>`;
+      p.onclick = () => {
+        curLickMode = idx;
+        document.querySelectorAll("#licks-mode-grid .mode-pill").forEach(el => el.classList.remove("active"));
+        p.classList.add("active");
+        renderLicksList();
+        const first = LICKS_DATABASE.find(l => l.modeIdx === curLickMode);
+        if (first) selectLick(first.id);
+      };
+      g.appendChild(p);
+    });
+  }
+
+  function filterLicksByStyle(st) {
+    curLickFilter = st;
+    const btns = document.querySelectorAll("#licks-style-filters button");
+    btns.forEach(b => {
+      if ((st === 'all' && b.innerText.includes('Todos')) || b.innerText.includes(st)) {
+        b.classList.add('btn-accent');
+      } else {
+        b.classList.remove('btn-accent');
+      }
+    });
+    renderLicksList();
+  }
+
+  function renderLicksList() {
+    const g = document.getElementById("licks-list-grid");
+    if (!g) return;
+    g.innerHTML = "";
+    const list = LICKS_DATABASE.filter(l => {
+      const matchMode = (l.modeIdx === curLickMode);
+      const matchStyle = (curLickFilter === 'all' || l.style === curLickFilter || (curLickFilter === 'Blues/Rock' && l.style.includes('Blues')) || (curLickFilter === 'World/Classical' && l.style.includes('World')));
+      return matchMode && matchStyle;
+    });
+
+    if (list.length === 0) {
+      g.innerHTML = `<div style="grid-column: 1/-1; font-size:0.82rem; color:var(--text-muted); padding:10px; text-align:center;">No hay licks con este filtro para este modo. Selecciona 'Todos'.</div>`;
+      return;
+    }
+
+    list.forEach(l => {
+      const card = document.createElement("div");
+      card.className = `song-card ${l.id === curLickId ? 'active' : ''}`;
+      card.style.cursor = "pointer";
+      if (l.id === curLickId) {
+        card.style.borderColor = "var(--primary)";
+        card.style.background = "rgba(56, 189, 248, 0.15)";
+      }
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <strong style="color:var(--text-main); font-size:0.83rem;">${l.title}</strong>
+          <span style="font-size:0.68rem; padding:1px 5px; border-radius:4px; background:rgba(245,158,11,0.2); color:var(--accent);">${l.style}</span>
+        </div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Nota clave: <span style="color:var(--primary); font-weight:700;">${l.colorNote}</span></div>
+      `;
+      card.onclick = () => selectLick(l.id);
+      g.appendChild(card);
+    });
+  }
+
+  function selectLick(id) {
+    curLickId = id;
+    const l = LICKS_DATABASE.find(x => x.id === id);
+    if (!l) return;
+    curLickMode = l.modeIdx;
+
+    document.querySelectorAll("#licks-list-grid .song-card").forEach(el => {
+      el.style.borderColor = "var(--border)";
+      el.style.background = "var(--bg-card-subtle)";
+    });
+    renderLicksList();
+
+    document.getElementById("lick-title").innerText = l.title;
+    document.getElementById("lick-style-tag").innerText = `${MODES_DATA[l.modeIdx].name} • ${l.style}`;
+    document.getElementById("lick-desc").innerText = l.desc;
+    document.getElementById("lick-notes-info").innerHTML = `
+      <span>🖐️ Mano Derecha: <strong>${l.rhNotes.map(n => n.name + '(d' + n.finger + ')').join(' - ')}</strong></span><br>
+      <span>🤚 Mano Izquierda (Voicing): <strong>${l.lhNotes.map(n => n.name + '(d' + n.finger + ')').join(' + ')}</strong> | Color: <span style="color:var(--accent);">${l.colorNote}</span></span>
+    `;
+
+    renderGrandStaff(l);
+    showLickOnPiano();
+  }
+
+  function renderGrandStaff(lick) {
+    const svg = document.getElementById("grand-staff-svg");
+    if (!svg) return;
+
+    let out = '';
+    /* Lineas Sol (y: 20, 30, 40, 50, 60) */
+    for (let i = 0; i < 5; i++) {
+      out += `<line x1="50" y1="${20 + i * 10}" x2="900" y2="${20 + i * 10}" stroke="#94a3b8" stroke-width="1.2"/>`;
+    }
+    /* Lineas Fa (y: 110, 120, 130, 140, 150) */
+    for (let i = 0; i < 5; i++) {
+      out += `<line x1="50" y1="${110 + i * 10}" x2="900" y2="${110 + i * 10}" stroke="#94a3b8" stroke-width="1.2"/>`;
+    }
+    /* Llave / Barra inicial */
+    out += `<line x1="50" y1="20" x2="50" y2="150" stroke="#334155" stroke-width="3"/>`;
+    out += `<line x1="54" y1="20" x2="54" y2="150" stroke="#64748b" stroke-width="1"/>`;
+
+    /* Clave de Sol */
+    out += `<text x="58" y="54" font-size="42" font-family="serif" fill="#0f172a">𝄞</text>`;
+    /* Clave de Fa */
+    out += `<text x="58" y="136" font-size="34" font-family="serif" fill="#0f172a">𝄢</text>`;
+
+    /* Rótulos MD y MI */
+    out += `<text x="16" y="42" font-size="11" font-weight="bold" fill="#0284c7">MD</text>`;
+    out += `<text x="16" y="132" font-size="11" font-weight="bold" fill="#d97706">MI</text>`;
+
+    /* Notas MI en acorde conjunto a la izquierda */
+    const lhX = 140;
+    lick.lhNotes.forEach(n => {
+      const pc = n.midi % 12;
+      const diaMap = { 0:0, 2:1, 4:2, 5:3, 7:4, 9:5, 11:6 };
+      const oct = Math.floor(n.midi / 12) - 1;
+      const dia = (oct - 3) * 7 + (diaMap[pc] !== undefined ? diaMap[pc] : 0);
+      const y = 140 - (dia * 5);
+      const col = (n.role === 'tonic') ? '#ca8a04' : ((n.role === 'char') ? '#e11d48' : '#f59e0b');
+
+      let ledger = '';
+      if (y >= 160) ledger = `<line x1="${lhX-10}" y1="160" x2="${lhX+10}" y2="160" stroke="#475569" stroke-width="1.2"/>`;
+      if (y <= 100) ledger = `<line x1="${lhX-10}" y1="100" x2="${lhX+10}" y2="100" stroke="#475569" stroke-width="1.2"/>`;
+
+      out += `
+        <g cursor="pointer" onclick="playMidi(${n.midi}, 1.2)">
+          ${ledger}
+          <ellipse cx="${lhX}" cy="${y}" rx="6" ry="4.5" fill="${col}" stroke="#0f172a"/>
+          <text x="${lhX - 16}" y="${y + 4}" font-size="9" font-weight="bold" fill="#64748b">${n.finger}</text>
+          <text x="${lhX}" y="168" font-size="9" font-weight="bold" text-anchor="middle" fill="#ca8a04">${n.name}</text>
+        </g>
+      `;
+    });
+    out += `<line x1="${lhX+5}" y1="110" x2="${lhX+5}" y2="145" stroke="#0f172a" stroke-width="1.4"/>`;
+
+    /* Barra divisoria entre Voicing MI y Lick MD */
+    out += `<line x1="190" y1="20" x2="190" y2="150" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="3,3"/>`;
+
+    /* Notas MD desplegadas en compás Sol */
+    const stepX = Math.min(85, Math.floor(660 / (lick.rhNotes.length || 1)));
+    lick.rhNotes.forEach((n, idx) => {
+      const x = 230 + (idx * stepX);
+      const pc = n.midi % 12;
+      const diaMap = { 0:0, 2:1, 4:2, 5:3, 7:4, 9:5, 11:6 };
+      const oct = Math.floor(n.midi / 12) - 1;
+      const dia = (oct - 4) * 7 + (diaMap[pc] !== undefined ? diaMap[pc] : 0);
+      const y = 60 - (dia * 5);
+      const col = (n.role === 'tonic') ? '#ca8a04' : ((n.role === 'char') ? '#e11d48' : '#0284c7');
+
+      let ledger = '';
+      if (y >= 70) ledger = `<line x1="${x-10}" y1="70" x2="${x+10}" y2="70" stroke="#475569" stroke-width="1.2"/>`;
+      if (y <= 10) ledger = `<line x1="${x-10}" y1="10" x2="${x+10}" y2="10" stroke="#475569" stroke-width="1.2"/>`;
+
+      out += `
+        <g cursor="pointer" onclick="playMidi(${n.midi}, 0.8)">
+          ${ledger}
+          <ellipse cx="${x}" cy="${y}" rx="6.2" ry="4.8" fill="${col}" stroke="#0f172a"/>
+          <line x1="${x+5}" y1="${y}" x2="${x+5}" y2="${y-22}" stroke="#0f172a" stroke-width="1.4"/>
+          <text x="${x}" y="${y-26}" font-size="10" font-weight="bold" text-anchor="middle" fill="#0284c7">${n.finger}</text>
+          <text x="${x}" y="78" font-size="9" font-weight="bold" text-anchor="middle" fill="${col}">${n.name}</text>
+        </g>
+      `;
+    });
+
+    svg.innerHTML = out;
+  }
+
+  function showLickOnPiano() {
+    const l = LICKS_DATABASE.find(x => x.id === curLickId);
+    if (!l) return;
+    const p = document.getElementById("piano-licks");
+    if (!p) return;
+    p.querySelectorAll(".finger-badge, .pass-indicator, .key-badge-role").forEach(el => el.remove());
+    p.querySelectorAll(".key-white, .key-black").forEach(k => k.classList.remove("highlight-tonic", "highlight-mode", "highlight-char", "highlight-lh", "highlight-penta"));
+
+    /* Marcar Voicing MI */
+    l.lhNotes.forEach(n => {
+      const el = p.querySelector(`[data-midi="${n.midi}"]`);
+      if (el) {
+        el.classList.add("highlight-lh");
+        const b = document.createElement("div");
+        b.className = "finger-badge";
+        b.innerText = n.finger;
+        b.style.borderColor = "#f59e0b";
+        b.style.color = "#fef08a";
+        el.appendChild(b);
+      }
+    });
+
+    /* Marcar Melodía MD */
+    l.rhNotes.forEach(n => {
+      const el = p.querySelector(`[data-midi="${n.midi}"]`);
+      if (el) {
+        if (n.role === 'tonic') el.classList.add("highlight-tonic");
+        else if (n.role === 'char') el.classList.add("highlight-char");
+        else el.classList.add("highlight-penta");
+
+        const b = document.createElement("div");
+        b.className = "finger-badge";
+        b.innerText = n.finger;
+        b.style.borderColor = "#38bdf8";
+        b.style.color = "#7dd3fc";
+        el.appendChild(b);
+      }
+    });
+  }
+
+  function playSelectedLick() {
+    const l = LICKS_DATABASE.find(x => x.id === curLickId);
+    if (!l) return;
+    stopAll();
+
+    /* Voicing MI suena sostenido */
+    l.lhNotes.forEach(n => {
+      playMidi(n.midi, 2.8, 0.7);
+      flashKey(n.midi);
+    });
+
+    /* Frase MD secuenciada al BPM actual */
+    const beatSec = (60 / bpm);
+    const stepMs = Math.round(beatSec * 360);
+    window.activeTimeouts = window.activeTimeouts || [];
+
+    l.rhNotes.forEach((n, idx) => {
+      const t = setTimeout(() => {
+        playMidi(n.midi, 0.65, 0.85);
+        flashKey(n.midi);
+      }, 250 + (idx * stepMs));
+      window.activeTimeouts.push(t);
+    });
+  }
+
+  /* Inicializar pestaña Licks en arranque */
+  window.addEventListener("DOMContentLoaded", () => {
+    initLicks();
+  });
+</script><body>
+<header role="banner">
+<div class="header-content">
+<h1>Modos de la Escala Mayor en Piano</h1>
+<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:center;">
+<span class="badge-author">by Rubén Sbarsky</span>
+<span id="midi-badge" style="font-size:0.72rem; padding:2px 8px; border-radius:12px; background:rgba(255,255,255,0.08); color:var(--text-muted); border:1px solid var(--border);">🎹 Web MIDI: No detectado</span>
+</div>
+<div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
+<button class="btn btn-xs" onclick="toggleTheme('dark')">🌙 Oscuro</button>
+<button class="btn btn-xs" onclick="toggleTheme('light')">☀️ Claro</button>
+<button class="btn btn-xs" onclick="toggleTheme('high-contrast')">👁️ Alto Contraste</button>
+<button class="btn btn-xs btn-accent" onclick="document.getElementById('help-modal').style.display='flex'">❓ Guía</button>
+<button class="btn btn-xs" onclick="window.print()">🖨️ Imprimir</button>
+</div>
+</div>
+</header>
+<aside aria-label="Controles de audio" class="master-bar">
+<div class="master-control">
+<label for="master-vol" style="color:var(--text-muted); font-size:0.75rem;">🔊 Vol:</label>
+<input id="master-vol" max="1" min="0" oninput="setVol(this.value)" step="0.05" style="width:65px; accent-color:var(--primary);" type="range" value="0.7"/>
+</div>
+<div class="master-control">
+<label style="color:var(--text-muted); font-size:0.75rem;">⏱️ BPM: <span id="bpm-val" style="color:var(--primary); font-weight:800;">100</span></label>
+<input max="180" min="60" oninput="setBpm(this.value)" step="2" style="width:65px; accent-color:var(--accent);" type="range" value="100"/>
+</div>
+<div class="master-control">
+<button class="btn btn-xs" id="btn-metronome" onclick="toggleMetro()">🥁 Metrónomo: OFF</button>
+</div>
+<div class="master-control">
+<span style="color:var(--text-muted); font-size:0.73rem;">⌨️ QWERTY: <strong>A-K</strong> (Blancas) / <strong>W,E,T,Y,U</strong> (Negras)</span>
+</div>
+</aside>
+<nav class="tab-nav" role="tablist">
+<button class="tab-btn active" id="tabbtn-explore" onclick="switchTab('tab-explore')">1. Explorar &amp; Pentagrama</button>
+<button class="tab-btn" id="tabbtn-lab" onclick="switchTab('tab-lab')">2. Lab Cromático (12 Tónicas)</button>
+<button class="tab-btn" id="tabbtn-calcs" onclick="switchTab('tab-calcs')">3. Cálculos &amp; Matemáticas</button>
+<button class="tab-btn tab-btn-accent" id="tabbtn-modal-penta" onclick="switchTab('tab-modal-penta')">★ Pentatónicas &amp; Voicings (7 Modos)</button><button class="tab-btn tab-btn-accent" id="tabbtn-licks" onclick="switchTab('tab-licks')">🔥 Licks &amp; Vocabulario (7 Modos)</button>
+<button class="tab-btn" id="tabbtn-impro" onclick="switchTab('tab-impro')">4. Improvisar &amp; Vamps (7 Modos)</button>
+<button class="tab-btn" id="tabbtn-practice" onclick="switchTab('tab-practice')">5. Práctica Guiada</button>
+<button class="tab-btn" id="tabbtn-ear" onclick="switchTab('tab-ear')">6. Entrenamiento Auditivo</button>
+<button class="tab-btn" id="tabbtn-quiz" onclick="switchTab('tab-quiz')">7. Comprobar (Quiz Pro)</button>
+<button class="tab-btn" id="tabbtn-glossary" onclick="switchTab('tab-glossary')">Glosario &amp; Canciones</button>
+</nav>
+<main class="container">
+<!-- PESTAÑA 1 -->
+<section class="tab-content active" id="tab-explore" role="tabpanel">
+<div class="card">
+<div class="card-title">
+<span>El Secreto Visual de las Teclas Blancas</span>
+<span style="font-size:0.75rem; color:var(--accent);">Teclado Multitouch C3 a C6 (61 Teclas)</span>
+</div>
+<p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:8px;">
+        Descubre cómo las mismas notas naturales cambian de color emocional según la tónica. Toca en pantalla, con tu teclado QWERTY o piano USB MIDI.
+      </p>
+<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+<div style="font-size:0.78rem; font-weight:700; color:var(--accent);">Digitación: <span id="fingering-title" style="color:#fff;">(Jónico)</span></div>
+<div style="display:flex; gap:4px;">
+<button class="btn btn-xs btn-accent" id="hand-r" onclick="setHand('right')">🖐️ MD</button>
+<button class="btn btn-xs" id="hand-l" onclick="setHand('left')">🤚 MI</button>
+<button class="btn btn-xs" id="hand-none" onclick="setHand('none')">Ocultar</button>
+</div>
+</div>
+<div class="piano-outer-container">
+<div class="piano-wrapper" id="wrap-explore">
+<div class="piano-keys" id="piano-explore"></div>
+</div>
+</div>
+<div style="display:flex; gap:8px; margin-top:8px; align-items:center; flex-wrap:wrap;">
+<button class="btn btn-primary btn-sm" onclick="playExploreScale()">🔊 Tocar Escala</button>
+<button class="btn btn-accent btn-sm" id="btn-drone" onclick="toggleDrone()">🎵 Drone Pedal</button>
+<button class="btn btn-danger btn-sm" onclick="stopAll()">⏹ Parar</button>
+</div>
+</div>
+<!-- Pentagrama SVG Dinámico -->
+<div class="card">
+<div class="card-title">🎼 Notación Musical Dinámica (Pentagrama SVG Real)</div>
+<div class="staff-container">
+<svg class="staff-svg" id="staff-svg" viewbox="0 0 850 95"></svg>
+</div>
+<div id="staff-caption" style="font-size:0.78rem; color:var(--text-muted); text-align:center;">Haz clic sobre las notas en el pentagrama para escuchar su tono.</div>
+</div>
+<!-- Modos de C Mayor -->
+<div class="card">
+<div class="card-title">Los 7 Modos de C Mayor</div>
+<div class="selector-grid" id="mode-grid-explore"></div>
+<div class="step-box" id="detail-box">
+<div class="step-title" id="mode-detail-title">Jónico</div>
+<p id="mode-detail-desc" style="font-size:0.83rem; color:var(--text-main);"></p>
+<div id="mode-detail-vibe" style="margin-top:4px; font-size:0.8rem; font-weight:bold; color:var(--accent);"></div>
+<div id="mode-detail-song" style="margin-top:4px; font-size:0.8rem; color:var(--primary); font-weight:600;"></div>
+</div>
+</div>
+</section>
+<!-- PESTAÑA 2: LAB CROMÁTICO -->
+<section class="tab-content" id="tab-lab" role="tabpanel">
+<div class="card">
+<div class="card-title">Laboratorio Cromático (Las 12 Tónicas Fundamentales)</div>
+<p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:8px;">Transpón y compara cualquier modo sobre cualquiera de las 12 notas de la escala cromática:</p>
+<label style="font-size:0.75rem; font-weight:700; color:var(--accent); display:block; margin-bottom:3px;">1. Tónica Fundamental (12 notas):</label>
+<div class="chromatic-grid" id="lab-root-grid"></div>
+<label style="font-size:0.75rem; font-weight:700; color:var(--primary); display:block; margin-bottom:3px;">2. Modo Griego:</label>
+<div class="selector-grid" id="lab-mode-grid"></div>
+<div class="piano-outer-container">
+<div class="piano-wrapper">
+<div class="piano-keys" id="piano-lab"></div>
+</div>
+</div>
+<div style="display:flex; gap:8px; margin-top:8px;">
+<button class="btn btn-primary btn-sm" onclick="playLabScale()">🔊 Escuchar Escala</button>
+<button class="btn btn-accent btn-sm" onclick="playLabChord()">🎹 Acorde Base</button>
+<button class="btn btn-danger btn-sm" onclick="stopAll()">⏹ Parar</button>
+</div>
+<div class="step-box" id="lab-info" style="margin-top:10px;"></div>
+</div>
+</section>
+<!-- PESTAÑA 3: CÁLCULOS -->
+<section class="tab-content" id="tab-calcs" role="tabpanel">
+<div class="card">
+<div class="card-title">Matemáticas de los Modos: Intervalos y Semitonos</div>
+<div style="overflow-x:auto;">
+<table class="math-table">
+<thead>
+<tr><th>Modo</th><th>Grado</th><th>Patrón T/S</th><th>Fórmula</th><th>Característica</th><th>Brillo</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>Lidio</strong></td><td>IV</td><td>T-T-T-S-T-T-S</td><td>1-2-3-#4-5-6-7</td><td>#4 (4ª aum)</td><td>+1 ♯ (Más brillante)</td></tr>
+<tr><td><strong>Jónico</strong></td><td>I</td><td>T-T-S-T-T-T-S</td><td>1-2-3-4-5-6-7</td><td>4J y 7M</td><td>Natural (Referencia)</td></tr>
+<tr><td><strong>Mixolidio</strong></td><td>V</td><td>T-T-S-T-T-S-T</td><td>1-2-3-4-5-6-b7</td><td>b7 (7ª menor)</td><td>-1 ♭ (Mayor blusero)</td></tr>
+<tr><td><strong>Dórico</strong></td><td>II</td><td>T-S-T-T-T-S-T</td><td>1-2-b3-4-5-6-b7</td><td>6M (6ª mayor)</td><td>-2 ♭ (Menor elegante)</td></tr>
+<tr><td><strong>Eólico</strong></td><td>VI</td><td>T-S-T-T-S-T-T</td><td>1-2-b3-4-5-b6-b7</td><td>b6 (6ª menor)</td><td>-3 ♭ (Menor natural)</td></tr>
+<tr><td><strong>Frigio</strong></td><td>III</td><td>S-T-T-T-S-T-T</td><td>1-b2-b3-4-5-b6-b7</td><td>b2 (2ª menor)</td><td>-4 ♭ (Flamenco/tenso)</td></tr>
+<tr><td><strong>Locrio</strong></td><td>VII</td><td>S-T-T-S-T-T-T</td><td>1-b2-b3-4-b5-b6-b7</td><td>b5 (5ª dism)</td><td>-5 ♭ (Más oscuro)</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- PESTAÑA: PENTATÓNICAS & VOICINGS -->
+<section class="tab-content" id="tab-modal-penta" role="tabpanel">
+<div class="card">
+<div class="card-title">
+<span>Calculador de Pentatónicas &amp; Voicings (Los 7 Modos x 12 Tónicas)</span>
+<span style="font-size:0.75rem; color:var(--accent);">Método Moderno</span>
+</div>
+<p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:8px;">
+        Toca un Voicing rico en la Mano Izquierda y superpone una Pentatónica exacta en la Mano Derecha para resaltar tensiones acústicas puras sin notas a evitar:
+      </p>
+<label style="font-size:0.75rem; font-weight:700; color:var(--primary); display:block; margin-bottom:3px;">1. Modo Griego:</label>
+<div class="selector-grid" id="penta-mode-grid"></div>
+<label style="font-size:0.75rem; font-weight:700; color:var(--accent); display:block; margin-bottom:3px;">2. Tónica Fundamental (12 notas):</label>
+<div class="chromatic-grid" id="penta-root-grid"></div>
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:8px; margin-bottom:8px;">
+<div id="penta-lh-box" style="background:var(--bg-input); border:1px solid var(--border); border-radius:8px; padding:8px;"></div>
+<div id="penta-rh-box" style="background:var(--bg-input); border:1px solid var(--border); border-radius:8px; padding:8px;"></div>
+</div>
+<div class="piano-outer-container">
+<div class="piano-wrapper">
+<div class="piano-keys" id="piano-penta"></div>
+</div>
+</div>
+<div style="display:flex; gap:8px; margin-top:8px;">
+<button class="btn btn-accent btn-sm" onclick="playPentaCombo()">🔊 Voicing MI + Pentatónica MD</button>
+<button class="btn btn-primary btn-sm" onclick="playPentaChord()">🎹 Solo Voicing MI</button>
+<button class="btn btn-danger btn-sm" onclick="stopAll()">⏹ Parar</button>
+</div>
+<div class="step-box" id="penta-theory" style="margin-top:10px;"></div>
+</div>
+</section><section class="tab-content" id="tab-licks" role="tabpanel"><div class="card"><div class="card-title"><span>Colección Maestra de Licks Pianísticos por Modos</span><span style="font-size:0.75rem; color:var(--accent);">Vocabulario Modal en Sol y Fa</span></div><p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:10px;">Domina frases auténticas y vocabulario idiomático organizado por modos y estilos musicales (Jazz, Neo-Soul, Blues, Fusión, Flamenco/Español, etc.). Incluye gran pentagrama (Clave de Sol + Fa con voicing MI), digitación sugerida y visualización en tiempo real sobre el piano.</p><label style="font-size:0.75rem; font-weight:700; color:var(--accent); display:block; margin-bottom:4px;">1. Selecciona Modo Griego:</label><div class="selector-grid" id="licks-mode-grid"></div><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin:10px 0 6px 0;"><label style="font-size:0.75rem; font-weight:700; color:var(--primary);">2. Frases y Licks Disponibles para el Modo:</label><div id="licks-style-filters" style="display:flex; gap:5px;"><button class="btn btn-xs btn-accent" onclick="filterLicksByStyle('all')">Todos</button><button class="btn btn-xs" onclick="filterLicksByStyle('Jazz')">Jazz</button><button class="btn btn-xs" onclick="filterLicksByStyle('Neo-Soul')">Neo-Soul / R&amp;B</button><button class="btn btn-xs" onclick="filterLicksByStyle('Blues/Rock')">Blues/Rock</button><button class="btn btn-xs" onclick="filterLicksByStyle('World/Classical')">Español/Clásico</button></div></div><div class="selector-grid" id="licks-list-grid" style="grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); margin-bottom:12px;"></div><div class="step-box" id="lick-detail-header" style="border-left-color:var(--accent); background:rgba(245,158,11,0.08); margin-bottom:12px;"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;"><div><span class="step-title" id="lick-title" style="font-size:1.05rem; color:#fde047;">Lick Seleccionado</span><div id="lick-style-tag" style="display:inline-block; margin-left:8px; font-size:0.72rem; padding:1px 7px; border-radius:10px; background:rgba(56,189,248,0.2); color:var(--primary); font-weight:700;">Jazz</div></div><div style="display:flex; gap:6px; align-items:center;"><button class="btn btn-primary btn-sm" id="btn-play-lick" onclick="playSelectedLick()">▶ Escuchar Lick</button><button class="btn btn-accent btn-sm" onclick="showLickOnPiano()">🎹 Ver en Teclado</button><button class="btn btn-danger btn-sm" onclick="stopAll()">⏹ Parar</button></div></div><p id="lick-desc" style="font-size:0.83rem; margin-top:6px; color:var(--text-main);"></p><div id="lick-notes-info" style="font-size:0.78rem; color:var(--primary); margin-top:3px; font-weight:600;"></div></div><div class="card" style="background:var(--bg-card-subtle); border:1px solid var(--border); padding:10px; margin-bottom:12px;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;"><span style="font-weight:700; font-size:0.85rem; color:var(--text-main);">🎼 Gran Pentagrama Real de Piano (Doble Sistema MD Clave de Sol + MI Clave de Fa)</span><span style="font-size:0.75rem; color:var(--text-muted);">Haz clic en cualquier nota para escucharla</span></div><div class="staff-container" style="background:#ffffff; padding:10px; border-radius:8px; overflow-x:auto;"><svg id="grand-staff-svg" style="width:100%; min-width:760px; height:180px; display:block;" viewbox="0 0 920 180"></svg></div><div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:8px; margin-top:6px; font-size:0.75rem; color:var(--text-muted);"><span>🟡 Tónica (T)</span><span>🔴 Nota Característica (C)</span><span>🔵 Notas Modales / Tensiones</span><span>🟠 Voicing MI (Armonía)</span></div></div><div class="card" style="background:var(--bg-input); padding:10px;"><div style="font-weight:700; font-size:0.85rem; color:var(--accent); margin-bottom:6px;">Teclado C3 a C6 para Ejecución de Lick:</div><div class="piano-outer-container"><div class="piano-wrapper"><div class="piano-keys" id="piano-licks"></div></div></div></div></div></section>
+<!-- PESTAÑA 4: IMPROVISAR & VAMPS -->
+<section class="tab-content" id="tab-impro" role="tabpanel">
+<div class="card">
+<div class="card-title">Vamps en Bucle Continuo para los 7 Modos</div>
+<p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:8px;">Activa una progresión cíclica de acordes y bajo coordinada al tempo para improvisar libremente encima:</p>
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:5px; margin-bottom:8px;">
+<button class="btn btn-sm btn-accent" onclick="startVamp(0)">1. Jónico (C - F/C)</button>
+<button class="btn btn-sm btn-accent" onclick="startVamp(1)">2. Dórico (Dm7 - G7)</button>
+<button class="btn btn-sm btn-accent" onclick="startVamp(2)">3. Frigio (Em - Fmaj7)</button>
+<button class="btn btn-sm btn-accent" onclick="startVamp(3)">4. Lidio (Fmaj7 - G/F)</button>
+<button class="btn btn-sm btn-accent" onclick="startVamp(4)">5. Mixolidio (G7 - F/G)</button>
+<button class="btn btn-sm btn-accent" onclick="startVamp(5)">6. Eólico (Am - F - G)</button>
+<button class="btn btn-sm btn-accent" onclick="startVamp(6)">7. Locrio (Bm7b5 - C)</button>
+</div>
+<div style="background:var(--bg-input); padding:8px 12px; border-radius:8px; border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+<span id="vamp-status" style="font-size:0.83rem; font-weight:700;">Vamp inactivo. Toca un modo arriba para activar.</span>
+<button class="btn btn-danger btn-xs" onclick="stopVamp()">⏹ Detener Bucle</button>
+</div>
+<div class="piano-outer-container">
+<div class="piano-wrapper">
+<div class="piano-keys" id="piano-impro"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- PESTAÑA 5: PRÁCTICA GUIADA -->
+<section class="tab-content" id="tab-practice" role="tabpanel">
+<div class="card">
+<div class="card-title">
+<span>Práctica Guiada: Memoria Motriz &amp; Reconocimiento</span>
+<span id="practice-score" style="font-size:0.85rem; color:var(--accent);">Puntaje: 0</span>
+</div>
+<p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:8px;">Escucha y observa la secuencia iluminada, luego repítela en orden en el teclado:</p>
+<div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+<select id="practice-mode" style="background:var(--bg-input); color:var(--text-main); padding:6px; border-radius:6px; border:1px solid var(--border); font-size:0.83rem;">
+<option value="0">Jónico (C)</option>
+<option value="1">Dórico (D)</option>
+<option value="2">Frigio (E)</option>
+<option value="3">Lidio (F)</option>
+<option value="4">Mixolidio (G)</option>
+<option value="5">Eólico (A)</option>
+<option value="6">Locrio (B)</option>
+</select>
+<button class="btn btn-primary btn-sm" onclick="startPracticeChallenge()">🎯 Iniciar Desafío</button><button class="btn btn-danger btn-sm" onclick="stopPractice()">⏹ Parar</button>
+</div>
+<div id="practice-msg" style="background:var(--bg-input); padding:8px; border-radius:6px; border:1px solid var(--border); font-size:0.83rem; margin-bottom:8px; color:var(--primary); font-weight:bold;">Presiona 'Iniciar Desafío' para comenzar.</div>
+<div class="piano-outer-container">
+<div class="piano-wrapper">
+<div class="piano-keys" id="piano-practice"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- PESTAÑA 6: ENTRENAMIENTO AUDITIVO -->
+<section class="tab-content" id="tab-ear" role="tabpanel">
+<div class="card">
+<div class="card-title">
+<span>Entrenamiento Auditivo (Ear Training Modal)</span>
+<span id="ear-stats" style="font-size:0.83rem; color:var(--primary);">Aciertos: 0 / 0</span>
+</div>
+<p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:8px;">Escucha el acorde y arpegio a ciegas. ¿Qué modo de la escala mayor es?</p>
+<div style="display:flex; gap:8px; margin-bottom:10px;">
+<button class="btn btn-primary btn-sm" onclick="playEarMystery()">🎧 Reproducir Misterio</button>
+<button class="btn btn-sm" onclick="replayEar()">🔁 Repetir</button>
+</div>
+<div id="ear-feedback" style="display:none; padding:8px; border-radius:6px; font-size:0.83rem; margin-bottom:10px;"></div>
+<div class="selector-grid" id="ear-buttons-grid"></div>
+</div>
+</section>
+<!-- PESTAÑA 7: QUIZ PRO -->
+<section class="tab-content" id="tab-quiz" role="tabpanel">
+<div class="card">
+<div class="card-title">
+<span>Evaluación de Conocimientos (Quiz Inteligente)</span>
+<button class="btn btn-primary btn-xs" onclick="initQuizSession()">🔄 Nuevas 5 Preguntas</button>
+</div>
+<div style="display:flex; justify-content:space-between; background:var(--bg-input); padding:6px 12px; border-radius:6px; font-size:0.8rem; margin-bottom:10px; border:1px solid var(--border);">
+<span>🔥 Racha: <strong id="quiz-streak" style="color:var(--accent);">0</strong></span>
+<span>🏆 Total Respondidas: <strong id="quiz-total">0</strong></span>
+<span>🎯 Precisión: <strong id="quiz-acc" style="color:var(--success);">100%</strong></span>
+</div>
+<div id="quiz-questions-list"></div>
+</div>
+</section>
+<!-- PESTAÑA 8: GLOSARIO & CANCIONES -->
+<section class="tab-content" id="tab-glossary" role="tabpanel">
+<div class="card">
+<div class="card-title">Canciones de Referencia para los 7 Modos</div>
+<div class="songs-grid" id="songs-grid"></div>
+</div>
+<div class="card">
+<div class="card-title">Glosario Técnico para Pianistas</div>
+<div style="display:flex; flex-direction:column; gap:8px; font-size:0.83rem; margin-top:6px;">
+<div><strong style="color:var(--accent);">Superposición Pentatónica:</strong> Técnica moderna consistente en tocar una pentatónica específica sobre un voicing en la mano izquierda, generando tensiones óptimas sin notas a evitar.</div>
+<div><strong style="color:var(--accent);">Pase del Pulgar (Thumb-Under):</strong> Rotación suave del pulgar por debajo de la palma tras el dedo 3 o 4 para ascender fluidamente por el teclado.</div>
+<div><strong style="color:var(--accent);">Nota Característica:</strong> El intervalo exclusivo que define el timbre único del modo (ej. 4ª aumentada en Lidio, 6ª mayor en Dórico, b2 en Frigio).</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Modal Onboarding -->
+<div class="modal-overlay" id="help-modal" style="display:none;">
+<div class="modal-box">
+<h3 style="color:var(--primary); font-size:1.15rem; margin-bottom:8px;">👋 ¡Bienvenido a Modos al Piano!</h3>
+<p style="font-size:0.83rem; color:var(--text-muted); line-height:1.45; margin-bottom:10px;">
+      Esta aplicación interactiva creada por <strong>Rubén Sbarsky</strong> está diseñada para dominar los modos griegos al piano con claridad visual, táctil y auditiva:
+    </p>
+<ul style="font-size:0.82rem; color:var(--text-main); padding-left:18px; line-height:1.5; margin-bottom:12px;">
+<li><strong>Teclado C3-C6:</strong> 61 teclas con multitouch y scroll horizontal.</li>
+<li><strong>Teclas QWERTY y MIDI:</strong> Toca notas con <code>A S D F G H J K</code> o conecta tu piano USB.</li>
+<li><strong>Pentatónicas &amp; Voicings:</strong> Fórmulas modernas a 2 manos para cada modo.</li>
+<li><strong>Vamps &amp; Práctica Guiada:</strong> Bucle continuo con bajo y juego de memoria motriz.</li>
+</ul>
+<button class="btn btn-primary" onclick="document.getElementById('help-modal').style.display='none'" style="width:100%; justify-content:center;">¡Comenzar!</button>
+</div>
+</div>
+<script>
+  /* ==================== SÍNTESIS AUDIO CON ADSR ==================== */
+  let audioCtx = null, masterGain = null, curVol = 0.7, bpm = 100;
+  let metroInterval = null, isMetroOn = false, vampInterval = null, curVampIdx = null, droneOsc = null, droneGain = null;
+
+  function getAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.setValueAtTime(curVol, audioCtx.currentTime);
+      masterGain.connect(audioCtx.destination);
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function setVol(v) { curVol = parseFloat(v); if (masterGain && audioCtx) masterGain.gain.setValueAtTime(curVol, audioCtx.currentTime); }
+  function setBpm(b) { bpm = parseInt(b); document.getElementById('bpm-val').innerText = bpm; }
+
+  function playPiano(freq, dur = 1.0, vel = 0.75) {
+    try {
+      const ctx = getAudio();
+      const now = ctx.currentTime;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.linearRampToValueAtTime(vel * 0.4, now + 0.008);
+      gain.gain.exponentialRampToValueAtTime(vel * 0.2, now + 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(Math.min(freq * 5, 8000), now);
+      filter.frequency.exponentialRampToValueAtTime(Math.max(freq * 1.5, 300), now + dur);
+
+      const o1 = ctx.createOscillator(); o1.type = "triangle"; o1.frequency.setValueAtTime(freq, now);
+      const o2 = ctx.createOscillator(); o2.type = "sine"; o2.frequency.setValueAtTime(freq * 2 + 0.3, now);
+      const g2 = ctx.createGain(); g2.gain.value = 0.3;
+
+      o1.connect(filter); o2.connect(g2); g2.connect(filter);
+      filter.connect(gain); gain.connect(masterGain);
+
+      o1.start(now); o2.start(now);
+      o1.stop(now + dur); o2.stop(now + dur);
+    } catch (e) {}
+  }
+  function midiToFreq(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+  function playMidi(m, dur = 1.0, vel = 0.7) { playPiano(midiToFreq(m), dur, vel); }
+
+  function toggleMetro() {
+    isMetroOn = !isMetroOn;
+    const btn = document.getElementById("btn-metronome");
+    if (!isMetroOn) { clearInterval(metroInterval); btn.innerText = "🥁 Metrónomo: OFF"; btn.classList.remove("btn-accent"); return; }
+    btn.innerText = "🥁 Metrónomo: ON"; btn.classList.add("btn-accent");
+    let beat = 0;
+    metroInterval = setInterval(() => {
+      try {
+        const ctx = getAudio(); const osc = ctx.createOscillator(); const g = ctx.createGain();
+        osc.frequency.setValueAtTime(beat % 4 === 0 ? 1200 : 800, ctx.currentTime);
+        g.gain.setValueAtTime(0.2, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
+        osc.connect(g); g.connect(masterGain); osc.start(); osc.stop(ctx.currentTime + 0.05);
+        beat++;
+      } catch (e) {}
+    }, (60 / bpm) * 1000);
+  }
+
+  function stopAll() {
+    stopVamp(); stopDrone();
+    if (window.activeTimeouts) { window.activeTimeouts.forEach(t => clearTimeout(t)); window.activeTimeouts = []; }
+  }
+
+  /* ==================== DATOS MODALES ==================== */
+  const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  const MODES_DATA = [
+    { name: "Jónico", deg: "I", tonic: 0, charIdx: 3, charName: "4ª Justa y 7ª Mayor", pat: [2,2,1,2,2,2,1],
+      desc: "Escala mayor clásica. Majestuosa, alegre y estable.", vibe: "Triunfo y estabilidad absoluta.",
+      song: "'Let It Be' (Beatles) / 'Ode to Joy' (Beethoven)",
+      fMD: [1,2,3,1,2,3,4,5], fMI: [5,4,3,2,1,3,2,1], pMD: [3], pMI: [5] },
+    { name: "Dórico", deg: "II", tonic: 2, charIdx: 5, charName: "6ª Mayor (B)", pat: [2,1,2,2,2,1,2],
+      desc: "Menor con 6ª mayor. Menos triste, elegante y jazzero.", vibe: "Jazz sofisticado, funk y frescura.",
+      song: "'So What' (Miles Davis) / 'Oye Como Va' (Santana)",
+      fMD: [1,2,3,1,2,3,4,5], fMI: [5,4,3,2,1,3,2,1], pMD: [3], pMI: [5] },
+    { name: "Frigio", deg: "III", tonic: 4, charIdx: 1, charName: "2ª menor (F)", pat: [1,2,2,2,1,2,2],
+      desc: "Menor con semitono de entrada (b2). Gran tensión andaluza.", vibe: "Flamenco español y misterio.",
+      song: "'Concierto de Aranjuez' / 'White Rabbit' (Jefferson Airplane)",
+      fMD: [1,2,3,1,2,3,4,5], fMI: [5,4,3,2,1,3,2,1], pMD: [3], pMI: [5] },
+    { name: "Lidio", deg: "IV", tonic: 5, charIdx: 3, charName: "4ª Aumentada / #11 (B)", pat: [2,2,2,1,2,2,1],
+      desc: "El más luminoso de todos. La 4ª aumentada desafía la gravedad.", vibe: "Místico, etéreo, cine espacial.",
+      song: "'Flying in a Blue Dream' (Satriani) / 'Tema Simpsons'",
+      fMD: [1,2,3,4,1,2,3,4], fMI: [5,4,3,2,1,3,2,1], pMD: [4], pMI: [5] },
+    { name: "Mixolidio", deg: "V", tonic: 7, charIdx: 6, charName: "7ª Menor (F)", pat: [2,2,1,2,2,1,2],
+      desc: "Mayor con séptima menor (b7). Clave del Blues y Rock.", vibe: "Groove, optimismo y desenfado.",
+      song: "'Sweet Home Alabama' / 'Norwegian Wood' (Beatles)",
+      fMD: [1,2,3,1,2,3,4,5], fMI: [5,4,3,2,1,3,2,1], pMD: [3], pMI: [5] },
+    { name: "Eólico", deg: "VI", tonic: 9, charIdx: 5, charName: "6ª Menor (F)", pat: [2,1,2,2,1,2,2],
+      desc: "Escala menor natural. La sexta bemol genera drama puro.", vibe: "Melancolía épica e introspección.",
+      song: "'Stairway to Heaven' (Led Zeppelin) / 'Losing My Religion'",
+      fMD: [1,2,3,1,2,3,4,5], fMI: [5,4,3,2,1,3,2,1], pMD: [3], pMI: [5] },
+    { name: "Locrio", deg: "VII", tonic: 11, charIdx: 4, charName: "5ª Disminuida (F)", pat: [1,2,2,1,2,2,2],
+      desc: "Modo semidisminuido sin quinta justa. Inestabilidad máxima.", vibe: "Tensión extrema y oscuridad.",
+      song: "'Sad But True' (Metallica intro) / 'Army of Lovers' (Lee Morgan)",
+      fMD: [1,2,3,1,2,3,4,5], fMI: [4,3,2,1,4,3,2,1], pMD: [3], pMI: [4] }
+  ];
+
+  /* PENTATÓNICAS & VOICINGS MAESTROS */
+  const PENTA_MODES = [
+    { name: "Jónico (I)", sfx: "Maj9", rule: "Pentatónica Mayor de la 5ª (V)", offset: 7, type: "major",
+      lh: [0, 7, 11, 14], desc: "Elimina la 4ª justa de choque y despliega todas las extensiones acústicas puras (9, 3, 13, 7M)." },
+    { name: "Dórico (II)", sfx: "m7(11)", rule: "Pentatónica Menor a +1 Tono (+2 ST)", offset: 2, type: "minor",
+      lh: [0, 7, 10, 15], desc: "Resalta de inmediato la novena, onceava y la nota mágica característica: la 6ª Mayor." },
+    { name: "Frigio (III)", sfx: "m7(b9)", rule: "Pentatónica Mayor a +1 Semitono (b2)", offset: 1, type: "major",
+      lh: [0, 7, 10, 13], desc: "Genera el genuino color andaluz incorporando b2, b3 y b6 sin disonancias ásperas." },
+    { name: "Lidio (IV)", sfx: "Maj7(#11)", rule: "Pentatónica Mayor a +1 Tono (+2 ST)", offset: 2, type: "major",
+      lh: [0, 7, 11, 18], desc: "Entrega la #11 como tercera de la pentatónica mayor. Sonido místico perfecto." },
+    { name: "Mixolidio (V)", sfx: "9 / 13", rule: "Pentatónica Mayor a la b7 (-1 Tono)", offset: 10, type: "major",
+      lh: [0, 7, 10, 16], desc: "Auténtico fraseo soul y gospel sin choque entre tensiones suspendidas y la tercera." },
+    { name: "Eólico (VI)", sfx: "m7(b6)", rule: "Pentatónica Menor de la Fundamental", offset: 0, type: "minor",
+      lh: [0, 7, 10, 15], desc: "Articula el drama clásico con apoyaturas melódicas en la 6ª menor." },
+    { name: "Locrio (VII)", sfx: "m7b5", rule: "Pentatónica Mayor a la 3ª Menor (b3)", offset: 3, type: "major",
+      lh: [0, 6, 10, 15], desc: "Resuelve la fricción angular del tritono y crea estabilidad moderna única." }
+  ];
+
+  /* CONSTRUCCIÓN TECLADO C3 - C6 (36 blancas + 25 negras = 61 teclas) */
+  const QWERTY_MAP = { 'a': 60, 'w': 61, 's': 62, 'e': 63, 'd': 64, 'f': 65, 't': 66, 'g': 67, 'y': 68, 'h': 69, 'u': 70, 'j': 71, 'k': 72 };
+  const QWERTY_INV = { 60: 'A', 61: 'W', 62: 'S', 63: 'E', 64: 'D', 65: 'F', 66: 'T', 67: 'G', 68: 'Y', 69: 'H', 70: 'U', 71: 'J', 72: 'K' };
+
+  function buildKeyboard(id, onTrigger) {
+    const box = document.getElementById(id); if (!box) return;
+    box.innerHTML = "";
+    let whiteIdx = 0;
+    for (let m = 48; m <= 84; m++) {
+      const pc = m % 12, isBlk = [1,3,6,8,10].includes(pc);
+      if (!isBlk) {
+        const d = document.createElement("div"); d.className = "key-white"; d.dataset.midi = m; d.dataset.name = NOTE_NAMES[pc];
+        const lbl = document.createElement("span"); lbl.innerText = (pc === 0) ? (NOTE_NAMES[pc] + (Math.floor(m/12)-1)) : NOTE_NAMES[pc];
+        d.appendChild(lbl);
+        if (QWERTY_INV[m]) { const q = document.createElement("span"); q.className = "key-qwerty-hint"; q.innerText = QWERTY_INV[m]; d.appendChild(q); }
+        bindKey(d, m, onTrigger); box.appendChild(d); whiteIdx++;
+      }
+    }
+    let curW = 0;
+    for (let m = 48; m < 84; m++) {
+      const pc = m % 12, isBlk = [1,3,6,8,10].includes(pc);
+      if (!isBlk) curW++;
+      else {
+        const d = document.createElement("div"); d.className = "key-black"; d.dataset.midi = m; d.dataset.name = NOTE_NAMES[pc];
+        d.style.left = `${(curW * 36) - 12}px`;
+        const lbl = document.createElement("span"); lbl.innerText = NOTE_NAMES[pc]; d.appendChild(lbl);
+        if (QWERTY_INV[m]) { const q = document.createElement("span"); q.className = "key-qwerty-hint"; q.innerText = QWERTY_INV[m]; d.appendChild(q); }
+        bindKey(d, m, onTrigger); box.appendChild(d);
+      }
+    }
+    box.style.width = `${whiteIdx * 36}px`;
+  }
+
+  function bindKey(el, m, cb) {
+    const press = (e) => { e.preventDefault(); el.classList.add("active"); playMidi(m, 1.0, 0.8); if (cb) cb(m); };
+    const rel = () => el.classList.remove("active");
+    el.addEventListener("pointerdown", press); el.addEventListener("pointerup", rel);
+    el.addEventListener("pointerleave", rel); el.addEventListener("pointercancel", rel);
+  }
+
+  function flashKey(m) {
+    document.querySelectorAll(`[data-midi="${m}"]`).forEach(k => { k.classList.add("active"); setTimeout(() => k.classList.remove("active"), 160); });
+  }
+
+  window.addEventListener("keydown", (e) => {
+    if (e.repeat || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+    const m = QWERTY_MAP[e.key.toLowerCase()];
+    if (m) { playMidi(m, 1.0, 0.85); flashKey(m); triggerPractice(m); }
+  });
+
+  /* Web MIDI */
+  if (navigator.requestMIDIAccess) {
+    navigator.requestMIDIAccess().then(acc => {
+      const b = document.getElementById("midi-badge");
+      const list = Array.from(acc.inputs.values());
+      if (list.length > 0) { b.innerText = `🎹 MIDI: ${list[0].name}`; b.style.color = "#6ee7b7"; }
+      acc.inputs.forEach(inp => {
+        inp.onmidimessage = (e) => {
+          if ((e.data[0] >> 4) === 9 && e.data[2] > 0) { playMidi(e.data[1], 1.0, e.data[2]/127); flashKey(e.data[1]); triggerPractice(e.data[1]); }
+        };
+      });
+    }).catch(()=>{});
+  }
+
+  /* SVG PENTAGRAMA */
+  function renderStaff(notes) {
+    const svg = document.getElementById("staff-svg"); if (!svg) return;
+    let l = "";
+    for (let i = 0; i < 5; i++) l += `<line x1="20" y1="${22 + i*11}" x2="830" y2="${22 + i*11}" stroke="#94a3b8" stroke-width="1.2"/>`;
+    let clef = `<text x="28" y="58" font-size="38" font-family="serif" fill="#0f172a">𝄞</text>`;
+    let nSvg = "";
+    notes.forEach((n, i) => {
+      const x = 110 + (i * 75);
+      const diaMap = { 0:0, 2:1, 4:2, 5:3, 7:4, 9:5, 11:6 };
+      const pc = n.midi % 12, oct = Math.floor(n.midi / 12) - 1;
+      const dia = (oct - 4) * 7 + (diaMap[pc] !== undefined ? diaMap[pc] : 0);
+      const y = 77 - (dia * 5.5);
+      const col = n.isTonic ? "#ca8a04" : (n.isChar ? "#e11d48" : "#0284c7");
+      let ledg = (y >= 77) ? `<line x1="${x-10}" y1="77" x2="${x+10}" y2="77" stroke="#475569" stroke-width="1.2"/>` : "";
+      nSvg += `<g cursor="pointer" onclick="playMidi(${n.midi}, 0.8)">
+        ${ledg}
+        <ellipse cx="${x}" cy="${y}" rx="6" ry="4.5" fill="${col}" stroke="#0f172a"/>
+        <line x1="${x+5}" y1="${y}" x2="${x+5}" y2="${y-22}" stroke="#0f172a" stroke-width="1.5"/>
+        <text x="${x}" y="92" font-size="10" font-weight="bold" text-anchor="middle" fill="${col}">${n.name}</text>
+      </g>`;
+    });
+    svg.innerHTML = l + clef + nSvg;
+  }
+
+  /* PESTAÑA 1: EXPLORAR */
+  let curExpIdx = 0, curHand = 'right';
+  function initExplore() {
+    buildKeyboard("piano-explore");
+    const grid = document.getElementById("mode-grid-explore"); grid.innerHTML = "";
+    MODES_DATA.forEach((m, i) => {
+      const p = document.createElement("div"); p.className = `mode-pill ${i===0?'active':''}`; p.id = `exp-p-${i}`;
+      p.innerHTML = `<span class="mode-name">${m.deg}. ${m.name}</span><span class="mode-feel">${NOTE_NAMES[m.tonic]} a ${NOTE_NAMES[m.tonic]}</span>`;
+      p.onclick = () => selectExplore(i); grid.appendChild(p);
+    });
+    selectExplore(0);
+    const w = document.getElementById("wrap-explore"); if (w) w.scrollLeft = 250;
+  }
+
+  function selectExplore(i) {
+    curExpIdx = i;
+    document.querySelectorAll("#mode-grid-explore .mode-pill").forEach(p => p.classList.remove("active"));
+    const act = document.getElementById(`exp-p-${i}`); if (act) act.classList.add("active");
+    const m = MODES_DATA[i];
+    document.getElementById("mode-detail-title").innerText = `${m.deg} Grado: Modo ${m.name}`;
+    document.getElementById("mode-detail-desc").innerText = `${m.desc} Nota Característica: ${m.charName}.`;
+    document.getElementById("mode-detail-vibe").innerText = `Color: ${m.vibe}`;
+    document.getElementById("mode-detail-song").innerText = `🎧 ${m.song}`;
+    document.getElementById("fingering-title").innerText = `(${m.name})`;
+
+    updateExplorePiano();
+    if (droneOsc) startDrone(m.tonic + 48);
+  }
+
+  function setHand(h) {
+    curHand = h;
+    document.getElementById('hand-r').classList.toggle('btn-accent', h==='right');
+    document.getElementById('hand-l').classList.toggle('btn-accent', h==='left');
+    document.getElementById('hand-none').classList.toggle('btn-accent', h==='none');
+    updateExplorePiano();
+  }
+
+  function updateExplorePiano() {
+    const m = MODES_DATA[curExpIdx];
+    const p = document.getElementById("piano-explore"); if (!p) return;
+    p.querySelectorAll(".finger-badge, .pass-indicator, .key-badge-role").forEach(el => el.remove());
+    p.querySelectorAll(".key-white, .key-black").forEach(k => k.classList.remove("highlight-tonic", "highlight-mode", "highlight-char"));
+
+    let start = 60 + m.tonic; if (start > 71) start -= 12;
+    let cur = start;
+    const notes = [{ midi: cur, isTonic: true, isChar: false, name: NOTE_NAMES[cur % 12] }];
+    for (let i = 0; i < 7; i++) {
+      cur += m.pat[i];
+      notes.push({ midi: cur, isTonic: (i===6), isChar: (i+1 === m.charIdx), name: NOTE_NAMES[cur % 12] });
+    }
+
+    const tName = NOTE_NAMES[m.tonic];
+    const cName = NOTE_NAMES[notes[m.charIdx].midi % 12];
+
+    p.querySelectorAll(".key-white").forEach(k => {
+      const nm = k.dataset.name;
+      if (nm === tName) { k.classList.add("highlight-tonic"); addRole(k, "role-tonic", "T"); }
+      else if (nm === cName) { k.classList.add("highlight-char"); addRole(k, "role-char", "C"); }
+      else { k.classList.add("highlight-mode"); addRole(k, "role-mode", "M"); }
+    });
+
+    if (curHand !== 'none') {
+      const fl = curHand === 'right' ? m.fMD : m.fMI;
+      const pl = curHand === 'right' ? m.pMD : m.pMI;
+      notes.forEach((n, idx) => {
+        const k = p.querySelector(`[data-midi="${n.midi}"]`);
+        if (k && fl[idx] !== undefined) {
+          const b = document.createElement("div"); b.className = "finger-badge"; b.innerText = fl[idx];
+          if (curHand === 'left') { b.style.borderColor = "#38bdf8"; b.style.color = "#7dd3fc"; }
+          k.appendChild(b);
+          if (pl.includes(idx)) { const pass = document.createElement("div"); pass.className = "pass-indicator"; pass.innerText = "↷ Pase"; k.appendChild(pass); }
+        }
+      });
+    }
+    renderStaff(notes);
+  }
+
+  function addRole(k, cls, txt) {
+    const s = document.createElement("div"); s.className = `key-badge-role ${cls}`; s.innerText = txt; k.appendChild(s);
+  }
+
+  function playExploreScale() {
+    const m = MODES_DATA[curExpIdx];
+    let start = 60 + m.tonic; if (start > 71) start -= 12;
+    let cur = start; const list = [cur];
+    for (let i = 0; i < 7; i++) { cur += m.pat[i]; list.push(cur); }
+    list.forEach((mid, idx) => {
+      setTimeout(() => { playMidi(mid, 0.4, 0.8); flashKey(mid); }, idx * 230);
+    });
+  }
+
+  function toggleDrone() {
+    const b = document.getElementById("btn-drone");
+    if (!droneOsc) { startDrone(MODES_DATA[curExpIdx].tonic + 48); b.innerText = "⏹ Detener Drone"; b.classList.add("btn-danger"); }
+    else { stopDrone(); b.innerText = "🎵 Drone Pedal"; b.classList.remove("btn-danger"); }
+  }
+  function startDrone(midi) {
+    stopDrone();
+    try {
+      const ctx = getAudio(); droneOsc = ctx.createOscillator(); droneGain = ctx.createGain();
+      droneOsc.type = "sawtooth"; droneOsc.frequency.setValueAtTime(midiToFreq(midi), ctx.currentTime);
+      const filt = ctx.createBiquadFilter(); filt.type = "lowpass"; filt.frequency.setValueAtTime(250, ctx.currentTime);
+      droneGain.gain.setValueAtTime(0.08, ctx.currentTime);
+      droneOsc.connect(filt); filt.connect(droneGain); droneGain.connect(masterGain);
+      droneOsc.start();
+    } catch (e) {}
+  }
+  function stopDrone() {
+    if (droneOsc) { try { droneOsc.stop(); droneOsc.disconnect(); } catch(e){} droneOsc = null; }
+    const b = document.getElementById("btn-drone"); if (b) { b.innerText = "🎵 Drone Pedal"; b.classList.remove("btn-danger"); }
+  }
+
+  /* PESTAÑA 2: LAB CROMÁTICO */
+  let labRoot = 0, labMode = 0;
+  function initLab() {
+    buildKeyboard("piano-lab");
+    const rG = document.getElementById("lab-root-grid"); rG.innerHTML = "";
+    NOTE_NAMES.forEach((n, i) => {
+      const b = document.createElement("button"); b.className = `root-btn ${i===labRoot?'active':''}`; b.id = `lr-${i}`; b.innerText = n;
+      b.onclick = () => { labRoot = i; document.querySelectorAll("#lab-root-grid .root-btn").forEach(x=>x.classList.remove("active")); b.classList.add("active"); updateLab(); };
+      rG.appendChild(b);
+    });
+    const mG = document.getElementById("lab-mode-grid"); mG.innerHTML = "";
+    MODES_DATA.forEach((m, i) => {
+      const p = document.createElement("div"); p.className = `mode-pill ${i===labMode?'active':''}`; p.id = `lm-${i}`;
+      p.innerHTML = `<span class="mode-name">${m.deg}. ${m.name}</span>`;
+      p.onclick = () => { labMode = i; document.querySelectorAll("#lab-mode-grid .mode-pill").forEach(x=>x.classList.remove("active")); p.classList.add("active"); updateLab(); };
+      mG.appendChild(p);
+    });
+    updateLab();
+  }
+
+  function updateLab() {
+    const p = document.getElementById("piano-lab"); if (!p) return;
+    p.querySelectorAll(".key-badge-role").forEach(el => el.remove());
+    p.querySelectorAll(".key-white, .key-black").forEach(k => k.classList.remove("highlight-tonic", "highlight-mode", "highlight-char"));
+
+    const m = MODES_DATA[labMode];
+    let cur = labRoot; const pcs = [cur];
+    for (let i = 0; i < 6; i++) { cur = (cur + m.pat[i]) % 12; pcs.push(cur); }
+    const charPc = pcs[m.charIdx];
+
+    p.querySelectorAll(".key-white, .key-black").forEach(k => {
+      const pc = parseInt(k.dataset.midi) % 12;
+      if (pc === labRoot) { k.classList.add("highlight-tonic"); addRole(k, "role-tonic", "T"); }
+      else if (pc === charPc) { k.classList.add("highlight-char"); addRole(k, "role-char", "C"); }
+      else if (pcs.includes(pc)) { k.classList.add("highlight-mode"); addRole(k, "role-mode", "M"); }
+    });
+
+    document.getElementById("lab-info").innerHTML = `
+      <div class="step-title">${NOTE_NAMES[labRoot]} ${m.name}</div>
+      <p style="font-size:0.83rem;">Notas: <strong>${pcs.map(x=>NOTE_NAMES[x]).join(" - ")}</strong>.<br>Nota Característica: <span style="color:var(--danger); font-weight:bold;">${NOTE_NAMES[charPc]} (${m.charName})</span>.</p>
+    `;
+  }
+  function playLabScale() {
+    const m = MODES_DATA[labMode];
+    let cur = 60 + labRoot; if (cur > 71) cur -= 12;
+    const list = [cur];
+    for (let i = 0; i < 7; i++) { cur += m.pat[i]; list.push(cur); }
+    list.forEach((mid, idx) => setTimeout(() => { playMidi(mid, 0.4, 0.8); flashKey(mid); }, idx * 230));
+  }
+  function playLabChord() {
+    const m = MODES_DATA[labMode];
+    let cur = 48 + labRoot;
+    let t3 = cur + m.pat[0] + m.pat[1], t5 = t3 + m.pat[2] + m.pat[3];
+    [cur, t3, t5].forEach(mid => { playMidi(mid, 1.4, 0.7); flashKey(mid); });
+  }
+
+  /* PESTAÑA: PENTATÓNICAS & VOICINGS */
+  let pentaModeIdx = 3, pentaRootVal = 5; // F Lidio default
+  function initPenta() {
+    buildKeyboard("piano-penta");
+    const mG = document.getElementById("penta-mode-grid"); mG.innerHTML = "";
+    PENTA_MODES.forEach((sys, i) => {
+      const p = document.createElement("div"); p.className = `mode-pill ${i===pentaModeIdx?'active':''}`; p.id = `pm-${i}`;
+      p.innerHTML = `<span class="mode-name">${sys.name}</span><span class="mode-feel">${sys.sfx}</span>`;
+      p.onclick = () => { pentaModeIdx = i; document.querySelectorAll("#penta-mode-grid .mode-pill").forEach(x=>x.classList.remove("active")); p.classList.add("active"); updatePenta(); };
+      mG.appendChild(p);
+    });
+    const rG = document.getElementById("penta-root-grid"); rG.innerHTML = "";
+    NOTE_NAMES.forEach((n, i) => {
+      const b = document.createElement("button"); b.className = `root-btn ${i===pentaRootVal?'active':''}`; b.id = `pr-${i}`; b.innerText = n;
+      b.onclick = () => { pentaRootVal = i; document.querySelectorAll("#penta-root-grid .root-btn").forEach(x=>x.classList.remove("active")); b.classList.add("active"); updatePenta(); };
+      rG.appendChild(b);
+    });
+    updatePenta();
+  }
+
+  function updatePenta() {
+    const sys = PENTA_MODES[pentaModeIdx];
+    const rName = NOTE_NAMES[pentaRootVal];
+    const chordName = rName + sys.sfx;
+
+    let lhBase = 48 + pentaRootVal; if (lhBase > 56) lhBase -= 12;
+    const lhMidis = sys.lh.map(x => lhBase + x);
+
+    const pRoot = (pentaRootVal + sys.offset) % 12;
+    const pSteps = sys.type === 'major' ? [0,2,4,7,9] : [0,3,5,7,10];
+    let rhBase = 60 + pRoot; if (rhBase < 60) rhBase += 12;
+    const pentaMidis = pSteps.map(x => rhBase + x);
+
+    document.getElementById("penta-lh-box").innerHTML = `
+      <div style="font-weight:bold; color:var(--accent); font-size:0.85rem;">🤚 MI (Voicing): ${chordName}</div>
+      <div style="font-size:0.8rem; margin-top:2px;">Notas: <strong>${lhMidis.map(m=>NOTE_NAMES[m%12]).join(" - ")}</strong></div>
+      <div style="font-size:0.75rem; color:var(--text-muted);">Dedos: 5-3-2-1</div>
+    `;
+    document.getElementById("penta-rh-box").innerHTML = `
+      <div style="font-weight:bold; color:var(--primary); font-size:0.85rem;">🖐️ MD: Pentatónica de ${NOTE_NAMES[pRoot]} ${sys.type==='major'?'Mayor':'Menor'}</div>
+      <div style="font-size:0.8rem; margin-top:2px;">Regla: <strong>${sys.rule}</strong></div>
+      <div style="font-size:0.75rem; color:var(--text-muted);">Notas: ${pentaMidis.map(m=>NOTE_NAMES[m%12]).join(" - ")}</div>
+    `;
+    document.getElementById("penta-theory").innerHTML = `
+      <div class="step-title">${sys.name}: ¿Por qué funciona?</div>
+      <p style="font-size:0.83rem;">${sys.desc}</p>
+    `;
+
+    const p = document.getElementById("piano-penta"); if (!p) return;
+    p.querySelectorAll(".key-white, .key-black").forEach(k => k.classList.remove("highlight-lh", "highlight-penta", "highlight-char"));
+    lhMidis.forEach(m => { const el = p.querySelector(`[data-midi="${m}"]`); if (el) el.classList.add("highlight-lh"); });
+    pentaMidis.forEach(m => { const el = p.querySelector(`[data-midi="${m}"]`); if (el) el.classList.add("highlight-penta"); });
+  }
+
+  function playPentaCombo() {
+    const sys = PENTA_MODES[pentaModeIdx];
+    let lhBase = 48 + pentaRootVal; if (lhBase > 56) lhBase -= 12;
+    const lhMidis = sys.lh.map(x => lhBase + x);
+
+    const pRoot = (pentaRootVal + sys.offset) % 12;
+    const pSteps = sys.type === 'major' ? [0,2,4,7,9] : [0,3,5,7,10];
+    let rhBase = 60 + pRoot; if (rhBase < 60) rhBase += 12;
+    const pentaMidis = pSteps.map(x => rhBase + x);
+
+    lhMidis.forEach(m => { playMidi(m, 2.2, 0.75); flashKey(m); });
+    pentaMidis.forEach((m, idx) => {
+      setTimeout(() => { playMidi(m, 0.5, 0.85); flashKey(m); }, 200 + (idx * 200));
+    });
+  }
+  function playPentaChord() {
+    const sys = PENTA_MODES[pentaModeIdx];
+    let lhBase = 48 + pentaRootVal; if (lhBase > 56) lhBase -= 12;
+    sys.lh.forEach(x => { playMidi(lhBase + x, 2.0, 0.8); flashKey(lhBase + x); });
+  }
+
+  /* PESTAÑA 4: IMPROVISAR & VAMPS */
+  const VAMPS = [
+    { name: "Jónico", chords: [[48, 52, 55], [48, 53, 57]], bass: [36, 41], title: "C - F/C" },
+    { name: "Dórico", chords: [[50, 53, 57, 60], [55, 59, 62, 65]], bass: [38, 43], title: "Dm7 - G7" },
+    { name: "Frigio", chords: [[52, 55, 59], [53, 57, 60, 64]], bass: [40, 41], title: "Em - Fmaj7" },
+    { name: "Lidio", chords: [[53, 57, 60, 64], [53, 55, 59, 62]], bass: [41, 41], title: "Fmaj7 - G/F" },
+    { name: "Mixolidio", chords: [[55, 59, 62, 65], [55, 57, 60, 65]], bass: [43, 43], title: "G7 - F/G" },
+    { name: "Eólico", chords: [[45, 48, 52], [41, 45, 48], [43, 47, 50]], bass: [33, 29, 31], title: "Am - F - G" },
+    { name: "Locrio", chords: [[47, 50, 53, 57], [48, 52, 55]], bass: [35, 36], title: "Bm7b5 - C" }
+  ];
+
+  function startVamp(idx) {
+    stopVamp(); curVampIdx = idx;
+    const v = VAMPS[idx];
+    document.getElementById("vamp-status").innerHTML = `Reproduciendo: <strong style="color:var(--accent);">${v.name} (${v.title})</strong>`;
+    let step = 0;
+    const tick = () => {
+      const c = v.chords[step % v.chords.length];
+      const b = v.bass[step % v.bass.length];
+      playMidi(b, 1.2, 0.9); flashKey(b);
+      c.forEach(m => { playMidi(m, 1.0, 0.55); flashKey(m); });
+      step++;
+    };
+    tick();
+    vampInterval = setInterval(tick, (60 / bpm) * 1000 * 2);
+  }
+  function stopVamp() {
+    if (vampInterval) { clearInterval(vampInterval); vampInterval = null; }
+    curVampIdx = null;
+    const el = document.getElementById("vamp-status"); if (el) el.innerText = "Vamp inactivo.";
+  }
+
+  /* PESTAÑA 5: PRÁCTICA GUIADA */
+  let practiceSeq = [], practiceStep = 0, practiceScore = 0;
+  function startPracticeChallenge() {
+    const mIdx = parseInt(document.getElementById("practice-mode").value);
+    const m = MODES_DATA[mIdx];
+    let start = 60 + m.tonic; if (start > 71) start -= 12;
+    practiceSeq = [start, start + m.pat[0], start + m.pat[0] + m.pat[1]];
+    practiceStep = 0;
+    document.getElementById("practice-msg").innerText = "¡Observa y escucha la secuencia!";
+
+    practiceSeq.forEach((mid, idx) => {
+      setTimeout(() => { playMidi(mid, 0.5, 0.85); flashKey(mid); }, idx * 400);
+    });
+    setTimeout(() => {
+      document.getElementById("practice-msg").innerText = "¡Tu turno! Toca las notas en orden.";
+    }, practiceSeq.length * 400 + 100);
+  }
+  function triggerPractice(m) {
+    if (practiceSeq.length === 0) return;
+    if (m === practiceSeq[practiceStep]) {
+      practiceStep++;
+      if (practiceStep === practiceSeq.length) {
+        practiceScore += 10;
+        document.getElementById("practice-score").innerText = `Puntaje: ${practiceScore}`;
+        document.getElementById("practice-msg").innerHTML = `🎉 <strong style="color:var(--success);">¡Correcto!</strong> +10 puntos. Elige otro desafío.`;
+        practiceSeq = [];
+      }
+    } else {
+      document.getElementById("practice-msg").innerHTML = `❌ <strong style="color:var(--danger);">Nota incorrecta.</strong> ¡Inténtalo de nuevo!`;
+      practiceSeq = [];
+    }
+  }
+
+  /* PESTAÑA 6: EAR TRAINING */
+  let earTargetIdx = 0, earScore = 0, earTotal = 0;
+  function initEar() {
+    const grid = document.getElementById("ear-buttons-grid"); grid.innerHTML = "";
+    MODES_DATA.forEach((m, i) => {
+      const b = document.createElement("button"); b.className = "btn btn-sm"; b.innerText = `${m.deg}. ${m.name}`;
+      b.onclick = () => answerEar(i); grid.appendChild(b);
+    });
+  }
+  function playEarMystery() {
+    earTargetIdx = Math.floor(Math.random() * 7);
+    replayEar();
+    document.getElementById("ear-feedback").style.display = "none";
+  }
+  function replayEar() {
+    const m = MODES_DATA[earTargetIdx];
+    let start = 60; let cur = start; const list = [cur];
+    for (let i = 0; i < 7; i++) { cur += m.pat[i]; list.push(cur); }
+    playMidi(48, 1.8, 0.8);
+    list.forEach((mid, idx) => setTimeout(() => playMidi(mid, 0.4, 0.75), 200 + (idx * 200)));
+  }
+  function answerEar(idx) {
+    earTotal++;
+    const fb = document.getElementById("ear-feedback"); fb.style.display = "block";
+    if (idx === earTargetIdx) {
+      earScore++;
+      fb.style.background = "rgba(16, 185, 129, 0.2)"; fb.style.color = "#6ee7b7";
+      fb.innerHTML = `🎉 <strong>¡Exacto!</strong> Era el modo <strong>${MODES_DATA[earTargetIdx].name}</strong>.`;
+    } else {
+      fb.style.background = "rgba(239, 68, 68, 0.2)"; fb.style.color = "#fca5a5";
+      fb.innerHTML = `❌ Incorrecto. Era <strong>${MODES_DATA[earTargetIdx].name}</strong> (${MODES_DATA[earTargetIdx].charName}).`;
+    }
+    document.getElementById("ear-stats").innerText = `Aciertos: ${earScore} / ${earTotal}`;
+  }
+
+  /* PESTAÑA 7: QUIZ PRO */
+  const QUIZ_BANK = [
+    { q: "¿Cuál es la nota característica del modo Lidio?", a: "4ª Aumentada (#4 / #11)", opts: ["4ª Aumentada (#4 / #11)", "2ª menor (b2)", "6ª menor (b6)", "5ª disminuida (b5)"] },
+    { q: "¿Qué intervalo distingue al modo Dórico del menor natural?", a: "6ª Mayor", opts: ["6ª Mayor", "7ª Mayor", "4ª Aumentada", "2ª Menor"] },
+    { q: "¿Qué pentatónica se superpone sobre un acorde Maj7(#11) Lidio?", a: "Pentatónica Mayor a +1 Tono", opts: ["Pentatónica Mayor a +1 Tono", "Pentatónica Menor de la tónica", "Pentatónica de la b5", "Pentatónica Blues"] },
+    { q: "¿Cuál es el modo más oscuro con 5ª disminuida?", a: "Locrio", opts: ["Locrio", "Frigio", "Eólico", "Mixolidio"] },
+    { q: "¿En qué grado de la escala mayor se genera el modo Mixolidio?", a: "V Grado (Dominante)", opts: ["V Grado (Dominante)", "II Grado", "IV Grado", "VI Grado"] },
+    { q: "¿Qué canción clásica de Miles Davis es el ejemplo canónico del modo Dórico?", a: "So What", opts: ["So What", "Blue in Green", "Take Five", "Autumn Leaves"] }
+  ];
+  let qAnswered = 0, qCorrect = 0;
+  function initQuizSession() {
+    const box = document.getElementById("quiz-questions-list"); box.innerHTML = "";
+    QUIZ_BANK.slice(0, 4).forEach((item, idx) => {
+      const qDiv = document.createElement("div"); qDiv.className = "card"; qDiv.style.background = "var(--bg-input)";
+      qDiv.innerHTML = `<div style="font-weight:700; font-size:0.85rem; margin-bottom:6px;">${idx + 1}. ${item.q}</div>`;
+      item.opts.forEach(opt => {
+        const btn = document.createElement("button"); btn.className = "btn btn-sm"; btn.style.display = "block"; btn.style.width = "100%"; btn.style.margin = "4px 0"; btn.style.textAlign = "left";
+        btn.innerText = opt;
+        btn.onclick = () => {
+          qAnswered++;
+          if (opt === item.a) { qCorrect++; btn.style.background = "#10b981"; btn.style.color = "#fff"; }
+          else { btn.style.background = "#ef4444"; btn.style.color = "#fff"; }
+          qDiv.querySelectorAll("button").forEach(b => b.disabled = true);
+          document.getElementById("quiz-total").innerText = qAnswered;
+          document.getElementById("quiz-acc").innerText = Math.round((qCorrect / qAnswered) * 100) + "%";
+          localStorage.setItem("sbarsky_quiz_total", qAnswered);
+        };
+        qDiv.appendChild(btn);
+      });
+      box.appendChild(qDiv);
+    });
+  }
+
+  /* PESTAÑA 8: CANCIONES */
+  function initSongs() {
+    const grid = document.getElementById("songs-grid"); grid.innerHTML = "";
+    MODES_DATA.forEach(m => {
+      const d = document.createElement("div"); d.className = "song-card";
+      d.innerHTML = `<strong style="color:var(--accent);">${m.name} (${m.deg}):</strong><br>${m.song}`;
+      grid.appendChild(d);
+    });
+  }
+
+  /* TABS & THEMES */
+  function switchTab(id) {
+    document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+    const sec = document.getElementById(id); if (sec) sec.classList.add("active");
+    const btn = document.getElementById(`tabbtn-${id.replace('tab-', '')}`); if (btn) btn.classList.add("active");
+    localStorage.setItem("sbarsky_last_tab", id);
+  }
+  function toggleTheme(th) {
+    document.body.className = (th === 'light') ? 'theme-light' : (th === 'high-contrast' ? 'theme-high-contrast' : '');
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    initExplore(); initLab(); initPenta(); buildKeyboard("piano-impro"); buildKeyboard("piano-practice");
+    initEar(); initQuizSession(); initSongs();
+    const last = localStorage.getItem("sbarsky_last_tab"); if (last && document.getElementById(last)) switchTab(last);
+  });
+</script>
+</body>
+</html>
