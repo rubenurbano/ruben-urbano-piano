@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patrón de Alberti — Piano moderno</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #0a0e1a;
+    color: #e5e7eb;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 950px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1 {
+    color: #60a5fa;
+    font-size: 28px;
+}
+
+h2 {
+    color: #93c5fd;
+    margin-top: 35px;
+}
+
+h3 {
+    color: #bfdbfe;
+}
+
+.card {
+    background: #0f172a;
+    border: 1px solid #1e3a5f;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.explanation {
+    background: #111827;
+    border-left: 4px solid #60a5fa;
+    padding: 15px;
+    margin: 15px 0;
+}
+
+button {
+    background: #1e3a5f;
+    color: white;
+    border: 1px solid #60a5fa;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+#score {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 15px;
+    overflow-x: auto;
+}
+
+.note-info {
+    font-size: 20px;
+    text-align: center;
+    margin: 15px;
+    color: #93c5fd;
+}
+
+.keyboard {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+    height: 160px;
+    position: relative;
+    max-width: 650px;
+}
+
+.white-key {
+    width: 55px;
+    height: 160px;
+    background: white;
+    border: 1px solid #333;
+    position: relative;
+    color: #111;
+}
+
+.black-key {
+    width: 34px;
+    height: 100px;
+    background: #111;
+    position: absolute;
+    z-index: 2;
+    border-radius: 0 0 5px 5px;
+}
+
+.key-label {
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+}
+
+.highlight {
+    background: #60a5fa !important;
+}
+
+.degree {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 4px;
+    border-radius: 6px;
+    background: #1e3a5f;
+    color: #bfdbfe;
+}
+
+.step {
+    margin: 20px 0;
+    padding: 15px;
+    background: #111827;
+    border-radius: 8px;
+}
+
+footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    color: #94a3b8;
+    text-align: center;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎹 El patrón de Alberti llevado a una balada moderna</h1>
+
+<p>
+Un patrón nacido en la música clásica puede convertirse en una herramienta
+muy útil para acompañar una balada moderna.
+</p>
+
+<div class="card">
+
+<h2>🎯 Qué vamos a aprender</h2>
+
+<p>
+Vamos a utilizar el patrón:
+</p>
+
+<div class="note-info">
+C(I) → G(V) → E(III) → G(V)
+</div>
+
+<p>
+La idea fundamental es que, en lugar de tocar las tres notas de un acorde
+simultáneamente, las convertimos en un movimiento continuo.
+</p>
+
+</div>
+
+
+<h2>1. El acorde de C mayor</h2>
+
+<div class="explanation">
+
+<strong>Primero entendamos el acorde.</strong>
+
+<p>
+El acorde de C mayor está formado por:
+</p>
+
+<div class="note-info">
+C(I) — E(III) — G(V)
+</div>
+
+<p>
+C(I) es la fundamental.<br>
+E(III) es la tercera.<br>
+G(V) es la quinta.
+</p>
+
+</div>
+
+
+<h2>2. Convertimos el acorde en un patrón</h2>
+
+<p>
+Ahora reorganizamos las tres notas de esta manera:
+</p>
+
+<div class="note-info">
+C(I) → G(V) → E(III) → G(V)
+</div>
+
+<p>
+Este movimiento se repite continuamente.
+</p>
+
+<div class="card">
+
+<h3>🎵 Resultado musical</h3>
+
+<div id="score"></div>
+
+<div id="currentNote" class="note-info">
+Pulsa "Reproducir"
+</div>
+
+<button onclick="playPattern()">▶ Reproducir</button>
+<button onclick="stopPattern()">■ Detener</button>
+
+</div>
+
+
+<h2>3. ¿Qué está haciendo realmente la mano?</h2>
+
+<div class="step">
+
+<strong>Paso 1</strong>
+
+<p>
+Toca C(I) con el dedo 5.
+</p>
+
+</div>
+
+<div class="step">
+
+<strong>Paso 2</strong>
+
+<p>
+Salta a G(V) con el dedo 2.
+</p>
+
+</div>
+
+<div class="step">
+
+<strong>Paso 3</strong>
+
+<p>
+Baja a E(III) con el dedo 1.
+</p>
+
+</div>
+
+<div class="step">
+
+<strong>Paso 4</strong>
+
+<p>
+Regresa a G(V) con el dedo 2.
+</p>
+
+</div>
+
+
+<h2>4. El teclado</h2>
+
+<div class="keyboard">
+
+<div class="white-key" data-note="C">
+<div class="key-label">C(I)</div>
+</div>
+
+<div class="white-key" data-note="D">
+<div class="key-label">D(II)</div>
+</div>
+
+<div class="white-key" data-note="E">
+<div class="key-label">E(III)</div>
+</div>
+
+<div class="white-key" data-note="F">
+<div class="key-label">F(IV)</div>
+</div>
+
+<div class="white-key" data-note="G">
+<div class="key-label">G(V)</div>
+</div>
+
+<div class="white-key" data-note="A">
+<div class="key-label">A(VI)</div>
+</div>
+
+<div class="white-key" data-note="B">
+<div class="key-label">B(VII)</div>
+</div>
+
+</div>
+
+
+<h2>5. Ahora lo convertimos en música moderna</h2>
+
+<div class="explanation">
+
+<p>
+Supongamos que nuestra progresión armónica es:
+</p>
+
+<div class="note-info">
+C(I) → Am(VI) → F(IV) → G(V)
+</div>
+
+<p>
+Podemos utilizar un patrón semejante en cada acorde.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h3>C(I)</h3>
+
+<p>
+C(I) → G(V) → E(III) → G(V)
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>Am(VI)</h3>
+
+<p>
+A(VI) → E(III) → C(I) → E(III)
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>F(IV)</h3>
+
+<p>
+F(IV) → C(I) → A(VI) → C(I)
+</p>
+
+</div>
+
+<div class="card">
+
+<h3>G(V)</h3>
+
+<p>
+G(V) → D(II) → B(VII) → D(II)
+</p>
+
+</div>
+
+
+<h2>6. La progresión completa</h2>
+
+<div class="card">
+
+<div class="note-info">
+
+C(I) → G(V) → E(III) → G(V)
+
+<br><br>
+
+A(VI) → E(III) → C(I) → E(III)
+
+<br><br>
+
+F(IV) → C(I) → A(VI) → C(I)
+
+<br><br>
+
+G(V) → D(II) → B(VII) → D(II)
+
+</div>
+
+</div>
+
+
+<h2>7. ¿Por qué funciona?</h2>
+
+<p>
+Aquí aparece una idea muy importante para la composición.
+</p>
+
+<div class="explanation">
+
+<p>
+El acorde no tiene que ser tocado siempre como un bloque.
+</p>
+
+<p>
+Podemos convertir sus notas en un <strong>movimiento melódico</strong>.
+</p>
+
+<p>
+La mano izquierda deja de ser simplemente:
+</p>
+
+<div class="note-info">
+"tocar acordes"
+</div>
+
+<p>
+y empieza a funcionar como una pequeña línea musical.
+</p>
+
+</div>
+
+
+<h2>8. Ejercicio</h2>
+
+<div class="step">
+
+<strong>Nivel 1</strong>
+
+<p>
+Toca solamente:
+</p>
+
+<div class="note-info">
+C(I) → G(V) → E(III) → G(V)
+</div>
+
+<p>
+Muy lentamente.
+</p>
+
+</div>
+
+<div class="step">
+
+<strong>Nivel 2</strong>
+
+<p>
+Mantén un pulso constante.
+</p>
+
+<p>
+No aceleres cuando cambias de nota.
+</p>
+
+</div>
+
+<div class="step">
+
+<strong>Nivel 3</strong>
+
+<p>
+Toca cuatro compases utilizando C(I).
+</p>
+
+</div>
+
+<div class="step">
+
+<strong>Nivel 4</strong>
+
+<p>
+Cambia a la progresión:
+</p>
+
+<div class="note-info">
+C(I) → Am(VI) → F(IV) → G(V)
+</div>
+
+</div>
+
+
+<h2>🧠 La idea que debes recordar</h2>
+
+<div class="card">
+
+<p style="font-size:20px;text-align:center;">
+
+<strong>
+Un acorde puede convertirse en movimiento.
+</strong>
+
+</p>
+
+<p>
+Esa es una de las claves para transformar patrones clásicos de mano
+izquierda en acompañamientos modernos.
+</p>
+
+</div>
+
+
+<footer>
+Tutorial experimental de piano — Notación, teoría y práctica interactiva
+</footer>
+
+</div>
+
+
+<script>
+
+/* ==========================================================
+   DATOS MUSICALES
+   ========================================================== */
+
+const pattern = [
+    {note:"C", degree:"I", freq:261.63},
+    {note:"G", degree:"V", freq:392.00},
+    {note:"E", degree:"III", freq:329.63},
+    {note:"G", degree:"V", freq:392.00}
+];
+
+let audioContext = null;
+let timers = [];
+
+
+/* ==========================================================
+   GENERADOR DE PARTITURA SVG
+   ========================================================== */
+
+function createScore() {
+
+    const width = 720;
+    const height = 250;
+
+    let svg = `
+    <svg
+        width="${width}"
+        height="${height}"
+        viewBox="0 0 ${width} ${height}"
+        xmlns="http://www.w3.org/2000/svg">
+
+        <rect
+            x="0"
+            y="0"
+            width="${width}"
+            height="${height}"
+            fill="white"/>
+
+        <!-- pentagrama -->
+
+        <g stroke="black" stroke-width="1">
+
+            <line x1="60" y1="70" x2="660" y2="70"/>
+            <line x1="60" y1="82" x2="660" y2="82"/>
+            <line x1="60" y1="94" x2="660" y2="94"/>
+            <line x1="60" y1="106" x2="660" y2="106"/>
+            <line x1="60" y1="118" x2="660" y2="118"/>
+
+        </g>
+
+        <!-- clave de fa -->
+
+        <text
+            x="20"
+            y="110"
+            font-size="65"
+            font-family="serif">
+            𝄢
+        </text>
+
+        <!-- compás -->
+
+        <line
+            x1="110"
+            y1="65"
+            x2="110"
+            y2="123"
+            stroke="black"
+            stroke-width="2"/>
+
+        <text
+            x="125"
+            y="85"
+            font-size="22"
+            font-family="Arial">
+            4
+        </text>
+
+        <text
+            x="125"
+            y="108"
+            font-size="22"
+            font-family="Arial">
+            4
+        </text>
+    `;
+
+    const positions = [
+        {x:220, y:94, label:"C"},
+        {x:330, y:70, label:"G"},
+        {x:440, y:82, label:"E"},
+        {x:550, y:70, label:"G"}
+    ];
+
+    positions.forEach((p,i) => {
+
+        svg += `
+
+        <!-- nota -->
+
+        <ellipse
+            cx="${p.x}"
+            cy="${p.y}"
+            rx="9"
+            ry="6"
+            fill="black"/>
+
+        <!-- plica -->
+
+        <line
+            x1="${p.x + 8}"
+            y1="${p.y}"
+            x2="${p.x + 8}"
+            y2="${p.y - 38}"
+            stroke="black"
+            stroke-width="2"/>
+
+        <!-- nombre -->
+
+        <text
+            x="${p.x - 10}"
+            y="${p.y + 35}"
+            font-size="14"
+            font-family="Arial"
+            fill="black">
+            ${p.label}
+        </text>
+        `;
+
+    });
+
+    svg += `
+
+        <!-- barra final -->
+
+        <line
+            x1="660"
+            y1="65"
+            x2="660"
+            y2="123"
+            stroke="black"
+            stroke-width="3"/>
+
+        <text
+            x="280"
+            y="180"
+            font-size="18"
+            font-family="Arial"
+            fill="black">
+            C(I) → G(V) → E(III) → G(V)
+        </text>
+
+    </svg>
+    `;
+
+    document.getElementById("score").innerHTML = svg;
+}
+
+
+/* ==========================================================
+   AUDIO
+   ========================================================== */
+
+function playTone(frequency, duration) {
+
+    if (!audioContext) {
+        audioContext =
+            new (window.AudioContext ||
+                 window.webkitAudioContext)();
+    }
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gain =
+        audioContext.createGain();
+
+    oscillator.type = "triangle";
+
+    oscillator.frequency.value = frequency;
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    gain.gain.setValueAtTime(
+        0.001,
+        audioContext.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.25,
+        audioContext.currentTime + 0.02
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime + duration
+    );
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioContext.currentTime + duration
+    );
+}
+
+
+/* ==========================================================
+   REPRODUCCIÓN DEL PATRÓN
+   ========================================================== */
+
+function playPattern() {
+
+    stopPattern();
+
+    let delay = 0;
+
+    pattern.forEach((item,index) => {
+
+        const timer = setTimeout(() => {
+
+            document.getElementById("currentNote")
+                .innerHTML =
+                item.note +
+                "(" +
+                item.degree +
+                ")";
+
+            highlightKey(item.note);
+
+            playTone(item.freq,0.65);
+
+        }, delay);
+
+        timers.push(timer);
+
+        delay += 700;
+
+    });
+}
+
+
+function stopPattern() {
+
+    timers.forEach(timer =>
+        clearTimeout(timer)
+    );
+
+    timers = [];
+
+    document.getElementById("currentNote")
+        .innerHTML =
+        "Pulsa \"Reproducir\"";
+
+    document.querySelectorAll(".white-key")
+        .forEach(key =>
+            key.classList.remove("highlight")
+        );
+}
+
+
+/* ==========================================================
+   RESALTAR TECLAS
+   ========================================================== */
+
+function highlightKey(note) {
+
+    document.querySelectorAll(".white-key")
+        .forEach(key =>
+            key.classList.remove("highlight")
+        );
+
+    const key =
+        document.querySelector(
+            `[data-note="${note}"]`
+        );
+
+    if (key) {
+
+        key.classList.add("highlight");
+
+        setTimeout(() => {
+
+            key.classList.remove("highlight");
+
+        },500);
+    }
+}
+
+
+/* ==========================================================
+   INICIAR
+   ========================================================== */
+
+createScore();
+
+</script>
+
+</body>
+</html>
