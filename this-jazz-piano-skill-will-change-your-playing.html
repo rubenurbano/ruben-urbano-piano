@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Armonización de Melodías al Piano Jazz — Tutorial Profesional</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --border:#1e3a5f;
+  --accent:#00d4ff;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --purple:#a855f7;
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+  line-height:1.6;
+  font-size:16px;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+/* PROGRESS BAR */
+#progressBar{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--accent),var(--green),var(--purple));
+  z-index:1000;transition:width .12s linear;
+  box-shadow:0 0 10px var(--accent);
+}
+/* NAVBAR */
+nav{
+  position:fixed;top:3px;left:0;right:0;
+  background:rgba(10,14,26,.94);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  z-index:999;
+  overflow-x:auto;
+  overflow-y:hidden;
+  white-space:nowrap;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+nav::-webkit-scrollbar{height:5px}
+nav::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+nav ul{
+  list-style:none;
+  display:inline-flex;
+  padding:0 8px;
+  gap:2px;
+}
+nav li{display:inline-block}
+nav button{
+  background:transparent;
+  color:var(--muted);
+  border:none;
+  padding:12px 14px;
+  font-size:.83rem;
+  font-weight:600;
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:.25s;
+  font-family:inherit;
+  white-space:nowrap;
+  letter-spacing:.3px;
+}
+nav button:hover{color:var(--accent)}
+nav button.active{
+  color:var(--accent);
+  border-bottom-color:var(--accent);
+  text-shadow:0 0 8px rgba(0,212,255,.5);
+}
+nav button.credits-btn{color:var(--purple)}
+nav button.credits-btn.active{
+  color:var(--purple);
+  border-bottom-color:var(--purple);
+  text-shadow:0 0 8px rgba(168,85,247,.5);
+}
+nav button.sources-btn{color:var(--amber)}
+nav button.sources-btn.active{
+  color:var(--amber);
+  border-bottom-color:var(--amber);
+}
+nav button.exercises-btn{color:var(--green)}
+nav button.exercises-btn.active{
+  color:var(--green);
+  border-bottom-color:var(--green);
+  text-shadow:0 0 8px rgba(34,197,94,.5);
+}
+/* MAIN */
+main{
+  max-width:1180px;
+  margin:0 auto;
+  padding:88px 18px 60px;
+}
+section{display:none;animation:fade .45s ease}
+section.active{display:block}
+@keyframes fade{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:translateY(0)}
+}
+/* HOME */
+.hero-badge{
+  display:inline-block;
+  background:rgba(0,212,255,.12);
+  color:var(--accent);
+  border:1px solid rgba(0,212,255,.35);
+  padding:5px 14px;
+  border-radius:20px;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:1.5px;
+  margin-bottom:16px;
+}
+h1.title-main{
+  font-size:clamp(1.5rem,4.5vw,2.4rem);
+  font-weight:800;
+  line-height:1.18;
+  background:linear-gradient(90deg,var(--accent),var(--purple));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:10px;
+}
+p.subtitle-main{
+  font-size:clamp(.95rem,2.4vw,1.15rem);
+  color:var(--muted);
+  margin-bottom:20px;
+}
+/* SVG WRAPPER */
+.svg-wrap{
+  width:100%;
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 0 30px rgba(0,212,255,.12);
+  margin-bottom:26px;
+  background:#070b14;
+  position:relative;
+}
+.svg-wrap svg{display:block;width:100%;height:auto}
+/* CARDS */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:22px;
+  margin-bottom:20px;
+}
+.card-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.card-header .icon{
+  width:38px;height:38px;
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.15rem;
+  background:rgba(0,212,255,.12);
+  border:1px solid rgba(0,212,255,.35);
+  flex-shrink:0;
+}
+.card-header h2{
+  font-size:1.12rem;
+  font-weight:700;
+  color:var(--text);
+}
+.card-header h3{
+  font-size:1rem;
+  font-weight:700;
+  color:var(--text);
+}
+/* TEXT ELEMENTS */
+p{margin-bottom:12px;color:var(--text)}
+ul,ol{margin:10px 0 12px 22px;color:var(--text)}
+li{margin-bottom:6px}
+strong{color:var(--accent)}
+code{
+  background:#020617;
+  color:var(--green);
+  padding:2px 7px;
+  border-radius:5px;
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:.87em;
+  border:1px solid var(--border);
+}
+/* CALLOUTS */
+.callout{
+  border-radius:10px;
+  padding:14px 16px;
+  margin:14px 0;
+  border-left:4px solid;
+  font-size:.94rem;
+}
+.callout.info{background:rgba(0,212,255,.08);border-color:var(--accent);color:#cbe9f5}
+.callout.example{background:rgba(34,197,94,.08);border-color:var(--green);color:#c8efd4}
+.callout.warn{background:rgba(245,158,11,.09);border-color:var(--amber);color:#f3ddb5}
+.callout.error{background:rgba(239,68,68,.09);border-color:var(--red);color:#f5c3c3}
+.callout strong{display:block;margin-bottom:4px;font-size:.78rem;letter-spacing:1px}
+.callout.info strong{color:var(--accent)}
+.callout.example strong{color:var(--green)}
+.callout.warn strong{color:var(--amber)}
+.callout.error strong{color:var(--red)}
+/* TABLES */
+.table-wrap{overflow-x:auto;margin:14px 0;border-radius:10px;border:1px solid var(--border)}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.9rem;
+  min-width:520px;
+  background:#0b1220;
+}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:#0a1425;color:var(--accent);font-weight:700;font-size:.78rem;letter-spacing:.6px;text-transform:uppercase}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,212,255,.04)}
+/* CODE BLOCKS */
+pre{
+  background:#020617;
+  color:#c7d6e6;
+  padding:16px;
+  border-radius:10px;
+  overflow-x:auto;
+  border:1px solid var(--border);
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:.82rem;
+  line-height:1.55;
+  margin:12px 0;
+}
+/* BADGES / CHIPS */
+.badge{
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:14px;
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.8px;
+  margin:2px 3px;
+}
+.badge.blue{background:rgba(0,212,255,.15);color:var(--accent);border:1px solid rgba(0,212,255,.4)}
+.badge.green{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.4)}
+.badge.amber{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.4)}
+.badge.red{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.4)}
+.badge.purple{background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.4)}
+/* STEPS */
+.step{
+  display:flex;
+  gap:14px;
+  margin:14px 0;
+  padding:14px;
+  background:#0b1220;
+  border:1px solid var(--border);
+  border-radius:10px;
+}
+.step-num{
+  width:34px;height:34px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  color:#020617;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;
+  flex-shrink:0;
+  font-size:.9rem;
+}
+.step-body{flex:1}
+.step-body h4{color:var(--accent);margin-bottom:6px;font-size:.95rem}
+/* GRID */
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.stat{
+  background:#0b1220;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+  text-align:center;
+}
+.stat .num{
+  font-size:1.7rem;font-weight:800;
+  background:linear-gradient(90deg,var(--accent),var(--purple));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  display:block;
+}
+.stat .lbl{font-size:.72rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+/* QUOTE */
+.quote{
+  background:linear-gradient(135deg,rgba(168,85,247,.1),rgba(0,212,255,.08));
+  border-left:4px solid var(--purple);
+  padding:18px 22px;
+  border-radius:10px;
+  margin:20px 0;
+  font-style:italic;
+  color:#d8c9f0;
+}
+.quote::before{content:'"';font-size:2.5rem;color:var(--purple);line-height:0;vertical-align:-.4em;margin-right:6px;opacity:.6}
+/* CHECKLIST */
+ul.checklist{list-style:none;margin-left:0}
+ul.checklist li{padding-left:26px;position:relative;margin-bottom:8px}
+ul.checklist li::before{
+  content:'✔';position:absolute;left:0;top:0;
+  color:var(--green);font-weight:700;
+}
+ul.errorlist{list-style:none;margin-left:0}
+ul.errorlist li{padding-left:26px;position:relative;margin-bottom:8px}
+ul.errorlist li::before{
+  content:'✖';position:absolute;left:0;top:0;
+  color:var(--red);font-weight:700;
+}
+/* ACCORDION */
+.acc{
+  background:#0b1220;
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin-bottom:10px;
+  overflow:hidden;
+}
+.acc-head{
+  padding:14px 16px;
+  cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  font-weight:600;
+  color:var(--accent);
+  font-size:.92rem;
+  user-select:none;
+  transition:.2s;
+}
+.acc-head:hover{background:rgba(0,212,255,.05)}
+.acc-head::after{
+  content:'▾';transition:.3s;color:var(--muted);
+  font-size:1rem;
+}
+.acc.open .acc-head::after{transform:rotate(180deg);color:var(--accent)}
+.acc-body{
+  max-height:0;overflow:hidden;
+  transition:max-height .4s ease;
+  padding:0 16px;
+}
+.acc.open .acc-body{max-height:900px;padding:0 16px 16px}
+/* EXERCISE REVEAL */
+.reveal-btn{
+  background:linear-gradient(135deg,var(--green),#16a34a);
+  color:#03150a;
+  border:none;
+  padding:9px 18px;
+  border-radius:8px;
+  font-weight:700;
+  cursor:pointer;
+  font-size:.85rem;
+  font-family:inherit;
+  letter-spacing:.5px;
+  transition:.2s;
+  margin-top:8px;
+}
+.reveal-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(34,197,94,.3)}
+.reveal-body{
+  max-height:0;overflow:hidden;transition:max-height .45s ease;
+  padding:0 14px;background:#0b1220;border-radius:8px;margin-top:8px;
+  border:1px solid transparent;
+}
+.reveal-body.show{max-height:3000px;padding:14px;border-color:var(--border)}
+/* FOOTER */
+footer{
+  border-top:1px solid var(--border);
+  padding:24px 18px 40px;
+  text-align:center;
+  font-size:.83rem;
+  color:var(--muted);
+  line-height:1.9;
+}
+footer strong{color:var(--accent)}
+footer .fiat{color:var(--purple);font-style:italic;margin-top:8px;display:block}
+/* TOP BUTTON */
+#topBtn{
+  position:fixed;
+  bottom:22px;right:22px;
+  width:46px;height:46px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  color:#020617;
+  border:none;
+  font-size:1.25rem;font-weight:800;
+  cursor:pointer;
+  display:none;
+  align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(0,212,255,.4);
+  z-index:998;
+  transition:.25s;
+}
+#topBtn:hover{transform:translateY(-4px) scale(1.06)}
+#topBtn.show{display:flex}
+/* SECTION TITLE */
+.sec-title{
+  font-size:clamp(1.25rem,3.4vw,1.75rem);
+  font-weight:800;
+  color:var(--text);
+  margin-bottom:6px;
+  display:flex;align-items:center;gap:12px;
+}
+.sec-title .num-chip{
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  color:#020617;
+  width:38px;height:38px;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;
+  flex-shrink:0;
+}
+.sec-subtitle{color:var(--muted);font-size:.9rem;margin-bottom:22px;padding-left:50px}
+/* NOTE NODE VIS */
+.voicing{
+  display:inline-flex;gap:6px;flex-wrap:wrap;margin:8px 0;
+}
+.note-chip{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--accent);
+  padding:5px 11px;
+  border-radius:6px;
+  font-family:ui-monospace,monospace;
+  font-weight:700;
+  font-size:.85rem;
+}
+.note-chip.hl{background:rgba(0,212,255,.12);border-color:var(--accent)}
+.note-chip.guide{color:var(--amber);border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.08)}
+.note-chip.color{color:var(--purple);border-color:rgba(168,85,247,.4);background:rgba(168,85,247,.08)}
+.note-chip.bass{color:var(--green);border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08)}
+/* EXERCISE LEVEL HEADERS */
+.level-head{
+  margin:28px 0 14px;
+  padding:10px 16px;
+  border-radius:10px;
+  font-size:.85rem;
+  font-weight:800;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  border-left:4px solid;
+}
+.level-head.basic{color:var(--green);background:rgba(34,197,94,.08);border-color:var(--green)}
+.level-head.inter{color:var(--amber);background:rgba(245,158,11,.08);border-color:var(--amber)}
+.level-head.adv{color:var(--red);background:rgba(239,68,68,.08);border-color:var(--red)}
+
+/* RESPONSIVE */
+@media (max-width:600px){
+main{padding:78px 12px 50px}
+nav button{padding:11px 10px;font-size:.76rem}
+.card{padding:16px}
+.card-header h2{font-size:1rem}
+.step{padding:12px;gap:10px}
+.quote{padding:14px 16px}
+.grid-2{grid-template-columns:1fr}
+#topBtn{width:42px;height:42px;bottom:16px;right:14px}
+.sec-subtitle{padding-left:0}
+}
+
+@media (prefers-reduced-motion: reduce){
+*{animation-duration:.001s !important;transition-duration:.001s !important}
+}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<nav>
+  <ul>
+    <li><button class="active" data-sec="home">🏠 Inicio</button></li>
+    <li><button data-sec="intro">📖 Introducción</button></li>
+    <li><button data-sec="cap1">1 · El Gran Error</button></li>
+    <li><button data-sec="cap2">2 · Marco Bajo-Melodía</button></li>
+    <li><button data-sec="cap3">3 · Notas Guía</button></li>
+    <li><button data-sec="cap4">4 · Notas de Color</button></li>
+    <li><button data-sec="cap5">5 · FAQ y Trucos</button></li>
+    <li><button data-sec="cap6">6 · Cierre y Ejercicios</button></li>
+    <li><button class="exercises-btn" data-sec="ejercicios">✏️ Ejercicios</button></li>
+    <li><button class="sources-btn" data-sec="fuentes">📚 Fuentes</button></li>
+    <li><button class="credits-btn" data-sec="creditos">✨ Créditos</button></li>
+  </ul>
+</nav>
+
+<main>
+
+<!-- ================= HOME ================= -->
+
+<section id="home" class="active">
+
+  <div class="svg-wrap" id="svgHomeWrap">
+    <!-- SVG injected by JS from template -->
+  </div>
+
+<span class="hero-badge">🎹 TUTORIAL TÉCNICO · ARMONIZACIÓN JAZZ</span>
+
+  <h1 class="title-main">Este truco de piano jazz transformará tu forma de tocar</h1>
+  <p class="subtitle-main">Armonización de melodías en tiempo real: guía de notas guía y notas de color debajo de la mano derecha.</p>
+
+  <div class="quote">
+    Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien.
+  </div>
+
+  <div class="grid-3" style="margin-bottom:22px">
+    <div class="stat"><span class="num">2</span><span class="lbl">Notas Guía (3ª+7ª)</span></div>
+    <div class="stat"><span class="num">4</span><span class="lbl">Pasos del método</span></div>
+    <div class="stat"><span class="num">12</span><span class="lbl">Tonalidades a practicar</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">🎯</div>
+      <h2>Objetivo del tutorial</h2>
+    </div>
+    <p>Aprender la habilidad fundamental que transforma una interpretación básica en una <strong>armonización de piano jazz fluida y sofisticada</strong>: construir acordes y voces directamente debajo de las notas de la melodía, en la mano derecha, dejando la mano izquierda limpia con únicamente la nota fundamental del bajo.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="icon">📅</div>
+      <h2>Información de la sesión</h2>
+    </div>
+    <div class="grid-2">
+      <div class="stat"><span class="num" style="font-size:1.1rem">28/09/2026</span><span class="lbl">Fecha</span></div>
+      <div class="stat"><span class="num" style="font-size:1.1rem">05:56:16</span><span class="lbl">Hora</span></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= INTRO ================= -->
+
+<section id="intro">
+  <h1 class="sec-title"><span class="num-chip">📖</span>Introducción y Objetivo</h1>
+  <p class="sec-subtitle">Por qué este truco separa a un pianista amateur de uno profesional</p>
+
+  <div class="card">
+    <p>Aprender a tocar el piano jazz suele parecer un misterio reservado para músicos experimentados. Muchos estudiantes aprenden la melodía de una canción con la mano derecha y tocan acordes simples con la mano izquierda, pero se preguntan por qué no obtienen ese sonido cálido y profesional propio de las grabaciones históricas.</p>
+    <p>Este tutorial enseña la habilidad fundamental para transformar una interpretación básica en una <strong>armonización de piano jazz fluida y sofisticada</strong>: la capacidad de construir acordes y voces directamente debajo de las notas de la melodía.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🔷</div><h2>¿Qué es la armonización de melodías al piano jazz?</h2></div>
+    <p>Es la técnica de <strong>rellenar el espacio armónico entre el bajo y la melodía</strong>, colocando las notas esenciales del acorde directamente debajo de la mano derecha. En lugar de ejecutar una nota suelta en la derecha y un acorde pesado en la izquierda, ambas manos se coordinan para formar una estructura armónica transparente y equilibrada.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🎯</div><h2>¿Para qué sirve y por qué es importante aprenderlo?</h2></div>
+    <ol>
+      <li><strong>Elimina el sonido infantil o rígido:</strong> Permite abandonar los acordes bloqueados en posición fundamental que ensucian el registro grave del piano.</li>
+      <li><strong>Construye independencia y estructura:</strong> Establece un marco armónico sólido (<em>shell</em>) sobre el cual es posible desarrollar acompañamientos e improvisaciones.</li>
+      <li><strong>Sirve como base para técnicas avanzadas:</strong> Es el requisito previo e indispensable para aprender <em>drop 2</em>, armonización a dos manos o disposiciones de acordes complejas.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🎼</div><h2>¿En qué situaciones reales se utiliza?</h2></div>
+    <ul>
+      <li><strong>Piano Solo:</strong> Al interpretar un tema sin acompañamiento de grupo, donde el pianista debe sostener la línea de bajo, la armonía y la melodía simultáneamente.</li>
+      <li><strong>Acompañamiento a cantantes o solistas:</strong> Para aportar un colchón armónico rico pero transparente que no interfiera con la voz ni con otros instrumentos.</li>
+      <li><strong>Interpretación de estándares de jazz (Lead Sheets):</strong> Al leer partituras simplificadas de compositores como Duke Ellington, Cole Porter o George Gershwin.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🏗️</div><h2>Analogía del Edificio</h2></div>
+    <p>Armonizar una melodía al piano es como construir un edificio de tres niveles:</p>
+    <ul>
+      <li><strong>El Bajo en mano izquierda (La Cimentación):</strong> Representa la nota raíz del acorde, ubicada en la parte más grave.</li>
+      <li><strong>La Melodía en mano derecha (El Tejado):</strong> Es la nota superior que todos escuchan y reconocen.</li>
+      <li><strong>Las Notas Guía y de Color (Los Muros y la Decoración):</strong> Son las notas intermedias que se colocan justo debajo de la melodía para darle forma, estilo y estabilidad a la estructura.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📊</div><h2>Tabla Comparativa: Acompañamiento Básico vs. Armonización Profesional</h2></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Característica</th><th>Acompañamiento Básico (Incorrecto)</th><th>Armonización Profesional (Este Tutorial)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Mano Izquierda</strong></td><td>Toca acordes completos en posición fundamental.</td><td>Toca únicamente la nota fundamental del bajo <code>D(I)</code>, <code>G(I)</code>, <code>C(I)</code>.</td></tr>
+          <tr><td><strong>Mano Derecha</strong></td><td>Toca solo la nota de la melodía suelta.</td><td>Toca la melodía junto con las <strong>Notas Guía</strong> (3ª y 7ª) y <strong>Colores</strong> debajo.</td></tr>
+          <tr><td><strong>Sonido Resultante</strong></td><td>Cargado, oscuro y pesado en los graves.</td><td>Transparente, rico, balanceado y auténticamente jazzero.</td></tr>
+          <tr><td><strong>Flexibilidad</strong></td><td>Muy baja; rígido a posiciones fijas de la mano.</td><td>Muy alta; aplicable al vuelo sobre cualquier <em>lead sheet</em>.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CAP 1 ================= -->
+
+<section id="cap1">
+  <h1 class="sec-title"><span class="num-chip">1</span>El Gran Error del Piano Jazz</h1>
+  <p class="sec-subtitle">Decir adiós a los acordes rígidos en posición fundamental</p>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">⚠️</div><h2>El problema de la posición fundamental</h2></div>
+    <p>Cuando un pianista principiante lee una partitura guía (<em>lead sheet</em>), suele tocar el acorde en posición fundamental con la mano izquierda (por ejemplo, el acorde <code>C7</code> formado por <code>C(I)</code>, <code>E(3)</code>, <code>G(5)</code> y <code>Bb(7)</code>) en la zona grave del teclado, mientras ejecuta notas sueltas de la melodía con la mano derecha.</p>
+    <p>El reconocido pianista de jazz <strong>Fred Hersch</strong> señaló en una ocasión que <em>uno de los peores sonidos que existen en la música es el acorde de <code>C7</code> en posición fundamental tocado en la zona grave del piano</em>. Tocar todas las notas de un acorde apretadas en la mano izquierda produce una sonoridad turbia que arruina la armonía del jazz.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">❌</div><h2>Ejemplo Incorrecto</h2></div>
+    <pre>Mano Izquierda: [ C(I) - E(3) - G(5) - Bb(7) ]  (Acorde bloqueado en el grave)
+Mano Derecha:   [ G(5) ]                        (Nota suelta de la melodía)
+Resultado: Sonido tosco, saturado e impropio del estilo.</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">✅</div><h2>Ejemplo Correcto</h2></div>
+    <pre>Mano Izquierda: [ C(I) ]                        (Solo la nota grave del bajo)
+Mano Derecha:   [ E(3) - Bb(7) - G(5) ]         (Acorde limpio debajo de la melodía)
+Resultado: Sonido abierto, profesional y transparente.</pre>
+  </div>
+
+  <div class="callout info">
+    <strong>INFO</strong>
+    La clave está en <em>separar funciones</em>: el bajo se queda grave y solitario; las notas armónicas esenciales suben a acompañar la melodía en la mano derecha.
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📌</div><h2>Resumen del Capítulo 1</h2></div>
+    <ul class="checklist">
+      <li>Tocar acordes completos en posición fundamental con la mano izquierda genera una masa sonora grave y desagradable.</li>
+      <li>La solución consiste en separar las funciones: el bajo va al registro grave y las notas armónicas clave se colocan debajo de la melodía en la mano derecha.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= CAP 2 ================= -->
+
+<section id="cap2">
+  <h1 class="sec-title"><span class="num-chip">2</span>Construyendo la Estructura</h1>
+  <p class="sec-subtitle">El Marco del Bajo y la Melodía (Pasos 1 y 2)</p>
+
+  <div class="callout example">
+    <strong>OBRA DE ESTUDIO</strong>
+    Utilizaremos los primeros 8 compases de la famosa obra de Duke Ellington, <strong>"Prelude to a Kiss"</strong>.
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📐</div><h2>Esquema Visual del Marco en el Teclado</h2></div>
+    <pre>[ MANO IZQUIERDA ]                    [ MANO DERECHA ]
+        |                                     |
+  Nota del Bajo                       Nota de Melodía (Arriba)
+   (Fundamental)                    + Notas de Relleno (Debajo)</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">1️⃣</div><h2>Paso 1 · Dominar la melodía por separado</h2></div>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h4>Acción</h4>
+        <p>Toca la línea melódica de la canción utilizando únicamente la mano derecha hasta que la ejecutes con fluidez, sin dudar ni detenerte.</p>
+        <h4 style="margin-top:8px">Motivo</h4>
+        <p>No es posible colocar acordes debajo de una melodía si aún se vacila en las notas melódicas principales.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">2️⃣</div><h2>Paso 2 · Añadir la nota del bajo</h2></div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h4>Acción</h4>
+        <p>Toca la nota fundamental (raíz) del acorde con la mano izquierda en el registro grave del piano, al mismo tiempo que ejecutas la melodía con la derecha.</p>
+        <h4 style="margin-top:8px">Motivo</h4>
+        <p>Esto establece la estructura externa (<em>shell</em> o marco) que delimita el rango sonoro dentro del cual se rellenará la armonía.</p>
+      </div>
+    </div>
+    <pre>Casos Prácticos en "Prelude to a Kiss":
+* Sobre el acorde D7: La mano izquierda toca la nota raíz D(I).
+* Sobre el acorde G7: La mano izquierda cambia a la nota raíz G(I).
+* Sobre el acorde C7: La mano izquierda se mueve a la nota raíz C(I).</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🔎</div><h2>Análisis de los Grados Melódicos respecto al Bajo</h2></div>
+    <p>Determinar qué grado o intervalo representa la nota de la melodía respecto a la nota del bajo:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Compás / Acorde</th><th>Nota de la Melodía</th><th>Grado / Función respecto a la raíz</th></tr></thead>
+        <tbody>
+          <tr><td><strong>D7</strong></td><td><code>B</code></td><td><code>B(13)</code> — Tensión de color</td></tr>
+          <tr><td><strong>G7</strong></td><td><code>B</code></td><td><code>B(3)</code> — Tercera mayor / Nota guía</td></tr>
+          <tr><td><strong>C7</strong></td><td><code>G</code></td><td><code>G(5)</code> — Quinta justa</td></tr>
+          <tr><td><strong>Fmaj7</strong></td><td><code>E</code></td><td><code>E(7)</code> — Séptima mayor / Nota guía</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">✔️</div><h2>Lista de Comprobación — Capítulo 2</h2></div>
+    <ul class="checklist">
+      <li>¿Puedo tocar la melodía sola con la mano derecha sin cometer errores de tiempo?</li>
+      <li>¿Identifico la nota raíz del bajo para cada acorde?</li>
+      <li>¿Sé exactamente qué grado de la escala representa la nota de la melodía sobre cada acorde?</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📌</div><h2>Resumen del Capítulo 2</h2></div>
+    <ul>
+      <li>El marco básico se compone de las notas fundamentales en la mano izquierda y la melodía en la mano derecha.</li>
+      <li>Analizar la función de cada nota melódica es el requisito necesario antes de agregar armonía debajo.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= CAP 3 ================= -->
+
+<section id="cap3">
+  <h1 class="sec-title"><span class="num-chip">3</span>El Núcleo Armónico</h1>
+  <p class="sec-subtitle">La Regla de las Notas Guía (Paso 3)</p>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🎯</div><h2>¿Qué son las Notas Guía (Guide Tones)?</h2></div>
+    <p>En la música de jazz, la <strong>tercera (3ª)</strong> y la <strong>séptima (7ª)</strong> de cualquier acorde son llamadas <strong>notas guía</strong>.</p>
+    <ul>
+      <li>La <strong>3ª</strong> define la cualidad del acorde (si es mayor o menor).</li>
+      <li>La <strong>7ª</strong> define la categoría armónica (si es mayor 7, dominante 7 o menor 7).</li>
+    </ul>
+    <p>Estas dos notas definen la identidad del acorde. No es necesario tocar la 5ª ni repetir la nota raíz en la mano derecha para que el acorde suene completo y claro.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">3️⃣</div><h2>Paso 3 · Aplicar la Regla de las Notas Guía</h2></div>
+    <div class="callout example">
+      <strong>REGLA A — La melodía ES la 3ª o la 7ª</strong>
+      Añade SOLO 1 nota guía debajo (la 7ª o la 3ª faltante).
+    </div>
+    <div class="callout warn">
+      <strong>REGLA B — La melodía NO ES ni la 3ª ni la 7ª</strong>
+      Añade AMBAS notas guía (3ª Y 7ª) debajo de la melodía.
+    </div>
+    <p><strong>Motivo:</strong> Asegura que cada acorde contenga siempre su 3ª y su 7ª esenciales, evitando amontonar notas innecesarias.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🧩</div><h2>Casos Prácticos Detallados</h2></div>
+
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">↔️</div><h2>Posiciones Cerradas vs. Abiertas (Spread Voicings)</h2></div>
+    <p>Si al colocar dos notas guía debajo de la melodía en la mano derecha las notas quedan muy apretadas provocando un choque sonoro incómodo, puedes distribuir las notas entre ambas manos. La mayoría de las personas pueden alcanzar una novena pasando la nota guía inferior a la mano izquierda junto con el bajo.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📋</div><h2>Tabla de Decisiones para Armonizar con Notas Guía</h2></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Acorde</th><th>Melodía</th><th>¿Es 3ª o 7ª?</th><th>Acción Requerida</th><th>Notas a colocar debajo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>D7</strong></td><td><code>B(13)</code></td><td>No (13ª)</td><td>Añadir 2 notas</td><td><code>F#(3)</code> + <code>C(7)</code></td></tr>
+          <tr><td><strong>G7</strong></td><td><code>B(3)</code></td><td><strong>Sí (3ª)</strong></td><td>Añadir 1 nota</td><td><code>F(7)</code></td></tr>
+          <tr><td><strong>C7</strong></td><td><code>G(5)</code></td><td>No (5ª)</td><td>Añadir 2 notas</td><td><code>E(3)</code> + <code>Bb(7)</code></td></tr>
+          <tr><td><strong>Fmaj7</strong></td><td><code>E(7)</code></td><td><strong>Sí (7ª)</strong></td><td>Añadir 1 nota</td><td><code>A(3)</code></td></tr>
+          <tr><td><strong>Dm7</strong></td><td><code>G(11)</code></td><td>No (11ª)</td><td>Añadir 2 notas</td><td><code>F(3)</code> + <code>C(7)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🚫</div><h2>Errores Comunes al Colocar Notas Guía</h2></div>
+    <div class="callout error">
+      <strong>ERROR 1</strong>
+      <strong>Duplicar notas.</strong> Si la melodía ya es la 3ª, agregar otra 3ª debajo arruina la transparencia.
+    </div>
+    <div class="callout error">
+      <strong>ERROR 2</strong>
+      <strong>Confundir alteraciones.</strong> Tocar una 3ª menor en lugar de una 3ª mayor cambia por completo el tipo de acorde.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📌</div><h2>Resumen del Capítulo 3</h2></div>
+    <ul class="checklist">
+      <li>Cada acorde armonizado debe contener la 3ª y la 7ª.</li>
+      <li>Se añade una sola nota si la melodía ya contiene una nota guía, o dos notas si la melodía es una extensión o nota raíz.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= CAP 4 ================= -->
+
+<section id="cap4">
+  <h1 class="sec-title"><span class="num-chip">4</span>El Toque Profesional</h1>
+  <p class="sec-subtitle">Añadiendo Notas de Color (Paso 4)</p>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🎨</div><h2>¿Qué son las Notas de Color?</h2></div>
+    <p>Las <strong>notas de color</strong> o extensiones son notas adicionales como la <strong>9ª</strong>, la <strong>13ª</strong> o sus variantes alteradas (<code>b9</code>, <code>b13</code>) que aportan sofisticación, elegancia y calidez al acorde.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">4️⃣</div><h2>Paso 4 · Incorporar una Nota de Color por Acorde</h2></div>
+    <p>Selecciona y añade <strong>una sola nota de color</strong> dentro de la disposición del acorde según la categoría del mismo:</p>
+    <pre>REGLAS GENERALES PARA NOTAS DE COLOR:
+
+1. Acordes Mayores y Menores:
+   ➔ Añadir la 5ª justa o la 9ª.
+2. Acordes Dominantes (ej. D7, G7, C7, A7):
+   ➔ Añadir la 9ª o la 13ª (o bien b9 / b13 si van hacia un acorde menor).
+3. Acordes Disminuidos:
+   ➔ Añadir la 5ª disminuida, b5.</pre>
+    <p><strong>Motivo:</strong> Transforma una estructura armónica básica en una sonoridad rica de jazz profesional sin sobrecargar la técnica de las manos.</p>
+
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🎼</div><h2>Aplicación Práctica en "Prelude to a Kiss"</h2></div>
+    <ol>
+      <li><strong>Sobre D7:</strong> Se añade la <code>E(9)</code> para enriquecer el acorde con la 13ª en la melodía.</li>
+      <li><strong>Sobre G7:</strong> Se añade la <code>Eb(b13)</code> para crear una tensión suave que resuelve hacia el siguiente acorde.</li>
+      <li><strong>Sobre C7:</strong> Se añade la <code>D(9)</code> obteniendo una sonoridad limpia de C13.</li>
+      <li><strong>Sobre Fmaj7:</strong> Se añade la <code>C(5)</code> o <code>G(9)</code> para dar solidez al cierre de la frase.</li>
+    </ol>
+  </div>
+
+  <div class="quote">
+    No busques sonar como Bill Evans desde el primer día. Comienza agregando únicamente una nota de color por acorde. Ese único detalle marcará una enorme diferencia en tu sonido. — <strong>Tim Whalen</strong>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📌</div><h2>Resumen del Capítulo 4</h2></div>
+    <ul class="checklist">
+      <li>Las notas de color agregan la textura propia del jazz.</li>
+      <li>Se utilizan la 9ª y 13ª para acordes dominantes, y la 5ª o 9ª para acordes mayores y menores.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= CAP 5 ================= -->
+
+<section id="cap5">
+  <h1 class="sec-title"><span class="num-chip">5</span>Preguntas Frecuentes y Trucos</h1>
+  <p class="sec-subtitle">Dudas comunes, consejos de estudio y canciones recomendadas</p>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">❓</div><h2>Preguntas Frecuentes (FAQ)</h2></div>
+
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🎯</div><h2>Trucos Prácticos de Estudio</h2></div>
+    <p><strong>Práctica de Notas Guía por Teclado:</strong> Entrena encontrar instantáneamente la 3ª y la 7ª de los acordes principales (<code>maj7</code>, <code>dom7</code>, <code>m7</code>) en las 12 tonalidades.</p>
+    <h3 style="margin-top:12px;color:var(--accent)">Canciones Recomendadas para Comenzar:</h3>
+    <ol>
+      <li><em>Autumn Leaves</em></li>
+      <li><em>Misty</em></li>
+      <li><em>Satin Doll</em></li>
+      <li><em>Prelude to a Kiss</em></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= CAP 6 ================= -->
+
+<section id="cap6">
+  <h1 class="sec-title"><span class="num-chip">6</span>Cierre, Ejercicios y Recursos</h1>
+  <p class="sec-subtitle">Resumen final, errores críticos, ejercicios resueltos y prompts</p>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📚</div><h2>Resumen de Todo lo Aprendido</h2></div>
+    <ol>
+      <li>Se elimina la costumbre de tocar acordes bloqueados en posición fundamental con la mano izquierda.</li>
+      <li>Se establece un marco sólido: bajo en la mano izquierda y melodía en la mano derecha.</li>
+      <li>Se analizan los grados de cada nota melódica respecto al bajo.</li>
+      <li>Se colocan las notas guía (3ª y 7ª) debajo de la melodía aplicando la Regla de las Notas Guía.</li>
+      <li>Se añade una nota de color (5ª, 9ª o 13ª) para obtener la sonoridad profesional de jazz.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🔑</div><h2>Lista de Conceptos Clave</h2></div>
+    <ul>
+      <li><strong>Lead Sheet:</strong> Partitura simplificada que muestra la melodía y el cifrado de acordes.</li>
+      <li><strong>Guide Tones (Notas Guía):</strong> La 3ª y la 7ª de un acorde; constituyen el núcleo armónico indispensable.</li>
+      <li><strong>Shell Voicing (Estructura Externa):</strong> Disposición limpia del acorde formada por el bajo y las notas guía.</li>
+      <li><strong>Color Notes (Notas de Color):</strong> Tensiones como la 9ª y la 13ª que aportan riqueza sonora.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🚫</div><h2>Errores que NUNCA deben cometerse</h2></div>
+    <ul class="errorlist">
+      <li><strong>NUNCA toques acordes dominantes en posición fundamental en la zona grave del teclado.</strong></li>
+      <li><strong>NUNCA dupliques la 3ª o la 7ª si la melodía ya contiene esa misma nota.</strong></li>
+      <li><strong>NUNCA cargues el acorde con demasiadas notas antes de dominar las notas guía.</strong></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🎓</div><h2>Recomendaciones para Seguir Aprendiendo</h2></div>
+    <ol>
+      <li>Toma partituras simplificadas (<em>lead sheets</em>) y analiza el grado melódico de cada compás.</li>
+      <li>Practica las 3ªs y 7ªs en todas las tonalidades hasta ejecutarlas sin dudar.</li>
+      <li>Escucha con frecuencia a pianistas clásicos del género para asimilar la sonoridad.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">✏️</div><h2>Ejercicios Prácticos con Soluciones</h2></div>
+
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📘</div><h2>Glosario de Términos Técnicos</h2></div>
+    <ul>
+      <li><strong>Armonización:</strong> El arte de agregar notas armónicas o acordes debajo de una línea melódica.</li>
+      <li><strong>Cifrado Americano:</strong> Sistema de letras (<code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, <code>E</code>, <code>F</code>, <code>G</code>) para nombrar notas y acordes.</li>
+      <li><strong>Intervalo:</strong> La distancia entre dos notas musicales.</li>
+      <li><strong>Voicing:</strong> La manera o disposición específica en que se organizan las notas de un acorde al piano.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🤖</div><h2>Prompts para Profundizar con IA</h2></div>
+    <p>Si deseas utilizar herramientas de inteligencia artificial para profundizar en este tema o generar ejercicios adicionales, puedes emplear los siguientes prompts estructurados:</p>
+    <pre>PROMPT 1 (Análisis de Canciones):
+"Actúa como un profesor experto de piano jazz. Analiza la melodía de los primeros 8 compases de [Nombre de la Canción]. Para cada compás, indica la nota de la melodía utilizando el sistema americano A, B, C, D, E, F, G indicando su grado en paréntesis. Especifica exactamente qué notas guía (3ª y 7ª) se deben colocar debajo de la mano derecha."
+
+PROMPT 2 (Generador de Ejercicios):
+"Crea 5 ejercicios prácticos de armonización de melodías para piano jazz. Usa el sistema americano de notas A, B, C, D, E, F, G con sus grados entre paréntesis. Para cada ejercicio indica el acorde, la nota del bajo y la nota de la melodía, y pide determinar las notas guía necesarias. Incluye las soluciones detalladas al final."</pre>
+
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🎬</div><h2>Video de YouTube Original</h2></div>
+    <ul>
+      <li><strong>Nombre del Video:</strong> <em>This Jazz Piano Skill Will Change Your Playing</em></li>
+      <li><strong>Canal:</strong> Whalen Jazz Lessons (Tim Whalen)</li>
+      <li><strong>URL:</strong> <a href="https://youtube.com/watch?v=mHug60fxCq4&amp;is=ycEnqvDIr1dF08RO" target="_blank" rel="noopener" style="color:var(--accent);word-break:break-all">https://youtube.com/watch?v=mHug60fxCq4&amp;is=ycEnqvDIr1dF08RO</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= EJERCICIOS ================= -->
+
+<section id="ejercicios">
+  <h1 class="sec-title"><span class="num-chip">✏️</span>Ejercicios Prácticos de Armonización</h1>
+  <p class="sec-subtitle">15 ejercicios guiados con soluciones paso a paso, ordenados por dificultad creciente</p>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📋</div><h2>Cómo aprovechar esta sección</h2></div>
+    <p>Cada ejercicio reproduce una situación real del método de armonización y te invita a <strong>resolver antes de mirar la solución</strong>. Intenta llegar a la respuesta por tu cuenta: analiza el grado melódico, aplica la Regla de las Notas Guía, decide el color y ordena el voicing.</p>
+    <p>Después pulsa <em>Ver solución</em> para comparar tu razonamiento con el desarrollo paso a paso, la explicación causal y el error típico a evitar.</p>
+    <div class="grid-3" style="margin-top:14px">
+      <div class="stat"><span class="num">1-5</span><span class="lbl">Nivel Básico</span></div>
+      <div class="stat"><span class="num">6-12</span><span class="lbl">Nivel Intermedio</span></div>
+      <div class="stat"><span class="num">13-15</span><span class="lbl">Nivel Avanzado</span></div>
+    </div>
+    <div class="callout info" style="margin-top:14px">
+      <strong>RECOMENDACIÓN DE ESTUDIO</strong>
+      Trabaja los ejercicios en orden. Los básicos consolidan el análisis de grados y el marco; los intermedios introducen la Regla A/B y la construcción de voicings; los avanzados integran las notas de color y el método completo de 4 pasos.
+    </div>
+  </div>
+
+  <div class="level-head basic">Nivel Básico · Ejercicios 1 – 5</div>
+
+  <!-- EJERCICIO 1 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">1</div><h2>Ejercicio 1 — Análisis del grado melódico</h2></div>
+    <div style="margin-bottom:10px"><span class="badge green">DIFICULTAD: BÁSICA</span></div>
+    <p><strong>Enunciado:</strong> Para cada par acorde/melodía, identifica con notación <code>X(n)</code> el grado que ocupa la nota melódica respecto a la raíz del acorde:</p>
+    <ul>
+      <li>a) <code>Bbmaj7</code> → melodía <code>A</code></li>
+      <li>b) <code>Em7</code> → melodía <code>D</code></li>
+      <li>c) <code>F7</code> → melodía <code>A</code></li>
+      <li>d) <code>Gmaj7</code> → melodía <code>F#</code></li>
+    </ul>
+    <button class="reveal-btn" data-target="sol1">Ver solución</button>
+    <div class="reveal-body" id="sol1">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li>Construir mentalmente la escala desde la raíz hasta la nota melódica (Bb mayor: Bb - C - D - Eb - F - G - A).</li>
+        <li>Sobre <code>Bbmaj7</code>, la nota <code>A</code> es la séptima → <code>A(7)</code>.</li>
+        <li>Sobre <code>Em7</code>, la nota <code>D</code> es la séptima → <code>D(7)</code>.</li>
+        <li>Sobre <code>F7</code>, la nota <code>A</code> es la tercera mayor → <code>A(3)</code>.</li>
+        <li>Sobre <code>Gmaj7</code>, la nota <code>F#</code> es la séptima mayor → <code>F#(7)</code>.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        El análisis de grados es el requisito previo indispensable del marco bajo-melodía: sin saber qué función ocupa la melodía dentro del acorde, no se puede decidir qué notas guía colocar debajo en el paso siguiente. El grado se cuenta siempre desde la raíz del acorde, no desde la tónica de la tonalidad.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Contar los grados desde la tonalidad de la pieza en lugar de desde la raíz del acorde. Por ejemplo, en Do mayor, sobre Em7 un estudiante podría etiquetar la D como D(2) pensando en la escala de Do, cuando en realidad es D(7) respecto a la raíz E.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 2 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">2</div><h2>Ejercicio 2 — Detección de error</h2></div>
+    <div style="margin-bottom:10px"><span class="badge green">DIFICULTAD: BÁSICA</span></div>
+    <p><strong>Enunciado:</strong> Un estudiante armoniza una pieza en Si bemol mayor. En el compás de <code>Gm7</code> coloca con la mano izquierda el acorde completo <code>[G(I) - Bb(3) - D(5) - F(7)]</code> en el registro grave, y toca la melodía <code>Bb</code> con la derecha. Señala el error principal y describe la corrección que propone el tutorial.</p>
+    <button class="reveal-btn" data-target="sol2">Ver solución</button>
+    <div class="reveal-body" id="sol2">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li>El error es tocar el acorde completo en posición fundamental en la zona grave con la mano izquierda: genera una masa sonora turbia.</li>
+        <li>El tutorial insiste en separar funciones: la mano izquierda queda relegada a la nota raíz.</li>
+        <li>Corrección: mano izquierda solo <code>G(I)</code>. Mano derecha toca la melodía <code>Bb(3)</code> sin acorde pesado debajo.</li>
+        <li>Resultado: marco limpio <code>G(I)</code> (izq.) + <code>Bb(3)</code> (der.), listo para rellenar con notas guía en el siguiente paso.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        Fred Hersch, citado en El Gran Error, señala que el acorde dominante completo en el grave es uno de los peores sonidos del jazz. Al eliminar <code>D(5)</code> y <code>F(7)</code> de la izquierda y dejar solo <code>G(I)</code>, se libera el registro medio para que la armonía se construya por encima, sin saturar la zona donde el oído percibe con menos claridad.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        "Compensar" el vacío de la mano izquierda añadiendo la quinta o la séptima al bajo. Cualquier nota añadida al bajo —aunque sea una sola— sigue engordando el grave y contradice la premisa del tutorial, que solo admite la raíz.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 3 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">3</div><h2>Ejercicio 3 — Análisis del grado melódico sobre progresión</h2></div>
+    <div style="margin-bottom:10px"><span class="badge green">DIFICULTAD: BÁSICA</span></div>
+    <p><strong>Enunciado:</strong> Sobre la progresión <code>Fmaj7 | Dm7 | Gm7 | C7</code>, las notas melódicas son respectivamente <code>A</code>, <code>F</code>, <code>D</code> y <code>G</code>. Identifica el grado de cada nota respecto a la raíz del acorde correspondiente.</p>
+    <button class="reveal-btn" data-target="sol3">Ver solución</button>
+    <div class="reveal-body" id="sol3">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li><code>Fmaj7</code> = F - A - C - E; la <code>A</code> es la tercera mayor → <code>A(3)</code>.</li>
+        <li><code>Dm7</code> = D - F - A - C; la <code>F</code> es la tercera menor → <code>F(3)</code>.</li>
+        <li><code>Gm7</code> = G - Bb - D - F; la <code>D</code> es la quinta justa → <code>D(5)</code>.</li>
+        <li><code>C7</code> = C - E - G - Bb; la <code>G</code> es la quinta justa → <code>G(5)</code>.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        Este análisis prepara la decisión de la Regla A o Regla B: en los dos primeros compases la melodía cae sobre la tercera —nota guía—, mientras que en los dos últimos cae sobre la quinta, que no es nota guía. Sin esta clasificación previa, no se puede saber cuántas notas guía añadir debajo.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Confundir la tercera mayor con la menor. En <code>Fmaj7</code> la tercera es <code>A</code> (mayor respecto a la raíz F) y en <code>Dm7</code> es <code>F</code> (menor respecto a D). Escribir <code>A(3)</code> sobre <code>Dm7</code> cambiaría por completo la calidad del acorde.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 4 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">4</div><h2>Ejercicio 4 — Construcción del marco</h2></div>
+    <div style="margin-bottom:10px"><span class="badge green">DIFICULTAD: BÁSICA</span></div>
+    <p><strong>Enunciado:</strong> En Mi bemol mayor, sobre la progresión <code>Ebmaj7 | Cm7 | Fm7 | Bb7</code>, las notas de la melodía son <code>G</code>, <code>Eb</code>, <code>C</code> y <code>F</code>. Escribe el marco completo (solo bajo en la izquierda, melodía en la derecha, sin notas armónicas de relleno todavía).</p>
+    <button class="reveal-btn" data-target="sol4">Ver solución</button>
+    <div class="reveal-body" id="sol4">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li><code>Ebmaj7</code> → izquierda <code>Eb(I)</code>, derecha <code>G(3)</code> (tercera mayor).</li>
+        <li><code>Cm7</code> → izquierda <code>C(I)</code>, derecha <code>Eb(3)</code> (tercera menor).</li>
+        <li><code>Fm7</code> → izquierda <code>F(I)</code>, derecha <code>C(5)</code> (quinta justa).</li>
+        <li><code>Bb7</code> → izquierda <code>Bb(I)</code>, derecha <code>F(5)</code> (quinta justa).</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        Este es el paso 2 del marco bajo-melodía: el bajo y la melodía delimitan el "shell" o estructura externa. El marco no resuelve aún la armonía, pero fija el rango acústico dentro del cual las notas guía deberán colocarse en el siguiente paso, evitando el registro grave. La diferencia entre <code>G(3)</code> mayor en <code>Ebmaj7</code> y <code>Eb(3)</code> menor en <code>Cm7</code> ilustra cómo la misma posición en la escala produce funciones distintas según la raíz.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Duplicar la raíz en la mano derecha "para reforzar" la tonalidad. El tutorial enseña que la raíz se toca exclusivamente en la mano izquierda; duplicarla en la derecha estrecha el espacio disponible para las notas guía.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 5 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">5</div><h2>Ejercicio 5 — Reescritura de pasaje</h2></div>
+    <div style="margin-bottom:10px"><span class="badge green">DIFICULTAD: BÁSICA</span></div>
+    <p><strong>Enunciado:</strong> Un pianista toca la progresión <code>Abmaj7 | Db7</code> con la mano izquierda en posición fundamental (<code>[Ab-C-Eb-G]</code> y <code>[Db-F-Ab-Cb]</code>) en zona grave, y con la derecha las melodías <code>C</code> (sobre <code>Abmaj7</code>) y <code>F</code> (sobre <code>Db7</code>). Reescribe el pasaje al estilo del tutorial.</p>
+    <button class="reveal-btn" data-target="sol5">Ver solución</button>
+    <div class="reveal-body" id="sol5">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li>Identificar el error: ambos acordes completos en posición fundamental en el grave, sonido saturado.</li>
+        <li>Sobre <code>Abmaj7</code>: izquierda <code>Ab(I)</code>; derecha melodía <code>C(3)</code>.</li>
+        <li>Sobre <code>Db7</code>: izquierda <code>Db(I)</code>; derecha melodía <code>F(3)</code>.</li>
+        <li>Resultado: dos marcos limpios consecutivos, con el grave liberado y la melodía sostenida sola en la derecha.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        El tutorial insiste en que la mano izquierda solo toca la raíz para evitar acumular densidades en el registro bajo. Al reducir cada acorde a su fundamento, la progresión <code>Abmaj7 → Db7</code> queda preparada para recibir notas guía y de color en el siguiente paso, sin haber contaminado el grave.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Mantener la quinta en la mano izquierda "porque da cuerpo al acorde". La quinta no define la calidad del acorde (ni mayor/menor ni maj7/dom7/m7) y su única función en el grave es emborronar la sonoridad.
+      </div>
+    </div>
+  </div>
+
+  <div class="level-head inter">Nivel Intermedio · Ejercicios 6 – 12</div>
+
+  <!-- EJERCICIO 6 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">6</div><h2>Ejercicio 6 — Aplicación de Regla A vs Regla B</h2></div>
+    <div style="margin-bottom:10px"><span class="badge amber">DIFICULTAD: INTERMEDIA</span></div>
+    <p><strong>Enunciado:</strong> Para cada par acorde/melodía decide si corresponde aplicar la Regla A (añadir una sola nota guía) o la Regla B (añadir las dos notas guía), e indica exactamente qué notas hay que añadir debajo de la melodía:</p>
+    <ul>
+      <li>a) <code>Am7</code> con melodía <code>G</code></li>
+      <li>b) <code>D7</code> con melodía <code>E</code></li>
+      <li>c) <code>Fmaj7</code> con melodía <code>Bb</code></li>
+      <li>d) <code>Bb7</code> con melodía <code>D</code></li>
+    </ul>
+    <button class="reveal-btn" data-target="sol6">Ver solución</button>
+    <div class="reveal-body" id="sol6">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li><code>Am7</code> = A - C - E - G; la <code>G</code> es la séptima → Regla A → añadir <code>C(3)</code>.</li>
+        <li><code>D7</code> = D - F# - A - C; la <code>E</code> es la novena → Regla B → añadir <code>F#(3) + C(7)</code>.</li>
+        <li><code>Fmaj7</code> = F - A - C - E; la <code>Bb</code> es la onceava → Regla B → añadir <code>A(3) + E(7)</code>.</li>
+        <li><code>Bb7</code> = Bb - D - F - Ab; la <code>D</code> es la tercera → Regla A → añadir <code>Ab(7)</code>.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        La regla garantiza que cada acorde contenga siempre su 3ª y su 7ª sin duplicar ninguna. Si la melodía ya cubre una de las dos notas guía, esa función queda satisfecha y solo hay que añadir la faltante; si la melodía es una extensión (9ª, 11ª, 13ª) o la raíz, hay que aportar las dos notas guía para que el acorde sea reconocible.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Aplicar siempre la Regla B "por seguridad". Cuando la melodía ya es la 3ª o la 7ª, añadir también esa nota debajo produce una duplicación que rompe la transparencia y engorda innecesariamente la mano derecha.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 7 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">7</div><h2>Ejercicio 7 — Construcción de voicing con Regla de Notas Guía</h2></div>
+    <div style="margin-bottom:10px"><span class="badge amber">DIFICULTAD: INTERMEDIA</span></div>
+    <p><strong>Enunciado:</strong> Sobre <code>Em7</code> con la nota melódica <code>B</code> en la octava central del teclado, escribe el voicing completo (mano izquierda + mano derecha) aplicando el marco y la Regla de las Notas Guía.</p>
+    <button class="reveal-btn" data-target="sol7">Ver solución</button>
+    <div class="reveal-body" id="sol7">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li>Análisis: <code>Em7</code> = E - G - B - D; la <code>B</code> es la quinta justa → <code>B(5)</code>. No es 3ª ni 7ª → Regla B.</li>
+        <li>Notas guía a añadir: <code>G(3)</code> y <code>D(7)</code>.</li>
+        <li>Mano izquierda: <code>E(I)</code>.</li>
+        <li>Mano derecha (de abajo hacia arriba): <code>G(3) - D(7) - B(5)</code> melodía.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        Al colocar <code>G(3)</code> y <code>D(7)</code> bajo la melodía se satisface el núcleo armónico exigido por el tutorial: la 3ª menor define que el acorde es menor y la 7ª menor define que es un acorde de séptima menor. La quinta de la melodía corona la estructura sin aportar información armónica esencial.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Colocar <code>E(I)</code> también en la mano derecha "para reforzar la tónica". El tutorial es explícito: la raíz vive solo en el bajo. Duplicarla arriba resta espacio y oscurece el voicing.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 8 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">8</div><h2>Ejercicio 8 — Detección de error (duplicación de nota guía)</h2></div>
+    <div style="margin-bottom:10px"><span class="badge amber">DIFICULTAD: INTERMEDIA</span></div>
+    <p><strong>Enunciado:</strong> Sobre <code>Bbmaj7</code> con melodía <code>D</code>, un estudiante toca: mano izquierda <code>Bb(I)</code>; mano derecha de abajo arriba <code>A(7) - D(3) - D(3)</code> (esta última como nota melódica). Identifica el error principal y escribe la corrección.</p>
+    <button class="reveal-btn" data-target="sol8">Ver solución</button>
+    <div class="reveal-body" id="sol8">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li>Análisis: <code>Bbmaj7</code> = Bb - D - F - A; la melodía <code>D</code> es la tercera → <code>D(3)</code>. Es nota guía → Regla A.</li>
+        <li>Nota guía a añadir: solo <code>A(7)</code>.</li>
+        <li>El estudiante ha duplicado la 3ª (<code>D</code> dos veces: una como melodía y otra debajo).</li>
+        <li>Corrección: izquierda <code>Bb(I)</code>; derecha (de abajo arriba) <code>A(7) - D(3)</code> melodía.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        La Regla A existe precisamente para impedir la duplicación de notas guía. Cuando la melodía ya ocupa una función armónica, repetirla debajo anula la transparencia del voicing: el oído percibe dos veces la misma información en lugar de recibir la 3ª y la 7ª complementarias.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Duplicar una nota guía "para dar cuerpo" al acorde. En un voicing de jazz la duplicación de la 3ª o la 7ª es uno de los defectos más señalados por el tutorial: la función armónica ya está cubierta y la segunda aparición solo engorda la textura.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 9 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">9</div><h2>Ejercicio 9 — Regla A vs Regla B en un ii-V-I</h2></div>
+    <div style="margin-bottom:10px"><span class="badge amber">DIFICULTAD: INTERMEDIA</span></div>
+    <p><strong>Enunciado:</strong> Sobre la progresión <code>Am7 | D7 | Gmaj7</code>, la melodía cae respectivamente en <code>E</code>, <code>A</code> y <code>F#</code>. Decide para cada acorde si aplicas Regla A o Regla B e indica las notas guía a colocar.</p>
+    <button class="reveal-btn" data-target="sol9">Ver solución</button>
+    <div class="reveal-body" id="sol9">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li><code>Am7</code> = A - C - E - G; la melodía <code>E</code> es la quinta → Regla B → añadir <code>C(3) + G(7)</code>.</li>
+        <li><code>D7</code> = D - F# - A - C; la melodía <code>A</code> es la quinta → Regla B → añadir <code>F#(3) + C(7)</code>.</li>
+        <li><code>Gmaj7</code> = G - B - D - F#; la melodía <code>F#</code> es la séptima → Regla A → añadir <code>B(3)</code>.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        Este es el caso típico de un ii-V-I: en los dos primeros acordes la melodía es la quinta (no es nota guía) y hay que construir el núcleo armónico completo por debajo; en el acorde de resolución la melodía cae sobre la séptima, ya es nota guía y solo se necesita la tercera para completar la estructura.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Aplicar Regla B sobre <code>Gmaj7</code> y añadir <code>F#(7)</code> además de <code>B(3)</code>. La melodía ya es <code>F#(7)</code>; duplicar la séptima mayor con la tercera genera una sonoridad innecesariamente cargada para un acorde de reposo.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 10 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">10</div><h2>Ejercicio 10 — Construcción de voicing de dos acordes</h2></div>
+    <div style="margin-bottom:10px"><span class="badge amber">DIFICULTAD: INTERMEDIA</span></div>
+    <p><strong>Enunciado:</strong> Escribe el voicing completo de dos acordes:</p>
+    <ul>
+      <li>a) <code>Amaj7</code> con melodía <code>C#</code></li>
+      <li>b) <code>F#m7</code> con melodía <code>A</code></li>
+    </ul>
+    <button class="reveal-btn" data-target="sol10">Ver solución</button>
+    <div class="reveal-body" id="sol10">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li><code>Amaj7</code> = A - C# - E - G#; la <code>C#</code> es la tercera mayor → Regla A → añadir <code>G#(7)</code>. Izquierda: <code>A(I)</code>. Derecha (abajo arriba): <code>G#(7) - C#(3)</code> melodía.</li>
+        <li><code>F#m7</code> = F# - A - C# - E; la <code>A</code> es la tercera menor → Regla A → añadir <code>E(7)</code>. Izquierda: <code>F#(I)</code>. Derecha (abajo arriba): <code>E(7) - A(3)</code> melodía.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        En ambos casos la melodía ocupa la 3ª, que es la nota que define la cualidad (mayor o menor). Añadir solo la 7ª es suficiente para identificar el acorde como maj7 o m7. Añadir la quinta además sería redundante y rompería la transparencia buscada por el tutorial.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Confundir la tercera del acorde mayor con la del menor. En <code>F#m7</code> la tercera es <code>A</code> natural (menor). Escribir <code>A#</code> cambiaría la calidad del acorde y rompería la progresión.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 11 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">11</div><h2>Ejercicio 11 — Comparativa cerrado vs. abierto (spread)</h2></div>
+    <div style="margin-bottom:10px"><span class="badge amber">DIFICULTAD: INTERMEDIA</span></div>
+    <p><strong>Enunciado:</strong> Sobre <code>Fmaj7</code> con melodía <code>Bb</code>, un estudiante coloca el voicing cerrado completo en la mano derecha: de abajo arriba <code>A(3) - E(7) - Bb(11)</code> melodía. El intervalo A-Bb produce un choque incómodo. Decide qué nota del voicing conviene redistribuir a la mano izquierda y reescribe la disposición en versión abierta.</p>
+    <button class="reveal-btn" data-target="sol11">Ver solución</button>
+    <div class="reveal-body" id="sol11">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li>Análisis: <code>Fmaj7</code> = F - A - C - E; la <code>Bb</code> es la onceava → Regla B → añadir <code>A(3) + E(7)</code>.</li>
+        <li>En cerrado, <code>A</code> y <code>Bb</code> quedan a semitono en la misma mano, generando un cluster.</li>
+        <li>Pasar a la mano izquierda la nota más grave del voicing —la 3ª <code>A</code>—: izquierda <code>F(I) + A(3)</code>.</li>
+        <li>Mano derecha (de abajo arriba): <code>E(7) - Bb(11)</code> melodía; intervalo E-Bb = tritono, sin cluster.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        El tutorial permite distribuir las notas guía entre ambas manos cuando la disposición cerrada produce choques. La nota que se pasa a la izquierda se suma al bajo formando un intervalo cómodo (F-A, tercera mayor) y libera la mano derecha del semitono conflictivo, manteniéndose dentro de un alcance de novena.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Pasar a la izquierda la nota más aguda en lugar de la más grave. Si se traslada <code>E(7)</code> en vez de <code>A(3)</code>, el choque A-Bb permanece en la mano derecha y además la izquierda acumula F-E, una séptima mayor en el grave que el tutorial rechaza por densidad.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 12 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">12</div><h2>Ejercicio 12 — Construcción de voicing de una progresión ii-V-I</h2></div>
+    <div style="margin-bottom:10px"><span class="badge amber">DIFICULTAD: INTERMEDIA</span></div>
+    <p><strong>Enunciado:</strong> Escribe el voicing completo (izquierda + derecha) de la progresión <code>Fm7 | Bb7 | Ebmaj7</code> sabiendo que las melodías son respectivamente <code>Ab</code>, <code>D</code> y <code>G</code>.</p>
+    <button class="reveal-btn" data-target="sol12">Ver solución</button>
+    <div class="reveal-body" id="sol12">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li><code>Fm7</code> = F - Ab - C - Eb; <code>Ab</code> es la 3ª menor → Regla A → añadir <code>Eb(7)</code>. Izquierda <code>F(I)</code>. Derecha (abajo arriba): <code>Eb(7) - Ab(3)</code>.</li>
+        <li><code>Bb7</code> = Bb - D - F - Ab; <code>D</code> es la 3ª mayor → Regla A → añadir <code>Ab(7)</code>. Izquierda <code>Bb(I)</code>. Derecha: <code>Ab(7) - D(3)</code>.</li>
+        <li><code>Ebmaj7</code> = Eb - G - Bb - D; <code>G</code> es la 3ª mayor → Regla A → añadir <code>D(7)</code>. Izquierda <code>Eb(I)</code>. Derecha: <code>D(7) - G(3)</code>.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        En los tres acordes la melodía cae sobre la tercera, por lo que se aplica la Regla A en todos los casos. El resultado es una progresión ii-V-I en Mi bemol con voicings transparentes: cada acorde expone su tercera como melodía y su séptima en el relleno.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Añadir la séptima del acorde menor <code>Fm7</code> como <code>Eb(7)</code> pero escribirla como <code>D#</code>. Aunque suene igual, la ortografía correcta en cifrado americano es <code>Eb</code> — la séptima menor de <code>Fm7</code> se construye bajando un tono completo desde la tónica de referencia F.
+      </div>
+    </div>
+  </div>
+
+  <div class="level-head adv">Nivel Avanzado · Ejercicios 13 – 15</div>
+
+  <!-- EJERCICIO 13 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">13</div><h2>Ejercicio 13 — Selección de nota de color</h2></div>
+    <div style="margin-bottom:10px"><span class="badge red">DIFICULTAD: AVANZADA</span></div>
+    <p><strong>Enunciado:</strong> Para cada acorde, selecciona UNA sola nota de color apropiada según las reglas de las Notas de Color y justifica brevemente:</p>
+    <ul>
+      <li>a) <code>Fmaj7</code> estático en función de tónica</li>
+      <li>b) <code>A7</code> actuando como dominante que resuelve a <code>Dm7</code> (acorde menor)</li>
+      <li>c) <code>Dbmaj7</code> estático</li>
+      <li>d) <code>Cm7</code> estático</li>
+    </ul>
+    <button class="reveal-btn" data-target="sol13">Ver solución</button>
+    <div class="reveal-body" id="sol13">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li><code>Fmaj7</code> (mayor) → añadir <code>C(5)</code> o <code>G(9)</code>; se elige <code>G(9)</code> por su riqueza sin alterar la estabilidad.</li>
+        <li><code>A7</code> → dominante que resuelve a menor → añadir <code>Bb(b9)</code> o <code>F(b13)</code>; se elige <code>F(b13)</code> por su tensión elegante hacia <code>Dm7</code>.</li>
+        <li><code>Dbmaj7</code> (mayor) → añadir <code>Ab(5)</code> o <code>Eb(9)</code>; se elige <code>Eb(9)</code>.</li>
+        <li><code>Cm7</code> (menor) → añadir <code>G(5)</code> o <code>D(9)</code>; se elige <code>D(9)</code> para enriquecer la sonoridad menor sin salir de la función.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        El tutorial reserva las tensiones según la función del acorde: los mayores y menores admiten 5ª o 9ª, mientras que los dominantes aceptan 9ª/13ª cuando son estáticos y b9/b13 cuando resuelven a un acorde menor. Añadir una sola nota de color mantiene la técnica manejable y evita sobrecargar el voicing.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Colocar una b9 o b13 sobre un acorde mayor (<code>Fmaj7</code>, <code>Dbmaj7</code>). Esa tensión solo se usa en dominantes que resuelven a menor; en un acorde mayor estático la b9 o b13 destruye la sensación de reposo.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 14 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">14</div><h2>Ejercicio 14 — Integración total (4 pasos)</h2></div>
+    <div style="margin-bottom:10px"><span class="badge red">DIFICULTAD: AVANZADA</span></div>
+    <p><strong>Enunciado:</strong> Sobre la progresión <code>Gm7 | C7 | Fmaj7 | Dm7</code>, con melodías <code>F</code>, <code>E</code>, <code>A</code> y <code>D</code> respectivamente, aplica los 4 pasos del tutorial y escribe el voicing completo de cada acorde (marco + notas guía + una nota de color).</p>
+    <button class="reveal-btn" data-target="sol14">Ver solución</button>
+    <div class="reveal-body" id="sol14">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li><code>Gm7</code> con <code>F</code>: la <code>F</code> es la 7ª → Regla A → añadir <code>Bb(3)</code>. Color menor: <code>D(5)</code>. Izquierda <code>G(I)</code>; derecha (abajo arriba) <code>Bb(3) - D(5) - F(7)</code> melodía.</li>
+        <li><code>C7</code> con <code>E</code>: la <code>E</code> es la 3ª → Regla A → añadir <code>Bb(7)</code>. Color dominante: <code>D(9)</code>. Izquierda <code>C(I)</code>; derecha <code>D(9) - Bb(7) - E(3)</code> melodía.</li>
+        <li><code>Fmaj7</code> con <code>A</code>: la <code>A</code> es la 3ª → Regla A → añadir <code>E(7)</code>. Color mayor: <code>G(9)</code>. Izquierda <code>F(I)</code>; derecha <code>E(7) - G(9) - A(3)</code> melodía.</li>
+        <li><code>Dm7</code> con <code>D</code>: la melodía es la raíz → Regla B → añadir <code>F(3) + C(7)</code>. Color menor: <code>A(5)</code>. Izquierda <code>D(I)</code>; derecha <code>F(3) - A(5) - C(7) - D(I)</code> melodía.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        Cada acorde recorre exactamente los cuatro pasos del tutorial: (1) identificar el grado de la melodía, (2) aplicar la Regla A o B para completar las notas guía, (3) elegir la nota de color según la categoría del acorde, y (4) ordenar las notas debajo de la melodía. La progresión es un ii-V-I en Fa con un último <code>Dm7</code> que recibe una coloración distinta por no tener la melodía sobre una nota guía.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        En el último acorde, aplicar la Regla A colocando solo <code>F(3)</code> bajo la melodía <code>D(I)</code> y olvidar la 7ª. Como la melodía no es ni 3ª ni 7ª, hay que aportar AMBAS notas guía; suprimir la <code>C(7)</code> deja el acorde sin información de séptima.
+      </div>
+    </div>
+  </div>
+
+  <!-- EJERCICIO 15 -->
+  <div class="card">
+    <div class="card-header"><div class="icon">15</div><h2>Ejercicio 15 — Integración total con notas de color</h2></div>
+    <div style="margin-bottom:10px"><span class="badge red">DIFICULTAD: AVANZADA</span></div>
+    <p><strong>Enunciado:</strong> Sobre la progresión <code>Bbmaj7 | Gm7 | Cm7 | F7</code> (I-vi-ii-V en Si bemol) con melodías <code>D</code>, <code>Bb</code>, <code>Eb</code> y <code>A</code> respectivamente, armoniza cada compás aplicando los 4 pasos del tutorial.</p>
+    <button class="reveal-btn" data-target="sol15">Ver solución</button>
+    <div class="reveal-body" id="sol15">
+      <h3 style="color:var(--accent);margin-bottom:8px;font-size:.95rem">Solución paso a paso</h3>
+      <ol>
+        <li><code>Bbmaj7</code> con <code>D</code>: la <code>D</code> es la 3ª → Regla A → añadir <code>A(7)</code>. Color: <code>C(9)</code>. Izquierda <code>Bb(I)</code>; derecha (abajo arriba) <code>C(9) - A(7) - D(3)</code> melodía.</li>
+        <li><code>Gm7</code> con <code>Bb</code>: la <code>Bb</code> es la 3ª menor → Regla A → añadir <code>F(7)</code>. Color: <code>D(5)</code>. Izquierda <code>G(I)</code>; derecha <code>D(5) - F(7) - Bb(3)</code> melodía.</li>
+        <li><code>Cm7</code> con <code>Eb</code>: la <code>Eb</code> es la 3ª menor → Regla A → añadir <code>Bb(7)</code>. Color: <code>G(5)</code>. Izquierda <code>C(I)</code>; derecha <code>G(5) - Bb(7) - Eb(3)</code> melodía.</li>
+        <li><code>F7</code> con <code>A</code>: la <code>A</code> es la 3ª mayor → Regla A → añadir <code>Eb(7)</code>. Color dominante: <code>G(9)</code>. Izquierda <code>F(I)</code>; derecha <code>Eb(7) - G(9) - A(3)</code> melodía.</li>
+      </ol>
+      <div class="callout info">
+        <strong>POR QUÉ</strong>
+        Toda la progresión cae sobre la tercera del acorde, por lo que se aplica la Regla A en los cuatro compases y solo hay que añadir la séptima correspondiente antes de sumar la nota de color. El <code>F7</code> final recibe la <code>G(9)</code> porque es un dominante estático dentro de la cadencia; si el mismo <code>F7</code> resolviera a un acorde menor (por ejemplo a <code>Bbm7</code>), la tensión adecuada sería <code>Gb(b9)</code> o <code>Db(b13)</code>.
+      </div>
+      <div class="callout error">
+        <strong>ERROR TÍPICO A EVITAR</strong>
+        Colocar dos notas de color en un mismo acorde "para enriquecerlo más". El tutorial insiste en añadir solo una por acorde: acumular tensiones antes de dominar las notas guía rompe la transparencia y convierte el voicing en una masa indistinguible, exactamente el problema que este método busca corregir.
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ================= FUENTES ================= -->
+
+<section id="fuentes">
+  <h1 class="sec-title"><span class="num-chip">📚</span>Fuentes y Referencias</h1>
+  <p class="sec-subtitle">Origen documental y enlaces utilizados en este tutorial</p>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">1️⃣</div><h2>Fuente Principal</h2></div>
+    <ul>
+      <li><strong>Nombre:</strong> FUENTES</li>
+      <li><strong>Título del Video Referenciado:</strong> THIS JAZZ PIANO SKILL WILL CHANGE YOUR PLAYING</li>
+      <li><strong>URL:</strong> <a href="https://youtube.com/watch?v=mHug60fxCq4&amp;is=ycEnqvDIr1dF08RO" target="_blank" rel="noopener" style="color:var(--accent);word-break:break-all">https://youtube.com/watch?v=mHug60fxCq4&amp;is=ycEnqvDIr1dF08RO</a></li>
+      <li><strong>Descripción:</strong> Video tutorial impartido por Tim Whalen (Whalen Jazz Lessons) sobre la armonización de melodías al piano jazz mediante el uso de notas guía (3ª y 7ª) y notas de color (9ª, 13ª) sobre temas clásicos como <em>Prelude to a Kiss</em> de Duke Ellington.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🔗</div><h2>Enlace del Video Original</h2></div>
+    <ul>
+      <li><strong>Nombre del Video:</strong> <em>This Jazz Piano Skill Will Change Your Playing</em></li>
+      <li><strong>Canal:</strong> Whalen Jazz Lessons (Tim Whalen)</li>
+      <li><strong>URL del Video:</strong> <a href="https://youtube.com/watch?v=mHug60fxCq4&amp;is=ycEnqvDIr1dF08RO" target="_blank" rel="noopener" style="color:var(--accent);word-break:break-all">https://youtube.com/watch?v=mHug60fxCq4&amp;is=ycEnqvDIr1dF08RO</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= CREDITOS ================= -->
+
+<section id="creditos">
+  <h1 class="sec-title"><span class="num-chip">✨</span>Créditos</h1>
+  <p class="sec-subtitle">Información del tutorial y del autor</p>
+
+  <div class="svg-wrap" id="svgCreditsWrap">
+    <!-- same SVG injected by JS -->
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">📘</div><h2>Tutorial</h2></div>
+    <p><strong>Este truco de piano jazz transformará tu forma de tocar</strong></p>
+    <p>Armonización de melodías al piano jazz mediante Notas Guía y Notas de Color.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">👨‍💻</div><h2>Autor de la adaptación</h2></div>
+    <p><strong>Rubén Sbarsky</strong></p>
+    <p>Fecha: <strong>28/09/2026</strong></p>
+    <p>Hora: <strong>05:56:16</strong></p>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="icon">🎓</div><h2>Indicación educativa</h2></div>
+    <p>Este tutorial tiene fines exclusivamente educativos y de divulgación. Todo el contenido musical, ejemplos y análisis han sido adaptados respetando fielmente el material original con fines de aprendizaje.</p>
+  </div>
+
+  <div class="quote" style="border-left-color:var(--purple)">
+    Fiat iustitia, ruat caelum.
+  </div>
+</section>
+
+</main>
+
+<footer>
+  📚 Tutorial solo con fines Educativos y Divulgación<br>
+  👨‍💻 Créditos: <strong>Rubén Sbarsky</strong><br>
+  📅 FECHA: <strong>28/09/2026</strong> &nbsp;·&nbsp; Hora: <strong>05:56:16</strong>
+  <span class="fiat">Fiat iustitia, ruat caelum.</span>
+</footer>
+
+<button id="topBtn" aria-label="Volver arriba">↑</button>
+
+<!-- ================ SVG TEMPLATE (reutilizable) ================ -->
+
+<template id="svgAnimTemplate">
+<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Portada animada de armonización jazz">
+  <defs>
+    <!-- Fondo con gradiente animado -->
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070b14">
+        <animate attributeName="stop-color" values="#070b14;#0a1424;#0d0a1f;#070b14" dur="8s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" stop-color="#0a0e1a">
+        <animate attributeName="stop-color" values="#0a0e1a;#0f172a;#0a1425;#0a0e1a" dur="6.5s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#050810">
+        <animate attributeName="stop-color" values="#050810;#0b0a1c;#070b14;#050810" dur="9s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+
+  </defs>
+
+  <!-- FONDO -->
+
+  <rect width="800" height="450" fill="url(#bgGrad)"/>
+  <rect width="800" height="450" fill="url(#gridP)" opacity="0.5">
+    <animate attributeName="opacity" values="0.25;0.6;0.25" dur="5s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- ANILLOS ORBITALES -->
+
+  <g opacity="0.4">
+    <ellipse cx="400" cy="225" rx="360" ry="160" fill="none" stroke="#00d4ff" stroke-width="0.6" stroke-dasharray="6 14">
+      <animateTransform attributeName="transform" type="rotate" from="0 400 225" to="360 400 225" dur="26s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="6 14;12 8;6 14" dur="5s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="400" cy="225" rx="290" ry="130" fill="none" stroke="#a855f7" stroke-width="0.6" stroke-dasharray="3 9">
+      <animateTransform attributeName="transform" type="rotate" from="360 400 225" to="0 400 225" dur="18s" repeatCount="indefinite"/>
+      <animate attributeName="stroke-dasharray" values="3 9;7 5;3 9" dur="3.5s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="400" cy="225" rx="220" ry="100" fill="none" stroke="#22c55e" stroke-width="0.5" stroke-dasharray="5 12">
+      <animateTransform attributeName="transform" type="rotate" from="0 400 225" to="360 400 225" dur="13s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+
+  <!-- TECLADO DE PIANO INFERIOR -->
+
+  <g id="piano">
+    <rect x="0" y="390" width="800" height="60" fill="#020617" opacity="0.85"/>
+    <g>
+      <!-- Teclas blancas -->
+      <g fill="url(#keyGrad)" stroke="#0a0e1a" stroke-width="0.6">
+        <rect x="10" y="395" width="48" height="50" rx="2"/>
+        <rect x="62" y="395" width="48" height="50" rx="2"/>
+        <rect x="114" y="395" width="48" height="50" rx="2"/>
+        <rect x="166" y="395" width="48" height="50" rx="2"/>
+        <rect x="218" y="395" width="48" height="50" rx="2"/>
+        <rect x="270" y="395" width="48" height="50" rx="2"/>
+        <rect x="322" y="395" width="48" height="50" rx="2"/>
+        <rect x="374" y="395" width="48" height="50" rx="2"/>
+        <rect x="426" y="395" width="48" height="50" rx="2"/>
+        <rect x="478" y="395" width="48" height="50" rx="2"/>
+        <rect x="530" y="395" width="48" height="50" rx="2"/>
+        <rect x="582" y="395" width="48" height="50" rx="2"/>
+        <rect x="634" y="395" width="48" height="50" rx="2"/>
+        <rect x="686" y="395" width="48" height="50" rx="2"/>
+        <rect x="738" y="395" width="48" height="50" rx="2"/>
+      </g>
+      <!-- Teclas negras -->
+      <g fill="#0a0e1a" stroke="#000" stroke-width="0.4">
+        <rect x="44" y="395" width="26" height="30" rx="2"/>
+        <rect x="96" y="395" width="26" height="30" rx="2"/>
+        <rect x="148" y="395" width="26" height="30" rx="2"/>
+        <rect x="200" y="395" width="26" height="30" rx="2"/>
+        <rect x="304" y="395" width="26" height="30" rx="2"/>
+        <rect x="356" y="395" width="26" height="30" rx="2"/>
+        <rect x="408" y="395" width="26" height="30" rx="2"/>
+        <rect x="460" y="395" width="26" height="30" rx="2"/>
+        <rect x="512" y="395" width="26" height="30" rx="2"/>
+        <rect x="616" y="395" width="26" height="30" rx="2"/>
+        <rect x="668" y="395" width="26" height="30" rx="2"/>
+      </g>
+      <!-- Pulso de una tecla destacada -->
+      <rect x="218" y="395" width="48" height="50" rx="2" fill="#00d4ff" opacity="0">
+        <animate attributeName="opacity" values="0;0.55;0" dur="2.4s" repeatCount="indefinite" begin="0s"/>
+      </rect>
+      <rect x="478" y="395" width="48" height="50" rx="2" fill="#a855f7" opacity="0">
+        <animate attributeName="opacity" values="0;0.55;0" dur="2.9s" repeatCount="indefinite" begin="1.2s"/>
+      </rect>
+    </g>
+  </g>
+
+  <!-- FLECHAS DE FLUJO (paths temáticos) -->
+
+  <path d="M 100 340 Q 250 240 400 260" fill="none" stroke="#22c55e" stroke-width="1.6" stroke-dasharray="8 6" opacity="0.7" filter="url(#glow)">
+    <animate attributeName="stroke-dashoffset" values="0;-56" dur="2.8s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 400 260 Q 500 200 620 200" fill="none" stroke="#f59e0b" stroke-width="1.6" stroke-dasharray="8 6" opacity="0.7" filter="url(#glow)">
+    <animate attributeName="stroke-dashoffset" values="0;-56" dur="3.3s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 620 200 Q 700 220 740 300" fill="none" stroke="#a855f7" stroke-width="1.6" stroke-dasharray="8 6" opacity="0.7" filter="url(#glow)">
+    <animate attributeName="stroke-dashoffset" values="0;-56" dur="3.8s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- PARTÍCULAS VIAJANDO POR PATHS -->
+
+  <circle r="3.2" fill="#22c55e" filter="url(#glow)">
+    <animateMotion dur="4.2s" repeatCount="indefinite" begin="0s">
+      <mpath href="#flowPath1"/>
+    </animateMotion>
+  </circle>
+  <circle r="2.6" fill="#22c55e" filter="url(#glow)">
+    <animateMotion dur="5.4s" repeatCount="indefinite" begin="1.4s">
+      <mpath href="#flowPath1"/>
+    </animateMotion>
+  </circle>
+  <circle r="3.2" fill="#f59e0b" filter="url(#glow)">
+    <animateMotion dur="4.7s" repeatCount="indefinite" begin="0.6s">
+      <mpath href="#flowPath2"/>
+    </animateMotion>
+  </circle>
+  <circle r="2.4" fill="#f59e0b" filter="url(#glow)">
+    <animateMotion dur="6.1s" repeatCount="indefinite" begin="2.1s">
+      <mpath href="#flowPath2"/>
+    </animateMotion>
+  </circle>
+  <circle r="3" fill="#a855f7" filter="url(#glow)">
+    <animateMotion dur="5.2s" repeatCount="indefinite" begin="1s">
+      <mpath href="#flowPath3"/>
+    </animateMotion>
+  </circle>
+
+  <!-- GHOST: nota que viaja del bajo a la melodía -->
+
+  <g filter="url(#glowStrong)">
+    <text x="0" y="0" fill="#00d4ff" font-size="26" font-family="Segoe UI" font-weight="700" opacity="0.85" text-anchor="middle">
+      E(3)
+      <animateMotion dur="6.5s" repeatCount="indefinite" begin="0s" rotate="0">
+        <mpath href="#flowPath1"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0;0.9;0.9;0" dur="6.5s" repeatCount="indefinite"/>
+    </text>
+    <text x="0" y="0" fill="#f59e0b" font-size="22" font-family="Segoe UI" font-weight="700" opacity="0.85" text-anchor="middle">
+      Bb(7)
+      <animateMotion dur="6.5s" repeatCount="indefinite" begin="1.5s" rotate="0">
+        <mpath href="#flowPath2"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0;0.9;0.9;0" dur="6.5s" repeatCount="indefinite" begin="1.5s"/>
+    </text>
+  </g>
+
+  <!-- NODO 1: C(I) BAJO (verde) -->
+
+  <g transform="translate(100 340)">
+    <circle r="26" fill="none" stroke="#22c55e" stroke-width="0.9" opacity="0.5">
+      <animate attributeName="r" values="22;34;22" dur="3.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.55;0.1;0.55" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="20" fill="#0f172a" stroke="#22c55e" stroke-width="2" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -3;0 0" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <text y="5" text-anchor="middle" fill="#22c55e" font-size="12" font-weight="800" font-family="Segoe UI">C(I)</text>
+    <text y="-32" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Segoe UI" letter-spacing="1">BAJO</text>
+  </g>
+
+  <!-- NODO 2: E(3) (ámbar) -->
+
+  <g transform="translate(400 260)">
+    <circle r="24" fill="none" stroke="#f59e0b" stroke-width="0.9" opacity="0.5">
+      <animate attributeName="r" values="20;32;20" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
+      <animate attributeName="opacity" values="0.55;0.1;0.55" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
+    </circle>
+    <circle r="18" fill="#0f172a" stroke="#f59e0b" stroke-width="2" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -2.5;0 0" dur="3.5s" repeatCount="indefinite" begin="0.3s"/>
+    </circle>
+    <text y="4" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="800" font-family="Segoe UI">E(3)</text>
+    <text y="-30" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Segoe UI" letter-spacing="1">GUÍA</text>
+  </g>
+
+  <!-- NODO 3: Bb(7) (ámbar) -->
+
+  <g transform="translate(620 200)">
+    <circle r="24" fill="none" stroke="#f59e0b" stroke-width="0.9" opacity="0.5">
+      <animate attributeName="r" values="20;32;20" dur="4s" repeatCount="indefinite" begin="0.8s"/>
+      <animate attributeName="opacity" values="0.55;0.1;0.55" dur="4s" repeatCount="indefinite" begin="0.8s"/>
+    </circle>
+    <circle r="18" fill="#0f172a" stroke="#f59e0b" stroke-width="2" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -3;0 0" dur="4s" repeatCount="indefinite" begin="0.8s"/>
+    </circle>
+    <text y="4" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="800" font-family="Segoe UI">Bb(7)</text>
+    <text y="-30" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Segoe UI" letter-spacing="1">GUÍA</text>
+  </g>
+
+  <!-- NODO 4: G(5) MELODÍA (púrpura) -->
+
+  <g transform="translate(740 300)">
+    <circle r="28" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.55">
+      <animate attributeName="r" values="24;38;24" dur="3.8s" repeatCount="indefinite" begin="0.5s"/>
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3.8s" repeatCount="indefinite" begin="0.5s"/>
+    </circle>
+    <circle r="22" fill="#0f172a" stroke="#a855f7" stroke-width="2.4" filter="url(#glowStrong)">
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="4.5s" repeatCount="indefinite" begin="0.5s"/>
+    </circle>
+    <text y="5" text-anchor="middle" fill="#a855f7" font-size="12" font-weight="800" font-family="Segoe UI">G(5)</text>
+    <text y="-34" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Segoe UI" letter-spacing="1">MELODÍA</text>
+    <!-- anillo orbital alrededor -->
+    <ellipse rx="34" ry="14" fill="none" stroke="#a855f7" stroke-width="0.8" stroke-dasharray="4 6" opacity="0.7">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="7s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+
+  <!-- NODO 5: D(9) COLOR (rojo) -->
+
+  <g transform="translate(200 130)">
+    <circle r="22" fill="none" stroke="#ef4444" stroke-width="0.9" opacity="0.5">
+      <animate attributeName="r" values="18;30;18" dur="3.4s" repeatCount="indefinite" begin="1.1s"/>
+      <animate attributeName="opacity" values="0.55;0.1;0.55" dur="3.4s" repeatCount="indefinite" begin="1.1s"/>
+    </circle>
+    <circle r="16" fill="#0f172a" stroke="#ef4444" stroke-width="2" filter="url(#glow)">
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -3.5;0 0" dur="4.2s" repeatCount="indefinite" begin="1.1s"/>
+    </circle>
+    <text y="4" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="800" font-family="Segoe UI">D(9)</text>
+    <text y="-28" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="Segoe UI" letter-spacing="1">COLOR</text>
+  </g>
+
+  <!-- EXPLOSIÓN RADIAL en nodo melodía -->
+
+  <g transform="translate(740 300)" opacity="0">
+    <animate attributeName="opacity" values="0;0;0.9;0;0" dur="6s" repeatCount="indefinite"/>
+    <line x1="0" y1="0" x2="0" y2="-28" stroke="#a855f7" stroke-width="1.6">
+      <animateTransform attributeName="transform" type="translate" values="0 0;0 -18;0 0" dur="1.8s" repeatCount="indefinite"/>
+    </line>
+    <line x1="0" y1="0" x2="24" y2="-14" stroke="#00d4ff" stroke-width="1.6">
+      <animateTransform attributeName="transform" type="translate" values="0 0;14 -10;0 0" dur="1.9s" repeatCount="indefinite"/>
+    </line>
+    <line x1="0" y1="0" x2="-24" y2="-14" stroke="#f59e0b" stroke-width="1.6">
+      <animateTransform attributeName="transform" type="translate" values="0 0;-14 -10;0 0" dur="2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="0" y1="0" x2="26" y2="10" stroke="#22c55e" stroke-width="1.4">
+      <animateTransform attributeName="transform" type="translate" values="0 0;16 6;0 0" dur="2.1s" repeatCount="indefinite"/>
+    </line>
+    <line x1="0" y1="0" x2="-26" y2="10" stroke="#ef4444" stroke-width="1.4">
+      <animateTransform attributeName="transform" type="translate" values="0 0;-16 6;0 0" dur="2.2s" repeatCount="indefinite"/>
+    </line>
+  </g>
+
+  <!-- INDICADOR LIVE -->
+
+  <g transform="translate(730 34)">
+    <circle r="5" fill="#ef4444">
+      <animate attributeName="opacity" values="1;0.15;1" dur="1.4s" repeatCount="indefinite"/>
+    </circle>
+    <text x="12" y="5" fill="#ef4444" font-size="11" font-weight="800" font-family="Segoe UI" letter-spacing="2">LIVE</text>
+  </g>
+
+  <!-- TÍTULO ANIMADO -->
+
+  <g transform="translate(40 58)">
+    <text font-family="Segoe UI" font-size="24" font-weight="800" letter-spacing="0.5">
+      <tspan fill="#00d4ff" x="0" y="0">JAZZ</tspan>
+      <tspan fill="#e2e8f0" x="70" y="0">PIANO</tspan>
+      <animate attributeName="fill-opacity" values="1;0.88;1" dur="3.4s" repeatCount="indefinite"/>
+    </text>
+    <text x="0" y="24" font-family="Segoe UI" font-size="12" fill="#94a3b8" letter-spacing="3">
+      ARMONIZACIÓN · GUÍA + COLOR
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <!-- ETIQUETA DE ESTADO alternando -->
+
+  <g transform="translate(40 100)">
+    <text font-family="Segoe UI" font-size="10" letter-spacing="1.5" fill="#22c55e">
+      <tspan>
+        <animate attributeName="opacity" values="1;0;0;1" dur="6s" repeatCount="indefinite"/>
+        ◉ SHELL VOICING ACTIVO
+      </tspan>
+    </text>
+    <text y="14" font-family="Segoe UI" font-size="10" letter-spacing="1.5" fill="#f59e0b">
+      <tspan>
+        <animate attributeName="opacity" values="0;1;0;0" dur="6s" repeatCount="indefinite"/>
+        ◉ NOTAS GUÍA COLOCADAS 3ª + 7ª
+      </tspan>
+    </text>
+    <text y="28" font-family="Segoe UI" font-size="10" letter-spacing="1.5" fill="#a855f7">
+      <tspan>
+        <animate attributeName="opacity" values="0;0;1;0" dur="6s" repeatCount="indefinite"/>
+        ◉ TENSIONES 9ª · 13ª · b13
+      </tspan>
+    </text>
+  </g>
+
+  <!-- FLASH + TEXTO CULMINANTE -->
+
+  <g transform="translate(400 170)" opacity="0">
+    <animate attributeName="opacity" values="0;0;0.95;0;0;0" dur="7.5s" repeatCount="indefinite"/>
+    <text text-anchor="middle" fill="#00d4ff" font-family="Segoe UI" font-size="34" font-weight="900" letter-spacing="6" filter="url(#glowStrong)">
+      ¡JAZZ!
+    </text>
+    <text y="22" text-anchor="middle" fill="#a855f7" font-family="Segoe UI" font-size="11" font-weight="700" letter-spacing="4">
+      ARMONÍA PROFESIONAL
+    </text>
+  </g>
+
+  <!-- FIRMA -->
+
+  <g transform="translate(760 440)">
+    <text text-anchor="end" fill="#94a3b8" font-family="Segoe UI" font-size="10" letter-spacing="1.4">
+      Rubén Sbarsky
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="4.8s" repeatCount="indefinite"/>
+    </text>
+  </g>
+</svg>
+</template>
+
+<script>
+(function(){
+  /* ============ SPA NAV ============ */
+  const navButtons = document.querySelectorAll('nav button[data-sec]');
+  const sections = document.querySelectorAll('main > section');
+  const svgTemplate = document.getElementById('svgAnimTemplate');
+
+  function mountSvg(targetId){
+    const target = document.getElementById(targetId);
+    if(!target || !svgTemplate) return;
+    target.innerHTML = '';
+    target.appendChild(svgTemplate.content.cloneNode(true));
+  }
+
+  function showSection(id){
+    sections.forEach(s=>s.classList.toggle('active', s.id === id));
+    navButtons.forEach(b=>b.classList.toggle('active', b.dataset.sec === id));
+    window.scrollTo({top:0, behavior:'smooth'});
+    if(id === 'home') mountSvg('svgHomeWrap');
+    if(id === 'creditos') mountSvg('svgCreditsWrap');
+  }
+
+  navButtons.forEach(btn=>{
+    btn.addEventListener('click', ()=>showSection(btn.dataset.sec));
+  });
+
+  /* Initial mount */
+  mountSvg('svgHomeWrap');
+
+  /* ============ PROGRESS BAR ============ */
+  const progressBar = document.getElementById('progressBar');
+  const topBtn = document.getElementById('topBtn');
+  function updateProgress(){
+    const h = document.documentElement;
+    const scrolled = h.scrollTop || document.body.scrollTop;
+    const height = h.scrollHeight - h.clientHeight;
+    const pct = height > 0 ? (scrolled / height) * 100 : 0;
+    progressBar.style.width = pct + '%';
+    topBtn.classList.toggle('show', scrolled > 320);
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  topBtn.addEventListener('click', ()=>{
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  /* ============ ACCORDIONS ============ */
+  document.querySelectorAll('.acc-head').forEach(head=>{
+    head.addEventListener('click', ()=>{
+      head.parentElement.classList.toggle('open');
+    });
+  });
+
+  /* ============ EXERCISE REVEAL ============ */
+  document.querySelectorAll('.reveal-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = document.getElementById(btn.dataset.target);
+      if(!target) return;
+      const shown = target.classList.toggle('show');
+      btn.textContent = shown ? 'Ocultar solución' : 'Ver solución';
+    });
+  });
+
+  /* ============ Keyboard nav: alt + arrows ============ */
+  document.addEventListener('keydown', e=>{
+    if(e.altKey && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')){
+      e.preventDefault();
+      const list = Array.from(navButtons);
+      const idx = list.findIndex(b=>b.classList.contains('active'));
+      const next = e.key === 'ArrowRight'
+        ? (idx + 1) % list.length
+        : (idx - 1 + list.length) % list.length;
+      list[next].click();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
