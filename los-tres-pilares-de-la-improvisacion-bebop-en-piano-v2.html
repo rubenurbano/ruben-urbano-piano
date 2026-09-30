@@ -256,6 +256,22 @@ details[open] summary::after{content:"–"}
 }
 .counter{font-size:.84rem;color:var(--muted);margin:0 0 6px}
 
+/* ============ EJERCICIOS (PESTAÑA NUEVA) ============ */
+.ex-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.ex-head .badge{margin:0}
+.ex-num{
+  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.76rem;
+  font-weight:800;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;
+}
+.badge.tipo{background:#2a4a7a;color:#e8f1ff;border-color:#4b9bff}
+.badge.dif-basica{background:rgba(55,181,124,.22);color:#7cf0b0;border-color:#37b57c}
+.badge.dif-intermedia{background:rgba(224,163,62,.22);color:#ffd98a;border-color:#e0a33e}
+.badge.dif-avanzada{background:rgba(75,155,255,.22);color:#a9d3ff;border-color:#4b9bff}
+html.light .badge.tipo{background:#dbe7f7;color:#10233f;border-color:#4b9bff}
+html.light .badge.dif-basica{background:rgba(55,181,124,.18);color:#0d5b3d;border-color:#37b57c}
+html.light .badge.dif-intermedia{background:rgba(224,163,62,.18);color:#6b4a06;border-color:#e0a33e}
+html.light .badge.dif-avanzada{background:rgba(75,155,255,.18);color:#0d3d7a;border-color:#4b9bff}
+
 /* ============ BOTÓN VOLVER ARRIBA ============ */
 .to-top{
   position:fixed;right:16px;bottom:18px;width:48px;height:48px;border-radius:50%;
@@ -521,14 +537,15 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
 
   <!-- ================= PESTAÑAS ================= -->
   <nav class="tabs" role="tablist" aria-label="Secciones del tutorial">
-    <button class="tab-btn" role="tab" id="tab-inicio"       aria-controls="panel-inicio"       aria-selected="true"  data-tab="inicio">INICIO</button>
-    <button class="tab-btn" role="tab" id="tab-conceptos"    aria-controls="panel-conceptos"    aria-selected="false" data-tab="conceptos">CONCEPTOS</button>
+    <button class="tab-btn" role="tab" id="tab-inicio"        aria-controls="panel-inicio"        aria-selected="true"  data-tab="inicio">INICIO</button>
+    <button class="tab-btn" role="tab" id="tab-conceptos"     aria-controls="panel-conceptos"     aria-selected="false" data-tab="conceptos">CONCEPTOS</button>
     <button class="tab-btn" role="tab" id="tab-procedimiento" aria-controls="panel-procedimiento" aria-selected="false" data-tab="procedimiento">PROCEDIMIENTO</button>
-    <button class="tab-btn" role="tab" id="tab-practica"     aria-controls="panel-practica"     aria-selected="false" data-tab="practica">PRÁCTICA</button>
-    <button class="tab-btn" role="tab" id="tab-errores"      aria-controls="panel-errores"      aria-selected="false" data-tab="errores">ERRORES</button>
-    <button class="tab-btn" role="tab" id="tab-resumen"      aria-controls="panel-resumen"      aria-selected="false" data-tab="resumen">RESUMEN</button>
-    <button class="tab-btn" role="tab" id="tab-fuentes"      aria-controls="panel-fuentes"      aria-selected="false" data-tab="fuentes">FUENTES</button>
-    <button class="tab-btn" role="tab" id="tab-creditos"     aria-controls="panel-creditos"     aria-selected="false" data-tab="creditos">CRÉDITOS</button>
+    <button class="tab-btn" role="tab" id="tab-practica"      aria-controls="panel-practica"      aria-selected="false" data-tab="practica">PRÁCTICA</button>
+    <button class="tab-btn" role="tab" id="tab-ejercicios"    aria-controls="panel-ejercicios"    aria-selected="false" data-tab="ejercicios">EJERCICIOS</button>
+    <button class="tab-btn" role="tab" id="tab-errores"       aria-controls="panel-errores"       aria-selected="false" data-tab="errores">ERRORES</button>
+    <button class="tab-btn" role="tab" id="tab-resumen"       aria-controls="panel-resumen"       aria-selected="false" data-tab="resumen">RESUMEN</button>
+    <button class="tab-btn" role="tab" id="tab-fuentes"       aria-controls="panel-fuentes"       aria-selected="false" data-tab="fuentes">FUENTES</button>
+    <button class="tab-btn" role="tab" id="tab-creditos"      aria-controls="panel-creditos"      aria-selected="false" data-tab="creditos">CRÉDITOS</button>
   </nav>
 
   <!-- ============================================================
@@ -605,10 +622,11 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
     <div class="card">
       <h2>¿Cómo utilizar este tutorial?</h2>
       <ol class="steps">
-        <li><b>Usa las pestañas de arriba.</b> Cada pestaña es una sección: conceptos, procedimiento, práctica, errores, resumen, fuentes y créditos.</li>
+        <li><b>Usa las pestañas de arriba.</b> Cada pestaña es una sección: conceptos, procedimiento, práctica, ejercicios, errores, resumen, fuentes y créditos.</li>
         <li><b>Empieza por CONCEPTOS.</b> Ahí entenderás el «mapa» antes de tocar una sola nota.</li>
         <li><b>Sigue con PROCEDIMIENTO.</b> Cada pilar tiene sus pasos numerados con una sola acción por paso.</li>
         <li><b>Ve a PRÁCTICA.</b> Encontrarás una lista de comprobación, ejercicios con solución y prompts listos para copiar.</li>
+        <li><b>Refuerza con EJERCICIOS.</b> Quince ejercicios progresivos con solución paso a paso, explicación causal y error típico a evitar.</li>
         <li><b>Revisa ERRORES.</b> Aprender qué <i>no</i> hacer te ahorra meses de práctica mal enfocada.</li>
         <li><b>Usa el buscador</b> si quieres encontrar una palabra concreta (por ejemplo, «contratiempo»).</li>
         <li><b>Ajusta el texto</b> con A− / A+ y cambia el tema con el botón de modo oscuro/claro.</li>
@@ -649,10 +667,10 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
   <section class="tab-panel" id="panel-conceptos" role="tabpanel" aria-labelledby="tab-conceptos">
 
     <div class="card">
-      <h2>Capítulo 1 · Fundamentos y conceptos clave</h2>
+      <h2>Fundamentos y conceptos clave</h2>
       <p class="subtitle">El secreto de los profesionales</p>
 
-      <h3>1.1 El mapa del teclado y el centro de gravedad</h3>
+      <h3>El mapa del teclado y el centro de gravedad</h3>
       <p>
         Para improvisar como un profesional <b>no necesitas tocar cientos de notas al azar</b>.
         La clave radica en saber <b>dónde aterrizar</b>.
@@ -758,7 +776,7 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
       </div>
 
       <div class="highlight">
-        <b>Resumen del Capítulo 1:</b> improvisar en Bebop consiste en <b>conectar notas de acorde
+        <b>Resumen:</b> improvisar en Bebop consiste en <b>conectar notas de acorde
         en los tiempos clave</b> mediante notas de adorno o de paso. Toda línea profesional se
         construye combinando <b>únicamente 3 componentes simples</b>.
       </div>
@@ -816,7 +834,7 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
 
     <!-- PILAR 1 -->
     <div class="card">
-      <h2>Capítulo 2 · Pilar 1 — Movimiento Escalar (Steps)</h2>
+      <h2>Pilar 1 — Movimiento Escalar (Steps)</h2>
 
       <h3>Objetivo</h3>
       <p>Mover la melodía paso a paso a través de la escala de la canción: subir o bajar nota por nota sin saltarte ninguna.</p>
@@ -866,14 +884,14 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
       </ul>
 
       <div class="highlight">
-        <b>Resumen del Capítulo 2:</b> el Movimiento Escalar (Steps) es el <b>pegamento</b> de tus
+        <b>Resumen:</b> el Movimiento Escalar (Steps) es el <b>pegamento</b> de tus
         frases musicales. Aporta <b>dirección y continuidad</b>.
       </div>
     </div>
 
     <!-- PILAR 2 -->
     <div class="card">
-      <h2>Capítulo 3 · Pilar 2 — Saltos y Arpegiados (Skips)</h2>
+      <h2>Pilar 2 — Saltos y Arpegiados (Skips)</h2>
 
       <h3>Objetivo</h3>
       <p>Saltar notas intercaladas, habitualmente en intervalos de tercera, o arpegiar el acorde (saltar una nota de la escala para tocar la siguiente).</p>
@@ -919,14 +937,14 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
       </ul>
 
       <div class="highlight">
-        <b>Resumen del Capítulo 3:</b> los Saltos (Skips) <b>dibujan el esqueleto del acorde</b> en
+        <b>Resumen:</b> los Saltos (Skips) <b>dibujan el esqueleto del acorde</b> en
         el aire. Combinar saltos con pasos escalares crea el <b>80 % del movimiento</b> de un solo de Bebop.
       </div>
     </div>
 
     <!-- PILAR 3 -->
     <div class="card">
-      <h2>Capítulo 4 · Pilar 3 — Notas de Aproximación Bebop (Approach Notes)</h2>
+      <h2>Pilar 3 — Notas de Aproximación Bebop (Approach Notes)</h2>
 
       <h3>Objetivo</h3>
       <p>
@@ -985,7 +1003,7 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
       </ul>
 
       <div class="highlight">
-        <b>Resumen del Capítulo 4:</b> las Aproximaciones Bebop crean la <b>tensión cromática</b>
+        <b>Resumen:</b> las Aproximaciones Bebop crean la <b>tensión cromática</b>
         indispensable. El secreto no es la nota cromática en sí, sino <b>resolverla a tiempo en una
         nota de acorde</b>.
       </div>
@@ -993,7 +1011,7 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
 
     <!-- COMBINACIÓN -->
     <div class="card">
-      <h2>Capítulo 5 · La combinación de los 3 pilares en la práctica real</h2>
+      <h2>La combinación de los 3 pilares en la práctica real</h2>
 
       <h3>¿Cómo se ensamblan los 3 pilares en un solo real?</h3>
       <p>
@@ -1082,14 +1100,14 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
     </div>
 
     <div class="card">
-      <h2>Ejercicio 1 · Identificación de Notas de Acorde</h2>
+      <h2>Ejercicio guiado: Identificación de Notas de Acorde</h2>
       <p>
         <b>Consigna:</b> para el acorde <b>G7</b> en la escala de C mayor, identifica las notas que
         componen su arpegio básico (1, 3, 5, 7) e indícalas en sistema americano con sus grados.
       </p>
 
       <details>
-        <summary>Ver solución explicada del Ejercicio 1</summary>
+        <summary>Ver solución explicada</summary>
         <div class="det-body">
           <div class="table-wrap">
             <table>
@@ -1113,14 +1131,14 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
     </div>
 
     <div class="card">
-      <h2>Ejercicio 2 · Construcción de una línea Bebop sobre V7 → I</h2>
+      <h2>Ejercicio guiado: Construcción de una línea Bebop sobre V7 → I</h2>
       <p>
         <b>Consigna:</b> crea una frase musical de 1 compás sobre <b>G7</b> que conecte con
         <b>Cmaj7</b> utilizando los 3 pilares.
       </p>
 
       <details>
-        <summary>Ver solución paso a paso del Ejercicio 2</summary>
+        <summary>Ver solución paso a paso</summary>
         <div class="det-body">
           <ol class="steps">
             <li><b>Pilar 2 (Saltos):</b> toca G(V) → B(VII) (salto en terceras sobre G7).</li>
@@ -1164,6 +1182,694 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
       </ol>
       <div class="note">
         Esto no es una opinión añadida: proviene directamente de las respuestas del FAQ del material de origen.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL: EJERCICIOS
+  ============================================================ -->
+  <section class="tab-panel" id="panel-ejercicios" role="tabpanel" aria-labelledby="tab-ejercicios">
+
+    <div class="card">
+      <h2>15 ejercicios para aprender haciendo</h2>
+      <p>
+        Esta sección reúne <b>quince ejercicios progresivos</b> para fijar los tres pilares de la
+        improvisación Bebop. Cada ejercicio incluye:
+      </p>
+      <ul>
+        <li><b>Tipo:</b> identificación, construcción, análisis, corrección, comparación, aplicación sobre progresión o reflexión metodológica.</li>
+        <li><b>Dificultad:</b> básica, intermedia o avanzada-dentro-de-principiante.</li>
+        <li><b>Enunciado:</b> qué debes hacer exactamente.</li>
+        <li><b>Solución paso a paso:</b> cómo se resuelve.</li>
+        <li><b>Por qué (explicación causal):</b> el motivo musical que justifica cada decisión.</li>
+        <li><b>Error típico a evitar:</b> la trampa más frecuente y su corrección.</li>
+      </ul>
+
+      <div class="note">
+        <b>Progresión de dificultad:</b> los ejercicios 1 a 4 y el 14 son de nivel <b>básico</b>;
+        los ejercicios 5 a 10 son de nivel <b>intermedio</b>; y los ejercicios 11, 12, 13 y 15 son de
+        nivel <b>avanzado-dentro-de-principiante</b>. Se recomienda resolverlos en orden.
+      </div>
+
+      <div class="highlight">
+        <b>Recomendación:</b> intenta resolver cada ejercicio <i>antes</i> de abrir la solución.
+        Usa papel, lápiz y tu piano. Si algo no suena como esperabas, vuelve al pilar
+        correspondiente en la pestaña <b>PROCEDIMIENTO</b>.
+      </div>
+    </div>
+
+    <!-- ================= EJERCICIO 1 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 1</span>
+        <span class="badge tipo">Identificación</span>
+        <span class="badge dif-basica">Básica</span>
+      </div>
+      <h2>Arpegio básico de Cmaj7</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Sobre el acorde <b>Cmaj7</b>, escribe las cuatro notas que forman su arpegio básico
+        (1, 3, 5, 7). Indica cada nota en sistema americano con su grado entre paréntesis.
+        Además, indica una nota de la escala de C mayor que <b>NO</b> sea Chord Tone de Cmaj7
+        y explica por qué no lo es.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Escala de referencia (C mayor): <b>C(I) – D(II) – E(III) – F(IV) – G(V) – A(VI) – B(VII)</b>.</li>
+            <li>Función 1 (tónica): <b>C(I)</b>.</li>
+            <li>Función 3 (tercera): <b>E(III)</b>.</li>
+            <li>Función 5 (quinta): <b>G(V)</b>.</li>
+            <li>Función 7 (séptima mayor): <b>B(VII)</b>.</li>
+            <li>Nota que NO es Chord Tone: <b>D(II)</b> o <b>F(IV)</b>. Ejemplo: D(II) es la segunda de la escala, no forma parte del arpegio de Cmaj7.</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> las cuatro notas C(I), E(III), G(V), B(VII) contienen
+            toda la información armónica de Cmaj7: la tercera E(III) determina la cualidad mayor y la
+            séptima B(VII) define la función de tónica. Cuando el oído reconoce esas notas en el tiempo
+            fuerte, confirma sin ambigüedad la armonía del acorde. D(II) y F(IV) pertenecen a la escala
+            pero no al arpegio, por lo que no confirman la armonía por sí solas.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> incluir D(II) o F(IV) como notas de acorde por pertenecer a
+            la escala de C mayor. <b>Corrección:</b> D(II) y F(IV) son notas de la escala, pero no
+            forman parte del arpegio de Cmaj7 (1, 3, 5, 7).
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 2 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 2</span>
+        <span class="badge tipo">Identificación</span>
+        <span class="badge dif-basica">Básica</span>
+      </div>
+      <h2>Escala de Bb mayor y sus grados</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Escribe las siete notas de la escala de <b>Bb mayor</b> con su grado entre paréntesis.
+        Señala explícitamente cuál es la tónica y cuál la quinta.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Tónica de la escala: <b>Bb(I)</b>.</li>
+            <li>Escala completa ascendente: <b>Bb(I) – C(II) – D(III) – Eb(IV) – F(V) – G(VI) – A(VII)</b>.</li>
+            <li>Identificación: tónica = <b>Bb(I)</b>; quinta = <b>F(V)</b>.</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> la escala fija el conjunto de notas disponibles para
+            el Pilar 1 (movimiento escalar). Reconocer la tónica Bb(I) permite construir arpegios por
+            terceras (Bb(I) – D(III) – F(V) – A(VII)), y la quinta F(V) actúa como punto de reposo
+            intermedio que el oído percibe como estable dentro del acorde.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> confundir Bb(I) con B(VII) de C mayor, o escribir la escala
+            de Bb partiendo de A. <b>Corrección:</b> la tónica del material es Bb(I), no B natural,
+            y la escala debe comenzar en Bb(I).
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 3 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 3</span>
+        <span class="badge tipo">Construcción</span>
+        <span class="badge dif-basica">Básica</span>
+      </div>
+      <h2>Línea descendente por pasos sobre Cmaj7</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Construye una línea de Pilar 1 (Movimiento Escalar) de cinco notas descendentes sobre
+        <b>Cmaj7</b>. Debe comenzar en la séptima <b>B(VII)</b> y aterrizar en una nota de acorde.
+        Escribe cada nota en sistema americano con su grado.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Nota inicial: <b>B(VII)</b> (Chord Tone).</li>
+            <li>Paso descendente: <b>A(VI)</b>.</li>
+            <li>Paso descendente: <b>G(V)</b> (Chord Tone).</li>
+            <li>Paso descendente: <b>F(IV)</b>.</li>
+            <li>Paso descendente final: <b>E(III)</b> (Chord Tone, tercera del acorde).</li>
+          </ol>
+          <p><b>Resultado:</b> B(VII) – A(VI) – G(V) – F(IV) – E(III).</p>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> el movimiento por grados conjuntos hace que el oído
+            siga la línea como un trayecto continuo. Al comenzar en B(VII) y descender, se recorre la
+            parte superior del arpegio de Cmaj7 y se aterriza en E(III), la tercera del acorde, lo que
+            produce sensación de cierre y confirmación armónica.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> saltar notas intermedias (por ejemplo, B(VII) – G(V) – E(III)),
+            lo que rompe la continuidad del Pilar 1 y convierte la línea en un arpegio.
+            <b>Corrección:</b> tocar todas las notas intermedias sin omitir ninguna.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 4 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 4</span>
+        <span class="badge tipo">Construcción</span>
+        <span class="badge dif-basica">Básica</span>
+      </div>
+      <h2>Arpegio descendente por terceras sobre Bbmaj7</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Sobre <b>Bbmaj7</b>, construye un arpegio descendente por terceras de cuatro notas,
+        comenzando en la séptima <b>A(VII)</b> y cerrando en la tónica <b>Bb(I)</b>.
+        Escribe cada nota con sistema americano y grado.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Punto de partida: <b>A(VII)</b> (séptima mayor).</li>
+            <li>Salto descendente de tercera: <b>A(VII) → F(V)</b> (se omite G(VI)).</li>
+            <li>Salto descendente de tercera: <b>F(V) → D(III)</b> (se omite Eb(IV)).</li>
+            <li>Salto descendente de tercera: <b>D(III) → Bb(I)</b> (se omite C(II)).</li>
+          </ol>
+          <p><b>Resultado:</b> A(VII) – F(V) – D(III) – Bb(I).</p>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> cada salto de tercera dibuja el esqueleto armónico
+            del acorde (1-3-5-7) sin rellenar con notas intermedias. Al descender desde la séptima
+            hasta la tónica, el oído recibe la información del acorde de arriba abajo y cierra en la
+            nota de mayor reposo, lo que produce una sensación de resolución completa.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> saltar más de una cuarta de forma consecutiva (por ejemplo,
+            A(VII) → Eb(IV)), lo que rompe el sabor idiomático del Bebop.
+            <b>Corrección:</b> mantener cada salto en tercera justo con la nota contigua del arpegio.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 5 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 5</span>
+        <span class="badge tipo">Identificación</span>
+        <span class="badge dif-intermedia">Intermedia</span>
+      </div>
+      <h2>Chord Tones vs. notas de adorno sobre Cmaj7</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Dada la línea sobre Cmaj7: <b>C(I) – D(II) – E(III) – F#(IV#) – G(V)</b>, indica qué notas
+        son Chord Tones, qué notas son de adorno, y qué función cumple cada nota de adorno dentro
+        de la línea.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Chord Tones de Cmaj7: <b>C(I)</b>, <b>E(III)</b>, <b>G(V)</b>. En la línea aparecen las tres.</li>
+            <li>Notas de adorno: <b>D(II)</b> y <b>F#(IV#)</b>.</li>
+            <li>Función de D(II): <b>paso diatónico</b> entre C(I) y E(III).</li>
+            <li>Función de F#(IV#): <b>aproximación cromática</b> que conduce por semitono a G(V).</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> las notas de adorno generan movimiento entre dos
+            puntos estables. D(II) actúa como puente diatónico que el oído acepta sin tensión;
+            F#(IV#), por estar fuera de la escala de C mayor, produce una tensión momentánea que se
+            libera al resolver en G(V). El contraste entre paso diatónico y cromatismo es lo que da
+            color a la línea.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> clasificar D(II) como Chord Tone solo porque pertenece a la
+            escala de C mayor. <b>Corrección:</b> Chord Tone es únicamente la nota que forma parte del
+            arpegio (1, 3, 5, 7); D(II) es la segunda, no la tónica, tercera, quinta ni séptima.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 6 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 6</span>
+        <span class="badge tipo">Análisis</span>
+        <span class="badge dif-intermedia">Intermedia</span>
+      </div>
+      <h2>Análisis de los tres pilares sobre Cmaj7</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Analiza la siguiente línea sobre Cmaj7 e indica qué notas corresponden a cada pilar:
+        <b>E(III) – G(V) – F(IV) – E(III) – D#(II#) – E(III)</b>.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>E(III) → G(V): salto de tercera → <b>Pilar 2 (Skips)</b>.</li>
+            <li>G(V) → F(IV): paso descendente → <b>Pilar 1 (Steps)</b>.</li>
+            <li>F(IV) → E(III): paso descendente → <b>Pilar 1 (Steps)</b>.</li>
+            <li>E(III) → D#(II#): descenso cromático de semitono (preparación).</li>
+            <li>D#(II#) → E(III): aproximación por semitono inferior que resuelve en E(III) → <b>Pilar 3 (Approach Notes)</b>.</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> la línea alterna un salto (que expone la tercera y
+            la quinta del acorde) con dos pasos descendentes (que conectan el registro agudo con la
+            tercera E(III)). El cromatismo D#(II#) → E(III) funciona como un «adorno inferior» que
+            crea tensión justo antes de cerrar la frase en la tercera del acorde, que es la nota que
+            define la cualidad mayor de Cmaj7.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> interpretar E(III) – G(V) como dos pasos porque las notas
+            «suenan cerca» en el piano. <b>Corrección:</b> medir la distancia interválica (E a G es
+            una tercera), no la distancia física entre teclas.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 7 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 7</span>
+        <span class="badge tipo">Corrección</span>
+        <span class="badge dif-intermedia">Intermedia</span>
+      </div>
+      <h2>Corrección: nota cromática sin resolver</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Un estudiante escribió la siguiente línea sobre Cmaj7. Detecta el error y escribe una
+        versión corregida: <b>C(I) – E(III) – G(V) – C#(I#) – C#(I#) – C#(I#)</b>.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Identificar las notas: C(I), E(III), G(V) son Chord Tones; C#(I#) es una nota cromática fuera del acorde.</li>
+            <li>Detectar el problema: la nota C#(I#) se repite tres veces y queda colgada sin resolver a ninguna nota de acorde.</li>
+            <li>Corregir la conducción: hacer que C#(I#) resuelva por semitono a C(I) o D(II), que son notas del acorde o de paso hacia él.</li>
+            <li>Versión corregida: <b>C(I) – E(III) – G(V) – C#(I#) – C(I)</b> (resolución por semitono inferior a la tónica).</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> una nota cromática aislada genera inestabilidad;
+            si no resuelve, el oído queda «suspendido» en tensión. Al resolver C#(I#) medio tono hacia
+            C(I), la tensión se libera en la tónica del acorde y la armonía de Cmaj7 queda confirmada.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> dejar la nota cromática repetida en tiempo fuerte sin
+            resolver. <b>Corrección:</b> tocar la nota cromática en contratiempo (off-beat) y hacer
+            que la siguiente nota sea siempre un Chord Tone.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 8 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 8</span>
+        <span class="badge tipo">Corrección</span>
+        <span class="badge dif-intermedia">Intermedia</span>
+      </div>
+      <h2>Corrección: salto mayor de una cuarta</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Un estudiante construyó el siguiente salto sobre G7: <b>G(V) → E(III) ascendente</b>.
+        Detecta el problema y reescribe el salto respetando las restricciones del Pilar 2 sobre G7.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Medir la distancia: de G(V) a E(III) ascendente hay una <b>sexta</b>.</li>
+            <li>Contrastar con la restricción del Pilar 2: los saltos en el Bebop raramente superan la distancia de una cuarta consecutiva.</li>
+            <li>Proponer alternativas válidas: <b>G(V) → B(VII)</b> (tercera ascendente, ambos Chord Tones de G7) o <b>G(V) → E(III) descendente</b> (tercera descendente).</li>
+            <li>Salto corregido: <b>G(V) → B(VII)</b>.</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> los saltos de tercera reproducen el esqueleto del
+            acorde (1-3-5-7) y mantienen la continuidad melódica del estilo. Un salto de sexta rompe
+            esa continuidad y suena «saltado» en un sentido que el oído asocia a otro lenguaje
+            musical, no al Bebop.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> creer que cualquier nota del acorde sirve como destino de
+            un salto sin medir la distancia. <b>Corrección:</b> antes de saltar, verificar que el
+            intervalo no exceda una cuarta.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 9 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 9</span>
+        <span class="badge tipo">Comparación</span>
+        <span class="badge dif-intermedia">Intermedia</span>
+      </div>
+      <h2>Aterrizaje en tiempo 1 sobre G7</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Compara las dos líneas siguientes sobre G7 y decide cuál respeta la regla de aterrizaje en
+        el tiempo 1. Asume que la última nota de cada línea cae en el tiempo 1. Justifica con los
+        pilares:
+      </p>
+      <ul>
+        <li><b>Línea A:</b> G(V) – F(IV) – E(III) – D(II)</li>
+        <li><b>Línea B:</b> G(V) – F(IV) – E(III) – Eb(IVb)</li>
+      </ul>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Chord Tones de G7: <b>G(V), B(VII), D(II), F(IV)</b>.</li>
+            <li>Línea A: todos los movimientos son por paso (Pilar 1). Comienza en G(V) (Chord Tone) y aterriza en D(II), que es Chord Tone de G7 → <b>cumple la regla</b>.</li>
+            <li>Línea B: también por pasos, pero termina en Eb(IVb), que no es Chord Tone ni resuelve a uno → <b>viola la regla</b> de aterrizaje.</li>
+            <li>Conclusión: <b>la Línea A es la correcta</b>.</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> la línea A confirma la armonía de G7 porque su nota
+            final pertenece al acorde (D(II) es la quinta). La línea B deja al oyente en suspenso
+            porque su última nota no pertenece a la armonía, lo que produce ambigüedad y sensación de
+            frase inacabada.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> evaluar las líneas solo por el comienzo o por la cantidad
+            de notas del acorde, sin fijarse en la última nota ni en el tiempo en que cae.
+            <b>Corrección:</b> verificar siempre la última nota y su función armónica.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 10 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 10</span>
+        <span class="badge tipo">Construcción</span>
+        <span class="badge dif-intermedia">Intermedia</span>
+      </div>
+      <h2>Combinación de saltos y pasos sobre G7</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Sobre G7, construye una línea de cuatro notas que combine los Pilares 1 y 2. Debe comenzar
+        con un salto de tercera ascendente y terminar en un Chord Tone. Escribe cada nota en sistema
+        americano con su grado.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Elegir el salto inicial: <b>B(VII) → D(II)</b> (tercera ascendente, ambos Chord Tones de G7) → Pilar 2.</li>
+            <li>Continuar con un paso descendente: <b>D(II) → C(I)</b> → Pilar 1.</li>
+            <li>Continuar con un paso descendente: <b>C(I) → B(VII)</b> → Pilar 1.</li>
+            <li>Verificar el aterrizaje: <b>B(VII)</b> es Chord Tone de G7 (la tercera del acorde).</li>
+          </ol>
+          <p><b>Resultado:</b> B(VII) – D(II) – C(I) – B(VII).</p>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> el salto de tercera inicial hace audible la
+            estructura del acorde (tercera y quinta de G7). Los dos pasos descendentes conectan esas
+            notas con la tercera B(VII), cerrando la frase en un punto de reposo. El oído percibe
+            primero energía (salto) y luego dirección (pasos), lo que da coherencia a la línea.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> encadenar dos saltos consecutivos (por ejemplo,
+            B(VII) – D(II) – F(IV)), lo que convierte la línea en un arpegio mecánico y pierde la
+            fluidez del Pilar 1. <b>Corrección:</b> alternar cada salto con al menos un paso.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 11 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 11</span>
+        <span class="badge tipo">Aplicación sobre progresión</span>
+        <span class="badge dif-avanzada">Avanzada-dentro-de-principiante</span>
+      </div>
+      <h2>Frase completa sobre G7 → Cmaj7</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Sobre la progresión <b>G7 → Cmaj7</b>, construye una frase de 1 compás que use los tres
+        pilares: un salto (Pilar 2), movimiento escalar (Pilar 1) y una aproximación cromática
+        (Pilar 3) que resuelva en el tiempo 1 del Cmaj7. Escribe cada nota en sistema americano con
+        su grado.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Pilar 2 (salto) sobre G7: <b>D(II) → F(IV)</b> (tercera ascendente, ambos Chord Tones de G7).</li>
+            <li>Pilar 1 (paso descendente): <b>F(IV) → E(III)</b>.</li>
+            <li>Pilar 3 (aproximación cromática): <b>E(III) → D#(II#)</b> en el último contratiempo del compás de G7.</li>
+            <li>Resolución: <b>D#(II#) → E(III)</b> en el tiempo 1 de Cmaj7 (E(III) es la tercera del acorde).</li>
+          </ol>
+          <p><b>Resultado:</b> D(II) – F(IV) – E(III) – D#(II#) | E(III).</p>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> el salto inicial hace audible el esqueleto de G7
+            (quinta y séptima); el paso descendente reconduce la línea; la aproximación D#(II#) crea
+            tensión por semitono que se libera al caer en E(III), la tercera de Cmaj7. La resolución
+            en tiempo 1 confirma el cambio de acorde en el oído del oyente.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> tocar D#(II#) en tiempo fuerte en vez de en contratiempo,
+            o no resolverlo en E(III). <b>Corrección:</b> colocar la nota cromática en la parte débil
+            del tiempo y asegurarse de que la siguiente nota sea un Chord Tone en el tiempo 1.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 12 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 12</span>
+        <span class="badge tipo">Análisis</span>
+        <span class="badge dif-avanzada">Avanzada-dentro-de-principiante</span>
+      </div>
+      <h2>Análisis de una frase sobre G7 → Cmaj7</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Analiza la siguiente frase sobre G7 → Cmaj7 y desglosa cada nota según el pilar al que
+        pertenece. Indica además cuál es la nota de resolución y en qué tiempo cae:
+        <b>B(VII) – D(II) – C(I) – B(VII) – A#(VI#) | B(VII)</b>.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>B(VII) → D(II): salto de tercera ascendente → <b>Pilar 2</b>.</li>
+            <li>D(II) → C(I): paso descendente → <b>Pilar 1</b>.</li>
+            <li>C(I) → B(VII): paso descendente → <b>Pilar 1</b>.</li>
+            <li>B(VII) → A#(VI#): descenso cromático de semitono (preparación).</li>
+            <li>A#(VI#) → B(VII): aproximación por semitono inferior que resuelve en B(VII) → <b>Pilar 3</b>.</li>
+            <li>Nota de resolución: <b>B(VII)</b>, que es Chord Tone de Cmaj7 (séptima mayor) y cae en el tiempo 1 del nuevo acorde.</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> A#(VI#) actúa como vecino inferior cromático de
+            B(VII): crea tensión por semitono y la libera al resolverse en la séptima mayor de Cmaj7.
+            El salto inicial y los pasos descendentes organizan el registro agudo y preparan la
+            llegada al tiempo fuerte con una nota que pertenece al acorde.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> no reconocer A#(VI#) como aproximación porque «no está en
+            la escala de C mayor». <b>Corrección:</b> las notas de aproximación cromática están fuera
+            de la escala por diseño; su función es crear tensión, no pertenecer a la armonía.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 13 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 13</span>
+        <span class="badge tipo">Corrección</span>
+        <span class="badge dif-avanzada">Avanzada-dentro-de-principiante</span>
+      </div>
+      <h2>Corrección del aterrizaje sobre V7 → I</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Un estudiante escribió la siguiente frase sobre G7 → Cmaj7. Detecta el error de aterrizaje
+        y corrígela manteniendo el resto de la línea:
+        <b>G7: B(VII) – A(VI) – G(V) – F(IV) | Cmaj7: F(IV)</b>.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Chord Tones de Cmaj7: <b>C(I), E(III), G(V), B(VII)</b>.</li>
+            <li>El estudiante aterriza en F(IV), que es la undécima del acorde y no es Chord Tone.</li>
+            <li>Corrección: sustituir el aterrizaje por <b>E(III)</b> (tercera del acorde), que es la nota más cercana por paso descendente desde F(IV).</li>
+            <li>Línea corregida: <b>G7: B(VII) – A(VI) – G(V) – F(IV) | Cmaj7: E(III)</b>.</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> aterrizar en la tercera E(III) hace que el oído
+            identifique el cambio a Cmaj7 y confirme la cualidad mayor del acorde. F(IV) deja la
+            armonía abierta porque no pertenece al arpegio, lo que produce sensación de frase sin
+            resolver.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> pensar que cualquier nota diatónica de C mayor funciona en
+            el tiempo 1. <b>Corrección:</b> en el tiempo 1 solo funcionan las notas del arpegio
+            (1, 3, 5, 7); el resto son notas de paso o adorno.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 14 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 14</span>
+        <span class="badge tipo">Reflexión metodológica</span>
+        <span class="badge dif-basica">Básica</span>
+      </div>
+      <h2>Decisión de aterrizaje antes de tocar</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Antes de tocar cualquier línea sobre Cmaj7, ¿qué decisión debes tomar y por qué? Describe
+        brevemente la metodología de práctica asociada a esa decisión, incluyendo el papel de las
+        corcheas constantes.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li><b>Decidir de antemano</b> en qué Chord Tone vas a aterrizar en el tiempo 1.</li>
+            <li>Practicar <b>sin metrónomo</b>, a velocidad <i>Slow Motion</i>, deteniéndote en cada nota el tiempo necesario para reflexionar qué pilar usarás a continuación.</li>
+            <li>Usar <b>corcheas constantes</b> como base rítmica del Pilar 1: contar internamente «1 y 2 y 3 y 4 y» para dar continuidad y pulso estable.</li>
+            <li>Una vez que la mente organice la línea, incorporar ritmo y velocidad.</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> cuando el destino está decidido, el oído y la mano
+            pueden elegir libremente las notas intermedias (pasos, saltos, aproximaciones) sin perder
+            la referencia armónica. Las corcheas constantes proporcionan un marco rítmico regular que
+            hace audible la continuidad del movimiento escalar. Sin esa decisión previa, la línea
+            carece de dirección y el oído no puede anticipar el punto de llegada.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> empezar a tocar sin saber dónde terminar, confiando en que
+            «saldrá solo». <b>Corrección:</b> antes de la primera nota, nombrar en voz alta el
+            Chord Tone de llegada.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= EJERCICIO 15 ================= -->
+    <article class="card">
+      <div class="ex-head">
+        <span class="ex-num">Ejercicio N.º 15</span>
+        <span class="badge tipo">Comparación</span>
+        <span class="badge dif-avanzada">Avanzada-dentro-de-principiante</span>
+      </div>
+      <h2>Comparación de frases sobre V7 → I</h2>
+
+      <h3>Enunciado</h3>
+      <p>
+        Compara estas dos frases sobre G7 → Cmaj7 y decide cuál suena más idiomática en el estilo
+        Bebop. Justifica con los tres pilares:
+      </p>
+      <ul>
+        <li><b>Frase A:</b> G7: G(V) – A(VI) – B(VII) – C(I) | Cmaj7: C(I)</li>
+        <li><b>Frase B:</b> G7: D(II) – B(VII) – A(VI) – A#(VI#) | Cmaj7: B(VII)</li>
+      </ul>
+
+      <details>
+        <summary>Ver solución paso a paso</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li>Chord Tones de G7: <b>G(V), B(VII), D(II), F(IV)</b>. De Cmaj7: <b>C(I), E(III), G(V), B(VII)</b>.</li>
+            <li>Frase A: todos los movimientos son por paso ascendente (Pilar 1). Aterriza en C(I), Chord Tone de Cmaj7 → <b>correcta pero monótona</b>: solo usa un pilar.</li>
+            <li>Frase B: D(II) → B(VII) es un salto de tercera descendente (Pilar 2); B(VII) → A(VI) es un paso descendente (Pilar 1); A(VI) → A#(VI#) es un descenso cromático (preparación); A#(VI#) → B(VII) es una aproximación por semitono inferior (Pilar 3) que resuelve en B(VII), Chord Tone de Cmaj7.</li>
+            <li>Conclusión: <b>la Frase B es más idiomática</b> porque combina los tres pilares.</li>
+          </ol>
+          <div class="highlight">
+            <b>Por qué (explicación causal):</b> la combinación de salto, paso y aproximación produce
+            variedad de tensión y reposo que el oído asocia al lenguaje Bebop. La Frase A, al usar
+            solo movimiento escalar, suena a ejercicio de escala y no a línea improvisada, porque
+            carece del contraste que generan los saltos y las aproximaciones cromáticas.
+          </div>
+          <div class="danger">
+            <b>Error típico a evitar:</b> elegir la Frase A por «sonar más ordenada» o por terminar
+            en la tónica. <b>Corrección:</b> valorar también la variedad de recursos (pilares) y la
+            conducción de la tensión, no solo la nota final.
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- ================= CIERRE ================= -->
+    <div class="card">
+      <h2>Cierre: cobertura de los 15 ejercicios</h2>
+      <p>
+        El conjunto de ejercicios cubre, en progresión de dificultad, todos los contenidos del
+        tutorial. Esta tabla resume el foco principal de cada uno:
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>N.º</th><th>Foco principal</th><th>Dificultad</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Chord Tones de Cmaj7 (1, 3, 5, 7), sistema americano con grados, distinción Chord Tone vs. nota de escala.</td><td>Básica</td></tr>
+            <tr><td>2</td><td>Escala de Bb mayor, tónica y quinta, sistema americano con grados.</td><td>Básica</td></tr>
+            <tr><td>3</td><td>Pilar 1 (Movimiento Escalar) sobre Cmaj7, aterrizaje en Chord Tone.</td><td>Básica</td></tr>
+            <tr><td>4</td><td>Pilar 2 (Saltos y Arpegios) sobre Bbmaj7, terceras descendentes.</td><td>Básica</td></tr>
+            <tr><td>5</td><td>Chord Tones vs. notas de adorno, aproximación cromática F#(IV#) → G(V).</td><td>Intermedia</td></tr>
+            <tr><td>6</td><td>Análisis de Pilares 1, 2 y 3 en una línea sobre Cmaj7.</td><td>Intermedia</td></tr>
+            <tr><td>7</td><td>Corrección de error típico: nota cromática colgada sin resolver.</td><td>Intermedia</td></tr>
+            <tr><td>8</td><td>Corrección de error típico: salto mayor de una cuarta.</td><td>Intermedia</td></tr>
+            <tr><td>9</td><td>Comparación de aterrizaje en Chord Tone en tiempo 1 sobre G7.</td><td>Intermedia</td></tr>
+            <tr><td>10</td><td>Construcción combinando Pilares 1 y 2 sobre G7.</td><td>Intermedia</td></tr>
+            <tr><td>11</td><td>Aplicación de los tres pilares sobre V7 → I (G7 → Cmaj7).</td><td>Avanzada-dentro-de-principiante</td></tr>
+            <tr><td>12</td><td>Análisis de los tres pilares sobre V7 → I con resolución en tiempo 1.</td><td>Avanzada-dentro-de-principiante</td></tr>
+            <tr><td>13</td><td>Corrección de error de aterrizaje en V7 → I (Cmaj7).</td><td>Avanzada-dentro-de-principiante</td></tr>
+            <tr><td>14</td><td>Reflexión metodológica: decidir aterrizaje antes de tocar, sin metrónomo, velocidad Slow Motion, corcheas constantes.</td><td>Básica</td></tr>
+            <tr><td>15</td><td>Comparación de frases sobre V7 → I: uso de un solo pilar vs. los tres pilares.</td><td>Avanzada-dentro-de-principiante</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <b>Total de ejercicios:</b> 15. No se ha usado información fuera del material de origen.
       </div>
     </div>
 
@@ -1440,7 +2146,8 @@ mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
         <b>No se utilizó información externa adicional.</b><br>
         Este tutorial es una reorganización, ampliación pedagógica y adaptación interactiva del
         contenido del archivo adjunto. No se han añadido datos, procedimientos ni afirmaciones
-        que no estén respaldados por dicho archivo.
+        que no estén respaldados por dicho archivo. Los ejercicios de la pestaña <b>EJERCICIOS</b>
+        provienen íntegramente del archivo <code>15 ejercicios.txt</code>.
       </div>
     </div>
 
