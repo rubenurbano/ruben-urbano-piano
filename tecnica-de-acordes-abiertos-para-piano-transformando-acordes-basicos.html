@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Técnica de Acordes Abiertos para Piano — Tutorial Profesional</title>
+<style>
+:root{
+  --bg:#0a0e1a;--bg2:#070b14;--card:#0f172a;--card2:#0b1322;--border:#1e3a5f;
+  --accent:#00d4ff;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--purple:#a855f7;
+  --text:#e2e8f0;--muted:#94a3b8;--nav-h:58px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:16px;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:var(--accent);text-decoration:none;word-break:break-word}
+a:hover{text-decoration:underline}
+
+.progress-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--accent),var(--purple),var(--green));z-index:1200;transition:width .15s ease;box-shadow:0 0 10px rgba(0,212,255,.6)}
+
+.navbar{position:fixed;top:3px;left:0;right:0;height:var(--nav-h);background:rgba(10,14,26,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:1100;display:flex;align-items:center}
+.nav-scroll{display:flex;gap:6px;overflow-x:auto;padding:0 12px;width:100%;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.nav-scroll::-webkit-scrollbar{height:5px}
+.nav-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.nav-btn{flex:0 0 auto;padding:8px 14px;border-radius:8px;color:var(--muted);font-size:13px;font-weight:600;letter-spacing:.4px;border:1px solid transparent;transition:all .2s;white-space:nowrap}
+.nav-btn:hover{color:var(--text);background:rgba(0,212,255,.08)}
+.nav-btn.active{color:var(--accent);background:rgba(0,212,255,.12);border-color:rgba(0,212,255,.35);box-shadow:0 0 12px rgba(0,212,255,.2)}
+
+main{padding:calc(var(--nav-h) + 12px) 16px 80px;max-width:1100px;margin:0 auto}
+#home{padding-top:0}
+.section{display:none;animation:fadeIn .45s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* SVG container bulletproof */
+.svg-container{
+  position:relative;width:100%;max-width:1000px;margin:0 auto 28px;
+  aspect-ratio:16/9;
+  border-radius:14px;overflow:hidden;
+  border:1px solid var(--border);
+  box-shadow:0 0 40px rgba(0,212,255,.15),0 0 80px rgba(168,85,247,.08);
+  background:#050810;
+}
+.svg-container::after{content:"";display:block;padding-bottom:56.25%}
+.svg-container > svg{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;display:block;
+}
+@supports not (aspect-ratio: 16/9){
+  .svg-container{height:auto}
+  .svg-container::after{content:"";display:block;padding-bottom:56.25%}
+}
+
+.hero-badge{display:inline-block;padding:6px 14px;border-radius:20px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.35);color:var(--accent);font-size:12px;font-weight:700;letter-spacing:2px;margin-bottom:14px}
+h1.hero-title{font-size:clamp(26px,5vw,44px);line-height:1.15;font-weight:800;background:linear-gradient(90deg,#00d4ff,#a855f7,#22c55e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px;letter-spacing:-.5px}
+.hero-sub{font-size:clamp(15px,2vw,18px);color:var(--muted);margin-bottom:22px;max-width:820px}
+.hero-desc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:22px;color:#cbd5e1}
+.quote{border-left:4px solid var(--accent);background:linear-gradient(90deg,rgba(0,212,255,.08),transparent);padding:16px 20px;border-radius:0 12px 12px 0;font-style:italic;color:#bae6fd;font-size:15px;margin-bottom:22px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.metric .num{font-size:22px;font-weight:800;color:var(--accent);display:block;line-height:1.2}
+.metric .lbl{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.meta-info{display:flex;flex-wrap:wrap;gap:16px;color:var(--muted);font-size:13px;margin-bottom:28px}
+.meta-info span b{color:var(--accent)}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:20px}
+.card h3{color:var(--accent);font-size:18px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card h3 .idx{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:28px;padding:0 8px;border-radius:6px;background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.35);font-size:12px;font-weight:800;color:var(--accent)}
+h2.section-title{font-size:clamp(22px,4vw,32px);font-weight:800;margin:8px 0 6px;color:var(--text);letter-spacing:-.3px}
+h2.section-title .num{color:var(--accent);font-size:.85em;margin-right:8px}
+.section-intro{color:var(--muted);margin-bottom:22px;font-size:15px;border-bottom:1px solid var(--border);padding-bottom:14px}
+h4{color:#bae6fd;font-size:16px;margin:18px 0 10px}
+p{margin-bottom:14px;color:#cbd5e1}
+ul,ol{margin:0 0 14px 22px;color:#cbd5e1}
+li{margin-bottom:8px}
+strong{color:var(--text)}
+em{color:#bae6fd}
+
+.note-chip{display:inline-block;padding:2px 8px;border-radius:5px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--accent);font-family:'Consolas',monospace;font-size:13px;font-weight:600;white-space:nowrap}
+.note-chip.p{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.35);color:#c4b5fd}
+.note-chip.g{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.35);color:#86efac}
+.note-chip.a{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.35);color:#fcd34d}
+.note-chip.r{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.35);color:#fca5a5}
+
+.callout{border-radius:10px;padding:14px 16px 14px 46px;margin:16px 0;position:relative;border:1px solid;font-size:14px}
+.callout::before{content:'';position:absolute;left:14px;top:14px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#0a0e1a;text-align:center;line-height:22px}
+.callout.info{background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.3);color:#bae6fd}
+.callout.info::before{content:'i';background:var(--accent)}
+.callout.example{background:rgba(34,197,94,.07);border-color:rgba(34,197,94,.3);color:#bbf7d0}
+.callout.example::before{content:'E';background:var(--green)}
+.callout.warn{background:rgba(245,158,11,.07);border-color:rgba(245,158,11,.3);color:#fde68a}
+.callout.warn::before{content:'!';background:var(--amber)}
+.callout.error{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.3);color:#fecaca}
+.callout.error::before{content:'X';background:var(--red)}
+
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+th{background:rgba(0,212,255,.08);color:var(--accent);font-weight:700;font-size:12px;letter-spacing:.5px;text-transform:uppercase}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,212,255,.04)}
+
+.steps{counter-reset:st;margin:16px 0}
+.step{background:var(--card2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:8px;padding:14px 16px 14px 52px;margin-bottom:10px;position:relative;counter-increment:st}
+.step::before{content:counter(st);position:absolute;left:14px;top:14px;width:26px;height:26px;border-radius:6px;background:rgba(0,212,255,.15);border:1px solid rgba(0,212,255,.4);color:var(--accent);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.step .st-title{font-weight:700;color:var(--text);margin-bottom:4px;font-size:14px}
+.step .st-motive{color:var(--muted);font-size:13px;font-style:italic}
+
+.chord-block{background:#050810;border:1px solid var(--border);border-radius:10px;padding:14px;margin:10px 0;font-family:'Consolas',monospace;font-size:14px}
+.chord-block .lbl{color:var(--muted);font-size:11px;letter-spacing:1.5px}
+.chord-block .notes{color:var(--accent);font-size:15px;margin-top:4px;letter-spacing:1px}
+.chord-block .notes .n{display:inline-block;padding:2px 8px;margin:2px;border-radius:5px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3)}
+.chord-block .notes .n.bass{background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.4);color:#c4b5fd}
+
+.faq-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
+.faq-q{width:100%;text-align:left;padding:14px 18px;font-weight:600;color:var(--text);font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;transition:background .2s}
+.faq-q:hover{background:rgba(0,212,255,.06)}
+.faq-q .arrow{color:var(--accent);transition:transform .3s;font-size:14px}
+.faq-item.open .faq-q .arrow{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 18px;color:#cbd5e1;font-size:14px}
+.faq-item.open .faq-a{max-height:4000px;padding:0 18px 16px}
+
+.chord-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:16px 0}
+.chord-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;transition:all .25s}
+.chord-card:hover{border-color:rgba(0,212,255,.5);box-shadow:0 0 18px rgba(0,212,255,.12);transform:translateY(-2px)}
+.chord-card .degree{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.chord-card .degree .name{font-weight:800;color:var(--accent);font-size:15px}
+.chord-card .degree .tag{font-size:11px;color:var(--muted);letter-spacing:1px}
+
+.summary-box{background:linear-gradient(135deg,rgba(0,212,255,.06),rgba(168,85,247,.06));border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:24px}
+.summary-box h4{color:var(--accent);margin-bottom:10px;font-size:15px;letter-spacing:1px;text-transform:uppercase}
+
+.back-to-top{position:fixed;bottom:22px;right:22px;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));color:#0a0e1a;font-size:20px;font-weight:900;box-shadow:0 6px 22px rgba(0,212,255,.4);display:none;align-items:center;justify-content:center;z-index:1000;transition:transform .2s}
+.back-to-top:hover{transform:scale(1.08)}
+.back-to-top.show{display:flex}
+
+footer{max-width:1100px;margin:0 auto;padding:24px 16px 40px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;text-align:center;line-height:1.9}
+footer .cr{color:var(--accent);font-weight:600}
+footer .fi{font-style:italic;color:#7dd3fc;margin-top:8px;letter-spacing:.5px}
+
+/* Ejercicios */
+.level-banner{display:flex;align-items:center;gap:14px;margin:28px 0 16px;padding:12px 18px;border-radius:12px;border:1px solid var(--border);background:var(--card2)}
+.level-banner .badge{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:34px;padding:0 12px;border-radius:8px;font-weight:800;font-size:13px;letter-spacing:1px}
+.level-banner.easy{border-color:rgba(34,197,94,.4)}
+.level-banner.easy .badge{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.4)}
+.level-banner.medium{border-color:rgba(245,158,11,.4)}
+.level-banner.medium .badge{background:rgba(245,158,11,.15);color:#fcd34d;border:1px solid rgba(245,158,11,.4)}
+.level-banner.hard{border-color:rgba(168,85,247,.4)}
+.level-banner.hard .badge{background:rgba(168,85,247,.15);color:#c4b5fd;border:1px solid rgba(168,85,247,.4)}
+.level-banner .desc{color:var(--muted);font-size:13px}
+
+.ex-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.ex-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+
+@media (max-width:600px){
+  body{font-size:15px}
+  main{padding:calc(var(--nav-h) + 10px) 12px 70px}
+  #home{padding-top:0}
+  .card{padding:16px}
+  .step{padding:12px 12px 12px 46px}
+  .nav-btn{padding:8px 11px;font-size:12px}
+  table{font-size:12px;min-width:520px}
+  th,td{padding:8px 10px}
+  .level-banner{flex-direction:column;align-items:flex-start;gap:8px}
+}
+@media (max-width:380px){.nav-btn{padding:7px 9px;font-size:11px}}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:0.001ms !important;transition-duration:0.001ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav class="navbar" role="navigation" aria-label="Navegación principal">
+  <div class="nav-scroll" id="navScroll">
+    <button class="nav-btn active" data-section="home">INICIO</button>
+    <button class="nav-btn" data-section="cap1">FUNDAMENTOS</button>
+    <button class="nav-btn" data-section="cap2">PREPARACIÓN</button>
+    <button class="nav-btn" data-section="cap3">EL TRATAMIENTO</button>
+    <button class="nav-btn" data-section="cap4">EJECUCIÓN Y ADORNOS</button>
+    <button class="nav-btn" data-section="cap5">RECURSOS</button>
+    <button class="nav-btn" data-section="ejercicios">EJERCICIOS</button>
+    <button class="nav-btn" data-section="fuentes">FUENTES</button>
+    <button class="nav-btn" data-section="creditos">CRÉDITOS</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section id="home" class="section active">
+
+  <div class="svg-container" id="svgHome">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" aria-label="Animación de transformación de acorde cerrado a acorde abierto en piano">
+    <defs>
+      <linearGradient id="bgG1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#070b14">
+          <animate attributeName="stop-color" values="#070b14;#0a1430;#0d1a35;#070b14" dur="11s" repeatCount="indefinite"/>
+        </stop>
+        <stop offset="55%" stop-color="#0a0e1a">
+          <animate attributeName="stop-color" values="#0a0e1a;#0d1a3a;#0a0e1a" dur="9s" repeatCount="indefinite"/>
+        </stop>
+        <stop offset="100%" stop-color="#070b14">
+          <animate attributeName="stop-color" values="#070b14;#061020;#0a1830;#070b14" dur="13s" repeatCount="indefinite"/>
+        </stop>
+      </linearGradient>
+      <radialGradient id="haloCyan1" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="haloGreen1" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#22c55e" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="haloPurple1" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#a855f7" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="haloAmber1" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="glow1" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="3" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <pattern id="gridP1" width="34" height="34" patternUnits="userSpaceOnUse">
+        <path d="M34 0 L0 0 0 34" fill="none" stroke="#1e3a5f" stroke-width="0.6"/>
+      </pattern>
+    </defs>
+
+    <!-- Fondo -->
+    <rect width="800" height="450" fill="url(#bgG1)"/>
+    <rect width="800" height="450" fill="url(#gridP1)" opacity="0.55"/>
+
+    <!-- Título -->
+    <text x="400" y="44" text-anchor="middle" fill="#00d4ff" font-family="Segoe UI, sans-serif" font-size="19" font-weight="800" letter-spacing="1.2">C(I) MAJOR · TRANSFORMACIÓN DEL VOICING</text>
+    <text x="400" y="70" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI, sans-serif" font-size="12">Cerrado → Preparación → Abierto tratado</text>
+
+    <!-- ====== Panel 1: CERRADO ====== -->
+    <g>
+      <rect x="55" y="105" width="180" height="295" rx="12" fill="#0b1322" stroke="#ef4444" stroke-width="1" stroke-dasharray="5 5" opacity="0.85"/>
+      <text x="145" y="132" text-anchor="middle" fill="#ef4444" font-family="Segoe UI" font-size="13" font-weight="800" letter-spacing="1.5">CERRADO</text>
+      <text x="145" y="150" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI" font-size="10">Sonido apretado</text>
+
+      <!-- Tres notas muy juntas -->
+      <circle cx="145" cy="220" r="26" fill="url(#haloGreen1)">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2.6s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="145" cy="220" r="18" fill="none" stroke="#22c55e" stroke-width="2" filter="url(#glow1)"/>
+      <text x="145" y="225" text-anchor="middle" fill="#86efac" font-family="Consolas" font-size="13" font-weight="700">G</text>
+
+      <circle cx="145" cy="258" r="26" fill="url(#haloPurple1)">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2.6s" begin="0.4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="145" cy="258" r="18" fill="none" stroke="#a855f7" stroke-width="2" filter="url(#glow1)"/>
+      <text x="145" y="263" text-anchor="middle" fill="#c4b5fd" font-family="Consolas" font-size="13" font-weight="700">E</text>
+
+      <circle cx="145" cy="296" r="26" fill="url(#haloCyan1)">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2.6s" begin="0.8s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="145" cy="296" r="18" fill="none" stroke="#00d4ff" stroke-width="2" filter="url(#glow1)"/>
+      <text x="145" y="301" text-anchor="middle" fill="#7dd3fc" font-family="Consolas" font-size="13" font-weight="700">C</text>
+
+      <text x="145" y="380" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI" font-size="10" font-style="italic">3 notas en 1 octava</text>
+    </g>
+
+    <!-- Flecha 1 -->
+    <g>
+      <line x1="240" y1="255" x2="315" y2="255" stroke="#00d4ff" stroke-width="2" stroke-dasharray="6 4">
+        <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite"/>
+      </line>
+      <polygon points="315,248 332,255 315,262" fill="#00d4ff"/>
+      <text x="285" y="240" text-anchor="middle" fill="#00d4ff" font-family="Segoe UI" font-size="9" font-weight="700">PREPARAR</text>
+    </g>
+
+    <!-- ====== Panel 2: PREPARACIÓN ====== -->
+    <g>
+      <rect x="338" y="105" width="180" height="295" rx="12" fill="#0b1322" stroke="#f59e0b" stroke-width="1" stroke-dasharray="5 5" opacity="0.85"/>
+      <text x="428" y="132" text-anchor="middle" fill="#f59e0b" font-family="Segoe UI" font-size="13" font-weight="800" letter-spacing="1.5">PREPARACIÓN</text>
+      <text x="428" y="150" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI" font-size="10">Tónica triplicada</text>
+
+      <!-- MD 4 notas -->
+      <circle cx="450" cy="185" r="20" fill="url(#haloPurple1)">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="450" cy="185" r="14" fill="none" stroke="#a855f7" stroke-width="2" filter="url(#glow1)"/>
+      <text x="450" y="189" text-anchor="middle" fill="#c4b5fd" font-family="Consolas" font-size="11" font-weight="700">E</text>
+
+      <circle cx="445" cy="218" r="20" fill="url(#haloCyan1)">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2.4s" begin="0.3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="445" cy="218" r="14" fill="none" stroke="#00d4ff" stroke-width="2" filter="url(#glow1)"/>
+      <text x="445" y="222" text-anchor="middle" fill="#7dd3fc" font-family="Consolas" font-size="11" font-weight="700">C</text>
+
+      <circle cx="440" cy="251" r="20" fill="url(#haloGreen1)">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="440" cy="251" r="14" fill="none" stroke="#22c55e" stroke-width="2" filter="url(#glow1)"/>
+      <text x="440" y="255" text-anchor="middle" fill="#86efac" font-family="Consolas" font-size="11" font-weight="700">G</text>
+
+      <circle cx="435" cy="284" r="20" fill="url(#haloPurple1)">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2.4s" begin="0.9s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="435" cy="284" r="14" fill="none" stroke="#a855f7" stroke-width="2" filter="url(#glow1)"/>
+      <text x="435" y="288" text-anchor="middle" fill="#c4b5fd" font-family="Consolas" font-size="11" font-weight="700">E</text>
+
+      <!-- X roja sobre C -->
+      <line x1="432" y1="207" x2="458" y2="229" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="458" y1="207" x2="432" y2="229" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+
+      <!-- MI octava -->
+      <circle cx="400" cy="345" r="18" fill="url(#haloCyan1)">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="400" cy="345" r="12" fill="none" stroke="#00d4ff" stroke-width="2" filter="url(#glow1)"/>
+      <text x="400" y="349" text-anchor="middle" fill="#7dd3fc" font-family="Consolas" font-size="10" font-weight="700">C</text>
+
+      <circle cx="458" cy="345" r="18" fill="url(#haloCyan1)">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2.8s" begin="0.4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="458" cy="345" r="12" fill="none" stroke="#00d4ff" stroke-width="2" filter="url(#glow1)"/>
+      <text x="458" y="349" text-anchor="middle" fill="#7dd3fc" font-family="Consolas" font-size="10" font-weight="700">C</text>
+
+      <text x="428" y="380" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI" font-size="10" font-style="italic">MD (4) + MI octava</text>
+    </g>
+
+    <!-- Flecha 2 -->
+    <g>
+      <line x1="523" y1="255" x2="598" y2="255" stroke="#22c55e" stroke-width="2" stroke-dasharray="6 4">
+        <animate attributeName="stroke-dashoffset" values="0;-20" dur="1s" repeatCount="indefinite"/>
+      </line>
+      <polygon points="598,248 615,255 598,262" fill="#22c55e"/>
+      <text x="568" y="240" text-anchor="middle" fill="#22c55e" font-family="Segoe UI" font-size="9" font-weight="700">TRATAMIENTO</text>
+    </g>
+
+    <!-- ====== Panel 3: ABIERTO TRATADO ====== -->
+    <g>
+      <rect x="620" y="105" width="160" height="295" rx="12" fill="#0b1322" stroke="#22c55e" stroke-width="1.2" opacity="0.95"/>
+      <text x="700" y="132" text-anchor="middle" fill="#22c55e" font-family="Segoe UI" font-size="13" font-weight="800" letter-spacing="1.5">ABIERTO</text>
+      <text x="700" y="150" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI" font-size="10">Sonido profesional</text>
+
+      <!-- E agudo -->
+      <circle cx="700" cy="185" r="22" fill="url(#haloPurple1)">
+        <animate attributeName="opacity" values="0.55;1;0.55" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="700" cy="185" r="16" fill="none" stroke="#a855f7" stroke-width="2.5" filter="url(#glow1)"/>
+      <text x="700" y="190" text-anchor="middle" fill="#c4b5fd" font-family="Consolas" font-size="12" font-weight="700">E</text>
+
+      <!-- G media -->
+      <circle cx="695" cy="248" r="22" fill="url(#haloGreen1)">
+        <animate attributeName="opacity" values="0.55;1;0.55" dur="2.2s" begin="0.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="695" cy="248" r="16" fill="none" stroke="#22c55e" stroke-width="2.5" filter="url(#glow1)"/>
+      <text x="695" y="253" text-anchor="middle" fill="#86efac" font-family="Consolas" font-size="12" font-weight="700">G</text>
+
+      <!-- E grave MD -->
+      <circle cx="690" cy="311" r="22" fill="url(#haloPurple1)">
+        <animate attributeName="opacity" values="0.55;1;0.55" dur="2.2s" begin="1s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="690" cy="311" r="16" fill="none" stroke="#a855f7" stroke-width="2.5" filter="url(#glow1)"/>
+      <text x="690" y="316" text-anchor="middle" fill="#c4b5fd" font-family="Consolas" font-size="12" font-weight="700">E</text>
+
+      <!-- Bajos -->
+      <circle cx="655" cy="345" r="16" fill="url(#haloCyan1)">
+        <animate attributeName="opacity" values="0.55;1;0.55" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="655" cy="345" r="11" fill="none" stroke="#00d4ff" stroke-width="2" filter="url(#glow1)"/>
+      <text x="655" y="349" text-anchor="middle" fill="#7dd3fc" font-family="Consolas" font-size="10" font-weight="700">C</text>
+
+      <circle cx="745" cy="345" r="16" fill="url(#haloCyan1)">
+        <animate attributeName="opacity" values="0.55;1;0.55" dur="3s" begin="0.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="745" cy="345" r="11" fill="none" stroke="#00d4ff" stroke-width="2" filter="url(#glow1)"/>
+      <text x="745" y="349" text-anchor="middle" fill="#7dd3fc" font-family="Consolas" font-size="10" font-weight="700">C</text>
+
+      <text x="700" y="380" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI" font-size="10" font-style="italic">MD (3) + MI octava</text>
+    </g>
+
+    <!-- Pulso inferior -->
+    <circle cx="400" cy="425" r="4" fill="#00d4ff" filter="url(#glow1)">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+  </div>
+
+  <div class="hero-badge">TUTORIAL TÉCNICO · PIANO · HARMONÍA</div>
+  <h1 class="hero-title">Técnica de Acordes Abiertos para Piano</h1>
+  <p class="hero-sub">Transformando acordes básicos en estructuras amplias, resonantes y profesionales mediante <em>voicing</em>, primera inversión y la regla de eliminación de notas.</p>
+
+  <div class="hero-desc">
+    <p>La <strong>Técnica de Acordes Abiertos</strong> es un método de reordenamiento de notas que convierte acordes triadas cerrados y apretados en estructuras amplias, llenas de color armónico. Esta guía completa te enseña a aplicar el sistema paso a paso sobre la escala de C(I) Mayor, con digitaciones, ejercicios prácticos y aplicación a canciones reales.</p>
+    <p style="margin-bottom:0">Basado en la técnica explicada por <strong>Cristian Simancas</strong> y estructurada como tutorial profesional por <strong>Rubén Sbarsky</strong>.</p>
+  </div>
+
+  <div class="quote">"Si no puedes explicarlo de forma sencilla, es que no lo entiendes lo suficientemente bien."</div>
+
+  <div class="metrics">
+    <div class="metric"><span class="num">5</span><span class="lbl">Bloques</span></div>
+    <div class="metric"><span class="num">7</span><span class="lbl">Acordes</span></div>
+    <div class="metric"><span class="num">15</span><span class="lbl">Ejercicios</span></div>
+    <div class="metric"><span class="num">C(I)</span><span class="lbl">Escala Base</span></div>
+  </div>
+
+  <div class="meta-info">
+    <span>📅 Fecha: <b>29/09/2026</b></span>
+    <span>🕐 Hora: <b>05:57:16</b></span>
+    <span>👨‍💻 Créditos: <b>Rubén Sbarsky</b></span>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">▶</span> Cómo navegar este tutorial</h3>
+    <p>Usa la barra de navegación superior para moverte entre las secciones. Cada sección es independiente y se muestra una sola a la vez (aplicación SPA). La barra de progreso superior indica tu avance de lectura. Puedes volver arriba en cualquier momento con el botón flotante inferior derecho.</p>
+    <p style="margin-bottom:0"><strong>Secciones:</strong> Fundamentos → Preparación → El Tratamiento → Ejecución y Adornos → Recursos → Ejercicios. Al final encontrarás las secciones de <strong>Fuentes</strong> y <strong>Créditos</strong>.</p>
+  </div>
+</section>
+
+<!-- ============ FUNDAMENTOS ============ -->
+<section id="cap1" class="section">
+  <h2 class="section-title"><span class="num">01</span> Introducción y Fundamentos</h2>
+  <p class="section-intro">Qué es la técnica de acordes abiertos, por qué es fundamental y en qué situaciones reales se utiliza.</p>
+
+  <div class="card">
+    <h3><span class="idx">1.1</span> ¿Qué es la técnica de acordes abiertos y para qué sirve?</h3>
+    <p>La <strong>Técnica de Acordes Abiertos</strong> es un método de reordenamiento de notas (conocido en música como <em>voicing</em> o disposición) que transforma acordes triadas cerrados y apretados en estructuras amplias, resonantes y llenas de color armónico.</p>
+    <p>En la ejecución tradicional principiante, las tres notas de un acorde se tocan juntas y muy cercanas dentro de la misma octava (por ejemplo, el acorde de <span class="note-chip">C(I)</span> Mayor formado por <span class="note-chip">C(I)</span>, <span class="note-chip">E(III)</span> y <span class="note-chip">G(V)</span>). La técnica de acordes abiertos redistribuye las notas separando las frecuencias graves de las agudas, eliminando duplicaciones innecesarias y expandiendo la distancia entre cada dedo a lo largo del teclado.</p>
+    <p style="margin-bottom:0">Sirve para hacer que acompañamientos sencillos en el piano suenen profesionales, profundos y envolventes sin necesidad de ejecutar pasajes virtuosos o rápidos.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">1.2</span> ¿Por qué es fundamental aprender esta técnica?</h3>
+    <ol>
+      <li><strong>Elimina el sonido "infantil" o acartonado:</strong> Tocar acordes cerrados en el centro del piano genera una acumulación de frecuencias que enturbia la mezcla armónica.</li>
+      <li><strong>Llena el espacio sonoro:</strong> Al abrir el acorde, las notas abarcan múltiples octavas, haciendo que un solo pianista llene el espectro acústico como si fuera una banda completa.</li>
+      <li><strong>Optimiza el esfuerzo muscular:</strong> Permite obtener un sonido gigante realizando menos movimientos bruscos con las manos.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">1.3</span> ¿En qué situaciones reales se utiliza?</h3>
+    <ul>
+      <li><strong>Acompañamiento a cantantes o solistas:</strong> Mantiene una base armónica rica sin invadir la tesitura vocal del cantante.</li>
+      <li><strong>Música de adoración y baladas:</strong> Ideal para pasajes emocionales donde se busca resonancia y calidez.</li>
+      <li><strong>Grabación en estudio:</strong> Evita conflictos de frecuencias con el bajo eléctrico o las guitarras.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">1.4</span> Ejemplos, analogías y situaciones cotidianas</h3>
+    <div class="callout info"><strong>Analogía visual:</strong> Imagina una habitación pequeña donde apilas tres muebles grandes uno encima del otro en un solo rincón; la habitación se ve abarrotada y desorganizada. Eso es un acorde cerrado. Un acorde abierto equivale a distribuir esos tres muebles estratégicamente en cada esquina: el espacio se ve amplio, elegante y funcional.</div>
+    <div class="callout info"><strong>Analogía sonora:</strong> Un acorde cerrado es como hablar con la mano pegada a la boca (sonido ahogado). Un acorde abierto es proyectar la voz en un teatro con buena acústica.</div>
+    <h4>Caso práctico real</h4>
+    <div class="callout error"><strong>Incorrecto (Cerrado):</strong> Mano izquierda parada; mano derecha tocando <span class="note-chip">C(I)-E(III)-G(V)</span> apretados en el centro del piano. Resultado: sonido plano y aburrido.</div>
+    <div class="callout example"><strong>Correcto (Abierto):</strong> Mano izquierda tocando octava de <span class="note-chip">C(I)-C(I)</span>; mano derecha tocando <span class="note-chip">E(III)-G(V)-E(III)</span> distribuidos ampliamente. Resultado: sonido profundo, cristalino y profesional.</div>
+  </div>
+
+  <div class="summary-box">
+    <h4>Resumen</h4>
+    <p style="margin-bottom:0">Los acordes abiertos transforman la sonoridad del piano al redistribuir las notas de un acorde cerrado a lo largo de varias octavas. Esto elimina la saturación de frecuencias, mejora el color armónico y permite acompañar cualquier estilo musical con un sonido lleno y profesional.</p>
+  </div>
+</section>
+
+<!-- ============ PREPARACIÓN ============ -->
+<section id="cap2" class="section">
+  <h2 class="section-title"><span class="num">02</span> Preparación y Posicionamiento en la Escala Base</h2>
+  <p class="section-intro">Construcción de la escala base, identificación de grados y preparación de la Primera Inversión Reforzada con Octava.</p>
+
+  <div class="card">
+    <h3><span class="idx">2.1</span> La escala base de C(I) Mayor y sus grados</h3>
+    <p>Para aprender esta técnica desde cero, utilizaremos como modelo la escala de <span class="note-chip">C(I)</span> Mayor. Esta escala contiene únicamente teclas blancas, lo que facilita la visualización y ejecución.</p>
+    <p>Cada nota de la escala tiene un grado correspondiente asignado en números romanos:</p>
+    <ul>
+      <li><strong><span class="note-chip">C(I)</span></strong> — Primer grado (Tónica / Fundamental)</li>
+      <li><strong><span class="note-chip">D(II)</span></strong> — Segundo grado (Superfónica)</li>
+      <li><strong><span class="note-chip">E(III)</span></strong> — Tercer grado (Mediante)</li>
+      <li><strong><span class="note-chip">F(IV)</span></strong> — Cuarto grado (Subdominante)</li>
+      <li><strong><span class="note-chip">G(V)</span></strong> — Quinto grado (Dominante)</li>
+      <li><strong><span class="note-chip">A(VI)</span></strong> — Sexto grado (Superdominante / Relativo menor)</li>
+      <li><strong><span class="note-chip">B(VII)</span></strong> — Séptimo grado (Sensible)</li>
+    </ul>
+    <h4>Acordes básicos triadas sobre cada grado</h4>
+    <ol>
+      <li><strong><span class="note-chip">C(I)</span> Mayor</strong> (Acorde Mayor - I)</li>
+      <li><strong><span class="note-chip">D(II)</span> minor</strong> (Acorde menor - ii)</li>
+      <li><strong><span class="note-chip">E(III)</span> minor</strong> (Acorde menor - iii)</li>
+      <li><strong><span class="note-chip">F(IV)</span> Major</strong> (Acorde Mayor - IV)</li>
+      <li><strong><span class="note-chip">G(V)</span> Major</strong> (Acorde Mayor - V)</li>
+      <li><strong><span class="note-chip">A(VI)</span> minor</strong> (Acorde menor - vi)</li>
+      <li><strong><span class="note-chip">B(VII)</span> diminished</strong> (Acorde disminuido - vii°)</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">2.2</span> Acordes triadas cerrados vs. Disposición en 1ª Inversión</h3>
+    <p>Para construir la técnica de acordes abiertos, no partimos de la posición fundamental del acorde, sino de su <strong>Primera Inversión</strong>.</p>
+    <ul>
+      <li><strong>Posición Fundamental de <span class="note-chip">C(I)</span>:</strong> <span class="note-chip">C(I)</span> - <span class="note-chip">E(III)</span> - <span class="note-chip">G(V)</span></li>
+      <li><strong>Primera Inversión de <span class="note-chip">C(I)</span>:</strong> La primera nota <span class="note-chip">C(I)</span> se traslada una octava arriba, dejando la nota <span class="note-chip">E(III)</span> como la más grave de la mano derecha: <span class="note-chip">E(III)</span> - <span class="note-chip">G(V)</span> - <span class="note-chip">C(I)</span>.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">2.3</span> Guía paso a paso para formar la Primera Inversión Reforzada con Octava</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="st-title">Paso 1 — Coloca el acorde básico en primera inversión en la mano derecha</div>
+        <div class="st-motive">Para <span class="note-chip">C(I)</span> Mayor: ubica las notas <span class="note-chip">E(III)</span>, <span class="note-chip">G(V)</span> y <span class="note-chip">C(I)</span>. <em>Motivo:</em> la primera inversión proporciona la apertura interválica ideal para la sonoridad moderna.</div>
+      </div>
+      <div class="step">
+        <div class="st-title">Paso 2 — Duplica la nota superior en la mano derecha</div>
+        <div class="st-motive">Añade la nota <span class="note-chip">E(III)</span> una octava más arriba. La mano derecha tocará ahora cuatro notas: <span class="note-chip">E(III)</span> - <span class="note-chip">G(V)</span> - <span class="note-chip">C(I)</span> - <span class="note-chip">E(III)</span>. <em>Motivo:</em> crear un marco de octava que servirá de guía para la posterior apertura.</div>
+      </div>
+      <div class="step">
+        <div class="st-title">Paso 3 — Añade el bajo en octava con la mano izquierda</div>
+        <div class="st-motive">Presiona la nota tónica del acorde en octava con la mano izquierda: <span class="note-chip">C(I)</span> grave y <span class="note-chip">C(I)</span> central. <em>Motivo:</em> dar cimiento, peso y estabilidad al acorde desde los graves.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">2.4</span> Tabla comparativa: cerrados vs. Estructura de preparación</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Grado</th><th>Acorde</th><th>Posición Fundamental Cerrada (MD)</th><th>1ª Inversión con Octava (MD)</th><th>Bajo Mano Izquierda</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>I</strong></td><td><span class="note-chip">C(I)</span> Major</td><td><span class="note-chip">C(I)-E(III)-G(V)</span></td><td><span class="note-chip">E(III)-G(V)-C(I)-E(III)</span></td><td><span class="note-chip p">C(I)-C(I)</span></td></tr>
+          <tr><td><strong>ii</strong></td><td><span class="note-chip">D(II)</span> minor</td><td><span class="note-chip">D(II)-F(IV)-A(VI)</span></td><td><span class="note-chip">F(IV)-A(VI)-D(II)-F(IV)</span></td><td><span class="note-chip p">D(II)-D(II)</span></td></tr>
+          <tr><td><strong>iii</strong></td><td><span class="note-chip">E(III)</span> minor</td><td><span class="note-chip">E(III)-G(V)-B(VII)</span></td><td><span class="note-chip">G(V)-B(VII)-E(III)-G(V)</span></td><td><span class="note-chip p">E(III)-E(III)</span></td></tr>
+          <tr><td><strong>IV</strong></td><td><span class="note-chip">F(IV)</span> Major</td><td><span class="note-chip">F(IV)-A(VI)-C(I)</span></td><td><span class="note-chip">A(VI)-C(I)-F(IV)-A(VI)</span></td><td><span class="note-chip p">F(IV)-F(IV)</span></td></tr>
+          <tr><td><strong>V</strong></td><td><span class="note-chip">G(V)</span> Major</td><td><span class="note-chip">G(V)-B(VII)-D(II)</span></td><td><span class="note-chip">B(VII)-D(II)-G(V)-B(VII)</span></td><td><span class="note-chip p">G(V)-G(V)</span></td></tr>
+          <tr><td><strong>vi</strong></td><td><span class="note-chip">A(VI)</span> minor</td><td><span class="note-chip">A(VI)-C(I)-E(III)</span></td><td><span class="note-chip">C(I)-E(III)-A(VI)-C(I)</span></td><td><span class="note-chip p">A(VI)-A(VI)</span></td></tr>
+          <tr><td><strong>vii°</strong></td><td><span class="note-chip">B(VII)</span> diminished</td><td><span class="note-chip">B(VII)-D(II)-F(IV)</span></td><td><span class="note-chip">D(II)-F(IV)-B(VII)-D(II)</span></td><td><span class="note-chip p">B(VII)-B(VII)</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    <h4>Resumen</h4>
+    <p style="margin-bottom:0">Partiendo de la escala de <span class="note-chip">C(I)</span> Mayor, la preparación para abrir un acorde consiste en colocar la mano derecha en primera inversión, duplicar la nota más grave del acorde una octava arriba y reforzar el bajo con octavas en la mano izquierda.</p>
+  </div>
+</section>
+
+<!-- ============ EL TRATAMIENTO ============ -->
+<section id="cap3" class="section">
+  <h2 class="section-title"><span class="num">03</span> La Regla de Oro de Eliminación de Notas</h2>
+  <p class="section-intro">El algoritmo definitivo para abrir cualquier acorde: identificación, eliminación y digitación profesional.</p>
+
+  <div class="card">
+    <h3><span class="idx">3.1</span> El problema de triplicar notas en el piano</h3>
+    <p>En la estructura de preparación, la nota <span class="note-chip">C(I)</span> se encuentra en la mano izquierda (dos veces) y en la mano derecha (una vez). Triplicar la misma nota genera saturación e impide que el acorde "respire".</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">3.2</span> Algoritmo paso a paso para abrir cualquier acorde</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="st-title">Paso 1 — Identifica las notas de tu mano derecha de arriba hacia abajo</div>
+        <div class="st-motive">En <span class="note-chip">C(I)</span> preparado: Nota 1 (superior) = <span class="note-chip">E(III)</span>; Nota 2 = <span class="note-chip">C(I)</span>; Nota 3 = <span class="note-chip">G(V)</span>; Nota 4 (inferior) = <span class="note-chip">E(III)</span>. <em>Motivo:</em> localizar exactamente la nota duplicada dentro del bloque armónico.</div>
+      </div>
+      <div class="step">
+        <div class="st-title">Paso 2 — Elimina la SEGUNDA nota contando de arriba hacia abajo</div>
+        <div class="st-motive">En el acorde de <span class="note-chip">C(I)</span>, quita la nota <span class="note-chip">C(I)</span> de la mano derecha. <em>Motivo:</em> la nota <span class="note-chip">C(I)</span> ya está siendo ejecutada dos veces por la mano izquierda en los graves.</div>
+      </div>
+      <div class="step">
+        <div class="st-title">Paso 3 — Mantén las tres notas restantes en la mano derecha</div>
+        <div class="st-motive">La mano derecha quedará tocando únicamente: <span class="note-chip">E(III)</span> - <span class="note-chip">G(V)</span> - <span class="note-chip">E(III)</span>. <em>Motivo:</em> al quitar la nota del medio, creas una "ventana de aire" entre <span class="note-chip">G(V)</span> y la octava superior <span class="note-chip">E(III)</span>.</div>
+      </div>
+      <div class="step">
+        <div class="st-title">Paso 4 — Ejecuta la digitación profesional definitiva</div>
+        <div class="st-motive">Mano izquierda: dedo 5 y dedo 1 para la octava <span class="note-chip">C(I)</span> - <span class="note-chip">C(I)</span>. Mano derecha: dedo 1 en <span class="note-chip">E(III)</span>, dedo 2 en <span class="note-chip">G(V)</span> y dedo 5 en <span class="note-chip">E(III)</span>. <em>Motivo:</em> postura relajada y natural sin tensionar los tendones.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">3.3</span> Aplicación práctica acorde por acorde en la escala de C(I)</h3>
+    <p>Transformación completa aplicando <strong>El Tratamiento</strong>:</p>
+    <div class="chord-grid">
+      <div class="chord-card">
+        <div class="degree"><span class="name">1. C(I) Major (I)</span><span class="tag">MAYOR</span></div>
+        <div class="chord-block"><div class="lbl">MANO IZQUIERDA</div><div class="notes"><span class="n bass">C(I)</span><span class="n bass">C(I)</span></div></div>
+        <div class="chord-block"><div class="lbl">MANO DERECHA</div><div class="notes"><span class="n">E(III)</span><span class="n">G(V)</span><span class="n">E(III)</span></div></div>
+        <p style="font-size:12px;color:var(--muted);margin:6px 0 0">Se elimina la nota <span class="note-chip">C(I)</span> intermedia de la MD.</p>
+      </div>
+      <div class="chord-card">
+        <div class="degree"><span class="name">2. D(II) minor (ii)</span><span class="tag">MENOR</span></div>
+        <div class="chord-block"><div class="lbl">MANO IZQUIERDA</div><div class="notes"><span class="n bass">D(II)</span><span class="n bass">D(II)</span></div></div>
+        <div class="chord-block"><div class="lbl">MANO DERECHA</div><div class="notes"><span class="n">F(IV)</span><span class="n">A(VI)</span><span class="n">F(IV)</span></div></div>
+        <p style="font-size:12px;color:var(--muted);margin:6px 0 0">Se elimina la nota <span class="note-chip">D(II)</span> intermedia de la MD.</p>
+      </div>
+      <div class="chord-card">
+        <div class="degree"><span class="name">3. E(III) minor (iii)</span><span class="tag">MENOR</span></div>
+        <div class="chord-block"><div class="lbl">MANO IZQUIERDA</div><div class="notes"><span class="n bass">E(III)</span><span class="n bass">E(III)</span></div></div>
+        <div class="chord-block"><div class="lbl">MANO DERECHA</div><div class="notes"><span class="n">G(V)</span><span class="n">B(VII)</span><span class="n">G(V)</span></div></div>
+        <p style="font-size:12px;color:var(--muted);margin:6px 0 0">Se elimina la nota <span class="note-chip">E(III)</span> intermedia de la MD.</p>
+      </div>
+      <div class="chord-card">
+        <div class="degree"><span class="name">4. F(IV) Major (IV)</span><span class="tag">MAYOR</span></div>
+        <div class="chord-block"><div class="lbl">MANO IZQUIERDA</div><div class="notes"><span class="n bass">F(IV)</span><span class="n bass">F(IV)</span></div></div>
+        <div class="chord-block"><div class="lbl">MANO DERECHA</div><div class="notes"><span class="n">A(VI)</span><span class="n">C(I)</span><span class="n">A(VI)</span></div></div>
+        <p style="font-size:12px;color:var(--muted);margin:6px 0 0">Se elimina la nota <span class="note-chip">F(IV)</span> intermedia de la MD.</p>
+      </div>
+      <div class="chord-card">
+        <div class="degree"><span class="name">5. G(V) Major (V)</span><span class="tag">MAYOR</span></div>
+        <div class="chord-block"><div class="lbl">MANO IZQUIERDA</div><div class="notes"><span class="n bass">G(V)</span><span class="n bass">G(V)</span></div></div>
+        <div class="chord-block"><div class="lbl">MANO DERECHA</div><div class="notes"><span class="n">B(VII)</span><span class="n">D(II)</span><span class="n">B(VII)</span></div></div>
+        <p style="font-size:12px;color:var(--muted);margin:6px 0 0">Se elimina la nota <span class="note-chip">G(V)</span> intermedia de la MD.</p>
+      </div>
+      <div class="chord-card">
+        <div class="degree"><span class="name">6. A(VI) minor (vi)</span><span class="tag">MENOR</span></div>
+        <div class="chord-block"><div class="lbl">MANO IZQUIERDA</div><div class="notes"><span class="n bass">A(VI)</span><span class="n bass">A(VI)</span></div></div>
+        <div class="chord-block"><div class="lbl">MANO DERECHA</div><div class="notes"><span class="n">C(I)</span><span class="n">E(III)</span><span class="n">C(I)</span></div></div>
+        <p style="font-size:12px;color:var(--muted);margin:6px 0 0">Se elimina la nota <span class="note-chip">A(VI)</span> intermedia de la MD.</p>
+      </div>
+      <div class="chord-card">
+        <div class="degree"><span class="name">7. B(VII) diminished (vii°)</span><span class="tag">DISMINUIDO</span></div>
+        <div class="chord-block"><div class="lbl">MANO IZQUIERDA</div><div class="notes"><span class="n bass">B(VII)</span><span class="n bass">B(VII)</span></div></div>
+        <div class="chord-block"><div class="lbl">MANO DERECHA</div><div class="notes"><span class="n">D(II)</span><span class="n">F(IV)</span><span class="n">D(II)</span></div></div>
+        <p style="font-size:12px;color:var(--muted);margin:6px 0 0">Se elimina la nota <span class="note-chip">B(VII)</span> intermedia de la MD.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">3.4</span> Esquema visual de reparto armónico (ejemplo C(I) Major)</h3>
+    <div class="chord-block" style="font-size:14px;line-height:1.9">
+      <div style="color:#f59e0b">OCTAVA AGUDA (Mano Derecha) ──→ <span class="note-chip a">E(III)</span> &nbsp;[Dedo 5]</div>
+      <div style="color:#94a3b8">INTERVALO ABIERTO (Espacio libre)</div>
+      <div style="color:#a855f7">NOTA MEDIA (Mano Derecha) &nbsp;──→ <span class="note-chip p">G(V)</span> &nbsp;[Dedo 2]</div>
+      <div style="color:#22c55e">NOTA INFERIOR (Mano Derecha) ─→ <span class="note-chip g">E(III)</span> &nbsp;[Dedo 1]</div>
+      <div style="color:#334155;padding:6px 0">────────────────── CENTRO DEL PIANO ──────────────────</div>
+      <div style="color:#00d4ff">BAJO AGUDO (Mano Izquierda) ──→ <span class="note-chip">C(I)</span> &nbsp;[Dedo 1]</div>
+      <div style="color:#00d4ff">BAJO GRAVE (Mano Izquierda) ──→ <span class="note-chip">C(I)</span> &nbsp;[Dedo 5]</div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    <h4>Resumen</h4>
+    <p style="margin-bottom:0">El "Tratamiento" consiste en tomar la primera inversión reforzada y eliminar la segunda nota desde arriba en la mano derecha (que es la tónica). Esto deja a la mano derecha ejecutando la tercera, la quinta y la tercera duplicada arriba, logrando una sonoridad abierta, equilibrada y limpia.</p>
+  </div>
+</section>
+
+<!-- ============ EJECUCIÓN Y ADORNOS ============ -->
+<section id="cap4" class="section">
+  <h2 class="section-title"><span class="num">04</span> Ejecución, Arpegios y Adornos Profesionales</h2>
+  <p class="section-intro">Técnicas de ataque, voicing dinámico, aplicación a canciones reales y errores frecuentes.</p>
+
+  <div class="card">
+    <h3><span class="idx">4.1</span> Técnica de ataque en bloque vs. Arpegio rápido</h3>
+    <ul>
+      <li><strong>Ataque en bloque:</strong> Tocar todas las notas de ambas manos exactamente al mismo tiempo. Es útil para dar acentos rítmicos marcados.</li>
+      <li><strong>Arpegio rápido (Rolled Chord):</strong> Tocar las notas en una sucesión ultra rápida desde el bajo hasta la nota más aguda de la mano derecha.</li>
+    </ul>
+    <div class="steps">
+      <div class="step"><div class="st-title">Paso 1 — Ataca el bajo grave de la mano izquierda</div><div class="st-motive">Comienza con el dedo 5.</div></div>
+      <div class="step"><div class="st-title">Paso 2 — Pasa rápidamente por la nota inferior e intermedia de la mano derecha</div><div class="st-motive">Dedos 1 y 2 de la MD.</div></div>
+      <div class="step"><div class="st-title">Paso 3 — Haz coincidir el bajo superior de la MI con la nota final más aguda de la MD</div><div class="st-motive">Dedo 1 de la MI junto con dedo 5 de la MD.</div></div>
+    </div>
+    <div class="callout example"><strong>Efecto:</strong> Aporta una elegancia fluida similar a la de un arpa.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">4.2</span> Adorno de movimiento de octavas (Voicing Dinámico)</h3>
+    <p>Un truco profesional para añadir movimiento sin cambiar de acorde consiste en alterar temporalmente la octava superior de la mano derecha:</p>
+    <h4>En el acorde de C(I) Major</h4>
+    <p>La mano derecha sostiene <span class="note-chip">E(III)-G(V)-E(III)</span>. Baja el meñique (dedo 5) de <span class="note-chip">E(III)</span> a <span class="note-chip">D(II)</span> manteniendo fija la nota <span class="note-chip">G(V)</span>, y regresa inmediatamente a <span class="note-chip">E(III)</span>. <em>Resultado:</em> tensión y resolución melódica exquisita dentro del mismo acorde.</p>
+    <h4>En el acorde de F(IV) Major</h4>
+    <p>La mano derecha sostiene <span class="note-chip">A(VI)-C(I)-A(VI)</span>. Baja la octava <span class="note-chip">A(VI)</span> a <span class="note-chip">G(V)</span> y regresa a <span class="note-chip">A(VI)</span>.</p>
+    <h4>En el acorde de G(V) Major</h4>
+    <p>La mano derecha sostiene <span class="note-chip">B(VII)-D(II)-B(VII)</span>. Baja la octava <span class="note-chip">B(VII)</span> a <span class="note-chip">A(VI)</span> y regresa a <span class="note-chip">B(VII)</span>.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">4.3</span> Aplicación a una canción real en C(I) Major</h3>
+    <p>Utilizaremos la progresión armónica del tema <em>"Ya no soy esclavo del temor"</em>.</p>
+    <h4>Sección de Estrofa (4 compases)</h4>
+    <ol>
+      <li><strong>Compás 1 (<span class="note-chip">C(I)</span> Major — 4 tiempos):</strong> MI: Octava <span class="note-chip p">C(I)-C(I)</span> | MD: <span class="note-chip">E(III)-G(V)-E(III)</span>.</li>
+      <li><strong>Compás 2 (<span class="note-chip">E(III)</span> minor — 4 tiempos):</strong> MI: Octava <span class="note-chip p">E(III)-E(III)</span> | MD: <span class="note-chip">G(V)-B(VII)-G(V)</span>.</li>
+      <li><strong>Compás 3 (<span class="note-chip">F(IV)</span> Major — 2 tiempos / <span class="note-chip">G(V)</span> Major — 2 tiempos):</strong>
+        <ul>
+          <li>Tiempo 1 y 2: MI: <span class="note-chip p">F(IV)-F(IV)</span> | MD: <span class="note-chip">A(VI)-C(I)-A(VI)</span>.</li>
+          <li>Tiempo 3 y 4: MI: <span class="note-chip p">G(V)-G(V)</span> | MD: <span class="note-chip">B(VII)-D(II)-B(VII)</span>.</li>
+        </ul>
+      </li>
+      <li><strong>Compás 4 (<span class="note-chip">C(I)</span> Major — 4 tiempos):</strong> MI: Octava <span class="note-chip p">C(I)-C(I)</span> | MD: <span class="note-chip">E(III)-G(V)-E(III)</span>.</li>
+    </ol>
+    <h4>Sección de Coro (4 compases)</h4>
+    <ol>
+      <li><strong>Compás 1:</strong> <span class="note-chip">F(IV)</span> Major (2 tiempos) → <span class="note-chip">G(V)</span> Major (2 tiempos).</li>
+      <li><strong>Compás 2:</strong> <span class="note-chip">C(I)</span> Major (4 tiempos).</li>
+      <li><strong>Compás 3:</strong> <span class="note-chip">A(VI)</span> minor (2 tiempos) → <span class="note-chip">G(V)</span> Major (2 tiempos).</li>
+      <li><strong>Compás 4:</strong> <span class="note-chip">C(I)</span> Major (4 tiempos).</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">4.4</span> Errores frecuentes y cómo evitarlos</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Error</th><th>Por qué ocurre</th><th>Cómo corregirlo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Sonido sucio o barroso</strong></td><td>Presionar la tónica en la MD junto con las octavas izquierdas.</td><td>Revisa tu mano derecha y elimina por completo la segunda nota contando desde arriba.</td></tr>
+          <tr><td><strong>Fatiga muscular en la MD</strong></td><td>Intentar abrir la mano usando los dedos 1, 3 y 5.</td><td>Usa la digitación 1, 2 y 5 (o 1, 2, 4, 5 en preparación) para relajar la palma.</td></tr>
+          <tr><td><strong>Pérdida de pulso rítmico</strong></td><td>Intentar los arpegios demasiado lento.</td><td>Practica con metrónomo tocando primero en bloque y arpegiando solo al final del compás.</td></tr>
+          <tr><td><strong>Bajos retumbantes</strong></td><td>Tocar las octavas de la MI demasiado graves en el piano.</td><td>Mantén el bajo de la MI entre <span class="note-chip">C(I)</span> grave y <span class="note-chip">C(I)</span> central.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    <h4>Resumen</h4>
+    <p style="margin-bottom:0">Para dominar los acordes abiertos debes aplicar la digitación adecuada (1-2-5 en mano derecha), combinar ataques en bloque con arpegios rápidos y utilizar adornos descendentes de octava para mantener el dinamismo musical.</p>
+  </div>
+</section>
+
+<!-- ============ RECURSOS ============ -->
+<section id="cap5" class="section">
+  <h2 class="section-title"><span class="num">05</span> Recursos de Aprendizaje</h2>
+  <p class="section-intro">Preguntas frecuentes, consejos de experto y síntesis final del tutorial.</p>
+
+  <div class="card">
+    <h3><span class="idx">5.1</span> Preguntas Frecuentes (FAQ)</h3>
+    <div class="faq-item">
+      <button class="faq-q">1. ¿Esta técnica sirve para acordes con sostenidos o bemoles? <span class="arrow">▼</span></button>
+      <div class="faq-a"><p style="margin:8px 0 0"><strong>Sí.</strong> La regla es universal. Funciona exactamente igual para acordes Mayores, menores, aumentados, disminuidos y con alteraciones.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">2. ¿Puedo usar esta técnica en la mano izquierda? <span class="arrow">▼</span></button>
+      <div class="faq-a"><p style="margin:8px 0 0"><strong>No es recomendable.</strong> La mano izquierda debe encargarse de las frecuencias graves (octavas o quintas). Abrir acordes complejos en zonas muy graves genera un sonido turbio.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q">3. ¿Qué hago si mis manos son muy pequeñas y no alcanzo la octava? <span class="arrow">▼</span></button>
+      <div class="faq-a"><p style="margin:8px 0 0"><strong>Solución:</strong> En la mano izquierda toca solo la nota tónica individual (sin octava). En la mano derecha, toca únicamente las dos notas inferiores de la posición abierta.</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">5.2</span> Consejos de experto y trucos prácticos</h3>
+    <div class="callout info"><strong>Truco de la pedalera:</strong> Presiona el pedal de resonancia (<em>sustain</em>) justo al atacar el bajo de la mano izquierda y levántalo exactamente al cambiar de acorde para evitar que las notas se mezclen.</div>
+    <div class="callout example"><strong>El toque "peso de brazo":</strong> No impulses los dedos con fuerza muscular; deja caer el peso natural de tu brazo sobre las teclas para obtener un tono cálido y redondo.</div>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">5.3</span> Síntesis final del tutorial</h3>
+    <p>Hemos aprendido a transformar acordes básicos triadas cerrados en acordes abiertos de sonoridad profesional. El proceso se sintetiza en: <strong>tomar la primera inversión del acorde, duplicar la nota superior, colocar bajos en octava con la mano izquierda y aplicar "El Tratamiento" eliminando la tónica triplicada de la mano derecha</strong>.</p>
+    <h4>Lista de conceptos clave</h4>
+    <ul>
+      <li><strong>Acorde Cerrado:</strong> Acorde con todas sus notas contenidas dentro de un espacio de octava.</li>
+      <li><strong>Acorde Abierto:</strong> Disposición donde las notas se separan a lo largo del teclado, dejando espacios interválicos amplios.</li>
+      <li><strong>Primera Inversión:</strong> Posición de un acorde donde la tercera del acorde se ubica como la nota más grave del mismo.</li>
+      <li><strong>El Tratamiento:</strong> Proceso de eliminación de la segunda nota más alta de la mano derecha para desaturar el color armónico.</li>
+      <li><strong>Arpegio Rápido:</strong> Ejecución consecutiva y veloz de las notas de un acorde de abajo hacia arriba.</li>
+    </ul>
+    <h4>Errores que nunca deben cometerse</h4>
+    <ol>
+      <li><strong>Nunca</strong> mantengas la tónica triplicada en la mano derecha si ya la estás tocando con octavas en la mano izquierda.</li>
+      <li><strong>Nunca</strong> toques acordes abiertos en la región demasiado grave del piano.</li>
+      <li><strong>Nunca</strong> tensiones la muñeca o los dedos; utiliza las digitaciones sugeridas (1-2-5 en la mano derecha).</li>
+    </ol>
+    <h4>Recomendaciones para seguir aprendiendo</h4>
+    <ul>
+      <li>Practica esta técnica en otras tonalidades Mayores (como <span class="note-chip">G(V)</span> Major o <span class="note-chip">D(II)</span> Major).</li>
+      <li>Aplica la técnica a tus canciones favoritas reemplazando los acordes tradicionales.</li>
+      <li>Explora la adición de notas de extensión como la novena o séptima una vez dominada la estructura base.</li>
+    </ul>
+    <h4>Glosario de términos técnicos</h4>
+    <ul>
+      <li><strong>Disposición (Voicing):</strong> El orden y distribución vertical específica de las notas que integran un acorde.</li>
+      <li><strong>Octava:</strong> Intervalo de ocho grados entre dos notas de mismo nombre en el teclado.</li>
+      <li><strong>Tónica / Fundamental:</strong> La nota principal sobre la cual se construye y nombra un acorde.</li>
+      <li><strong>Grado de la Escala:</strong> La posición numérica de una nota dentro de una escala armónica dada.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">5.4</span> Prompts sugeridos para IA y estudio personal</h3>
+    <div class="callout info"><strong>Prompt 1 (Para rearmonizar canciones):</strong><br><em>"Actúa como un tutor experto en piano. Tengo la siguiente progresión de acordes en la tonalidad de <span class="note-chip">C(I)</span> Major: [Escribe tus acordes]. Transfórmalos aplicando la Técnica de Acordes Abiertos basada en Primera Inversión y eliminación de la nota duplicada. Muestra la lista de notas exactas para mano izquierda y mano derecha."</em></div>
+    <div class="callout info"><strong>Prompt 2 (Para práctica en otras tonalidades):</strong><br><em>"Explícame paso a paso cómo aplicar la Técnica de Acordes Abiertos a la escala de <span class="note-chip">G(V)</span> Major, detallando los 7 grados con la nomenclatura americana de notas y sus respectivos grados entre paréntesis."</em></div>
+  </div>
+
+  <div class="summary-box">
+    <h4>Resumen</h4>
+    <p style="margin-bottom:0">La técnica es universal (funciona con cualquier acorde, alteración o tonalidad). La mano izquierda se reserva para los graves; la derecha ejecuta el voicing abierto con digitación 1-2-5. Practica con metrónomo, cuida el pedal y aplica los prompts para expandir tu repertorio.</p>
+  </div>
+</section>
+
+<!-- ============ EJERCICIOS ============ -->
+<section id="ejercicios" class="section">
+  <h2 class="section-title"><span class="num">§</span> Ejercicios Prácticos con Soluciones</h2>
+  <p class="section-intro">15 ejercicios organizados por dificultad (Fácil → Medio → Difícil) que cubren identificación, construcción, digitación, algoritmo, comparación, análisis de error, ejecución, progresión, voicing dinámico, caso límite y síntesis. Intenta resolver cada uno antes de desplegar la solución.</p>
+
+  <div class="card">
+    <h3><span class="idx">★</span> Cómo usar esta sección</h3>
+    <ul>
+      <li><strong>Progresión respetada:</strong> los ejercicios siguen el orden Fácil → Medio → Difícil del material original.</li>
+      <li><strong>Tipos de ejercicio:</strong> identificación, construcción, digitación, algoritmo, comparación, análisis de error, ejecución, progresión, voicing dinámico, caso límite y síntesis.</li>
+      <li><strong>Recomendación:</strong> lee el enunciado, resuélvelo en el piano (o mentalmente) y solo después despliega la solución para comparar.</li>
+      <li><strong>Terminología:</strong> MI = mano izquierda; MD = mano derecha; Cap. = capítulo del tutorial.</li>
+    </ul>
+  </div>
+
+  <!-- ============ NIVEL FÁCIL ============ -->
+  <div class="level-banner easy">
+    <span class="badge">FÁCIL</span>
+    <span class="desc">Ejercicios 1–5 · Identificación, construcción, digitación, algoritmo y comparación en C(I) Major.</span>
+  </div>
+
+  <!-- E1 -->
+  <div class="card">
+    <h3><span class="idx">E1</span> Definir los tres conceptos clave del voicing</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Identificación</span>
+      <span class="note-chip g">Dificultad: Fácil</span>
+    </div>
+    <p><strong>Enunciado:</strong> Define con tus propias palabras, sin salir del vocabulario del tutorial, los tres conceptos siguientes y clasifícalos indicando en cada caso si incluye bajo en octava con la mano izquierda y si mantiene la tónica duplicada en la mano derecha: (a) acorde cerrado, (b) estructura de preparación con primera inversión reforzada, (c) acorde abierto resultante tras aplicar El Tratamiento.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>Acorde cerrado:</strong> contiene las tres notas de la triada dentro de una sola octava, sin bajo independiente. <em>No incluye bajo en octava en la MI</em> y <em>no duplica la tónica en la MD</em>.</li>
+          <li><strong>Estructura de preparación:</strong> parte de la primera inversión en la MD, duplica la nota superior una octava arriba y añade el bajo en octava con la MI. <em>Sí incluye bajo en octava</em> y <em>sí mantiene la tónica duplicada en la MD</em> (además de sonar en la MI).</li>
+          <li><strong>Acorde abierto tras El Tratamiento:</strong> se elimina de la MD la segunda nota desde arriba (la tónica triplicada). Conserva el bajo en octava en la MI, pero <em>ya no mantiene la tónica duplicada en la MD</em>.</li>
+        </ol>
+        <div class="callout info"><strong>Por qué:</strong> Los tres conceptos corresponden a tres estadios del proceso: el cerrado es el punto de partida saturado en el registro medio; la preparación es el esqueleto amplio con la tónica triplicada; el voicing final abre espacio al eliminar la fundamental redundante de la MD. La diferencia técnica radica en cuántas veces suena la tónica y en qué registros del piano se reparte el acorde.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Confundir la estructura de preparación con el voicing final abierto y tocar la preparación como si ya estuviera tratada, dejando la tónica triplicada en la MD, lo que produce sonido sucio o barroso (Cap. 4.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E2 -->
+  <div class="card">
+    <h3><span class="idx">E2</span> Construir la estructura de preparación de C(I) Major</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Construcción</span>
+      <span class="note-chip g">Dificultad: Fácil</span>
+    </div>
+    <p><strong>Enunciado:</strong> Escribe, de grave a agudo, todas las notas que suenan al ejecutar la estructura de preparación de C(I) Major, separando las notas de la mano izquierda y las de la mano derecha.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>Triada de C(I) Major:</strong> C(I), E(III), G(V).</li>
+          <li><strong>Primera inversión en la MD:</strong> E(III)-G(V)-C(I).</li>
+          <li><strong>Duplicar la nota superior una octava arriba:</strong> MD = E(III)-G(V)-C(I)-E(III).</li>
+          <li><strong>Añadir el bajo en octava con la MI:</strong> C(I)-C(I).</li>
+        </ol>
+        <div class="chord-block">
+          <div class="lbl">MANO IZQUIERDA (grave → agudo)</div>
+          <div class="notes"><span class="n bass">C(I)</span><span class="n bass">C(I)</span></div>
+        </div>
+        <div class="chord-block">
+          <div class="lbl">MANO DERECHA (grave → agudo)</div>
+          <div class="notes"><span class="n">E(III)</span><span class="n">G(V)</span><span class="n">C(I)</span><span class="n">E(III)</span></div>
+        </div>
+        <div class="callout info"><strong>Por qué:</strong> La primera inversión coloca la tercera como nota más grave del bloque y genera un marco interválico más amplio que la posición fundamental. La duplicación de la nota superior crea el marco de octava que guía la posterior apertura, y el bajo en octava da cimiento en los graves.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Escribir la MD en posición fundamental (C(I)-E(III)-G(V)) en lugar de la primera inversión; esto rompe el punto de partida del algoritmo y deja la tónica triplicada, lo que produce sonido sucio o barroso (Cap. 4.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E3 -->
+  <div class="card">
+    <h3><span class="idx">E3</span> Digitación de la fase de preparación de C(I) Major</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Digitación</span>
+      <span class="note-chip g">Dificultad: Fácil</span>
+    </div>
+    <p><strong>Enunciado:</strong> Indica la digitación (números 1 a 5) correspondiente a la fase de preparación de C(I) Major (MI: C(I)-C(I); MD: E(III)-G(V)-C(I)-E(III)), asignando un dedo distinto a cada nota.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>MI:</strong> dedo 5 en C(I) grave, dedo 1 en C(I) central (octava).</li>
+          <li><strong>MD:</strong> dedo 1 en E(III), dedo 2 en G(V), dedo 4 en C(I), dedo 5 en E(III) superior.</li>
+          <li>Esta asignación permite retirar después la C(I) con el dedo 4 sin recolocar la mano para llegar al voicing final 1-2-5.</li>
+        </ol>
+        <div class="callout info"><strong>Por qué:</strong> La digitación 1-2-4-5 en la preparación distribuye el peso de la mano sin forzar el tendón del dedo medio, previniendo la fatiga muscular descrita en el Cap. 4.4. Al retirar el dedo 4 (C(I)) ya se tiene directamente la posición 1-2-5 del voicing definitivo.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Usar 1-3-5 en la MD durante la preparación; esto obliga a abrir la mano entre índice y meñique y produce tensión y fatiga muscular (Cap. 4.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E4 -->
+  <div class="card">
+    <h3><span class="idx">E4</span> Aplicar El Tratamiento a C(I) Major</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Algoritmo</span>
+      <span class="note-chip g">Dificultad: Fácil</span>
+    </div>
+    <p><strong>Enunciado:</strong> Partiendo de la preparación de C(I) Major (MI: C(I)-C(I); MD: E(III)-G(V)-C(I)-E(III)), aplica El Tratamiento y escribe el voicing final de ambas manos.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>Ordenar la MD de arriba a abajo:</strong> 1.ª E(III), 2.ª C(I), 3.ª G(V), 4.ª E(III).</li>
+          <li><strong>Eliminar la segunda nota contando desde arriba:</strong> C(I).</li>
+          <li><strong>MD final:</strong> E(III)-G(V)-E(III). <strong>MI:</strong> C(I)-C(I).</li>
+        </ol>
+        <div class="chord-block">
+          <div class="lbl">VOICING FINAL — MANO IZQUIERDA</div>
+          <div class="notes"><span class="n bass">C(I)</span><span class="n bass">C(I)</span></div>
+        </div>
+        <div class="chord-block">
+          <div class="lbl">VOICING FINAL — MANO DERECHA</div>
+          <div class="notes"><span class="n">E(III)</span><span class="n">G(V)</span><span class="n">E(III)</span></div>
+        </div>
+        <div class="callout info"><strong>Por qué:</strong> La tónica C(I) ya suena dos veces en la MI en registro grave; conservarla en la MD triplica la fundamental y satura el acorde. Al retirarla se abre una ventana de aire entre G(V) y E(III) superior que permite que el acorde respire.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> No aplicar El Tratamiento y tocar la preparación como voicing final, dejando la tónica triplicada (Cap. 5.4), lo que produce sonido sucio o barroso.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E5 -->
+  <div class="card">
+    <h3><span class="idx">E5</span> Comparación acústica: cerrado vs. abierto tratado</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Comparación</span>
+      <span class="note-chip g">Dificultad: Fácil</span>
+    </div>
+    <p><strong>Enunciado:</strong> Explica qué diferencias acústicas existen entre ejecutar C(I) Major como acorde cerrado (tres notas apretadas en el centro del piano, sin bajo en la MI) y como acorde abierto tratado (MI: C(I)-C(I); MD: E(III)-G(V)-E(III)). Menciona al menos dos efectos sonoros concretos.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li>En el cerrado, las tres notas comparten el mismo registro central y sus armónicos se solapan; el oído percibe el bloque plano.</li>
+          <li>En el abierto, la fundamental suena en los graves (octava) y las voces superiores se distribuyen con espacio interválico amplio; cada nota se distingue.</li>
+          <li><strong>Resultado:</strong> el abierto ocupa varias octavas del espectro, llena el espacio sonoro y suena profundo y cristalino; el cerrado suena apretado y acartonado.</li>
+        </ol>
+        <div class="callout info"><strong>Por qué:</strong> La separación en registros distintos evita la acumulación de armónicos en la zona media, que es la causa del sonido acartonado. Al repartir las notas en frecuencias graves y agudas, el acorde llena el espectro acústico de forma análoga a como lo haría una banda completa.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Creer que la versión cerrada suena más llena por tener las notas juntas; en realidad es la acumulación de frecuencias medias la que produce el efecto apretado que el tutorial identifica como sonido infantil (Cap. 1.2) y que reaparece como sonido sucio o barroso (Cap. 4.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ NIVEL MEDIO ============ -->
+  <div class="level-banner medium">
+    <span class="badge">MEDIO</span>
+    <span class="desc">Ejercicios 6–10 · Construcción, algoritmo, digitación, análisis de error y ejecución sobre A(VI) minor, F(IV) Major, D(II) minor y G(V) Major.</span>
+  </div>
+
+  <!-- E6 -->
+  <div class="card">
+    <h3><span class="idx">E6</span> Preparación y voicing final de A(VI) minor</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Construcción</span>
+      <span class="note-chip a">Dificultad: Medio</span>
+    </div>
+    <p><strong>Enunciado:</strong> Construye la preparación y el voicing final tratado de A(VI) minor. Escribe las notas de MI y MD en cada una de las dos etapas.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>Triada:</strong> A(VI), C(I), E(III).</li>
+          <li><strong>Primera inversión:</strong> C(I)-E(III)-A(VI).</li>
+          <li><strong>Preparación:</strong> MD = C(I)-E(III)-A(VI)-C(I); MI = A(VI)-A(VI).</li>
+          <li><strong>Ordenar MD arriba-abajo:</strong> C(I), A(VI), E(III), C(I).</li>
+          <li><strong>Eliminar la segunda desde arriba (A(VI)). Voicing final:</strong> MD = C(I)-E(III)-C(I); MI = A(VI)-A(VI).</li>
+        </ol>
+        <div class="chord-block">
+          <div class="lbl">PREPARACIÓN — MI</div>
+          <div class="notes"><span class="n bass">A(VI)</span><span class="n bass">A(VI)</span></div>
+        </div>
+        <div class="chord-block">
+          <div class="lbl">PREPARACIÓN — MD</div>
+          <div class="notes"><span class="n">C(I)</span><span class="n">E(III)</span><span class="n">A(VI)</span><span class="n">C(I)</span></div>
+        </div>
+        <div class="chord-block">
+          <div class="lbl">VOICING FINAL — MD</div>
+          <div class="notes"><span class="n">C(I)</span><span class="n">E(III)</span><span class="n">C(I)</span></div>
+        </div>
+        <div class="callout info"><strong>Por qué:</strong> La A(VI) ya suena duplicada en la MI; al retirarla de la MD se evita la triplicación de la tónica y se conserva la tercera C(I)-E(III) más la octava superior, que define el color menor del acorde.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Dejar la tónica A(VI) triplicada en el voicing final; esto produce sonido sucio o barroso porque la fundamental se acumula en los graves y en las voces medias (Cap. 4.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E7 -->
+  <div class="card">
+    <h3><span class="idx">E7</span> Aplicar El Tratamiento a F(IV) Major</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Algoritmo</span>
+      <span class="note-chip a">Dificultad: Medio</span>
+    </div>
+    <p><strong>Enunciado:</strong> Dada la preparación de F(IV) Major (MD: A(VI)-C(I)-F(IV)-A(VI); MI: F(IV)-F(IV)), aplica El Tratamiento paso a paso y escribe el voicing final completo.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>Ordenar MD de arriba a abajo:</strong> A(VI), F(IV), C(I), A(VI).</li>
+          <li><strong>Segunda nota desde arriba:</strong> F(IV), que coincide con la tónica que ya suena en octava en la MI.</li>
+          <li><strong>Eliminar F(IV). Voicing final:</strong> MD = A(VI)-C(I)-A(VI); MI = F(IV)-F(IV).</li>
+        </ol>
+        <div class="chord-block">
+          <div class="lbl">VOICING FINAL — MANO IZQUIERDA</div>
+          <div class="notes"><span class="n bass">F(IV)</span><span class="n bass">F(IV)</span></div>
+        </div>
+        <div class="chord-block">
+          <div class="lbl">VOICING FINAL — MANO DERECHA</div>
+          <div class="notes"><span class="n">A(VI)</span><span class="n">C(I)</span><span class="n">A(VI)</span></div>
+        </div>
+        <div class="callout info"><strong>Por qué:</strong> Al retirar la F(IV) intermedia, la MD queda con la tercera arriba y abajo y la quinta al centro, dejando un espacio abierto que se traduce en resonancia limpia sin choque de frecuencias graves.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Conservar la F(IV) intermedia pensando que refuerza el acorde; en realidad triplica la fundamental con la MI y produce sonido sucio o barroso (Cap. 4.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E8 -->
+  <div class="card">
+    <h3><span class="idx">E8</span> Digitación 1-2-5 y 5-1 en D(II) minor</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Digitación</span>
+      <span class="note-chip a">Dificultad: Medio</span>
+    </div>
+    <p><strong>Enunciado:</strong> Asigna la digitación 1-2-5 (MD) y 5-1 (MI) al voicing final tratado de D(II) minor, indicando el dedo que actúa sobre cada nota.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>Voicing final de D(II) minor:</strong> MD = F(IV)-A(VI)-F(IV); MI = D(II)-D(II).</li>
+          <li><strong>MI:</strong> dedo 5 en D(II) grave, dedo 1 en D(II) central.</li>
+          <li><strong>MD:</strong> dedo 1 en F(IV) inferior, dedo 2 en A(VI) central, dedo 5 en F(IV) superior.</li>
+        </ol>
+        <div class="chord-block">
+          <div class="lbl">DIGITACIÓN — MANO IZQUIERDA</div>
+          <div class="notes"><span class="n bass">D(II) · dedo 5</span><span class="n bass">D(II) · dedo 1</span></div>
+        </div>
+        <div class="chord-block">
+          <div class="lbl">DIGITACIÓN — MANO DERECHA</div>
+          <div class="notes"><span class="n">F(IV) · dedo 1</span><span class="n">A(VI) · dedo 2</span><span class="n">F(IV) · dedo 5</span></div>
+        </div>
+        <div class="callout info"><strong>Por qué:</strong> La digitación 1-2-5 deja el dedo 2 en la nota central (A(VI)) y reserva el meñique para la octava superior, manteniendo la palma relajada y evitando la fatiga muscular descrita en el Cap. 4.4.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Usar 1-3-5 en la MD; el dedo 3 en la nota central obliga a estirar la mano y tensa la muñeca, produciendo fatiga muscular (Cap. 4.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E9 -->
+  <div class="card">
+    <h3><span class="idx">E9</span> Detectar y corregir un voicing mal construido en G(V) Major</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Análisis de error</span>
+      <span class="note-chip a">Dificultad: Medio</span>
+    </div>
+    <p><strong>Enunciado:</strong> Un estudiante presenta el siguiente voicing para G(V) Major como si fuera el voicing final: MI toca G(V)-G(V) en octava; MD toca B(VII)-D(II)-G(V)-B(VII). Identifica el error respecto al algoritmo del Cap. 3 y escribe el voicing corregido.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li>La MD presentada corresponde a la <strong>estructura de preparación</strong> (cuatro notas con la tónica duplicada arriba), no al voicing final.</li>
+          <li>Faltó aplicar <strong>El Tratamiento</strong>: ordenar la MD de arriba a abajo (B(VII), G(V), D(II), B(VII)) y eliminar la segunda nota desde arriba, que es G(V).</li>
+          <li><strong>Voicing corregido:</strong> MD = B(VII)-D(II)-B(VII); MI = G(V)-G(V).</li>
+        </ol>
+        <div class="chord-block">
+          <div class="lbl">VOICING CORREGIDO — MANO IZQUIERDA</div>
+          <div class="notes"><span class="n bass">G(V)</span><span class="n bass">G(V)</span></div>
+        </div>
+        <div class="chord-block">
+          <div class="lbl">VOICING CORREGIDO — MANO DERECHA</div>
+          <div class="notes"><span class="n">B(VII)</span><span class="n">D(II)</span><span class="n">B(VII)</span></div>
+        </div>
+        <div class="callout info"><strong>Por qué:</strong> Mantener la G(V) intermedia triplica la tónica que ya suena en octava en la MI, lo que produce sonido sucio o barroso (Cap. 4.4). Al eliminarla, la MD conserva la tercera y la quinta y aparece la apertura característica del voicing abierto.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Saltarse el paso de eliminación y presentar la preparación como voicing final, dejando la tónica triplicada (Cap. 5.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E10 -->
+  <div class="card">
+    <h3><span class="idx">E10</span> Arpegio rápido (rolled chord) sobre G(V) Major</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Ejecución</span>
+      <span class="note-chip a">Dificultad: Medio</span>
+    </div>
+    <p><strong>Enunciado:</strong> Describe los tres pasos del arpegio rápido (rolled chord) sobre el voicing final de G(V) Major (MI: G(V)-G(V); MD: B(VII)-D(II)-B(VII)), indicando qué dedo actúa en cada paso.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li>Atacar primero el bajo grave de la MI con el <strong>dedo 5</strong> (G(V) grave).</li>
+          <li>Pasar rápidamente por las notas inferiores de la MD: <strong>dedo 1</strong> en B(VII), <strong>dedo 2</strong> en D(II).</li>
+          <li>Hacer coincidir el bajo superior de la MI (<strong>dedo 1</strong>, G(V) central) con la nota superior de la MD (<strong>dedo 5</strong>, B(VII) superior).</li>
+        </ol>
+        <div class="callout info"><strong>Por qué:</strong> La secuencia de abajo hacia arriba imita el gesto del arpa y produce un efecto fluido y elegante sin alterar la estructura armónica. El sincronismo del dedo 1 de la MI con el dedo 5 de la MD ancla el acorde y evita la sensación de inestabilidad rítmica.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Arpegiar demasiado lento y perder el pulso rítmico (Cap. 4.4); el arpegio debe ser ultra rápido para no romper el tempo del compás.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ NIVEL DIFÍCIL ============ -->
+  <div class="level-banner hard">
+    <span class="badge">DIFÍCIL</span>
+    <span class="desc">Ejercicios 11–15 · Progresión completa, voicing dinámico, caso límite, síntesis y gestión del pedal.</span>
+  </div>
+
+  <!-- E11 -->
+  <div class="card">
+    <h3><span class="idx">E11</span> Aplicar acordes abiertos a una progresión completa</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Progresión</span>
+      <span class="note-chip p">Dificultad: Difícil</span>
+    </div>
+    <p><strong>Enunciado:</strong> Aplica la Técnica de Acordes Abiertos a la progresión C(I) Major (4 tiempos) – A(VI) minor (4 tiempos) – F(IV) Major (2 tiempos) seguido de G(V) Major (2 tiempos) – C(I) Major (4 tiempos). Escribe MI y MD tratada para cada acorde.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>C(I) Major:</strong> MI = C(I)-C(I); MD = E(III)-G(V)-E(III).</li>
+          <li><strong>A(VI) minor:</strong> MI = A(VI)-A(VI); MD = C(I)-E(III)-C(I).</li>
+          <li><strong>F(IV) Major:</strong> MI = F(IV)-F(IV); MD = A(VI)-C(I)-A(VI). <strong>Luego G(V) Major:</strong> MI = G(V)-G(V); MD = B(VII)-D(II)-B(VII).</li>
+          <li><strong>C(I) Major:</strong> MI = C(I)-C(I); MD = E(III)-G(V)-E(III).</li>
+        </ol>
+        <div class="callout info"><strong>Por qué:</strong> Cada acorde mantiene el bajo en octava con la MI y aplica El Tratamiento sobre la tónica triplicada, de modo que la progresión no acumula fundamentales repetidas y el cambio armónico se percibe nítido.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Dejar la tónica triplicada en la MD al pasar de un acorde a otro; la acumulación de fundamentales produce sonido sucio o barroso (Cap. 4.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E12 -->
+  <div class="card">
+    <h3><span class="idx">E12</span> Adorno de voicing dinámico sobre F(IV) Major</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Voicing dinámico</span>
+      <span class="note-chip p">Dificultad: Difícil</span>
+    </div>
+    <p><strong>Enunciado:</strong> Sobre el voicing final tratado de F(IV) Major (MI: F(IV)-F(IV); MD: A(VI)-C(I)-A(VI)), describe el adorno de voicing dinámico del Cap. 4.2: qué voz se mueve, hacia qué nota, cuál permanece fija y cómo se resuelve.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li>La voz superior <strong>A(VI)</strong>, tocada con el dedo 5, desciende un tono hasta <strong>G(V)</strong>.</li>
+          <li>La voz central <strong>C(I)</strong> permanece fija.</li>
+          <li>La voz superior regresa inmediatamente a <strong>A(VI)</strong> para resolver el adorno.</li>
+        </ol>
+        <div class="callout info"><strong>Por qué:</strong> El descenso temporal de la voz superior crea una tensión melódica interna que se resuelve al volver a la tónica, añadiendo movimiento expresivo sin cambiar de acorde ni rearmonizar el bloque.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Mover más de una voz a la vez o alterar la voz central; el tutorial advierte que el adorno consiste en bajar solo la octava superior y regresar, y mover voces adicionales tensiona la mano y desfigura el voicing (Cap. 4.4, fatiga muscular).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E13 -->
+  <div class="card">
+    <h3><span class="idx">E13</span> Adaptación del voicing para manos pequeñas en E(III) minor</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Caso límite</span>
+      <span class="note-chip p">Dificultad: Difícil</span>
+    </div>
+    <p><strong>Enunciado:</strong> Un estudiante con manos pequeñas no alcanza la octava con la MI. Según la FAQ del tutorial, adapta el voicing final tratado de E(III) minor (MI: E(III)-E(III); MD: G(V)-B(VII)-G(V)) para que sea ejecutable sin forzar la extensión. Escribe MI y MD adaptadas.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>MI:</strong> en lugar de la octava, tocar solo la nota tónica individual, E(III).</li>
+          <li><strong>MD:</strong> en lugar de las tres notas, tocar únicamente las dos notas inferiores, G(V)-B(VII).</li>
+          <li><strong>Resultado:</strong> MI = E(III); MD = G(V)-B(VII).</li>
+        </ol>
+        <div class="chord-block">
+          <div class="lbl">ADAPTACIÓN — MANO IZQUIERDA</div>
+          <div class="notes"><span class="n bass">E(III)</span></div>
+        </div>
+        <div class="chord-block">
+          <div class="lbl">ADAPTACIÓN — MANO DERECHA</div>
+          <div class="notes"><span class="n">G(V)</span><span class="n">B(VII)</span></div>
+        </div>
+        <div class="callout info"><strong>Por qué:</strong> Reducir la MI a nota única y recortar la MD a las dos voces graves conserva la identidad armónica (tercera y quinta) sin exigir una extensión imposible, evitando tensión muscular y manteniendo la claridad del acorde.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Forzar la octava y tensionar la muñeca; el Cap. 5.4 advierte que nunca deben tensionarse muñeca ni dedos al ejecutar esta técnica.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E14 -->
+  <div class="card">
+    <h3><span class="idx">E14</span> Universalidad de la técnica en tonalidades con alteraciones</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Síntesis</span>
+      <span class="note-chip p">Dificultad: Difícil</span>
+    </div>
+    <p><strong>Enunciado:</strong> Según la FAQ del tutorial, ¿la Técnica de Acordes Abiertos funciona en tonalidades con sostenidos o bemoles? Explica el procedimiento que aplicarías a cualquier acorde alterado usando solo las reglas del tutorial.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>Sí, la técnica es universal:</strong> se aplica igual a acordes Mayores, menores, aumentados, disminuidos y con alteraciones.</li>
+          <li>Colocar el acorde en <strong>primera inversión</strong> en la MD.</li>
+          <li><strong>Duplicar la nota superior</strong> una octava arriba y añadir el bajo en octava con la MI.</li>
+          <li>Aplicar <strong>El Tratamiento</strong> eliminando la segunda nota desde arriba de la MD (la tónica triplicada).</li>
+        </ol>
+        <div class="callout info"><strong>Por qué:</strong> La regla no depende de que las teclas sean blancas ni del nombre de las notas, sino de la relación interválica entre los grados del acorde; cualquier tríada alterada se somete al mismo algoritmo sin variantes.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Creer que las alteraciones exigen un tratamiento distinto y dejar la tónica triplicada en la MD; esa acumulación de fundamental produce sonido sucio o barroso (Cap. 4.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E15 -->
+  <div class="card">
+    <h3><span class="idx">E15</span> Gestión del pedal de resonancia en una progresión</h3>
+    <div class="ex-tags">
+      <span class="note-chip">Tipo: Ejecución</span>
+      <span class="note-chip p">Dificultad: Difícil</span>
+    </div>
+    <p><strong>Enunciado:</strong> Vas a tocar la progresión C(I) Major – G(V) Major – A(VI) minor – F(IV) Major con acordes abiertos. Indica en qué momento exacto pisar y soltar el pedal de resonancia en cada acorde, y qué error sonoro se evita con esa gestión.</p>
+    <div class="faq-item">
+      <button class="faq-q">Ver solución paso a paso <span class="arrow">▼</span></button>
+      <div class="faq-a">
+        <ol>
+          <li><strong>Pisar el pedal al atacar el bajo de la MI de cada acorde</strong> (por ejemplo, al tocar C(I)-C(I) en el primero).</li>
+          <li><strong>Mantener el pedal durante el acorde.</strong></li>
+          <li><strong>Soltar el pedal al cambiar de acorde</strong>, antes de atacar el bajo del siguiente (por ejemplo, antes de G(V)-G(V)).</li>
+          <li><strong>Repetir el ciclo con cada acorde.</strong></li>
+        </ol>
+        <div class="callout info"><strong>Por qué:</strong> Pisar al atacar el bajo permite que las notas resuenen y llenen el espectro; soltar al cambiar de acorde evita que las fundamentales de dos acordes distintos se superpongan y generen mezcla de armónicos incompatibles.</div>
+        <div class="callout warn"><strong>Error típico a evitar:</strong> Mantener el pedal pisado durante dos acordes consecutivos, lo que mezcla armónicos incompatibles y produce sonido sucio o barroso (Cap. 4.4).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    <h4>Resumen de la sección de Ejercicios</h4>
+    <p style="margin-bottom:0">Los 15 ejercicios recorren los tres estadios del proceso (cerrado → preparación → abierto tratado), la digitación profesional, la aplicación a distintos acordes, la detección de errores, el adorno dinámico, los casos límite y la gestión del pedal. Se recomienda resolverlos en orden, verificando cada solución y tocando cada voicing en el piano antes de avanzar al siguiente nivel.</p>
+  </div>
+</section>
+
+<!-- ============ FUENTES ============ -->
+<section id="fuentes" class="section">
+  <h2 class="section-title"><span class="num">§</span> Fuentes y Referencias</h2>
+  <p class="section-intro">Material documental y audiovisual que sustenta este tutorial.</p>
+
+  <div class="card">
+    <h3><span class="idx">▶</span> Video base de YouTube</h3>
+    <ul>
+      <li><strong>Título del video:</strong> <em>Haz que tus Acordes Básicos suenen IMPRESIONANTES</em></li>
+      <li><strong>Canal:</strong> Cristian Simancas</li>
+      <li><strong>URL del Video:</strong> <a href="https://youtube.com/watch?v=rBahGrAO-V4&is=vq2qPREY4rOift5u" target="_blank" rel="noopener noreferrer">https://youtube.com/watch?v=rBahGrAO-V4&is=vq2qPREY4rOift5u</a></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">📚</span> Fuentes documentales</h3>
+    <ol>
+      <li><strong>Video de YouTube:</strong> <em>Haz que tus Acordes Básicos suenen IMPRESIONANTES</em> — Transcripción y técnica de acordes abiertos explicada por Cristian Simancas.</li>
+      <li><strong>Documento Markdown de la fuente:</strong> <em>FUENTES / Nota nueva</em>.</li>
+      <li><strong>Archivo de ejercicios del tutorial:</strong> <em>EJERCICIO-N-15Tipo.txt</em> (15 ejercicios con soluciones).</li>
+    </ol>
+  </div>
+
+  <div class="callout info">Este tutorial es una transformación educativa del contenido original. La técnica, definiciones y procedimientos provienen íntegramente del material documental citado. No se ha añadido información técnica externa.</div>
+</section>
+
+<!-- ============ CRÉDITOS ============ -->
+<section id="creditos" class="section">
+  <h2 class="section-title"><span class="num">§</span> Créditos</h2>
+  <p class="section-intro">Información del tutorial, autoría y datos de elaboración.</p>
+
+  <div class="svg-container" id="svgCredits">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet" aria-label="Animación decorativa del voicing abierto">
+    <defs>
+      <linearGradient id="bgG2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#070b14">
+          <animate attributeName="stop-color" values="#070b14;#0a1430;#0d1a35;#070b14" dur="11s" repeatCount="indefinite"/>
+        </stop>
+        <stop offset="100%" stop-color="#0a0e1a">
+          <animate attributeName="stop-color" values="#0a0e1a;#0d1a3a;#0a0e1a" dur="9s" repeatCount="indefinite"/>
+        </stop>
+      </linearGradient>
+      <radialGradient id="haloCyan2" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="haloPurple2" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#a855f7" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="haloGreen2" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#22c55e" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="haloAmber2" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="glow2" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="4" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <pattern id="gridP2" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M40 0 L0 0 0 40" fill="none" stroke="#1e3a5f" stroke-width="0.5"/>
+      </pattern>
+    </defs>
+
+    <rect width="800" height="450" fill="url(#bgG2)"/>
+    <rect width="800" height="450" fill="url(#gridP2)" opacity="0.5"/>
+
+    <!-- Círculos decorativos concéntricos -->
+    <circle cx="400" cy="225" r="180" fill="none" stroke="#00d4ff" stroke-width="0.8" opacity="0.25">
+      <animate attributeName="r" values="180;190;180" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.25;0.5;0.25" dur="6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="400" cy="225" r="130" fill="none" stroke="#a855f7" stroke-width="0.8" opacity="0.3">
+      <animate attributeName="r" values="130;140;130" dur="5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="400" cy="225" r="80" fill="none" stroke="#22c55e" stroke-width="0.8" opacity="0.35">
+      <animate attributeName="r" values="80;88;80" dur="4s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Notas orbitando -->
+    <circle r="14" fill="url(#haloCyan2)">
+      <animate attributeName="cx" values="400;600;400;200;400" dur="16s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="95;225;355;225;95" dur="16s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="14" fill="url(#haloPurple2)">
+      <animate attributeName="cx" values="400;200;400;600;400" dur="18s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="95;225;355;225;95" dur="18s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="14" fill="url(#haloGreen2)">
+      <animate attributeName="cx" values="400;540;400;260;400" dur="14s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="140;225;310;225;140" dur="14s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="14" fill="url(#haloAmber2)">
+      <animate attributeName="cx" values="400;260;400;540;400" dur="20s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="140;225;310;225;140" dur="20s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Núcleo central -->
+    <circle cx="400" cy="225" r="55" fill="url(#haloCyan2)">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="400" cy="225" r="42" fill="#050810" stroke="#00d4ff" stroke-width="1.5" filter="url(#glow2)"/>
+    <text x="400" y="220" text-anchor="middle" fill="#00d4ff" font-family="Consolas" font-size="15" font-weight="800">C(I)</text>
+    <text x="400" y="238" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI" font-size="9" letter-spacing="1">ABIERTO</text>
+
+    <text x="400" y="425" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI" font-size="11" font-style="italic">Voicing abierto · resonancia limpia en todo el espectro</text>
+  </svg>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">★</span> Título del tutorial</h3>
+    <p style="font-size:18px;color:var(--text);font-weight:700;margin-bottom:0">Técnica de Acordes Abiertos para Piano: Transformando Acordes Básicos</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">👤</span> Autoría</h3>
+    <p><strong>Créditos:</strong> <span style="color:var(--accent);font-weight:700">Rubén Sbarsky</span></p>
+    <p><strong>Fecha:</strong> 29/09/2026</p>
+    <p><strong>Hora:</strong> 05:57:16</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="idx">🎓</span> Indicación educativa</h3>
+    <p style="margin-bottom:0">Este material tiene una finalidad exclusivamente educativa y de divulgación. Su objetivo es facilitar el aprendizaje de la técnica de acordes abiertos en el piano, respetando íntegramente el contenido de las fuentes originales citadas en la sección de <strong>Fuentes</strong>.</p>
+  </div>
+
+  <div class="card" style="text-align:center;border-color:rgba(0,212,255,.35)">
+    <p style="font-style:italic;color:#7dd3fc;font-size:16px;letter-spacing:1px;margin-bottom:0">Fiat iustitia, ruat caelum.</p>
+  </div>
+</section>
+
+</main>
+
+<button class="back-to-top" id="backToTop" aria-label="Volver arriba">↑</button>
+
+<footer>
+  <div>📚 Tutorial solo con fines Educativos y Divulgación</div>
+  <div class="cr">👨‍💻 Créditos: Rubén Sbarsky</div>
+  <div>📅 FECHA: 29/09/2026</div>
+  <div>Hora: 05:57:16</div>
+  <div class="fi">Fiat iustitia, ruat caelum.</div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  var navBtns = document.querySelectorAll('.nav-btn');
+  var sections = document.querySelectorAll('.section');
+  var progressBar = document.getElementById('progressBar');
+  var backToTop = document.getElementById('backToTop');
+
+  function activate(sectionId){
+    sections.forEach(function(s){ s.classList.toggle('active', s.id === sectionId); });
+    navBtns.forEach(function(b){ b.classList.toggle('active', b.dataset.section === sectionId); });
+    window.scrollTo({top:0, behavior:'smooth'});
+    updateProgress();
+
+    // Reiniciar animaciones SMIL del SVG de la sección activa
+    var section = document.getElementById(sectionId);
+    if(section){
+      var svg = section.querySelector('.svg-container > svg');
+      if(svg && typeof svg.setCurrentTime === 'function'){
+        try{ svg.setCurrentTime(0); }catch(e){}
+      }
+      section.querySelectorAll('animate, animateTransform, animateMotion').forEach(function(a){
+        try{ if(typeof a.beginElement === 'function') a.beginElement(); }catch(e){}
+      });
+    }
+  }
+
+  navBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){ activate(btn.dataset.section); });
+  });
+
+  function updateProgress(){
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var dh = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = dh > 0 ? (st / dh) * 100 : 0;
+    progressBar.style.width = Math.min(100, Math.max(0, pct)) + '%';
+    if(st > 400){ backToTop.classList.add('show'); }
+    else{ backToTop.classList.remove('show'); }
+  }
+
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  backToTop.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  document.querySelectorAll('.faq-item .faq-q').forEach(function(q){
+    q.addEventListener('click', function(){
+      var item = q.closest('.faq-item');
+      item.classList.toggle('open');
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>
