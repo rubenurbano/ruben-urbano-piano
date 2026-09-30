@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Los Tres Pilares de la Improvisación Bebop en Piano — Tutorial Interactivo</title>
+<style>
+/* ============ VARIABLES Y TEMA ============ */
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --accent:#1e3a5f;
+  --on-accent:#e8f1ff;
+  --text:#e6edf7;
+  --muted:#93a4bd;
+  --border:#1e2b46;
+  --code-bg:#0b1222;
+  --ok:#37b57c;
+  --warn:#e0a33e;
+  --bad:#e06060;
+  --blue:#4b9bff;
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+html.light{
+  --bg:#eef3fb;
+  --card:#ffffff;
+  --accent:#dbe7f7;
+  --on-accent:#10233f;
+  --text:#101f38;
+  --muted:#4d5f7c;
+  --border:#c6d6ee;
+  --code-bg:#f2f6fd;
+  --shadow:0 10px 26px rgba(20,45,90,.12);
+}
+*{box-sizing:border-box}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.68;
+  -webkit-text-size-adjust:100%;
+}
+
+/* ============ BARRA DE PROGRESO ============ */
+#progressBar{
+  position:fixed;top:0;left:0;height:4px;width:0%;
+  background:linear-gradient(90deg,#2f6fbf,#4b9bff,#8fc7ff);
+  z-index:999;transition:width .1s linear;
+}
+
+/* ============ CONTENEDOR ============ */
+.wrap{max-width:1000px;margin:0 auto;padding:0 14px 60px}
+
+/* ============ HERO ============ */
+header.hero{padding:26px 0 6px;text-align:center}
+.hero-svg{
+  width:100%;height:auto;display:block;margin:0 auto 18px;
+  border-radius:20px;box-shadow:var(--shadow);
+}
+h1{
+  font-size:1.65rem;line-height:1.25;margin:.2em 0 .3em;
+  letter-spacing:-.01em;
+}
+.subtitle{color:var(--muted);font-size:.98rem;margin:0 0 6px}
+.badge{
+  display:inline-block;background:var(--accent);color:var(--on-accent);
+  border:1px solid var(--border);border-radius:999px;
+  padding:4px 12px;font-size:.74rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;margin:6px 4px;
+}
+
+/* ============ TOOLBAR ============ */
+.toolbar{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:12px;margin:16px 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  box-shadow:var(--shadow);
+}
+.search-box{display:flex;flex:1 1 240px;gap:8px;align-items:center;min-width:200px}
+.search-box input{
+  flex:1;min-width:0;background:var(--bg);border:1px solid var(--border);
+  color:var(--text);border-radius:10px;padding:10px 12px;font-size:.9rem;
+  font-family:inherit;
+}
+.search-box input:focus{outline:2px solid var(--blue);outline-offset:1px}
+.btn{
+  background:var(--accent);color:var(--on-accent);border:1px solid var(--border);
+  border-radius:10px;padding:10px 13px;font-size:.82rem;font-weight:700;
+  cursor:pointer;font-family:inherit;transition:.18s;white-space:nowrap;
+}
+.btn:hover{filter:brightness(1.18);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.small{padding:8px 10px;font-size:.8rem}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.search-info{
+  font-size:.8rem;color:var(--muted);width:100%;margin:0;
+}
+.search-info b{color:var(--blue)}
+
+/* ============ PESTAÑAS ============ */
+.tabs{
+  display:flex;gap:6px;overflow-x:auto;padding:8px;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  position:sticky;top:8px;z-index:60;box-shadow:var(--shadow);
+  scrollbar-width:thin;
+}
+.tabs::-webkit-scrollbar{height:6px}
+.tabs::-webkit-scrollbar-thumb{background:var(--accent);border-radius:10px}
+.tab-btn{
+  flex:0 0 auto;padding:9px 14px;border-radius:10px;
+  border:1px solid transparent;background:transparent;color:var(--muted);
+  font-weight:700;font-size:.78rem;letter-spacing:.05em;cursor:pointer;
+  font-family:inherit;transition:.18s;
+}
+.tab-btn:hover{color:var(--text);background:var(--accent)}
+.tab-btn[aria-selected="true"]{
+  background:var(--accent);color:var(--on-accent);
+  border-color:#3a6ea8;
+}
+
+/* ============ PANELES ============ */
+.tab-panel{display:none;padding-top:16px;animation:fade .25s ease}
+.tab-panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ============ TARJETAS ============ */
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:18px;margin:14px 0;box-shadow:var(--shadow);
+}
+.card h2{
+  font-size:1.16rem;margin:0 0 10px;padding-left:12px;
+  border-left:4px solid #3a6ea8;line-height:1.35;
+}
+.card h3{font-size:1rem;margin:18px 0 8px;color:var(--text)}
+.card h4{font-size:.94rem;margin:14px 0 6px;color:var(--blue)}
+.card p{margin:.6em 0}
+.card ul,.card ol{margin:.5em 0;padding-left:1.25em}
+.card li{margin:.3em 0}
+.highlight{
+  background:var(--accent);color:var(--on-accent);
+  border-left:4px solid #4b9bff;border-radius:10px;padding:12px 14px;margin:12px 0;
+  font-size:.94rem;
+}
+.golden{
+  background:linear-gradient(90deg,rgba(224,163,62,.18),transparent);
+  border-left:4px solid var(--warn);border-radius:10px;padding:12px 14px;margin:12px 0;
+}
+.danger{
+  background:linear-gradient(90deg,rgba(224,96,96,.16),transparent);
+  border-left:4px solid var(--bad);border-radius:10px;padding:12px 14px;margin:12px 0;
+}
+.ok{
+  background:linear-gradient(90deg,rgba(55,181,124,.16),transparent);
+  border-left:4px solid var(--ok);border-radius:10px;padding:12px 14px;margin:12px 0;
+}
+.note{
+  background:transparent;border:1px dashed var(--border);border-radius:10px;
+  padding:12px 14px;margin:12px 0;font-size:.9rem;color:var(--muted);
+}
+
+/* ============ PASOS ============ */
+ol.steps{list-style:none;counter-reset:paso;padding-left:0;margin:12px 0}
+ol.steps li{
+  counter-increment:paso;position:relative;padding:10px 12px 10px 52px;
+  background:var(--bg);border:1px solid var(--border);border-radius:12px;
+  margin-bottom:9px;font-size:.94rem;
+}
+ol.steps li::before{
+  content:counter(paso);position:absolute;left:12px;top:12px;
+  width:28px;height:28px;border-radius:8px;background:var(--accent);
+  color:var(--on-accent);display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:.82rem;border:1px solid #3a6ea8;
+}
+ol.steps li b{color:var(--blue)}
+
+/* ============ TABLAS ============ */
+.table-wrap{overflow-x:auto;margin:14px 0;border-radius:12px;border:1px solid var(--border)}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:.88rem}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--accent);color:var(--on-accent);font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+tbody tr:nth-child(even){background:rgba(30,58,95,.14)}
+html.light tbody tr:nth-child(even){background:rgba(30,58,95,.05)}
+tbody tr:last-child td{border-bottom:none}
+
+/* ============ BLOQUES DE CÓDIGO / DIAGRAMAS ============ */
+pre{
+  background:var(--code-bg);border:1px solid var(--border);border-radius:12px;
+  padding:14px;overflow-x:auto;font-size:.84rem;line-height:1.6;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color:var(--text);margin:12px 0;
+}
+.diagram{
+  background:var(--code-bg);border:1px solid var(--border);border-radius:12px;
+  padding:14px;overflow-x:auto;font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:.8rem;line-height:1.7;white-space:pre;color:var(--blue);margin:12px 0;
+}
+
+/* ============ PROMPTS ============ */
+.prompt-block{
+  background:var(--code-bg);border:1px solid var(--border);
+  border-left:4px solid #4b9bff;border-radius:12px;
+  padding:14px 14px 12px;margin:12px 0;position:relative;
+}
+.prompt-block p{
+  margin:0 0 10px;font-size:.92rem;white-space:pre-wrap;font-style:italic;
+  color:var(--text);
+}
+.copy-btn{
+  background:var(--accent);color:var(--on-accent);border:1px solid #3a6ea8;
+  border-radius:8px;padding:7px 14px;font-size:.75rem;font-weight:800;
+  letter-spacing:.06em;cursor:pointer;font-family:inherit;transition:.18s;
+}
+.copy-btn:hover{filter:brightness(1.2)}
+.copy-btn.copied{background:var(--ok);color:#04170f;border-color:var(--ok)}
+
+/* ============ DESPLEGABLES ============ */
+details{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  margin:12px 0;overflow:hidden;box-shadow:var(--shadow);
+}
+summary{
+  cursor:pointer;padding:14px 16px;font-weight:700;font-size:.95rem;
+  list-style:none;display:flex;justify-content:space-between;
+  align-items:center;gap:10px;transition:.18s;
+}
+summary:hover{background:var(--accent);color:var(--on-accent)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.3rem;font-weight:800;color:var(--muted);line-height:1}
+summary:hover::after{color:var(--on-accent)}
+details[open] summary::after{content:"–"}
+.det-body{padding:0 16px 16px;font-size:.93rem}
+
+/* ============ CHECKLIST ============ */
+.checklist{list-style:none;padding:0;margin:10px 0}
+.checklist li{
+  display:flex;gap:12px;align-items:flex-start;padding:11px 12px;
+  background:var(--bg);border:1px solid var(--border);border-radius:12px;
+  margin-bottom:8px;font-size:.93rem;transition:.18s;
+}
+.checklist li.done{border-color:var(--ok);background:rgba(55,181,124,.09)}
+.checklist input[type="checkbox"]{
+  width:20px;height:20px;flex:0 0 auto;margin-top:2px;
+  accent-color:#37b57c;cursor:pointer;
+}
+.checklist label{cursor:pointer}
+.checklist li.done label{text-decoration:line-through;opacity:.72}
+.mini-bar{
+  height:9px;background:var(--bg);border:1px solid var(--border);
+  border-radius:99px;overflow:hidden;margin:10px 0 6px;
+}
+.mini-bar span{
+  display:block;height:100%;width:0%;
+  background:linear-gradient(90deg,#2f6fbf,#37b57c);transition:width .3s;
+}
+.counter{font-size:.84rem;color:var(--muted);margin:0 0 6px}
+
+/* ============ BOTÓN VOLVER ARRIBA ============ */
+.to-top{
+  position:fixed;right:16px;bottom:18px;width:48px;height:48px;border-radius:50%;
+  background:var(--accent);color:var(--on-accent);border:1px solid #3a6ea8;
+  font-size:1.25rem;cursor:pointer;display:none;z-index:200;
+  box-shadow:var(--shadow);font-family:inherit;line-height:1;
+}
+.to-top.show{display:block}
+.to-top:hover{filter:brightness(1.2)}
+
+/* ============ CRÉDITOS ============ */
+.credit-name{
+  font-size:clamp(2rem,9vw,3.6rem);
+  font-weight:900;letter-spacing:-.02em;line-height:1.05;
+  margin:8px 0 4px;
+  background:linear-gradient(90deg,#4b9bff,#a9d3ff,#4b9bff);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:#4b9bff;
+  background-size:200% auto;animation:shine 5s linear infinite;
+}
+@keyframes shine{to{background-position:200% center}}
+.credit-role{
+  font-size:1.05rem;font-weight:800;color:var(--text);
+  letter-spacing:.06em;text-transform:uppercase;margin:0 0 14px;
+}
+.credit-date{
+  display:inline-block;font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:1rem;background:var(--accent);color:var(--on-accent);
+  border:1px solid #3a6ea8;border-radius:10px;padding:9px 16px;letter-spacing:.05em;
+}
+.credits-svg{width:100%;height:auto;display:block;border-radius:18px;margin:16px 0;box-shadow:var(--shadow)}
+
+/* ============ FOOTER ============ */
+footer{
+  text-align:center;color:var(--muted);font-size:.8rem;
+  padding:26px 14px 40px;border-top:1px solid var(--border);margin-top:30px;
+}
+
+/* ============ RESALTADO DE BÚSQUEDA ============ */
+mark.sh{background:#ffe680;color:#1a1a1a;border-radius:3px;padding:0 2px}
+mark.sh.current{background:#ff9f43;outline:2px solid #ff6b00}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:600px){
+  .wrap{padding:0 11px 50px}
+  h1{font-size:1.35rem}
+  .card{padding:15px;border-radius:14px}
+  .card h2{font-size:1.05rem}
+  .toolbar{padding:10px;gap:8px}
+  .btn{padding:9px 11px;font-size:.78rem}
+  .tab-btn{padding:8px 11px;font-size:.72rem}
+  table{font-size:.82rem}
+  .to-top{width:44px;height:44px;right:12px;bottom:14px}
+}
+
+/* ============ IMPRESIÓN ============ */
+@media print{
+  #progressBar,.toolbar,.tabs,.to-top,.copy-btn{display:none!important}
+  body{background:#fff;color:#000}
+  .tab-panel{display:block!important;page-break-before:always}
+  .card,details,pre,.diagram{box-shadow:none;border-color:#bbb;break-inside:avoid}
+  .credit-name{-webkit-text-fill-color:#123;-color:#123}
+  a{color:#000;text-decoration:underline}
+  .hero-svg,.credits-svg{box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+
+<div class="wrap">
+
+  <!-- ================= HERO CON SVG ANIMADO ================= -->
+  <header class="hero">
+
+    <svg class="hero-svg" viewBox="0 0 800 420" role="img"
+         aria-label="Animación educativa: sobre un teclado de piano se mueven tres líneas que representan los pilares del bebop: pasos por escala, saltos por terceras y aproximaciones cromáticas que resuelven en una nota de acorde.">
+      <defs>
+        <linearGradient id="bgG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#101c33"/>
+          <stop offset="1" stop-color="#0a0e1a"/>
+        </linearGradient>
+        <linearGradient id="keyG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#f4f8ff"/>
+          <stop offset="1" stop-color="#c6d4e8"/>
+        </linearGradient>
+        <linearGradient id="dotG" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#8fc7ff"/>
+          <stop offset="1" stop-color="#ffffff"/>
+        </linearGradient>
+        <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="4.5" result="b"/>
+          <feMerge>
+            <feMergeNode in="b"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <!-- Fondo -->
+      <rect x="0" y="0" width="800" height="420" rx="22" fill="url(#bgG)"/>
+      <rect x="1" y="1" width="798" height="418" rx="22" fill="none" stroke="#1e3a5f" stroke-width="2"/>
+
+      <!-- Título -->
+      <text x="400" y="36" text-anchor="middle" font-family="system-ui,sans-serif"
+            font-size="17" font-weight="800" fill="#dce9ff" letter-spacing="2.5">
+        LOS 3 PILARES DEL BEBOP
+      </text>
+
+      <!-- ============ PILAR 1 : PASOS ============ -->
+      <text x="20" y="92" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#7fd1ff">PASOS</text>
+      <text x="20" y="108" font-family="system-ui,sans-serif" font-size="10" fill="#6f86a8">Pilar 1 · escala</text>
+
+      <g font-family="system-ui,sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+        <circle cx="170" cy="96" r="17" fill="#1e3a5f" stroke="#3f7ac0" stroke-width="2"/>
+        <text x="170" y="101" fill="#cfe4ff">C</text>
+        <circle cx="255" cy="96" r="17" fill="#1e3a5f" stroke="#3f7ac0" stroke-width="2"/>
+        <text x="255" y="101" fill="#cfe4ff">D</text>
+        <circle cx="340" cy="96" r="17" fill="#1e3a5f" stroke="#3f7ac0" stroke-width="2"/>
+        <text x="340" y="101" fill="#cfe4ff">E</text>
+        <circle cx="425" cy="96" r="17" fill="#1e3a5f" stroke="#3f7ac0" stroke-width="2"/>
+        <text x="425" y="101" fill="#cfe4ff">F</text>
+        <circle cx="510" cy="96" r="17" fill="#1e3a5f" stroke="#3f7ac0" stroke-width="2"/>
+        <text x="510" y="101" fill="#cfe4ff">G</text>
+      </g>
+
+      <circle r="8" cy="96" fill="url(#dotG)" filter="url(#glow)">
+        <animate attributeName="cx" calcMode="discrete" dur="9s" repeatCount="indefinite"
+                 values="170;255;340;425;510;425;340;255;170"/>
+      </circle>
+
+      <!-- ============ PILAR 2 : SALTOS ============ -->
+      <text x="20" y="167" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#9be8b8">SALTOS</text>
+      <text x="20" y="183" font-family="system-ui,sans-serif" font-size="10" fill="#6f86a8">Pilar 2 · terceras</text>
+
+      <g font-family="system-ui,sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+        <circle cx="170" cy="171" r="17" fill="#12351f" stroke="#37b57c" stroke-width="2"/>
+        <text x="170" y="176" fill="#c8f5db">C</text>
+        <circle cx="340" cy="171" r="17" fill="#12351f" stroke="#37b57c" stroke-width="2"/>
+        <text x="340" y="176" fill="#c8f5db">E</text>
+        <circle cx="510" cy="171" r="17" fill="#12351f" stroke="#37b57c" stroke-width="2"/>
+        <text x="510" y="176" fill="#c8f5db">G</text>
+        <circle cx="680" cy="171" r="17" fill="#12351f" stroke="#37b57c" stroke-width="2"/>
+        <text x="680" y="176" fill="#c8f5db">B</text>
+      </g>
+
+      <circle r="8" cy="171" fill="#7cf0b0" filter="url(#glow)">
+        <animate attributeName="cx" calcMode="discrete" dur="6s" repeatCount="indefinite"
+                 values="170;340;510;680;510;340;170"/>
+      </circle>
+
+      <!-- ============ PILAR 3 : APROXIMACIÓN ============ -->
+      <text x="20" y="242" font-family="system-ui,sans-serif" font-size="13" font-weight="800" fill="#f0c477">APROX.</text>
+      <text x="20" y="258" font-family="system-ui,sans-serif" font-size="10" fill="#6f86a8">Pilar 3 · cromatismo</text>
+
+      <g font-family="system-ui,sans-serif" font-size="11" font-weight="700" text-anchor="middle">
+        <circle cx="170" cy="246" r="17" fill="#3a2a10" stroke="#e0a33e" stroke-width="2"/>
+        <text x="170" y="251" fill="#ffe0a3">D#</text>
+        <circle cx="340" cy="246" r="17" fill="#1e3a5f" stroke="#4b9bff" stroke-width="2"/>
+        <text x="340" y="251" fill="#cfe4ff">E</text>
+      </g>
+
+      <line x1="192" y1="246" x2="312" y2="246" stroke="#e0a33e" stroke-width="2.2"
+            stroke-dasharray="7 7" stroke-linecap="round">
+        <animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.1s" repeatCount="indefinite"/>
+      </line>
+      <polygon points="312,240 326,246 312,252" fill="#e0a33e"/>
+
+      <circle r="8" cy="246" fill="#ffd98a" filter="url(#glow)">
+        <animate attributeName="cx" dur="2.6s" repeatCount="indefinite"
+                 keyTimes="0;0.45;0.75;1" values="170;170;340;340"/>
+      </circle>
+
+      <text x="470" y="251" font-family="system-ui,sans-serif" font-size="11" fill="#8fa6c4">
+        tensión → resolución
+      </text>
+
+      <!-- ============ TECLADO ============ -->
+      <g>
+        <!-- teclas blancas -->
+        <g>
+          <rect x="99"  y="310" width="86" height="72" rx="5" fill="url(#keyG)" stroke="#26364f"/>
+          <rect x="185" y="310" width="86" height="72" rx="5" fill="url(#keyG)" stroke="#26364f"/>
+          <rect x="271" y="310" width="86" height="72" rx="5" fill="url(#keyG)" stroke="#26364f"/>
+          <rect x="357" y="310" width="86" height="72" rx="5" fill="url(#keyG)" stroke="#26364f"/>
+          <rect x="443" y="310" width="86" height="72" rx="5" fill="url(#keyG)" stroke="#26364f"/>
+          <rect x="529" y="310" width="86" height="72" rx="5" fill="url(#keyG)" stroke="#26364f"/>
+          <rect x="615" y="310" width="86" height="72" rx="5" fill="url(#keyG)" stroke="#26364f"/>
+        </g>
+
+        <!-- resplandor de notas de acorde (C, E, G) -->
+        <rect x="99" y="310" width="86" height="72" rx="5" fill="#3f8cff" opacity="0.1">
+          <animate attributeName="opacity" values="0.05;0.5;0.05" dur="2.6s"
+                   begin="0s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="271" y="310" width="86" height="72" rx="5" fill="#3f8cff" opacity="0.1">
+          <animate attributeName="opacity" values="0.05;0.5;0.05" dur="2.6s"
+                   begin="0.85s" repeatCount="indefinite"/>
+        </rect>
+        <rect x="443" y="310" width="86" height="72" rx="5" fill="#3f8cff" opacity="0.1">
+          <animate attributeName="opacity" values="0.05;0.5;0.05" dur="2.6s"
+                   begin="1.7s" repeatCount="indefinite"/>
+        </rect>
+
+        <!-- teclas negras -->
+        <g fill="#111a2b" stroke="#0a0e1a">
+          <rect x="172" y="310" width="26" height="46" rx="4"/>
+          <rect x="258" y="310" width="26" height="46" rx="4"/>
+          <rect x="430" y="310" width="26" height="46" rx="4"/>
+          <rect x="516" y="310" width="26" height="46" rx="4"/>
+          <rect x="602" y="310" width="26" height="46" rx="4"/>
+        </g>
+
+        <!-- nombres -->
+        <g font-family="system-ui,sans-serif" font-size="12" font-weight="700"
+           fill="#33445e" text-anchor="middle">
+          <text x="142" y="372">C</text>
+          <text x="228" y="372">D</text>
+          <text x="314" y="372">E</text>
+          <text x="400" y="372">F</text>
+          <text x="486" y="372">G</text>
+          <text x="572" y="372">A</text>
+          <text x="658" y="372">B</text>
+        </g>
+      </g>
+
+      <!-- Pie animado -->
+      <text x="400" y="405" text-anchor="middle" font-family="system-ui,sans-serif"
+            font-size="12.5" font-weight="700" fill="#8fc7ff">
+        PASOS + SALTOS + APROXIMACIÓN
+        <animate attributeName="opacity" values="0.35;1;0.35" dur="3.4s" repeatCount="indefinite"/>
+      </text>
+    </svg>
+
+    <h1>Los Tres Pilares de la Improvisación Bebop en Piano</h1>
+    <p class="subtitle">Tutorial interactivo para principiantes · Método de aprendizaje paso a paso</p>
+    <div>
+      <span class="badge">Nivel: Principiante</span>
+      <span class="badge">Sin metrónomo al inicio</span>
+      <span class="badge">3 componentes simples</span>
+    </div>
+  </header>
+
+  <!-- ================= TOOLBAR ================= -->
+  <div class="toolbar">
+    <div class="search-box">
+      <input type="search" id="searchInput" placeholder="Buscar en el tutorial… (ej: aproximación, chord tone)"
+             aria-label="Buscar en el tutorial">
+      <button class="btn small" id="searchBtn" type="button">BUSCAR</button>
+      <button class="btn small" id="clearSearchBtn" type="button">LIMPIAR</button>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn small" id="fontMinus" type="button" title="Reducir tamaño del texto">A−</button>
+      <button class="btn small" id="fontPlus" type="button" title="Aumentar tamaño del texto">A+</button>
+      <button class="btn small" id="themeBtn" type="button" title="Cambiar entre modo oscuro y claro">🌙 OSCURO</button>
+      <button class="btn small" id="printBtn" type="button" title="Imprimir o guardar como PDF">🖨 IMPRIMIR / PDF</button>
+    </div>
+
+    <p class="search-info" id="searchInfo">Escribe al menos 2 letras y pulsa BUSCAR.</p>
+  </div>
+
+  <!-- ================= PESTAÑAS ================= -->
+  <nav class="tabs" role="tablist" aria-label="Secciones del tutorial">
+    <button class="tab-btn" role="tab" id="tab-inicio"       aria-controls="panel-inicio"       aria-selected="true"  data-tab="inicio">INICIO</button>
+    <button class="tab-btn" role="tab" id="tab-conceptos"    aria-controls="panel-conceptos"    aria-selected="false" data-tab="conceptos">CONCEPTOS</button>
+    <button class="tab-btn" role="tab" id="tab-procedimiento" aria-controls="panel-procedimiento" aria-selected="false" data-tab="procedimiento">PROCEDIMIENTO</button>
+    <button class="tab-btn" role="tab" id="tab-practica"     aria-controls="panel-practica"     aria-selected="false" data-tab="practica">PRÁCTICA</button>
+    <button class="tab-btn" role="tab" id="tab-errores"      aria-controls="panel-errores"      aria-selected="false" data-tab="errores">ERRORES</button>
+    <button class="tab-btn" role="tab" id="tab-resumen"      aria-controls="panel-resumen"      aria-selected="false" data-tab="resumen">RESUMEN</button>
+    <button class="tab-btn" role="tab" id="tab-fuentes"      aria-controls="panel-fuentes"      aria-selected="false" data-tab="fuentes">FUENTES</button>
+    <button class="tab-btn" role="tab" id="tab-creditos"     aria-controls="panel-creditos"     aria-selected="false" data-tab="creditos">CRÉDITOS</button>
+  </nav>
+
+  <!-- ============================================================
+       PANEL: INICIO
+  ============================================================ -->
+  <section class="tab-panel active" id="panel-inicio" role="tabpanel" aria-labelledby="tab-inicio">
+
+    <div class="card">
+      <h2>¿Qué vas a aprender aquí?</h2>
+      <p>
+        Vas a aprender a improvisar en estilo <b>Bebop</b> sobre el piano usando solamente
+        <b>tres componentes simples</b>. No necesitas memorizar miles de fórmulas complejas:
+        el método se basa en entender <b>dónde aterrizar</b> y cómo moverse entre esos puntos.
+      </p>
+      <p>Los tres pilares son:</p>
+      <ul>
+        <li><b>Pilar 1 — Movimiento Escalar (Steps):</b> mover la melodía nota por nota dentro de la escala.</li>
+        <li><b>Pilar 2 — Saltos y Arpegios (Skips):</b> saltar notas, normalmente en intervalos de tercera.</li>
+        <li><b>Pilar 3 — Notas de Aproximación Bebop (Approach Notes):</b> rodear una nota de acorde con una nota vecina para crear tensión y resolverla.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>¿Para qué sirve?</h2>
+      <p>
+        Sirve para construir líneas melódicas con sonido <b>100 % profesional</b> sin necesidad de
+        memorizar miles de fórmulas complejas. La improvisación Bebop consiste en crear melodías
+        en tiempo real sobre una progresión de acordes, haciendo que cada nota encaje de manera
+        natural con la armonía de la canción.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>¿Por qué es importante aprenderlo?</h2>
+      <p>
+        El Bebop es la <b>piedra angular</b> y el <b>vocabulario madre</b> del jazz moderno.
+        Si comprendes cómo funciona la improvisación en el Bebop, podrás improvisar sobre
+        cualquier género musical —blues, soul, bossa nova, pop o funk— con total elegancia y soltura.
+      </p>
+      <p>
+        Además, el Bebop es un estilo revolucionario caracterizado por un ritmo ágil, una rica
+        sofisticación armónica y líneas melódicas muy fluidas.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>¿Qué necesitas antes de empezar?</h2>
+      <ul>
+        <li>Un <b>piano o teclado</b> (físico o digital) para practicar.</li>
+        <li>Ganas de ir <b>muy despacio</b>: el método funciona igual a velocidad «súper lenta».</li>
+        <li><b>No</b> necesitas metrónomo al principio (de hecho, el material recomienda apagarlo al inicio).</li>
+        <li>Conocer los nombres de las notas y su ubicación en el teclado.</li>
+        <li>Nociones básicas de qué es un acorde (no hace falta experiencia avanzada).</li>
+      </ul>
+      <div class="note">
+        <b>Importante:</b> todo lo que se explica aquí usa el <b>sistema americano</b>
+        (C = Do, D = Re, E = Mi, F = Fa, G = Sol, A = La, B = Si) con los <b>grados</b>
+        de la escala entre paréntesis (I, II, III, IV, V, VI, VII).
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Objetivos del tutorial</h2>
+      <ol>
+        <li>Entender qué son las <b>Notas de Acorde (Chord Tones)</b> y por qué son tu punto de aterrizaje.</li>
+        <li>Dominar el <b>Movimiento Escalar</b> como elemento de conexión.</li>
+        <li>Saber cuándo y cómo usar los <b>Saltos (Skips)</b> para dar energía.</li>
+        <li>Aplicar <b>Notas de Aproximación</b> para crear tensión y resolverla a tiempo.</li>
+        <li>Combinar los tres pilares en una frase real sobre una progresión <b>V7 → I</b> (G7 → Cmaj7).</li>
+        <li>Reconocer y corregir los errores más frecuentes de principiante.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>¿Cómo utilizar este tutorial?</h2>
+      <ol class="steps">
+        <li><b>Usa las pestañas de arriba.</b> Cada pestaña es una sección: conceptos, procedimiento, práctica, errores, resumen, fuentes y créditos.</li>
+        <li><b>Empieza por CONCEPTOS.</b> Ahí entenderás el «mapa» antes de tocar una sola nota.</li>
+        <li><b>Sigue con PROCEDIMIENTO.</b> Cada pilar tiene sus pasos numerados con una sola acción por paso.</li>
+        <li><b>Ve a PRÁCTICA.</b> Encontrarás una lista de comprobación, ejercicios con solución y prompts listos para copiar.</li>
+        <li><b>Revisa ERRORES.</b> Aprender qué <i>no</i> hacer te ahorra meses de práctica mal enfocada.</li>
+        <li><b>Usa el buscador</b> si quieres encontrar una palabra concreta (por ejemplo, «contratiempo»).</li>
+        <li><b>Ajusta el texto</b> con A− / A+ y cambia el tema con el botón de modo oscuro/claro.</li>
+        <li><b>Marca tu progreso</b> en la lista de comprobación: se guarda automáticamente en tu navegador.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>Situaciones reales de uso</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Situación</th><th>Qué harás con estos pilares</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Tocar en una Jam Session</b></td>
+              <td>Crear un solo improvisado cuando llega tu turno.</td>
+            </tr>
+            <tr>
+              <td><b>Tocar piano solo</b></td>
+              <td>Enriquecer las melodías de cualquier tema estándar con adornos y arreglos de nivel profesional.</td>
+            </tr>
+            <tr>
+              <td><b>Acompañamiento (Comping)</b></td>
+              <td>Entender qué notas utilizar para no chocar con el solista o la voz principal.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL: CONCEPTOS
+  ============================================================ -->
+  <section class="tab-panel" id="panel-conceptos" role="tabpanel" aria-labelledby="tab-conceptos">
+
+    <div class="card">
+      <h2>Capítulo 1 · Fundamentos y conceptos clave</h2>
+      <p class="subtitle">El secreto de los profesionales</p>
+
+      <h3>1.1 El mapa del teclado y el centro de gravedad</h3>
+      <p>
+        Para improvisar como un profesional <b>no necesitas tocar cientos de notas al azar</b>.
+        La clave radica en saber <b>dónde aterrizar</b>.
+      </p>
+
+      <h4>Notas de Acorde (Chord Tones)</h4>
+      <p>
+        Son las notas principales que forman el acorde activo en ese momento
+        (habitualmente la <b>tónica</b>, la <b>tercera</b>, la <b>quinta</b> y la <b>séptima</b>).
+      </p>
+
+      <h4>Notas de Adorno / Tensión</h4>
+      <p>
+        Son notas que están <b>fuera del acorde</b> y crean <b>tensión momentánea</b> antes de
+        resolver en una nota de acorde.
+      </p>
+
+      <div class="golden">
+        <b>⭐ Regla de oro del Bebop:</b> en el primer tiempo (tiempo fuerte) de cada nuevo acorde,
+        debes aterrizar en una <b>Nota de Acorde (Chord Tone)</b>.
+      </div>
+
+      <h3>Analogía cotidiana: cruzar el río</h3>
+      <p>
+        Imagina que cruzas un río saltando sobre piedras secas. Las <b>Notas de Acorde</b> son las
+        piedras firmes donde puedes apoyarte sin caerte. Las <b>notas de adorno</b> son pequeños
+        saltos en el aire: puedes estar un instante en el aire, pero <b>siempre debes volver a
+        pisar una piedra firme</b>.
+      </p>
+
+      <h3>Las notas de la escala de C mayor con sus grados</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Nota (sistema americano)</th><th>Grado</th><th>Nombre del grado</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>C</td><td>I</td><td>Tónica / Primera</td></tr>
+            <tr><td>D</td><td>II</td><td>Segunda</td></tr>
+            <tr><td>E</td><td>III</td><td>Tercera</td></tr>
+            <tr><td>F</td><td>IV</td><td>Cuarta</td></tr>
+            <tr><td>G</td><td>V</td><td>Quinta</td></tr>
+            <tr><td>A</td><td>VI</td><td>Sexta</td></tr>
+            <tr><td>B</td><td>VII</td><td>Séptima</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Tabla comparativa: Notas de Acorde vs. Notas de Adorno</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Notas de Acorde (Chord Tones)</th>
+              <th>Notas de Adorno / Aproximación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Función</b></td>
+              <td>Dan estabilidad y reflejan la armonía.</td>
+              <td>Crean tensión, dinamismo y sabor.</td>
+            </tr>
+            <tr>
+              <td><b>Ubicación ideal</b></td>
+              <td>Tiempos fuertes (Tiempo 1 y Tiempo 3).</td>
+              <td>Tiempos débiles (contratiempos).</td>
+            </tr>
+            <tr>
+              <td><b>Sensación</b></td>
+              <td>Reposo, resolución, claridad.</td>
+              <td>Movimiento, expectativa, tensión.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Los tres pilares de un vistazo</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Pilar</th><th>Qué es</th><th>Para qué sirve</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>1. Movimiento Escalar (Steps)</b></td>
+              <td>Subir o bajar nota por nota dentro de la escala, sin saltarte ninguna.</td>
+              <td>Da fluidez y conecta una idea con otra sin sobresaltos.</td>
+            </tr>
+            <tr>
+              <td><b>2. Saltos y Arpegios (Skips)</b></td>
+              <td>Saltar notas intercaladas, normalmente en intervalos de tercera, o arpegiar el acorde.</td>
+              <td>Rompe la monotonía y perfila las notas internas del acorde.</td>
+            </tr>
+            <tr>
+              <td><b>3. Notas de Aproximación (Approach Notes)</b></td>
+              <td>Tocar una o dos notas adyacentes a la nota objetivo justo antes de tocarla.</td>
+              <td>Crea el auténtico «sabor Bebop» mediante tensión y liberación.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="highlight">
+        <b>Resumen del Capítulo 1:</b> improvisar en Bebop consiste en <b>conectar notas de acorde
+        en los tiempos clave</b> mediante notas de adorno o de paso. Toda línea profesional se
+        construye combinando <b>únicamente 3 componentes simples</b>.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Conceptos de tiempo: dónde colocar cada cosa</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Término</th><th>Qué significa</th><th>Qué se toca ahí</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Downbeat</b> (tiempo fuerte)</td>
+              <td>El golpe principal del tiempo, especialmente el tiempo 1.</td>
+              <td>Notas de acorde (Chord Tones). Confirman la armonía.</td>
+            </tr>
+            <tr>
+              <td><b>Contratiempo</b> (off-beat)</td>
+              <td>La subdivisión débil del tiempo (el «y» al contar <i>1 y 2 y</i>).</td>
+              <td>Notas de aproximación y tensiones.</td>
+            </tr>
+            <tr>
+              <td><b>Corcheas constantes</b></td>
+              <td>Contar internamente <i>«1 y 2 y 3 y 4 y»</i>.</td>
+              <td>Base rítmica de la práctica del Pilar 1.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Aviso sobre información no incluida en el material</h2>
+      <div class="note">
+        El material de origen <b>no especifica</b> los siguientes puntos. No se han inventado:
+        <ul>
+          <li>Digitación concreta de los dedos en el teclado.</li>
+          <li>Uso del pedal.</li>
+          <li>Valores de tempo concretos en BPM.</li>
+          <li>Ejercicios en tonalidades distintas a C mayor, G7, Cmaj7 y Bb mayor (Bb6 / Bbmaj7).</li>
+          <li>Repertorio o estándares concretos para aplicar el método.</li>
+        </ul>
+        Si necesitas estos datos, consúltalos en la fuente original citada en la pestaña <b>FUENTES</b>.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL: PROCEDIMIENTO
+  ============================================================ -->
+  <section class="tab-panel" id="panel-procedimiento" role="tabpanel" aria-labelledby="tab-procedimiento">
+
+    <!-- PILAR 1 -->
+    <div class="card">
+      <h2>Capítulo 2 · Pilar 1 — Movimiento Escalar (Steps)</h2>
+
+      <h3>Objetivo</h3>
+      <p>Mover la melodía paso a paso a través de la escala de la canción: subir o bajar nota por nota sin saltarte ninguna.</p>
+
+      <h3>Explicación sencilla</h3>
+      <p>
+        El primer pilar consiste en caminar por la escala. Es el «pegamento» de tus frases.
+      </p>
+
+      <h3>¿Por qué funciona? (El motivo de la acción)</h3>
+      <p>
+        El oído humano percibe el movimiento por escala como una secuencia natural y continua.
+        Otorga <b>fluidez</b> a la frase y conecta una idea con otra sin sobresaltos.
+      </p>
+
+      <div class="diagram">Esquema de Movimiento Escalar (pasos consecutivos):
+
+[ C(I) ] ---> [ D(II) ] ---> [ E(III) ] ---> [ F(IV) ] ---> [ G(V) ]</div>
+
+      <h3>Pasos (una sola acción por paso)</h3>
+      <ol class="steps">
+        <li><b>Selecciona un acorde base.</b> Por ejemplo, C mayor (Cmaj7). <i>Motivo:</i> necesitas un punto de partida concreto antes de tocar nada.</li>
+        <li><b>Identifica la escala asociada.</b> C(I) – D(II) – E(III) – F(IV) – G(V) – A(VI) – B(VII). <i>Motivo:</i> la escala es la «materia prima» de este pilar.</li>
+        <li><b>Elige una Nota de Acorde como punto de inicio.</b> Comienza en C(I) o en E(III). <i>Motivo:</i> empezar en una nota estable evita que la frase suene insegura.</li>
+        <li><b>Camina nota por nota hacia arriba.</b> C(I) → D(II) → E(III) → F(IV) → G(V). <i>Motivo:</i> el movimiento consecutivo crea dirección clara.</li>
+        <li><b>Ajusta el ritmo a corcheas constantes.</b> Cuenta internamente: <i>«1 y 2 y 3 y 4 y»</i>. <i>Motivo:</i> las corcheas dan continuidad y un pulso estable.</li>
+      </ol>
+
+      <h3>Resultado esperado</h3>
+      <p>Una línea que asciende de forma coherente y aterriza en G(V) justo cuando cambia el acorde.</p>
+
+      <h3>Ejemplo correcto vs. incorrecto</h3>
+      <div class="ok">
+        <b>✔ Correcto:</b> inicias en C(I), subes por pasos a D(II), E(III), F(IV) y aterrizas en G(V)
+        justo en el cambio de acorde. La melodía fluye de forma coherente.
+      </div>
+      <div class="danger">
+        <b>✘ Incorrecto:</b> tocar notas aleatorias sin orden, como C(I) → A(VI) → D(II) → F(IV),
+        creando un sonido caótico e inestable sin direccionalidad.
+      </div>
+
+      <h3>Qué hacer si algo sale mal</h3>
+      <ul>
+        <li><b>Si suena como un ejercicio de técnica:</b> estás tocando escalas de arriba abajo continuamente. Recuerda: la escala es solo la materia prima, no el solo terminado.</li>
+        <li><b>Si te pierdes:</b> vuelve a la velocidad mínima y toca solo dos notas de la escala.</li>
+        <li><b>Si no sabes dónde terminar:</b> decide antes de tocar en qué nota de acorde vas a aterrizar.</li>
+      </ul>
+
+      <div class="highlight">
+        <b>Resumen del Capítulo 2:</b> el Movimiento Escalar (Steps) es el <b>pegamento</b> de tus
+        frases musicales. Aporta <b>dirección y continuidad</b>.
+      </div>
+    </div>
+
+    <!-- PILAR 2 -->
+    <div class="card">
+      <h2>Capítulo 3 · Pilar 2 — Saltos y Arpegiados (Skips)</h2>
+
+      <h3>Objetivo</h3>
+      <p>Saltar notas intercaladas, habitualmente en intervalos de tercera, o arpegiar el acorde (saltar una nota de la escala para tocar la siguiente).</p>
+
+      <h3>¿Por qué funciona? (El motivo de la acción)</h3>
+      <p>
+        Si solo usaras escalas, tu improvisación sonaría <b>aburrida y predecible</b>.
+        Los saltos <b>rompen la monotonía</b> y <b>perfilan claramente las notas internas del acorde</b>.
+      </p>
+
+      <div class="diagram">Esquema de Saltos / Arpegio (intervalos de tercera):
+
+[ C(I) ] -- (salta D) --> [ E(III) ] -- (salta F) --> [ G(V) ] -- (salta A) --> [ B(VII) ]</div>
+
+      <h3>Pasos (una sola acción por paso)</h3>
+      <ol class="steps">
+        <li><b>Elige el acorde sobre el que vas a tocar.</b> Por ejemplo, Bb mayor (Bb6 o Bbmaj7). <i>Motivo:</i> define el marco armónico.</li>
+        <li><b>Localiza la nota inicial.</b> Empieza en la tónica Bb(I). <i>Motivo:</i> partir de la tónica hace evidente el arpegio.</li>
+        <li><b>Aplica saltos por terceras.</b> Toca Bb(I), salta C(II) para tocar D(III), salta Eb(IV) para tocar F(V), salta G(VI) para tocar A(VII). <i>Motivo:</i> las terceras dibujan el esqueleto del acorde.</li>
+        <li><b>Combina el salto con pasos descendentes.</b> Sube mediante saltos Bb(I) → D(III) → F(V) y baja paso a paso por la escala F(V) → Eb(IV) → D(III) → C(II) → Bb(I). <i>Motivo:</i> mezclar saltos y pasos es lo que hace musical el ejercicio.</li>
+      </ol>
+
+      <h3>Analogía cotidiana</h3>
+      <p>
+        Si el movimiento escalar es como subir una escalera peldaño a peldaño, los saltos (skips)
+        equivalen a subir los escalones <b>de dos en dos</b>. Otorga <b>energía y variedad</b> al trayecto.
+      </p>
+
+      <h3>Resultado esperado</h3>
+      <p>Un sonido más energético y «armónico», donde se escuchan con claridad las notas del acorde.</p>
+
+      <h3>Observación importante</h3>
+      <div class="golden">
+        Los saltos en el Bebop tradicional <b>raramente superan la distancia de una tercera o cuarta
+        de forma consecutiva</b>. Mantenlos controlados para conservar el sabor idiomático del jazz.
+      </div>
+
+      <h3>Qué hacer si algo sale mal</h3>
+      <ul>
+        <li><b>Si suena desordenado:</b> reduce los saltos a terceras únicamente.</li>
+        <li><b>Si pierdes la armonía:</b> vuelve a aterrizar en una nota de acorde en el tiempo 1.</li>
+        <li><b>Si todo suena a arpegio mecánico:</b> alterna un salto con dos pasos de escala.</li>
+      </ul>
+
+      <div class="highlight">
+        <b>Resumen del Capítulo 3:</b> los Saltos (Skips) <b>dibujan el esqueleto del acorde</b> en
+        el aire. Combinar saltos con pasos escalares crea el <b>80 % del movimiento</b> de un solo de Bebop.
+      </div>
+    </div>
+
+    <!-- PILAR 3 -->
+    <div class="card">
+      <h2>Capítulo 4 · Pilar 3 — Notas de Aproximación Bebop (Approach Notes)</h2>
+
+      <h3>Objetivo</h3>
+      <p>
+        Tocar una o dos notas inmediatamente adyacentes a la nota objetivo (Chord Tone)
+        <b>justo antes</b> de tocarla. Es el ingrediente secreto que da el auténtico «sabor Bebop».
+      </p>
+
+      <h3>El principio de Tensión y Liberación (Tension &amp; Release)</h3>
+      <ul>
+        <li><b>Tensión:</b> la nota de aproximación (fuera del acorde) crea un dilema auditivo.</li>
+        <li><b>Liberación:</b> al resolver inmediatamente en la nota del acorde (Chord Tone), el oído siente un alivio placentero.</li>
+      </ul>
+
+      <div class="diagram">Esquema de Aproximación Cromática (semitono abajo):
+
+[ D#(II#) / Eb(IVb) ] ======(TENSIÓN)======> [ E(III) ] ======(LIBERACIÓN en Cmaj7)======</div>
+
+      <h3>Tipos básicos de aproximaciones</h3>
+      <ol>
+        <li>
+          <b>Aproximación por semitono inferior (Half Step Below):</b> tocar una nota medio tono
+          por debajo de la nota objetivo.<br>
+          <i>Ejemplo:</i> para llegar a la nota E(III) del acorde Cmaj7, inicias tocando la nota
+          D#(II#) o Eb(IVb) y resuelves en E(III).
+        </li>
+        <li>
+          <b>Aproximación por tono/semitono superior (Step Above):</b> tocar una nota por encima
+          dentro de la escala y caer a la nota de acorde.
+        </li>
+      </ol>
+
+      <h3>Pasos (una sola acción por paso)</h3>
+      <ol class="steps">
+        <li><b>Selecciona tu nota de destino (Chord Tone).</b> Ejemplo: la nota G(V) sobre el acorde Cmaj7. <i>Motivo:</i> sin destino claro no hay resolución.</li>
+        <li><b>Elige tu nota de aproximación.</b> Toma la nota F#(IV#), que es el semitono inferior a G(V). <i>Motivo:</i> el semitono crea la tensión característica del Bebop.</li>
+        <li><b>Sincroniza con el tiempo.</b> Toca F#(IV#) en la parte débil del tiempo (contratiempo) y cae exactamente en G(V) en el tiempo 1 (tiempo fuerte). <i>Motivo:</i> la resolución debe coincidir con el tiempo fuerte para confirmar la armonía.</li>
+      </ol>
+
+      <h3>Resultado esperado</h3>
+      <p>Un sonido «jazzeado», tenso y con resolución limpia justo en el tiempo fuerte.</p>
+
+      <h3>Ejemplo correcto vs. incorrecto</h3>
+      <div class="ok">
+        <b>✔ Correcto:</b> F#(IV#) → G(V) en el tiempo fuerte. Suena jazzeado, tenso y con resolución limpia.
+      </div>
+      <div class="danger">
+        <b>✘ Incorrecto:</b> quedarse estancado en la nota F#(IV#) en el tiempo fuerte sin resolver
+        a G(V), generando una disonancia molesta que destruye la armonía del acorde.
+      </div>
+
+      <h3>Qué hacer si algo sale mal</h3>
+      <ul>
+        <li><b>Si suena «desafinado»:</b> seguramente dejaste la nota de aproximación colgada. Muévete inmediatamente medio tono hacia una nota de acorde.</li>
+        <li><b>Si no se nota el efecto Bebop:</b> comprueba que la aproximación está en el contratiempo y la resolución en el tiempo 1.</li>
+        <li><b>Si te resulta imposible a tempo:</b> quita el metrónomo y hazlo en cámara súper lenta.</li>
+      </ul>
+
+      <div class="highlight">
+        <b>Resumen del Capítulo 4:</b> las Aproximaciones Bebop crean la <b>tensión cromática</b>
+        indispensable. El secreto no es la nota cromática en sí, sino <b>resolverla a tiempo en una
+        nota de acorde</b>.
+      </div>
+    </div>
+
+    <!-- COMBINACIÓN -->
+    <div class="card">
+      <h2>Capítulo 5 · La combinación de los 3 pilares en la práctica real</h2>
+
+      <h3>¿Cómo se ensamblan los 3 pilares en un solo real?</h3>
+      <p>
+        Un solo de Bebop profesional no utiliza estos pilares por separado: los <b>alterna fluidamente</b>.
+      </p>
+
+      <div class="diagram" id="formulaMaestra">Fórmula Maestra de una Frase Bebop:
+
+[ SALTO (Pilar 2) ] ---> [ PASOS ESCALARES (Pilar 1) ] ---> [ APROXIMACIÓN (Pilar 3) ] ---> [ NOTA DE ACORDE (Resolución) ]</div>
+
+      <button class="copy-btn" data-copy-target="formulaMaestra" type="button">COPIAR FÓRMULA</button>
+
+      <h3>Caso práctico sobre una progresión V7 → I (G7 a Cmaj7)</h3>
+      <p>Analicemos cómo improvisar sobre el cambio de un acorde G7 (dominante) a un acorde Cmaj7 (tónica):</p>
+
+      <h4>Paso 1 — Sobre el acorde G7</h4>
+      <ol class="steps">
+        <li><b>Inicia con un Salto (Pilar 2) sobre el arpegio:</b> G(I) → B(III) → D(V).</li>
+        <li><b>Continúa con Movimiento Escalar (Pilar 1) descendente:</b> C(IV) → B(III) → A(II).</li>
+      </ol>
+
+      <h4>Paso 2 — Conexión hacia Cmaj7</h4>
+      <ol class="steps">
+        <li><b>Usa una Aproximación (Pilar 3):</b> toca D#(II#) —semitono inferior a la tercera de Cmaj7— en el contratiempo.</li>
+        <li><b>Aterriza:</b> resuelve cayendo en la nota E(III) justo en el primer tiempo del acorde Cmaj7.</li>
+      </ol>
+
+      <div class="ok">
+        <b>Resultado esperado:</b> una frase de un compás que arranca con energía (salto),
+        fluye (pasos), genera tensión (aproximación) y descansa exactamente en el tiempo 1
+        del acorde nuevo (nota de acorde).
+      </div>
+
+      <h3>Qué hacer si algo sale mal</h3>
+      <ul>
+        <li><b>Si la frase se te desarma:</b> practica cada pilar por separado durante unos minutos y vuelve a unirlos.</li>
+        <li><b>Si el aterrizaje no coincide con el tiempo 1:</b> reduce la velocidad hasta que coincida sin esfuerzo.</li>
+        <li><b>Si te sobra o te falta tiempo:</b> ajusta el número de notas del movimiento escalar (pasos), no la velocidad.</li>
+      </ul>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL: PRÁCTICA
+  ============================================================ -->
+  <section class="tab-panel" id="panel-practica" role="tabpanel" aria-labelledby="tab-practica">
+
+    <div class="card">
+      <h2>Lista de comprobación (Checklist) para la práctica</h2>
+      <p>Marca cada punto mientras practicas. Tu progreso se guarda automáticamente en este navegador.</p>
+
+      <ul class="checklist" id="checklist">
+        <li>
+          <input type="checkbox" id="ck1" data-check="ck1">
+          <label for="ck1">¿Identifiqué las notas de acorde (1, 3, 5, 7) de la progresión?</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ck2" data-check="ck2">
+          <label for="ck2">¿Estoy iniciando mi práctica a una velocidad súper lenta y sin metrónomo?</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ck3" data-check="ck3">
+          <label for="ck3">¿Aterricé en una nota de acorde (Chord Tone) en el tiempo 1 de cada cambio de acorde?</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ck4" data-check="ck4">
+          <label for="ck4">¿Utilicé movimiento por escala (Steps) para conectar notas?</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ck5" data-check="ck5">
+          <label for="ck5">¿Incluí al menos un salto (Skips) por terceras?</label>
+        </li>
+        <li>
+          <input type="checkbox" id="ck6" data-check="ck6">
+          <label for="ck6">¿Apliqué una aproximación cromática antes de resolver en el nuevo acorde?</label>
+        </li>
+      </ul>
+
+      <div class="mini-bar"><span id="checkBar"></span></div>
+      <p class="counter" id="checkCounter">0 de 6 completados</p>
+
+      <div class="btn-row">
+        <button class="btn small" id="resetChecks" type="button">REINICIAR CHECKLIST</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ejercicio 1 · Identificación de Notas de Acorde</h2>
+      <p>
+        <b>Consigna:</b> para el acorde <b>G7</b> en la escala de C mayor, identifica las notas que
+        componen su arpegio básico (1, 3, 5, 7) e indícalas en sistema americano con sus grados.
+      </p>
+
+      <details>
+        <summary>Ver solución explicada del Ejercicio 1</summary>
+        <div class="det-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Grado del arpegio</th><th>Nombre</th><th>Nota (sistema americano)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Tónica (I / 1)</td><td>—</td><td>G(V)</td></tr>
+                <tr><td>Tercera (III / 3)</td><td>—</td><td>B(VII)</td></tr>
+                <tr><td>Quinta (V / 5)</td><td>—</td><td>D(II)</td></tr>
+                <tr><td>Séptima menor (VIIb / 7)</td><td>—</td><td>F(IV)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            <b>Explicación:</b> estas cuatro notas representan las <b>«piedras firmes»</b> donde
+            debes aterrizar cuando el acorde activo sea G7.
+          </p>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2>Ejercicio 2 · Construcción de una línea Bebop sobre V7 → I</h2>
+      <p>
+        <b>Consigna:</b> crea una frase musical de 1 compás sobre <b>G7</b> que conecte con
+        <b>Cmaj7</b> utilizando los 3 pilares.
+      </p>
+
+      <details>
+        <summary>Ver solución paso a paso del Ejercicio 2</summary>
+        <div class="det-body">
+          <ol class="steps">
+            <li><b>Pilar 2 (Saltos):</b> toca G(V) → B(VII) (salto en terceras sobre G7).</li>
+            <li><b>Pilar 1 (Pasos):</b> sube por escala C(IV) → D(II).</li>
+            <li><b>Pilar 3 (Aproximación):</b> toca D#(II#) (semitono inferior a E(III)) en el contratiempo.</li>
+            <li><b>Resolución (Chord Tone):</b> cae en E(III) justo en el tiempo 1 del acorde Cmaj7.</li>
+          </ol>
+          <div class="diagram">G(V) --> B(VII)  |  C(IV) --> D(II)  |  D#(II#) --> E(III) ✅
+   salto            pasos           aproximación   resolución</div>
+        </div>
+      </details>
+    </div>
+
+    <div class="card">
+      <h2>Prompts sugeridos para practicar con Inteligencia Artificial</h2>
+      <p>
+        Si deseas utilizar herramientas de IA para generar nuevos ejercicios personalizados de piano
+        Bebop, puedes copiar y pegar los siguientes prompts:
+      </p>
+
+      <h3>1. Prompt para crear rutinas de práctica progresivas</h3>
+      <div class="prompt-block">
+        <p id="prompt1">"Actúa como un profesor experto de piano jazz. Créame una rutina de práctica paso a paso de 15 minutos diarios sobre una progresión 2-5-1 en C mayor (Dm7 - G7 - Cmaj7). Utiliza únicamente el sistema americano con grados en paréntesis. Incluye combinaciones específicas de Pasos, Saltos y Aproximaciones cromáticas a velocidad súper lenta."</p>
+        <button class="copy-btn" data-copy-target="prompt1" type="button">COPIAR</button>
+      </div>
+
+      <h3>2. Prompt para analizar líneas melódicas de Bebop</h3>
+      <div class="prompt-block">
+        <p id="prompt2">"Analiza la siguiente línea melódica en piano sobre Cmaj7: C(I) - E(III) - G(V) - D#(II#) - E(III). Desglosa exactamente qué notas son Pasos (Pilar 1), cuáles son Saltos (Pilar 2) y cuáles son Aproximaciones Bebop (Pilar 3)."</p>
+        <button class="copy-btn" data-copy-target="prompt2" type="button">COPIAR</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Cómo practicar cada sesión (según el material)</h2>
+      <ol class="steps">
+        <li><b>Apaga el metrónomo.</b> <i>Motivo:</i> necesitas tiempo para reflexionar qué pilar usarás a continuación.</li>
+        <li><b>Detente en cada nota</b> el tiempo que sea necesario antes de decidir el siguiente movimiento.</li>
+        <li><b>Organiza la línea mentalmente.</b> Cuando tu mente organice la línea, podrás incorporar ritmo y velocidad.</li>
+        <li><b>Revisa la checklist</b> al final de cada sesión.</li>
+      </ol>
+      <div class="note">
+        Esto no es una opinión añadida: proviene directamente de las respuestas del FAQ del material de origen.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL: ERRORES
+  ============================================================ -->
+  <section class="tab-panel" id="panel-errores" role="tabpanel" aria-labelledby="tab-errores">
+
+    <div class="card">
+      <h2>Errores que NUNCA deben cometerse</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Error</th><th>Qué ocurre</th><th>Cómo corregirlo</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>❌ <b>Tocar sin rumbo</b></td>
+              <td>Tocar notas al azar sin saber en qué nota de acorde vas a aterrizar cuando cambie el acorde.</td>
+              <td>Decide <b>antes</b> de tocar cuál será tu Chord Tone de llegada en el tiempo 1.</td>
+            </tr>
+            <tr>
+              <td>❌ <b>Abusar de las velocidades altas al estudiar</b></td>
+              <td>Intentar tocar rápido antes de dominar la lógica a velocidad súper lenta.</td>
+              <td>Vuelve a la velocidad «Slow Motion». El sistema funciona igual de bien ahí.</td>
+            </tr>
+            <tr>
+              <td>❌ <b>Olvidar resolver las tensiones</b></td>
+              <td>Tocar notas de aproximación cromáticas en tiempos fuertes y dejarlas suspendidas sin resolver.</td>
+              <td>Resuelve siempre la nota de aproximación en una nota de acorde, a tiempo.</td>
+            </tr>
+            <tr>
+              <td>❌ <b>Usar solo escalas de arriba a abajo</b></td>
+              <td>Esto convierte tu solo en un ejercicio mecánico aburrido.</td>
+              <td>Alterna Pasos, Saltos y Aproximaciones (los tres pilares).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Errores frecuentes por pilar</h2>
+
+      <h3>Pilar 1 — Movimiento Escalar</h3>
+      <div class="danger">
+        <b>Advertencia de error frecuente:</b> tocar escalas de arriba a abajo continuamente como si
+        estuvieras haciendo ejercicios de técnica. La escala es solo la <b>materia prima</b>, no el
+        solo terminado.
+      </div>
+
+      <h3>Pilar 2 — Saltos</h3>
+      <div class="danger">
+        <b>Error frecuente:</b> saltar distancias demasiado grandes de forma consecutiva.
+        Los saltos en el Bebop tradicional raramente superan la distancia de una <b>tercera o cuarta</b>.
+      </div>
+
+      <h3>Pilar 3 — Aproximaciones</h3>
+      <div class="danger">
+        <b>Error frecuente:</b> quedarse estancado en la nota de aproximación en el tiempo fuerte
+        sin resolver. Genera una disonancia molesta que destruye la armonía del acorde.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Preguntas frecuentes (FAQ)</h2>
+
+      <details>
+        <summary>1. ¿Necesito tocar muy rápido para que suene a Bebop?</summary>
+        <div class="det-body">
+          <p>
+            <b>No.</b> El tutorial original demuestra que el sistema de los 3 pilares funciona
+            exactamente igual a velocidad «Súper Lenta» (Slow Motion). El sabor Bebop proviene de la
+            <b>estructura melódica</b> y de la <b>resolución de tensiones</b>, no de la velocidad de tus dedos.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>2. ¿Qué hago si me equivoco de nota mientras improviso?</summary>
+        <div class="det-body">
+          <p>
+            En el Bebop no existen notas equivocadas, sino <b>resoluciones tardías</b>.
+            Si caes en una nota que suena fuera de lugar, muévete <b>medio tono arriba o abajo</b>
+            inmediatamente hacia una nota de acorde (Chord Tone).
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>3. ¿Debo usar metrónomo desde el primer día?</summary>
+        <div class="det-body">
+          <p>
+            <b>Absolutamente no.</b> Apaga el metrónomo. Detente en cada nota el tiempo que sea
+            necesario para reflexionar qué pilar usarás a continuación. Una vez que tu mente organice
+            la línea, podrás incorporar ritmo y velocidad.
+          </p>
+        </div>
+      </details>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL: RESUMEN
+  ============================================================ -->
+  <section class="tab-panel" id="panel-resumen" role="tabpanel" aria-labelledby="tab-resumen">
+
+    <div class="card">
+      <h2>Resumen de todo lo aprendido</h2>
+      <ol class="steps">
+        <li>La improvisación Bebop <b>no es improvisar sin reglas</b>; es una construcción lógica basada en 3 componentes sencillos.</li>
+        <li>El pilar de <b>Movimiento Escalar (Steps)</b> otorga fluidez a la melodía.</li>
+        <li>El pilar de <b>Saltos (Skips)</b> delinea la estructura armónica mediante arpegios en terceras.</li>
+        <li>El pilar de <b>Notas de Aproximación (Approach Notes)</b> genera la tensión requerida que resuelve en una nota de acorde.</li>
+        <li>Aterrizar en una <b>Nota de Acorde (Chord Tone)</b> en los tiempos fuertes es el secreto que hace que tu solo suene profesional.</li>
+      </ol>
+    </div>
+
+    <div class="card">
+      <h2>Lista de conceptos clave</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Concepto</th><th>Definición breve</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>Chord Tones (Notas de Acorde)</b></td><td>Las notas estructurales del acorde (1, 3, 5, 7).</td></tr>
+            <tr><td><b>Steps (Pasos)</b></td><td>Movimiento nota por nota dentro de la escala.</td></tr>
+            <tr><td><b>Skips (Saltos)</b></td><td>Intervalos de tercera o saltos de arpegio.</td></tr>
+            <tr><td><b>Approach Notes (Aproximaciones)</b></td><td>Semitono inferior o paso superior que rodea a una nota de acorde para crear tensión y resolución.</td></tr>
+            <tr><td><b>Downbeat (Tiempo Fuerte)</b></td><td>El tiempo 1 de cada compás donde se confirma la armonía del acorde.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Tabla resumen de los tres pilares</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Pilar</th><th>Qué es</th><th>Para qué sirve</th><th>Ejemplo</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>1. Pasos</b></td>
+              <td>Movimiento consecutivo por la escala.</td>
+              <td>Fluidez y continuidad.</td>
+              <td>C(I) → D(II) → E(III) → F(IV) → G(V)</td>
+            </tr>
+            <tr>
+              <td><b>2. Saltos</b></td>
+              <td>Intervalos de tercera / arpegios.</td>
+              <td>Energía y esqueleto armónico.</td>
+              <td>C(I) → E(III) → G(V) → B(VII)</td>
+            </tr>
+            <tr>
+              <td><b>3. Aproximaciones</b></td>
+              <td>Nota vecina antes de la nota objetivo.</td>
+              <td>Tensión y sabor Bebop.</td>
+              <td>F#(IV#) → G(V) en el tiempo 1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Glosario de términos técnicos</h2>
+
+      <details>
+        <summary>Arpegio</summary>
+        <div class="det-body"><p>Tocar las notas de un acorde de manera sucesiva en lugar de simultánea.</p></div>
+      </details>
+
+      <details>
+        <summary>Bebop</summary>
+        <div class="det-body"><p>Estilo de jazz desarrollado en la década de 1940 caracterizado por un tempo rápido, armonías complejas y líneas melódicas basadas en tensiones y resoluciones.</p></div>
+      </details>
+
+      <details>
+        <summary>Chord Tone (Nota de Acorde)</summary>
+        <div class="det-body"><p>Cualquier nota que forma parte de la estructura armónica directa de un acorde.</p></div>
+      </details>
+
+      <details>
+        <summary>Contratiempo (Off-beat)</summary>
+        <div class="det-body"><p>La subdivisión débil del tiempo (el «y» al contar <i>1 y 2 y</i>), ideal para colocar tensiones o notas de aproximación.</p></div>
+      </details>
+
+      <details>
+        <summary>Downbeat (Tiempo Fuerte)</summary>
+        <div class="det-body"><p>El golpe principal del tiempo (especialmente el tiempo 1), donde deben escucharse las notas principales del acorde.</p></div>
+      </details>
+
+      <details>
+        <summary>Grados de la escala</summary>
+        <div class="det-body"><p>Números romanos (I, II, III, IV, V, VI, VII) que indican la posición relativa de cada nota respecto a la tónica de la escala.</p></div>
+      </details>
+
+      <details>
+        <summary>Sistema Americano (Cifra Cifrada)</summary>
+        <div class="det-body"><p>Notación musical que utiliza letras del alfabeto (A = La, B = Si, C = Do, D = Re, E = Mi, F = Fa, G = Sol).</p></div>
+      </details>
+
+      <details>
+        <summary>Tensión y Resolución</summary>
+        <div class="det-body"><p>Principio expresivo del jazz donde se genera inestabilidad sonora (tensión) para luego descansar en una nota estable (resolución).</p></div>
+      </details>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL: FUENTES
+  ============================================================ -->
+  <section class="tab-panel" id="panel-fuentes" role="tabpanel" aria-labelledby="tab-fuentes">
+
+    <div class="card">
+      <h2>Fuente del archivo adjunto</h2>
+      <p>
+        Todo el contenido de este tutorial proviene del archivo adjunto:
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Elemento</th><th>Detalle</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>Nombre del archivo</b></td><td><code>-Los-Tres-Pilares-d.txt</code></td></tr>
+            <tr><td><b>Título del material</b></td><td>Los Tres Pilares de la Improvisación Bebop en Piano</td></tr>
+            <tr><td><b>Autoría del material</b></td><td>Rubén Sbarsky</td></tr>
+            <tr><td><b>Tipo</b></td><td>Documento de texto con el material base del tutorial</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Fuentes citadas dentro del propio archivo</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Elemento</th><th>Detalle</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Título del video de YouTube</b></td>
+              <td><i>Slow Motion Bebop Solo: The 3 Things You Need — Ep. 323</i></td>
+            </tr>
+            <tr>
+              <td><b>Canal / Creador</b></td>
+              <td><i>Jazz Piano School</i> (presentado por Brendan Lowe)</td>
+            </tr>
+            <tr>
+              <td><b>Enlace URL del video</b></td>
+              <td>https://www.youtube.com/watch?v=Ej323_JazzPianoSchool</td>
+            </tr>
+            <tr>
+              <td><b>Plataforma educativa</b></td>
+              <td>https://jazzpianoschool.com</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Información adicional utilizada</h2>
+      <div class="note">
+        <b>No se utilizó información externa adicional.</b><br>
+        Este tutorial es una reorganización, ampliación pedagógica y adaptación interactiva del
+        contenido del archivo adjunto. No se han añadido datos, procedimientos ni afirmaciones
+        que no estén respaldados por dicho archivo.
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL: CRÉDITOS
+  ============================================================ -->
+  <section class="tab-panel" id="panel-creditos" role="tabpanel" aria-labelledby="tab-creditos">
+
+    <div class="card" style="text-align:center">
+
+      <svg class="credits-svg" viewBox="0 0 800 280" role="img"
+           aria-label="Animación: notas musicales que ascienden flotando sobre un teclado de piano.">
+        <defs>
+          <linearGradient id="credBg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#101c33"/>
+            <stop offset="1" stop-color="#0a0e1a"/>
+          </linearGradient>
+          <filter id="credGlow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="4" result="b"/>
+            <feMerge>
+              <feMergeNode in="b"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <rect x="0" y="0" width="800" height="280" rx="20" fill="url(#credBg)"/>
+        <rect x="1" y="1" width="798" height="278" rx="20" fill="none" stroke="#1e3a5f" stroke-width="2"/>
+
+        <!-- Notas flotantes -->
+        <g filter="url(#credGlow)">
+          <!-- Nota 1 -->
+          <g transform="translate(140,230)" opacity="0">
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.7;1"
+                     dur="4.4s" begin="0s" repeatCount="indefinite"/>
+            <g>
+              <animateTransform attributeName="transform" type="translate"
+                                values="0,0;0,-150" dur="4.4s" begin="0s" repeatCount="indefinite"/>
+              <ellipse cx="0" cy="0" rx="11" ry="8" fill="#4b9bff" transform="rotate(-20)"/>
+              <rect x="7" y="-46" width="3" height="46" fill="#4b9bff"/>
+              <path d="M10,-46 q16,5 18,18 q-7,-9 -18,-9 z" fill="#4b9bff"/>
+            </g>
+          </g>
+
+          <!-- Nota 2 -->
+          <g transform="translate(280,230)" opacity="0">
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.7;1"
+                     dur="5.2s" begin="0.9s" repeatCount="indefinite"/>
+            <g>
+              <animateTransform attributeName="transform" type="translate"
+                                values="0,0;0,-170" dur="5.2s" begin="0.9s" repeatCount="indefinite"/>
+              <ellipse cx="0" cy="0" rx="11" ry="8" fill="#8fc7ff" transform="rotate(-20)"/>
+              <rect x="7" y="-46" width="3" height="46" fill="#8fc7ff"/>
+              <path d="M10,-46 q16,5 18,18 q-7,-9 -18,-9 z" fill="#8fc7ff"/>
+            </g>
+          </g>
+
+          <!-- Nota 3 -->
+          <g transform="translate(420,230)" opacity="0">
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.7;1"
+                     dur="4.8s" begin="1.8s" repeatCount="indefinite"/>
+            <g>
+              <animateTransform attributeName="transform" type="translate"
+                                values="0,0;0,-140" dur="4.8s" begin="1.8s" repeatCount="indefinite"/>
+              <ellipse cx="0" cy="0" rx="11" ry="8" fill="#37b57c" transform="rotate(-20)"/>
+              <rect x="7" y="-46" width="3" height="46" fill="#37b57c"/>
+              <path d="M10,-46 q16,5 18,18 q-7,-9 -18,-9 z" fill="#37b57c"/>
+            </g>
+          </g>
+
+          <!-- Nota 4 -->
+          <g transform="translate(560,230)" opacity="0">
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.7;1"
+                     dur="5.6s" begin="2.6s" repeatCount="indefinite"/>
+            <g>
+              <animateTransform attributeName="transform" type="translate"
+                                values="0,0;0,-165" dur="5.6s" begin="2.6s" repeatCount="indefinite"/>
+              <ellipse cx="0" cy="0" rx="11" ry="8" fill="#e0a33e" transform="rotate(-20)"/>
+              <rect x="7" y="-46" width="3" height="46" fill="#e0a33e"/>
+              <path d="M10,-46 q16,5 18,18 q-7,-9 -18,-9 z" fill="#e0a33e"/>
+            </g>
+          </g>
+
+          <!-- Nota 5 -->
+          <g transform="translate(680,230)" opacity="0">
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.15;0.7;1"
+                     dur="5s" begin="3.4s" repeatCount="indefinite"/>
+            <g>
+              <animateTransform attributeName="transform" type="translate"
+                                values="0,0;0,-130" dur="5s" begin="3.4s" repeatCount="indefinite"/>
+              <ellipse cx="0" cy="0" rx="11" ry="8" fill="#a9d3ff" transform="rotate(-20)"/>
+              <rect x="7" y="-46" width="3" height="46" fill="#a9d3ff"/>
+              <path d="M10,-46 q16,5 18,18 q-7,-9 -18,-9 z" fill="#a9d3ff"/>
+            </g>
+          </g>
+        </g>
+
+        <!-- Teclado -->
+        <g>
+          <rect x="120" y="238" width="560" height="30" rx="6" fill="#e8eefb" stroke="#26364f"/>
+          <g fill="#111a2b">
+            <rect x="180" y="238" width="16" height="18" rx="3"/>
+            <rect x="260" y="238" width="16" height="18" rx="3"/>
+            <rect x="420" y="238" width="16" height="18" rx="3"/>
+            <rect x="500" y="238" width="16" height="18" rx="3"/>
+            <rect x="580" y="238" width="16" height="18" rx="3"/>
+          </g>
+          <rect x="120" y="238" width="560" height="30" rx="6" fill="#4b9bff" opacity="0.12">
+            <animate attributeName="opacity" values="0.05;0.35;0.05" dur="3.2s" repeatCount="indefinite"/>
+          </rect>
+        </g>
+
+        <text x="400" y="42" text-anchor="middle" font-family="system-ui,sans-serif"
+              font-size="15" font-weight="800" fill="#8fc7ff" letter-spacing="3">
+          GRACIAS POR ESTUDIAR
+          <animate attributeName="opacity" values="0.4;1;0.4" dur="3.6s" repeatCount="indefinite"/>
+        </text>
+      </svg>
+
+      <p class="credit-role" style="margin-top:22px">Autor del tutorial</p>
+      <h2 class="credit-name">Rubén Sbarsky</h2>
+      <p class="subtitle" style="margin-bottom:18px">Los Tres Pilares de la Improvisación Bebop en Piano</p>
+
+      <p style="margin:6px 0 6px;font-size:.86rem;color:var(--muted)">Fecha y hora de generación de este tutorial:</p>
+      <div class="credit-date" id="fechaHora">--/--/---- — --:--:--</div>
+
+      <p style="font-size:.84rem;color:var(--muted);margin-top:22px">
+        Tutorial interactivo elaborado a partir del material
+        <i>«Los Tres Pilares de la Improvisación Bebop en Piano»</i>.<br>
+        Contenido basado en el video <i>Slow Motion Bebop Solo: The 3 Things You Need — Ep. 323</i>
+        del canal <i>Jazz Piano School</i> (Brendan Lowe).
+      </p>
+    </div>
+
+  </section>
+
+</div><!-- /wrap -->
+
+<footer>
+  Los Tres Pilares de la Improvisación Bebop en Piano · Tutorial interactivo · Rubén Sbarsky
+</footer>
+
+<button class="to-top" id="toTop" type="button" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     1. PESTAÑAS
+  ============================================================ */
+  var tabButtons = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
+
+  function activateTab(name){
+    tabButtons.forEach(function(btn){
+      var on = btn.getAttribute('data-tab') === name;
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panels.forEach(function(p){
+      p.classList.toggle('active', p.id === 'panel-' + name);
+    });
+  }
+
+  tabButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      activateTab(btn.getAttribute('data-tab'));
+      var tabsEl = document.querySelector('.tabs');
+      var y = tabsEl.getBoundingClientRect().top + window.pageYOffset - 8;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+  });
+
+  /* ============================================================
+     2. TAMAÑO DE TEXTO (A− / A+)
+  ============================================================ */
+  var baseSize = 16;
+  var currentSize = parseInt(localStorage.getItem('bebop_fontsize'), 10) || baseSize;
+
+  function applyFontSize(){
+    currentSize = Math.min(22, Math.max(12, currentSize));
+    document.documentElement.style.fontSize = currentSize + 'px';
+    localStorage.setItem('bebop_fontsize', String(currentSize));
+  }
+  applyFontSize();
+
+  document.getElementById('fontPlus').addEventListener('click', function(){
+    currentSize += 1; applyFontSize();
+  });
+  document.getElementById('fontMinus').addEventListener('click', function(){
+    currentSize -= 1; applyFontSize();
+  });
+
+  /* ============================================================
+     3. MODO OSCURO / CLARO
+  ============================================================ */
+  var themeBtn = document.getElementById('themeBtn');
+
+  function applyTheme(light){
+    document.documentElement.classList.toggle('light', light);
+    themeBtn.textContent = light ? '☀️ CLARO' : '🌙 OSCURO';
+    localStorage.setItem('bebop_theme', light ? 'light' : 'dark');
+  }
+  applyTheme(localStorage.getItem('bebop_theme') === 'light');
+
+  themeBtn.addEventListener('click', function(){
+    applyTheme(!document.documentElement.classList.contains('light'));
+  });
+
+  /* ============================================================
+     4. IMPRIMIR / PDF
+  ============================================================ */
+  document.getElementById('printBtn').addEventListener('click', function(){
+    window.print();
+  });
+
+  /* ============================================================
+     5. BARRA DE PROGRESO + BOTÓN VOLVER ARRIBA
+  ============================================================ */
+  var progressBar = document.getElementById('progressBar');
+  var toTop = document.getElementById('toTop');
+
+  function onScroll(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = h > 0 ? (window.pageYOffset / h) * 100 : 0;
+    progressBar.style.width = pct.toFixed(2) + '%';
+    toTop.classList.toggle('show', window.pageYOffset > 320);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  toTop.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ============================================================
+     6. CHECKLIST CON LOCALSTORAGE
+  ============================================================ */
+  var STORAGE_KEY = 'bebop_checklist_v1';
+  var checks = Array.prototype.slice.call(document.querySelectorAll('#checklist input[type="checkbox"]'));
+  var checkBar = document.getElementById('checkBar');
+  var checkCounter = document.getElementById('checkCounter');
+
+  function loadChecks(){
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e){ saved = {}; }
+    checks.forEach(function(cb){
+      cb.checked = !!saved[cb.getAttribute('data-check')];
+    });
+    updateChecks(false);
+  }
+
+  function saveChecks(){
+    var data = {};
+    checks.forEach(function(cb){ data[cb.getAttribute('data-check')] = cb.checked; });
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e){}
+  }
+
+  function updateChecks(save){
+    var done = 0;
+    checks.forEach(function(cb){
+      var li = cb.closest('li');
+      if (li) li.classList.toggle('done', cb.checked);
+      if (cb.checked) done++;
+    });
+    var pct = checks.length ? (done / checks.length) * 100 : 0;
+    checkBar.style.width = pct + '%';
+    checkCounter.textContent = done + ' de ' + checks.length + ' completados';
+    if (save) saveChecks();
+  }
+
+  checks.forEach(function(cb){
+    cb.addEventListener('change', function(){ updateChecks(true); });
+  });
+
+  document.getElementById('resetChecks').addEventListener('click', function(){
+    checks.forEach(function(cb){ cb.checked = false; });
+    updateChecks(true);
+  });
+
+  loadChecks();
+
+  /* ============================================================
+     7. BOTONES COPIAR
+  ============================================================ */
+  function copyToClipboard(text, btn){
+    function done(){
+      var original = btn.getAttribute('data-label') || btn.textContent;
+      btn.setAttribute('data-label', original);
+      btn.textContent = '¡COPIADO!';
+      btn.classList.add('copied');
+      setTimeout(function(){
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1700);
+    }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch(e){ ok = false; }
+      document.body.removeChild(ta);
+      if (ok) { done(); }
+      else { btn.textContent = 'COPIA MANUAL'; }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var targetId = btn.getAttribute('data-copy-target');
+      var el = document.getElementById(targetId);
+      if (!el) { return; }
+      var text = el.innerText || el.textContent || '';
+      copyToClipboard(text.trim(), btn);
+    });
+  });
+
+  /* ============================================================
+     8. BUSCADOR
+  ============================================================ */
+  var searchInput = document.getElementById('searchInput');
+  var searchInfo = document.getElementById('searchInfo');
+
+  function clearHighlights(){
+    var marks = document.querySelectorAll('mark.sh');
+    for (var i = 0; i < marks.length; i++){
+      var m = marks[i];
+      var parent = m.parentNode;
+      if (parent){
+        parent.replaceChild(document.createTextNode(m.textContent), m);
+        parent.normalize();
+      }
+    }
+  }
+
+  function highlightPanel(panel, query){
+    var qLower = query.toLowerCase();
+    var count = 0;
+
+    var walker = document.createTreeWalker(panel, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node){
+        if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var pe = node.parentElement;
+        if (!pe) return NodeFilter.FILTER_REJECT;
+        if (pe.closest('script, style, mark, noscript')) return NodeFilter.FILTER_REJECT;
+        return node.nodeValue.toLowerCase().indexOf(qLower) !== -1
+          ? NodeFilter.FILTER_ACCEPT
+          : NodeFilter.FILTER_REJECT;
+      }
+    });
+
+    var nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    nodes.forEach(function(node){
+      var text = node.nodeValue;
+      var lower = text.toLowerCase();
+      var frag = document.createDocumentFragment();
+      var i = 0, idx;
+      while ((idx = lower.indexOf(qLower, i)) !== -1){
+        if (idx > i) frag.appendChild(document.createTextNode(text.slice(i, idx)));
+        var mark = document.createElement('mark');
+        mark.className = 'sh';
+        mark.textContent = text.slice(idx, idx + query.length);
+        frag.appendChild(mark);
+        count++;
+        i = idx + query.length;
+      }
+      if (i < text.length) frag.appendChild(document.createTextNode(text.slice(i)));
+      if (node.parentNode) node.parentNode.replaceChild(frag, node);
+    });
+
+    return count;
+  }
+
+  function runSearch(){
+    var query = (searchInput.value || '').trim();
+    clearHighlights();
+
+    if (query.length < 2){
+      searchInfo.textContent = 'Escribe al menos 2 letras y pulsa BUSCAR.';
+      return;
+    }
+
+    var total = 0;
+    var firstPanelId = null;
+
+    panels.forEach(function(panel){
+      var c = highlightPanel(panel, query);
+      total += c;
+      if (c > 0 && !firstPanelId) firstPanelId = panel.id;
+    });
+
+    if (total === 0){
+      searchInfo.innerHTML = 'No se encontraron resultados para «<b>' + escapeHtml(query) + '</b>».';
+      return;
+    }
+
+    var firstPanelName = firstPanelId.replace('panel-', '');
+    activateTab(firstPanelName);
+
+    searchInfo.innerHTML = 'Se encontraron <b>' + total + '</b> coincidencia(s) para «<b>'
+      + escapeHtml(query) + '</b>». Mostrando la sección: <b>' + firstPanelName.toUpperCase() + '</b>.';
+
+    setTimeout(function(){
+      var first = document.querySelector('mark.sh');
+      if (first){
+        first.classList.add('current');
+        var y = first.getBoundingClientRect().top + window.pageYOffset - 120;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        setTimeout(function(){ first.classList.remove('current'); }, 2200);
+      }
+    }, 120);
+  }
+
+  function escapeHtml(s){
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  document.getElementById('searchBtn').addEventListener('click', runSearch);
+
+  searchInput.addEventListener('keydown', function(e){
+    if (e.key === 'Enter'){ e.preventDefault(); runSearch(); }
+  });
+
+  document.getElementById('clearSearchBtn').addEventListener('click', function(){
+    searchInput.value = '';
+    clearHighlights();
+    searchInfo.textContent = 'Escribe al menos 2 letras y pulsa BUSCAR.';
+  });
+
+  /* ============================================================
+     9. FECHA Y HORA AUTOMÁTICAS (DD/MM/AAAA — HH:MM:SS)
+  ============================================================ */
+  function pad(n){ return n < 10 ? '0' + n : String(n); }
+
+  function tickClock(){
+    var el = document.getElementById('fechaHora');
+    if (!el) return;
+    var d = new Date();
+    var fecha = pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear();
+    var hora  = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+    el.textContent = fecha + ' — ' + hora;
+  }
+  tickClock();
+  setInterval(tickClock, 1000);
+
+})();
+</script>
+</body>
+</html>
