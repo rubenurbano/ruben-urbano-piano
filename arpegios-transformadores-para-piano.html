@@ -1,0 +1,2255 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arpegios Transformadores para Piano — Tutorial Interactivo</title>
+<style>
+/* ============================================================
+   VARIABLES Y TEMAS
+   ============================================================ */
+:root{
+  --fs:16px;
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --accent:#1e3a5f;
+  --line:#1e293b;
+  --text:#e2e8f0;
+  --muted:#94a3b8;
+  --blue:#38bdf8;
+  --violet:#a78bfa;
+  --ok:#34d399;
+  --err:#f87171;
+  --warn:#fbbf24;
+  --topbar-bg:rgba(10,14,26,.94);
+  --th-bg:#1e3a5f;
+  --th-fg:#e0f2fe;
+  --code-bg:#0b1220;
+  --shadow:0 10px 30px -14px rgba(0,0,0,.9);
+}
+html[data-theme="light"]{
+  --bg:#f1f5f9;
+  --card:#ffffff;
+  --accent:#dbeafe;
+  --line:#cbd5e1;
+  --text:#0f172a;
+  --muted:#475569;
+  --topbar-bg:rgba(241,245,249,.95);
+  --th-bg:#1e3a5f;
+  --th-fg:#ffffff;
+  --code-bg:#e2e8f0;
+  --shadow:0 10px 26px -18px rgba(15,23,42,.6);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*{box-sizing:border-box;}
+html{
+  font-size:var(--fs,16px);
+  scroll-behavior:smooth;
+  -webkit-text-size-adjust:100%;
+}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height:1.65;
+  transition:background .2s,color .2s;
+  overflow-x:hidden;
+}
+img,svg{max-width:100%;}
+a{color:var(--blue);word-break:break-word;}
+
+/* ============================================================
+   BARRA DE PROGRESO
+   ============================================================ */
+.progress-bar{
+  position:fixed;top:0;left:0;right:0;height:4px;
+  z-index:80;pointer-events:none;background:transparent;
+}
+#progressFill{
+  height:100%;width:0;
+  background:linear-gradient(90deg,var(--blue),var(--violet));
+  transition:width .08s linear;
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.topbar{
+  position:sticky;top:0;z-index:60;
+  display:flex;align-items:center;gap:.4rem;
+  padding:.5rem .7rem;
+  background:var(--topbar-bg);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.brand{
+  font-weight:800;font-size:.86rem;letter-spacing:.3px;
+  margin-right:auto;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;color:var(--text);
+}
+.brand span{color:var(--blue);}
+.tool{
+  flex:0 0 auto;
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--line);
+  border-radius:10px;
+  min-width:38px;height:34px;
+  padding:0 .5rem;
+  font-size:.82rem;font-weight:700;
+  cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;
+  transition:.15s;
+}
+.tool:hover{border-color:var(--blue);color:var(--blue);}
+.tool:active{transform:scale(.94);}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+.tabs{
+  position:sticky;top:51px;z-index:55;
+  display:flex;gap:.35rem;
+  overflow-x:auto;
+  padding:.5rem .7rem;
+  background:var(--bg);
+  border-bottom:1px solid var(--line);
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none;}
+.tab-btn{
+  flex:0 0 auto;
+  background:var(--card);
+  color:var(--muted);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:.38rem .85rem;
+  font-size:.74rem;font-weight:700;letter-spacing:.5px;
+  cursor:pointer;white-space:nowrap;
+  transition:.18s;
+  position:relative;
+}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{
+  background:linear-gradient(135deg,#1e3a5f,#2b4f7d);
+  color:#e0f2fe;
+  border-color:var(--blue);
+  box-shadow:0 0 0 1px rgba(56,189,248,.35),0 8px 20px -12px rgba(56,189,248,.9);
+}
+.tab-btn.has-hit::after{
+  content:"";
+  position:absolute;top:2px;right:4px;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--warn);
+}
+
+/* ============================================================
+   BUSCADOR
+   ============================================================ */
+.searchbar{
+  display:none;
+  gap:.4rem;align-items:center;
+  padding:.55rem .7rem;
+  background:var(--card);
+  border-bottom:1px solid var(--line);
+  position:sticky;top:104px;z-index:54;
+}
+.searchbar.open{display:flex;}
+.searchbar input{
+  flex:1;min-width:0;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:10px;
+  color:var(--text);
+  padding:.45rem .7rem;
+  font-size:.85rem;
+  font-family:inherit;
+}
+.searchbar input:focus{outline:none;border-color:var(--blue);}
+#searchInfo{font-size:.72rem;color:var(--muted);white-space:nowrap;}
+mark.search-hl{
+  background:rgba(251,191,36,.85);
+  color:#0a0e1a;
+  border-radius:3px;
+  padding:0 2px;
+}
+html[data-theme="light"] mark.search-hl{background:#fde68a;color:#0f172a;}
+
+/* ============================================================
+   PANELES
+   ============================================================ */
+main{display:block;}
+.panel{
+  display:none;
+  max-width:960px;
+  margin:0 auto;
+  padding:1rem .85rem 5rem;
+  animation:fadeIn .3s ease;
+}
+.panel.active{display:block;}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:none;}
+}
+
+/* ============================================================
+   SVG HERO
+   ============================================================ */
+.hero-svg-mount{
+  width:100%;
+  max-width:820px;
+  margin:0 auto 1rem;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  background:#0f172a;
+  line-height:0;
+}
+.hero-svg-mount svg{display:block;width:100%;height:auto;}
+.hero-svg-mount img{display:block;width:100%;height:auto;}
+.svg-caption{
+  font-size:.76rem;
+  color:var(--muted);
+  text-align:center;
+  margin:-.4rem auto 1.1rem;
+  max-width:640px;
+  line-height:1.5;
+}
+
+/* ============================================================
+   TIPOGRAFÍA
+   ============================================================ */
+.page-title{
+  font-size:1.55rem;
+  line-height:1.25;
+  margin:.2rem 0 .5rem;
+  font-weight:800;
+  letter-spacing:-.4px;
+  background:linear-gradient(100deg,#7dd3fc,#a78bfa);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+html[data-theme="light"] .page-title{
+  background:none;
+  -webkit-background-clip:initial;
+  background-clip:initial;
+  color:#1e3a5f;
+}
+.lede{
+  font-size:1rem;
+  color:var(--muted);
+  margin:0 0 1.1rem;
+}
+h2{
+  font-size:1.08rem;
+  margin:0 0 .55rem;
+  font-weight:800;
+  letter-spacing:-.2px;
+  color:var(--text);
+  display:flex;align-items:center;gap:.45rem;
+}
+h3{
+  font-size:.95rem;
+  margin:1rem 0 .4rem;
+  font-weight:700;
+  color:var(--blue);
+}
+h4{
+  font-size:.88rem;
+  margin:.85rem 0 .3rem;
+  font-weight:700;
+  color:var(--text);
+}
+p{margin:.5rem 0;}
+ul,ol{margin:.45rem 0;padding-left:1.25rem;}
+li{margin:.28rem 0;}
+strong{color:var(--text);font-weight:700;}
+em{color:var(--muted);}
+
+/* ============================================================
+   TARJETAS
+   ============================================================ */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:1rem 1rem .95rem;
+  margin:0 0 .9rem;
+  box-shadow:var(--shadow);
+}
+.card.tight{padding:.8rem .85rem;}
+.card.accent{
+  border-color:rgba(56,189,248,.45);
+  background:linear-gradient(160deg,rgba(30,58,95,.55),rgba(15,23,42,.9));
+}
+html[data-theme="light"] .card.accent{
+  background:linear-gradient(160deg,#e0f2fe,#f8fafc);
+}
+.card.violet{
+  border-color:rgba(167,139,250,.45);
+  background:linear-gradient(160deg,rgba(76,29,149,.35),rgba(15,23,42,.9));
+}
+html[data-theme="light"] .card.violet{
+  background:linear-gradient(160deg,#ede9fe,#f8fafc);
+}
+
+/* ============================================================
+   ETIQUETAS / NOTAS
+   ============================================================ */
+.pill{
+  display:inline-block;
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:.6px;
+  padding:.15rem .55rem;
+  border-radius:999px;
+  border:1px solid var(--line);
+  color:var(--muted);
+  background:var(--bg);
+  vertical-align:middle;
+}
+.pill.blue{color:#7dd3fc;border-color:rgba(56,189,248,.5);}
+.pill.violet{color:#c4b5fd;border-color:rgba(167,139,250,.5);}
+.pill.green{color:var(--ok);border-color:rgba(52,211,153,.5);}
+.pill.red{color:var(--err);border-color:rgba(248,113,113,.5);}
+
+.note,.warn,.ok,.bad{
+  border-radius:12px;
+  padding:.7rem .85rem;
+  margin:.7rem 0;
+  font-size:.87rem;
+  border-left:4px solid;
+  line-height:1.6;
+}
+.note{background:rgba(56,189,248,.09);border-color:var(--blue);}
+.warn{background:rgba(251,191,36,.09);border-color:var(--warn);}
+.ok{background:rgba(52,211,153,.09);border-color:var(--ok);}
+.bad{background:rgba(248,113,113,.09);border-color:var(--err);}
+.note b,.warn b,.ok b,.bad b{color:inherit;}
+
+/* ============================================================
+   PASOS NUMERADOS
+   ============================================================ */
+ol.steps{
+  counter-reset:s;
+  list-style:none;
+  padding-left:0;
+  margin:.6rem 0;
+}
+ol.steps>li{
+  counter-increment:s;
+  position:relative;
+  padding-left:2.5rem;
+  margin-bottom:.85rem;
+}
+ol.steps>li::before{
+  content:counter(s);
+  position:absolute;left:0;top:.08rem;
+  width:1.75rem;height:1.75rem;
+  border-radius:50%;
+  background:var(--accent);
+  color:#7dd3fc;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:800;
+  border:1px solid rgba(56,189,248,.6);
+}
+html[data-theme="light"] ol.steps>li::before{
+  background:#1e3a5f;color:#e0f2fe;
+}
+ol.steps>li .why{
+  display:block;
+  font-size:.8rem;
+  color:var(--muted);
+  margin-top:.15rem;
+  font-style:italic;
+}
+
+/* ============================================================
+   CÓDIGO / DIAGRAMA
+   ============================================================ */
+pre{
+  background:var(--code-bg);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:.75rem .85rem;
+  overflow-x:auto;
+  font-size:.78rem;
+  line-height:1.6;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+  color:#7dd3fc;
+  margin:.7rem 0;
+}
+html[data-theme="light"] pre{color:#0f172a;}
+
+.diagram{
+  background:var(--code-bg);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:.85rem;
+  margin:.7rem 0;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.76rem;
+  line-height:1.9;
+  overflow-x:auto;
+  white-space:pre;
+  color:var(--muted);
+}
+.diagram .hl{color:var(--violet);font-weight:700;}
+.diagram .b{color:var(--blue);font-weight:700;}
+
+/* ============================================================
+   TABLAS
+   ============================================================ */
+.table-wrap{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  margin:.7rem 0;
+  border-radius:12px;
+  border:1px solid var(--line);
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.82rem;
+  min-width:540px;
+}
+th{
+  background:var(--th-bg);
+  color:var(--th-fg);
+  text-align:left;
+  padding:.55rem .65rem;
+  font-weight:800;
+  font-size:.75rem;
+  letter-spacing:.4px;
+  white-space:nowrap;
+}
+td{
+  padding:.5rem .65rem;
+  border-top:1px solid var(--line);
+  vertical-align:top;
+}
+tbody tr:nth-child(even){background:rgba(30,58,95,.16);}
+html[data-theme="light"] tbody tr:nth-child(even){background:#f1f5f9;}
+td code,th code{
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:.9em;
+  color:var(--violet);
+}
+
+/* ============================================================
+   DESPLEGABLES
+   ============================================================ */
+details{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin:.55rem 0;
+  overflow:hidden;
+}
+details[open]{border-color:rgba(56,189,248,.4);}
+summary{
+  cursor:pointer;
+  padding:.65rem .85rem;
+  font-weight:700;
+  font-size:.87rem;
+  list-style:none;
+  display:flex;align-items:center;gap:.5rem;
+  user-select:none;
+}
+summary::-webkit-details-marker{display:none;}
+summary::before{
+  content:"▸";
+  color:var(--blue);
+  font-size:.85rem;
+  transition:transform .2s;
+  flex:0 0 auto;
+}
+details[open] summary::before{transform:rotate(90deg);}
+details .body{
+  padding:0 .9rem .85rem;
+  font-size:.87rem;
+  border-top:1px solid var(--line);
+  padding-top:.65rem;
+}
+
+/* ============================================================
+   CHECKLIST
+   ============================================================ */
+.checklist{list-style:none;padding-left:0;margin:.5rem 0;}
+.checklist li{
+  display:flex;gap:.6rem;align-items:flex-start;
+  padding:.45rem .55rem;
+  border-radius:10px;
+  font-size:.87rem;
+  transition:background .15s;
+}
+.checklist li:hover{background:rgba(30,58,95,.25);}
+html[data-theme="light"] .checklist li:hover{background:#f1f5f9;}
+.checklist input[type="checkbox"]{
+  flex:0 0 auto;
+  width:19px;height:19px;
+  margin-top:.2rem;
+  accent-color:#38bdf8;
+  cursor:pointer;
+}
+.checklist label{cursor:pointer;flex:1;}
+.checklist input:checked + label{
+  color:var(--muted);
+  text-decoration:line-through;
+  text-decoration-color:rgba(148,163,184,.6);
+}
+.ck-counter{
+  font-size:.75rem;
+  color:var(--muted);
+  margin-top:.35rem;
+  font-weight:700;
+}
+
+/* ============================================================
+   BOTONES COPIAR
+   ============================================================ */
+.copyBtn{
+  display:inline-flex;align-items:center;gap:.3rem;
+  background:var(--accent);
+  color:#e0f2fe;
+  border:1px solid rgba(56,189,248,.5);
+  border-radius:9px;
+  padding:.3rem .7rem;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.5px;
+  cursor:pointer;
+  margin:.25rem 0;
+  transition:.15s;
+  font-family:inherit;
+}
+.copyBtn:hover{background:#2b4f7d;}
+.copyBtn:active{transform:scale(.95);}
+.copyBtn.done{background:#065f46;border-color:var(--ok);color:#d1fae5;}
+.copyRow{
+  display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;
+  margin:.4rem 0;
+}
+.copyRow code{
+  flex:1;min-width:180px;
+  background:var(--code-bg);
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:.4rem .6rem;
+  font-size:.75rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  color:var(--text);
+  word-break:break-all;
+}
+
+/* ============================================================
+   VOLVER ARRIBA
+   ============================================================ */
+.to-top{
+  position:fixed;
+  right:.9rem;bottom:.9rem;
+  width:46px;height:46px;
+  border-radius:50%;
+  border:1px solid rgba(56,189,248,.6);
+  background:linear-gradient(135deg,#1e3a5f,#0f172a);
+  color:#7dd3fc;
+  font-size:1.15rem;
+  font-weight:800;
+  cursor:pointer;
+  z-index:70;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(14px);
+  transition:.25s;
+  box-shadow:0 10px 24px -10px rgba(0,0,0,.9);
+}
+.to-top.show{opacity:1;pointer-events:auto;transform:none;}
+.to-top:active{transform:scale(.93);}
+
+/* ============================================================
+   CRÉDITOS
+   ============================================================ */
+.author-name{
+  font-size:2rem;
+  line-height:1.15;
+  font-weight:900;
+  letter-spacing:-.8px;
+  margin:.2rem 0 .1rem;
+  background:linear-gradient(100deg,#7dd3fc,#a78bfa);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+html[data-theme="light"] .author-name{
+  background:none;
+  -webkit-background-clip:initial;
+  background-clip:initial;
+  color:#1e3a5f;
+}
+.author-role{
+  font-size:.9rem;
+  font-weight:700;
+  color:var(--muted);
+  letter-spacing:.6px;
+  margin:0 0 .9rem;
+}
+.meta-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.5rem;
+  margin-top:.7rem;
+}
+.meta-item{
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:.55rem .7rem;
+}
+.meta-item .k{
+  font-size:.68rem;
+  letter-spacing:.8px;
+  font-weight:800;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+.meta-item .v{
+  font-size:.92rem;
+  font-weight:700;
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  color:var(--text);
+  word-break:break-word;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.foot{
+  text-align:center;
+  font-size:.75rem;
+  color:var(--muted);
+  padding:1.2rem .8rem 2rem;
+  border-top:1px solid var(--line);
+  margin-top:1.5rem;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (min-width:640px){
+  .meta-grid{grid-template-columns:1fr 1fr;}
+  .page-title{font-size:1.9rem;}
+}
+@media (min-width:900px){
+  .panel{padding:1.5rem 1.5rem 5rem;}
+}
+
+/* ============================================================
+   IMPRESIÓN / PDF
+   ============================================================ */
+@page{size:A4 portrait;margin:14mm 12mm;}
+
+@media print{
+  html,body{
+    background:#ffffff !important;
+    color:#000000 !important;
+    padding:0 !important;
+    margin:0 !important;
+    font-size:11pt !important;
+  }
+  .toolbar,.topbar,.tabs,.to-top,.copyBtn,.progress-bar,.searchbar,
+  nav,.search-hl,.no-print{
+    display:none !important;
+  }
+  .panel{
+    display:block !important;
+    page-break-after:auto !important;
+    animation:none !important;
+    padding:0 !important;
+    max-width:100% !important;
+    margin:0 !important;
+  }
+  .panel + .panel{
+    page-break-before:always;
+    border-top:none;
+    margin-top:0;
+  }
+  .card,details,.meta-item,.diagram{
+    background:#ffffff !important;
+    border:1px solid #94a3b8 !important;
+    box-shadow:none !important;
+    break-inside:avoid;
+  }
+  .card.accent,.card.violet{background:#ffffff !important;}
+  .page-title,.author-name{
+    -webkit-background-clip:initial !important;
+    background-clip:initial !important;
+    background:none !important;
+    color:#0f172a !important;
+  }
+  h2,h3,h4,strong,.lede,p,li,td,summary,.body{
+    color:#000000 !important;
+  }
+  h3{color:#1e3a5f !important;}
+  .lede,.muted,ol.steps>li .why{color:#333333 !important;}
+  th{
+    background:#ffffff !important;
+    color:#000000 !important;
+    border-bottom:2px solid #0f172a !important;
+  }
+  td{border-top:1px solid #94a3b8 !important;}
+  tbody tr:nth-child(even){background:#ffffff !important;}
+  pre,.diagram{
+    background:#f8fafc !important;
+    color:#0f172a !important;
+    overflow:visible !important;
+    white-space:pre-wrap !important;
+    word-break:break-word !important;
+    border:1px solid #94a3b8 !important;
+  }
+  .table-wrap{overflow:visible !important;border:1px solid #94a3b8 !important;}
+  table{min-width:0 !important;overflow:visible !important;}
+  .note,.warn,.ok,.bad{
+    background:#ffffff !important;
+    color:#000000 !important;
+    border-left:4px solid #0f172a !important;
+  }
+  .pill{
+    background:#ffffff !important;
+    color:#0f172a !important;
+    border:1px solid #0f172a !important;
+  }
+  .hero-svg-mount{
+    box-shadow:none !important;
+    border:1px solid #94a3b8 !important;
+    max-width:100% !important;
+    break-inside:avoid;
+  }
+  .checklist input[type="checkbox"]{
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+  details{break-inside:avoid;}
+  details .body{border-top:1px solid #94a3b8 !important;}
+  summary::before{color:#0f172a !important;}
+  a{color:#0f172a !important;text-decoration:underline;}
+  .svg-caption{color:#333333 !important;}
+  .ck-counter{color:#333333 !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div id="progressFill"></div></div>
+
+<header class="topbar">
+  <div class="brand">🎹 ARPEGIOS <span>TRANSFORMADORES</span></div>
+  <button class="tool" id="btnSearch" title="Buscar" aria-label="Buscar">🔍</button>
+  <button class="tool" id="btnMinus" title="Reducir texto" aria-label="Reducir tamaño de texto">A−</button>
+  <button class="tool" id="btnPlus" title="Aumentar texto" aria-label="Aumentar tamaño de texto">A+</button>
+  <button class="tool" id="btnTheme" title="Modo claro / oscuro" aria-label="Cambiar tema">🌙</button>
+  <button class="tool" id="btnPrint" title="Imprimir o guardar como PDF" aria-label="Imprimir">🖨</button>
+</header>
+
+<div class="searchbar" id="searchBar">
+  <input type="search" id="searchInput" placeholder="Buscar en el tutorial…" autocomplete="off" aria-label="Buscar en el tutorial">
+  <span id="searchInfo">—</span>
+</div>
+
+<nav class="tabs" id="tabs" aria-label="Secciones del tutorial">
+  <button class="tab-btn active" data-target="p-inicio">INICIO</button>
+  <button class="tab-btn" data-target="p-conceptos">CONCEPTOS</button>
+  <button class="tab-btn" data-target="p-procedimiento">PROCEDIMIENTO</button>
+  <button class="tab-btn" data-target="p-practica">PRÁCTICA</button>
+  <button class="tab-btn" data-target="p-errores">ERRORES</button>
+  <button class="tab-btn" data-target="p-resumen">RESUMEN</button>
+  <button class="tab-btn" data-target="p-fuentes">FUENTES</button>
+  <button class="tab-btn" data-target="p-creditos">CRÉDITOS</button>
+</nav>
+
+<main id="main">
+
+<!-- ============================================================
+     PANEL: INICIO
+     ============================================================ -->
+<section class="panel active" id="p-inicio">
+
+  <div class="hero-svg-mount" data-svg-hero="true" role="img"
+       aria-label="Ilustración animada: tres notas (1, 5 y 9) se encienden en secuencia sobre un teclado de piano mientras una cascada de notas desciende por la derecha."></div>
+  <p class="svg-caption">La mano izquierda enciende <b>1 · 5 · 9</b> (tónica, quinta y novena) mientras la mano derecha despliega una cascada de notas.</p>
+
+  <h1 class="page-title">Arpegios Transformadores para Piano</h1>
+  <p class="lede">Convierte acordes planos en un acompañamiento moderno, profundo y profesional — sin necesidad de tocar pasajes rápidos.</p>
+
+  <div class="card accent">
+    <h2>🎯 ¿Qué vas a aprender?</h2>
+    <p>A sustituir el acompañamiento tradicional de piano (acorde en bloque + octava en la mano izquierda) por un <b>arpegio transformador</b>: una forma de tocar las notas una tras otra que hace que un pianista principiante o intermedio suene como un arreglista profesional.</p>
+    <p>Concretamente aprenderás a:</p>
+    <ul>
+      <li>Construir la mano izquierda con la fórmula <b>1 – 5 – 9</b> (tónica, quinta y novena) en lugar de la clásica 1 – 5 – 8.</li>
+      <li>Reestructurar la mano derecha usando una <b>primera inversión modificada</b> que duplica la nota inferior.</li>
+      <li>Coordinar ambas manos con patrones de <b>2 y 4 tiempos</b>.</li>
+      <li>Aplicarlo a los 6 grados de la escala de <b>Fa mayor</b>, incluida su única excepción.</li>
+      <li>Usarlo en canciones reales.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>💡 ¿Para qué sirve?</h2>
+    <p>Sirve para <b>romper la monotonía de los acordes básicos en estado fundamental</b>. Al reemplazar la estructura tradicional de octava en la mano izquierda por una novena abierta, y reorganizar la mano derecha, el piano adquiere un sonido moderno, lleno, profundo y profesional.</p>
+    <p>Es especialmente útil en:</p>
+    <ul>
+      <li><b>Acompañamiento vocal:</b> llena el espacio sonoro en baladas, canciones lentas o música acústica sin tapar la voz principal.</li>
+      <li><b>Música de adoración y eventos:</b> momentos introspectivos donde se requiere un sonido envolvente y emotivo.</li>
+      <li><b>Improvisación:</b> para crear intros, puentes e interludios elegantes sobre cualquier progresión armónica.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🧰 ¿Qué necesitas antes de empezar?</h2>
+    <ul>
+      <li>Un piano, teclado o controlador MIDI (basta con 61 teclas).</li>
+      <li><b>Pedal de sustain.</b> Es imprescindible: sustituye la fuerza de la mano y evita la tensión muscular.</li>
+      <li>Conocer los nombres de las notas y saber qué es un acorde mayor y menor.</li>
+      <li>Conocer la escala de <b>Fa mayor</b> (F, G, A, Bb, C, D, E). Si no la conoces, en la pestaña CONCEPTOS tienes un repaso mínimo.</li>
+      <li>Un metrónomo (físico o app) para la fase de práctica.</li>
+    </ul>
+    <div class="note">No necesitas saber leer partituras ni tener una técnica avanzada. Todo el tutorial se explica con <b>números de grado</b> y posiciones de mano.</div>
+  </div>
+
+  <div class="card violet">
+    <h2>🏁 Objetivos del tutorial</h2>
+    <p>Marca cada objetivo cuando lo domines. Tu progreso se guarda en este navegador.</p>
+    <ul class="checklist" data-ckgroup="objetivos">
+      <li><input type="checkbox" id="ck-obj1" data-ck="obj1"><label for="ck-obj1">Entender qué es un arpegio transformador y en qué se diferencia del tradicional.</label></li>
+      <li><input type="checkbox" id="ck-obj2" data-ck="obj2"><label for="ck-obj2">Tocar la mano izquierda con la fórmula 1 – 5 – 9 sin tensión muscular.</label></li>
+      <li><input type="checkbox" id="ck-obj3" data-ck="obj3"><label for="ck-obj3">Construir la mano derecha con la primera inversión modificada.</label></li>
+      <li><input type="checkbox" id="ck-obj4" data-ck="obj4"><label for="ck-obj4">Coordinar las dos manos en patrones de 2 y 4 tiempos.</label></li>
+      <li><input type="checkbox" id="ck-obj5" data-ck="obj5"><label for="ck-obj5">Aplicar las 6 posiciones de Fa mayor a una canción real.</label></li>
+      <li><input type="checkbox" id="ck-obj6" data-ck="obj6"><label for="ck-obj6">Recordar y respetar la excepción del grado III (Am).</label></li>
+    </ul>
+    <div class="ck-counter" data-ckcount="objetivos">0 de 6 completados</div>
+  </div>
+
+  <div class="card">
+    <h2>🧭 Cómo usar este tutorial</h2>
+    <ol class="steps">
+      <li><b>Recorre las pestañas en orden.</b> Cada una construye sobre la anterior.
+        <span class="why">El orden es: conceptos → procedimiento → práctica → errores → resumen.</span></li>
+      <li><b>Lee primero, toca después.</b> Cada capítulo explica el concepto antes de pedirte acción.
+        <span class="why">Entender el «por qué» hace que el «cómo» se memorice solo.</span></li>
+      <li><b>Usa los desplegables</b> (▸) para ver el detalle paso a paso solo cuando lo necesites.</li>
+      <li><b>Marca los checklists.</b> Se guardan automáticamente en tu navegador.
+        <span class="why">Ver el progreso avanzar mantiene la motivación.</span></li>
+      <li><b>Imprime o guarda el PDF</b> con el botón 🖨 cuando quieras repasar sin pantalla.</li>
+      <li><b>Usa el buscador</b> 🔍 si quieres repasar un concepto concreto (por ejemplo: «novena», «pedal», «Bb»).</li>
+    </ol>
+    <div class="ok"><b>Resultado esperado:</b> al terminar, podrás sentarte al piano, reconocer la progresión de una canción y sustituir cada acorde por su posición transformadora sin pensar.</div>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: CONCEPTOS
+     ============================================================ -->
+<section class="panel" id="p-conceptos">
+
+  <h1 class="page-title">Conceptos fundamentales</h1>
+  <p class="lede">Antes de mover un dedo, entendamos <b>qué</b> vamos a hacer y <b>por qué</b> funciona.</p>
+
+  <div class="card accent">
+    <h2>📖 ¿Qué es un arpegio transformador?</h2>
+    <p>Un <b>arpegio transformador</b> es una técnica de acompañamiento en piano donde las notas de un acorde <b>no se tocan todas al mismo tiempo en un bloque</b>, sino de forma consecutiva (una tras otra), introduciendo dos cambios concretos:</p>
+    <ol>
+      <li>Una <b>modificación clave en la mano izquierda</b>: la octava se sustituye por la novena.</li>
+      <li>Un <b>rediseño de posición en la mano derecha</b>: se elimina la nota superior y se duplica la inferior.</li>
+    </ol>
+    <p>El resultado: el mismo acorde, pero con un color armónico completamente distinto.</p>
+  </div>
+
+  <div class="card">
+    <h2>🔑 El secreto de la mano izquierda: 1 – 5 – 9</h2>
+    <p>En la interpretación tradicional, la mano izquierda toca <b>tónica, quinta y octava repetida</b> (patrón 1 – 5 – 8). El secreto del arpegio transformador consiste en <b>subir un tono entero a la última nota</b> para convertirla en la <b>novena</b> del acorde (patrón 1 – 5 – 9).</p>
+
+    <div class="diagram">Patrón tradicional (izquierda):  Tónica(1) —— Quinta(5) —— Octava(8)
+Patrón transformador (izq.):    Tónica(1) —— Quinta(5) —— <span class="hl">Novena(9)</span>   ← ¡Nota clave!</div>
+
+    <h4>¿Por qué la novena suena mejor que la octava?</h4>
+    <p>La octava es la misma nota repetida: aporta peso, pero también rigidez. La novena, en cambio, es una nota <b>distinta</b> que pertenece a la extensión del acorde. Añade color sin cambiar la función armónica.</p>
+    <div class="note"><b>Analogía:</b> es como cambiar la pintura plana de una pared por un acabado con textura ligera. La estructura sigue siendo la misma, pero la percepción cambia drásticamente.</div>
+  </div>
+
+  <div class="card violet">
+    <h2>🎹 La mano derecha: primera inversión modificada</h2>
+    <p>Para complementar el bajo abierto de la mano izquierda, la mano derecha no realiza un acorde en bloque convencional, sino una <b>duplicación estratégica de la nota inferior</b>.</p>
+
+    <div class="diagram">Acorde invertido inicial:          Nota inferior — Nota media — Nota superior
+Reestructuración transformadora:  Nota inferior — Nota media — <span class="hl">Nota inferior</span> (duplicada arriba)</div>
+
+    <p>Es decir: se <b>quita la nota más aguda</b> y se <b>duplica la más grave una octava más arriba</b>.</p>
+    <div class="ok"><b>Resultado:</b> una posición simétrica, abierta, que se puede arpegiar en forma de «cascada» con mucha fluidez.</div>
+  </div>
+
+  <div class="card">
+    <h2>📊 Tabla comparativa: tradicional vs. transformador</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Característica</th>
+            <th>Arpegio tradicional</th>
+            <th>Arpegio transformador</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Mano izquierda</b></td>
+            <td>Tónica – Quinta – Octava (1-5-8)</td>
+            <td>Tónica – Quinta – Novena (1-5-9)</td>
+          </tr>
+          <tr>
+            <td><b>Mano derecha</b></td>
+            <td>Acorde triada cerrado</td>
+            <td>Inversión abierta con nota duplicada</td>
+          </tr>
+          <tr>
+            <td><b>Color armónico</b></td>
+            <td>Plano, rígido, básico</td>
+            <td>Moderno, envolvente, profesional</td>
+          </tr>
+          <tr>
+            <td><b>Dificultad de ejecución</b></td>
+            <td>Muy baja</td>
+            <td>Media (requiere uso de pedal de sustain)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎼 Repaso mínimo: la escala de Fa mayor</h2>
+    <p>Todo el tutorial está construido sobre la tonalidad de <b>Fa mayor</b>. Estas son las 7 notas, con su grado:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Grado</th><th>Nota</th><th>Acorde que se forma</th><th>Tipo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>I</td><td>F</td><td>F</td><td>Mayor</td></tr>
+          <tr><td>II</td><td>G</td><td>Gm</td><td>Menor</td></tr>
+          <tr><td>III</td><td>A</td><td>Am</td><td>Menor</td></tr>
+          <tr><td>IV</td><td>Bb</td><td>Bb</td><td>Mayor</td></tr>
+          <tr><td>V</td><td>C</td><td>C</td><td>Mayor</td></tr>
+          <tr><td>VI</td><td>D</td><td>Dm</td><td>Menor</td></tr>
+          <tr><td>VII</td><td>E</td><td>Edim</td><td>Disminuido</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">La única alteración de la escala de Fa mayor es <b>Bb</b> (si bemol). Recuérdalo: será la causa de la única excepción de todo el sistema.</div>
+  </div>
+
+  <div class="card">
+    <h2>📚 Glosario rápido</h2>
+
+    <details>
+      <summary>Arpegio</summary>
+      <div class="body">Ejecución sucesiva y no simultánea de las notas de un acorde. En lugar de un «bloque», las notas suenan una tras otra.</div>
+    </details>
+
+    <details>
+      <summary>Tónica (Grado 1)</summary>
+      <div class="body">Nota fundamental que nombra y rige el acorde. En Dm, la tónica es D. En Bb, la tónica es Bb.</div>
+    </details>
+
+    <details>
+      <summary>Quinta justa (Grado 5)</summary>
+      <div class="body">Intervalo de cinco notas desde la tónica. Le otorga estabilidad al bajo sin saturar la armonía. En Dm, la quinta es A.</div>
+    </details>
+
+    <details>
+      <summary>Octava (Grado 8)</summary>
+      <div class="body">La misma nota de la tónica, pero más aguda. Da peso, pero es armónicamente redundante.</div>
+    </details>
+
+    <details>
+      <summary>Novena (Grado 9 / Grado 2)</summary>
+      <div class="body">Nota ubicada un tono por encima de la octava fundamental. En la práctica es la segunda nota de la escala, pero colocada arriba. En Dm, la novena es E.</div>
+    </details>
+
+    <details>
+      <summary>Primera inversión</summary>
+      <div class="body">Ordenación del acorde donde la tercera se sitúa en la nota más grave. En Dm (D-F-A), la primera inversión es F-A-D.</div>
+    </details>
+
+    <details>
+      <summary>Pedal de sustain</summary>
+      <div class="body">Pedal del piano que levanta los apagadores, dejando resonar las cuerdas libremente. Es la herramienta que permite «soltar» la mano izquierda sin que el sonido se corte.</div>
+    </details>
+
+    <details>
+      <summary>Cascada</summary>
+      <div class="body">Efecto que se consigue arpegiando rápidamente las tres notas de la mano derecha de abajo hacia arriba, creando un flujo sonoro continuo.</div>
+    </details>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: PROCEDIMIENTO
+     ============================================================ -->
+<section class="panel" id="p-procedimiento">
+
+  <h1 class="page-title">Procedimiento paso a paso</h1>
+  <p class="lede">Tres capítulos para construir el arpegio: mano izquierda, mano derecha y coordinación.</p>
+
+  <!-- CAPÍTULO 1 -->
+  <div class="card accent">
+    <h2>Capítulo 1 · La mano izquierda</h2>
+    <p><b>Objetivo:</b> sustituir la octava por la novena y tocar el bajo abierto sin tensión.</p>
+    <p><b>Explicación sencilla:</b> tu mano izquierda va a tocar tres notas: la fundamental (1), la quinta (5) y, en lugar de repetir la fundamental una octava arriba, va a subir un tono entero para tocar la novena (9).</p>
+
+    <h4>Pasos numerados</h4>
+    <ol class="steps">
+      <li><b>Ubica la tónica del acorde.</b> Coloca el dedo meñique (dedo 5) en la nota fundamental que da nombre al acorde.
+        <span class="why">Motivo: la tónica establece el cimiento armónico sobre el cual se construye todo el sonido.</span></li>
+      <li><b>Añade la quinta justa.</b> Toca la quinta nota del acorde con el dedo índice (2) o corazón (3).
+        <span class="why">Motivo: la quinta proporciona estabilidad y refuerza el bajo sin saturar la armonía.</span></li>
+      <li><b>Sustituye la octava por la novena.</b> En lugar de tocar la octava superior, desplaza el pulgar (dedo 1) un tono completo hacia arriba.
+        <span class="why">Motivo: la novena rompe la rigidez de la octava tradicional y aporta una sonoridad abierta, limpia y moderna.</span></li>
+    </ol>
+    <div class="ok"><b>Resultado esperado:</b> tres notas sonando (1 – 5 – 9) que, con el pedal pisado, llenan el registro grave sin embarrarlo.</div>
+
+    <h4>Ejemplo real: Dm (grado VI de Fa mayor)</h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Versión</th><th>Notas</th><th>Grados</th></tr></thead>
+        <tbody>
+          <tr><td>Tradicional</td><td>D – A – D</td><td>1 – 5 – 8</td></tr>
+          <tr><td><b>Transformador (correcto)</b></td><td><b>D – A – E</b></td><td><b>1 – 5 – 9</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Correcto vs. incorrecto</h4>
+    <div class="ok"><b>✔ Correcto:</b> tocar D (bajo), A (quinta) y E (novena) dejando resonar el pedal de sustain.</div>
+    <div class="bad"><b>✘ Incorrecto:</b> forzar la mano abierta causando tensión muscular dolorosa en lugar de usar el pedal para enlazar el movimiento.</div>
+
+    <h4>Si algo sale mal</h4>
+    <div class="warn">Si sientes tensión entre el meñique y el pulgar, <b>no estires más</b>. Toca D y A, suelta la tónica impulsando la mano suavemente hacia la derecha con el pedal pisado, y alcanza la novena E con soltura. La mano se mueve; no se estira.</div>
+
+    <div class="note"><b>Resumen del Capítulo 1:</b> el secreto del arpegio transformador en la mano izquierda radica en sustituir la octava cerrada por la novena abierta (subiendo un tono a la nota superior), logrando un color armónico superior.</div>
+  </div>
+
+  <!-- CAPÍTULO 2 -->
+  <div class="card violet">
+    <h2>Capítulo 2 · La mano derecha y la cascada</h2>
+    <p><b>Objetivo:</b> reestructurar la posición de la mano derecha para que se integre con el bajo abierto.</p>
+    <p><b>Explicación sencilla:</b> en lugar de tocar el acorde completo, vas a quitar la nota más aguda y duplicar la más grave una octava más arriba.</p>
+
+    <h4>Pasos numerados</h4>
+    <ol class="steps">
+      <li><b>Selecciona la primera inversión del acorde.</b> Toma el acorde que vas a interpretar en su primera inversión.
+        <span class="why">Motivo: la primera inversión ofrece una conducción de voces suave que conecta bien con el registro medio del piano.</span></li>
+      <li><b>Elimina la nota superior de la posición.</b> Quita la nota más alta que se encuentra en la cima de esa inversión.
+        <span class="why">Motivo: liberar la nota superior evita choques armónicos con el bajo extendido de la mano izquierda.</span></li>
+      <li><b>Duplica la nota inferior en la parte superior.</b> Toma la nota más baja de la posición y agrégala una octava más arriba.
+        <span class="why">Motivo: crea un efecto de simetría y apertura, permitiendo ejecutar una «cascadita» muy fluida.</span></li>
+    </ol>
+
+    <h4>Ejemplo práctico en Dm</h4>
+    <div class="diagram">Inversión base (mano derecha):  F(1) — A(3) — D(6)
+Paso de transformación:        eliminamos D(6) de arriba y duplicamos F(1) al final
+Nueva posición (mano derecha): <span class="hl">F(1) — A(3) — F(1)</span></div>
+
+    <h4>Trucos profesionales</h4>
+    <ul>
+      <li><b>Pedal de sustain:</b> písalo justo antes de tocar la primera nota de la mano izquierda y mantenlo hasta el cambio de acorde.</li>
+      <li><b>Efecto cascada:</b> no golpees las tres notas juntas; arpegéalas rápidamente de abajo hacia arriba (F → A → F) para crear un flujo constante, como agua cayendo.</li>
+    </ul>
+
+    <div class="warn"><b>Si algo sale mal:</b> si el sonido de la mano derecha «choca» con el de la izquierda, casi siempre es porque olvidaste eliminar la nota superior. Revísalo antes de tocar más fuerte.</div>
+
+    <div class="note"><b>Resumen del Capítulo 2:</b> la mano derecha elimina la nota superior de la primera inversión y duplica la nota inferior, creando una posición simétrica que se arpegia en forma de cascada.</div>
+  </div>
+
+  <!-- CAPÍTULO 3 -->
+  <div class="card">
+    <h2>Capítulo 3 · Coordinación, tiempo y ritmo</h2>
+    <p><b>Objetivo:</b> decidir <b>cuándo</b> suena cada nota.</p>
+    <p><b>Explicación sencilla:</b> el arpegio no tiene un ritmo único. Se adapta a la duración del acorde: si el acorde dura 2 tiempos, usas el patrón corto; si dura 4, usas el patrón largo en cascada.</p>
+
+    <h3>Patrón de 2 tiempos (compás rápido / cambios frecuentes)</h3>
+    <p>Se utiliza cuando la canción cambia de acorde cada 2 tiempos.</p>
+    <ol class="steps">
+      <li><b>Tiempo 1 — entrada simultánea.</b> Entra la tónica de la mano izquierda en el bajo junto con el bloque de la mano derecha (o el inicio de su cascada).</li>
+      <li><b>Subdivisión del tiempo 1.</b> La mano izquierda toca la quinta.</li>
+      <li><b>Tiempo 2.</b> La mano izquierda alcanza la novena diferenciadora.</li>
+    </ol>
+
+    <h3>Patrón de 4 tiempos (desarrollo completo en cascada)</h3>
+    <p>Se utiliza cuando el acorde permanece durante 4 tiempos completos.</p>
+    <div class="diagram">Tiempo 1:  Mano izquierda (tónica)  +  Mano derecha (misma entrada)
+Tiempo 2:  Mano izquierda (quinta) → Mano izquierda (novena)
+Tiempo 3:  Mano derecha despliega notas consecutivas (ej.: A(3) – C(5))
+Tiempo 4:  Resonancia y preparación para el siguiente acorde</div>
+
+    <h3>Lista de comprobación de la ejecución</h3>
+    <ul class="checklist" data-ckgroup="ejecucion">
+      <li><input type="checkbox" id="ck-ej1" data-ck="ej1"><label for="ck-ej1">¿Estás usando la novena en la mano izquierda en lugar de repetir la octava?</label></li>
+      <li><input type="checkbox" id="ck-ej2" data-ck="ej2"><label for="ck-ej2">¿La mano derecha duplicó la nota inferior quitando la superior?</label></li>
+      <li><input type="checkbox" id="ck-ej3" data-ck="ej3"><label for="ck-ej3">¿El pedal de sustain está sosteniendo las notas para evitar tensión física?</label></li>
+      <li><input type="checkbox" id="ck-ej4" data-ck="ej4"><label for="ck-ej4">¿El cambio de acorde se realiza sin interrupciones rítmicas?</label></li>
+    </ul>
+    <div class="ck-counter" data-ckcount="ejecucion">0 de 4 completados</div>
+
+    <div class="note"><b>Resumen del Capítulo 3:</b> el arpegio se adapta a compases de 2 o 4 tiempos sincronizando la entrada simultánea de las manos en el tiempo 1 y desplegando las notas en cascada en los tiempos posteriores.</div>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: PRÁCTICA
+     ============================================================ -->
+<section class="panel" id="p-practica">
+
+  <h1 class="page-title">Práctica y aplicación real</h1>
+  <p class="lede">Las 6 posiciones completas en Fa mayor, dos canciones reales y ejercicios con solución.</p>
+
+  <div class="card accent">
+    <h2>🗺️ Mapeo completo en la escala de Fa mayor</h2>
+    <p>Para aplicar este concepto a cualquier canción en la tonalidad de <b>Fa mayor</b> (F, G, A, Bb, C, D, E), necesitas conocer las posiciones exactas de cada grado.</p>
+    <div class="diagram">Grados en Fa mayor:
+I: F  |  II: Gm  |  III: Am <span class="hl">[EXCEPCIÓN]</span>  |  IV: Bb  |  V: C  |  VI: Dm</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Grado</th>
+            <th>Acorde</th>
+            <th>Mano izquierda (1-5-9)</th>
+            <th>Mano derecha (cascada)</th>
+            <th>Observación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><b>I</b></td><td>F</td><td>F – C – G</td><td>A – C – A</td><td>Novena G añadida</td></tr>
+          <tr><td><b>II</b></td><td>Gm</td><td>G – D – A</td><td>Bb – D – Bb</td><td>Novena A añadida</td></tr>
+          <tr><td><b>III</b></td><td>Am</td><td>A – E – A</td><td>C – E – C</td><td><b>Excepción:</b> octava limpia para no salir de la escala</td></tr>
+          <tr><td><b>IV</b></td><td>Bb</td><td>Bb – F – C</td><td>D – F – D</td><td>Novena C añadida</td></tr>
+          <tr><td><b>V</b></td><td>C</td><td>C – G – D</td><td>E – G – E</td><td>Novena D añadida</td></tr>
+          <tr><td><b>VI</b></td><td>Dm</td><td>D – A – E</td><td>F – A – F</td><td>Novena E añadida</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔍 Detalle acorde por acorde</h2>
+
+    <details>
+      <summary>Grado I · F mayor (duración de 4 tiempos)</summary>
+      <div class="body">
+        <p><b>Mano izquierda:</b> F (tónica) – C (quinta) – G (novena).</p>
+        <p><b>Mano derecha:</b> A – C – A.</p>
+        <p class="why">Nota: la novena de F es G, que pertenece a la escala. Sin problemas.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Grado II · Gm (Sol menor)</summary>
+      <div class="body">
+        <p><b>Mano izquierda:</b> G (tónica) – D (quinta) – A (novena).</p>
+        <p><b>Mano derecha:</b> Bb – D – Bb.</p>
+        <p class="why">Nota: la novena de G es A, que pertenece a la escala. Sin problemas.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Grado III · Am (La menor) — ¡LA EXCEPCIÓN DE LA ESCALA!</summary>
+      <div class="body">
+        <div class="bad"><b>Observación importante:</b> en el grado III <b>no</b> agregamos la novena completa arriba en la mano izquierda, porque la novena de A sería la nota <b>B natural</b>, que <b>no pertenece</b> a la escala de Fa mayor (que usa Bb) y generaría una disonancia desagradable.</div>
+        <p><b>Mano izquierda:</b> A (tónica) – E (quinta) – A (octava limpia dentro de la escala).</p>
+        <p><b>Mano derecha:</b> C – E – C.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Grado IV · Bb (Si bemol mayor)</summary>
+      <div class="body">
+        <p><b>Mano izquierda:</b> Bb (tónica) – F (quinta) – C (novena).</p>
+        <p><b>Mano derecha:</b> D – F – D.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Grado V · C (Do mayor)</summary>
+      <div class="body">
+        <p><b>Mano izquierda:</b> C (tónica) – G (quinta) – D (novena).</p>
+        <p><b>Mano derecha:</b> E – G – E.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Grado VI · Dm (Re menor)</summary>
+      <div class="body">
+        <p><b>Mano izquierda:</b> D (tónica) – A (quinta) – E (novena).</p>
+        <p><b>Mano derecha:</b> F – A – F.</p>
+        <p class="why">Este es el ejemplo guía de todo el tutorial.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="card violet">
+    <h2>🎵 Caso práctico 1: «Cuerdas de Amor» (Julio Melgar) en Fa mayor</h2>
+    <p><b>Progresión de la estrofa:</b> Dm — Bb — F — F.</p>
+
+    <ol class="steps">
+      <li><b>Sobre Dm (2 tiempos).</b>
+        Mano izquierda: D → A → E. Mano derecha en cascada: F → A → F.</li>
+      <li><b>Sobre Bb (2 tiempos).</b>
+        Mano izquierda: Bb → F → C. Mano derecha en cascada: D → F → D.</li>
+      <li><b>Sobre F (4 tiempos completos).</b>
+        Mano izquierda entra con F → C → G. Mano derecha completa el patrón arpegiado prolongado con A → C.</li>
+    </ol>
+    <div class="ok"><b>Resultado:</b> la progresión deja de sonar a «bloques» y pasa a sonar como un acompañamiento continuo de balada.</div>
+  </div>
+
+  <div class="card">
+    <h2>🎵 Caso práctico 2: «Tu Fidelidad» (Marcos Witt) en Fa mayor</h2>
+    <p><b>Progresión armónica sustituida:</b> F — Dm — Gm — C — Bb — F.</p>
+    <p>Al reemplazar los acordes simples en bloque por las posiciones de la tabla anterior, la canción adquiere un acompañamiento fluido, profesional y cinematográfico.</p>
+    <div class="note"><b>Cómo hacerlo tú mismo con cualquier canción:</b> identifica la progresión con números de grado (I, IV, V, VI…), busca cada grado en la tabla y toca la posición correspondiente. No hace falta memorizar nota por nota.</div>
+  </div>
+
+  <div class="card accent">
+    <h2>🏋️ Ejercicios prácticos con solución explicada</h2>
+
+    <h3>Ejercicio 1 · Conexión Dm → Bb</h3>
+    <p><b>Instrucción:</b> toca 2 tiempos de Dm y pasa a 2 tiempos de Bb usando el pedal de sustain.</p>
+    <details>
+      <summary>Ver solución explicada</summary>
+      <div class="body">
+        <p>Toca <b>D – A – E</b> en la izquierda con <b>F – A – F</b> en la derecha. Suelta el bajo cambiando el pedal justo al presionar <b>Bb – F – C</b> en la izquierda y <b>D – F – D</b> en la derecha.</p>
+        <p>Esto garantiza una transición limpia y continua: el cambio de pedal en el instante exacto evita que los dos acordes se mezclen.</p>
+      </div>
+    </details>
+
+    <h3>Ejercicio 2 · Identificación del grado de excepción</h3>
+    <p><b>Pregunta:</b> ¿Cómo se ejecuta la mano izquierda en el acorde Am dentro de la escala de Fa mayor y por qué?</p>
+    <details>
+      <summary>Ver solución explicada</summary>
+      <div class="body">
+        <p>Se ejecuta <b>A – E – A</b> (tónica, quinta, octava). <b>No</b> se usa la novena porque la novena de A es <b>B natural</b>, que destruye la sonoridad de la escala de Fa mayor (la cual contiene Bb).</p>
+      </div>
+    </details>
+
+    <h3>Ejercicio 3 · Rutina de metrónomo</h3>
+    <p><b>Instrucción:</b> practica la mano izquierda sola, con metrónomo a 60 BPM, recorriendo los 6 grados en orden: F → Gm → Am → Bb → C → Dm. Un compás de 4 tiempos por acorde.</p>
+    <details>
+      <summary>Ver solución explicada</summary>
+      <div class="body">
+        <p>En cada compás: tiempo 1 = tónica, tiempo 2 = quinta, tiempo 3 = novena (o la octava en Am), tiempo 4 = silencio con pedal. Repite el ciclo completo tres veces sin parar.</p>
+        <p>Cuando lo domines a 60 BPM, sube a 70 y luego a 80.</p>
+      </div>
+    </details>
+  </div>
+
+  <div class="card">
+    <h2>✅ Checklist de práctica</h2>
+    <ul class="checklist" data-ckgroup="practica">
+      <li><input type="checkbox" id="ck-pr1" data-ck="pr1"><label for="ck-pr1">Practiqué la mano izquierda sola con metrónomo a 60 BPM.</label></li>
+      <li><input type="checkbox" id="ck-pr2" data-ck="pr2"><label for="ck-pr2">Integré la mano derecha progresivamente en patrones de 2 tiempos.</label></li>
+      <li><input type="checkbox" id="ck-pr3" data-ck="pr3"><label for="ck-pr3">Toqué los 6 grados de Fa mayor sin mirar la tabla.</label></li>
+      <li><input type="checkbox" id="ck-pr4" data-ck="pr4"><label for="ck-pr4">Apliqué el arpegio a una canción completa.</label></li>
+      <li><input type="checkbox" id="ck-pr5" data-ck="pr5"><label for="ck-pr5">Transporté las 6 posiciones a otra escala (C mayor o G mayor).</label></li>
+    </ul>
+    <div class="ck-counter" data-ckcount="practica">0 de 5 completados</div>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: ERRORES
+     ============================================================ -->
+<section class="panel" id="p-errores">
+
+  <h1 class="page-title">Errores frecuentes y cómo corregirlos</h1>
+  <p class="lede">Casi todos los problemas de este sistema tienen la misma causa: forzar la mano en lugar de usar el pedal.</p>
+
+  <div class="card">
+    <h2>⚠️ Error 1 · Tensión muscular en la mano izquierda</h2>
+    <div class="bad"><b>✘ Error:</b> intentar abarcar la distancia D – A – E manteniendo la mano totalmente rígida y estirada.</div>
+    <div class="ok"><b>✔ Solución:</b> toca D y A, suelta la tónica D impulsando la mano suavemente hacia la derecha con el pedal de sustain presionado para alcanzar la novena E con soltura.</div>
+    <p><b>Por qué funciona:</b> el pedal mantiene vivo el sonido de la tónica mientras la mano se desplaza. No necesitas cubrir toda la distancia con los dedos.</p>
+  </div>
+
+  <div class="card">
+    <h2>⚠️ Error 2 · Tocar la novena en Am (grado III)</h2>
+    <div class="bad"><b>✘ Error:</b> tocar B natural en lugar de A al acompañar Am en la escala de Fa mayor.</div>
+    <div class="ok"><b>✔ Solución:</b> en Am usa la octava limpia: A – E – A. La novena de A (B natural) no pertenece a Fa mayor y choca con el Bb de la escala.</div>
+    <p><b>Cómo detectarlo:</b> si el acorde de Am suena «raro», «tenso» o «fuera de contexto», casi seguro estás tocando B natural.</p>
+  </div>
+
+  <div class="card">
+    <h2>⚠️ Error 3 · Saturación en el registro grave</h2>
+    <div class="bad"><b>✘ Error:</b> tocar el arpegio de mano derecha demasiado abajo en el teclado, encima del bajo de la mano izquierda.</div>
+    <div class="ok"><b>✔ Solución:</b> mantén la mano derecha en el registro medio. Si es necesario, súbela una octava completa.</div>
+    <p><b>Por qué funciona:</b> los armónicos graves son densos; dos voces en la misma zona se emborronan.</p>
+  </div>
+
+  <div class="card">
+    <h2>⚠️ Error 4 · Cambiar el pedal en el momento equivocado</h2>
+    <div class="bad"><b>✘ Error:</b> levantar el pedal antes de tocar el nuevo bajo, dejando un silencio audible entre acordes.</div>
+    <div class="ok"><b>✔ Solución:</b> cambia el pedal <b>justo en el instante</b> en que presionas el nuevo bajo (técnica de «pedal sincopado»).</div>
+  </div>
+
+  <div class="card">
+    <h2>⚠️ Error 5 · Tocar las tres notas de la mano derecha como un bloque</h2>
+    <div class="bad"><b>✘ Error:</b> golpear F, A y F simultáneamente, perdiendo el efecto cascada.</div>
+    <div class="ok"><b>✔ Solución:</b> arpegia de abajo hacia arriba: F → A → F, con una separación mínima entre notas.</div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Errores que nunca deben cometerse</h2>
+    <ul>
+      <li>❌ <b>Tensión muscular:</b> tratar de estirar los dedos sin usar el pedal de sustain.</li>
+      <li>❌ <b>Tocar la novena en Am:</b> tocar B natural en lugar de A al acompañar en la escala de Fa mayor.</li>
+      <li>❌ <b>Saturación en el grave:</b> tocar el arpegio de mano derecha demasiado abajo en el teclado.</li>
+      <li>❌ <b>Olvidar eliminar la nota superior</b> de la primera inversión en la mano derecha.</li>
+      <li>❌ <b>Ignorar el pedal:</b> tocar el arpegio sin pedal produce un sonido entrecortado y obliga a estirar la mano.</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: RESUMEN
+     ============================================================ -->
+<section class="panel" id="p-resumen">
+
+  <h1 class="page-title">Resumen del tutorial</h1>
+  <p class="lede">Todo el sistema en una sola página.</p>
+
+  <div class="card accent">
+    <h2>🧠 Resumen de todo lo aprendido</h2>
+    <p>Hemos aprendido a sustituir el acompañamiento plano de piano por un sistema de <b>arpegios transformadores</b>. El pilar del sistema consiste en:</p>
+    <ol>
+      <li><b>Transformar la mano izquierda:</b> cambiar la octava tradicional por la novena (fórmula 1 – 5 – 9).</li>
+      <li><b>Reestructurar la mano derecha:</b> duplicar la nota inferior de la primera inversión y eliminar la superior.</li>
+      <li><b>Arpegiar en cascada</b> las notas de la mano derecha.</li>
+      <li><b>Sostener todo con el pedal de sustain</b> para evitar tensión y dar continuidad.</li>
+    </ol>
+  </div>
+
+  <div class="card violet">
+    <h2>🔑 Conceptos clave</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Concepto</th><th>Definición breve</th></tr></thead>
+        <tbody>
+          <tr><td><b>Arpegio transformador</b></td><td>Tocar las notas consecutivamente alterando la novena en el bajo.</td></tr>
+          <tr><td><b>Fórmula 1-5-9</b></td><td>Tónica, quinta justa y novena agregada en la mano izquierda.</td></tr>
+          <tr><td><b>Primera inversión modificada</b></td><td>Estructura en mano derecha eliminando la cima y duplicando la base.</td></tr>
+          <tr><td><b>Excepción del grado III</b></td><td>Ajuste necesario en Am para no salirse de las notas de la escala.</td></tr>
+          <tr><td><b>Efecto cascada</b></td><td>Arpegiar rápido la mano derecha de abajo hacia arriba.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💡 Recomendaciones para seguir aprendiendo</h2>
+    <ol class="steps">
+      <li>Practica la mano izquierda de forma aislada con metrónomo a <b>60 BPM</b>.</li>
+      <li>Integra la mano derecha progresivamente en <b>patrones de 2 tiempos</b>.</li>
+      <li>Transporta estas mismas 6 posiciones a la escala de <b>Do mayor</b> y <b>Sol mayor</b>.</li>
+    </ol>
+    <div class="note">La regla general para transportar: la mano izquierda siempre es <b>tónica – quinta – novena</b>, y la mano derecha siempre es <b>nota grave – nota media – nota grave (octava arriba)</b> de la primera inversión. Solo hay que revisar si la novena pertenece a la escala.</div>
+  </div>
+
+  <div class="card">
+    <h2>✅ Checklist final</h2>
+    <ul class="checklist" data-ckgroup="final">
+      <li><input type="checkbox" id="ck-fin1" data-ck="fin1"><label for="ck-fin1">Puedo explicar con mis palabras qué es un arpegio transformador.</label></li>
+      <li><input type="checkbox" id="ck-fin2" data-ck="fin2"><label for="ck-fin2">Puedo construir la mano izquierda de cualquier acorde con la fórmula 1-5-9.</label></li>
+      <li><input type="checkbox" id="ck-fin3" data-ck="fin3"><label for="ck-fin3">Sé cuál es la única excepción y por qué existe.</label></li>
+      <li><input type="checkbox" id="ck-fin4" data-ck="fin4"><label for="ck-fin4">Puedo tocar una canción completa usando este acompañamiento.</label></li>
+    </ul>
+    <div class="ck-counter" data-ckcount="final">0 de 4 completados</div>
+  </div>
+
+  <div class="card">
+    <h2>📤 Comparte tu resultado</h2>
+    <p>Cuando domines el patrón, grábalo y escúchate. Compara la grabación con cómo sonabas antes de empezar: la diferencia de color armónico será evidente.</p>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: FUENTES
+     ============================================================ -->
+<section class="panel" id="p-fuentes">
+
+  <h1 class="page-title">Fuentes y recursos</h1>
+  <p class="lede">Material de referencia utilizado para construir este tutorial.</p>
+
+  <div class="card accent">
+    <h2>🎬 Video de referencia</h2>
+    <p><b>Nombre del video:</b> «Arpegio que cambiará tu manera de tocar para siempre»</p>
+    <p><b>Canal:</b> Cristian Simancas (YouTube)</p>
+    <p><b>Enlace:</b></p>
+    <div class="copyRow">
+      <code id="srcVideo">https://youtube.com/watch?v=IHKPE0GgbOM&amp;is=_yoAMezKuc2J1iqS</code>
+      <button class="copyBtn" data-copy="https://youtube.com/watch?v=IHKPE0GgbOM&amp;is=_yoAMezKuc2J1iqS">COPIAR</button>
+    </div>
+    <p><a href="https://youtube.com/watch?v=IHKPE0GgbOM&amp;is=_yoAMezKuc2J1iqS" target="_blank" rel="noopener noreferrer">Abrir el video en YouTube ↗</a></p>
+  </div>
+
+  <div class="card">
+    <h2>📄 Documento base</h2>
+    <p>El contenido pedagógico de este tutorial proviene del documento <b>«Arpegios Transformadores para Piano»</b> de <b>Rubén Sbarsky</b>, reorganizado y ampliado en formato interactivo.</p>
+  </div>
+
+  <div class="card violet">
+    <h2>🔎 Prompts de búsqueda y estudio</h2>
+    <p>Si deseas profundizar en este concepto mediante herramientas de búsqueda, utiliza los siguientes prompts:</p>
+
+    <div class="copyRow">
+      <code>Ver tutorial de piano arpegio novena mano izquierda acorde abierto en F mayor</code>
+      <button class="copyBtn" data-copy="Ver tutorial de piano arpegio novena mano izquierda acorde abierto en F mayor">COPIAR</button>
+    </div>
+
+    <div class="copyRow">
+      <code>Cómo sustituir acompañamiento de acordes por arpegios en cascada piano</code>
+      <button class="copyBtn" data-copy="Cómo sustituir acompañamiento de acordes por arpegios en cascada piano">COPIAR</button>
+    </div>
+
+    <div class="copyRow">
+      <code>Acompañamiento de baladas piano novena de sustitución y primera inversión</code>
+      <button class="copyBtn" data-copy="Acompañamiento de baladas piano novena de sustitución y primera inversión">COPIAR</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⚠️ Aviso sobre derechos</h2>
+    <p>Las canciones mencionadas («Cuerdas de Amor», «Tu Fidelidad») se citan únicamente como ejemplos de progresión armónica con fines educativos. Todos los derechos pertenecen a sus respectivos autores y editores.</p>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: CRÉDITOS
+     ============================================================ -->
+<section class="panel" id="p-creditos">
+
+  <h1 class="page-title">Créditos</h1>
+
+  <div class="hero-svg-mount" data-svg-hero="true" role="img"
+       aria-label="Ilustración animada: tres notas (1, 5 y 9) se encienden en secuencia sobre un teclado de piano mientras una cascada de notas desciende por la derecha."></div>
+  <p class="svg-caption">El mismo arpegio transformador que estudiaste: <b>1 · 5 · 9</b> en la mano izquierda y la cascada en la derecha.</p>
+
+  <div class="card accent">
+    <div class="author-name">Rubén Sbarsky</div>
+    <p class="author-role">Autor del tutorial</p>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="k">Fecha de creación</div>
+        <div class="v">06/10/2026</div>
+      </div>
+      <div class="meta-item">
+        <div class="k">Hora de creación</div>
+        <div class="v">14:32:10</div>
+      </div>
+      <div class="meta-item">
+        <div class="k">Versión del archivo</div>
+        <div class="v">V003</div>
+      </div>
+      <div class="meta-item">
+        <div class="k">Formato</div>
+        <div class="v">HTML · un solo archivo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📘 Sobre este tutorial</h2>
+    <p>Tutorial interactivo de una sola página construido a partir del documento «Arpegios Transformadores para Piano». Todo el contenido —HTML, CSS, JavaScript y el SVG animado— está incluido en este único archivo y funciona sin conexión a Internet.</p>
+    <p>No se utilizan librerías, fuentes ni recursos externos.</p>
+  </div>
+
+  <div class="card">
+    <h2>🧩 Tecnología utilizada</h2>
+    <ul>
+      <li><b>HTML5</b> semántico con pestañas reales.</li>
+      <li><b>CSS3</b> con variables de tema, modo claro/oscuro y hoja de impresión completa.</li>
+      <li><b>JavaScript</b> sin dependencias: pestañas, buscador, checklists persistentes y control de impresión.</li>
+      <li><b>SVG animado con SMIL</b> (<code>&lt;animate&gt;</code>, <code>&lt;animateTransform&gt;</code>), montado dinámicamente desde una única plantilla.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>🗂️ Historial de versiones</h2>
+    <ul>
+      <li><b>V003</b> — Versión actual. SVG animado unificado, impresión/PDF corregida, buscador con resaltado, checklists persistentes.</li>
+      <li><b>V002</b> — Reorganización pedagógica en pestañas y ampliación de la sección de práctica.</li>
+      <li><b>V001</b> — Primera conversión del documento base a formato HTML.</li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    Tutorial creado por <b>Rubén Sbarsky</b> · Versión V003 · 06/10/2026 — 14:32:10
+  </div>
+
+</section>
+
+</main>
+
+<button class="to-top" id="toTop" aria-label="Volver arriba">↑</button>
+
+<!-- ============================================================
+     SVG FUENTE (oculto). Se elimina del DOM tras extraer la plantilla.
+     ============================================================ -->
+<svg id="svgHeroSource" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="gBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e3a5f"/>
+    </linearGradient>
+    <linearGradient id="gAcc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="gKey" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+    <filter id="fGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="cKb">
+      <rect x="40" y="176" width="740" height="64"/>
+    </clipPath>
+  </defs>
+
+  <g id="svgHero">
+
+    <!-- Fondo -->
+    <rect x="0" y="0" width="820" height="260" rx="20" fill="url(#gBg)"/>
+    <rect x="1" y="1" width="818" height="258" rx="19" fill="none" stroke="url(#gAcc)" stroke-width="1.5" opacity="0.5"/>
+
+    <!-- Títulos -->
+    <text x="40" y="42" font-family="Verdana,Geneva,sans-serif" font-size="14" font-weight="700" letter-spacing="3" fill="#7dd3fc" opacity="0.9">ARPEGIO TRANSFORMADOR</text>
+    <text x="780" y="42" text-anchor="end" font-family="Verdana,Geneva,sans-serif" font-size="12" font-weight="700" letter-spacing="2" fill="#a78bfa" opacity="0.9">CASCADA · MANO DERECHA</text>
+
+    <!-- Conectores entre orbes -->
+    <line x1="134" y1="100" x2="226" y2="100" stroke="#38bdf8" stroke-width="2" stroke-dasharray="7 7" opacity="0.55">
+      <animate attributeName="stroke-dashoffset" values="0;-28" dur="1.1s" repeatCount="indefinite"/>
+    </line>
+    <line x1="274" y1="100" x2="366" y2="100" stroke="#a78bfa" stroke-width="2" stroke-dasharray="7 7" opacity="0.55">
+      <animate attributeName="stroke-dashoffset" values="0;-28" dur="1.1s" repeatCount="indefinite"/>
+    </line>
+
+    <!-- Orbe 1: tónica -->
+    <g>
+      <circle cx="110" cy="100" r="26" fill="none" stroke="#38bdf8" stroke-width="4" opacity="0.35">
+        <animate attributeName="r" values="26;46;26" dur="3.3s" begin="0s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.55;0;0.55" dur="3.3s" begin="0s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="110" cy="100" r="24" fill="#0b1220" stroke="#38bdf8" stroke-width="2.5"/>
+      <text x="110" y="108" text-anchor="middle" font-family="Verdana,Geneva,sans-serif" font-size="20" font-weight="700" fill="#7dd3fc">1</text>
+    </g>
+
+    <!-- Orbe 2: quinta -->
+    <g>
+      <circle cx="250" cy="100" r="26" fill="none" stroke="#38bdf8" stroke-width="4" opacity="0.35">
+        <animate attributeName="r" values="26;46;26" dur="3.3s" begin="1.1s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.55;0;0.55" dur="3.3s" begin="1.1s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="250" cy="100" r="24" fill="#0b1220" stroke="#38bdf8" stroke-width="2.5"/>
+      <text x="250" y="108" text-anchor="middle" font-family="Verdana,Geneva,sans-serif" font-size="20" font-weight="700" fill="#7dd3fc">5</text>
+    </g>
+
+    <!-- Orbe 3: novena (clave) -->
+    <g>
+      <circle cx="390" cy="100" r="26" fill="none" stroke="#a78bfa" stroke-width="4" opacity="0.35">
+        <animate attributeName="r" values="26;48;26" dur="3.3s" begin="2.2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.7;0;0.7" dur="3.3s" begin="2.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="390" cy="100" r="24" fill="#0b1220" stroke="#a78bfa" stroke-width="3" filter="url(#fGlow)"/>
+      <text x="390" y="108" text-anchor="middle" font-family="Verdana,Geneva,sans-serif" font-size="20" font-weight="700" fill="#c4b5fd">9</text>
+    </g>
+
+    <!-- Etiquetas -->
+    <text x="110" y="148" text-anchor="middle" font-family="Verdana,Geneva,sans-serif" font-size="11" font-weight="700" letter-spacing="1" fill="#94a3b8">TÓNICA</text>
+    <text x="250" y="148" text-anchor="middle" font-family="Verdana,Geneva,sans-serif" font-size="11" font-weight="700" letter-spacing="1" fill="#94a3b8">QUINTA</text>
+    <text x="390" y="148" text-anchor="middle" font-family="Verdana,Geneva,sans-serif" font-size="11" font-weight="700" letter-spacing="1" fill="#c4b5fd">NOVENA</text>
+    <text x="390" y="164" text-anchor="middle" font-family="Verdana,Geneva,sans-serif" font-size="9.5" fill="#a78bfa" opacity="0.9">↑ un tono desde la 8ª</text>
+
+    <!-- Cascada mano derecha -->
+    <polyline points="580,66 622,88 664,110 706,132 748,154" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.4"/>
+
+    <circle cx="580" cy="66" r="9" fill="#a78bfa" opacity="0.55">
+      <animate attributeName="opacity" values="0.2;1;0.2" dur="1.9s" begin="0s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="7;11;7" dur="1.9s" begin="0s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="622" cy="88" r="9" fill="#a78bfa" opacity="0.55">
+      <animate attributeName="opacity" values="0.2;1;0.2" dur="1.9s" begin="0.19s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="7;11;7" dur="1.9s" begin="0.19s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="664" cy="110" r="9" fill="#a78bfa" opacity="0.55">
+      <animate attributeName="opacity" values="0.2;1;0.2" dur="1.9s" begin="0.38s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="7;11;7" dur="1.9s" begin="0.38s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="706" cy="132" r="9" fill="#a78bfa" opacity="0.55">
+      <animate attributeName="opacity" values="0.2;1;0.2" dur="1.9s" begin="0.57s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="7;11;7" dur="1.9s" begin="0.57s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="748" cy="154" r="9" fill="#a78bfa" opacity="0.55">
+      <animate attributeName="opacity" values="0.2;1;0.2" dur="1.9s" begin="0.76s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="7;11;7" dur="1.9s" begin="0.76s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Marco del teclado -->
+    <rect x="40" y="176" width="740" height="64" rx="6" fill="#0b1220" stroke="#1e3a5f" stroke-width="1.5"/>
+
+    <!-- Teclas blancas -->
+    <g fill="url(#gKey)" stroke="#334155" stroke-width="1">
+      <rect x="40" y="176" width="52.86" height="64"/>
+      <rect x="92.86" y="176" width="52.86" height="64"/>
+      <rect x="145.71" y="176" width="52.86" height="64"/>
+      <rect x="198.57" y="176" width="52.86" height="64"/>
+      <rect x="251.43" y="176" width="52.86" height="64"/>
+      <rect x="304.29" y="176" width="52.86" height="64"/>
+      <rect x="357.14" y="176" width="52.86" height="64"/>
+      <rect x="410" y="176" width="52.86" height="64"/>
+      <rect x="462.86" y="176" width="52.86" height="64"/>
+      <rect x="515.71" y="176" width="52.86" height="64"/>
+      <rect x="568.57" y="176" width="52.86" height="64"/>
+      <rect x="621.43" y="176" width="52.86" height="64"/>
+      <rect x="674.29" y="176" width="52.86" height="64"/>
+      <rect x="727.14" y="176" width="52.86" height="64"/>
+    </g>
+
+    <!-- Resaltados de teclas (sincronizados con los orbes) -->
+    <g clip-path="url(#cKb)">
+      <rect x="40" y="176" width="52.86" height="64" fill="#38bdf8" opacity="0.15">
+        <animate attributeName="opacity" values="0.15;0.5;0.15" dur="3.3s" begin="0s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="251.43" y="176" width="52.86" height="64" fill="#38bdf8" opacity="0.15">
+        <animate attributeName="opacity" values="0.15;0.5;0.15" dur="3.3s" begin="1.1s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="410" y="176" width="52.86" height="64" fill="#a78bfa" opacity="0.15">
+        <animate attributeName="opacity" values="0.15;0.6;0.15" dur="3.3s" begin="2.2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="40" y="176" width="80" height="64" fill="#7dd3fc" opacity="0.08">
+        <animateTransform attributeName="transform" type="translate" values="0 0;660 0;0 0" dur="8s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <!-- Teclas negras -->
+    <g fill="#0b1220" stroke="#0f172a" stroke-width="1">
+      <rect x="77.86" y="176" width="30" height="38" rx="3"/>
+      <rect x="130.71" y="176" width="30" height="38" rx="3"/>
+      <rect x="236.43" y="176" width="30" height="38" rx="3"/>
+      <rect x="289.29" y="176" width="30" height="38" rx="3"/>
+      <rect x="342.14" y="176" width="30" height="38" rx="3"/>
+      <rect x="447.86" y="176" width="30" height="38" rx="3"/>
+      <rect x="500.71" y="176" width="30" height="38" rx="3"/>
+      <rect x="606.43" y="176" width="30" height="38" rx="3"/>
+      <rect x="659.29" y="176" width="30" height="38" rx="3"/>
+      <rect x="712.14" y="176" width="30" height="38" rx="3"/>
+    </g>
+
+    <!-- Brillo final del teclado -->
+    <rect x="40" y="176" width="740" height="64" rx="6" fill="none" stroke="url(#gAcc)" stroke-width="1.5" opacity="0.35">
+      <animate attributeName="opacity" values="0.2;0.6;0.2" dur="3.3s" repeatCount="indefinite"/>
+    </rect>
+
+  </g>
+</svg>
+
+<script>
+(function () {
+  'use strict';
+
+  /* =========================================================
+     0. UTILIDADES
+     ========================================================= */
+  var $  = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+  function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  /* =========================================================
+     1. TEMA CLARO / OSCURO
+     ========================================================= */
+  var root = document.documentElement;
+  var btnTheme = $('#btnTheme');
+
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    btnTheme.textContent = (t === 'dark') ? '🌙' : '☀️';
+    safeSet('arp_theme', t);
+  }
+  applyTheme(safeGet('arp_theme') || 'dark');
+
+  btnTheme.addEventListener('click', function () {
+    applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  /* =========================================================
+     2. TAMAÑO DE TEXTO
+     ========================================================= */
+  var FS = parseInt(safeGet('arp_fs') || '16', 10);
+  if (isNaN(FS)) FS = 16;
+  FS = Math.max(13, Math.min(22, FS));
+
+  function applyFS(v) {
+    FS = Math.max(13, Math.min(22, v));
+    root.style.setProperty('--fs', FS + 'px');
+    safeSet('arp_fs', String(FS));
+  }
+  applyFS(FS);
+
+  $('#btnMinus').addEventListener('click', function () { applyFS(FS - 1); });
+  $('#btnPlus').addEventListener('click', function () { applyFS(FS + 1); });
+
+  /* =========================================================
+     3. SVG ANIMADO — PLANTILLA ÚNICA + MONTAJE
+     ========================================================= */
+  var seq = 0;
+  var TPL = null;
+  var imgMode = false;
+  var FREEZE_TIME = 1.65;
+
+  function template() {
+    if (TPL) return TPL;
+    var src = document.getElementById('svgHeroSource');
+    if (!src) { TPL = { defs: '', art: '' }; return TPL; }
+
+    var defsNode = src.querySelector('defs');
+    var artNode = src.querySelector('#svgHero');
+
+    var defsHTML = defsNode ? defsNode.innerHTML : '';
+    var artHTML = '';
+    if (artNode) {
+      var clone = artNode.cloneNode(true);
+      clone.removeAttribute('id');
+      artHTML = clone.outerHTML;
+    }
+
+    TPL = { defs: defsHTML, art: artHTML };
+
+    /* Eliminar el SVG fuente del DOM para que no siga animando oculto */
+    try {
+      if (src.parentNode) src.parentNode.removeChild(src);
+    } catch (e) {}
+
+    return TPL;
+  }
+
+  /* Reescritura genérica de ids para que cada copia sea independiente */
+  function markup(uid) {
+    var t = template();
+    var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" '
+          + 'preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">'
+          + '<defs>' + t.defs + '</defs>' + t.art + '</svg>';
+
+    var ids = [];
+    var seen = {};
+    var re = /\sid="([^"]+)"/g;
+    var m;
+    while ((m = re.exec(s)) !== null) {
+      if (!seen[m[1]]) { seen[m[1]] = 1; ids.push(m[1]); }
+    }
+
+    ids.forEach(function (id) {
+      var nid = id + '-' + uid;
+      s = s.split('id="' + id + '"').join('id="' + nid + '"');
+      s = s.split('url(#' + id + ')').join('url(#' + nid + ')');
+      s = s.split('href="#' + id + '"').join('href="#' + nid + '"');
+      s = s.split('xlink:href="#' + id + '"').join('xlink:href="#' + nid + '"');
+    });
+
+    return s;
+  }
+
+  function mountOne(mount) {
+    if (!mount) return;
+    mount.textContent = '';
+
+    if (imgMode) {
+      var im = document.createElement('img');
+      im.alt = mount.getAttribute('aria-label') || '';
+      im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(markup('i' + (++seq)));
+      mount.appendChild(im);
+      return;
+    }
+
+    mount.innerHTML = markup('h' + (++seq));
+
+    var svg = mount.querySelector('svg');
+    if (!svg) return;
+
+    try {
+      svg.setCurrentTime(0);
+      svg.unpauseAnimations();
+    } catch (e) {}
+
+    var t0 = 0;
+    try { t0 = svg.getCurrentTime(); } catch (e) { t0 = 0; }
+
+    /* Plan B: si el reloj no avanza, pasar a <img> con el mismo dibujo */
+    setTimeout(function () {
+      if (document.hidden) return;
+      if (mount.querySelector('svg') !== svg) return;
+      var rect = svg.getBoundingClientRect();
+      var t1 = 0;
+      try { t1 = svg.getCurrentTime(); } catch (e) { t1 = 0; }
+      if (rect.height > 0 && (t1 - t0) < 0.3) {
+        imgMode = true;
+        mountOne(mount);
+      }
+    }, 1600);
+  }
+
+  function mountActive() {
+    $$('.panel.active [data-svg-hero]').forEach(mountOne);
+  }
+
+  function mountAll() {
+    $$('[data-svg-hero]').forEach(mountOne);
+  }
+
+  function freezeAll() {
+    $$('[data-svg-hero] svg').forEach(function (s) {
+      try {
+        s.pauseAnimations();
+        s.setCurrentTime(FREEZE_TIME);
+      } catch (e) {}
+    });
+  }
+
+  function unfreezeAll() {
+    $$('[data-svg-hero] svg').forEach(function (s) {
+      try { s.unpauseAnimations(); } catch (e) {}
+    });
+  }
+
+  /* Red de seguridad: si un panel activo tiene su contenedor vacío, remontar */
+  setInterval(function () {
+    if (document.hidden) return;
+    $$('.panel.active [data-svg-hero]').forEach(function (m) {
+      if (!m.firstElementChild) mountOne(m);
+    });
+  }, 800);
+
+  /* =========================================================
+     4. PESTAÑAS
+     ========================================================= */
+  var panels = $$('.panel');
+  var tabBtns = $$('.tab-btn');
+
+  function activateTab(id, opts) {
+    opts = opts || {};
+    var found = false;
+
+    panels.forEach(function (p) {
+      var on = (p.id === id);
+      p.classList.toggle('active', on);
+      if (on) found = true;
+    });
+    if (!found) return;
+
+    tabBtns.forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-target') === id);
+    });
+
+    if (opts.scroll !== false) {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+
+    /* Montar el SVG del panel recién activado */
+    mountActive();
+
+    if (!opts.silent && history.replaceState) {
+      try { history.replaceState(null, '', '#' + id); } catch (e) {}
+    }
+  }
+
+  tabBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      activateTab(b.getAttribute('data-target'));
+    });
+  });
+
+  /* =========================================================
+     5. CHECKLISTS PERSISTENTES
+     ========================================================= */
+  var ckBoxes = $$('input[type="checkbox"][data-ck]');
+
+  ckBoxes.forEach(function (cb) {
+    var key = 'arp_ck_' + cb.getAttribute('data-ck');
+    if (safeGet(key) === '1') cb.checked = true;
+
+    cb.addEventListener('change', function () {
+      safeSet(key, cb.checked ? '1' : '0');
+      updateCounters();
+    });
+  });
+
+  function updateCounters() {
+    $$('[data-ckcount]').forEach(function (el) {
+      var group = el.getAttribute('data-ckcount');
+      var boxes = $$('input[data-ck]', document).filter(function (b) {
+        var li = b.closest('li');
+        var ul = b.closest('ul.checklist');
+        return ul && ul.getAttribute('data-ckgroup') === group;
+      });
+      var total = boxes.length;
+      var done = boxes.filter(function (b) { return b.checked; }).length;
+      el.textContent = done + ' de ' + total + ' completados';
+      if (total > 0 && done === total) {
+        el.textContent = '✔ ' + done + ' de ' + total + ' completados — ¡bien!';
+      }
+    });
+  }
+  updateCounters();
+
+  /* =========================================================
+     6. BARRA DE PROGRESO + VOLVER ARRIBA
+     ========================================================= */
+  var progressFill = $('#progressFill');
+  var toTop = $('#toTop');
+
+  function onScroll() {
+    var h = document.documentElement;
+    var top = window.pageYOffset || h.scrollTop || 0;
+    var max = (h.scrollHeight - h.clientHeight);
+    var p = max > 0 ? (top / max) * 100 : 0;
+    progressFill.style.width = Math.max(0, Math.min(100, p)) + '%';
+    toTop.classList.toggle('show', top > 420);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* =========================================================
+     7. BUSCADOR CON RESALTADO
+     ========================================================= */
+  var btnSearch = $('#btnSearch');
+  var searchBar = $('#searchBar');
+  var searchInput = $('#searchInput');
+  var searchInfo = $('#searchInfo');
+  var currentQuery = '';
+
+  function normalize(str) {
+    return str
+      .toString()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function clearHighlights() {
+    $$('mark.search-hl').forEach(function (mk) {
+      var p = mk.parentNode;
+      if (!p) return;
+      p.replaceChild(document.createTextNode(mk.textContent), mk);
+      p.normalize();
+    });
+  }
+
+  function highlightIn(root, q) {
+    var qn = normalize(q);
+    if (!qn || qn.length < 2) return 0;
+
+    var walker = document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode: function (n) {
+          if (!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          var p = n.parentNode;
+          if (!p) return NodeFilter.FILTER_REJECT;
+          var tag = p.nodeName ? p.nodeName.toLowerCase() : '';
+          if (tag === 'script' || tag === 'style' || tag === 'mark') return NodeFilter.FILTER_REJECT;
+          if (p.closest && p.closest('svg')) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      },
+      false
+    );
+
+    var nodes = [];
+    var n;
+    while ((n = walker.nextNode())) nodes.push(n);
+
+    var count = 0;
+
+    nodes.forEach(function (node) {
+      var text = node.nodeValue;
+      var lower = normalize(text);
+      var idx = lower.indexOf(qn);
+      if (idx === -1) return;
+
+      var frag = document.createDocumentFragment();
+      var pos = 0;
+
+      while (idx !== -1) {
+        if (idx > pos) frag.appendChild(document.createTextNode(text.slice(pos, idx)));
+        var mk = document.createElement('mark');
+        mk.className = 'search-hl';
+        mk.textContent = text.slice(idx, idx + qn.length);
+        frag.appendChild(mk);
+        pos = idx + qn.length;
+        idx = lower.indexOf(qn, pos);
+        count++;
+      }
+
+      if (pos < text.length) frag.appendChild(document.createTextNode(text.slice(pos)));
+
+      if (node.parentNode) node.parentNode.replaceChild(frag, node);
+    });
+
+    return count;
+  }
+
+  function runSearch(q) {
+    clearHighlights();
+    $$('.tab-btn').forEach(function (b) { b.classList.remove('has-hit'); });
+
+    if (!q || q.trim().length < 2) {
+      searchInfo.textContent = '—';
+      currentQuery = '';
+      return;
+    }
+
+    currentQuery = q;
+
+    var total = 0;
+
+    panels.forEach(function (p) {
+      var c = highlightIn(p, q);
+      total += c;
+      if (c > 0) {
+        var btn = tabBtns.filter(function (b) {
+          return b.getAttribute('data-target') === p.id;
+        })[0];
+        if (btn) btn.classList.add('has-hit');
+      }
+    });
+
+    searchInfo.textContent = total === 0
+      ? 'sin resultados'
+      : (total + (total === 1 ? ' coincidencia' : ' coincidencias'));
+  }
+
+  btnSearch.addEventListener('click', function () {
+    searchBar.classList.toggle('open');
+    if (searchBar.classList.contains('open')) {
+      setTimeout(function () { searchInput.focus(); }, 30);
+    } else {
+      searchInput.value = '';
+      runSearch('');
+    }
+  });
+
+  var searchTimer = null;
+  searchInput.addEventListener('input', function () {
+    clearTimeout(searchTimer);
+    var v = searchInput.value;
+    searchTimer = setTimeout(function () { runSearch(v); }, 220);
+  });
+
+  searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      var firstHit = $$('.tab-btn.has-hit')[0];
+      if (firstHit) activateTab(firstHit.getAttribute('data-target'));
+    }
+    if (e.key === 'Escape') {
+      searchInput.value = '';
+      runSearch('');
+      searchBar.classList.remove('open');
+    }
+  });
+
+  /* =========================================================
+     8. IMPRIMIR / PDF
+     ========================================================= */
+  var closedDetails = [];
+
+  function preparePrint() {
+    closedDetails = [];
+    $$('details').forEach(function (d) {
+      if (!d.open) { d.open = true; closedDetails.push(d); }
+    });
+
+    /* Montar el SVG de TODAS las pestañas (aunque no se hayan visitado) */
+    $$('[data-svg-hero]').forEach(function (m) {
+      if (!m.firstElementChild) mountOne(m);
+    });
+
+    freezeAll();
+  }
+
+  function restoreAfterPrint() {
+    closedDetails.forEach(function (d) { d.open = false; });
+    closedDetails = [];
+    unfreezeAll();
+  }
+
+  var btnPrint = $('#btnPrint');
+
+  btnPrint.addEventListener('click', function () {
+    preparePrint();
+    var ok = false;
+    try {
+      window.print();
+      ok = true;
+    } catch (e) {
+      ok = false;
+    }
+    if (!ok) {
+      showPrintNotice();
+    }
+    /* Restaurar cuando el navegador cierre el diálogo */
+    setTimeout(restoreAfterPrint, 1500);
+  });
+
+  window.addEventListener('beforeprint', preparePrint);
+  window.addEventListener('afterprint', restoreAfterPrint);
+
+  function showPrintNotice() {
+    var div = document.createElement('div');
+    div.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);' +
+      'max-width:min(92vw,460px);background:#0f172a;color:#e2e8f0;border:1px solid #38bdf8;' +
+      'border-radius:14px;padding:1rem 1.1rem;z-index:200;font-size:.88rem;line-height:1.6;' +
+      'box-shadow:0 20px 60px -20px #000;text-align:center;';
+    div.innerHTML = '<b style="color:#7dd3fc">No se pudo abrir el diálogo de impresión.</b><br><br>' +
+      'Abre este archivo directamente en el navegador (no dentro de un visor o previsualizador) ' +
+      'y pulsa <b>Ctrl+P</b> / <b>Cmd+P</b>.<br><br>' +
+      '<button id="closePrintNotice" style="background:#1e3a5f;color:#e0f2fe;border:1px solid #38bdf8;' +
+      'border-radius:9px;padding:.4rem .9rem;font-weight:700;cursor:pointer;">Entendido</button>';
+    document.body.appendChild(div);
+    var btn = document.getElementById('closePrintNotice');
+    if (btn) {
+      btn.addEventListener('click', function () {
+        if (div.parentNode) div.parentNode.removeChild(div);
+      });
+    }
+  }
+
+  /* =========================================================
+     9. BOTONES COPIAR
+     ========================================================= */
+  function copyText(txt) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(txt).catch(function () {
+        return fallbackCopy(txt);
+      });
+    }
+    return Promise.resolve(fallbackCopy(txt));
+  }
+
+  function fallbackCopy(txt) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = txt;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    } catch (e) {}
+    return true;
+  }
+
+  $$('.copyBtn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var txt = btn.getAttribute('data-copy') || '';
+      copyText(txt).then(function () {
+        var old = btn.textContent;
+        btn.classList.add('done');
+        btn.textContent = '✔ COPIADO';
+        setTimeout(function () {
+          btn.classList.remove('done');
+          btn.textContent = old;
+        }, 1600);
+      });
+    });
+  });
+
+  /* =========================================================
+     10. ARRANQUE
+     ========================================================= */
+  function boot() {
+    var hash = window.location.hash ? window.location.hash.replace('#', '') : '';
+    var target = null;
+
+    if (hash) {
+      var el = document.getElementById(hash);
+      if (el && el.classList.contains('panel')) target = hash;
+    }
+
+    if (!target) {
+      /* Última pestaña visitada (si existe y es válida) */
+      var last = safeGet('arp_last_tab');
+      if (last && document.getElementById(last) && document.getElementById(last).classList.contains('panel')) {
+        target = last;
+      }
+    }
+
+    if (!target) target = 'p-inicio';
+
+    activateTab(target, { scroll: false, silent: true });
+
+    /* Guardar la pestaña activa al cambiar */
+    tabBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        safeSet('arp_last_tab', b.getAttribute('data-target'));
+      });
+    });
+
+    onScroll();
+    updateCounters();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  /* Al cambiar el hash manualmente */
+  window.addEventListener('hashchange', function () {
+    var h = window.location.hash.replace('#', '');
+    if (h && document.getElementById(h) && document.getElementById(h).classList.contains('panel')) {
+      activateTab(h, { scroll: false, silent: true });
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
