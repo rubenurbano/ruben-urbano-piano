@@ -1,0 +1,2586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explorador Universal de Acordes — by Rubén Sbarsky — V002</title>
+<style>
+:root{
+  --bg:#0a0e1a; --panel:#0f172a; --panel2:#111c33; --border:#1e3a5f;
+  --text:#e2e8f0; --dim:#94a3b8; --accent:#3b82f6; --accent2:#2563eb;
+  --gold:#f59e0b; --green:#22c55e; --blue:#3b82f6; --purple:#a855f7;
+  --pink:#ec4899; --teal:#14b8a6; --red:#ef4444;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.45}
+body{min-height:100vh;overflow-x:hidden}
+h1,h2,h3,h4{margin:0 0 .5em;font-weight:700;line-height:1.2}
+h1{font-size:1.5rem}
+h2{font-size:1.15rem;color:#cbd5e1}
+h3{font-size:1rem;color:#cbd5e1}
+p{margin:.35em 0}
+a{color:var(--accent)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+:focus-visible{outline:2px solid #60a5fa;outline-offset:2px}
+header{padding:14px 16px 10px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#0d1526,#0a0e1a)}
+header h1{color:#f1f5f9;letter-spacing:.3px}
+header .sub{color:var(--dim);font-size:.85rem;margin-top:-.3em}
+nav.tabs{display:flex;gap:4px;padding:8px 10px;overflow-x:auto;background:var(--panel);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:20}
+nav.tabs::-webkit-scrollbar{height:6px}
+nav.tabs::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.tab{flex:0 0 auto;padding:9px 14px;border-radius:8px;border:1px solid transparent;
+  background:transparent;color:var(--dim);white-space:nowrap;font-weight:600;font-size:.88rem}
+.tab:hover{color:var(--text);background:#16223d}
+.tab.active{color:#fff;background:var(--accent2);border-color:#3b82f6}
+main{max-width:1180px;margin:0 auto;padding:14px}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.panel.compact{padding:10px 12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row.between{justify-content:space-between}
+.grow{flex:1 1 auto;min-width:0}
+label.field{display:flex;flex-direction:column;gap:4px;font-size:.78rem;color:var(--dim);font-weight:600}
+label.field select,label.field input{font-size:.92rem}
+select,input[type=text],input[type=search],textarea{
+  background:#0b1324;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:8px 10px;
+  font-family:inherit;font-size:.92rem;min-height:38px}
+select:focus,input:focus,textarea:focus{border-color:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:#16223d;color:var(--text);border:1px solid var(--border);border-radius:8px;
+  padding:8px 12px;font-weight:600;font-size:.86rem;min-height:38px;transition:background .12s,border-color .12s}
+.btn:hover{background:#1c2c4d;border-color:#2d5280}
+.btn.primary{background:var(--accent2);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:#1d4ed8}
+.btn.ghost{background:transparent}
+.btn.danger{background:#3b1a1f;border-color:#7f1d1d;color:#fca5a5}
+.btn.small{padding:4px 9px;min-height:30px;font-size:.78rem;border-radius:6px}
+.btn.pill{border-radius:999px}
+.note-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px}
+@media(max-width:760px){.note-grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media(max-width:420px){.note-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.note-btn{padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:#0b1324;color:var(--text);
+  font-weight:700;font-size:.85rem;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;transition:background .12s,transform .08s}
+.note-btn small{font-size:.62rem;color:var(--dim);font-weight:500}
+.note-btn:hover{background:#16223d}
+.note-btn.active{background:var(--accent2);border-color:#60a5fa;color:#fff}
+.note-btn.active small{color:#c7d2fe}
+.results-summary{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px;color:var(--dim);font-size:.85rem}
+.count{background:var(--panel2);border:1px solid var(--border);border-radius:999px;padding:4px 12px;
+  color:var(--text);font-weight:700;font-size:.82rem}
+.count.ok{border-color:#15803d;color:#86efac;background:#052e16}
+.count.bad{border-color:#7f1d1d;color:#fca5a5;background:#3b1a1f}
+.family-group{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;background:var(--panel)}
+.family-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;
+  background:#132038;cursor:pointer;user-select:none}
+.family-head:hover{background:#17274a}
+.family-head h3{margin:0;font-size:.95rem;text-transform:capitalize}
+.family-head .cnt{font-size:.78rem;color:var(--dim);font-weight:600}
+.family-body{padding:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%, 285px),1fr));gap:10px}
+/* Rejilla reutilizable para resultados planos (búsqueda por función y por tonalidad).
+   min(100%, 285px) evita el desbordamiento horizontal en pantallas de 320 px. */
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%, 285px),1fr));gap:10px}
+.family-group.collapsed .family-body{display:none}
+.family-group.collapsed .family-head .arrow{transform:rotate(-90deg)}
+.arrow{display:inline-block;transition:transform .15s}
+.card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;
+  display:flex;flex-direction:column;gap:6px;transition:border-color .12s}
+.card:hover{border-color:#2d5280}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.card-title{font-size:1.08rem;font-weight:800;color:#f1f5f9;letter-spacing:.2px;word-break:break-word}
+.card-fam{font-size:.68rem;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.card-meta{font-size:.78rem;color:var(--dim);display:flex;flex-wrap:wrap;gap:10px}
+.card-meta b{color:#cbd5e1;font-weight:600}
+.notes-line{font-size:.86rem;display:flex;flex-wrap:wrap;gap:4px}
+.note-chip{display:inline-flex;align-items:center;gap:3px;background:#0b1324;border:1px solid var(--border);
+  border-radius:6px;padding:2px 7px;font-weight:600;font-size:.8rem;white-space:nowrap}
+.fn-badge{background:#1b2c4d;color:#93c5fd;border:1px solid #2d5280;border-radius:5px;
+  padding:1px 6px;font-size:.7rem;font-weight:700}
+.fn-badge.gold{background:#422006;border-color:#b45309;color:#fcd34d}
+.fn-badge.green{background:#052e16;border-color:#15803d;color:#86efac}
+.fn-badge.blue{background:#172554;border-color:#1d4ed8;color:#93c5fd}
+.fn-badge.purple{background:#2e1065;border-color:#7e22ce;color:#d8b4fe}
+.fn-badge.pink{background:#500724;border-color:#be185d;color:#f9a8d4}
+.fn-badge.teal{background:#042f2e;border-color:#0d9488;color:#5eead4}
+.card-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.empty{padding:24px;text-align:center;color:var(--dim);border:1px dashed var(--border);border-radius:10px}
+.piano-scroll{overflow-x:auto;padding:8px 0}
+.piano{position:relative;height:180px;min-width:520px;width:100%;user-select:none}
+@media(max-width:760px){.piano{min-width:680px;height:150px}}
+.pkey{position:absolute;top:0;bottom:0;border:1px solid #0a0e1a;padding:0;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:6px;
+  font-size:.68rem;font-weight:700;transition:background .1s,box-shadow .1s;overflow:hidden}
+.pkey.white{background:linear-gradient(180deg,#e5e7eb,#cbd5e1);color:#1e293b;z-index:1}
+.pkey.white:hover{background:#f1f5f9}
+.pkey.black{height:62%;background:linear-gradient(180deg,#1f2937,#0f172a);color:#e5e7eb;
+  z-index:2;width:4.3%;transform:translateX(-50%);border-radius:0 0 4px 4px;
+  font-size:.6rem;padding-bottom:4px}
+.pkey.black:hover{background:#334155}
+.pkey.hl-white{background:linear-gradient(180deg,#93c5fd,#60a5fa);color:#0c1a33}
+.pkey.hl-black{background:linear-gradient(180deg,#2563eb,#1d4ed8);color:#fff}
+.pkey .kfn{font-size:.55rem;opacity:.85;margin-top:2px;font-weight:800}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.76rem;color:var(--dim);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:6px 12px;font-size:.88rem}
+@media(max-width:520px){.kv{grid-template-columns:110px 1fr}}
+.kv dt{color:var(--dim);font-weight:600}
+.kv dd{margin:0;color:var(--text)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:#0b1324;border:1px solid var(--border);border-radius:999px;padding:3px 10px;
+  font-size:.78rem;color:#cbd5e1;font-weight:600}
+.chip.warn{border-color:#b45309;color:#fcd34d;background:#422006}
+.chip.ok{border-color:#15803d;color:#86efac;background:#052e16}
+.chip.bad{border-color:#7f1d1d;color:#fca5a5;background:#3b1a1f}
+.muted{color:var(--dim);font-size:.85rem}
+.hint{color:var(--dim);font-size:.8rem;font-style:italic}
+details{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--panel2)}
+details summary{cursor:pointer;font-weight:700;color:#cbd5e1}
+details[open] summary{margin-bottom:6px}
+.test-item{display:flex;gap:10px;padding:8px 10px;border-radius:8px;margin-bottom:6px;
+  background:var(--panel2);border:1px solid var(--border);font-size:.86rem;flex-wrap:wrap}
+.test-item.pass{border-color:#15803d;background:#052e16}
+.test-item.fail{border-color:#7f1d1d;background:#3b1a1f}
+.test-item .badge{font-weight:800;font-size:.72rem;padding:2px 8px;border-radius:5px;align-self:flex-start}
+.test-item.pass .badge{background:#166534;color:#bbf7d0}
+.test-item.fail .badge{background:#991b1b;color:#fecaca}
+.test-item .detail{color:var(--dim);font-size:.78rem;flex-basis:100%}
+.test-item .detail b{color:#e2e8f0}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem}
+.fav-card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.fav-card .row{gap:6px}
+textarea{width:100%;min-height:70px;resize:vertical}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#16223d;color:#fff;
+  border:1px solid var(--accent);border-radius:10px;padding:10px 18px;font-weight:600;font-size:.88rem;
+  box-shadow:0 6px 24px rgba(0,0,0,.5);z-index:100;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+hr{border:0;border-top:1px solid var(--border);margin:12px 0}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Explorador Universal de Acordes</h1>
+  <p class="sub">by Rubén Sbarsky · V002</p>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Secciones">
+  <button class="tab active" role="tab" data-tab="inicio" aria-selected="true">Inicio</button>
+  <button class="tab" role="tab" data-tab="explorador">Explorador</button>
+  <button class="tab" role="tab" data-tab="piano">Piano</button>
+  <button class="tab" role="tab" data-tab="funcion">Por función</button>
+  <button class="tab" role="tab" data-tab="tonalidad">Tonalidad</button>
+  <button class="tab" role="tab" data-tab="favoritos">Favoritos</button>
+  <button class="tab" role="tab" data-tab="ayuda">Ayuda</button>
+  <button class="tab" role="tab" data-tab="pruebas">Pruebas</button>
+  <button class="tab" role="tab" data-tab="creditos">Créditos</button>
+</nav>
+
+<main>
+
+<section class="tab-panel active" id="tab-inicio">
+  <div class="panel">
+    <h2>1 · Selecciona una nota</h2>
+    <p class="muted">Se muestran todos los acordes del catálogo que contienen esa clase de altura, con la función que desempeña.</p>
+    <div class="row" style="margin:10px 0">
+      <label class="field">Notación
+        <select id="sel-notation">
+          <option value="latin">Latina (DO RE MI…)</option>
+          <option value="int">Internacional (C D E…)</option>
+        </select>
+      </label>
+      <label class="field">Grafía de alteraciones
+        <select id="sel-prefer">
+          <option value="sharp">Sostenidos</option>
+          <option value="flat">Bemoles</option>
+          <option value="auto">Automática</option>
+          <option value="both">Mostrar ambas grafías (enarmónicas)</option>
+        </select>
+      </label>
+      <label class="field" style="justify-content:flex-end">
+        <span>&nbsp;</span>
+        <button class="btn ghost small" id="btn-reset-all">Restablecer configuración</button>
+      </label>
+    </div>
+    <div class="note-grid" id="note-grid" role="group" aria-label="Selector de nota"></div>
+  </div>
+
+  <div class="panel">
+    <div class="row between" style="margin-bottom:8px">
+      <h2 style="margin:0">2 · Filtros</h2>
+      <button class="btn ghost small" id="btn-clear-filters">Limpiar filtros</button>
+    </div>
+    <div class="row">
+      <label class="field">Familia
+        <select id="f-family">
+          <option value="all">Todas</option>
+          <option value="mayores">Mayores</option>
+          <option value="menores">Menores</option>
+          <option value="dominantes">Dominantes</option>
+          <option value="aumentados">Aumentados</option>
+          <option value="disminuidos">Disminuidos</option>
+          <option value="suspendidos">Suspendidos</option>
+          <option value="quinta">Quinta sin tercera</option>
+          <option value="added">Acordes con notas añadidas</option>
+        </select>
+      </label>
+      <label class="field">Función de la nota
+        <select id="f-func">
+          <option value="all">Todas</option>
+          <option value="1">Fundamental</option>
+          <option value="2">Segunda</option>
+          <option value="3">Tercera</option>
+          <option value="4">Cuarta</option>
+          <option value="5">Quinta</option>
+          <option value="6">Sexta</option>
+          <option value="7">Séptima</option>
+          <option value="9">Novena</option>
+          <option value="11">Oncena</option>
+          <option value="13">Trecena</option>
+          <option value="altered">Tensión alterada (♭9/♯9/♯11/♭13)</option>
+        </select>
+      </label>
+      <label class="field">Complejidad
+        <select id="f-complex">
+          <option value="all">Todas</option>
+          <option value="3">Tríadas (3 notas)</option>
+          <option value="4">Cuatro notas</option>
+          <option value="5">Cinco notas</option>
+          <option value="6">Seis notas</option>
+          <option value="7">Siete o más notas</option>
+        </select>
+      </label>
+      <label class="field">Tensiones
+        <select id="f-tension">
+          <option value="all">Todas</option>
+          <option value="none">Sin tensiones</option>
+          <option value="9">Con novena (natural o alterada)</option>
+          <option value="11">Con oncena (natural o alterada)</option>
+          <option value="13">Con trecena (natural o alterada)</option>
+          <option value="altered">Con tensiones alteradas</option>
+          <option value="multi">Con varias tensiones</option>
+        </select>
+      </label>
+      <label class="field">Estructuras
+        <select id="f-exp">
+          <option value="conv">Solo convencionales</option>
+          <option value="all" selected>Incluir experimentales</option>
+        </select>
+      </label>
+      <label class="field">Ordenar por
+        <select id="f-sort">
+          <option value="family">Familia</option>
+          <option value="name">Nombre del acorde</option>
+          <option value="func">Función de la nota</option>
+          <option value="notes">Número de notas</option>
+          <option value="root">Fundamental</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="results-summary">
+      <span class="count" id="res-count">0 acordes</span>
+      <span id="res-note-info"></span>
+    </div>
+    <div id="results"></div>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-explorador">
+  <div class="panel">
+    <h2>Explorador de un acorde</h2>
+    <div class="row">
+      <input type="text" id="exp-input" class="grow" placeholder="Ej.: Cmaj7, Dbm7b5, F#dim7, DOm7, C°7, Cø7, Caug…" aria-label="Nombre del acorde">
+      <button class="btn primary" id="btn-exp-search">Buscar</button>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <label class="field">Fundamental
+        <select id="exp-root"></select>
+      </label>
+      <label class="field grow">Tipo de acorde
+        <select id="exp-formula"></select>
+      </label>
+      <label class="field" style="justify-content:flex-end">
+        <span>&nbsp;</span>
+        <button class="btn" id="btn-exp-build">Construir</button>
+      </label>
+    </div>
+    <p class="hint" id="exp-msg" aria-live="polite"></p>
+  </div>
+  <div id="exp-result"></div>
+</section>
+
+<section class="tab-panel" id="tab-piano">
+  <div class="panel">
+    <div class="row between">
+      <h2 style="margin:0">Piano interactivo</h2>
+      <label class="row" style="gap:6px;font-size:.82rem;color:var(--dim)">
+        <input type="checkbox" id="piano-names" checked> Mostrar nombres
+      </label>
+    </div>
+    <p class="muted">Pulsa cualquier tecla para seleccionar una nota o carga un acorde desde los resultados o el explorador.</p>
+    <div class="piano-scroll">
+      <div class="piano" id="piano" role="group" aria-label="Teclado de piano"></div>
+    </div>
+    <div class="legend" id="piano-legend">
+      <span><i style="background:var(--gold)"></i>Fundamental</span>
+      <span><i style="background:var(--green)"></i>Tercera / 2 / 6</span>
+      <span><i style="background:var(--blue)"></i>Quinta</span>
+      <span><i style="background:var(--purple)"></i>Séptima</span>
+      <span><i style="background:var(--pink)"></i>Tensiones (9, 11, 13)</span>
+    </div>
+    <div id="piano-info" class="panel compact" style="margin-top:10px;background:var(--panel2)">
+      <span class="muted">Ningún acorde cargado todavía.</span>
+    </div>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-funcion">
+  <div class="panel">
+    <h2>Buscador inverso por función armónica</h2>
+    <p class="muted">Encuentra todos los acordes en los que una nota desempeña una función concreta.</p>
+    <div class="row">
+      <label class="field">Nota
+        <select id="fn-note"></select>
+      </label>
+      <label class="field">Función
+        <select id="fn-func">
+          <option value="1">Fundamental</option>
+          <option value="2">Segunda</option>
+          <option value="♭3">Tercera menor</option>
+          <option value="3">Tercera mayor</option>
+          <option value="4">Cuarta</option>
+          <option value="♭5">Quinta disminuida</option>
+          <option value="5">Quinta justa</option>
+          <option value="♯5">Quinta aumentada</option>
+          <option value="6">Sexta</option>
+          <option value="♭♭7">Séptima disminuida</option>
+          <option value="♭7">Séptima menor</option>
+          <option value="7">Séptima mayor</option>
+          <option value="♭9">Novena bemol</option>
+          <option value="9">Novena</option>
+          <option value="♯9">Novena aumentada</option>
+          <option value="11">Oncena</option>
+          <option value="♯11">Oncena aumentada</option>
+          <option value="♭13">Trecena bemol</option>
+          <option value="13">Trecena</option>
+        </select>
+      </label>
+      <label class="field">Familia (opcional)
+        <select id="fn-family">
+          <option value="all">Todas</option>
+          <option value="mayores">Mayores</option>
+          <option value="menores">Menores</option>
+          <option value="dominantes">Dominantes</option>
+          <option value="aumentados">Aumentados</option>
+          <option value="disminuidos">Disminuidos</option>
+          <option value="suspendidos">Suspendidos</option>
+          <option value="quinta">Quinta</option>
+        </select>
+      </label>
+      <button class="btn primary" id="btn-fn-search">Buscar</button>
+    </div>
+  </div>
+  <div class="panel"><div id="fn-results"></div></div>
+</section>
+
+<section class="tab-panel" id="tab-tonalidad">
+  <div class="panel">
+    <h2>Explorador por tonalidad</h2>
+    <p class="muted">Los acordes diatónicos contienen exclusivamente notas de la escala (con escritura correcta por letra musical). Los no diatónicos incluyen alguna nota ajena.</p>
+    <div class="row">
+      <label class="field">Tonalidad
+        <select id="key-select"></select>
+      </label>
+      <label class="field">Nota a investigar
+        <select id="key-note"></select>
+      </label>
+      <label class="field">Familia (opcional)
+        <select id="key-family">
+          <option value="all">Todas</option>
+          <option value="mayores">Mayores</option>
+          <option value="menores">Menores</option>
+          <option value="dominantes">Dominantes</option>
+          <option value="aumentados">Aumentados</option>
+          <option value="disminuidos">Disminuidos</option>
+          <option value="suspendidos">Suspendidos</option>
+        </select>
+      </label>
+      <button class="btn primary" id="btn-key-search">Analizar</button>
+    </div>
+    <p class="hint" id="key-scale-info" style="margin-top:8px"></p>
+  </div>
+  <div class="panel"><div id="key-results"></div></div>
+</section>
+
+<section class="tab-panel" id="tab-favoritos">
+  <div class="panel">
+    <h2>Favoritos y acordes guardados</h2>
+    <div class="row">
+      <button class="btn" id="btn-export-fav">Exportar JSON</button>
+      <button class="btn" id="btn-import-fav">Importar JSON</button>
+      <input type="file" id="file-import-fav" accept=".json,application/json" class="sr-only">
+      <button class="btn danger" id="btn-clear-fav">Vaciar favoritos</button>
+    </div>
+    <p class="hint" id="fav-msg" aria-live="polite"></p>
+  </div>
+  <div id="fav-list"></div>
+</section>
+
+<section class="tab-panel" id="tab-ayuda">
+  <div class="panel">
+    <h2>Ayuda y glosario musical</h2>
+    <p class="muted">Esta herramienta trabaja con las doce clases de altura de la música occidental. Las grafías enarmónicas (DO♯ / RE♭) suenan igual pero se escriben distinto.</p>
+  </div>
+  <div class="panel">
+    <details><summary>Fundamental</summary><p>Nota que da nombre al acorde y desde la cual se miden los intervalos que lo forman.</p></details>
+    <details><summary>Intervalo</summary><p>Distancia entre dos notas. Una tercera menor y una segunda aumentada suenan igual pero se escriben distinto.</p></details>
+    <details><summary>Semitono y tono</summary><p>El semitono es la menor distancia en la música occidental. El tono equivale a dos semitonos.</p></details>
+    <details><summary>Tercera mayor y tercera menor</summary><p>La tercera mayor abarca cuatro semitonos y la tercera menor tres. Determinan si un acorde es mayor o menor.</p></details>
+    <details><summary>Quinta justa, disminuida y aumentada</summary><p>La quinta justa abarca siete semitonos; la disminuida seis y la aumentada ocho.</p></details>
+    <details><summary>Sexta</summary><p>La sexta mayor abarca nueve semitonos y la menor ocho.</p></details>
+    <details><summary>Séptima menor y séptima mayor</summary><p>La séptima menor abarca diez semitonos y la mayor once.</p></details>
+    <details><summary>Novena, oncena y trecena</summary><p>Segunda, cuarta y sexta transportadas una octava arriba.</p></details>
+    <details><summary>Tensión</summary><p>Nota añadida a la estructura básica de un acorde (9, 11, 13 y sus alteraciones).</p></details>
+    <details><summary>Acorde dominante</summary><p>Fundamental, tercera mayor, quinta justa y séptima menor.</p></details>
+    <details><summary>Acorde aumentado y disminuido</summary><p>El aumentado tiene dos terceras mayores; el disminuido, dos terceras menores.</p></details>
+    <details><summary>Acorde suspendido</summary><p>Sustituye la tercera por una segunda o una cuarta.</p></details>
+    <details><summary>Nota añadida</summary><p>Nota extra que no forma parte de la séptima del acorde (p. ej. Cadd9).</p></details>
+    <details><summary>Inversión y voicing</summary><p>Invertir un acorde es poner otra de sus notas como bajo. El voicing es la disposición de las voces.</p></details>
+    <details><summary>Enarmonía</summary><p>Dos grafías distintas para el mismo sonido (DO♯ y RE♭).</p></details>
+    <details><summary>Acorde diatónico y cromático</summary><p>Diatónico es el que contiene solo notas de la escala. Cromático incluye alguna ajena.</p></details>
+    <details><summary>Grados de escala e intervalos del acorde</summary><p>No es lo mismo el grado de la escala que la función de una nota dentro de un acorde concreto.</p></details>
+    <details><summary>Nomenclatura latina e internacional</summary><p>DO, RE, MI, FA, SOL, LA, SI equivalen a C, D, E, F, G, A, B.</p></details>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-pruebas">
+  <div class="panel">
+    <h2>Pruebas y validación interna</h2>
+    <p class="muted">Las pruebas trabajan con datos aislados: no modifican favoritos ni configuración del usuario.</p>
+    <button class="btn primary" id="btn-run-tests">Ejecutar pruebas del motor musical</button>
+    <div id="test-summary" class="results-summary" style="margin-top:10px"></div>
+  </div>
+  <div class="panel"><div id="test-list"></div></div>
+</section>
+
+<section class="tab-panel" id="tab-creditos">
+  <div class="panel" style="text-align:center;padding:30px 18px">
+    <h2 style="font-size:1.3rem">EXPLORADOR UNIVERSAL DE ACORDES</h2>
+    <p style="font-size:1.05rem;font-weight:700;color:#93c5fd">by Rubén Sbarsky · V002</p>
+    <p class="muted" style="max-width:640px;margin:14px auto">Herramienta interactiva de estudio de armonía musical. Aplicación autónoma desarrollada en HTML, CSS y JavaScript, sin dependencias externas ni conexión a Internet.</p>
+    <hr>
+    <p class="muted" style="max-width:720px;margin:0 auto">Permite buscar acordes que contienen una nota, identificar funciones, explorar por nombre, familia o tonalidad, visualizar en piano, buscar por función armónica y guardar favoritos. El motor musical es determinista.</p>
+  </div>
+</section>
+
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ============ EXPLORADOR UNIVERSAL DE ACORDES — by Rubén Sbarsky — V002 ============ */
+
+/* -------- 1. Constantes de notas -------- */
+const NOTE_LATIN = ["DO","RE","MI","FA","SOL","LA","SI"];
+const NOTE_INT   = ["C","D","E","F","G","A","B"];
+const LETTER_PC  = [0,2,4,5,7,9,11]; // C,D,E,F,G,A,B
+const LETTER_TO_INDEX = {C:0,D:1,E:2,F:3,G:4,A:5,B:6};
+
+const FAMILY_LABEL = {
+  mayores:"Mayores", menores:"Menores", dominantes:"Dominantes",
+  aumentados:"Aumentados", disminuidos:"Disminuidos",
+  suspendidos:"Suspendidos", quinta:"Quinta sin tercera"
+};
+
+/* Escrituras enarmónicas por clase de altura (grafía usual) */
+const ENHARM = {
+  0:{sharp:{l:0,a:0},  flat:{l:0,a:0}},
+  1:{sharp:{l:0,a:1},  flat:{l:1,a:-1}},
+  2:{sharp:{l:1,a:0},  flat:{l:1,a:0}},
+  3:{sharp:{l:1,a:1},  flat:{l:2,a:-1}},
+  4:{sharp:{l:2,a:0},  flat:{l:2,a:0}},
+  5:{sharp:{l:3,a:0},  flat:{l:3,a:0}},
+  6:{sharp:{l:3,a:1},  flat:{l:4,a:-1}},
+  7:{sharp:{l:4,a:0},  flat:{l:4,a:0}},
+  8:{sharp:{l:4,a:1},  flat:{l:5,a:-1}},
+  9:{sharp:{l:5,a:0},  flat:{l:5,a:0}},
+  10:{sharp:{l:5,a:1}, flat:{l:6,a:-1}},
+  11:{sharp:{l:6,a:0}, flat:{l:6,a:0}}
+};
+const AUTO_SPELL = {1:"flat",3:"flat",6:"sharp",8:"flat",10:"flat"};
+
+/* Pares enarmónicos reales para modo "ambas grafías" */
+const ENHARM_PAIRS = {
+  0:  [{l:0,a:0}],
+  1:  [{l:0,a:1},{l:1,a:-1}],
+  2:  [{l:1,a:0}],
+  3:  [{l:1,a:1},{l:2,a:-1}],
+  4:  [{l:2,a:0}],
+  5:  [{l:3,a:0}],
+  6:  [{l:3,a:1},{l:4,a:-1}],
+  7:  [{l:4,a:0}],
+  8:  [{l:4,a:1},{l:5,a:-1}],
+  9:  [{l:5,a:0}],
+  10: [{l:5,a:1},{l:6,a:-1}],
+  11: [{l:6,a:0}]
+};
+
+/* -------- 2. Utilidades de escritura -------- */
+function parseLabel(l){
+  let alt=0, i=0;
+  while(i<l.length){
+    if(l[i]==="♭"){alt--;i++;}
+    else if(l[i]==="♯"){alt++;i++;}
+    else break;
+  }
+  return {alt, deg: parseInt(l.slice(i),10)};
+}
+const FUNC_NAME = {
+  "1":"Fundamental","2":"Segunda","♭3":"Tercera menor","3":"Tercera mayor",
+  "4":"Cuarta","♭5":"Quinta disminuida","5":"Quinta justa","♯5":"Quinta aumentada",
+  "6":"Sexta","♭♭7":"Séptima disminuida","♭7":"Séptima menor","7":"Séptima mayor",
+  "♭9":"Novena bemol","9":"Novena","♯9":"Novena aumentada",
+  "11":"Oncena","♯11":"Oncena aumentada","♭13":"Trecena bemol","13":"Trecena"
+};
+function functionColor(label){
+  const {deg} = parseLabel(label);
+  if(deg===1) return "gold";
+  if(deg===3) return "green";
+  if(deg===5) return "blue";
+  if(deg===7) return "purple";
+  if(deg>=9)  return "pink";
+  if(deg===2||deg===4||deg===6) return "teal";
+  return "gray";
+}
+function noteName(spelling, notation){
+  const names = notation==="latin" ? NOTE_LATIN : NOTE_INT;
+  const acc = spelling.a;
+  const accStr = acc===0 ? "" : acc>0 ? "♯".repeat(acc) : "♭".repeat(-acc);
+  return names[spelling.l] + accStr;
+}
+function rootSpelling(pc, preferOverride){
+  const p = preferOverride || state.prefer;
+  let key;
+  if(p==="sharp") key="sharp";
+  else if(p==="flat") key="flat";
+  else if(p==="auto") key = AUTO_SPELL[pc] || "sharp";
+  else key = "sharp"; /* "both": usar sostenido internamente; la UI muestra ambas grafías */
+  return ENHARM[pc][key];
+}
+function noteDisplayName(pc, notation, prefer){
+  const p = prefer || state.prefer;
+  if(p==="both"){
+    const pairs = ENHARM_PAIRS[pc];
+    if(pairs && pairs.length > 1){
+      return pairs.map(s=>noteName(s, notation)).join("/");
+    }
+    return noteName(rootSpelling(pc), notation);
+  }
+  return noteName(rootSpelling(pc, p), notation);
+}
+/**
+ * Devuelve la representación de una nota del acorde mostrando ambas grafías enarmónicas
+ * en un orden estable (el de ENHARM_PAIRS), conservando grafías no habituales (p. ej. MI♯, FA♭).
+ */
+function noteBothDisplay(note, notation){
+  const pairs = ENHARM_PAIRS[note.pc] || [];
+  if(pairs.length <= 1){
+    return noteName({l:note.letter,a:note.acc}, notation);
+  }
+  const cur = {l:note.letter, a:note.acc};
+  const inPair = pairs.some(s=>s.l===cur.l && s.a===cur.a);
+  if(!inPair){
+    /* Grafía inusual (p. ej. FA♭ en un acorde de RE♭, MI♯ en DO♯): respetarla tal cual */
+    return noteName(cur, notation);
+  }
+  /* Mostrar el par canónico en orden ENHARM_PAIRS para coherencia con noteDisplayName */
+  return pairs.map(s=>noteName(s, notation)).join("/");
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+}
+
+/* -------- 3. Catálogo de fórmulas (idéntico a V001) -------- */
+const CHORD_FORMULAS = [
+  {id:"maj", family:"mayores", name:"Mayor", symbol:"",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"}],
+   desc:"Tríada mayor: fundamental, tercera mayor y quinta justa.", isAdded:false, exp:false},
+  {id:"maj6", family:"mayores", name:"Mayor sexta", symbol:"6",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:9,l:"6"}],
+   desc:"Tríada mayor con sexta añadida.", isAdded:true, exp:false},
+  {id:"maj7", family:"mayores", name:"Mayor séptima", symbol:"maj7",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:11,l:"7"}],
+   desc:"Tríada mayor con séptima mayor.", isAdded:false, exp:false},
+  {id:"maj9", family:"mayores", name:"Mayor novena", symbol:"maj9",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:11,l:"7"},{i:14,l:"9"}],
+   desc:"Acorde mayor séptima con novena añadida.", isAdded:false, exp:false},
+  {id:"maj69", family:"mayores", name:"Sexta y novena", symbol:"6/9",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:9,l:"6"},{i:14,l:"9"}],
+   desc:"Tríada mayor con sexta y novena añadidas.", isAdded:true, exp:false},
+  {id:"maj7#11", family:"mayores", name:"Mayor séptima oncena aumentada", symbol:"maj7♯11",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:11,l:"7"},{i:18,l:"♯11"}],
+   desc:"Acorde mayor séptima con oncena aumentada.", isAdded:false, exp:false},
+  {id:"maj13", family:"mayores", name:"Mayor trecena", symbol:"maj13",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:11,l:"7"},{i:14,l:"9"},{i:21,l:"13"}],
+   desc:"Acorde mayor con séptima mayor, novena y trecena.", isAdded:false, exp:false},
+  {id:"add9", family:"mayores", name:"Mayor con novena añadida", symbol:"add9",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:14,l:"9"}],
+   desc:"Tríada mayor con novena añadida.", isAdded:true, exp:false},
+  {id:"add11", family:"mayores", name:"Mayor con oncena añadida", symbol:"add11",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:17,l:"11"}],
+   desc:"Tríada mayor con oncena justa añadida.", isAdded:true, exp:false},
+  {id:"add#11", family:"mayores", name:"Mayor con oncena aumentada añadida", symbol:"add♯11",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:18,l:"♯11"}],
+   desc:"Tríada mayor con oncena aumentada añadida.", isAdded:true, exp:false},
+  {id:"maj7add13", family:"mayores", name:"Mayor séptima con trecena añadida", symbol:"maj7(add13)",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:11,l:"7"},{i:21,l:"13"}],
+   desc:"Acorde mayor séptima con trecena añadida.", isAdded:true, exp:false},
+  {id:"m", family:"menores", name:"Menor", symbol:"m",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:7,l:"5"}],
+   desc:"Tríada menor: fundamental, tercera menor y quinta justa.", isAdded:false, exp:false},
+  {id:"m6", family:"menores", name:"Menor sexta", symbol:"m6",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:7,l:"5"},{i:9,l:"6"}],
+   desc:"Tríada menor con sexta añadida.", isAdded:true, exp:false},
+  {id:"m7", family:"menores", name:"Menor séptima", symbol:"m7",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:7,l:"5"},{i:10,l:"♭7"}],
+   desc:"Tríada menor con séptima menor.", isAdded:false, exp:false},
+  {id:"mMaj7", family:"menores", name:"Menor séptima mayor", symbol:"m(maj7)",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:7,l:"5"},{i:11,l:"7"}],
+   desc:"Tríada menor con séptima mayor.", isAdded:false, exp:false},
+  {id:"m9", family:"menores", name:"Menor novena", symbol:"m9",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:14,l:"9"}],
+   desc:"Acorde menor séptima con novena añadida.", isAdded:false, exp:false},
+  {id:"m11", family:"menores", name:"Menor oncena", symbol:"m11",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:14,l:"9"},{i:17,l:"11"}],
+   desc:"Acorde menor con oncena justa.", isAdded:false, exp:false},
+  {id:"m13", family:"menores", name:"Menor trecena", symbol:"m13",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:14,l:"9"},{i:21,l:"13"}],
+   desc:"Acorde menor con trecena.", isAdded:false, exp:false},
+  {id:"madd9", family:"menores", name:"Menor con novena añadida", symbol:"m(add9)",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:7,l:"5"},{i:14,l:"9"}],
+   desc:"Tríada menor con novena añadida.", isAdded:true, exp:false},
+  {id:"m#5", family:"menores", name:"Menor con quinta aumentada", symbol:"m♯5",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:8,l:"♯5"}],
+   desc:"Tríada menor con quinta aumentada.", isAdded:false, exp:false},
+  {id:"madd11", family:"menores", name:"Menor con oncena añadida", symbol:"m(add11)",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:7,l:"5"},{i:17,l:"11"}],
+   desc:"Tríada menor con oncena justa añadida.", isAdded:true, exp:true},
+  {id:"7", family:"dominantes", name:"Séptima dominante", symbol:"7",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"}],
+   desc:"Séptima dominante: mayor con séptima menor.", isAdded:false, exp:false},
+  {id:"9", family:"dominantes", name:"Novena dominante", symbol:"9",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:14,l:"9"}],
+   desc:"Acorde dominante con novena.", isAdded:false, exp:false},
+  {id:"11", family:"dominantes", name:"Oncena dominante", symbol:"11",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:14,l:"9"},{i:17,l:"11"}],
+   desc:"Acorde dominante con oncena justa.", isAdded:false, exp:false},
+  {id:"13", family:"dominantes", name:"Trecena dominante", symbol:"13",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:14,l:"9"},{i:21,l:"13"}],
+   desc:"Acorde dominante con novena y trecena.", isAdded:false, exp:false},
+  {id:"7b9", family:"dominantes", name:"Séptima con novena bemol", symbol:"7♭9",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:13,l:"♭9"}],
+   desc:"Acorde dominante con novena bemol.", isAdded:false, exp:false},
+  {id:"7#9", family:"dominantes", name:"Séptima con novena aumentada", symbol:"7♯9",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:15,l:"♯9"}],
+   desc:"Acorde dominante con novena aumentada.", isAdded:false, exp:false},
+  {id:"7b5", family:"dominantes", name:"Séptima con quinta bemol", symbol:"7♭5",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:6,l:"♭5"},{i:10,l:"♭7"}],
+   desc:"Acorde dominante con quinta disminuida.", isAdded:false, exp:false},
+  {id:"7#5", family:"dominantes", name:"Séptima con quinta aumentada", symbol:"7♯5",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:8,l:"♯5"},{i:10,l:"♭7"}],
+   desc:"Acorde dominante con quinta aumentada.", isAdded:false, exp:false},
+  {id:"7#11", family:"dominantes", name:"Séptima con oncena aumentada", symbol:"7♯11",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:18,l:"♯11"}],
+   desc:"Acorde dominante con oncena aumentada.", isAdded:false, exp:false},
+  {id:"7b13", family:"dominantes", name:"Séptima con trecena bemol", symbol:"7♭13",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:20,l:"♭13"}],
+   desc:"Acorde dominante con trecena bemol.", isAdded:false, exp:false},
+  {id:"7b9#5", family:"dominantes", name:"Séptima novena bemol quinta aumentada", symbol:"7♭9♯5",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:8,l:"♯5"},{i:10,l:"♭7"},{i:13,l:"♭9"}],
+   desc:"Acorde dominante con novena bemol y quinta aumentada.", isAdded:false, exp:false},
+  {id:"7#9b5", family:"dominantes", name:"Séptima novena aumentada quinta bemol", symbol:"7♯9♭5",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:6,l:"♭5"},{i:10,l:"♭7"},{i:15,l:"♯9"}],
+   desc:"Acorde dominante con novena aumentada y quinta bemol.", isAdded:false, exp:false},
+  {id:"7b9b13", family:"dominantes", name:"Séptima novena y trecena bemol", symbol:"7♭9♭13",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:13,l:"♭9"},{i:20,l:"♭13"}],
+   desc:"Acorde dominante con novena bemol y trecena bemol.", isAdded:false, exp:false},
+  {id:"7#9_13", family:"dominantes", name:"Séptima novena aumentada trecena", symbol:"7♯9,13",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:15,l:"♯9"},{i:21,l:"13"}],
+   desc:"Acorde dominante con novena aumentada y trecena natural.", isAdded:false, exp:false},
+  {id:"7b9#11", family:"dominantes", name:"Séptima novena bemol oncena aumentada", symbol:"7♭9♯11",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:13,l:"♭9"},{i:18,l:"♯11"}],
+   desc:"Acorde dominante con novena bemol y oncena aumentada.", isAdded:false, exp:false},
+  {id:"7#9#5", family:"dominantes", name:"Séptima novena y quinta aumentada", symbol:"7♯9♯5",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:8,l:"♯5"},{i:10,l:"♭7"},{i:15,l:"♯9"}],
+   desc:"Acorde dominante con novena y quinta aumentadas.", isAdded:false, exp:false},
+  {id:"13b9", family:"dominantes", name:"Trecena novena bemol", symbol:"13♭9",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:7,l:"5"},{i:10,l:"♭7"},{i:13,l:"♭9"},{i:21,l:"13"}],
+   desc:"Acorde dominante con novena bemol y trecena natural.", isAdded:false, exp:false},
+  {id:"aug", family:"aumentados", name:"Aumentado", symbol:"aug",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:8,l:"♯5"}],
+   desc:"Tríada aumentada (C+).", isAdded:false, exp:false},
+  {id:"maj7#5", family:"aumentados", name:"Mayor séptima quinta aumentada", symbol:"maj7♯5",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:8,l:"♯5"},{i:11,l:"7"}],
+   desc:"Acorde mayor séptima con quinta aumentada.", isAdded:false, exp:false},
+  {id:"aug_add9", family:"aumentados", name:"Aumentado con novena", symbol:"aug(add9)",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:8,l:"♯5"},{i:14,l:"9"}],
+   desc:"Tríada aumentada con novena añadida.", isAdded:true, exp:false},
+  {id:"9#5", family:"aumentados", name:"Novena con quinta aumentada", symbol:"9♯5",
+   intervals:[{i:0,l:"1"},{i:4,l:"3"},{i:8,l:"♯5"},{i:10,l:"♭7"},{i:14,l:"9"}],
+   desc:"Acorde dominante con quinta aumentada y novena.", isAdded:false, exp:false},
+  {id:"dim", family:"disminuidos", name:"Disminuido", symbol:"dim",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:6,l:"♭5"}],
+   desc:"Tríada disminuida (C°).", isAdded:false, exp:false},
+  {id:"dim7", family:"disminuidos", name:"Disminuido séptima", symbol:"dim7",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:6,l:"♭5"},{i:9,l:"♭♭7"}],
+   desc:"Acorde disminuido con séptima disminuida (C°7).", isAdded:false, exp:false},
+  {id:"m7b5", family:"disminuidos", name:"Semidisminuido", symbol:"m7♭5",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:6,l:"♭5"},{i:10,l:"♭7"}],
+   desc:"Semidisminuido (Cø7).", isAdded:false, exp:false},
+  {id:"dim_add9", family:"disminuidos", name:"Disminuido con novena", symbol:"dim(add9)",
+   intervals:[{i:0,l:"1"},{i:3,l:"♭3"},{i:6,l:"♭5"},{i:14,l:"9"}],
+   desc:"Tríada disminuida con novena añadida.", isAdded:true, exp:true},
+  {id:"sus2", family:"suspendidos", name:"Suspendido segunda", symbol:"sus2",
+   intervals:[{i:0,l:"1"},{i:2,l:"2"},{i:7,l:"5"}],
+   desc:"Suspendido con segunda.", isAdded:false, exp:false},
+  {id:"sus4", family:"suspendidos", name:"Suspendido cuarta", symbol:"sus4",
+   intervals:[{i:0,l:"1"},{i:5,l:"4"},{i:7,l:"5"}],
+   desc:"Suspendido con cuarta.", isAdded:false, exp:false},
+  {id:"7sus4", family:"suspendidos", name:"Séptima suspendida cuarta", symbol:"7sus4",
+   intervals:[{i:0,l:"1"},{i:5,l:"4"},{i:7,l:"5"},{i:10,l:"♭7"}],
+   desc:"Dominante con cuarta en lugar de tercera.", isAdded:false, exp:false},
+  {id:"9sus4", family:"suspendidos", name:"Novena suspendida cuarta", symbol:"9sus4",
+   intervals:[{i:0,l:"1"},{i:5,l:"4"},{i:7,l:"5"},{i:10,l:"♭7"},{i:14,l:"9"}],
+   desc:"Suspendido con séptima menor y novena.", isAdded:false, exp:false},
+  {id:"7sus2", family:"suspendidos", name:"Séptima suspendida segunda", symbol:"7sus2",
+   intervals:[{i:0,l:"1"},{i:2,l:"2"},{i:7,l:"5"},{i:10,l:"♭7"}],
+   desc:"Suspendido con segunda y séptima menor.", isAdded:false, exp:false},
+  {id:"6sus4", family:"suspendidos", name:"Sexta suspendida cuarta", symbol:"6sus4",
+   intervals:[{i:0,l:"1"},{i:5,l:"4"},{i:7,l:"5"},{i:9,l:"6"}],
+   desc:"Suspendido con sexta añadida.", isAdded:true, exp:false},
+  {id:"sus2add6", family:"suspendidos", name:"Suspendido segunda con sexta", symbol:"sus2(add6)",
+   intervals:[{i:0,l:"1"},{i:2,l:"2"},{i:7,l:"5"},{i:9,l:"6"}],
+   desc:"Suspendido con segunda y sexta.", isAdded:true, exp:true},
+  {id:"5", family:"quinta", name:"Quinta (power chord)", symbol:"5",
+   intervals:[{i:0,l:"1"},{i:7,l:"5"}],
+   desc:"Power chord: fundamental y quinta, sin tercera.", isAdded:false, exp:false},
+  {id:"7omit3", family:"quinta", name:"Séptima sin tercera", symbol:"7(no3)",
+   intervals:[{i:0,l:"1"},{i:7,l:"5"},{i:10,l:"♭7"}],
+   desc:"Fundamental, quinta y séptima menor, sin tercera.", isAdded:false, exp:true}
+];
+
+const FORMULA_MAP = {};
+CHORD_FORMULAS.forEach(f=>{ FORMULA_MAP[f.id]=f; });
+
+/* Alias ASCII */
+const SUFFIX_ALIASES = {
+  "":"maj","maj":"maj","M":"maj","MAJ":"maj","ma":"maj",
+  "6":"maj6","maj6":"maj6","M6":"maj6","MAJ6":"maj6",
+  "maj7":"maj7","M7":"maj7","MAJ7":"maj7",
+  "maj9":"maj9","M9":"maj9","MAJ9":"maj9",
+  "6/9":"maj69","maj6/9":"maj69","69":"maj69",
+  "maj7#11":"maj7#11","M7#11":"maj7#11",
+  "maj13":"maj13","M13":"maj13",
+  "add9":"add9","add11":"add11","add#11":"add#11",
+  "maj7(add13)":"maj7add13","maj7add13":"maj7add13",
+  "m":"m","min":"m","MIN":"m","-":"m",
+  "m6":"m6","min6":"m6","-6":"m6",
+  "m7":"m7","min7":"m7","MIN7":"m7","-7":"m7",
+  "m(maj7)":"mMaj7","mMaj7":"mMaj7","mM7":"mMaj7","minmaj7":"mMaj7",
+  "m9":"m9","min9":"m9","-9":"m9",
+  "m11":"m11","min11":"m11",
+  "m13":"m13","min13":"m13",
+  "m(add9)":"madd9","madd9":"madd9","minadd9":"madd9",
+  "m(add11)":"madd11","madd11":"madd11",
+  "m#5":"m#5","m(#5)":"m#5",
+  "7":"7","dom7":"7",
+  "9":"9","dom9":"9",
+  "11":"11","dom11":"11",
+  "13":"13","dom13":"13",
+  "7b9":"7b9","7#9":"7#9","7b5":"7b5","7#5":"7#5","aug7":"7#5",
+  "7#11":"7#11","7b13":"7b13","7b9#5":"7b9#5","7#9b5":"7#9b5",
+  "7b9b13":"7b9b13","7#9,13":"7#9_13","7#9_13":"7#9_13",
+  "7b9#11":"7b9#11","7#9#5":"7#9#5","13b9":"13b9",
+  "aug":"aug","AUG":"aug",
+  "maj7#5":"maj7#5","M7#5":"maj7#5",
+  "aug(add9)":"aug_add9","augadd9":"aug_add9",
+  "9#5":"9#5","9(#5)":"9#5",
+  "dim":"dim","DIM":"dim",
+  "dim7":"dim7",
+  "m7b5":"m7b5","m7(b5)":"m7b5","min7b5":"m7b5",
+  "dim(add9)":"dim_add9","dimadd9":"dim_add9",
+  "sus2":"sus2","sus4":"sus4",
+  "7sus4":"7sus4","7sus":"7sus4",
+  "9sus4":"9sus4","9sus":"9sus4",
+  "7sus2":"7sus2",
+  "6sus4":"6sus4",
+  "sus2(add6)":"sus2add6",
+  "5":"5","(no3)":"7omit3","no3":"7omit3","7(no3)":"7omit3","7omit3":"7omit3"
+};
+
+/* -------- 4. Estado global -------- */
+const state = {
+  notation: "latin",
+  prefer: "sharp",
+  selectedPc: null,
+  filters: {family:"all", func:"all", complex:"all", tension:"all", exp:"all"},
+  sort: "family",
+  pianoChord: null,
+  expandGroups: {},
+  favorites: [],
+  pianoShowNames: true,
+  lastExplore: null,
+  lastFnSearch: null,
+  lastKeySearch: null
+};
+
+/* -------- 5. Motor musical -------- */
+function generateChord(rootPc, formula, preferOverride){
+  const root = rootSpelling(rootPc, preferOverride);
+  const rootL = root.l, rootA = root.a;
+  const rootPcValue = ((LETTER_PC[rootL] + rootA) % 12 + 12) % 12;
+  const notes = [];
+  formula.intervals.forEach(entry=>{
+    const {deg} = parseLabel(entry.l);
+    const step = (deg - 1) % 7;
+    const targetLetter = (rootL + step) % 7;
+    const targetPC = ((rootPcValue + entry.i) % 12 + 12) % 12;
+    const naturalPC = LETTER_PC[targetLetter];
+    let diff = ((targetPC - naturalPC) % 12 + 12) % 12;
+    if(diff > 6) diff -= 12;
+    notes.push({
+      pc: targetPC,
+      letter: targetLetter,
+      acc: diff,
+      label: entry.l,
+      interval: entry.i
+    });
+  });
+  return {
+    rootPc: rootPcValue,
+    rootLetter: rootL,
+    rootAcc: rootA,
+    formula: formula,
+    notes: notes
+  };
+}
+
+function uniquePcs(chord){
+  const s = new Set();
+  chord.notes.forEach(n=>s.add(n.pc));
+  return s;
+}
+
+let allChordsCache = {prefer:null, data:null};
+function getAllChords(){
+  if(allChordsCache.prefer === state.prefer && allChordsCache.data) return allChordsCache.data;
+  const list = [];
+  for(let pc=0; pc<12; pc++){
+    for(const f of CHORD_FORMULAS){
+      list.push(generateChord(pc, f));
+    }
+  }
+  allChordsCache = {prefer: state.prefer, data: list};
+  return list;
+}
+
+/**
+ * Nombre visible del acorde. En modo "ambas grafías" muestra las dos
+ * grafías enarmónicas de la fundamental de forma coherente con noteDisplayName.
+ */
+function chordDisplayName(chord, notation){
+  if(state.prefer === "both"){
+    return noteDisplayName(chord.rootPc, notation, "both") + chord.formula.symbol;
+  }
+  const rootSp = {l:chord.rootLetter, a:chord.rootAcc};
+  return noteName(rootSp, notation) + chord.formula.symbol;
+}
+
+function chordNotesString(chord, notation, showBoth){
+  return chord.notes.map(n=>{
+    if(showBoth) return noteBothDisplay(n, notation);
+    return noteName({l:n.letter, a:n.acc}, notation);
+  }).join(" – ");
+}
+
+function chordsContaining(pc){
+  return getAllChords().filter(chord=>chord.notes.some(n=>n.pc===pc));
+}
+
+function functionsOfPc(chord, pc){
+  const out = [];
+  chord.notes.forEach(n=>{ if(n.pc===pc) out.push({label:n.label, index:chord.notes.indexOf(n)}); });
+  return out;
+}
+
+/* -------- 6. Escritura diatónica de escalas -------- */
+const MAJOR_INTERVALS = [0,2,4,5,7,9,11];
+const MINOR_INTERVALS = [0,2,3,5,7,8,10];
+
+function spellScale(rootLetter, rootAcc, intervals){
+  const rootPc = ((LETTER_PC[rootLetter] + rootAcc) % 12 + 12) % 12;
+  const notes = [];
+  for(let i=0; i<intervals.length; i++){
+    const letter = (rootLetter + i) % 7;
+    const targetPc = ((rootPc + intervals[i]) % 12 + 12) % 12;
+    const naturalPc = LETTER_PC[letter];
+    let diff = targetPc - naturalPc;
+    if(diff > 6) diff -= 12;
+    if(diff < -6) diff += 12;
+    notes.push({l:letter, a:diff, pc:targetPc});
+  }
+  return notes;
+}
+
+const KEYS_MAJOR = [
+  {name:"DO mayor", letter:0, acc:0, rootPc:0},
+  {name:"SOL mayor", letter:4, acc:0, rootPc:7},
+  {name:"RE mayor", letter:1, acc:0, rootPc:2},
+  {name:"LA mayor", letter:5, acc:0, rootPc:9},
+  {name:"MI mayor", letter:2, acc:0, rootPc:4},
+  {name:"SI mayor", letter:6, acc:0, rootPc:11},
+  {name:"FA♯ mayor", letter:3, acc:1, rootPc:6},
+  {name:"DO♯ mayor", letter:0, acc:1, rootPc:1},
+  {name:"FA mayor", letter:3, acc:0, rootPc:5},
+  {name:"SI♭ mayor", letter:6, acc:-1, rootPc:10},
+  {name:"MI♭ mayor", letter:2, acc:-1, rootPc:3},
+  {name:"LA♭ mayor", letter:5, acc:-1, rootPc:8}
+];
+const KEYS_MINOR = [
+  {name:"LA menor", letter:5, acc:0, rootPc:9},
+  {name:"MI menor", letter:2, acc:0, rootPc:4},
+  {name:"SI menor", letter:6, acc:0, rootPc:11},
+  {name:"FA♯ menor", letter:3, acc:1, rootPc:6},
+  {name:"DO♯ menor", letter:0, acc:1, rootPc:1},
+  {name:"SOL♯ menor", letter:4, acc:1, rootPc:8},
+  {name:"RE♯ menor", letter:1, acc:1, rootPc:3},
+  {name:"LA♯ menor", letter:5, acc:1, rootPc:10},
+  {name:"RE menor", letter:1, acc:0, rootPc:2},
+  {name:"SOL menor", letter:4, acc:0, rootPc:7},
+  {name:"DO menor", letter:0, acc:0, rootPc:0},
+  {name:"FA menor", letter:3, acc:0, rootPc:5}
+];
+
+/* -------- 7. Selector de notas -------- */
+function renderNoteSelector(){
+  const grid = document.getElementById("note-grid");
+  grid.innerHTML = "";
+  for(let pc=0; pc<12; pc++){
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "note-btn" + (state.selectedPc===pc ? " active" : "");
+    btn.dataset.pc = pc;
+    const display = noteDisplayName(pc, state.notation, state.prefer);
+    btn.textContent = display;
+    if(state.prefer !== "both" && display.length <= 4){
+      const other = state.notation==="latin" ? noteName(rootSpelling(pc), "int") : noteName(rootSpelling(pc), "latin");
+      if(other !== display){
+        const small = document.createElement("small");
+        small.textContent = other;
+        btn.appendChild(small);
+      }
+    }
+    btn.addEventListener("click", ()=>{
+      state.selectedPc = pc;
+      renderNoteSelector();
+      renderResults();
+    });
+    grid.appendChild(btn);
+  }
+}
+
+/* -------- 8. Filtros y orden -------- */
+function applyFilters(chords, searchedPc){
+  const F = state.filters;
+  return chords.filter(chord=>{
+    const f = chord.formula;
+    if(F.family !== "all"){
+      if(F.family === "added"){ if(!f.isAdded) return false; }
+      else if(f.family !== F.family) return false;
+    }
+    if(F.func !== "all" && searchedPc !== null){
+      const fns = functionsOfPc(chord, searchedPc);
+      if(F.func === "altered"){
+        if(!fns.some(fn=>{
+          const p = parseLabel(fn.label);
+          return (p.deg===9 || p.deg===11 || p.deg===13) && p.alt !== 0;
+        })) return false;
+      } else {
+        const match = fns.some(fn=>String(parseLabel(fn.label).deg) === F.func);
+        if(!match) return false;
+      }
+    }
+    if(F.complex !== "all"){
+      const u = uniquePcs(chord).size;
+      if(F.complex === "7"){ if(u < 7) return false; }
+      else if(u !== parseInt(F.complex,10)) return false;
+    }
+    if(F.tension !== "all"){
+      const labels = chord.notes.map(n=>n.label);
+      const has9 = labels.some(l=>parseLabel(l).deg === 9);
+      const has11 = labels.some(l=>parseLabel(l).deg === 11);
+      const has13 = labels.some(l=>parseLabel(l).deg === 13);
+      const alteredTension = labels.some(l=>{
+        const p = parseLabel(l);
+        return (p.deg===9 || p.deg===11 || p.deg===13) && p.alt !== 0;
+      });
+      if(F.tension==="none" && (has9||has11||has13)) return false;
+      if(F.tension==="9" && !has9) return false;
+      if(F.tension==="11" && !has11) return false;
+      if(F.tension==="13" && !has13) return false;
+      if(F.tension==="altered" && !alteredTension) return false;
+      if(F.tension==="multi"){
+        let c=0; if(has9)c++; if(has11)c++; if(has13)c++;
+        if(c<2) return false;
+      }
+    }
+    if(F.exp === "conv" && f.exp) return false;
+    return true;
+  });
+}
+
+function sortChords(chords){
+  const sort = state.sort;
+  const order = ["mayores","menores","dominantes","aumentados","disminuidos","suspendidos","quinta"];
+  const copy = chords.slice();
+  copy.sort((a,b)=>{
+    if(sort==="name"){
+      return chordDisplayName(a,state.notation).localeCompare(chordDisplayName(b,state.notation));
+    }
+    if(sort==="root"){
+      if(a.rootPc!==b.rootPc) return a.rootPc-b.rootPc;
+      return a.formula.name.localeCompare(b.formula.name);
+    }
+    if(sort==="notes"){
+      const d = uniquePcs(a).size - uniquePcs(b).size;
+      if(d!==0) return d;
+      return a.formula.name.localeCompare(b.formula.name);
+    }
+    if(sort==="func" && state.selectedPc!==null){
+      const fa = functionsOfPc(a,state.selectedPc)[0];
+      const fb = functionsOfPc(b,state.selectedPc)[0];
+      const da = fa ? parseLabel(fa.label).deg : 99;
+      const db = fb ? parseLabel(fb.label).deg : 99;
+      if(da!==db) return da-db;
+      return a.formula.name.localeCompare(b.formula.name);
+    }
+    const ia = order.indexOf(a.formula.family);
+    const ib = order.indexOf(b.formula.family);
+    if(ia!==ib) return ia-ib;
+    if(a.rootPc!==b.rootPc) return a.rootPc-b.rootPc;
+    return a.formula.name.localeCompare(b.formula.name);
+  });
+  return copy;
+}
+
+/* -------- 9. Render de tarjetas -------- */
+function makeCard(chord, searchedPc){
+  const card = document.createElement("div");
+  card.className = "card";
+  const dispName = chordDisplayName(chord, state.notation);
+  const funcs = searchedPc!==null ? functionsOfPc(chord, searchedPc) : [];
+  const uniq = uniquePcs(chord).size;
+
+  const head = document.createElement("div");
+  head.className = "card-head";
+  const title = document.createElement("div");
+  title.className = "card-title";
+  title.textContent = dispName;
+  const fam = document.createElement("div");
+  fam.className = "card-fam";
+  fam.textContent = FAMILY_LABEL[chord.formula.family] || chord.formula.family;
+  head.appendChild(title); head.appendChild(fam);
+  card.appendChild(head);
+
+  const meta = document.createElement("div");
+  meta.className = "card-meta";
+  const rootSp = {l:chord.rootLetter, a:chord.rootAcc};
+  const rootDisp = state.prefer === "both"
+    ? noteDisplayName(chord.rootPc, state.notation, "both")
+    : noteName(rootSp, state.notation);
+  const spanR = document.createElement("span");
+  spanR.innerHTML = "<b>Fundamental:</b> " + escapeHtml(rootDisp);
+  meta.appendChild(spanR);
+  const spanF = document.createElement("span");
+  spanF.innerHTML = "<b>Fórmula:</b> " + escapeHtml(chord.formula.intervals.map(e=>e.l).join(" – "));
+  meta.appendChild(spanF);
+  const spanN = document.createElement("span");
+  spanN.innerHTML = "<b>Notas distintas:</b> " + uniq;
+  meta.appendChild(spanN);
+  card.appendChild(meta);
+
+  const notes = document.createElement("div");
+  notes.className = "notes-line";
+  chord.notes.forEach(n=>{
+    const chip = document.createElement("span");
+    chip.className = "note-chip";
+    let name = state.prefer === "both" ? noteBothDisplay(n, state.notation)
+                                        : noteName({l:n.letter,a:n.acc}, state.notation);
+    chip.textContent = name;
+    const fnBadge = document.createElement("span");
+    fnBadge.className = "fn-badge " + functionColor(n.label);
+    fnBadge.textContent = n.label;
+    chip.appendChild(fnBadge);
+    notes.appendChild(chip);
+  });
+  card.appendChild(notes);
+
+  if(searchedPc !== null && funcs.length){
+    const fnLine = document.createElement("div");
+    fnLine.className = "card-meta";
+    const names = funcs.map(f=>FUNC_NAME[f.label] || f.label).join(" / ");
+    fnLine.innerHTML = "<b>Función de la nota buscada:</b> " + escapeHtml(names);
+    card.appendChild(fnLine);
+  }
+
+  const desc = document.createElement("div");
+  desc.className = "muted";
+  desc.style.fontSize = ".78rem";
+  desc.textContent = chord.formula.desc;
+  card.appendChild(desc);
+
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+
+  const btnPiano = document.createElement("button");
+  btnPiano.className = "btn small";
+  btnPiano.textContent = "Ver en piano";
+  btnPiano.addEventListener("click", ()=>loadChordInPiano(chord));
+  actions.appendChild(btnPiano);
+
+  const btnExp = document.createElement("button");
+  btnExp.className = "btn small";
+  btnExp.textContent = "Explorar";
+  btnExp.addEventListener("click", ()=>{
+    selectChord(chord.rootPc, chord.formula.id);
+    switchTab("explorador");
+  });
+  actions.appendChild(btnExp);
+
+  const btnFav = document.createElement("button");
+  btnFav.className = "btn small";
+  btnFav.textContent = "★ Favorito";
+  btnFav.addEventListener("click", ()=>addFavorite(chord.rootPc, chord.formula.id));
+  actions.appendChild(btnFav);
+
+  card.appendChild(actions);
+  return card;
+}
+
+/* -------- 10. Render de resultados -------- */
+function renderResults(){
+  const results = document.getElementById("results");
+  const counter = document.getElementById("res-count");
+  const info = document.getElementById("res-note-info");
+  results.innerHTML = "";
+  info.textContent = "";
+
+  if(state.selectedPc === null){
+    counter.textContent = "0 acordes";
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Selecciona una nota para comenzar.";
+    results.appendChild(empty);
+    return;
+  }
+
+  let chords = chordsContaining(state.selectedPc);
+  chords = applyFilters(chords, state.selectedPc);
+  chords = sortChords(chords);
+
+  counter.textContent = chords.length + (chords.length===1 ? " acorde" : " acordes");
+  info.textContent = "Contiene la nota: " + noteDisplayName(state.selectedPc, state.notation, state.prefer);
+
+  if(!chords.length){
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No hay acordes que cumplan todos los filtros seleccionados. Prueba a quitar alguno.";
+    results.appendChild(empty);
+    return;
+  }
+
+  const groups = {};
+  chords.forEach(c=>{
+    const fam = c.formula.family;
+    if(!groups[fam]) groups[fam] = [];
+    groups[fam].push(c);
+  });
+
+  const order = ["mayores","menores","dominantes","aumentados","disminuidos","suspendidos","quinta"];
+  order.forEach(fam=>{
+    if(!groups[fam]) return;
+    const list = groups[fam];
+    const grp = document.createElement("div");
+    grp.className = "family-group";
+    const key = "g_"+fam;
+    const expanded = state.expandGroups[key] === true;
+    if(!expanded) grp.classList.add("collapsed");
+
+    const head = document.createElement("div");
+    head.className = "family-head";
+    const h3 = document.createElement("h3");
+    h3.textContent = FAMILY_LABEL[fam] || fam;
+    const right = document.createElement("span");
+    right.className = "cnt";
+    right.textContent = list.length + " · ";
+    const arrow = document.createElement("span");
+    arrow.className = "arrow";
+    arrow.textContent = "▾";
+    right.appendChild(arrow);
+    head.appendChild(h3); head.appendChild(right);
+
+    const body = document.createElement("div");
+    body.className = "family-body";
+    function renderBody(){
+      if(body.dataset.rendered === "1") return;
+      list.forEach(c=>body.appendChild(makeCard(c, state.selectedPc)));
+      body.dataset.rendered = "1";
+    }
+    if(expanded) renderBody();
+    head.addEventListener("click", ()=>{
+      grp.classList.toggle("collapsed");
+      state.expandGroups[key] = !grp.classList.contains("collapsed");
+      if(state.expandGroups[key]) renderBody();
+    });
+
+    grp.appendChild(head);
+    grp.appendChild(body);
+    results.appendChild(grp);
+  });
+}
+
+/* -------- 10b. Render progresivo para rejillas planas -------- */
+const PROGRESSIVE_PAGE = 24;
+
+function renderProgressiveGrid(container, chords, searchedPc){
+  let shown = 0;
+  const grid = document.createElement("div");
+  grid.className = "results-grid";
+  container.appendChild(grid);
+
+  let moreBtn = null;
+
+  function renderMore(){
+    const next = Math.min(shown + PROGRESSIVE_PAGE, chords.length);
+    for(let i=shown; i<next; i++){
+      grid.appendChild(makeCard(chords[i], searchedPc));
+    }
+    shown = next;
+    if(moreBtn){ moreBtn.remove(); moreBtn = null; }
+    if(shown < chords.length){
+      moreBtn = document.createElement("button");
+      moreBtn.className = "btn";
+      moreBtn.textContent = "Mostrar más (" + (chords.length - shown) + " restantes)";
+      moreBtn.style.marginTop = "10px";
+      moreBtn.addEventListener("click", renderMore);
+      container.appendChild(moreBtn);
+    }
+  }
+  renderMore();
+  return grid;
+}
+
+/* -------- 11. Explorador de un acorde -------- */
+function normalizeChordInput(input){
+  let s = String(input).trim();
+  if(!s) return {error:"Escribe el nombre de un acorde."};
+
+  s = s
+    .replace(/ø7?/g, "m7b5")
+    .replace(/°/g, "dim")
+    .replace(/Δ/g, "maj")
+    .replace(/♭/g, "b")
+    .replace(/♯/g, "#")
+    .replace(/\+/g, "aug");
+
+  let m = s.match(/^(DO|RE|MI|FA|SOL|LA|SI)([#b]?)(.*)$/i);
+  let rootLetter = null, rootAcc = 0, rest = "";
+  if(m){
+    rootLetter = NOTE_LATIN.indexOf(m[1].toUpperCase());
+    rootAcc = m[2]==="#" ? 1 : m[2]==="b" ? -1 : 0;
+    rest = m[3];
+  } else {
+    m = s.match(/^([A-Ga-g])([#b]?)(.*)$/);
+    if(!m) return {error:"No se reconoce la fundamental. Usa por ejemplo C, Dm, F#maj7 o DOm7."};
+    rootLetter = LETTER_TO_INDEX[m[1].toUpperCase()];
+    rootAcc = m[2]==="#" ? 1 : m[2]==="b" ? -1 : 0;
+    rest = m[3];
+  }
+  const rootPc = ((LETTER_PC[rootLetter] + rootAcc) % 12 + 12) % 12;
+  let suffix = rest.replace(/\s+/g,"").replace(/♭/g,"b").replace(/♯/g,"#");
+  if(/^M\d/.test(suffix)) suffix = "maj" + suffix.slice(1);
+  if(suffix === "maj") suffix = "";
+  if(suffix === "") {
+    return {rootPc, rootLetter, rootAcc, id:"maj"};
+  }
+  const id = SUFFIX_ALIASES[suffix];
+  if(!id){
+    return {
+      rootPc, rootLetter, rootAcc,
+      error:"Sufijo desconocido: '"+suffix+"'",
+      suggestions: suggestSuffixes(suffix)
+    };
+  }
+  return {rootPc, rootLetter, rootAcc, id};
+}
+
+function suggestSuffixes(suffix){
+  const keys = Object.keys(SUFFIX_ALIASES);
+  const scored = keys.map(k=>{
+    let d = 0;
+    const len = Math.max(k.length, suffix.length);
+    for(let i=0;i<len;i++){
+      if(k[i] !== suffix[i]) d++;
+    }
+    return {k, d};
+  }).filter(x=>x.d <= 3).sort((a,b)=>a.d-b.d).slice(0,5);
+  return scored.map(x=>x.k || "(mayor)");
+}
+
+/**
+ * Función canónica: selecciona un acorde y sincroniza estado, campo de texto,
+ * exp-root, exp-formula y resultado principal. Todas las vías de selección
+ * (tarjetas, acordes relacionados, favoritos, construcción manual) deben pasar
+ * por aquí.
+ */
+function selectChord(rootPc, formulaId, inputValue){
+  const formula = FORMULA_MAP[formulaId];
+  if(!formula) return;
+  const chord = generateChord(rootPc, formula);
+  const inp = document.getElementById("exp-input");
+  if(inp){
+    inp.value = inputValue !== undefined
+      ? inputValue
+      : chordDisplayName(chord, "int");
+  }
+  const rootSel = document.getElementById("exp-root");
+  if(rootSel) rootSel.value = String(rootPc);
+  const fSel = document.getElementById("exp-formula");
+  if(fSel) fSel.value = formulaId;
+  const msg = document.getElementById("exp-msg");
+  if(msg) msg.textContent = "";
+  exploreChord(rootPc, formulaId);
+}
+
+function exploreChord(rootPc, formulaId){
+  const formula = FORMULA_MAP[formulaId];
+  if(!formula) return;
+  state.lastExplore = {rootPc, formulaId};
+  const chord = generateChord(rootPc, formula);
+  const container = document.getElementById("exp-result");
+  container.innerHTML = "";
+
+  const panel = document.createElement("div");
+  panel.className = "panel";
+
+  const h2 = document.createElement("h2");
+  h2.textContent = chordDisplayName(chord, state.notation);
+  panel.appendChild(h2);
+
+  const dl = document.createElement("dl");
+  dl.className = "kv";
+  const rootSp = {l:chord.rootLetter, a:chord.rootAcc};
+  const fundamentalDisp = state.prefer === "both"
+    ? noteDisplayName(chord.rootPc, state.notation, "both")
+    : noteName(rootSp, state.notation);
+  const rows = [
+    ["Familia", FAMILY_LABEL[chord.formula.family] || chord.formula.family],
+    ["Fundamental", fundamentalDisp],
+    ["Fórmula", chord.formula.intervals.map(e=>e.l).join(" – ")],
+    ["Notas", chordNotesString(chord, state.notation, state.prefer==="both")],
+    ["Número de notas distintas", String(uniquePcs(chord).size)],
+    ["Descripción", chord.formula.desc]
+  ];
+  rows.forEach(([k,v])=>{
+    const dt = document.createElement("dt"); dt.textContent = k;
+    const dd = document.createElement("dd"); dd.textContent = v;
+    dl.appendChild(dt); dl.appendChild(dd);
+  });
+  panel.appendChild(dl);
+
+  const h3 = document.createElement("h3");
+  h3.textContent = "Función de cada nota";
+  panel.appendChild(h3);
+  const chips = document.createElement("div");
+  chips.className = "chips";
+  chord.notes.forEach(n=>{
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    const nm = state.prefer==="both" ? noteBothDisplay(n, state.notation)
+                                     : noteName({l:n.letter,a:n.acc}, state.notation);
+    chip.textContent = nm + " · " + (FUNC_NAME[n.label] || n.label);
+    chips.appendChild(chip);
+  });
+  panel.appendChild(chips);
+
+  const actions = document.createElement("div");
+  actions.className = "row";
+  actions.style.marginTop = "10px";
+  const btnPiano = document.createElement("button");
+  btnPiano.className = "btn primary"; btnPiano.textContent = "Ver en piano";
+  btnPiano.addEventListener("click", ()=>loadChordInPiano(chord));
+  actions.appendChild(btnPiano);
+  const btnFav = document.createElement("button");
+  btnFav.className = "btn"; btnFav.textContent = "★ Añadir a favoritos";
+  btnFav.addEventListener("click", ()=>addFavorite(rootPc, formulaId));
+  actions.appendChild(btnFav);
+  panel.appendChild(actions);
+
+  container.appendChild(panel);
+
+  const myPcs = uniquePcs(chord);
+  const related = [];
+  getAllChords().forEach(c=>{
+    if(c.rootPc===chord.rootPc && c.formula.id===chord.formula.id) return;
+    const pcs = uniquePcs(c);
+    let shared = 0;
+    pcs.forEach(p=>{ if(myPcs.has(p)) shared++; });
+    if(shared >= Math.min(pcs.size, myPcs.size) - 1 && shared >= 3){
+      related.push({c, shared});
+    }
+  });
+  related.sort((a,b)=>b.shared-a.shared);
+  if(related.length){
+    const relPanel = document.createElement("div");
+    relPanel.className = "panel";
+    const rh = document.createElement("h3");
+    rh.textContent = "Acordes que comparten notas";
+    relPanel.appendChild(rh);
+    const rch = document.createElement("div");
+    rch.className = "chips";
+    related.slice(0,24).forEach(({c})=>{
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.style.cursor = "pointer";
+      chip.textContent = chordDisplayName(c, state.notation);
+      chip.addEventListener("click", ()=>{
+        /* Sincroniza estado, texto, exp-root, exp-formula y resultados */
+        selectChord(c.rootPc, c.formula.id);
+      });
+      rch.appendChild(chip);
+    });
+    relPanel.appendChild(rch);
+    container.appendChild(relPanel);
+  }
+}
+
+/* -------- 12. Piano -------- */
+function buildPiano(){
+  const piano = document.getElementById("piano");
+  piano.innerHTML = "";
+  const whitePcs = [0,2,4,5,7,9,11];
+  const blackData = [
+    {pos:1,pc:1},{pos:2,pc:3},{pos:4,pc:6},{pos:5,pc:8},{pos:6,pc:10},
+    {pos:8,pc:1},{pos:9,pc:3},{pos:11,pc:6},{pos:12,pc:8},{pos:13,pc:10}
+  ];
+  const whiteW = 100/14;
+  let idx = 0;
+  for(let oct=0; oct<2; oct++){
+    for(let i=0; i<7; i++){
+      const pc = whitePcs[i];
+      const key = document.createElement("button");
+      key.type = "button";
+      key.className = "pkey white";
+      key.dataset.pc = pc;
+      key.style.left = (idx * whiteW) + "%";
+      key.style.width = whiteW + "%";
+      if(state.pianoShowNames){
+        const lbl = document.createElement("span");
+        lbl.textContent = noteDisplayName(pc, state.notation, state.prefer);
+        key.appendChild(lbl);
+      }
+      const fnSpan = document.createElement("span");
+      fnSpan.className = "kfn";
+      key.appendChild(fnSpan);
+      key.setAttribute("aria-label", "Tecla " + noteDisplayName(pc, state.notation, state.prefer));
+      key.addEventListener("click", ()=>onPianoKey(pc));
+      piano.appendChild(key);
+      idx++;
+    }
+  }
+  blackData.forEach(b=>{
+    const key = document.createElement("button");
+    key.type = "button";
+    key.className = "pkey black";
+    key.dataset.pc = b.pc;
+    key.style.left = (b.pos * whiteW) + "%";
+    if(state.pianoShowNames){
+      const lbl = document.createElement("span");
+      lbl.textContent = noteDisplayName(b.pc, state.notation, state.prefer);
+      key.appendChild(lbl);
+    }
+    const fnSpan = document.createElement("span");
+    fnSpan.className = "kfn";
+    key.appendChild(fnSpan);
+    key.setAttribute("aria-label", "Tecla " + noteDisplayName(b.pc, state.notation, state.prefer));
+    key.addEventListener("click", ()=>onPianoKey(b.pc));
+    piano.appendChild(key);
+  });
+  if(state.pianoChord) highlightChordOnPiano(state.pianoChord);
+}
+
+function onPianoKey(pc){
+  state.selectedPc = pc;
+  renderNoteSelector();
+  renderResults();
+  switchTab("inicio");
+}
+
+function highlightChordOnPiano(chord){
+  const piano = document.getElementById("piano");
+  const keys = piano.querySelectorAll(".pkey");
+  const map = new Map();
+  chord.notes.forEach(n=>{
+    if(!map.has(n.pc)) map.set(n.pc, []);
+    map.get(n.pc).push(n.label);
+  });
+  keys.forEach(k=>{
+    const pc = parseInt(k.dataset.pc,10);
+    k.classList.remove("hl-white","hl-black");
+    const fn = k.querySelector(".kfn");
+    if(fn) fn.textContent = "";
+    if(map.has(pc)){
+      const labels = map.get(pc);
+      if(k.classList.contains("white")) k.classList.add("hl-white");
+      else k.classList.add("hl-black");
+      if(fn){
+        fn.textContent = labels.join("/");
+        fn.style.color = functionColorVar(labels[0]);
+      }
+    }
+  });
+  const info = document.getElementById("piano-info");
+  info.innerHTML = "";
+  const title = document.createElement("div");
+  title.style.fontWeight = "700";
+  title.textContent = chordDisplayName(chord, state.notation);
+  info.appendChild(title);
+  const desc = document.createElement("div");
+  desc.className = "muted";
+  desc.style.fontSize = ".82rem";
+  desc.textContent = chord.formula.intervals.map(e=>e.l).join(" – ") + " · " +
+    chordNotesString(chord, state.notation, state.prefer==="both");
+  info.appendChild(desc);
+}
+
+function functionColorVar(label){
+  const c = functionColor(label);
+  return ({gold:"#fcd34d", green:"#86efac", blue:"#93c5fd", purple:"#d8b4fe",
+    pink:"#f9a8d4", teal:"#5eead4", gray:"#cbd5e1"})[c] || "#cbd5e1";
+}
+
+function loadChordInPiano(chord){
+  state.pianoChord = chord;
+  highlightChordOnPiano(chord);
+  switchTab("piano");
+}
+
+/* -------- 13. Favoritos -------- */
+const FAV_KEY = "eua_favs_v1";
+
+function loadFavorites(){
+  try{
+    const raw = localStorage.getItem(FAV_KEY);
+    if(!raw) return [];
+    const arr = JSON.parse(raw);
+    if(!Array.isArray(arr)) return [];
+    return arr.filter(validateFavoriteRecord);
+  }catch(e){ return []; }
+}
+
+function validateFavoriteRecord(f){
+  return f && typeof f === "object"
+    && Number.isInteger(f.rootPc) && f.rootPc >= 0 && f.rootPc < 12
+    && typeof f.formulaId === "string" && FORMULA_MAP[f.formulaId]
+    && (f.label === undefined || typeof f.label === "string");
+}
+
+function saveFavorites(){
+  try{
+    localStorage.setItem(FAV_KEY, JSON.stringify(state.favorites));
+    return true;
+  }catch(e){
+    setFavMsg("No se pudo guardar en localStorage. Los favoritos no se conservarán al cerrar.", true);
+    return false;
+  }
+}
+
+function setFavMsg(msg, isError){
+  const el = document.getElementById("fav-msg");
+  el.textContent = msg;
+  el.style.color = isError ? "#fca5a5" : "#86efac";
+}
+
+function addFavorite(rootPc, formulaId){
+  const key = rootPc + "::" + formulaId;
+  if(state.favorites.some(f=>f.rootPc===rootPc && f.formulaId===formulaId)){
+    showToast("Ese acorde ya está en favoritos.");
+    return;
+  }
+  state.favorites.push({
+    id: key,
+    rootPc: rootPc,
+    formulaId: formulaId,
+    label: "",
+    date: new Date().toISOString()
+  });
+  if(saveFavorites()){
+    showToast("Acorde guardado en favoritos.");
+    renderFavorites();
+  }
+}
+
+function renderFavorites(){
+  const list = document.getElementById("fav-list");
+  list.innerHTML = "";
+  if(!state.favorites.length){
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Aún no hay acordes en favoritos.";
+    list.appendChild(empty);
+    return;
+  }
+  const panel = document.createElement("div");
+  panel.className = "panel";
+  state.favorites.forEach(f=>{
+    const chord = generateChord(f.rootPc, FORMULA_MAP[f.formulaId]);
+    const card = document.createElement("div");
+    card.className = "fav-card";
+    const name = document.createElement("div");
+    name.style.fontWeight = "800";
+    name.style.fontSize = "1.02rem";
+    name.textContent = chordDisplayName(chord, state.notation);
+    card.appendChild(name);
+    const meta = document.createElement("div");
+    meta.className = "muted";
+    meta.style.fontSize = ".8rem";
+    meta.textContent = FAMILY_LABEL[chord.formula.family] + " · " +
+      chord.formula.intervals.map(e=>e.l).join(" – ") + " · " +
+      chordNotesString(chord, state.notation, state.prefer==="both");
+    card.appendChild(meta);
+    const row = document.createElement("div");
+    row.className = "row";
+    row.style.marginTop = "6px";
+    const inp = document.createElement("input");
+    inp.type = "text"; inp.value = f.label || "";
+    inp.placeholder = "Etiqueta personal…";
+    inp.style.flex = "1 1 200px";
+    inp.addEventListener("input", ()=>{ f.label = inp.value.slice(0,200); saveFavorites(); });
+    row.appendChild(inp);
+    const btnPiano = document.createElement("button");
+    btnPiano.className = "btn small"; btnPiano.textContent = "Piano";
+    btnPiano.addEventListener("click", ()=>loadChordInPiano(chord));
+    row.appendChild(btnPiano);
+    const btnDel = document.createElement("button");
+    btnDel.className = "btn small danger"; btnDel.textContent = "Eliminar";
+    btnDel.addEventListener("click", ()=>{
+      state.favorites = state.favorites.filter(x=>x.id!==f.id);
+      saveFavorites();
+      renderFavorites();
+    });
+    row.appendChild(btnDel);
+    card.appendChild(row);
+    panel.appendChild(card);
+  });
+  list.appendChild(panel);
+}
+
+function exportFavorites(){
+  const data = JSON.stringify(state.favorites, null, 2);
+  const blob = new Blob([data], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "favoritos-acordes.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importFavorites(file){
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const arr = JSON.parse(reader.result);
+      if(!Array.isArray(arr)){ setFavMsg("El archivo no contiene una lista válida.", true); return; }
+      const valid = arr.filter(validateFavoriteRecord);
+      const rejected = arr.length - valid.length;
+      let added = 0;
+      valid.forEach(f=>{
+        const id = f.rootPc + "::" + f.formulaId;
+        if(!state.favorites.some(x=>x.id===id)){
+          state.favorites.push({
+            id: id,
+            rootPc: f.rootPc,
+            formulaId: f.formulaId,
+            label: typeof f.label === "string" ? f.label.slice(0,200) : "",
+            date: typeof f.date === "string" ? f.date : new Date().toISOString()
+          });
+          added++;
+        }
+      });
+      saveFavorites();
+      renderFavorites();
+      setFavMsg("Importación correcta: " + added + " nuevos, " + rejected + " rechazados.", rejected>0);
+    }catch(e){
+      setFavMsg("Error al leer el JSON: " + e.message, true);
+    }
+  };
+  reader.onerror = ()=>setFavMsg("No se pudo leer el archivo.", true);
+  reader.readAsText(file);
+}
+
+/* -------- 14. Búsqueda por función -------- */
+function renderFunctionNoteSelector(){
+  const noteSel = document.getElementById("fn-note");
+  const prev = noteSel.value;
+  noteSel.innerHTML = "";
+  for(let pc=0; pc<12; pc++){
+    const opt = document.createElement("option");
+    opt.value = pc;
+    opt.textContent = noteDisplayName(pc, state.notation, state.prefer);
+    noteSel.appendChild(opt);
+  }
+  if(prev) noteSel.value = prev;
+}
+
+function runFunctionSearch(){
+  const pc = parseInt(document.getElementById("fn-note").value,10);
+  const func = document.getElementById("fn-func").value;
+  const family = document.getElementById("fn-family").value;
+  state.lastFnSearch = {pc, func, family};
+  const container = document.getElementById("fn-results");
+  container.innerHTML = "";
+
+  const results = [];
+  getAllChords().forEach(chord=>{
+    if(family !== "all" && chord.formula.family !== family) return;
+    if(functionsOfPc(chord, pc).some(f=>f.label === func)) results.push(chord);
+  });
+
+  const summary = document.createElement("div");
+  summary.className = "results-summary";
+  const cnt = document.createElement("span");
+  cnt.className = "count";
+  cnt.textContent = results.length + " resultado" + (results.length===1?"":"s");
+  summary.appendChild(cnt);
+  const info = document.createElement("span");
+  info.textContent = noteDisplayName(pc, state.notation, state.prefer) + " como " + (FUNC_NAME[func] || func);
+  summary.appendChild(info);
+  container.appendChild(summary);
+
+  if(!results.length){
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Ningún acorde del catálogo cumple ese criterio.";
+    container.appendChild(empty);
+    return;
+  }
+  const order = ["mayores","menores","dominantes","aumentados","disminuidos","suspendidos","quinta"];
+  const sorted = results.slice().sort((a,b)=>{
+    const ia = order.indexOf(a.formula.family), ib = order.indexOf(b.formula.family);
+    if(ia !== ib) return ia - ib;
+    return a.rootPc - b.rootPc;
+  });
+  renderProgressiveGrid(container, sorted, pc);
+}
+
+/* -------- 15. Tonalidad -------- */
+function renderTonalityControls(){
+  const sel = document.getElementById("key-select");
+  const prevKey = sel.value;
+  sel.innerHTML = "";
+  const gM = document.createElement("optgroup"); gM.label = "Mayores";
+  KEYS_MAJOR.forEach((k,i)=>{
+    const o = document.createElement("option");
+    o.value = "M"+i; o.textContent = k.name;
+    gM.appendChild(o);
+  });
+  sel.appendChild(gM);
+  const gm = document.createElement("optgroup"); gm.label = "Menores (natural)";
+  KEYS_MINOR.forEach((k,i)=>{
+    const o = document.createElement("option");
+    o.value = "m"+i; o.textContent = k.name;
+    gm.appendChild(o);
+  });
+  sel.appendChild(gm);
+  if(prevKey && [...sel.options].some(o=>o.value===prevKey)) sel.value = prevKey;
+
+  const nsel = document.getElementById("key-note");
+  const prevNote = nsel.value;
+  nsel.innerHTML = "";
+  for(let pc=0; pc<12; pc++){
+    const o = document.createElement("option");
+    o.value = pc; o.textContent = noteDisplayName(pc, state.notation, state.prefer);
+    nsel.appendChild(o);
+  }
+  if(prevNote !== undefined && prevNote !== null && [...nsel.options].some(o=>o.value===prevNote)) nsel.value = prevNote;
+}
+
+function runTonalitySearch(){
+  const selVal = document.getElementById("key-select").value;
+  const mode = selVal[0];
+  const idx = parseInt(selVal.slice(1),10);
+  const keyInfo = mode==="M" ? KEYS_MAJOR[idx] : KEYS_MINOR[idx];
+  const scaleIntervals = mode==="M" ? MAJOR_INTERVALS : MINOR_INTERVALS;
+  const scaleNotes = spellScale(keyInfo.letter, keyInfo.acc, scaleIntervals);
+  const keyPcs = new Set(scaleNotes.map(n=>n.pc));
+
+  const notePc = parseInt(document.getElementById("key-note").value,10);
+  const family = document.getElementById("key-family").value;
+  state.lastKeySearch = {selVal, notePc, family};
+
+  const container = document.getElementById("key-results");
+  container.innerHTML = "";
+
+  const info = document.getElementById("key-scale-info");
+  info.textContent = "Notas de la escala: " + scaleNotes.map(n=>noteName({l:n.l,a:n.a}, state.notation)).join(" – ");
+
+  const diatonic = [], chromatic = [];
+  getAllChords().forEach(chord=>{
+    if(family !== "all" && chord.formula.family !== family) return;
+    const pcs = uniquePcs(chord);
+    if(!pcs.has(notePc)) return;
+    let inKey = true;
+    pcs.forEach(p=>{ if(!keyPcs.has(p)) inKey=false; });
+    if(inKey) diatonic.push(chord);
+    else chromatic.push(chord);
+  });
+
+  const summary = document.createElement("div");
+  summary.className = "results-summary";
+  const c1 = document.createElement("span"); c1.className = "count ok";
+  c1.textContent = "Diatónicos: " + diatonic.length;
+  const c2 = document.createElement("span"); c2.className = "count";
+  c2.textContent = "No diatónicos: " + chromatic.length;
+  summary.appendChild(c1); summary.appendChild(c2);
+  container.appendChild(summary);
+
+  function renderGroup(title, arr){
+    const h = document.createElement("h3");
+    h.textContent = title;
+    h.style.marginTop = "12px";
+    container.appendChild(h);
+    if(!arr.length){
+      const e = document.createElement("div");
+      e.className = "empty";
+      e.textContent = "Sin resultados en esta categoría.";
+      container.appendChild(e);
+      return;
+    }
+    arr.sort((a,b)=>a.rootPc - b.rootPc || a.formula.name.localeCompare(b.formula.name));
+    renderProgressiveGrid(container, arr, notePc);
+  }
+  renderGroup("Acordes diatónicos", diatonic);
+  renderGroup("Acordes no diatónicos (contienen la nota buscada)", chromatic);
+}
+
+/* -------- 16. Sistema de pruebas -------- */
+function runTests(){
+  const list = document.getElementById("test-list");
+  const summary = document.getElementById("test-summary");
+  list.innerHTML = ""; summary.innerHTML = "";
+  let pass=0, fail=0;
+  const results = [];
+
+  /* Snapshot del estado real: las pruebas NO deben tocarlo de forma permanente */
+  const snapshot = {
+    favorites: JSON.stringify(state.favorites),
+    filters: JSON.stringify(state.filters),
+    notation: state.notation,
+    prefer: state.prefer,
+    sort: state.sort
+  };
+
+  function check(name, ok, expected, actual){
+    results.push({name, ok: !!ok, expected: String(expected), actual: String(actual)});
+    if(ok) pass++; else fail++;
+  }
+
+  function namesLatin(chord){ return chord.notes.map(n=>noteName({l:n.letter,a:n.acc}, "latin")); }
+  function namesInt(chord){ return chord.notes.map(n=>noteName({l:n.letter,a:n.acc}, "int")); }
+  function pcs(chord){ return chord.notes.map(n=>n.pc); }
+
+  /* --- 1. Correspondencia internacional --- */
+  try {
+    const expected = {C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+    let ok = true, detalle = [];
+    for(const letter of Object.keys(expected)){
+      const idx = LETTER_TO_INDEX[letter];
+      const pc = LETTER_PC[idx];
+      if(pc !== expected[letter]){ ok = false; }
+      detalle.push(letter+"="+pc);
+    }
+    check("Correspondencia C,D,E,F,G,A,B → pc", ok, "C=0 D=2 E=4 F=5 G=7 A=9 B=11", detalle.join(" "));
+  } catch(e){ check("Correspondencia internacional", false, "OK", "Error: "+e.message); }
+
+  /* --- 2. C mayor --- */
+  try {
+    const c = generateChord(0, FORMULA_MAP["maj"], "sharp");
+    const n = namesLatin(c).join("-");
+    check("C mayor → DO-MI-SOL", n === "DO-MI-SOL", "DO-MI-SOL", n);
+  } catch(e){ check("C mayor", false, "DO-MI-SOL", "Error: "+e.message); }
+
+  /* --- 3. Cmaj7 --- */
+  try {
+    const c = generateChord(0, FORMULA_MAP["maj7"], "sharp");
+    const n = namesLatin(c).join("-");
+    check("Cmaj7 → DO-MI-SOL-SI", n === "DO-MI-SOL-SI", "DO-MI-SOL-SI", n);
+  } catch(e){ check("Cmaj7", false, "DO-MI-SOL-SI", "Error: "+e.message); }
+
+  /* --- 4. Am --- */
+  try {
+    const c = generateChord(9, FORMULA_MAP["m"], "sharp");
+    const n = namesLatin(c).join("-");
+    check("Am → LA-DO-MI", n === "LA-DO-MI", "LA-DO-MI", n);
+  } catch(e){ check("Am", false, "LA-DO-MI", "Error: "+e.message); }
+
+  /* --- 5. Dm7 --- */
+  try {
+    const c = generateChord(2, FORMULA_MAP["m7"], "sharp");
+    const n = namesLatin(c).join("-");
+    check("Dm7 → RE-FA-LA-DO", n === "RE-FA-LA-DO", "RE-FA-LA-DO", n);
+  } catch(e){ check("Dm7", false, "RE-FA-LA-DO", "Error: "+e.message); }
+
+  /* --- 6. G7 --- */
+  try {
+    const c = generateChord(7, FORMULA_MAP["7"], "sharp");
+    const n = namesInt(c).join("-");
+    check("G7 → G-B-D-F", n === "G-B-D-F", "G-B-D-F", n);
+  } catch(e){ check("G7", false, "G-B-D-F", "Error: "+e.message); }
+
+  /* --- 7. Bdim7 --- */
+  try {
+    const c = generateChord(11, FORMULA_MAP["dim7"], "sharp");
+    const n = namesLatin(c).join("-");
+    check("Bdim7 → SI-RE-FA-LA♭", n === "SI-RE-FA-LA♭", "SI-RE-FA-LA♭", n);
+  } catch(e){ check("Bdim7", false, "SI-RE-FA-LA♭", "Error: "+e.message); }
+
+  /* --- 8. Bm7b5 y Bø7 misma estructura --- */
+  try {
+    const c1 = generateChord(11, FORMULA_MAP["m7b5"], "sharp");
+    const p1 = normalizeChordInput("Bm7b5");
+    const p2 = normalizeChordInput("Bø7");
+    const p3 = normalizeChordInput("Bø");
+    const idOk = p1.id === "m7b5" && p2.id === "m7b5" && p3.id === "m7b5";
+    const c2 = generateChord(p2.rootPc, FORMULA_MAP[p2.id], "sharp");
+    const same = JSON.stringify(pcs(c1)) === JSON.stringify(pcs(c2));
+    check("Bm7♭5 y Bø7 misma estructura", idOk && same,
+      "m7b5 / mismo pc set",
+      "ids="+[p1.id,p2.id,p3.id].join(",")+" pcs="+pcs(c1).join(",")+"/"+pcs(c2).join(","));
+  } catch(e){ check("Semidisminuido", false, "m7b5", "Error: "+e.message); }
+
+  /* --- 9. Alias --- */
+  try {
+    const pairs = [
+      ["Cdim","C°","dim"],
+      ["Cdim7","C°7","dim7"],
+      ["Cm7b5","Cø7","m7b5"],
+      ["Caug","C+","aug"],
+      ["Cmaj7","CM7","maj7"],
+      ["Cm","Cmin","m"],
+      ["C7sus4","C7sus","7sus4"],
+      ["Caug7","C7#5","7#5"],
+      ["C7","Cdom7","7"]
+    ];
+    let ok = true, detalle = [];
+    for(const [a,b,id] of pairs){
+      const pa = normalizeChordInput(a);
+      const pb = normalizeChordInput(b);
+      if(pa.id !== id || pb.id !== id){ ok = false; }
+      detalle.push(a+"→"+pa.id+" / "+b+"→"+pb.id);
+    }
+    check("Alias (dim, °, ø, aug, +, maj7, m, 7#5…) se interpretan correctamente",
+      ok, "todos al id esperado", detalle.join(" | "));
+  } catch(e){ check("Alias", false, "OK", "Error: "+e.message); }
+
+  /* --- 10. Enarmonía DO♯ / RE♭ --- */
+  try {
+    const p1 = normalizeChordInput("C#m7");
+    const p2 = normalizeChordInput("Dbm7");
+    const samePc = p1.rootPc === p2.rootPc && p1.rootPc === 1;
+    const c1 = generateChord(p1.rootPc, FORMULA_MAP[p1.id], "sharp");
+    const c2 = generateChord(p2.rootPc, FORMULA_MAP[p2.id], "flat");
+    const samePcs = JSON.stringify(uniquePcs(c1).size) === JSON.stringify(uniquePcs(c2).size)
+      && [...uniquePcs(c1)].every(p=>uniquePcs(c2).has(p));
+    check("DO♯m7 y RE♭m7 misma clase de altura y mismas notas",
+      samePc && samePcs, "rootPc=1 en ambos, mismo set",
+      "pc="+p1.rootPc+"/"+p2.rootPc+" set1="+[...uniquePcs(c1)].join(",")+" set2="+[...uniquePcs(c2)].join(","));
+  } catch(e){ check("Enarmonía", false, "OK", "Error: "+e.message); }
+
+  /* --- 11. Funciones independientes --- */
+  try {
+    const amC = functionsOfPc(generateChord(9, FORMULA_MAP["m"]), 0);
+    const abC = functionsOfPc(generateChord(8, FORMULA_MAP["maj"]), 0);
+    const fC  = functionsOfPc(generateChord(5, FORMULA_MAP["maj"]), 0);
+    const dm7C = functionsOfPc(generateChord(2, FORMULA_MAP["m7"]), 0);
+    const dbmaj7C = functionsOfPc(generateChord(1, FORMULA_MAP["maj7"], "flat"), 0);
+    const okAm = amC.some(f=>f.label==="♭3");
+    const okAb = abC.some(f=>f.label==="3");
+    const okF  = fC.some(f=>f.label==="5");
+    const okDm = dm7C.some(f=>f.label==="♭7");
+    const okDb = dbmaj7C.some(f=>f.label==="7");
+    check("Funciones: DO=♭3 en Am, DO=3 en A♭, DO=5 en F, DO=♭7 en Dm7, DO=7 en D♭maj7",
+      okAm&&okAb&&okF&&okDm&&okDb,
+      "todas OK",
+      "Am="+okAm+" Ab="+okAb+" F="+okF+" Dm7="+okDm+" Dbmaj7="+okDb);
+  } catch(e){ check("Funciones", false, "todas OK", "Error: "+e.message); }
+
+  /* --- 12. Filtros familia --- */
+  try {
+    const base = chordsContaining(0);
+    const fams = ["mayores","menores","dominantes","aumentados","disminuidos","suspendidos","quinta"];
+    let ok = true, detalle = [];
+    for(const f of fams){
+      const testF = {family:f, func:"all", complex:"all", tension:"all", exp:"all"};
+      const orig = state.filters;
+      state.filters = testF;
+      const filtered = applyFilters(base, 0);
+      state.filters = orig;
+      const allMatch = filtered.every(c=>c.formula.family===f);
+      if(!allMatch) ok = false;
+      detalle.push(f+"="+filtered.length);
+    }
+    check("Filtro por familia: cada familia solo devuelve acordes de esa familia",
+      ok, "todas coherentes", detalle.join(" "));
+  } catch(e){ check("Filtros familia", false, "OK", "Error: "+e.message); }
+
+  /* --- 13. Tensiones alteradas --- */
+  try {
+    function hasAlteredTension(formulaId){
+      const chord = generateChord(0, FORMULA_MAP[formulaId]);
+      return chord.notes.some(n=>{
+        const p = parseLabel(n.label);
+        return (p.deg===9 || p.deg===11 || p.deg===13) && p.alt !== 0;
+      });
+    }
+    const casos = [
+      ["7b9", true],
+      ["7#9", true],
+      ["9", false],
+      ["9#5", false],
+      ["7#5", false],
+      ["7b5", false],
+      ["maj7#11", true],
+      ["7b13", true],
+      ["7b9#5", true]
+    ];
+    let ok = true, detalle = [];
+    for(const [id, exp] of casos){
+      const r = hasAlteredTension(id);
+      if(r !== exp) ok = false;
+      detalle.push(id+"="+r);
+    }
+    check("Tensiones alteradas: distingue alteración de tensión vs estructural",
+      ok, "7b9=Y, 9#5=N, maj7#11=Y, 7b5=N", detalle.join(" "));
+  } catch(e){ check("Tensiones alteradas", false, "OK", "Error: "+e.message); }
+
+  /* --- 14. Tonalidades 12+12 --- */
+  try {
+    let ok = true, detalle = [];
+    for(const k of KEYS_MAJOR){
+      const scale = spellScale(k.letter, k.acc, MAJOR_INTERVALS);
+      if(scale.length !== 7) ok = false;
+      if(scale.some(n=>Math.abs(n.a) > 2)) ok = false;
+      detalle.push(k.name);
+    }
+    for(const k of KEYS_MINOR){
+      const scale = spellScale(k.letter, k.acc, MINOR_INTERVALS);
+      if(scale.length !== 7) ok = false;
+      if(scale.some(n=>Math.abs(n.a) > 2)) ok = false;
+    }
+    check("Las 12 tonalidades mayores y 12 menores se escriben sin dobles alteraciones",
+      ok, "todas OK", detalle.length+" mayores + "+KEYS_MINOR.length+" menores");
+  } catch(e){ check("Tonalidades", false, "OK", "Error: "+e.message); }
+
+  /* --- 15. Escritura diatónica específica --- */
+  try {
+    const bb = spellScale(6, -1, MAJOR_INTERVALS).map(n=>noteName({l:n.l,a:n.a}, "int")).join("");
+    const f  = spellScale(3, 0, MAJOR_INTERVALS).map(n=>noteName({l:n.l,a:n.a}, "int")).join("");
+    const db = spellScale(1, -1, MAJOR_INTERVALS).map(n=>noteName({l:n.l,a:n.a}, "int")).join("");
+    const g  = spellScale(4, 0, MAJOR_INTERVALS).map(n=>noteName({l:n.l,a:n.a}, "int")).join("");
+    const okBb = bb === "BbCDEbFGA";
+    const okF  = f  === "FGABbCDE";
+    const okDb = db === "DbEbFGbAbBbC";
+    const okG  = g  === "GABCDEF#";
+    check("Escritura diatónica: Si♭ mayor = Bb-C-D-Eb-F-G-A",
+      okBb && okF && okDb && okG,
+      "BbCDEbFGA / FGABbCDE / DbEbFGbAbBbC / GABCDEF#",
+      bb+" / "+f+" / "+db+" / "+g);
+  } catch(e){ check("Escritura diatónica", false, "OK", "Error: "+e.message); }
+
+  /* --- 16. Favoritos (usa funciones reales y restaura estado) --- */
+  try {
+    const backupFavs = JSON.stringify(state.favorites);
+    const backupLS = localStorage.getItem(FAV_KEY);
+    let tAdded=false, tLabel=false, tRemoved=false;
+    try {
+      state.favorites = [];
+      addFavorite(0, "maj");
+      tAdded = state.favorites.length === 1 && state.favorites[0].id === "0::maj";
+      /* Cambio de etiqueta: misma operación que el input del usuario */
+      state.favorites[0].label = "prueba";
+      saveFavorites();
+      tLabel = state.favorites[0].label === "prueba";
+      /* Borrado: misma operación que el botón Eliminar */
+      state.favorites = state.favorites.filter(x => x.id !== "0::maj");
+      saveFavorites();
+      tRemoved = state.favorites.length === 0;
+    } finally {
+      state.favorites = JSON.parse(backupFavs);
+      if(backupLS === null) localStorage.removeItem(FAV_KEY);
+      else localStorage.setItem(FAV_KEY, backupLS);
+      renderFavorites();
+    }
+    const restored = JSON.stringify(state.favorites) === backupFavs;
+    check("Favoritos: add/etiqueta/delete con funciones reales (con restauración)",
+      tAdded && tLabel && tRemoved && restored,
+      "operaciones OK + estado restaurado",
+      "added="+tAdded+" label="+tLabel+" removed="+tRemoved+" restaurado="+restored);
+  } catch(e){ check("Favoritos", false, "OK", "Error: "+e.message); }
+
+  /* --- 17. Importación JSON --- */
+  try {
+    const valid = [{rootPc:0, formulaId:"maj", label:""}];
+    const invalid = [
+      {rootPc:-1, formulaId:"maj"},
+      {rootPc:12, formulaId:"maj"},
+      {rootPc:1.5, formulaId:"maj"},
+      {rootPc:"0", formulaId:"maj"},
+      {rootPc:0, formulaId:"nonexistent"},
+      {rootPc:0}
+    ];
+    const v = valid.every(validateFavoriteRecord);
+    const i = invalid.every(x => !validateFavoriteRecord(x));
+    check("Importación JSON: valida rootPc 0-11 y formulaId conocido",
+      v && i, "válidos OK, inválidos rechazados",
+      "válido="+v+" inválidosRechazados="+i);
+  } catch(e){ check("Importación JSON", false, "OK", "Error: "+e.message); }
+
+  /* --- 18. Persistencia --- */
+  try {
+    const testKey = "__eua_test_persist__";
+    const original = localStorage.getItem(testKey);
+    localStorage.setItem(testKey, JSON.stringify({ok:true}));
+    const roundTrip = JSON.parse(localStorage.getItem(testKey)).ok === true;
+    if(original === null) localStorage.removeItem(testKey);
+    else localStorage.setItem(testKey, original);
+    check("LocalStorage: guardado y lectura funcionan",
+      roundTrip, "roundtrip OK", "ok="+roundTrip);
+  } catch(e){ check("Persistencia", false, "OK", "Error: "+e.message); }
+
+  /* --- 19. Notación (selector) --- */
+  try {
+    const latin = noteName({l:0,a:0}, "latin");
+    const intl  = noteName({l:0,a:0}, "int");
+    const displayBoth = noteDisplayName(1, "latin", "both");
+    const displaySharp = noteDisplayName(1, "latin", "sharp");
+    const displayFlat  = noteDisplayName(1, "latin", "flat");
+    check("Notación: latina/internacional y modo 'ambas grafías' muestran enarmónicos",
+      latin==="DO" && intl==="C" && displayBoth==="DO♯/RE♭" && displaySharp==="DO♯" && displayFlat==="RE♭",
+      "DO / C / DO♯/RE♭ / DO♯ / RE♭",
+      latin+" / "+intl+" / "+displayBoth+" / "+displaySharp+" / "+displayFlat);
+  } catch(e){ check("Notación", false, "OK", "Error: "+e.message); }
+
+  /* --- 20. Búsqueda por nombre --- */
+  try {
+    const casos = [
+      ["Cmaj7", 0, "maj7"],
+      ["Am", 9, "m"],
+      ["Dm7", 2, "m7"],
+      ["G7", 7, "7"],
+      ["C°7", 0, "dim7"],
+      ["Cø7", 0, "m7b5"],
+      ["Caug", 0, "aug"],
+      ["F#m7b5", 6, "m7b5"],
+      ["Dbmaj7", 1, "maj7"],
+      ["DOm7", 0, "m7"],
+      ["LA7", 9, "7"]
+    ];
+    let ok = true, detalle = [];
+    for(const [input, pc, id] of casos){
+      const p = normalizeChordInput(input);
+      if(p.rootPc !== pc || p.id !== id){ ok = false; }
+      detalle.push(input+"→pc"+p.rootPc+","+p.id);
+    }
+    check("Búsqueda por nombre: convencionales y símbolos (°, ø, +) se interpretan correctamente",
+      ok, "todos OK", detalle.join(" | "));
+  } catch(e){ check("Búsqueda por nombre", false, "OK", "Error: "+e.message); }
+
+  /* --- 21. Catálogo --- */
+  try {
+    const ids = new Set();
+    let ok = true, errMsg = "";
+    for(const f of CHORD_FORMULAS){
+      if(ids.has(f.id)){ ok=false; errMsg="duplicado "+f.id; break; }
+      ids.add(f.id);
+      if(!f.intervals || !f.intervals.length){ ok=false; errMsg="sin intervalos "+f.id; break; }
+      for(const e of f.intervals){
+        if(typeof e.i !== "number" || e.i < 0 || e.i > 30){ ok=false; errMsg="intervalo "+f.id; break; }
+        if(!/^[♭♯]*[1-9][0-9]?$/.test(e.l)){ ok=false; errMsg="label "+f.id+":"+e.l; break; }
+      }
+      if(!ok) break;
+    }
+    check("Catálogo: ≥55 fórmulas, IDs únicos, intervalos y etiquetas válidas",
+      ok && CHORD_FORMULAS.length >= 55,
+      "≥55 OK", CHORD_FORMULAS.length + " fórmulas" + (errMsg ? " · "+errMsg : ""));
+  } catch(e){ check("Catálogo", false, "OK", "Error: "+e.message); }
+
+  /* --- 22. Inicialización --- */
+  try {
+    const ok = typeof getAllChords === "function" && getAllChords().length > 0
+      && document.getElementById("piano").children.length > 0
+      && document.getElementById("note-grid").children.length === 12;
+    check("Inicialización: motor, piano y selector cargados sin errores",
+      ok, "todo cargado", "chords="+getAllChords().length+" pianoKeys="+document.getElementById("piano").children.length);
+  } catch(e){ check("Inicialización", false, "OK", "Error: "+e.message); }
+
+  /* --- 23. Integridad de estado (pruebas no destructivas) --- */
+  try {
+    const intact = JSON.stringify(state.favorites) === snapshot.favorites
+      && JSON.stringify(state.filters) === snapshot.filters
+      && state.notation === snapshot.notation
+      && state.prefer === snapshot.prefer
+      && state.sort === snapshot.sort;
+    check("Las pruebas no alteran favoritos, filtros, notación, preferencia ni orden",
+      intact, "estado intacto", "ok="+intact);
+  } catch(e){ check("Integridad de estado", false, "OK", "Error: "+e.message); }
+
+  /* --- 24. Sin dependencias externas --- */
+  try {
+    const scripts = document.querySelectorAll('script[src]');
+    const styles = document.querySelectorAll('link[rel="stylesheet"][href^="http"]');
+    const imgs = document.querySelectorAll('img[src^="http"]');
+    const ok = scripts.length===0 && styles.length===0 && imgs.length===0;
+    check("Sin dependencias externas (scripts, estilos, imágenes remotas)",
+      ok, "0 recursos externos", "scripts="+scripts.length+" styles="+styles.length+" imgs="+imgs.length);
+  } catch(e){ check("Sin dependencias", false, "OK", "Error: "+e.message); }
+
+  /* --- 25. Sincronización acorde ↔ controles ↔ estado --- */
+  try {
+    const backup = {
+      input: document.getElementById("exp-input").value,
+      root: document.getElementById("exp-root").value,
+      formula: document.getElementById("exp-formula").value,
+      lastExplore: state.lastExplore,
+      resultHTML: document.getElementById("exp-result").innerHTML
+    };
+    selectChord(0, "maj7");
+    const rootOK = document.getElementById("exp-root").value === "0";
+    const formulaOK = document.getElementById("exp-formula").value === "maj7";
+    const inputVal = document.getElementById("exp-input").value;
+    const inputOK = (inputVal.includes("C") || inputVal.includes("DO")) && inputVal.includes("maj7");
+    const stateOK = state.lastExplore && state.lastExplore.rootPc === 0 && state.lastExplore.formulaId === "maj7";
+    const resultOK = document.getElementById("exp-result").innerHTML.length > 0;
+    document.getElementById("exp-input").value = backup.input;
+    document.getElementById("exp-root").value = backup.root;
+    document.getElementById("exp-formula").value = backup.formula;
+    state.lastExplore = backup.lastExplore;
+    document.getElementById("exp-result").innerHTML = backup.resultHTML;
+    check("Sincronización: selectChord actualiza estado, texto y selectores sin recursión",
+      rootOK && formulaOK && inputOK && stateOK && resultOK,
+      "todo sincronizado",
+      "root="+rootOK+" f="+formulaOK+" input="+inputOK+" state="+stateOK+" result="+resultOK);
+  } catch(e){ check("Sincronización", false, "OK", "Error: "+e.message); }
+
+  /* --- 26. Modo 'ambas grafías' se aplica al título del acorde --- */
+  try {
+    const savedPrefer = state.prefer;
+    let name = "";
+    try {
+      state.prefer = "both";
+      const c = generateChord(1, FORMULA_MAP["m7"]);
+      name = chordDisplayName(c, "int");
+    } finally {
+      state.prefer = savedPrefer;
+    }
+    const ok = /C#/.test(name) && /Db/.test(name) && /m7/.test(name);
+    check("Modo 'ambas grafías': el título principal muestra las dos grafías enarmónicas",
+      ok, "C#/Db…m7", name);
+  } catch(e){ check("Ambas grafías", false, "OK", "Error: "+e.message); }
+
+  /* --- 27. CSS responsive: min(100%, 285px), sin 285px fijo --- */
+  try {
+    const styles = document.querySelector("style").textContent;
+    const hasSafe = /minmax\(\s*min\(100%,\s*285px\)/.test(styles);
+    const noUnsafe = !/minmax\(\s*285px\s*,\s*1fr\s*\)/.test(styles);
+    const hasResultsGrid = /\.results-grid\s*\{[^}]*minmax\(\s*min\(100%,\s*285px\)/.test(styles);
+    const hasFamilySafe = /\.family-body\s*\{[^}]*minmax\(\s*min\(100%,\s*285px\)/.test(styles);
+    check("CSS responsive: rejillas usan min(100%, 285px) y no minmax(285px…) fijo",
+      hasSafe && noUnsafe && hasResultsGrid && hasFamilySafe,
+      "safe minmax en .family-body y .results-grid",
+      "safe="+hasSafe+" noUnsafe="+noUnsafe+" resultsGrid="+hasResultsGrid+" familyBody="+hasFamilySafe);
+  } catch(e){ check("CSS responsive", false, "OK", "Error: "+e.message); }
+
+  /* --- 28. Renderizado progresivo: primera página + botón 'Mostrar más' --- */
+  try {
+    const host = document.createElement("div");
+    const sample = getAllChords().slice(0, 30);
+    renderProgressiveGrid(host, sample, 0);
+    const initialCards = host.querySelectorAll(".card").length;
+    const moreBtn = [...host.querySelectorAll("button.btn")].find(b=>/Mostrar más/.test(b.textContent));
+    const ok = initialCards > 0 && initialCards <= PROGRESSIVE_PAGE && (sample.length <= initialCards || moreBtn);
+    check("Renderizado progresivo: página inicial acotada + botón 'Mostrar más' cuando hay más",
+      ok, "≤"+PROGRESSIVE_PAGE+" iniciales y botón si quedan",
+      "cards="+initialCards+" moreBtn="+(!!moreBtn)+" total="+sample.length);
+  } catch(e){ check("Renderizado progresivo", false, "OK", "Error: "+e.message); }
+
+  /* --- Resumen --- */
+  const total = results.length;
+  summary.innerHTML = "";
+  const cTotal = document.createElement("span"); cTotal.className = "count";
+  cTotal.textContent = "Pruebas: " + total;
+  const cPass = document.createElement("span"); cPass.className = "count ok";
+  cPass.textContent = "Superadas: " + pass;
+  const cFail = document.createElement("span"); cFail.className = "count bad";
+  cFail.textContent = "Fallidas: " + fail;
+  summary.appendChild(cTotal); summary.appendChild(cPass); summary.appendChild(cFail);
+
+  results.forEach((r,i)=>{
+    const div = document.createElement("div");
+    div.className = "test-item " + (r.ok ? "pass" : "fail");
+    const b = document.createElement("span");
+    b.className = "badge"; b.textContent = r.ok ? "OK" : "FALLO";
+    const t = document.createElement("span");
+    t.textContent = (i+1) + ". " + r.name;
+    t.style.fontWeight = "600";
+    div.appendChild(b); div.appendChild(t);
+    if(!r.ok){
+      const d = document.createElement("div");
+      d.className = "detail";
+      d.innerHTML = "Esperado: <b>" + escapeHtml(r.expected) + "</b> · Obtenido: <b>" + escapeHtml(r.actual) + "</b>";
+      div.appendChild(d);
+    }
+    list.appendChild(div);
+  });
+}
+
+/* -------- 17. Navegación -------- */
+function switchTab(name){
+  document.querySelectorAll(".tab").forEach(t=>{
+    const on = t.dataset.tab === name;
+    t.classList.toggle("active", on);
+    t.setAttribute("aria-selected", on ? "true" : "false");
+  });
+  document.querySelectorAll(".tab-panel").forEach(p=>{
+    p.classList.toggle("active", p.id === "tab-" + name);
+  });
+}
+
+let toastTimer = null;
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+/* -------- 18. Controles del explorador -------- */
+function buildExplorerControls(){
+  const rootSel = document.getElementById("exp-root");
+  const prevRoot = rootSel.value;
+  rootSel.innerHTML = "";
+  for(let pc=0; pc<12; pc++){
+    const o = document.createElement("option");
+    o.value = pc;
+    o.textContent = noteDisplayName(pc, state.notation, state.prefer);
+    rootSel.appendChild(o);
+  }
+  if(prevRoot) rootSel.value = prevRoot;
+
+  const fSel = document.getElementById("exp-formula");
+  const prevF = fSel.value;
+  fSel.innerHTML = "";
+  const byFam = {};
+  CHORD_FORMULAS.forEach(f=>{
+    if(!byFam[f.family]) byFam[f.family] = [];
+    byFam[f.family].push(f);
+  });
+  Object.keys(byFam).forEach(fam=>{
+    const og = document.createElement("optgroup");
+    og.label = FAMILY_LABEL[fam] || fam;
+    byFam[fam].forEach(f=>{
+      const o = document.createElement("option");
+      o.value = f.id;
+      o.textContent = (f.symbol || "(mayor)") + " · " + f.name;
+      og.appendChild(o);
+    });
+    fSel.appendChild(og);
+  });
+  if(prevF) fSel.value = prevF;
+}
+
+/* -------- 19. Sincronización al cambiar preferencias -------- */
+function syncUI(){
+  allChordsCache = {prefer:null, data:null};
+  renderNoteSelector();
+  renderResults();
+  renderFunctionNoteSelector();
+  renderTonalityControls();
+  buildExplorerControls();
+  buildPiano();
+  renderFavorites();
+  if(state.lastExplore){
+    exploreChord(state.lastExplore.rootPc, state.lastExplore.formulaId);
+  }
+  if(state.lastFnSearch){
+    runFunctionSearch();
+  }
+  if(state.lastKeySearch){
+    runTonalitySearch();
+  }
+}
+
+/* -------- 20. Inicialización -------- */
+function init(){
+  state.favorites = loadFavorites();
+
+  const selNot = document.getElementById("sel-notation");
+  const selPre = document.getElementById("sel-prefer");
+  selNot.value = state.notation;
+  selPre.value = state.prefer;
+
+  selNot.addEventListener("change", ()=>{
+    state.notation = selNot.value;
+    syncUI();
+  });
+  selPre.addEventListener("change", ()=>{
+    state.prefer = selPre.value;
+    syncUI();
+  });
+
+  document.getElementById("btn-reset-all").addEventListener("click", ()=>{
+    state.notation = "latin";
+    state.prefer = "sharp";
+    state.selectedPc = null;
+    state.filters = {family:"all", func:"all", complex:"all", tension:"all", exp:"all"};
+    state.sort = "family";
+    selNot.value = state.notation;
+    selPre.value = state.prefer;
+    document.getElementById("f-family").value = "all";
+    document.getElementById("f-func").value = "all";
+    document.getElementById("f-complex").value = "all";
+    document.getElementById("f-tension").value = "all";
+    document.getElementById("f-exp").value = "all";
+    document.getElementById("f-sort").value = "family";
+    allChordsCache = {prefer:null, data:null};
+    state.expandGroups = {};
+    state.pianoChord = null;
+    state.lastExplore = null;
+    state.lastFnSearch = null;
+    state.lastKeySearch = null;
+    document.getElementById("exp-input").value = "";
+    document.getElementById("exp-msg").textContent = "";
+    document.getElementById("exp-result").innerHTML = "";
+    document.getElementById("fn-results").innerHTML = "";
+    document.getElementById("key-results").innerHTML = "";
+    document.getElementById("key-scale-info").textContent = "";
+    document.getElementById("piano-info").innerHTML = '<span class="muted">Ningún acorde cargado todavía.</span>';
+    syncUI();
+    showToast("Configuración restablecida.");
+  });
+
+  document.getElementById("btn-clear-filters").addEventListener("click", ()=>{
+    state.filters = {family:"all", func:"all", complex:"all", tension:"all", exp:"all"};
+    document.getElementById("f-family").value = "all";
+    document.getElementById("f-func").value = "all";
+    document.getElementById("f-complex").value = "all";
+    document.getElementById("f-tension").value = "all";
+    document.getElementById("f-exp").value = "all";
+    renderResults();
+  });
+
+  ["f-family","f-func","f-complex","f-tension","f-exp","f-sort"].forEach(id=>{
+    document.getElementById(id).addEventListener("change", ()=>{
+      state.filters.family = document.getElementById("f-family").value;
+      state.filters.func = document.getElementById("f-func").value;
+      state.filters.complex = document.getElementById("f-complex").value;
+      state.filters.tension = document.getElementById("f-tension").value;
+      state.filters.exp = document.getElementById("f-exp").value;
+      state.sort = document.getElementById("f-sort").value;
+      renderResults();
+    });
+  });
+
+  document.querySelectorAll(".tab").forEach(t=>{
+    t.addEventListener("click", ()=>{
+      switchTab(t.dataset.tab);
+      if(t.dataset.tab === "piano") buildPiano();
+    });
+  });
+
+  buildExplorerControls();
+  document.getElementById("btn-exp-search").addEventListener("click", ()=>{
+    const input = document.getElementById("exp-input").value;
+    const parsed = normalizeChordInput(input);
+    const msg = document.getElementById("exp-msg");
+    if(parsed.error){
+      msg.style.color = "#fca5a5";
+      msg.textContent = parsed.error + (parsed.suggestions && parsed.suggestions.length ? " Sugerencias: " + parsed.suggestions.join(", ") : "");
+      return;
+    }
+    msg.style.color = "#86efac";
+    msg.textContent = "Acorde reconocido.";
+    selectChord(parsed.rootPc, parsed.id, input);
+  });
+  document.getElementById("exp-input").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter") document.getElementById("btn-exp-search").click();
+  });
+  document.getElementById("btn-exp-build").addEventListener("click", ()=>{
+    const rootPc = parseInt(document.getElementById("exp-root").value,10);
+    const fid = document.getElementById("exp-formula").value;
+    selectChord(rootPc, fid);
+  });
+
+  renderFunctionNoteSelector();
+  document.getElementById("btn-fn-search").addEventListener("click", runFunctionSearch);
+
+  renderTonalityControls();
+  document.getElementById("btn-key-search").addEventListener("click", runTonalitySearch);
+
+  document.getElementById("btn-export-fav").addEventListener("click", exportFavorites);
+  document.getElementById("btn-import-fav").addEventListener("click", ()=>{
+    document.getElementById("file-import-fav").click();
+  });
+  document.getElementById("file-import-fav").addEventListener("change", (e)=>{
+    if(e.target.files && e.target.files[0]) importFavorites(e.target.files[0]);
+    e.target.value = "";
+  });
+  document.getElementById("btn-clear-fav").addEventListener("click", ()=>{
+    if(confirm("¿Vaciar todos los favoritos?")){
+      state.favorites = [];
+      saveFavorites();
+      renderFavorites();
+      setFavMsg("Favoritos vaciados.", false);
+    }
+  });
+
+  document.getElementById("piano-names").addEventListener("change", (e)=>{
+    state.pianoShowNames = e.target.checked;
+    buildPiano();
+  });
+
+  document.getElementById("btn-run-tests").addEventListener("click", runTests);
+
+  renderNoteSelector();
+  renderResults();
+  buildPiano();
+  renderFavorites();
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
