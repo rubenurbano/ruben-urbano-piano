@@ -1,0 +1,3225 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Método práctico para convertir partituras de batería en acompañamientos de piano: 24 ejemplos resueltos, 33 preguntas y respuestas, plan de 8 semanas.">
+<title>De la partitura de batería al acompañamiento de piano — Tutorial</title>
+<style>
+/* ============================================================
+   VARIABLES Y BASE
+   ============================================================ */
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --line:#1e3a5f;
+  --tx:#e2e8f0;
+  --tx2:#94a3b8;
+  --ac:#38bdf8;
+  --acsoft:rgba(56,189,248,.14);
+  --code:#070b14;
+  --navh:58px;
+  --fs:16px;
+}
+html[data-theme="light"]{
+  --bg:#eef2f7;
+  --card:#ffffff;
+  --line:#c7d4e4;
+  --tx:#0f172a;
+  --tx2:#4a5a70;
+  --ac:#0369a1;
+  --acsoft:rgba(3,105,161,.12);
+  --code:#f2f6fb;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--tx);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:var(--fs);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em;font-weight:800;letter-spacing:-.01em}
+h1{font-size:1.72em}
+h2{font-size:1.32em;margin-top:1.6em;padding-top:.2em}
+h3{font-size:1.1em;margin-top:1.4em}
+h4{font-size:1em;margin-top:1.2em;color:var(--ac)}
+p{margin:0 0 1em}
+a{color:var(--ac)}
+strong{color:var(--tx)}
+ul,ol{margin:0 0 1em;padding-left:1.35em}
+li{margin:.3em 0}
+hr{border:0;border-top:1px solid var(--line);margin:2em 0}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px;border-radius:4px}
+::selection{background:var(--acsoft)}
+
+/* ============================================================
+   BARRA SUPERIOR
+   ============================================================ */
+#nav{
+  position:fixed;top:0;left:0;right:0;height:var(--navh);
+  display:flex;align-items:center;gap:8px;
+  padding:0 10px;
+  background:rgba(10,14,26,.94);
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;
+  z-index:30;
+}
+html[data-theme="light"] #nav{background:rgba(238,242,247,.95)}
+#nav::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:42px;padding:0 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--tx2);
+  font:inherit;font-size:13px;font-weight:700;letter-spacing:.03em;
+  cursor:pointer;white-space:nowrap;
+  transition:background .18s,color .18s,border-color .18s;
+  -webkit-tap-highlight-color:transparent;
+}
+.chip:hover{color:var(--tx);border-color:var(--ac)}
+.chip.on{background:var(--acsoft);border-color:var(--ac);color:var(--ac)}
+#mb{
+  position:sticky;left:0;z-index:3;
+  background:var(--card);
+  box-shadow:8px 0 12px -8px rgba(0,0,0,.75);
+  border-color:var(--ac);
+  color:var(--ac);
+}
+.navsep{flex:0 0 auto;width:1px;height:26px;background:var(--line);margin:0 2px}
+.chip.tool{padding:0 12px;font-size:15px;min-width:44px}
+#prog{
+  position:absolute;left:0;bottom:-1px;height:3px;width:0;
+  background:linear-gradient(90deg,var(--ac),#a78bfa);
+  transition:width .1s linear;
+  border-radius:0 3px 3px 0;
+}
+
+/* ============================================================
+   PANEL DE ÍNDICE
+   ============================================================ */
+#dr{
+  position:fixed;top:var(--navh);left:0;bottom:0;
+  width:min(330px,88vw);
+  background:#0f172a;
+  border-right:1px solid #1e3a5f;
+  transform:translateX(-105%);
+  transition:transform .25s ease;
+  z-index:25;
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding:10px;
+  box-shadow:20px 0 40px -20px rgba(0,0,0,.8);
+}
+#dr.o{transform:none}
+#dr .drh{
+  color:#94a3b8;font-size:11px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;padding:8px 12px 12px;
+}
+#dr a{
+  display:flex;align-items:center;
+  padding:12px;border-radius:8px;
+  color:#e2e8f0;cursor:pointer;
+  min-height:44px;
+  text-decoration:none;
+  font-size:14px;font-weight:600;
+  line-height:1.3;
+}
+#dr a:hover{background:#ffffff0d}
+#dr a.on{background:#00d4ff22;color:#00d4ff}
+
+/* ============================================================
+   PANEL DE BÚSQUEDA
+   ============================================================ */
+#schp{
+  position:fixed;top:var(--navh);left:0;right:0;
+  background:#0f172a;
+  border-bottom:1px solid #1e3a5f;
+  padding:12px;
+  z-index:26;
+  display:none;
+  max-height:calc(100vh - var(--navh));
+  overflow:auto;
+  box-shadow:0 20px 40px -20px rgba(0,0,0,.85);
+}
+#schp.o{display:block}
+#schp input{
+  width:100%;min-height:44px;padding:10px 14px;
+  border-radius:10px;border:1px solid #1e3a5f;
+  background:#0a0e1a;color:#e2e8f0;
+  font:inherit;font-size:15px;
+}
+#schp input::placeholder{color:#64748b}
+#schr{margin-top:10px}
+#schr a{
+  display:block;padding:11px 12px;border-radius:8px;
+  color:#e2e8f0;text-decoration:none;font-size:14px;
+  min-height:44px;cursor:pointer;
+}
+#schr a:hover{background:#ffffff0d}
+#schr a small{display:block;color:#38bdf8;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+#schr .empty{color:#64748b;font-size:14px;padding:10px 12px}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+main{
+  max-width:980px;margin:0 auto;
+  padding:calc(var(--navh) + 18px) 16px 90px;
+}
+.tabp{display:none}
+.tabp.on{display:block;animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.hero{margin:0 0 18px}
+.hsvg{display:block}
+.hsvg svg{width:100%;height:auto;display:block;max-width:520px;margin:0 auto;border-radius:18px;border:1px solid var(--line)}
+
+.lead{font-size:1.06em;color:var(--tx2)}
+.meta{font-size:.86em;color:var(--tx2);letter-spacing:.04em}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+  margin:14px 0;
+}
+.card > :last-child{margin-bottom:0}
+.card h3:first-child,.card h4:first-child{margin-top:0}
+
+.grid2{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:680px){.grid2{grid-template-columns:1fr 1fr}}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:46px;padding:0 20px;
+  border-radius:999px;border:1px solid var(--ac);
+  background:var(--acsoft);color:var(--ac);
+  font:inherit;font-size:14px;font-weight:800;letter-spacing:.03em;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background .18s,transform .12s;
+}
+.btn:hover{background:rgba(56,189,248,.24)}
+.btn:active{transform:scale(.98)}
+
+.pill{
+  display:inline-block;padding:2px 9px;border-radius:999px;
+  background:var(--acsoft);color:var(--ac);
+  font-size:.76em;font-weight:800;letter-spacing:.05em;
+  vertical-align:middle;
+}
+
+/* TABLAS */
+.tw{overflow-x:auto;margin:14px 0;border:1px solid var(--line);border-radius:12px;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:.9em;min-width:420px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--acsoft);color:var(--ac);font-weight:800;font-size:.86em;letter-spacing:.04em;text-transform:uppercase}
+tr:last-child td{border-bottom:0}
+tbody tr:nth-child(even){background:rgba(148,163,184,.05)}
+
+/* BLOQUES DE CÓDIGO / CUADRÍCULAS */
+.code{
+  position:relative;
+  background:var(--code);
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin:14px 0;
+  overflow:hidden;
+}
+.cbar{display:flex;justify-content:flex-end;padding:6px 8px 0}
+.cp{
+  min-height:30px;padding:0 12px;border-radius:999px;
+  border:1px solid var(--line);background:transparent;
+  color:var(--tx2);font:inherit;font-size:11px;font-weight:800;
+  letter-spacing:.1em;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  transition:color .18s,border-color .18s,background .18s;
+}
+.cp:hover{color:var(--ac);border-color:var(--ac);background:var(--acsoft)}
+.cp.ok{color:#4ade80;border-color:#4ade80;background:rgba(74,222,128,.12)}
+.code pre{
+  margin:0;padding:4px 14px 14px;
+  overflow-x:auto;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  font-size:13px;line-height:1.55;
+  color:#cfe3f5;
+  white-space:pre;
+  -webkit-overflow-scrolling:touch;
+}
+html[data-theme="light"] .code pre{color:#0f172a}
+
+/* DESPLEGABLES */
+details.ex{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  margin:12px 0;
+  overflow:hidden;
+}
+details.ex > summary{
+  cursor:pointer;list-style:none;
+  padding:14px 16px;
+  min-height:48px;
+  display:flex;align-items:center;gap:10px;
+  font-weight:800;font-size:.98em;
+  -webkit-tap-highlight-color:transparent;
+}
+details.ex > summary::-webkit-details-marker{display:none}
+details.ex > summary::after{
+  content:"▾";margin-left:auto;color:var(--ac);
+  transition:transform .2s;font-size:.9em;
+}
+details.ex[open] > summary::after{transform:rotate(180deg)}
+details.ex[open] > summary{border-bottom:1px solid var(--line);background:var(--acsoft)}
+details.ex .body{padding:14px 16px 6px}
+details.ex .body > :last-child{margin-bottom:14px}
+.exn{
+  flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  min-width:40px;height:24px;padding:0 8px;border-radius:999px;
+  background:var(--acsoft);color:var(--ac);
+  font-size:.78em;font-weight:900;letter-spacing:.04em;
+}
+
+/* LISTAS DE COMPROBACIÓN */
+.ck{list-style:none;padding:0;margin:14px 0}
+.ck li{margin:0}
+.ck label{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:11px 12px;border-radius:10px;
+  border:1px solid transparent;cursor:pointer;
+  min-height:44px;line-height:1.5;
+  transition:background .16s,border-color .16s;
+}
+.ck label:hover{background:rgba(148,163,184,.08);border-color:var(--line)}
+.ck input{
+  flex:0 0 auto;width:20px;height:20px;margin:2px 0 0;
+  accent-color:var(--ac);cursor:pointer;
+}
+.ck input:checked + span{color:var(--tx2);text-decoration:line-through}
+
+/* VARIOS */
+.kbd{
+  display:inline-block;padding:1px 7px;border-radius:6px;
+  border:1px solid var(--line);background:var(--card);
+  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;
+}
+.callout{
+  border-left:3px solid var(--ac);
+  background:var(--acsoft);
+  padding:12px 16px;border-radius:0 10px 10px 0;
+  margin:14px 0;
+}
+.callout > :last-child{margin-bottom:0}
+.qa{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0}
+.qa h3{margin-top:0;color:var(--ac);font-size:1.02em}
+.qa > :last-child{margin-bottom:0}
+.src{font-size:.86em;color:var(--tx2)}
+
+#top{
+  position:fixed;right:14px;bottom:14px;
+  width:48px;height:48px;border-radius:50%;
+  border:1px solid var(--ac);
+  background:var(--card);color:var(--ac);
+  font-size:20px;font-weight:800;line-height:1;
+  cursor:pointer;z-index:20;
+  display:none;align-items:center;justify-content:center;
+  box-shadow:0 8px 24px -8px rgba(0,0,0,.8);
+}
+#top.o{display:flex}
+
+/* ============================================================
+   ANIMACIONES DEL SVG
+   ============================================================ */
+.hsvg .hit{transform-box:fill-box;transform-origin:center;animation:hitPulse 2s ease-in-out infinite}
+@keyframes hitPulse{0%,68%,100%{transform:scale(1);opacity:.5}12%{transform:scale(1.4);opacity:1}30%{transform:scale(1);opacity:.85}}
+.hsvg .beam{animation:dashFlow 1.6s linear infinite}
+@keyframes dashFlow{to{stroke-dashoffset:-160}}
+.hsvg .dot{animation:flow 2.4s linear infinite}
+@keyframes flow{0%{transform:translateY(0);opacity:0}12%{opacity:1}85%{opacity:1}100%{transform:translateY(360px);opacity:0}}
+.hsvg .led{animation:ledOn 2s ease-in-out infinite}
+@keyframes ledOn{0%,86%,100%{opacity:.06}8%,22%{opacity:1}}
+.hsvg .ring{transform-box:fill-box;transform-origin:center;animation:ringOut 2.6s ease-out infinite}
+@keyframes ringOut{0%{transform:scale(.35);opacity:.5}75%,100%{transform:scale(1.55);opacity:0}}
+.hsvg .halo{transform-box:fill-box;transform-origin:center;animation:haloPulse 4.5s ease-in-out infinite}
+@keyframes haloPulse{0%,100%{opacity:.42;transform:scale(1)}50%{opacity:.78;transform:scale(1.05)}}
+.hsvg .note{animation:rise 4.4s ease-out infinite}
+@keyframes rise{0%{transform:translateY(0) scale(.55);opacity:0}10%{opacity:.95}65%{opacity:.55}100%{transform:translateY(-330px) scale(1.15);opacity:0}}
+.hsvg .pt{animation:floatY 5.5s ease-in-out infinite}
+@keyframes floatY{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-16px);opacity:.9}}
+.hsvg .spark{animation:twinkle 3s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:1;transform:scale(1.25)}}
+.hsvg .key{transition:none}
+
+@media (prefers-reduced-motion: reduce){
+  .hsvg *{animation:none !important}
+  .tabp.on{animation:none}
+  #dr{transition:none}
+}
+
+/* ============================================================
+   MÓVIL
+   ============================================================ */
+@media(max-width:420px){
+  main{padding-left:13px;padding-right:13px}
+  .code pre{font-size:12px}
+  h1{font-size:1.5em}
+}
+
+/* ============================================================
+   IMPRESIÓN
+   ============================================================ */
+@media print{
+  @page{size:A4 portrait;margin:14mm 12mm}
+  html,body{background:#fff !important;color:#000 !important}
+  #nav,#dr,#schp,#top,#prog,.cbar{display:none !important}
+  main{padding:0 !important;max-width:none !important}
+  .tabp{display:block !important;animation:none !important}
+  .tabp + .tabp{page-break-before:always}
+  .card,details.ex,.qa,.tw,.code{
+    background:#fff !important;border:1px solid #bbb !important;
+    color:#000 !important;box-shadow:none !important;
+  }
+  .code pre{background:#fff !important;color:#000 !important;white-space:pre-wrap !important;word-break:break-word}
+  details.ex > summary{background:#f2f2f2 !important;color:#000 !important}
+  details.ex > summary::after{display:none}
+  th{background:#eee !important;color:#000 !important}
+  td,th{border-color:#bbb !important}
+  h1,h2,h3,h4,.lead,.qa h3{color:#000 !important}
+  .pill,.exn{background:#e8e8e8 !important;color:#000 !important;border:1px solid #999}
+  .callout{background:#f5f5f5 !important;border-left:3px solid #333 !important}
+  a{color:#000 !important;text-decoration:underline}
+  .hsvg svg{max-width:100% !important;border:1px solid #bbb !important}
+  .hsvg *{animation:none !important}
+  table{min-width:0 !important}
+  .tw{overflow:visible !important}
+  .ck input:checked + span{color:#000 !important;text-decoration:line-through}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav" aria-label="Barra de navegación principal">
+  <button class="chip" id="mb" type="button" aria-label="Abrir índice" aria-expanded="false" aria-controls="dr">☰ Índice</button>
+  <button class="chip on" type="button" data-t="0">INICIO</button>
+  <button class="chip" type="button" data-t="1">CONCEPTOS</button>
+  <button class="chip" type="button" data-t="2">PROCEDIMIENTO</button>
+  <button class="chip" type="button" data-t="3">PRÁCTICA</button>
+  <button class="chip" type="button" data-t="4">33 PREGUNTAS (Q&amp;A)</button>
+  <button class="chip" type="button" data-t="5">ERRORES</button>
+  <button class="chip" type="button" data-t="6">RESUMEN</button>
+  <button class="chip" type="button" data-t="7">FUENTES</button>
+  <button class="chip" type="button" data-t="8">CRÉDITOS</button>
+  <span class="navsep" aria-hidden="true"></span>
+  <button class="chip tool" id="fsm" type="button" aria-label="Reducir el tamaño de letra">A−</button>
+  <button class="chip tool" id="fsp" type="button" aria-label="Aumentar el tamaño de letra">A+</button>
+  <button class="chip tool" id="thm" type="button" aria-label="Cambiar entre tema oscuro y claro">☀</button>
+  <button class="chip tool" id="prt" type="button" aria-label="Imprimir o guardar como PDF">🖨</button>
+  <button class="chip tool" id="sch" type="button" aria-label="Buscar en el tutorial" aria-expanded="false">🔍</button>
+  <div id="prog" aria-hidden="true"></div>
+</nav>
+
+<div id="dr" role="navigation" aria-label="Índice de secciones"></div>
+
+<div id="schp" role="search">
+  <input id="schi" type="search" placeholder="Buscar en el tutorial…" aria-label="Buscar en el tutorial" autocomplete="off">
+  <div id="schr" aria-live="polite"></div>
+</div>
+
+<main>
+
+<!-- ============================================================
+     0 · INICIO
+     ============================================================ -->
+<section class="tabp on" id="t0" data-t="INICIO">
+  <div class="hero">
+    <div class="hsvg" role="img" aria-label="Ilustración animada: una partitura de batería en un pentagrama se transforma, a través de líneas de energía, en un teclado de piano con teclas que se iluminan y notas que ascienden."></div>
+  </div>
+
+  <h1>De la partitura de batería al acompañamiento de piano</h1>
+  <p class="lead">Un método práctico y progresivo, con ejemplos escritos paso a paso.</p>
+  <p class="meta"><strong>by Rubén Sbarsky</strong></p>
+
+  <p><button class="btn" id="ix" type="button">☰ Ver índice</button></p>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Objetivo</h3>
+      <p>Aprender a tomar un patrón escrito para batería, entender cómo está organizado y convertirlo en un acompañamiento de piano con bajo, acordes, síncopas, inversiones y voicings.</p>
+    </div>
+    <div class="card">
+      <h3>Idea central</h3>
+      <p>La partitura de batería no te dice qué acordes tocar. Te da una <strong>estructura temporal</strong> (ataques, silencios, acentos, subdivisiones) sobre la que tú tomas las decisiones armónicas y pianísticas.</p>
+    </div>
+    <div class="card">
+      <h3>Para quién es</h3>
+      <p>Para pianistas y teclistas que saben leer ritmos sencillos y reconocen los acordes básicos (C, Am, F, G). No hace falta tocar la batería ni haber leído nunca una partitura de batería: el capítulo 2 explica lo que necesitas.</p>
+    </div>
+    <div class="card">
+      <h3>Qué encontrarás aquí</h3>
+      <ul>
+        <li>Un método de diez pasos que sirve para cualquier patrón.</li>
+        <li>Una lectura básica de la notación de batería.</li>
+        <li><strong>24 ejemplos resueltos</strong> en seis niveles de dificultad, con el patrón de batería, la versión de piano nota por nota, el motivo de cada decisión y un reto para seguir.</li>
+        <li>Ejercicios de apoyo, un plan de ocho semanas y una rutina de 30 minutos.</li>
+        <li><strong>33 preguntas y respuestas</strong> ordenadas de la más sencilla a la más compleja.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Cómo estudiarlo</h2>
+  <p>Tres hábitos valen más que cualquier truco:</p>
+  <ol>
+    <li><strong>Cuenta en voz alta</strong> mientras tocas, también cuando creas que ya no lo necesitas.</li>
+    <li><strong>Toca despacio.</strong> Si un ejemplo falla, baja el tempo antes de cambiar nada más.</li>
+    <li><strong>Grábate</strong> (el móvil basta). Lo que crees que tocas y lo que suena casi nunca coinciden del todo.</li>
+  </ol>
+  <p>No hace falta leer el tutorial en orden estricto. Si ya tocas acompañamientos, puedes saltar a la escalera de ejemplos (capítulo 12, pestaña PRÁCTICA) y volver a los capítulos teóricos cuando un ejemplo lo pida.</p>
+
+  <h2>Mapa de niveles</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Nivel</th><th>Qué trabajas</th><th>Ejemplos</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Un solo acorde. Ataques en los pulsos y en las corcheas. Compases de 4/4 y 3/4.</td><td>1.1 a 1.5</td></tr>
+        <tr><td>2</td><td>Una progresión de cuatro acordes: inversiones, bajo, séptimas y arpegios.</td><td>2.1 a 2.5</td></tr>
+        <tr><td>3</td><td>Síncopa y anticipación. Acordes en el contratiempo.</td><td>3.1 a 3.4</td></tr>
+        <tr><td>4</td><td>Compases compuestos y tresillos: 6/8, 12/8 y shuffle.</td><td>4.1 a 4.3</td></tr>
+        <tr><td>5</td><td>Semicorcheas y patrones de clave: funk, bossa nova, ostinato.</td><td>5.1 a 5.3</td></tr>
+        <tr><td>6</td><td>Rellenos, forma de ocho compases, estilos y un caso completo.</td><td>6.1 a 6.4</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Cómo se escriben los ejemplos</h2>
+  <p>Los patrones van en cuadrículas de texto. Cada columna es una subdivisión del compás y la primera fila es la cuenta:</p>
+  <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . . . x . . .
+Caja        . . x . . . x .
+Hi-hat      x x x x x x x x</pre></div>
+  <ul>
+    <li><span class="kbd">x</span> es un golpe y <span class="kbd">.</span> es un silencio. En el hi-hat, <span class="kbd">o</span> es hi-hat abierto.</li>
+    <li>Una barra vertical <span class="kbd">|</span> separa compases.</li>
+    <li>En las cuadrículas de piano, una <strong>letra mayúscula</strong> es un acorde en la mano derecha (MD) y una <strong>minúscula</strong> es una nota suelta o un bajo en la mano izquierda (MI). <span class="kbd">-</span> significa que el sonido sigue y <span class="kbd">.</span> que no hay ataque. Cada ejemplo trae su leyenda.</li>
+    <li>Los patrones de este tutorial son didácticos. No son transcripciones de ninguna grabación concreta.</li>
+  </ul>
+  <p><strong>Notas y acordes.</strong> Las notas van en español (Do, Re, Mi, Fa, Sol, La, Si) con el número de octava: <strong>Do4 es el Do central</strong>. Los acordes usan cifrado americano: C = Do mayor, Am = La menor, F = Fa mayor, G = Sol mayor, G7 = Sol con séptima, Cmaj7 = Do mayor con séptima mayor. Equivalencias: Do = C, Re = D, Mi = E, Fa = F, Sol = G, La = A, Si = B.</p>
+  <p><strong>Registros.</strong> Los bajos de este tutorial van entre Do2 y Sol3. Los acordes de la mano derecha van entre Si3 y Do5, salvo que se indique otra cosa. En muchos teclados de 61 teclas la nota más grave es Do2, así que todo cabe.</p>
+
+  <div class="callout">
+    <p><strong>Consejo de navegación.</strong> Usa el botón <span class="kbd">☰ Índice</span> de la barra superior (o el botón «Ver índice» de aquí arriba) para saltar a cualquier sección. También puedes buscar con <span class="kbd">🔍</span>.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     1 · CONCEPTOS
+     ============================================================ -->
+<section class="tabp" id="t1" data-t="CONCEPTOS">
+  <h2>Parte I · Entender el patrón</h2>
+  <p class="lead">Antes de tocar una sola nota conviene saber qué estás mirando. Estos cuatro capítulos te dan el vocabulario y la rejilla mental que usarás en todo el resto del tutorial.</p>
+
+  <h2>1. El método y sus reglas</h2>
+
+  <h3>1.1. Qué vamos a hacer</h3>
+  <p>Vamos a usar una partitura de batería como un <strong>mapa de acontecimientos rítmicos</strong>. Primero localizamos dónde caen los ataques. Después decidimos qué función puede tener cada uno en el piano.</p>
+  <p>Un patrón sencillo puede tener bombo en los tiempos 1 y 3, caja en los tiempos 2 y 4 e hi-hat en corcheas constantes. Una adaptación posible es esta:</p>
+  <ul>
+    <li>Mano izquierda: bajo en los tiempos del bombo.</li>
+    <li>Mano derecha: acordes en los tiempos de la caja.</li>
+    <li>Los demás ataques: notas de relleno, anticipaciones o nada, según pida la música.</li>
+  </ul>
+  <p>Esto es una posibilidad, no una ley. No existe una equivalencia universal del tipo «bombo = fundamental» o «caja = acorde». Son asociaciones útiles para empezar.</p>
+
+  <h3>1.2. Cuatro capas que conviene separar</h3>
+  <p>Al estudiar un patrón, analiza cuatro cosas por separado:</p>
+  <ol>
+    <li><strong>Pulso:</strong> la referencia regular con la que cuentas.</li>
+    <li><strong>Subdivisión:</strong> cómo se parte cada pulso (en dos corcheas, en cuatro semicorcheas, en tres tresillos).</li>
+    <li><strong>Acentos:</strong> qué ataques destacan y dónde caen.</li>
+    <li><strong>Densidad:</strong> cuántos ataques hay y cuánto espacio queda entre ellos.</li>
+  </ol>
+  <p>Un patrón puede tener un pulso muy simple y unos acentos complicados. Otro puede tener pocos acentos y muchas subdivisiones. Separar las capas te permite crear acompañamientos claros sin copiar cada golpe de forma mecánica.</p>
+
+  <h3>1.3. Tres principios de trabajo</h3>
+  <p><strong>A. Primero el ritmo, después las notas.</strong> Da palmadas o cuenta el patrón antes de tocarlo con acordes.</p>
+  <p><strong>B. No tienes que traducir cada golpe.</strong> Los silencios forman parte del ritmo. Si llenas todos los huecos, el patrón pierde su carácter.</p>
+  <p><strong>C. La armonía decide las notas.</strong> El patrón te dice cuándo tocar. La tonalidad, el acorde, la melodía y el estilo te dicen qué tocar.</p>
+
+  <div class="card">
+    <h4>Práctica 1A · Identificar la estructura</h4>
+    <p>Elige un patrón de batería que sepas leer (o el de la sección 3.1). Sin tocar, responde:</p>
+    <ol>
+      <li>¿Cuál es el compás y cuántos pulsos tiene?</li>
+      <li>¿Qué subdivisión predomina?</li>
+      <li>¿Dónde está el bombo? ¿Y la caja?</li>
+      <li>¿El hi-hat es constante o variable?</li>
+      <li>¿Qué ataques parecen más importantes?</li>
+      <li>¿Qué silencios conviene conservar?</li>
+    </ol>
+    <p><strong>Criterio de éxito:</strong> puedes contar el compás en voz alta y señalar los ataques sin perder el pulso.</p>
+  </div>
+
+  <h2>2. Leer una partitura de batería</h2>
+  <p>Si nunca has visto una partitura de batería, parece un código raro. Es más sencillo de lo que parece, porque casi todo el trabajo lo hacen unas pocas posiciones del pentagrama.</p>
+
+  <h3>2.1. El pentagrama de batería</h3>
+  <p>La batería no tiene alturas, así que no lleva clave de sol ni de fa. En su lugar, <strong>cada línea o espacio representa un instrumento</strong>. La convención más extendida es esta:</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Instrumento</th><th>Dónde se escribe</th><th>Cabeza de la nota</th></tr></thead>
+      <tbody>
+        <tr><td>Bombo</td><td>primer espacio (el de abajo)</td><td>redonda</td></tr>
+        <tr><td>Caja</td><td>tercer espacio, contando desde abajo</td><td>redonda</td></tr>
+        <tr><td>Tom agudo</td><td>espacio superior</td><td>redonda</td></tr>
+        <tr><td>Tom medio</td><td>cuarta línea</td><td>redonda</td></tr>
+        <tr><td>Tom de suelo</td><td>segundo espacio</td><td>redonda</td></tr>
+        <tr><td>Hi-hat cerrado</td><td>justo encima de la línea superior</td><td><span class="kbd">x</span></td></tr>
+        <tr><td>Hi-hat abierto</td><td>igual, con un pequeño círculo encima</td><td><span class="kbd">x</span> con <span class="kbd">o</span></td></tr>
+        <tr><td>Hi-hat con el pie</td><td>debajo del pentagrama</td><td><span class="kbd">x</span></td></tr>
+        <tr><td>Ride</td><td>línea superior (algunas ediciones, primera línea adicional)</td><td><span class="kbd">x</span></td></tr>
+        <tr><td>Crash</td><td>línea adicional por encima del pentagrama</td><td><span class="kbd">x</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout">
+    <p><strong>Aviso importante:</strong> las ediciones no coinciden del todo. Algunas colocan el ride y el crash en alturas distintas, y la posición de los toms varía. Mira siempre la <strong>leyenda</strong> de la partitura: manda sobre cualquier tabla, incluida esta.</p>
+  </div>
+  <p>Dos reglas prácticas que casi siempre se cumplen:</p>
+  <ul>
+    <li>Los platillos (hi-hat, ride, crash) llevan cabeza en forma de <span class="kbd">x</span>; los tambores, cabeza redonda.</li>
+    <li>Lo que va arriba lo tocan las manos y lo que va abajo, los pies. Por eso el bombo suele escribirse con la plica hacia abajo y la caja con la plica hacia arriba.</li>
+  </ul>
+
+  <h3>2.2. Los ritmos se leen como en cualquier partitura</h3>
+  <p>Las figuras son las de siempre: negras, corcheas, semicorcheas, tresillos, silencios. Si sabes leer el ritmo de una melodía, sabes leer el ritmo de la batería. Lo único nuevo es saber <strong>qué instrumento</strong> está en cada posición.</p>
+
+  <h3>2.3. Símbolos que vas a encontrar</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Símbolo</th><th>Significado</th><th>Qué hacer en el piano</th></tr></thead>
+      <tbody>
+        <tr><td><span class="kbd">&gt;</span> sobre una nota</td><td>acento</td><td>Toca ese ataque con más intención.</td></tr>
+        <tr><td>Nota entre paréntesis o más pequeña</td><td>nota fantasma (golpe muy suave)</td><td>Puedes ignorarla o tocarla como una nota muy ligera.</td></tr>
+        <tr><td><span class="kbd">o</span> sobre una <span class="kbd">x</span></td><td>hi-hat abierto</td><td>Sonido más largo: sostén una nota o un acorde.</td></tr>
+        <tr><td><span class="kbd">+</span> sobre una <span class="kbd">x</span></td><td>hi-hat cerrado</td><td>Sonido corto.</td></tr>
+        <tr><td>Dos o tres barras oblicuas en la plica</td><td>redoble</td><td>Reduce a dos o tres notas (capítulo 8).</td></tr>
+        <tr><td>Un <span class="kbd">3</span> bajo un grupo de notas</td><td>tresillo</td><td>Cada pulso se divide en tres (capítulo 3).</td></tr>
+        <tr><td><span class="kbd">%</span> o signo de repetición</td><td>repite el compás anterior</td><td>Toca lo mismo; puedes variar la mano izquierda.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.4. Cómo leer un compás: tres pasadas</h3>
+  <p>No intentes leer todo a la vez. Lee tres veces el mismo compás, una por voz:</p>
+  <ol>
+    <li><strong>Solo el bombo.</strong> Cuenta en voz alta y señala dónde cae.</li>
+    <li><strong>Solo la caja.</strong></li>
+    <li><strong>Solo el hi-hat.</strong></li>
+  </ol>
+  <p>Así es como se ve el patrón básico de rock en un pentagrama dibujado con texto (<span class="kbd">x</span> platillo, <span class="kbd">O</span> tambor):</p>
+  <div class="code"><pre>      1   y   2   y   3   y   4   y
+      x   x   x   x   x   x   x   x      &lt;- hi-hat (sobre la línea superior)
+  ---------------------------------
+                                           &lt;- espacio superior (toms agudos)
+  ---------------------------------
+              O               O           &lt;- caja (tercer espacio)
+  ---------------------------------
+                                           &lt;- segundo espacio (tom de suelo)
+  ---------------------------------
+      O               O                   &lt;- bombo (primer espacio)
+  ---------------------------------</pre></div>
+  <p>Y esta es su traducción a cuadrícula, que es lo que usaremos en el resto del tutorial:</p>
+  <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . . . x . . .
+Caja        . . x . . . x .
+Hi-hat      x x x x x x x x</pre></div>
+
+  <div class="card">
+    <h4>Práctica 2A · Descifra el patrón</h4>
+    <p>Una partitura describe este compás de 4/4: el hi-hat toca corcheas seguidas; la caja toca en los tiempos 2 y 4; el bombo toca en el tiempo 1, en el tiempo 3 y en el «y» del tiempo 3. Escribe la cuadrícula en papel. La solución está en la pestaña PRÁCTICA, sección 18.1.</p>
+  </div>
+
+  <h2>3. La cuadrícula temporal</h2>
+  <p>Una cuadrícula te deja ver el lugar exacto de cada ataque. Hay tres tamaños que necesitarás.</p>
+
+  <h3>3.1. Corcheas en 4/4 (ocho columnas)</h3>
+  <p>La cuenta es <strong>1 y 2 y 3 y 4 y</strong>. Este es el patrón básico de rock:</p>
+  <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . . . x . . .
+Caja        . . x . . . x .
+Hi-hat      x x x x x x x x</pre></div>
+  <p>El bombo cae en 1 y 3, la caja en 2 y 4 y el hi-hat mantiene las corcheas.</p>
+
+  <h3>3.2. Semicorcheas en 4/4 (dieciséis columnas)</h3>
+  <p>Cada pulso se divide en cuatro: <strong>1 e y a 2 e y a 3 e y a 4 e y a</strong>.</p>
+  <div class="code"><pre>Cuenta      1 e y a 2 e y a 3 e y a 4 e y a
+Hi-hat      x x x x x x x x x x x x x x x x
+Caja        . . . . x . . . . . . . x . . .
+Bombo       x . . . . . . . x . . . . . . .</pre></div>
+  <p>No pases a las semicorcheas hasta que las corcheas estén seguras.</p>
+
+  <h3>3.3. Tresillos y compases compuestos (seis o doce columnas)</h3>
+  <p>Cuando cada pulso se divide en tres, la cuenta es <strong>1 la li, 2 la li, 3 la li, 4 la li</strong>. En 6/8 hay dos grupos de tres; en 12/8, cuatro:</p>
+  <div class="code"><pre>Cuenta      1  la li 2  la li
+Bombo       x  .  .  .  .  .
+Caja        .  .  .  x  .  .
+Hi-hat      x  x  x  x  x  x</pre></div>
+
+  <h3>3.4. Qué ocurre cuando un golpe cae en «y»</h3>
+  <p>Un ataque en «y» no está sobre el pulso principal, sino en su subdivisión. Ese desplazamiento puede dar sensación de impulso o de ligereza. No todo ataque en «y» es una síncopa: lo que importa es cómo se relaciona con los acentos que esperas oír (sección 7.3).</p>
+
+  <h3>3.5. Cuadrículas en blanco para copiar</h3>
+  <p><strong>Corcheas (4/4):</strong></p>
+  <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       . . . . . . . .
+Caja        . . . . . . . .
+Hi-hat      . . . . . . . .
+Otros       . . . . . . . .</pre></div>
+  <p><strong>Semicorcheas (4/4):</strong></p>
+  <div class="code"><pre>Cuenta      1 e y a 2 e y a 3 e y a 4 e y a
+Bombo       . . . . . . . . . . . . . . . .
+Caja        . . . . . . . . . . . . . . . .
+Hi-hat      . . . . . . . . . . . . . . . .
+Otros       . . . . . . . . . . . . . . . .</pre></div>
+  <p><strong>Tresillos (12/8 o shuffle):</strong></p>
+  <div class="code"><pre>Cuenta      1  la li 2  la li 3  la li 4  la li
+Bombo       .  .  .  .  .  .  .  .  .  .  .  .
+Caja        .  .  .  .  .  .  .  .  .  .  .  .
+Hi-hat      .  .  .  .  .  .  .  .  .  .  .  .
+Otros       .  .  .  .  .  .  .  .  .  .  .  .</pre></div>
+
+  <div class="card">
+    <h4>Práctica 3A · Transcripción rítmica</h4>
+    <p>Transcribe tres patrones de un compás, de una partitura o de una grabación: uno con hi-hat constante, otro con silencios en el hi-hat y otro con un bombo o una caja desplazados a una subdivisión. Tócalos con palmadas.</p>
+    <p><strong>Autocorrección:</strong> si al contar ya no sabes dónde está el tiempo 1, baja la velocidad y marca el pulso con el pie.</p>
+  </div>
+
+  <h2>4. Preparar el trabajo</h2>
+
+  <h3>4.1. Material</h3>
+  <ul>
+    <li>Un piano o teclado.</li>
+    <li>Una partitura de batería de uno a cuatro compases (o los patrones de este tutorial).</li>
+    <li>Un metrónomo.</li>
+    <li>Papel o una hoja de cálculo para las cuadrículas.</li>
+    <li>Un móvil para grabarte.</li>
+  </ul>
+
+  <h3>4.2. Empieza con un patrón corto</h3>
+  <p>No comiences con una canción entera ni con una partitura llena de redobles. Elige un patrón estable de un compás y repítelo varios compases. Si trabajas con una grabación, aísla un fragmento corto.</p>
+
+  <h3>4.3. Tempo cómodo</h3>
+  <p>Empieza entre <strong>50 y 70 negras por minuto</strong>, o más despacio si lo necesitas. El objetivo inicial es mantener el pulso y tocar los ataques correctos. Sube el tempo solo cuando puedas repetir el patrón varias veces sin tensión ni errores. Una regla sencilla: <strong>sube 4 pulsaciones por minuto después de tres repeticiones perfectas seguidas</strong>, y baja 8 si fallas dos veces.</p>
+
+  <div class="card">
+    <h4>Práctica 4A · Preparación sin piano</h4>
+    <ol>
+      <li>Pon el metrónomo a 60 y cuenta «1, 2, 3, 4» durante ocho compases.</li>
+      <li>Añade las subdivisiones: «1 y 2 y 3 y 4 y».</li>
+      <li>Lee el patrón de batería mientras cuentas.</li>
+      <li>Da palmadas solo en los ataques del bombo. Repite con la caja y con el hi-hat.</li>
+      <li>Variante: en lugar de palmadas, di «bombo», «caja» o «hi-hat» en el lugar correspondiente.</li>
+    </ol>
+    <p><strong>Criterio de éxito:</strong> mantienes el conteo aunque un instrumento no toque en un pulso.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     2 · PROCEDIMIENTO
+     ============================================================ -->
+<section class="tabp" id="t2" data-t="PROCEDIMIENTO">
+  <h2>Parte II · Del patrón al piano</h2>
+  <p class="lead">Aquí convertimos la teoría en decisiones concretas: qué hace cada mano, cómo se colocan las síncopas, cómo se eligen las inversiones y cómo se organiza una frase de ocho compases. Al final encontrarás el procedimiento de diez pasos que resume todo el método.</p>
+
+  <h2>5. Tu primer acompañamiento</h2>
+  <p>Para no mezclar dificultades, vamos a usar un solo acorde: <strong>Do mayor (C)</strong>, formado por Do, Mi y Sol.</p>
+
+  <h3>5.1. Primera traducción: bombo y caja</h3>
+  <p>Partimos del patrón básico de rock (sección 3.1). La propuesta es:</p>
+  <ul>
+    <li><strong>Mano izquierda:</strong> una nota grave (Do3) en los tiempos del bombo.</li>
+    <li><strong>Mano derecha:</strong> el acorde Do4-Mi4-Sol4 en los tiempos de la caja.</li>
+    <li><strong>Hi-hat:</strong> por ahora, no se toca.</li>
+  </ul>
+  <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . A . . . A .
+MI          b . . . b . . .</pre></div>
+  <p>Leyenda: <span class="kbd">A</span> = Do4-Mi4-Sol4; <span class="kbd">b</span> = Do3.</p>
+  <p>Cuenta en voz alta y toca despacio. Respeta los silencios: no añadas acordes por costumbre.</p>
+
+  <h3>5.2. Cómo elegir el registro</h3>
+  <p>La mano izquierda debe sonar claramente más grave que la derecha. Como punto de partida, usa Do3 (o Do2 si tu teclado llega) en la izquierda y Do4-Mi4-Sol4 en la derecha. Si al escucharte no distingues el bajo de los acordes, sepáralos más.</p>
+
+  <h3>5.3. Tres maneras de tocar el mismo acorde</h3>
+  <ol>
+    <li><strong>Corto:</strong> lo sueltas antes del siguiente ataque.</li>
+    <li><strong>Sostenido:</strong> lo mantienes casi hasta el siguiente ataque.</li>
+    <li><strong>Acentuado:</strong> lo tocas con más intención, sin golpear el teclado.</li>
+  </ol>
+  <p>El ritmo escrito no fija cuánto dura cada acorde. Esa decisión es tuya y depende del estilo. Lo único que debes evitar es que un acorde largo tape el ataque siguiente.</p>
+
+  <div class="card">
+    <h4>Práctica 5A · Tres versiones del patrón básico</h4>
+    <p>Toca cuatro compases de cada versión y grábalas:</p>
+    <ul>
+      <li><strong>A. Minimalista:</strong> bajo en 1 y 3, acorde corto en 2 y 4.</li>
+      <li><strong>B. Sostenida:</strong> mismos ataques, pero dejas sonar los acordes casi hasta el siguiente.</li>
+      <li><strong>C. Corta:</strong> bajo y acordes muy breves, con mucho aire entre ellos.</li>
+    </ul>
+    <p>Escucha y responde: ¿cuál suena más ligera? ¿Cuál pesa más? ¿Cuál serviría para una escena íntima y cuál para una canción pop? No hay respuesta única: depende del tempo, el timbre y el contexto.</p>
+  </div>
+
+  <h2>6. Qué hace cada mano</h2>
+  <p>Mantener funciones distintas sin que las manos se estorben es una de las habilidades más útiles de este método.</p>
+
+  <h3>6.1. La mano izquierda no tiene que limitarse a una nota</h3>
+  <p>Sobre un acorde de Do mayor puedes probar:</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Opción</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>Fundamental</td><td>Do3</td></tr>
+        <tr><td>Fundamental en octavas</td><td>Do2 + Do3</td></tr>
+        <tr><td>Fundamental y quinta</td><td>Do3, luego Sol3 (o Sol2, por debajo)</td></tr>
+        <tr><td>Bajo alternado</td><td>Do3, Sol3, Do3, Sol3</td></tr>
+        <tr><td>Línea con notas del acorde</td><td>Do3, Mi3, Sol3, Mi3</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>No las uses todas a la vez. Primero asegura el ritmo y luego cambia las notas del bajo.</p>
+
+  <h3>6.2. La mano derecha no tiene que tocar siempre el acorde completo</h3>
+  <p>Opciones: tríada en bloque, solo dos notas del acorde, voicing abierto, acorde invertido, acorde con séptima, figura quebrada o arpegio. Con el mismo ritmo, cada una suena distinta.</p>
+
+  <h3>6.3. Qué hacer con el hi-hat</h3>
+  <p>El hi-hat te da información sobre <strong>subdivisión y continuidad</strong>. Puedes traducirlo como:</p>
+  <ul>
+    <li>Una nota repetida en cada corchea (la más sencilla; mira el ejemplo 1.2).</li>
+    <li>Dos notas alternadas del acorde.</li>
+    <li>Un arpegio pequeño (ejemplo 2.5).</li>
+    <li>Acordes muy cortos en algunas subdivisiones, no en todas.</li>
+    <li>Nada: dejar que la regularidad exista solo en tu conteo interno.</li>
+  </ul>
+  <p>Si tocas un acorde en cada golpe de hi-hat, el acompañamiento se vuelve denso enseguida. Prueba antes con una sola nota.</p>
+
+  <div class="card">
+    <h4>Práctica 6A · Cambiar el bajo, conservar el ritmo</h4>
+    <p>Mantén los acordes de Do mayor en 2 y 4 y cambia solo la mano izquierda:</p>
+    <ol>
+      <li>Do3 en 1 y 3.</li>
+      <li>Do2 + Do3 (octava) en 1 y 3.</li>
+      <li>Do3 en 1 y Sol3 en 3.</li>
+      <li>Do3 en 1 y Sol2 en 3.</li>
+      <li>Alterna Do3 y Sol3 en corcheas sin cambiar los ataques de la derecha.</li>
+    </ol>
+    <p>En la última versión ya no traduces el bombo: creas algo inspirado en él. Está permitido.</p>
+  </div>
+
+  <div class="card">
+    <h4>Práctica 6B · Cambiar la disposición del acorde</h4>
+    <p>Mismo ritmo y misma mano izquierda. En la derecha toca, por este orden, Do-Mi-Sol, Mi-Sol-Do, Sol-Do-Mi y una versión más abierta (Do4-Sol4-Mi5). Escucha cómo cambia el color con un ritmo idéntico.</p>
+  </div>
+
+  <div class="card">
+    <h4>Práctica 6C · Tres traducciones del mismo hi-hat</h4>
+    <p>Conserva bajo y acordes del patrón básico y añade el hi-hat de tres formas:</p>
+    <ul>
+      <li><strong>A.</strong> Sol4 repetido en cada corchea.</li>
+      <li><strong>B.</strong> Alternancia de Sol4 y Mi4.</li>
+      <li><strong>C.</strong> Una tríada muy breve en algunas subdivisiones.</li>
+    </ul>
+    <p>Cuatro compases de cada una. No subas el volumen para compensar la densidad: busca claridad.</p>
+  </div>
+
+  <div class="card">
+    <h4>Práctica 6D · Elegir qué no tocar</h4>
+    <p>Toca el patrón básico con hi-hat en corcheas. En la primera vuelta toca todas las subdivisiones; en la segunda, solo las que coinciden con los tiempos; en la tercera, quita algunas pero conserva el pulso. ¿En cuál se percibe mejor el groove? ¿Cuál deja más espacio para una melodía?</p>
+  </div>
+
+  <h2>7. Subdivisiones, síncopas y anticipaciones</h2>
+  <p>Este capítulo es el que evita que el resultado suene a ejercicio mecánico.</p>
+
+  <h3>7.1. Corcheas</h3>
+  <p>En 4/4, «1 y 2 y 3 y 4 y» divide cada negra en dos partes iguales. Practica primero con una sola nota y después coloca acordes en algunas posiciones.</p>
+
+  <h3>7.2. Semicorcheas</h3>
+  <p>La cuenta es «1 e y a 2 e y a 3 e y a 4 e y a». Cada pulso se divide en cuatro partes iguales. No las uses hasta mantener el pulso con seguridad. Una estrategia práctica es tocar solo algunas de las cuatro posiciones (por ejemplo «1» y «a») y callar las otras mientras sigues contando todas.</p>
+
+  <h3>7.3. Síncopa</h3>
+  <p>Una síncopa desplaza el acento a una parte débil o prolonga un sonido de modo que el acento esperado queda cubierto. El efecto depende del contexto métrico y de la articulación. Un acorde en el «y» del tiempo 2 puede funcionar como síncopa; el mismo acorde en el «y» de 4 suele funcionar como anticipación, porque prepara el pulso siguiente.</p>
+
+  <h3>7.4. Anticipación de un acorde</h3>
+  <p>Imagina que el acorde cambia de Do mayor a Fa mayor en el tiempo 1 del compás siguiente. Puedes tocar el Fa mayor en el «y» de 4 del compás anterior y mantenerlo, o volver a atacarlo en 1. El compás sigue igual: lo que llega antes es el acorde, no el pulso. El ejemplo 3.1 lo desarrolla con cuadrículas.</p>
+
+  <div class="card">
+    <h4>Práctica 7A · Acordes en el contratiempo</h4>
+    <p>Con Do mayor durante cuatro compases:</p>
+    <ol>
+      <li>Bajo en 1 y 3, acordes en 2 y 4.</li>
+      <li>Mueve el acorde de 2 al «y» de 1.</li>
+      <li>Mantén el acorde de 4.</li>
+      <li>Por último, prueba un acorde en el «y» de 3.</li>
+    </ol>
+    <p>Cuenta en voz alta todo el tiempo. Pregúntate: ¿el acorde adelantado empuja el ritmo? ¿Se pierde el peso del tiempo 2? ¿Cambia la sensación al subir el tempo?</p>
+  </div>
+
+  <div class="card">
+    <h4>Práctica 7B · De la cuadrícula a un patrón sincopado</h4>
+    <p>Toca acordes de Do mayor en estas posiciones (1, «y» de 2 y 4):</p>
+    <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Acorde      x . . x . . x .</pre></div>
+    <p>Primero sin bajo; después añade Do3 en el tiempo 1. Luego crea dos variaciones moviendo un ataque a otra corchea. Escribe cada versión antes de tocarla.</p>
+  </div>
+
+  <h2>8. Platillos, toms y rellenos</h2>
+  <p>El piano no necesita imitar el timbre de la batería. Lo que sí puede hacer es recoger la <strong>función</strong> de cada instrumento.</p>
+
+  <h3>8.1. Qué función cumple cada uno</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Instrumento</th><th>Función habitual</th><th>Ideas para el piano</th></tr></thead>
+      <tbody>
+        <tr><td>Hi-hat cerrado</td><td>mantener la subdivisión</td><td>nota repetida, dos notas alternadas, arpegio pequeño</td></tr>
+        <tr><td>Hi-hat abierto</td><td>dar un respiro largo o contraste</td><td>una nota o un acorde que dura más que los demás</td></tr>
+        <tr><td>Toms y redobles</td><td>rellenos y transiciones</td><td>escala breve, arpegio, tres notas que suben</td></tr>
+        <tr><td>Crash</td><td>inicio de sección, acento fuerte</td><td>acorde amplio, bajo y acorde a la vez, nota aguda destacada</td></tr>
+        <tr><td>Ride</td><td>marcar el pulso con sonido continuo</td><td>notas repetidas sostenidas y suaves</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>8.2. Rellenos</h3>
+  <p>Un redoble puede inspirar un relleno, pero no tienes que copiar cada golpe. Si el redoble es muy rápido, reducirlo a dos o tres notas conserva su función. Cuatro salidas posibles:</p>
+  <ul>
+    <li>Una escala corta que conduzca al compás siguiente.</li>
+    <li>Un arpegio del acorde.</li>
+    <li>Una repetición rítmica que aumente la densidad.</li>
+    <li>Un silencio seguido de un ataque fuerte (suele funcionar mejor de lo que parece).</li>
+  </ul>
+
+  <h3>8.3. Crash</h3>
+  <p>No todo crash pide un acorde fortissimo. El contraste dinámico importa más que tocar siempre fuerte. Funciona bien un registro nuevo o un acorde más amplio que los anteriores.</p>
+
+  <div class="card">
+    <h4>Práctica 8A · Diseñar un relleno</h4>
+    <p>Imagina un redoble de toms en el cuarto tiempo del cuarto compás. Crea tres respuestas: tres notas ascendentes de la escala, un arpegio y un silencio con un acorde acentuado en el compás siguiente. Compara cuál conduce mejor a la frase siguiente. En el ejemplo 6.1 lo hacemos nota por nota.</p>
+  </div>
+
+  <div class="card">
+    <h4>Práctica 8B · Acento de transición</h4>
+    <p>Toca cuatro compases con una progresión. En el cuarto, añade un acento inspirado en un crash. En la segunda vuelta, quítalo. En la tercera, sustitúyelo por una sola nota aguda. Escucha cómo cambia la transición.</p>
+  </div>
+
+  <h2>9. Armonía: un ritmo, muchos colores</h2>
+  <p>Hasta aquí hemos usado Do mayor para simplificar. Ahora separamos el ritmo de la progresión.</p>
+
+  <h3>9.1. Mantener el ritmo y cambiar los acordes</h3>
+  <p>Prueba esta progresión en 4/4:</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Compás</th><th>Acorde</th><th>Tríada</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>C</td><td>Do-Mi-Sol</td></tr>
+        <tr><td>2</td><td>Am</td><td>La-Do-Mi</td></tr>
+        <tr><td>3</td><td>F</td><td>Fa-La-Do</td></tr>
+        <tr><td>4</td><td>G</td><td>Sol-Si-Re</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Conserva el mismo patrón de bajo y acordes en los cuatro compases. El ritmo no cambia; la armonía sí.</p>
+
+  <h3>9.2. Una variable cada vez</h3>
+  <p>Para saber qué produce cada decisión, cambia una sola cosa por vuelta: primero la progresión, luego las inversiones, luego el registro y, por último, la articulación y la densidad.</p>
+
+  <h3>9.3. Séptimas</h3>
+  <p>Cuando las tríadas estén cómodas, prueba:</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Acorde</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>Cmaj7</td><td>Do-Mi-Sol-Si</td></tr>
+        <tr><td>Am7</td><td>La-Do-Mi-Sol</td></tr>
+        <tr><td>Fmaj7</td><td>Fa-La-Do-Mi</td></tr>
+        <tr><td>G7</td><td>Sol-Si-Re-Fa</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Puedes repartirlas entre ambas manos o quitar alguna nota para que el sonido no quede apretado. En el capítulo 10 verás una forma de hacerlo sin que suene pesado.</p>
+
+  <h3>9.4. Otras progresiones con el mismo ritmo</h3>
+  <ul>
+    <li>C - Am - F - G</li>
+    <li>Am - F - C - G</li>
+    <li>C - F - Am - G</li>
+    <li>Am - G - F - E7 (E7 = Mi-Sol♯-Si-Re; da una sonoridad menor con dominante)</li>
+  </ul>
+  <p>No existe una emoción fija asociada a cada progresión. El tempo, la melodía, el registro y el timbre también cuentan.</p>
+
+  <div class="card">
+    <h4>Práctica 9A · Cuatro armonías, un ritmo</h4>
+    <p>Toca el patrón básico con C - Am - F - G, cuatro veces: con tríadas en posición fundamental, con inversiones cercanas, con séptimas y con solo dos notas de cada acorde en la derecha. Graba las cuatro y anota cuál equilibra mejor claridad, riqueza y comodidad.</p>
+  </div>
+
+  <div class="card">
+    <h4>Práctica 9B · Cambiar el color</h4>
+    <p>Toca las cuatro progresiones de la sección 9.4 con el mismo ritmo. Después repite una de ellas con acordes cortos y otra con acordes sostenidos. ¿Cómo cambia el carácter?</p>
+  </div>
+
+  <h2>10. Inversiones, conducción de voces y voicings</h2>
+
+  <h3>10.1. Qué es una inversión</h3>
+  <p>Una tríada tiene tres notas. Según cuál esté en el grave, hablamos de posición fundamental, primera o segunda inversión. La identidad del acorde no cambia, pero sí lo que suena abajo.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Acorde</th><th>Fundamental</th><th>1.ª inversión</th><th>2.ª inversión</th></tr></thead>
+      <tbody>
+        <tr><td>C</td><td>Do-Mi-Sol</td><td>Mi-Sol-Do</td><td>Sol-Do-Mi</td></tr>
+        <tr><td>Am</td><td>La-Do-Mi</td><td>Do-Mi-La</td><td>Mi-La-Do</td></tr>
+        <tr><td>F</td><td>Fa-La-Do</td><td>La-Do-Fa</td><td>Do-Fa-La</td></tr>
+        <tr><td>G</td><td>Sol-Si-Re</td><td>Si-Re-Sol</td><td>Re-Sol-Si</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>10.2. Conducción de voces: tres reglas prácticas</h3>
+  <p>La conducción de voces es el modo en que se mueven las notas de un acorde al siguiente. Si cada acorde va en posición fundamental, la mano derecha da saltos. Con estas tres reglas el acompañamiento suena más conectado:</p>
+  <ol>
+    <li><strong>Conserva las notas comunes</strong> entre un acorde y el siguiente.</li>
+    <li><strong>Mueve el resto por grado conjunto</strong> (a la nota más cercana).</li>
+    <li><strong>Busca movimiento contrario al bajo:</strong> si el bajo sube, deja que las voces superiores bajen.</li>
+  </ol>
+  <p>No son obligaciones. Son un punto de partida para que la mano derecha se mueva poco.</p>
+
+  <h3>10.3. Paquete A: tríadas con movimiento mínimo</h3>
+  <p>Este paquete de voicings se usa en varios ejemplos de la escalera (2.2, 2.5, 3.3, 3.4, 6.2). Memorízalo:</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Acorde</th><th>Mano derecha</th><th>Inversión</th><th>Bajo (MI)</th></tr></thead>
+      <tbody>
+        <tr><td>C</td><td>Do4-Mi4-Sol4</td><td>fundamental</td><td>Do3</td></tr>
+        <tr><td>Am</td><td>Do4-Mi4-La4</td><td>1.ª</td><td>La2</td></tr>
+        <tr><td>F</td><td>Do4-Fa4-La4</td><td>2.ª</td><td>Fa2</td></tr>
+        <tr><td>G</td><td>Si3-Re4-Sol4</td><td>1.ª</td><td>Sol2</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Qué se mueve en cada cambio:</p>
+  <ul>
+    <li><strong>C → Am:</strong> solo Sol sube a La.</li>
+    <li><strong>Am → F:</strong> solo Mi sube a Fa.</li>
+    <li><strong>F → G:</strong> Do baja a Si, Fa baja a Re, La baja a Sol (las tres voces bajan mientras el bajo sube).</li>
+    <li><strong>G → C:</strong> Si sube a Do, Re sube a Mi y Sol se queda.</li>
+  </ul>
+  <p>La progresión C - Am - F - G se toca así sin que la mano se desplace más de una tercera.</p>
+
+  <h3>10.4. Paquete B: séptimas con tres notas</h3>
+  <p>Con séptimas, la mano izquierda toca la fundamental y la derecha <strong>solo tres notas</strong>, sin la fundamental. El bajo aporta el nombre del acorde; la derecha aporta el color.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Acorde</th><th>Mano derecha</th><th>Bajo (MI)</th></tr></thead>
+      <tbody>
+        <tr><td>Cmaj7</td><td>Mi4-Sol4-Si4</td><td>Do3</td></tr>
+        <tr><td>Am7</td><td>Mi4-Sol4-Do5</td><td>La2</td></tr>
+        <tr><td>Fmaj7</td><td>Mi4-La4-Do5</td><td>Fa2</td></tr>
+        <tr><td>G7</td><td>Fa4-Si4-Re5</td><td>Sol2</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Hay un detalle curioso: las notas de la derecha de Am7 son un Do mayor y las de Fmaj7 son un La menor. No es un error. Sobre el bajo La2, las notas Do-Mi-Sol suenan como Am7; sobre Fa2, las notas Mi-La-Do suenan como Fmaj7. Y Fa-Si-Re (un Si disminuido) sobre Sol2 suena como G7.</p>
+  <p>Cada cambio mueve muy pocas notas: de Cmaj7 a Am7 solo Si sube a Do; de Am7 a Fmaj7 solo Sol sube a La; de Fmaj7 a G7 suben Mi, La y Do un grado. Al volver de G7 a Cmaj7 la mano baja una tercera en dos voces. Es el único salto del bucle y es normal.</p>
+
+  <h3>10.5. Voicings abiertos y nota superior destacada</h3>
+  <p>En un voicing cerrado las notas están juntas. En uno abierto se reparten con más espacio. Para abrir un C puedes poner Do3 en la izquierda y Mi4-Sol4-Do5 en la derecha. Para destacar una melodía, mantén el voicing y cambia solo la nota superior (ejemplo 2.5 y capítulo 11).</p>
+
+  <div class="card">
+    <h4>Práctica 10A · Mínimo movimiento</h4>
+    <p>Toca C - Am - F - G con el patrón básico:</p>
+    <ol>
+      <li>Todo en posición fundamental.</li>
+      <li>Con el paquete A.</li>
+      <li>Compara cuánto se desplaza la mano derecha en cada caso.</li>
+    </ol>
+    <p>Repite con el paquete B. <strong>Criterio de éxito:</strong> la mano se mueve con naturalidad y los cambios no interrumpen el pulso.</p>
+  </div>
+
+  <div class="card">
+    <h4>Práctica 10B · Un acorde, tres voicings</h4>
+    <p>Sobre un compás de C crea un voicing cerrado, uno abierto y uno con la nota superior destacada. Mismos ataques en las tres. Compara claridad y resonancia.</p>
+  </div>
+
+  <h2>11. De un compás a una frase de ocho compases</h2>
+  <p>Una canción rara vez repite un compás idéntico sin parar. Aunque el groove sea constante, hay variaciones de densidad, registro, dinámica y articulación.</p>
+
+  <h3>11.1. Una forma posible para ocho compases</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Compases</th><th>Función</th></tr></thead>
+      <tbody>
+        <tr><td>1-2</td><td>Presentar el patrón.</td></tr>
+        <tr><td>3-4</td><td>Repetirlo con una variación pequeña.</td></tr>
+        <tr><td>5-6</td><td>Añadir movimiento o cambiar el registro.</td></tr>
+        <tr><td>7-8</td><td>Preparar la vuelta o el bloque siguiente.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Es una propuesta. Hay muchas otras formas de organizar ocho compases.</p>
+
+  <h3>11.2. Qué puedes variar</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Variable</th><th>Ejemplo concreto</th></tr></thead>
+      <tbody>
+        <tr><td>Bajo</td><td>pasar de fundamental a fundamental y quinta</td></tr>
+        <tr><td>Inversión</td><td>cambiar el voicing del tercer compás</td></tr>
+        <tr><td>Cantidad de ataques</td><td>añadir una nota repetida en la derecha</td></tr>
+        <tr><td>Duración</td><td>acordes cortos en la primera vuelta, sostenidos en la segunda</td></tr>
+        <tr><td>Dinámica</td><td>acordes más suaves al principio y con más cuerpo al final</td></tr>
+        <tr><td>Registro</td><td>subir la derecha una octava en los compases 5 y 6</td></tr>
+        <tr><td>Último compás</td><td>un relleno, una anticipación o un silencio</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Procura que cada variación tenga una función. Si cambias todo a la vez, el patrón pierde su identidad.</p>
+
+  <div class="card">
+    <h4>Práctica 11A · Componer ocho compases</h4>
+    <p>Usa C - Am - F - G dos veces. Compases 1-2: bajo en 1 y 3, acordes en 2 y 4. Compases 3-4: mismo ritmo, otras inversiones. Compases 5-6: añade algunas corcheas en la derecha. Compases 7-8: reduce la densidad y crea una pequeña transición. Graba y escucha si se percibe una frase o si las variaciones parecen arbitrarias. El ejemplo 6.2 trae una solución completa.</p>
+  </div>
+
+  <div class="card">
+    <h4>Práctica 11B · Construir y retirar energía</h4>
+    <p>Ocho compases en los que la densidad aumente de los compases 1 a 4 y baje de los 5 a los 8. No uses el volumen para eso: añade ataques, abre el registro, sostén más los acordes. Después retira esos recursos.</p>
+  </div>
+
+  <hr>
+
+  <h2>13. El procedimiento con una partitura real</h2>
+  <p>Este es el procedimiento central del tutorial. Úsalo cada vez que encuentres un patrón de batería que te interese. El ejemplo 6.4 (en la pestaña PRÁCTICA) lo recorre entero.</p>
+
+  <ol>
+    <li><strong>Elige un fragmento manejable.</strong> Uno o dos compases. Si hay redobles, simplifica el material inicial y déjalos para más tarde.</li>
+    <li><strong>Confirma compás y tempo.</strong> Mira la indicación de compás y el tempo. Si es demasiado rápido, baja la velocidad sin cambiar la estructura.</li>
+    <li><strong>Escribe la cuadrícula.</strong> Anota los ataques de bombo, caja e hi-hat. Si hay semicorcheas o tresillos, usa la cuadrícula que corresponda (sección 3.5).</li>
+    <li><strong>Toca solo el bombo.</strong> Con la mano izquierda, una única nota grave. Sin acordes todavía.</li>
+    <li><strong>Añade la caja.</strong> Con la mano derecha, un acorde en los ataques que quieras destacar. Si cuesta coordinar, practica cada mano por separado y después juntas.</li>
+    <li><strong>Decide qué hacer con el hi-hat.</strong> Ignorarlo, tocarlo como nota repetida, usarlo para añadir corcheas, hacer una figura de acordes cortos o tomarlo solo como referencia de articulación.</li>
+    <li><strong>Elige la armonía.</strong> Empieza con una tríada. Cuando el patrón esté estable, pasa a una progresión, a inversiones o a séptimas.</li>
+    <li><strong>Prueba tres niveles de densidad.</strong> Bajo (solo los ataques principales), medio (bajo, caja y algún relleno) y alto (más subdivisiones, arpegios o síncopas). No confundas densidad con volumen: un acompañamiento puede tener muchos ataques y sonar suave.</li>
+    <li><strong>Graba y escucha.</strong> No evalúes solo si las notas son correctas. Pregúntate si se entiende el pulso, si bajo y acordes se distinguen, si el patrón conserva su carácter, si hay demasiadas notas, si queda espacio para una melodía y si los cambios de acorde se oyen con claridad.</li>
+    <li><strong>Crea una versión propia.</strong> Cambia algo a propósito: el bajo, las inversiones, la densidad, la articulación o el registro. Escribe qué has cambiado y qué efecto esperabas.</li>
+  </ol>
+
+  <h3>Ficha de análisis para copiar</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Campo</th><th>Tu respuesta</th></tr></thead>
+      <tbody>
+        <tr><td>Nombre de la partitura o patrón</td><td></td></tr>
+        <tr><td>Compás</td><td></td></tr>
+        <tr><td>Tempo</td><td></td></tr>
+        <tr><td>Subdivisión principal</td><td></td></tr>
+        <tr><td>Patrón del bombo</td><td></td></tr>
+        <tr><td>Patrón de la caja</td><td></td></tr>
+        <tr><td>Patrón del hi-hat</td><td></td></tr>
+        <tr><td>Otros instrumentos</td><td></td></tr>
+        <tr><td>Función de la mano izquierda</td><td></td></tr>
+        <tr><td>Función de la mano derecha</td><td></td></tr>
+        <tr><td>Progresión armónica</td><td></td></tr>
+        <tr><td>Densidad elegida</td><td></td></tr>
+        <tr><td>Qué funciona bien</td><td></td></tr>
+        <tr><td>Qué quiero mejorar</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================
+     3 · PRÁCTICA
+     ============================================================ -->
+<section class="tabp" id="t3" data-t="PRÁCTICA">
+  <h2>Parte III · La escalera de ejemplos resueltos</h2>
+  <h2>12. Seis niveles, 24 ejemplos</h2>
+  <p class="lead">Hasta aquí has visto la teoría. Esta parte es el entrenamiento: 24 ejemplos ordenados de menor a mayor dificultad, cada uno con el patrón de batería y su traducción al piano escrita nota por nota.</p>
+
+  <h3>Cómo usar la escalera</h3>
+  <p>Cada ejemplo sigue el mismo orden:</p>
+  <ol>
+    <li><strong>Batería:</strong> el patrón de partida, en cuadrícula.</li>
+    <li><strong>Piano:</strong> la propuesta, con su leyenda de notas.</li>
+    <li><strong>Por qué funciona:</strong> qué has conservado del patrón y qué has decidido tú.</li>
+    <li><strong>Cómo practicarlo:</strong> una secuencia corta de pasos.</li>
+    <li><strong>Reto:</strong> una variación para comprobar que lo has entendido.</li>
+  </ol>
+  <p>Sugerencia de trabajo: antes de mirar la versión de piano, intenta escribir tu propia traducción en papel. Después compara. Si tu versión es distinta pero suena bien y respeta el patrón, no está mal: la mía es una solución entre varias.</p>
+  <div class="callout">
+    <p><strong>Cuándo pasar al nivel siguiente:</strong> cuando puedas tocar cada ejemplo del nivel ocho compases seguidos, a 60 negras, contando en voz alta y sin parar.</p>
+  </div>
+
+  <h2>Nivel 1 · Un solo acorde</h2>
+  <p>Aquí todo ocurre sobre Do mayor. Lo que aprendes es a coordinar manos y a decidir qué parte del patrón traduces.</p>
+
+  <details class="ex">
+    <summary><span class="exn">1.1</span> Rock básico</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 80 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . . . x . . .
+Caja        . . x . . . x .
+Hi-hat      x x x x x x x x</pre></div>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . A . . . A .
+MI          b . . . b . . .</pre></div>
+      <p>Leyenda: <span class="kbd">A</span> = Do4-Mi4-Sol4; <span class="kbd">b</span> = Do3.</p>
+      <p><strong>Por qué funciona.</strong> El bombo pasa a la mano izquierda y la caja a la derecha. El hi-hat se ha quedado fuera: se oye en tu cabeza porque cuentas «1 y 2 y 3 y 4 y», pero no ocupa espacio en el teclado. Con dos ataques por mano ya tienes un groove reconocible.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Mano izquierda sola, dos compases, contando en voz alta.</li>
+        <li>Mano derecha sola, dos compases.</li>
+        <li>Juntas, cuatro compases a 60.</li>
+        <li>Si falla, vuelve al paso 1. No aceleres.</li>
+      </ol>
+      <p><strong>Reto.</strong> Tócalo tres veces seguidas, cambiando solo la articulación: acordes cortos, sostenidos y acentuados (sección 5.3). Anota cuál te gusta más.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">1.2</span> El hi-hat como nota repetida</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 80 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C</p>
+      <p><strong>Batería:</strong> el patrón del ejemplo 1.1.</p>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          n n A n n n A n
+MI          b . . . b . . .</pre></div>
+      <p>Leyenda: <span class="kbd">n</span> = Sol4 solo, muy suave; <span class="kbd">A</span> = Do4-Mi4-Sol4; <span class="kbd">b</span> = Do3.</p>
+      <p><strong>Por qué funciona.</strong> La nota repetida es la forma más barata de «tocar el hi-hat»: ocupa un solo dedo y no pisa ni el bajo ni los acordes. Como Sol4 forma parte del acorde, el dedo 5 no se mueve: en 2 y 4 le añades el Do y el Mi, y el resto del tiempo lo dejas repitiendo.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Solo la derecha, a 50: Sol-Sol-<strong>acorde</strong>-Sol-Sol-Sol-<strong>acorde</strong>-Sol.</li>
+        <li>Cuida que las notas <span class="kbd">n</span> queden mucho más suaves que los acordes.</li>
+        <li>Añade la izquierda.</li>
+      </ol>
+      <p><strong>Reto.</strong> Sustituye la nota repetida por la alternancia Sol4-Mi4 (práctica 6C, versión B). ¿Sigue claro el acorde de 2 y 4?</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">1.3</span> Rock con un segundo bombo</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 80 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . . . x x . .
+Caja        . . x . . . x .
+Hi-hat      x x x x x x x x</pre></div>
+      <p>El bombo toca en 1, en 3 y en el «y» de 3.</p>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . A . . . A .
+MI          b . . . b c . .</pre></div>
+      <p>Leyenda: <span class="kbd">A</span> = Do4-Mi4-Sol4; <span class="kbd">b</span> = Do3; <span class="kbd">c</span> = Do3 muy corto (como un golpecito).</p>
+      <p><strong>Por qué funciona.</strong> El bombo extra se refleja en un ataque breve de la izquierda justo detrás del 3. No hace falta traducir cada bombo como un bajo igual de importante: el primero del par es el que pesa y el segundo es un adorno.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Solo la izquierda, contando «uno... tres-y». El «y» cae justo después del 3, no a mitad de camino hacia el 4.</li>
+        <li>Añade la derecha.</li>
+      </ol>
+      <p><strong>Reto.</strong> Sustituye <span class="kbd">c</span> por Sol2 (una quinta por debajo). ¿Qué cambia en el carácter del bajo?</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">1.4</span> Balada con la caja en el 3 (half-time)</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 72 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . . . . . . .
+Caja        . . . . x . . .
+Hi-hat      x . x . x . x .</pre></div>
+      <p>Solo hay un golpe de caja por compás, en el tiempo 3. Esto se llama <em>half-time</em>: el pulso es el mismo, pero el groove se siente la mitad de rápido porque falta el acento del 2 y del 4.</p>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . n . A . n .
+MI          b - - - - - - -</pre></div>
+      <p>Leyenda: <span class="kbd">n</span> = Sol4 suave; <span class="kbd">A</span> = Do4-Mi4-Sol4; <span class="kbd">b</span> = Do3 sostenido todo el compás (con pedal; si quieres más peso, añade Do2).</p>
+      <p><strong>Por qué funciona.</strong> Hay muy pocos ataques, y justo por eso cada uno cuenta. El acorde del 3 hace de caja y el bajo largo hace de bombo. Las notas <span class="kbd">n</span> dan el pulso del hi-hat sin molestar.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Cuenta «1 y 2 y 3 y 4 y» muy despacio. El silencio entre el 1 y el 3 es parte del patrón.</li>
+        <li>Toca solo el bajo y el acorde del 3. Después añade las notas <span class="kbd">n</span>.</li>
+      </ol>
+      <p><strong>Reto.</strong> En el segundo compás, rellena el hueco con corcheas muy suaves en la mano derecha (Do4-Mi4-Sol4-Mi4, repetidas). Cuando el acorde caiga en el 3, que se note.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">1.5</span> Vals en 3/4</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 80 a 100 · <strong>Compás:</strong> 3/4 · <strong>Armonía:</strong> C</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y
+Bombo       x . . . . .
+Caja        . . x . x .
+Hi-hat      x x x x x x</pre></div>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y
+MD          . . A . A .
+MI          b . . . . .</pre></div>
+      <p>Leyenda: <span class="kbd">A</span> = Mi4-Sol4-Do5 (primera inversión de C); <span class="kbd">b</span> = Do3.</p>
+      <p><strong>Por qué funciona.</strong> Es el clásico «pum-pa-pa». El bombo del tiempo 1 se convierte en el bajo y los dos golpes de caja se convierten en dos acordes. El pulso es de tres, así que cuentas «1 y 2 y 3 y» (seis columnas).</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Cuenta en voz alta, acentuando el 1.</li>
+        <li>Izquierda sola, derecha sola, juntas.</li>
+      </ol>
+      <p><strong>Reto.</strong> Alterna el bajo por compases: Do3 en el primero y Sol2 en el segundo, y cambia la derecha a G (Si3-Re4-Sol4) en los compases pares.</p>
+      <p><strong>Pasas al nivel 2 si:</strong> puedes tocar los cinco ejemplos ocho compases seguidos a 60 (el vals, a 80) contando en voz alta.</p>
+    </div>
+  </details>
+
+  <h2>Nivel 2 · Una progresión de cuatro acordes</h2>
+  <p>Ahora el ritmo se queda fijo y cambian los acordes. Usamos el patrón del ejemplo 1.1 (bombo en 1 y 3, caja en 2 y 4, hi-hat en corcheas) y la progresión <strong>C - Am - F - G</strong>, un compás por acorde.</p>
+
+  <details class="ex">
+    <summary><span class="exn">2.1</span> Tríadas en posición fundamental</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 80 · <strong>Compás:</strong> 4/4</p>
+      <p><strong>Piano.</strong> El ritmo es el del ejemplo 1.1 en los cuatro compases:</p>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . A . . . A .
+MI          b . . . b . . .</pre></div>
+      <p>Lo que cambia cada compás son las notas:</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th>MI (1 y 3)</th><th>MD (2 y 4)</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>C</td><td>Do3</td><td>Do4-Mi4-Sol4</td></tr>
+            <tr><td>2</td><td>Am</td><td>La2</td><td>La3-Do4-Mi4</td></tr>
+            <tr><td>3</td><td>F</td><td>Fa2</td><td>Fa3-La3-Do4</td></tr>
+            <tr><td>4</td><td>G</td><td>Sol2</td><td>Sol3-Si3-Re4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Por qué funciona (y por qué no del todo).</strong> Es la traducción más literal: cada acorde en su posición más simple. Funciona, pero la mano derecha salta una tercera hacia abajo de C a Am y de Am a F, y vuelve a subir al llegar a G. Escucha cómo la progresión «se desplaza» en vez de fluir. Este defecto es justo lo que arregla el ejemplo siguiente.</p>
+      <p><strong>Cómo practicarlo.</strong> Toca solo los cambios de acorde con la derecha, sin bajo, a 60, hasta que no tengas que mirar. Después añade la izquierda.</p>
+      <p><strong>Reto.</strong> Graba esta versión. La compararás con la del ejemplo 2.2.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">2.2</span> Inversiones con movimiento mínimo (paquete A)</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 80 · <strong>Compás:</strong> 4/4</p>
+      <p>Mismo ritmo. Cambian las inversiones:</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th>MI (1 y 3)</th><th>MD (2 y 4)</th><th>Qué se mueve</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>C</td><td>Do3</td><td>Do4-Mi4-Sol4</td><td>(punto de partida)</td></tr>
+            <tr><td>2</td><td>Am</td><td>La2</td><td>Do4-Mi4-La4</td><td>Sol sube a La</td></tr>
+            <tr><td>3</td><td>F</td><td>Fa2</td><td>Do4-Fa4-La4</td><td>Mi sube a Fa</td></tr>
+            <tr><td>4</td><td>G</td><td>Sol2</td><td>Si3-Re4-Sol4</td><td>las tres voces bajan</td></tr>
+            <tr><td>1 (vuelta)</td><td>C</td><td>Do3</td><td>Do4-Mi4-Sol4</td><td>Si sube a Do, Re sube a Mi</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Por qué funciona.</strong> Casi no hay movimiento en la derecha: la mano se queda en su sitio y cambia solo un dedo en cada cambio. El bajo sube y baja debajo, así que se crea contraste entre la parte grave (que se mueve) y los acordes (que casi no). Eso es lo que hace que la progresión suene conectada.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Sin ritmo, toca los cuatro acordes seguidos, despacio, mirando qué dedo cambia.</li>
+        <li>Con el patrón, a 60.</li>
+      </ol>
+      <p><strong>Reto.</strong> Graba esta versión y compárala con la 2.1. ¿Notas la diferencia sin mirar la partitura?</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">2.3</span> Bajo de raíz y quinta</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 90 · <strong>Compás:</strong> 4/4</p>
+      <p>Mano derecha con el paquete A (como en 2.2). La izquierda ya no repite la raíz: toca la raíz en el 1 y la quinta en el 3.</p>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . A . . . A .
+MI          r . . . q . . .</pre></div>
+      <p>Leyenda: <span class="kbd">A</span> = acorde del paquete A; <span class="kbd">r</span> = raíz; <span class="kbd">q</span> = quinta del acorde.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th><span class="kbd">r</span> (tiempo 1)</th><th><span class="kbd">q</span> (tiempo 3)</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>C</td><td>Do3</td><td>Sol3</td></tr>
+            <tr><td>2</td><td>Am</td><td>La2</td><td>Mi3</td></tr>
+            <tr><td>3</td><td>F</td><td>Fa2</td><td>Do3</td></tr>
+            <tr><td>4</td><td>G</td><td>Sol2</td><td>Re3</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Por qué funciona.</strong> El bombo sigue marcando 1 y 3, así que los ataques no cambian. Lo único nuevo son las notas, y es suficiente para que el bajo tenga movimiento sin cargar el acompañamiento. La quinta es una nota «segura»: suena bien sobre casi cualquier acorde mayor o menor.</p>
+      <p><strong>Cómo practicarlo.</strong> Izquierda sola con metrónomo hasta que los saltos no te cuesten (observa que de la quinta de un acorde a la raíz del siguiente hay saltos de una séptima: es normal).</p>
+      <p><strong>Reto.</strong> Baja la quinta una octava, por debajo de la raíz (Sol2, Mi2, Do2 y Re2 en los cuatro compases), y escucha cómo cambia el color del bajo.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">2.4</span> Séptimas con tres notas (paquete B)</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 80 · <strong>Compás:</strong> 4/4</p>
+      <p>Mismo ritmo que en 2.1. Ahora los acordes llevan séptima, pero la mano derecha toca <strong>solo tres notas</strong> y deja la fundamental a la mano izquierda:</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th>MI (1 y 3)</th><th>MD (2 y 4)</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Cmaj7</td><td>Do3</td><td>Mi4-Sol4-Si4</td></tr>
+            <tr><td>2</td><td>Am7</td><td>La2</td><td>Mi4-Sol4-Do5</td></tr>
+            <tr><td>3</td><td>Fmaj7</td><td>Fa2</td><td>Mi4-La4-Do5</td></tr>
+            <tr><td>4</td><td>G7</td><td>Sol2</td><td>Fa4-Si4-Re5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Por qué funciona.</strong> Una séptima completa tiene cuatro notas y en una sola mano suena espesa. Si repartes (la raíz abajo, tres notas arriba), el acorde queda claro y la mano derecha casi no se mueve. De Cmaj7 a Am7 solo cambia una nota; de Am7 a Fmaj7, otra.</p>
+      <p><strong>Cómo practicarlo.</strong> Compara cada acorde con su versión de tríada (2.2). La séptima añade una nota de color, no cambia el carácter.</p>
+      <h4>Reto: versión de dos notas</h4>
+      <p>Quita la nota central y deja solo tercera y séptima:</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Acorde</th><th>MD (dos notas)</th></tr></thead>
+          <tbody>
+            <tr><td>Cmaj7</td><td>Mi4-Si4</td></tr>
+            <tr><td>Am7</td><td>Sol4-Do5</td></tr>
+            <tr><td>Fmaj7</td><td>Mi4-La4</td></tr>
+            <tr><td>G7</td><td>Fa4-Si4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>¿Sigue sonando como el mismo acorde? Normalmente sí, porque la tercera y la séptima son las notas que más lo definen.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">2.5</span> Del hi-hat al arpegio</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 76 · <strong>Compás:</strong> 4/4</p>
+      <p>Este es el acompañamiento de balada de piano más reconocible: en lugar de dar acordes en 2 y 4, la derecha toca un arpegio en corcheas que sustituye al hi-hat.</p>
+      <p><strong>Batería:</strong> el patrón del ejemplo 1.1.</p>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          a b c b a b c b
+MI          r . . . r . . .</pre></div>
+      <p>Leyenda: con el paquete A, <span class="kbd">a</span> = nota grave del acorde, <span class="kbd">b</span> = nota central, <span class="kbd">c</span> = nota superior; <span class="kbd">r</span> = raíz del bajo.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th><span class="kbd">a</span></th><th><span class="kbd">b</span></th><th><span class="kbd">c</span></th><th><span class="kbd">r</span></th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>C</td><td>Do4</td><td>Mi4</td><td>Sol4</td><td>Do3</td></tr>
+            <tr><td>2</td><td>Am</td><td>Do4</td><td>Mi4</td><td>La4</td><td>La2</td></tr>
+            <tr><td>3</td><td>F</td><td>Do4</td><td>Fa4</td><td>La4</td><td>Fa2</td></tr>
+            <tr><td>4</td><td>G</td><td>Si3</td><td>Re4</td><td>Sol4</td><td>Sol2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Por qué funciona.</strong> El hi-hat (corcheas) se ha convertido en el movimiento de la derecha. La caja de 2 y 4 sigue presente: es el momento en que cae la nota <span class="kbd">c</span>, la más alta del arpegio. Dale un poco más de peso a esas notas y el patrón original reaparece sin que toques un solo acorde en bloque.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Arpegio de un compás con la derecha sola, a 50, hasta que sea automático: <em>abajo, medio, arriba, medio</em>, dos veces.</li>
+        <li>Añade la izquierda. Los ataques de la izquierda caen en las notas <span class="kbd">a</span>.</li>
+        <li>Acentúa suavemente <span class="kbd">c</span>.</li>
+      </ol>
+      <p><strong>Reto.</strong> Mantén el pedal derecho y cámbialo en el tiempo 1 de cada compás. Si el pedal arrastra el acorde anterior, suéltalo un instante antes del cambio.</p>
+      <p><strong>Pasas al nivel 3 si:</strong> puedes tocar C - Am - F - G con cada uno de los cinco ejemplos sin detenerte a 60 negras.</p>
+    </div>
+  </details>
+
+  <h2>Nivel 3 · Síncopa y anticipación</h2>
+  <p>El piano deja de seguir al pie de la letra los golpes de la caja. Ahora aparecen ataques en «y» y acordes que llegan antes de tiempo.</p>
+
+  <details class="ex">
+    <summary><span class="exn">3.1</span> Anticipar el cambio de acorde</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 80 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C (compás 1) y F (compás 2)</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . . . x . . x
+Caja        . . x . . . x .
+Hi-hat      x x x x x x x x</pre></div>
+      <p>El bombo cae en 1, 3 y en el «y» de 4. Este último golpe empuja hacia el compás siguiente.</p>
+      <h4>Piano sin anticipación (el acorde cambia en el 1 del compás 2)</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y
+MD          . . C . . . C . | . . F . . . F .
+MI          c . . . c . . . | f . . . f . . .</pre></div>
+      <h4>Piano con anticipación (el acorde cambia en el «y» de 4)</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y
+MD          . . C . . . . F | - - F . . . F .
+MI          c . . . c . . f | - - - - f . . .</pre></div>
+      <p>Leyenda: <span class="kbd">C</span> = Do4-Mi4-Sol4; <span class="kbd">F</span> = Do4-Fa4-La4; <span class="kbd">c</span> = Do3; <span class="kbd">f</span> = Fa2. Un guion (<span class="kbd">-</span>) es una nota que sigue sonando.</p>
+      <p><strong>Por qué funciona.</strong> El bombo del «y» de 4 es lo que justifica adelantar el cambio: el piano lo sigue y la progresión «cae» en el compás siguiente con más impulso. El tiempo 1 del compás 2 pierde su ataque (el acorde ya sonaba) y esa ausencia es lo que se siente como empuje. El pulso no se ha movido.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Cuenta «cuatro-y» con claridad. El «y» de 4 cae antes del 1, no con él.</li>
+        <li>Toca primero la versión sin anticipación y después la que anticipa, y escucha la diferencia.</li>
+      </ol>
+      <p><strong>Reto.</strong> Anticipa solo el bajo (Fa2 en el «y» de 4) y deja el acorde de la derecha para el 1. ¿Qué efecto tiene?</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">3.2</span> Un acorde en el «y» del segundo bombo</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 80 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . . x x . . .
+Caja        . . x . . . x .
+Hi-hat      x x x x x x x x</pre></div>
+      <p>Aquí el bombo toca en 1, en el «y» de 2 y en 3.</p>
+      <h4>Piano, versión A: traducción literal</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . A . . . A .
+MI          b . . b b . . .</pre></div>
+      <p>La izquierda sigue los tres golpes de bombo y la derecha sigue la caja.</p>
+      <h4>Piano, versión B: el acorde se desplaza</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . . A . . A .
+MI          b . . . b . . .</pre></div>
+      <p>Leyenda: <span class="kbd">A</span> = Do4-Mi4-Sol4; <span class="kbd">b</span> = Do3.</p>
+      <p><strong>Por qué funciona.</strong> En la versión A, cada mano tiene su trabajo. En la B, el acorde del 2 se mueve al «y», donde cae el bombo extra. El tiempo 2 se queda vacío y el acorde llega medio tiempo después de lo esperado. Suena más impulsivo, y quizás pierda algo del peso del 2. Esa tensión es justo lo que estás aprendiendo a manejar.</p>
+      <p><strong>Cómo practicarlo.</strong> Cuenta en voz alta: «uno... y... dos-y». Toca la versión A hasta que sea cómoda y después cámbiala a B.</p>
+      <p><strong>Reto.</strong> En la versión B, mueve también el acorde del 4 al «y» de 3 (que ya no tiene bombo). ¿Aguanta el patrón o se vuelve confuso?</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">3.3</span> Disco: cuatro bombos y acordes en el contratiempo</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 80 a 120 (empieza a 80) · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C - Am - F - G</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . x . x . x .
+Caja        . . x . . . x .
+Hi-hat      . o . o . o . o</pre></div>
+      <p>El bombo cae en los cuatro pulsos («cuatro al suelo») y el hi-hat abierto cae en todos los «y».</p>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . A . A . A . A
+MI          b . b . b . b .</pre></div>
+      <p>Leyenda: <span class="kbd">A</span> = acorde del paquete A (Do4-Mi4-Sol4, Do4-Mi4-La4, Do4-Fa4-La4, Si3-Re4-Sol4 según el compás); <span class="kbd">b</span> = raíz del bajo (Do3, La2, Fa2, Sol2), corta y seca.</p>
+      <p><strong>Por qué funciona.</strong> El patrón se reparte en dos capas que se alternan: el bajo en los pulsos (el bombo) y los acordes en los «y» (el hi-hat abierto). Nunca coinciden. El hueco que queda entre bajo y acorde es lo que hace que se oiga bailable. Si pones un acorde sobre cada pulso, el efecto desaparece.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Solo el bajo, contando «1 y 2 y 3 y 4 y» y tocando solo cuando dices el número.</li>
+        <li>Solo los acordes, cuando dices «y».</li>
+        <li>Juntos, a 80. Sube de 4 en 4 hasta 110.</li>
+      </ol>
+      <p><strong>Reto.</strong> Pasa el bajo a octavas (Do2 + Do3) y acorta los acordes aún más. ¿Notas el ritmo más «de pista de baile»?</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">3.4</span> Reggae: el primer tiempo vacío</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 80 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C - F - C - G (un acorde por compás)</p>
+      <h4>Batería (one drop)</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       . . . . x . . .
+Aro/caja    . . . . x . . .
+Hi-hat      x x x x x x x x</pre></div>
+      <p>El bombo y la caja (o el aro, que suena más seco) golpean juntos en el 3. El tiempo 1 se deja vacío. En muchos materiales de estilo, este patrón se llama <em>one drop</em>.</p>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . S . S . S . S
+MI          . . . . b . . .</pre></div>
+      <p>Leyenda: <span class="kbd">S</span> = acorde corto y seco; <span class="kbd">b</span> = bajo en el 3.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th>MD (<span class="kbd">S</span>)</th><th>MI (<span class="kbd">b</span>)</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>C</td><td>Do4-Mi4-Sol4</td><td>Do3</td></tr>
+            <tr><td>2</td><td>F</td><td>Do4-Fa4-La4</td><td>Fa2</td></tr>
+            <tr><td>3</td><td>C</td><td>Do4-Mi4-Sol4</td><td>Do3</td></tr>
+            <tr><td>4</td><td>G</td><td>Si3-Re4-Sol4</td><td>Sol2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Por qué funciona.</strong> El peso del compás pasa al 3, donde está el golpe de bombo y caja juntos. Los acordes caen sobre todos los «y» (lo que en reggae se llama <em>skank</em>, un acorde corto en el contratiempo). Al dejar vacío el tiempo 1, el patrón queda suspendido.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Cuenta «1 y 2 y 3 y 4 y» muy lento. Solo tocas cuando dices «y».</li>
+        <li>Haz el acorde muy corto: sonar y soltar enseguida.</li>
+        <li>Añade el bajo solo en el 3.</li>
+      </ol>
+      <p><strong>Reto.</strong> Añade una nota de bajo en el «y» de 4 que anticipe la raíz del compás siguiente. El patrón se vuelve más reggae y menos escolar.</p>
+      <p><strong>Pasas al nivel 4 si:</strong> puedes tocar los cuatro ejemplos a 60 sin perder el pulso. Sigue contando en voz alta hasta que los ataques en «y» salgan solos.</p>
+    </div>
+  </details>
+
+  <h2>Nivel 4 · Compases compuestos y tresillos</h2>
+  <p>Hasta aquí cada pulso se dividía en dos. Ahora se divide en tres. Es un cambio de sensación más que de dificultad técnica: la cuenta pasa a ser <strong>«1 la li, 2 la li...»</strong> y los ataques caen en una rejilla distinta.</p>
+
+  <details class="ex">
+    <summary><span class="exn">4.1</span> Balada en 6/8</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 50 a 66 (negra con puntillo, dos pulsos por compás) · <strong>Compás:</strong> 6/8 · <strong>Armonía:</strong> C - Am - F - G</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1  la li 2  la li
+Bombo       x  .  .  .  .  .
+Caja        .  .  .  x  .  .
+Hi-hat      x  x  x  x  x  x</pre></div>
+      <p>En 6/8 hay dos grupos de tres corcheas. El bombo cae al inicio del primer grupo y la caja al inicio del segundo.</p>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1  la li 2  la li
+MD          a  b  c  d  c  b
+MI          r  .  .  .  .  .</pre></div>
+      <p>Leyenda: la derecha toca un arpegio de seis notas, <em>raíz - tercera - quinta - octava - quinta - tercera</em>; <span class="kbd">r</span> es la raíz del bajo.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th><span class="kbd">a</span></th><th><span class="kbd">b</span></th><th><span class="kbd">c</span></th><th><span class="kbd">d</span></th><th><span class="kbd">r</span></th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>C</td><td>Do4</td><td>Mi4</td><td>Sol4</td><td>Do5</td><td>Do3</td></tr>
+            <tr><td>2</td><td>Am</td><td>La3</td><td>Do4</td><td>Mi4</td><td>La4</td><td>La2</td></tr>
+            <tr><td>3</td><td>F</td><td>Fa3</td><td>La3</td><td>Do4</td><td>Fa4</td><td>Fa2</td></tr>
+            <tr><td>4</td><td>G</td><td>Sol3</td><td>Si3</td><td>Re4</td><td>Sol4</td><td>Sol2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Por qué funciona.</strong> Los seis hi-hat son las seis notas del arpegio. La nota más alta (<span class="kbd">d</span>) cae justo donde está la caja, en el segundo grupo de tres, así que el acento del patrón original queda marcado sin necesidad de tocar un acorde en bloque.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Cuenta «uno-la-li dos-la-li» con el metrónomo marcando solo los dos pulsos.</li>
+        <li>Derecha sola, un acorde (un compás) a 50, hasta que los seis ataques salgan iguales.</li>
+        <li>Añade la izquierda en el 1.</li>
+        <li>Encadena los cuatro acordes.</li>
+      </ol>
+      <p><strong>Reto.</strong> Añade una nota de bajo en el segundo grupo (Sol2 en el compás de C, que es la quinta). El bajo respalda ahora la caja, además del bombo.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">4.2</span> Balada de tresillos en 12/8</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 50 a 60 (negra con puntillo, cuatro pulsos por compás) · <strong>Compás:</strong> 12/8 · <strong>Armonía:</strong> C</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1  la li 2  la li 3  la li 4  la li
+Bombo       x  .  .  .  .  .  x  .  .  .  .  .
+Caja        .  .  .  x  .  .  .  .  .  x  .  .
+Hi-hat      x  x  x  x  x  x  x  x  x  x  x  x</pre></div>
+      <p>Doce corcheas por compás: cuatro pulsos divididos en tres. El bombo cae en 1 y 3, la caja en 2 y 4.</p>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1  la li 2  la li 3  la li 4  la li
+MD          a  a  a  A  a  a  a  a  a  A  a  a
+MI          b  .  .  .  .  .  b  .  .  .  .  .</pre></div>
+      <p>Leyenda: <span class="kbd">a</span> = acorde suave (Do4-Mi4-Sol4); <span class="kbd">A</span> = el mismo acorde con acento; <span class="kbd">b</span> = Do3.</p>
+      <p><strong>Por qué funciona.</strong> Es una textura muy habitual en las baladas lentas en 12/8: la mano derecha repite el acorde doce veces por compás, como un hi-hat hecho con acordes, y los acentos de 2 y 4 hacen de caja. El bajo de 1 y 3 sigue al bombo.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Derecha sola, a 50, con los doce acordes iguales de suaves. Es más difícil de lo que parece: lo importante es que ninguno se oiga más fuerte por accidente.</li>
+        <li>Añade el acento en 2 y 4.</li>
+        <li>Añade la izquierda.</li>
+      </ol>
+      <p><strong>Reto.</strong> Alivia la derecha: en las posiciones sin acento toca solo Mi4-Sol4 (dos notas) y deja el acorde completo para los acentos. ¿Mejora la claridad?</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">4.3</span> Shuffle de blues</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 70 a 90 (negra) · <strong>Compás:</strong> 4/4 con sensación de tresillo · <strong>Armonía:</strong> C7</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1  la li 2  la li 3  la li 4  la li
+Bombo       x  .  .  .  .  .  x  .  .  .  .  .
+Caja        .  .  .  x  .  .  .  .  .  x  .  .
+Hi-hat      x  .  x  x  .  x  x  .  x  x  .  x</pre></div>
+      <p>El hi-hat toca solo el primer y el tercer tresillo de cada pulso («uno... li, dos... li»). Esa sensación de «largo-corto» es lo que se llama <em>shuffle</em> o swing.</p>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1  la li 2  la li 3  la li 4  la li
+MD          .  .  .  C  .  .  .  .  .  C  .  .
+MI          c  .  g  c  .  a  c  .  b  c  .  a</pre></div>
+      <p>Leyenda: <span class="kbd">C</span> = Mi4-Sol4-Si♭4 (un C7 sin la fundamental); <span class="kbd">c</span> = Do3; <span class="kbd">g</span> = Sol3; <span class="kbd">a</span> = La3; <span class="kbd">b</span> = Si♭3.</p>
+      <p><strong>Por qué funciona.</strong> La izquierda toca la raíz en cada pulso y, en el tercer tresillo, una nota que va cambiando: quinta, sexta, séptima menor, sexta (<em>Sol, La, Si♭, La</em>). Es un patrón de bajo de shuffle muy habitual en el blues. La derecha da el acorde en 2 y 4, donde está la caja.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Izquierda sola, a 70. Cuenta «uno-la-li» y toca en el «uno» y en el «li».</li>
+        <li>El segundo golpe de cada pareja llega tarde, a dos tercios del pulso, no a la mitad. Si lo tocas recto, pierdes el shuffle.</li>
+        <li>Añade la derecha.</li>
+      </ol>
+      <h4>Reto: blues de 12 compases</h4>
+      <p>Usa el patrón en las tres posiciones del blues. Cada compás repite el patrón completo; solo cambian las notas:</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Acorde</th><th>Bajo (<span class="kbd">c</span>, <span class="kbd">g</span>, <span class="kbd">a</span>, <span class="kbd">b</span>)</th><th>MD</th></tr></thead>
+          <tbody>
+            <tr><td>C7</td><td>Do3, Sol3, La3, Si♭3</td><td>Mi4-Sol4-Si♭4</td></tr>
+            <tr><td>F7</td><td>Fa2, Do3, Re3, Mi♭3</td><td>La3-Do4-Mi♭4</td></tr>
+            <tr><td>G7</td><td>Sol2, Re3, Mi3, Fa3</td><td>Si3-Re4-Fa4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Orden: C7 C7 C7 C7 | F7 F7 C7 C7 | G7 F7 C7 C7.</p>
+      <p><strong>Pasas al nivel 5 si:</strong> cuentas «uno-la-li» sin pensar y sientes la diferencia entre un 6/8, un 12/8 y un shuffle.</p>
+    </div>
+  </details>
+
+  <h2>Nivel 5 · Semicorcheas y patrones de clave</h2>
+  <p>Aquí los ataques caen en posiciones más finas del compás. Tocar menos notas, bien colocadas, vale más que tocar muchas.</p>
+
+  <details class="ex">
+    <summary><span class="exn">5.1</span> Funk de semicorcheas</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 70 a 90 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C (o C7)</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1 e y a 2 e y a 3 e y a 4 e y a
+Hi-hat      x x x x x x x x x x x x x x x x
+Caja        . . . . x . . . . . . . x . . .
+Bombo       x . . . . . x . . . x . . . . .</pre></div>
+      <p>El bombo cae en 1, en el «y» de 2 y en el «y» de 3. La caja, en 2 y 4. El hi-hat corre en semicorcheas.</p>
+      <h4>Piano, versión A: bombo y caja</h4>
+      <div class="code"><pre>Cuenta      1 e y a 2 e y a 3 e y a 4 e y a
+MD          . . . . S . . . . . . . S . . .
+MI          c . . . . . c . . . c . . . . .</pre></div>
+      <h4>Piano, versión B: con acordes fantasma en los «a»</h4>
+      <div class="code"><pre>Cuenta      1 e y a 2 e y a 3 e y a 4 e y a
+MD          . . . . S . . s . . . . S . . s
+MI          c . . . . . c . . . c . . . . .</pre></div>
+      <h4>Piano, versión C: un fantasma más</h4>
+      <div class="code"><pre>Cuenta      1 e y a 2 e y a 3 e y a 4 e y a
+MD          . . . . S . . s . g . . S . . s
+MI          c . . . . . c . . . c . . . . .</pre></div>
+      <p>Leyenda: <span class="kbd">S</span> = acorde seco y corto (Do4-Mi4-Sol4); <span class="kbd">s</span> = solo Mi4-Sol4, muy suave y muy corto; <span class="kbd">g</span> = Sol4 muy suave (nota fantasma); <span class="kbd">c</span> = Do3 seco.</p>
+      <p><strong>Por qué funciona.</strong> El hi-hat de semicorcheas no se toca: es el reloj que llevas dentro. La izquierda toma los tres bombos y la derecha, la caja. Las notas fantasma de la versión B y C imitan los golpes suaves de la batería en las semicorcheas sin pisar a los acentos. Lo que hace funk al patrón es el <strong>silencio</strong>: notas cortas, secas, sin pedal.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Cuenta «1 e y a 2 e y a» a 50.</li>
+        <li>Versión A con las manos separadas y después juntas.</li>
+        <li>Cuando sea estable, pasa a la B. No pases a la C hasta que la B salga sola.</li>
+      </ol>
+      <p><strong>Reto.</strong> Cambia el acorde <span class="kbd">S</span> por Mi4-Sol4-Si♭4 (C7). El ritmo es idéntico, pero el color cambia mucho.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">5.2</span> Bossa nova con clave 3-2</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 70 a 100 (negra) · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> Dm7 - G7 - Cmaj7 - Cmaj7</p>
+      <h4>Batería (dos compases)</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y
+Bombo       x . . x x . . x | x . . x x . . x
+Aro (clave) x . . x . . x . | . . x . x . . .
+Hi-hat      x x x x x x x x | x x x x x x x x</pre></div>
+      <p>La bossa nova tiene tres partes. El <strong>bombo</strong> hace de surdo (golpes en 1, «y» de 2, 3 y «y» de 4). El <strong>aro de la caja</strong> toca la clave, un patrón de cinco golpes en dos compases: tres en el primero (1, «y» de 2 y 4) y dos en el segundo (2 y 3). Por eso se llama clave <strong>3-2</strong>. El <strong>hi-hat</strong> toca corcheas, como un shaker.</p>
+      <h4>Piano (cuatro compases)</h4>
+      <div class="code"><pre>Compás      1 (Dm7)         | 2 (G7)          | 3 (Cmaj7)       | 4 (Cmaj7)
+Cuenta      1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y
+MD          A . . A . . A . | . . A . A . . . | A . . A . . A . | . . A . A . . .
+MI          r . . q r . . q | r . . q r . . q | r . . q r . . q | r . . q r . . q</pre></div>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th>MD (<span class="kbd">A</span>)</th><th><span class="kbd">r</span> (raíz)</th><th><span class="kbd">q</span> (quinta)</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Dm7</td><td>La3-Do4-Fa4</td><td>Re2</td><td>La2</td></tr>
+            <tr><td>2</td><td>G7</td><td>Si3-Re4-Fa4</td><td>Sol2</td><td>Re3</td></tr>
+            <tr><td>3 y 4</td><td>Cmaj7</td><td>Si3-Mi4-Sol4</td><td>Do3</td><td>Sol2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Por qué funciona.</strong> La mano izquierda sigue el bombo (surdo) con raíz y quinta. La derecha sigue la clave del aro. El hi-hat se queda fuera. Y las voces de la derecha casi no se mueven: de Dm7 a G7 solo suben dos notas un grado (La→Si, Do→Re), y de G7 a Cmaj7 igual (Re→Mi, Fa→Sol). Es un ii - V - I de manual.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Da palmadas solo la clave durante cuatro compases, contando «1 y 2 y 3 y 4 y». Primero con la mano derecha, después con la izquierda llevando el bombo.</li>
+        <li>Toca solo el bajo.</li>
+        <li>Toca solo los acordes de la clave, a 70.</li>
+        <li>Junta las dos manos.</li>
+      </ol>
+      <p><strong>Reto.</strong> Invierte la clave a <strong>2-3</strong>: empieza por el compás de dos golpes (2 y 3) y sigue con el de tres. Es una variante habitual y obliga a escuchar dónde empieza cada ciclo.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">5.3</span> Hi-hat de semicorcheas convertido en ostinato</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 50 a 66 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C - Am - F - G</p>
+      <h4>Batería</h4>
+      <div class="code"><pre>Cuenta      1 e y a 2 e y a 3 e y a 4 e y a
+Bombo       x . . . . . . . x . . . . . . .
+Caja        . . . . x . . . . . . . x . . .
+Hi-hat      x x x x x x x x x x x x x x x x</pre></div>
+      <h4>Piano</h4>
+      <div class="code"><pre>Cuenta      1 e y a 2 e y a 3 e y a 4 e y a
+MD          a c b c a c b c a c b c a c b c
+MI          r . . . . . . . r . . . . . . .</pre></div>
+      <p>Leyenda: con el paquete A, <span class="kbd">a</span> = nota grave del acorde, <span class="kbd">b</span> = nota central, <span class="kbd">c</span> = nota superior; <span class="kbd">r</span> = raíz del bajo.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th><span class="kbd">a</span></th><th><span class="kbd">b</span></th><th><span class="kbd">c</span></th><th><span class="kbd">r</span></th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>C</td><td>Do4</td><td>Mi4</td><td>Sol4</td><td>Do3</td></tr>
+            <tr><td>2</td><td>Am</td><td>Do4</td><td>Mi4</td><td>La4</td><td>La2</td></tr>
+            <tr><td>3</td><td>F</td><td>Do4</td><td>Fa4</td><td>La4</td><td>Fa2</td></tr>
+            <tr><td>4</td><td>G</td><td>Si3</td><td>Re4</td><td>Sol4</td><td>Sol2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Por qué funciona.</strong> Las dieciséis semicorcheas del hi-hat se convierten en un ostinato de la derecha con la figura <em>abajo - arriba - medio - arriba</em>, el mismo diseño que el bajo de Alberti de la música clásica. La caja de 2 y 4 queda marcada por un pequeño acento en la nota grave (<span class="kbd">a</span>) que abre cada uno de esos pulsos.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Un solo acorde (compás 1) a 50, derecha sola, hasta que los dieciséis ataques salgan igual de suaves.</li>
+        <li>Añade la izquierda.</li>
+        <li>Cambia de acorde cada compás sin pausas.</li>
+      </ol>
+      <p><strong>Reto.</strong> Pasa el ostinato a corcheas (la figura <em>a b c b</em> una vez por tiempo, ocho notas por compás) y compara el resultado con el ejemplo 2.5.</p>
+      <p><strong>Pasas al nivel 6 si:</strong> puedes tocar los tres ejemplos del nivel con los silencios en su sitio y sin que se acelere el tempo.</p>
+    </div>
+  </details>
+
+  <h2>Nivel 6 · Rellenos, forma y estilos</h2>
+  <p>Hasta aquí has traducido compases. Ahora tomas decisiones de arreglo: qué hacer en un relleno, cómo organizar ocho compases y cómo cambiar de estilo sin cambiar de patrón.</p>
+
+  <details class="ex">
+    <summary><span class="exn">6.1</span> Convertir un relleno de batería en una frase de piano</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 60 a 80 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> compás 4 de C - Am - F - G (acorde de G) y llegada a C</p>
+      <h4>Batería (compás 4 y primer tiempo del compás 5)</h4>
+      <div class="code"><pre>Cuenta      1 e y a 2 e y a 3 e y a 4 e y a | 1
+Hi-hat      x . x . x . x . x . x . . . . . | .
+Caja        . . . . x . . . . . . . x x . . | .
+Tom alto    . . . . . . . . . . . . . . x . | .
+Tom grave   . . . . . . . . . . . . . . . x | .
+Bombo       x . . . . . . . x . . . . . . . | x
+Crash       . . . . . . . . . . . . . . . . | x</pre></div>
+      <p>El relleno ocupa el cuarto tiempo: caja en el 4 y en la «e», tom agudo en el «y», tom grave en la «a». Después llega el crash con el bombo en el 1 del compás siguiente.</p>
+      <h4>Piano: tres respuestas</h4>
+      <div class="code"><pre>Cuenta      1 e y a 2 e y a 3 e y a 4 e y a | 1
+MD (A y B)  . . . . G . . . . . . . p q r s | C
+MD (C)      . . . . G . . . . . . . . . . . | C
+MI          g . . . . . . . g . . . . . . . | c</pre></div>
+      <p>Leyenda general: <span class="kbd">G</span> = Si3-Re4-Sol4; <span class="kbd">C</span> = Mi4-Sol4-Do5 (el acorde del crash, más abierto que los anteriores); <span class="kbd">g</span> = Sol2; <span class="kbd">c</span> = Do2 + Do3 (el bajo en octava, para el crash).</p>
+      <ul>
+        <li><strong>Opción A: escala.</strong> <span class="kbd">p q r s</span> = Fa4, Sol4, La4, Si4. Cuatro semicorcheas que suben hasta la sensible; el Do5 llega en el crash.</li>
+        <li><strong>Opción B: arpegio.</strong> <span class="kbd">p q r s</span> = Sol3, Si3, Re4, Sol4. Un arpegio de G; la nota final (Sol4) también está en el acorde de C.</li>
+        <li><strong>Opción C: silencio.</strong> No tocas nada en el cuarto tiempo. El acorde del crash cae entonces con más peso.</li>
+      </ul>
+      <p><strong>Por qué funciona.</strong> El relleno tiene cuatro golpes y las opciones A y B tienen cuatro notas: lo que copias es <strong>cuántos ataques hay y dónde caen</strong>, no el timbre ni la dirección (la batería baja de agudo a grave, el piano sube). El crash pide un acorde más amplio, por eso <span class="kbd">C</span> es Mi4-Sol4-Do5 y el bajo se pone en octava.</p>
+      <h4>Cómo practicarlo</h4>
+      <ol>
+        <li>Toca solo el cuarto tiempo: cuatro semicorcheas, contando «cuatro-e-y-a», a 50.</li>
+        <li>Añade el acorde de llegada.</li>
+        <li>Toca los cuatro compases completos con la opción que prefieras.</li>
+      </ol>
+      <p><strong>Reto.</strong> Reduce el relleno a dos notas (en el «y» y la «a») y compara. A veces menos funciona mejor.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">6.2</span> Ocho compases completos</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 66 a 80 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C - Am - F - G, dos veces</p>
+      <p>Este ejemplo reúne casi todo lo anterior en una frase de ocho compases con principio, desarrollo, clímax y cierre. La batería es el patrón del ejemplo 1.1 durante toda la frase; el relleno de 6.1 aparece en el compás 8.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th>Qué haces</th><th>MI</th><th>MD</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>C</td><td>Módulo 1.1: bajo en 1 y 3, acorde en 2 y 4</td><td>Do3</td><td>Do4-Mi4-Sol4</td></tr>
+            <tr><td>2</td><td>Am</td><td>Igual</td><td>La2</td><td>Do4-Mi4-La4</td></tr>
+            <tr><td>3</td><td>F</td><td>Módulo 1.2: añade el hi-hat como nota repetida (<span class="kbd">n</span> = La4)</td><td>Fa2</td><td>Do4-Fa4-La4</td></tr>
+            <tr><td>4</td><td>G</td><td>Igual con <span class="kbd">n</span> = Sol4; el acorde del 4 se sustituye por C en el «y» de 4 (anticipación, ejemplo 3.1)</td><td>Sol2 y Do3 en el «y» de 4</td><td>Si3-Re4-Sol4 y luego Do4-Mi4-Sol4</td></tr>
+            <tr><td>5</td><td>C</td><td>Sube la energía: arpegio del ejemplo 2.5 y bajo raíz-quinta (2.3)</td><td>Do3 / Sol3</td><td>Do4-Mi4-Sol4-Mi4 (dos veces)</td></tr>
+            <tr><td>6</td><td>Am</td><td>Igual</td><td>La2 / Mi3</td><td>Do4-Mi4-La4-Mi4 (dos veces)</td></tr>
+            <tr><td>7</td><td>F</td><td>Igual con la mano derecha una octava más arriba</td><td>Fa2 / Do3</td><td>Do5-Fa5-La5-Fa5 (dos veces)</td></tr>
+            <tr><td>8</td><td>G</td><td>Baja la densidad: acorde de G en el 2 y el relleno de la opción A de 6.1 en el 4</td><td>Sol2 / Re3</td><td>G en el 2; Fa4-Sol4-La4-Si4 en el 4</td></tr>
+            <tr><td>9</td><td>C</td><td>Llegada: acorde largo con pedal</td><td>Do2 + Do3</td><td>Mi4-Sol4-Do5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>La curva de energía se ve así, contando los ataques de la mano derecha en cada compás:</p>
+      <div class="code"><pre>Compás           1  2  3  4  5  6  7  8  9
+Ataques de MD    2  2  8  7  8  8  8  5  1</pre></div>
+      <p><strong>Por qué funciona.</strong> Cada pareja de compases hace una cosa. Los compases 1-2 presentan el patrón con muy poco. Los compases 3-4 añaden movimiento en la derecha y terminan con una anticipación que empuja hacia el 5. Los compases 5-7 llevan la energía arriba con arpegios, bajo con movimiento y un registro más agudo. El compás 8 la retira justo antes del cierre, que es lo que hace sentir una llegada.</p>
+      <p><strong>Cómo practicarlo.</strong> Toca por parejas de compases, de la 1-2 a la 7-8, y no los unas hasta que cada pareja salga bien. Graba los ocho compases y escucha si se oye una frase o una lista de ideas.</p>
+      <p><strong>Reto.</strong> Escribe tu propia versión de los compases 5 a 8 con otra estrategia (por ejemplo, subir la energía con acordes sostenidos en vez de arpegios) y compara.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">6.3</span> Un patrón, tres estilos</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> según el estilo · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> C - Am - F - G</p>
+      <p>Partimos del mismo patrón (ejemplo 1.1: bombo en 1 y 3, caja en 2 y 4, hi-hat en corcheas) y lo tratamos de tres maneras. Se conservan los ataques del bombo y de la caja; cambian las notas, el registro, la articulación y la densidad.</p>
+
+      <h4>Versión pop (negra = 100)</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          n n A n n n A n
+MI          r . . . q . . .</pre></div>
+      <p>Paquete A en la derecha (con <span class="kbd">n</span> = nota superior del acorde, suave); bajo con raíz en 1 y quinta en 3 (ejemplo 2.3). Acordes cortos, sin mucho pedal.</p>
+
+      <h4>Versión cinematográfica (negra = 60)</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          A . . . n . . .
+MI          o - - - - - - -</pre></div>
+      <p>Leyenda: <span class="kbd">o</span> = raíz y su octava superior, sostenidas con pedal; <span class="kbd">A</span> = voicing abierto; <span class="kbd">n</span> = nota central del voicing, muy suave.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th><span class="kbd">o</span></th><th><span class="kbd">A</span> (voicing abierto)</th><th><span class="kbd">n</span></th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>C</td><td>Do2 + Do3</td><td>Sol3-Mi4-Do5</td><td>Mi4</td></tr>
+            <tr><td>2</td><td>Am</td><td>La2 + La3</td><td>La3-Mi4-Do5</td><td>Mi4</td></tr>
+            <tr><td>3</td><td>F</td><td>Fa2 + Fa3</td><td>La3-Fa4-Do5</td><td>Fa4</td></tr>
+            <tr><td>4</td><td>G</td><td>Sol2 + Sol3</td><td>Si3-Sol4-Re5</td><td>Sol4</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>El ritmo se queda en un ataque grande por compás: el bombo y la caja se funden en un solo gesto largo.</p>
+
+      <h4>Versión funk/jazz (negra = 90 a 100)</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . S . . . . S
+MI          r . . . q . . .</pre></div>
+      <p>Leyenda: <span class="kbd">S</span> = acorde seco del paquete B (tres notas); el <span class="kbd">S</span> del «y» de 4 es <strong>el acorde del compás siguiente</strong>, anticipado.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compás</th><th>Acorde</th><th><span class="kbd">S</span> en el 2</th><th><span class="kbd">S</span> en el «y» de 4</th><th><span class="kbd">r</span> / <span class="kbd">q</span></th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Cmaj7</td><td>Mi4-Sol4-Si4</td><td>Mi4-Sol4-Do5 (Am7)</td><td>Do3 / Sol3</td></tr>
+            <tr><td>2</td><td>Am7</td><td>Mi4-Sol4-Do5</td><td>Mi4-La4-Do5 (Fmaj7)</td><td>La2 / Mi3</td></tr>
+            <tr><td>3</td><td>Fmaj7</td><td>Mi4-La4-Do5</td><td>Fa4-Si4-Re5 (G7)</td><td>Fa2 / Do3</td></tr>
+            <tr><td>4</td><td>G7</td><td>Fa4-Si4-Re5</td><td>Mi4-Sol4-Si4 (Cmaj7)</td><td>Sol2 / Re3</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Por qué funciona.</strong> En las tres versiones se reconoce el patrón original: el bajo sigue al bombo (1 y 3) y hay un acento donde estaba la caja. Lo que cambia es el carácter. La versión pop llena los huecos con notas suaves; la cinematográfica los deja vacíos; la funk/jazz anticipa el acorde siguiente y añade color con séptimas.</p>
+      <p><strong>Cómo practicarlo.</strong> Toca una versión por sesión. Graba las tres y escúchalas seguidas. Si no se distinguen, exagera las diferencias.</p>
+      <p><strong>Reto.</strong> Crea una cuarta versión: un estilo que elijas tú (balada, rock, latino...) con el mismo patrón. Escribe en qué cambia respecto a las tres anteriores.</p>
+    </div>
+  </details>
+
+  <details class="ex">
+    <summary><span class="exn">6.4</span> Caso completo: de una partitura de dos compases a ocho compases de piano</summary>
+    <div class="body">
+      <p><strong>Tempo:</strong> 72 · <strong>Compás:</strong> 4/4 · <strong>Armonía:</strong> Am - F - C - G</p>
+      <p>Este ejemplo sigue de principio a fin el procedimiento del capítulo 13 con una partitura nueva. Es el que mejor se parece a lo que harás tú con cualquier patrón.</p>
+
+      <h4>Paso 1. La partitura (dos compases)</h4>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y
+Bombo       x . . . x x . . | x . . . x . . x
+Caja        . . x . . . x . | . . x . . . x .
+Hi-hat      x x x x x x x x | x x x x x x x o</pre></div>
+
+      <h4>Paso 2. La ficha de análisis, rellena</h4>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Campo</th><th>Respuesta</th></tr></thead>
+          <tbody>
+            <tr><td>Compás y tempo</td><td>4/4, negra = 72</td></tr>
+            <tr><td>Subdivisión</td><td>corcheas</td></tr>
+            <tr><td>Bombo</td><td>compás 1: 1, 3 y «y» de 3 · compás 2: 1, 3 y «y» de 4</td></tr>
+            <tr><td>Caja</td><td>2 y 4 en los dos compases</td></tr>
+            <tr><td>Hi-hat</td><td>corcheas; el último golpe del compás 2 es abierto</td></tr>
+            <tr><td>Función de la MI</td><td>seguir el bombo</td></tr>
+            <tr><td>Función de la MD</td><td>seguir la caja</td></tr>
+            <tr><td>Armonía elegida</td><td>Am - F - C - G (un acorde por compás, el patrón se repite cada dos compases)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Paso 3. Tres versiones de los dos primeros compases (Am y F)</h4>
+      <p>Con el paquete A: Am = Do4-Mi4-La4; F = Do4-Fa4-La4. Los dos acordes comparten Do4 y La4, así que <span class="kbd">La4</span> sirve de nota superior en ambos.</p>
+      <p><em>Mínima.</em> El bajo se sostiene y la derecha da un solo acorde por compás.</p>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y
+MD          . . . . . . A . | . . . . . . A .
+MI          r - - - - - - - | r - - - - - - -</pre></div>
+      <p><em>Media.</em> El bajo sigue al bombo y la derecha, a la caja.</p>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y
+MD          . . A . . . A . | . . A . . . A .
+MI          r . . . r r . . | r . . . r . . r</pre></div>
+      <p><em>Densa.</em> Se añade el hi-hat como nota repetida (<span class="kbd">n</span> = La4) y el hi-hat abierto final se traduce en que el último acorde queda sonando.</p>
+      <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y
+MD          n n A n n n A n | n n A n n n A -
+MI          r . . . r r . . | r . . . r . . r</pre></div>
+      <p>Leyenda: <span class="kbd">r</span> = La2 en el compás 1 y Fa2 en el compás 2; <span class="kbd">A</span> = acorde del compás; <span class="kbd">n</span> = La4 suave.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Versión</th><th>Ataques en dos compases</th></tr></thead>
+          <tbody>
+            <tr><td>Mínima</td><td>4</td></tr>
+            <tr><td>Media</td><td>10</td></tr>
+            <tr><td>Densa</td><td>21</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Paso 4. Los ocho compases</h4>
+      <p>La progresión completa es Am - F - C - G, así que el patrón de dos compases se repite cuatro veces. Se dosifican las versiones:</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Compases</th><th>Acordes</th><th>Versión</th></tr></thead>
+          <tbody>
+            <tr><td>1-2</td><td>Am, F</td><td>mínima</td></tr>
+            <tr><td>3-4</td><td>C, G</td><td>media (paquete A: Do4-Mi4-Sol4 y Si3-Re4-Sol4)</td></tr>
+            <tr><td>5-6</td><td>Am, F</td><td>densa</td></tr>
+            <tr><td>7-8</td><td>C, G</td><td>media, con el acorde de G sostenido en el compás 8</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Paso 5. Evaluar</h4>
+      <p>Graba y puntúa de 1 a 5 con la tabla del capítulo 17. Elige un único aspecto para mejorar en la sesión siguiente.</p>
+      <p><strong>Reto final del nivel.</strong> Escoge otra partitura de batería de dos compases (de un libro, de un método o de tu propia imaginación) y repite los cinco pasos con una progresión propia.</p>
+      <p><strong>Terminas la escalera cuando:</strong> puedes explicar en voz alta por qué has elegido cada decisión en un arreglo y cambiarla a propósito.</p>
+    </div>
+  </details>
+
+  <hr>
+
+  <h2>Parte IV · Práctica</h2>
+
+  <h2>14. Ejercicios de apoyo</h2>
+  <p>Estos ejercicios trabajan habilidades concretas que aparecen una y otra vez en la escalera. Úsalos cuando un ejemplo se te atasque.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>N.º</th><th>Ejercicio</th><th>Qué trabajas</th><th>Criterio de éxito</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Metrónomo en 2 y 4.</strong> Pon el metrónomo para que solo suene en los tiempos 2 y 4 y toca el ejemplo 1.1.</td><td>Sostener el pulso sin el clic en 1 y 3.</td><td>Cuatro compases sin desplazar el 1.</td></tr>
+        <tr><td>2</td><td><strong>Contar y tocar.</strong> Di en voz alta «1 y 2 y 3 y 4 y» mientras tocas cualquier ejemplo.</td><td>Unir cuenta y manos.</td><td>El conteo no se detiene en los cambios de acorde.</td></tr>
+        <tr><td>3</td><td><strong>Manos por capas.</strong> Izquierda dos compases, derecha dos compases, juntas cuatro.</td><td>Aislar la dificultad.</td><td>Las juntas salen sin corregir.</td></tr>
+        <tr><td>4</td><td><strong>Regla de los cuatro puntos.</strong> Sube 4 pulsaciones por minuto tras tres repeticiones perfectas seguidas. Si fallas dos veces, baja 8.</td><td>Subir el tempo con control.</td><td>Llegas al tempo objetivo sin tensión.</td></tr>
+        <tr><td>5</td><td><strong>Compás roto.</strong> Aísla el compás difícil junto con el último tiempo del anterior y repítelo diez veces.</td><td>Resolver el punto débil.</td><td>Diez repeticiones seguidas sin fallo.</td></tr>
+        <tr><td>6</td><td><strong>Palmadas por capas.</strong> Mano izquierda: palmas el bombo. Mano derecha: palmas la caja. Cuenta en voz alta.</td><td>Independencia rítmica sin teclado.</td><td>Dos compases sin perder el pulso.</td></tr>
+        <tr><td>7</td><td><strong>Silencio deliberado.</strong> Omite un ataque cada segundo compás mientras sigues contando.</td><td>Conservar el pulso con huecos.</td><td>El compás siguiente entra a tiempo.</td></tr>
+        <tr><td>8</td><td><strong>Dinámica independiente.</strong> Toca el bajo suave y los acordes más fuertes. Luego al revés.</td><td>Dar protagonismo a una capa.</td><td>Se oye la diferencia al grabar.</td></tr>
+        <tr><td>9</td><td><strong>Bucle de un solo cambio.</strong> Toca solo el cambio C → Am (o F → G) dieciséis veces seguidas a 60.</td><td>Cambiar de acorde sin detenerse.</td><td>Dieciséis cambios sin pausa.</td></tr>
+        <tr><td>10</td><td><strong>Palmas en semicorcheas.</strong> Aplaude el patrón de 16 columnas del ejemplo 5.1 diciendo «1 e y a» a 50.</td><td>Cuenta de semicorcheas.</td><td>Dos compases sin perder el 1.</td></tr>
+        <tr><td>11</td><td><strong>Una cuadrícula, tres articulaciones.</strong> Toca la misma cuadrícula en staccato, tenuto y con pedal.</td><td>Separar ritmo de duración.</td><td>Se oyen tres versiones distintas.</td></tr>
+        <tr><td>12</td><td><strong>Dictado rítmico.</strong> Escucha cuatro compases de una canción con batería y escribe su cuadrícula sin partitura.</td><td>Oído y análisis.</td><td>Tu cuadrícula, al tocarla con palmas, coincide con la grabación.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>15. Plan de ocho semanas y rutina de 30 minutos</h2>
+
+  <h3>15.1. Plan de ocho semanas</h3>
+  <p>Pensado para estudiar cuatro o cinco días por semana, unos 30 minutos. Si una semana se te hace corta, repítela. Una semana de más no es tiempo perdido.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Semana</th><th>Ejemplos</th><th>Objetivo técnico</th><th>Objetivo musical</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>1.1, 1.2, 1.3</td><td>Coordinar bajo y acordes a 60.</td><td>Que se oiga el pulso sin esfuerzo.</td></tr>
+        <tr><td>2</td><td>1.4, 1.5, 2.1</td><td>Tocar con pocos ataques. Contar en 3/4.</td><td>Que el silencio forme parte del groove.</td></tr>
+        <tr><td>3</td><td>2.2, 2.3</td><td>Cambiar de acorde sin detenerte.</td><td>Que la progresión suene conectada.</td></tr>
+        <tr><td>4</td><td>2.4, 2.5, 3.1</td><td>Arpegio de corcheas. Séptimas con tres notas.</td><td>Primera anticipación.</td></tr>
+        <tr><td>5</td><td>3.2, 3.3, 3.4</td><td>Ataques en «y».</td><td>Distinguir disco, reggae y rock con el mismo piano.</td></tr>
+        <tr><td>6</td><td>4.1, 4.2, 4.3</td><td>Sentir la cuenta «1 la li».</td><td>Que el shuffle no suene recto.</td></tr>
+        <tr><td>7</td><td>5.1, 5.2, 5.3</td><td>Semicorcheas y clave 3-2.</td><td>Notas cortas y bien colocadas.</td></tr>
+        <tr><td>8</td><td>6.1 a 6.4 y proyecto final</td><td>Organizar ocho compases.</td><td>Un arreglo propio y grabado.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>15.2. Rutina de 30 minutos</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Minutos</th><th>Qué haces</th></tr></thead>
+      <tbody>
+        <tr><td>0-5</td><td><strong>Lectura y conteo.</strong> Elige un compás, identifica pulso y subdivisión, cuenta en voz alta y marca los ataques con palmadas.</td></tr>
+        <tr><td>5-10</td><td><strong>Bajo.</strong> Toca solo los ataques del bombo con una nota grave, hasta mantener el pulso sin mirarte las manos.</td></tr>
+        <tr><td>10-15</td><td><strong>Acordes.</strong> Añade acordes en algunos ataques de caja. Empieza con tríadas y conserva los silencios. Baja el tempo si se desorganiza.</td></tr>
+        <tr><td>15-20</td><td><strong>Una variación.</strong> Solo una: inversión, nota repetida, anticipación, duración o quitar ataques.</td></tr>
+        <tr><td>20-25</td><td><strong>Armonía.</strong> Aplica el patrón a una progresión de cuatro acordes. Si los cambios te distraen, vuelve a un solo acorde.</td></tr>
+        <tr><td>25-30</td><td><strong>Grabación y evaluación.</strong> Graba cuatro u ocho compases y anota qué salió bien, qué se desajustó y qué cambiarás mañana.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>Regla de la rutina:</strong> en cada sesión, un objetivo técnico y uno musical. Por ejemplo: «mantener estable la mano izquierda» y «que la anticipación suene natural».</p>
+
+  <h2>17. Proyecto final</h2>
+  <p><strong>Reto:</strong> transformar una partitura de batería en una pieza de acompañamiento. Elige una partitura con uno a cuatro compases de patrón principal. Si no tienes ninguna a mano, usa uno de los patrones de la escalera.</p>
+  <ul>
+    <li><strong>Fase A. Análisis.</strong> Rellena la ficha del capítulo 13: compás, tempo, subdivisión, bombo, caja, hi-hat, acentos, silencios y rellenos.</li>
+    <li><strong>Fase B. Primera versión.</strong> Bajo inspirado en el bombo, acordes inspirados en la caja, hi-hat omitido o como nota repetida, y una sola armonía.</li>
+    <li><strong>Fase C. Armonización.</strong> Elige una progresión de cuatro acordes. Mantén el patrón rítmico y comprueba que cada acorde encaje con lo que quieres expresar.</li>
+    <li><strong>Fase D. Tres arreglos.</strong> Mínima (pocos ataques y mucho espacio), media (bajo, acordes y algunos rellenos) y densa (más subdivisiones, síncopas o arpegios). La versión densa no tiene que ser más fuerte, solo más activa.</li>
+    <li><strong>Fase E. Forma.</strong> Extiende el material a ocho compases. Introduce una variación en la segunda mitad y crea un final o una transición.</li>
+    <li><strong>Fase F. Evaluación.</strong> Graba las tres versiones y puntúa cada una de 1 a 5:</li>
+  </ul>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Criterio</th><th>Puntuación</th></tr></thead>
+      <tbody>
+        <tr><td>Pulso estable</td><td></td></tr>
+        <tr><td>Coordinación de manos</td><td></td></tr>
+        <tr><td>Claridad del bajo</td><td></td></tr>
+        <tr><td>Claridad de los acordes</td><td></td></tr>
+        <tr><td>Calidad de la articulación</td><td></td></tr>
+        <tr><td>Interés rítmico</td><td></td></tr>
+        <tr><td>Coherencia armónica</td><td></td></tr>
+        <tr><td>Uso de los silencios</td><td></td></tr>
+        <tr><td>Sensación de frase musical</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>La puntuación no mide tu valor como músico. Es una herramienta para decidir qué mejorar.</p>
+
+  <h2>18. Autoevaluación y soluciones</h2>
+  <p>En música creativa no siempre hay una sola solución correcta. Estas referencias sirven para comprobar la coordinación y el propósito de cada ejercicio, sin imponer una única interpretación.</p>
+
+  <h3>18.1. Solución de la práctica 2A</h3>
+  <p>El patrón descrito es este (coincide con el ejemplo 1.3):</p>
+  <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . . . x x . .
+Caja        . . x . . . x .
+Hi-hat      x x x x x x x x</pre></div>
+
+  <h3>18.2. Comprobaciones rápidas</h3>
+  <ul>
+    <li><strong>Patrón básico (ejemplo 1.1):</strong> izquierda en 1 y 3, derecha en 2 y 4, pulso constante, ningún ataque accidental entre los tiempos principales. Si pierdes la coordinación, toca cada mano por separado.</li>
+    <li><strong>Progresión C - Am - F - G:</strong> las tríadas son Do-Mi-Sol, La-Do-Mi, Fa-La-Do y Sol-Si-Re (o sus inversiones). Lo importante es que las notas correspondan al acorde y que el cambio ocurra donde lo planificaste.</li>
+    <li><strong>Anticipaciones:</strong> si anticipas el F en el «y» de 4 del compás anterior, cuenta bien esa subdivisión. La anticipación cambia el lugar del ataque armónico, no el tempo.</li>
+    <li><strong>Tresillos:</strong> si los dos golpes de cada pareja del shuffle suenan a mitad de camino, estás tocando corcheas rectas. El segundo debe caer a dos tercios del pulso.</li>
+  </ul>
+
+  <h3>18.3. Criterios para pasar de nivel</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Nivel</th><th>Puedes pasar al siguiente cuando...</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Tocas los cinco ejemplos ocho compases seguidos a 60 contando en voz alta.</td></tr>
+        <tr><td>2</td><td>Tocas C - Am - F - G con cada ejemplo sin detenerte entre acordes.</td></tr>
+        <tr><td>3</td><td>Los ataques en «y» salen en su sitio sin acelerar.</td></tr>
+        <tr><td>4</td><td>Distingues y palmeas 6/8, 12/8 y shuffle sin confundirlos.</td></tr>
+        <tr><td>5</td><td>Tus semicorcheas son suaves, cortas y regulares.</td></tr>
+        <tr><td>6</td><td>Puedes explicar cada decisión de tu arreglo y cambiarla a propósito.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>18.4. Lista de autocontrol</h3>
+  <p>Marca cada casilla solo cuando puedas hacerlo de forma consistente. El estado se guarda en tu navegador.</p>
+  <ul class="ck">
+    <li><label><input type="checkbox" data-ck="au1"><span>Mantengo el pulso sin tocar todos los tiempos.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au2"><span>Leo y cuento el patrón sin perder el tiempo 1.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au3"><span>Puedo tocar el bajo por separado.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au4"><span>Puedo tocar los acordes por separado.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au5"><span>Puedo combinar las manos lentamente.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au6"><span>Mantengo los silencios escritos o planificados.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au7"><span>Puedo añadir corcheas sin acelerar.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au8"><span>Puedo cambiar de acorde sin detenerme.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au9"><span>Puedo usar inversiones cercanas.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au10"><span>Puedo anticipar un acorde sin mover el pulso.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au11"><span>Puedo contar un patrón de 6/8 o 12/8.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au12"><span>Puedo tocar tres versiones del mismo patrón con distinta densidad.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au13"><span>Puedo grabarme y detectar al menos un aspecto mejorable.</span></label></li>
+    <li><label><input type="checkbox" data-ck="au14"><span>Puedo explicar qué decisión rítmica o armónica estoy practicando.</span></label></li>
+  </ul>
+</section>
+
+<!-- ============================================================
+     4 · 33 PREGUNTAS (Q&A)
+     ============================================================ -->
+<section class="tabp" id="t4" data-t="33 Preguntas (Q&amp;A)">
+  <h2>33 preguntas y respuestas ordenadas por dificultad</h2>
+  <p class="lead">Esta sección sirve para repasar el método, resolver dudas habituales y comprobar si puedes pasar de leer una partitura de batería a proponer un acompañamiento de piano. Las preguntas van de las más sencillas a las más exigentes. Si quieres usarla como examen, tapa la respuesta y contesta primero con tus palabras.</p>
+
+  <h2>Nivel 1 · Fundamentos (preguntas 1 a 7)</h2>
+
+  <div class="qa">
+    <h3>1. ¿Para qué le sirve una partitura de batería a alguien que toca el piano?</h3>
+    <p>Sirve como modelo rítmico. Muestra dónde caen los golpes, los acentos y los silencios. No dice qué acordes tocar, pero sí te da una estructura temporal que puedes convertir en acompañamiento. Es una forma práctica de estudiar ritmo con patrones reales en vez de inventarlos de memoria.</p>
+  </div>
+
+  <div class="qa">
+    <h3>2. ¿Tengo que tocar todos los golpes escritos para la batería?</h3>
+    <p>No. La partitura es una fuente de ideas, no una orden de copiar cada golpe. Si lo hicieras con las dos manos, el resultado sería demasiado denso o incómodo. Elige los golpes que mejor expresen el patrón: por ejemplo, que el bombo inspire el bajo, la caja un acorde y el hi-hat la subdivisión.</p>
+  </div>
+
+  <div class="qa">
+    <h3>3. ¿Cómo leo una partitura de batería si nunca he visto una?</h3>
+    <p>Cada línea o espacio del pentagrama es un instrumento, no una altura. En la convención más extendida, el bombo va en el espacio de abajo, la caja en el tercer espacio y los platillos (con forma de <span class="kbd">x</span>) por encima del pentagrama; el hi-hat justo sobre la línea superior. Las ediciones varían, así que mira siempre la leyenda. Lee el compás en tres pasadas: solo el bombo, luego la caja y por último el hi-hat. El capítulo 2 lo explica con un ejemplo.</p>
+  </div>
+
+  <div class="qa">
+    <h3>4. ¿Qué es el pulso y por qué debo contar «1 y 2 y 3 y 4 y»?</h3>
+    <p>El pulso es la referencia regular con la que cuentas. Contar las corcheas en voz alta («1 y 2 y 3 y 4 y») te permite colocar ataques que caen entre los pulsos principales. La vista reconoce una figura antes que el cuerpo sabe cuándo tocarla; la cuenta pone ambas cosas de acuerdo. Cuando tengas más soltura puedes dejar de decirla, pero conserva un conteo interno.</p>
+  </div>
+
+  <div class="qa">
+    <h3>5. ¿Qué hago con el bombo?</h3>
+    <p>Normalmente puede inspirar una nota grave en la mano izquierda, a menudo la fundamental del acorde. No es una norma: también sirve una quinta, una nota de paso o una nota pedal. Lo importante es que la parte grave sostenga el pulso y la armonía sin enturbiar el registro. El ejemplo 1.1 lo muestra con una sola nota.</p>
+  </div>
+
+  <div class="qa">
+    <h3>6. ¿Y con la caja?</h3>
+    <p>Puede inspirar un acorde, un acento armónico o una respuesta rítmica en el registro medio. Si la caja cae en 2 y 4, puedes tocar acordes en esos tiempos. Pero también puedes omitir uno, desplazarlo o responder con una inversión para evitar la traducción mecánica (preguntas 14 y 17).</p>
+  </div>
+
+  <div class="qa">
+    <h3>7. ¿Y con el hi-hat?</h3>
+    <p>Considéralo una pista sobre la <strong>subdivisión y la continuidad</strong>. Si marca corcheas, puedes tocar una nota repetida muy suave (ejemplo 1.2), un arpegio (ejemplo 2.5) o simplemente llevar esa regularidad en tu cabeza. No necesitas tocar cada hi-hat: dos ataques por compás pueden bastar.</p>
+  </div>
+
+  <h2>Nivel 2 · Primeros arreglos (preguntas 8 a 14)</h2>
+
+  <div class="qa">
+    <h3>8. ¿La partitura de batería me dice qué acordes debo usar?</h3>
+    <p>No. La batería describe el ritmo, no la armonía. Si el patrón viene de una canción, saca los acordes de su cifrado (lead sheet). Si solo tienes el patrón, elige una progresión sencilla, como C - Am - F - G, y pon un acorde por compás. El patrón sí puede sugerir dónde cambiar: un crash en el 1 suele marcar un cambio de acorde o de sección.</p>
+  </div>
+
+  <div class="qa">
+    <h3>9. ¿Cuál es la manera más sencilla de convertir un patrón en acompañamiento?</h3>
+    <p>Con dos capas: bajo en los golpes principales del bombo y acordes en algunos acentos de caja.</p>
+    <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . A . . . A .
+MI          b . . . b . . .</pre></div>
+    <p>Después compara con el patrón original y ajusta lo que suene rígido o pesado.</p>
+  </div>
+
+  <div class="qa">
+    <h3>10. ¿Cómo puedo practicar las dos manos sin perder el pulso?</h3>
+    <p>Por capas: izquierda sola, derecha sola y juntas a un tempo lento. Si la coordinación falla, simplifica el patrón en vez de acelerar. Repite un solo compás hasta tocarlo varias veces seguidas sin detenerte. Para subir el tempo, usa la regla de los cuatro puntos: sube 4 pulsaciones por minuto después de tres repeticiones perfectas y baja 8 si fallas dos veces.</p>
+  </div>
+
+  <div class="qa">
+    <h3>11. ¿Qué hago si el bombo toca muchas veces dentro del compás?</h3>
+    <p>No tienes que duplicarlo. Elige los golpes que definen el groove y trata los demás como adorno. Por ejemplo, con el bombo en 1, 3 y «y» de 3:</p>
+    <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+Bombo       x . . . x x . .
+MI          b . . . b c . .</pre></div>
+    <p>La <span class="kbd">b</span> pesa; la <span class="kbd">c</span> es un golpecito corto. La elección depende del tempo, el estilo y el espacio que necesiten los acordes.</p>
+  </div>
+
+  <div class="qa">
+    <h3>12. ¿Cómo evito que el bajo y los acordes se mezclen en un sonido confuso?</h3>
+    <p>Sepáralos en función y en registro. Deja el bajo en una zona grave que se oiga claramente (Do2 a Sol3) y los acordes más arriba (Si3 a Do5). Si el bajo retumba, acorta sus notas o sube alguna. Si los acordes suenan espesos, toca menos notas o usa voicings más abiertos. También cambia el pedal en cada cambio de acorde.</p>
+  </div>
+
+  <div class="qa">
+    <h3>13. ¿Cuánto debe durar cada acorde?</h3>
+    <p>Lo que pida el estilo. El ritmo escrito te dice cuándo empieza cada sonido, no cuánto dura. A tempos lentos puedes sostener más; en patrones rápidos o secos (funk, reggae), los acordes son cortos. La única regla es que un acorde largo no tape el siguiente ataque. Prueba la misma cuadrícula en staccato, en tenuto y con pedal (apoyo 11) y escucha cuál sirve a la música.</p>
+  </div>
+
+  <div class="qa">
+    <h3>14. ¿Cómo hago para que la caja no suene siempre igual?</h3>
+    <p>Conserva el lugar rítmico y cambia <strong>qué notas</strong> tocas. Sobre un mismo acorde de C en los tiempos 2 y 4, puedes alternar:</p>
+    <ul>
+      <li>Do4-Mi4-Sol4 (acorde completo).</li>
+      <li>Mi4-Sol4-Do5 (inversión).</li>
+      <li>Mi4-Sol4 (dos notas).</li>
+      <li>Un acorde muy corto.</li>
+      <li>Una respuesta sincopada.</li>
+    </ul>
+    <p>Así separas dos decisiones: <strong>cuándo</strong> tocar y <strong>qué</strong> tocar.</p>
+  </div>
+
+  <h2>Nivel 3 · Ritmo con intención (preguntas 15 a 21)</h2>
+
+  <div class="qa">
+    <h3>15. ¿Qué es una síncopa y cómo la uso?</h3>
+    <p>Una síncopa desplaza un acento hacia una parte débil del compás o prolonga un sonido de modo que el acento esperado se cubre. En la práctica, toca un acorde en el «y» entre dos pulsos en vez de en el pulso:</p>
+    <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y
+MD          . . . A . . A .</pre></div>
+    <p>Cuenta la subdivisión con precisión y empieza con una sola síncopa por compás. Añade más solo cuando la primera salga sola.</p>
+  </div>
+
+  <div class="qa">
+    <h3>16. ¿Qué diferencia hay entre tocar un acorde en el pulso y anticiparlo?</h3>
+    <p>Si lo tocas en el pulso, el ataque coincide con el punto métrico. Si lo anticipas, suena un poco antes, normalmente en el «y» anterior, y prepara el cambio siguiente. El pulso no cambia. Compara:</p>
+    <div class="code"><pre>Cuenta      1 y 2 y 3 y 4 y | 1 y 2 y 3 y 4 y
+En el pulso . . . . . . . . | F . . . . . . .
+Anticipado  . . . . . . . F | - . . . . . . .</pre></div>
+    <p>Practica primero el cambio sin anticipación y luego adelanta solo el acorde elegido (ejemplo 3.1).</p>
+  </div>
+
+  <div class="qa">
+    <h3>17. ¿Cómo uso los silencios de la partitura?</h3>
+    <p>Los silencios también son información. Puedes dejarlos vacíos para que la música respire, o mantener una nota mientras no añades ataques nuevos. No hace falta llenar cada hueco: quitar un acorde a veces mejora el groove más que añadir una figura rápida. En el ejemplo 3.4 (reggae), el tiempo 1 vacío es lo que define el patrón.</p>
+  </div>
+
+  <div class="qa">
+    <h3>18. ¿Qué hago con un hi-hat abierto, un tom o un crash?</h3>
+    <p>No hace falta imitar el timbre. Interpreta la <strong>función</strong>. Un hi-hat abierto puede sugerir una nota o un acorde que se sostiene; un tom, una pequeña respuesta melódica; un crash, un acento de sección o el principio de una frase. Son asociaciones creativas, no equivalencias obligatorias. El ejemplo 6.1 lo desarrolla nota por nota.</p>
+  </div>
+
+  <div class="qa">
+    <h3>19. ¿Cuándo conviene utilizar inversiones de acordes?</h3>
+    <p>Cuando quieres cambios más suaves, evitar saltos grandes o un registro más cómodo. La inversión no cambia la identidad del acorde, pero sí cuál queda abajo y cómo se conectan las voces. Con el paquete A (capítulo 10), de C a Am solo cambia una nota (Sol sube a La). En posición fundamental, la mano derecha salta una tercera.</p>
+  </div>
+
+  <div class="qa">
+    <h3>20. ¿Cómo traduzco un patrón de semicorcheas sin enredarme?</h3>
+    <p>Reduce el problema:</p>
+    <ol>
+      <li>Cuenta «1 e y a 2 e y a» muy despacio (50).</li>
+      <li>Toca solo bombo y caja y deja el hi-hat fuera.</li>
+      <li>Añade solo dos o tres posiciones de las dieciséis (por ejemplo la «a» de 2 y la «a» de 4).</li>
+      <li>Sube el tempo con la regla de los cuatro puntos.</li>
+    </ol>
+    <p>El ejemplo 5.1 tiene tres versiones con densidad creciente.</p>
+  </div>
+
+  <div class="qa">
+    <h3>21. ¿Qué cambia si el patrón está en 3/4, 6/8 o 12/8?</h3>
+    <p>La lógica es la misma: el bombo se convierte en bajo y la caja en acorde. Lo que cambia es <strong>cuántas partes tiene cada pulso</strong>. En 3/4 cuentas «1 y 2 y 3 y» (ejemplo 1.5). En 6/8 hay dos grupos de tres corcheas: «1 la li 2 la li» (ejemplo 4.1). En 12/8 hay cuatro grupos de tres (ejemplo 4.2). Antes de tocar, palmea el patrón con esa cuenta: si lo cuentas en dos, suena a otra cosa.</p>
+  </div>
+
+  <h2>Nivel 4 · Arreglo y armonía (preguntas 22 a 28)</h2>
+
+  <div class="qa">
+    <h3>22. ¿Cómo elijo una progresión si la partitura solo tiene ritmo?</h3>
+    <p>Elige primero un contexto: tonalidad, estilo o ambiente. Luego una progresión sencilla y reconocible: en Do mayor, C - G - Am - F o Am - F - C - G. Un acorde por compás es un buen punto de partida. El ritmo y la armonía se influyen, pero ninguno determina del todo al otro. Termina la frase en un acorde estable (normalmente C) para que se perciba un cierre.</p>
+  </div>
+
+  <div class="qa">
+    <h3>23. ¿Puedo cambiar la armonía sin cambiar el ritmo, y al revés?</h3>
+    <p>Sí, y es un ejercicio muy útil. Si cambias la progresión pero mantienes los ataques, oyes cómo una misma estructura temporal puede sonar luminosa, tensa o nostálgica. Si cambias los ataques pero mantienes los acordes, una progresión sencilla puede pasar de tranquila a bailable solo con la articulación rítmica. Cambia una cosa por vez para poder compararlas.</p>
+  </div>
+
+  <div class="qa">
+    <h3>24. ¿Cómo añado séptimas sin que el acompañamiento suene pesado?</h3>
+    <p>Pon la fundamental en la izquierda y solo tres notas en la derecha (paquete B, capítulo 10). En Do mayor, C y F llevan séptima mayor (Cmaj7, Fmaj7); Am y G llevan séptima menor (Am7, G7). Si aun así suena espeso, deja solo la tercera y la séptima: Mi4-Si4 para Cmaj7, Sol4-Do5 para Am7, Mi4-La4 para Fmaj7, Fa4-Si4 para G7 (ejemplo 2.4).</p>
+  </div>
+
+  <div class="qa">
+    <h3>25. ¿Cómo adapto el patrón a un tempo lento o rápido?</h3>
+    <p>A tempo lento hay más espacio: puedes sostener, usar silencios y expresar anticipaciones. A tempo rápido, las corcheas son muy cortas (a 120, cada una dura 0,25 segundos), así que conviene reducir ataques y evitar voicings incómodos. Un truco: si el tempo es muy rápido, cuenta el compás a la mitad de velocidad (a 140, cuenta a 70 y trata las corcheas como negras). Si es muy lento, el <em>half-time</em> (ejemplo 1.4) hace que la caja caiga solo en el 3 y el compás respire. Tocar más notas cuando suben las pulsaciones casi nunca es la solución.</p>
+  </div>
+
+  <div class="qa">
+    <h3>26. ¿Cómo hago que el acompañamiento no sea un bucle interminable?</h3>
+    <p>Organízalo en frases. Un esquema frecuente: dos compases para presentar, dos con una variación pequeña, dos para subir la energía y dos para cerrar o preparar la vuelta. Reserva el registro más amplio o la textura más densa para el momento culminante. El ejemplo 6.2 es una frase de ocho compases completa. La repetición da identidad; la variación evita que se haga monótono.</p>
+  </div>
+
+  <div class="qa">
+    <h3>27. ¿Qué hago si hay una melodía o un cantante encima?</h3>
+    <p>Deja espacio. Una regla útil: cuando la melodía se mueve, el piano calla o simplifica; cuando la melodía descansa, el piano habla. Mantén tu registro por debajo de la melodía y reduce la densidad (ejemplos 1.4 y 6.3, versión cinematográfica). La prueba de siempre: toca tu acompañamiento mientras cantas una melodía sencilla. Si no puedes, hay demasiadas notas.</p>
+  </div>
+
+  <div class="qa">
+    <h3>28. ¿Cómo hago que el acompañamiento suene menos mecánico?</h3>
+    <p>Primero asegúrate de que el pulso es estable. Después trabaja expresión sin perder claridad:</p>
+    <ul>
+      <li>Da un poco más de peso a la nota superior de los acentos.</li>
+      <li>Varía la intensidad entre dos acordes consecutivos (el del 2 algo más suave que el del 4, por ejemplo).</li>
+      <li>Suelta el pedal justo antes de cada cambio de acorde.</li>
+      <li>Deja respirar el último acorde de la frase.</li>
+    </ul>
+    <p>No todos los acordes tienen que sonar igual de fuertes ni durar lo mismo.</p>
+  </div>
+
+  <h2>Nivel 5 · Criterio y dominio (preguntas 29 a 33)</h2>
+
+  <div class="qa">
+    <h3>29. ¿Cómo sé si estoy tocando demasiadas notas?</h3>
+    <p>Escucha tres cosas: si el bajo sigue siendo reconocible, si los acordes se distinguen y si el pulso se percibe sin esfuerzo. Si las manos compiten, el sonido se vuelve turbio o no consigues repetir el patrón con estabilidad, elimina elementos. Haz la prueba de quitar: toca la versión más sencilla y añade cada nota extra solo si aporta una función audible. La versión de dos notas del ejemplo 2.4 es un buen ejemplo.</p>
+  </div>
+
+  <div class="qa">
+    <h3>30. ¿Cómo trabajo un estilo concreto sin copiarlo de manera superficial?</h3>
+    <p>Escucha varias grabaciones del estilo y escribe su cuadrícula de oído (apoyo 12). Busca lo que se repite: dónde caen los acentos, qué subdivisión usa, qué densidad tiene y cómo se relacionan el bajo y la caja. Por ejemplo, en el reggae tipo one drop el tiempo 1 queda vacío y los acordes van en los «y»; en la bossa nova, la derecha sigue una clave 3-2; en el funk, las notas son cortas y secas sobre semicorcheas. Luego crea tu acompañamiento con esos principios, sin asumir que existe una única traducción correcta.</p>
+  </div>
+
+  <div class="qa">
+    <h3>31. ¿Y si el compás es irregular (5/4, 7/8) o cambia?</h3>
+    <p>Agrupa. Un 7/8 se cuenta como 2+2+3 (o 3+2+2) y un 5/4 como 3+2. Después aplica la misma lógica: bajo al comienzo de los grupos importantes, acorde en los acentos de caja. Por ejemplo, un 7/8 de 2+2+3 con bombo al inicio de los grupos primero y tercero, y caja al comienzo del segundo:</p>
+    <div class="code"><pre>Cuenta      1 2 1 2 1 2 3
+Bombo       x . . . x . .
+Caja        . . x . . . .
+Hi-hat      x x x x x x x
+MD          . . A . . . .
+MI          b . . . b . .</pre></div>
+    <p>Si el compás cambia a mitad de patrón, escribe una cuadrícula por compás y cuenta por grupos, no por corcheas sueltas.</p>
+  </div>
+
+  <div class="qa">
+    <h3>32. ¿Cómo evalúo objetivamente mi propia versión?</h3>
+    <p>Grábate y usa criterios concretos: estabilidad del pulso, claridad del bajo, coordinación, precisión de las síncopas, limpieza de los acordes, equilibrio dinámico y coherencia de las frases. Puntúa cada criterio de 1 a 5 con la tabla del capítulo 17 y elige solo uno o dos para mejorar en la siguiente sesión. Una prueba más: toca con el metrónomo sonando solo en 2 y 4 (apoyo 1). Si te desplazas, el pulso no es todavía tan estable como creías. Compara dos grabaciones hechas con una semana de diferencia: ahí se nota el progreso.</p>
+  </div>
+
+  <div class="qa">
+    <h3>33. ¿Cuál es el objetivo final de este método y cómo continúo?</h3>
+    <p>El objetivo no es convertir al pianista en una batería ni producir una copia literal de la partitura. Es desarrollar una manera consciente de crear acompañamientos: leer patrones, entender su energía, tomar decisiones rítmicas y combinarlas con armonía, voicings, articulación y forma. Para seguir:</p>
+    <ol>
+      <li>Toma una canción que conozcas y escribe la cuadrícula de dos compases de su batería (apoyo 12).</li>
+      <li>Arréglala en tres versiones (mínima, media, densa) y elige la mejor.</li>
+      <li>Extiéndela a dieciséis compases con una sección de verso y otra de estribillo, con distinta densidad.</li>
+      <li>Toca con un metrónomo o con una pista de batería real y comprueba si tu piano «conversa» con ella.</li>
+    </ol>
+    <p>Con la práctica, una partitura de batería se convierte en un punto de partida para generar varias soluciones musicales propias.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     5 · ERRORES
+     ============================================================ -->
+<section class="tabp" id="t5" data-t="ERRORES">
+  <h2>16. Errores frecuentes y cómo corregirlos</h2>
+  <p class="lead">Casi todos los problemas que aparecen al convertir un patrón de batería en un acompañamiento de piano pertenecen a un puñado de categorías. Esta tabla los reúne con su causa y su corrección concreta.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Error</th><th>Por qué ocurre</th><th>Qué hacer</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Traducir literalmente todos los golpes</strong></td>
+          <td>Se copia el patrón sin elegir. El piano queda lleno y pierde claridad.</td>
+          <td>Empieza con bombo y caja. Añade el hi-hat solo si hace falta más movimiento.</td>
+        </tr>
+        <tr>
+          <td><strong>Confundir ataque con duración</strong></td>
+          <td>Se supone que cada nota dura lo que dura el golpe de batería.</td>
+          <td>Separa dos decisiones: cuándo empieza y cuánto se mantiene. La batería te da el ataque; la duración es pianística.</td>
+        </tr>
+        <tr>
+          <td><strong>Tocar siempre la fundamental</strong></td>
+          <td>El bajo se vuelve monótono.</td>
+          <td>Cuando el ritmo sea estable, prueba la quinta, octavas o notas de paso (ejemplo 2.3).</td>
+        </tr>
+        <tr>
+          <td><strong>Acordes cerrados en el grave</strong></td>
+          <td>Las notas muy próximas en el registro grave suenan turbias.</td>
+          <td>Separa el bajo de los acordes y sube estos una octava.</td>
+        </tr>
+        <tr>
+          <td><strong>Añadir síncopas sin contar</strong></td>
+          <td>Los ataques se adelantan o se retrasan por accidente.</td>
+          <td>Di «1 y 2 y 3 y 4 y» mientras tocas. Practica antes la derecha sola.</td>
+        </tr>
+        <tr>
+          <td><strong>Confundir densidad con energía</strong></td>
+          <td>Más notas no siempre significa más fuerza.</td>
+          <td>Aumenta la densidad poco a poco. La energía también viene de la dinámica, el registro y la articulación.</td>
+        </tr>
+        <tr>
+          <td><strong>Cambiar demasiadas variables a la vez</strong></td>
+          <td>No sabes por qué una versión suena mejor.</td>
+          <td>Cambia una cosa por vuelta y compara grabaciones.</td>
+        </tr>
+        <tr>
+          <td><strong>Practicar siempre desde el principio</strong></td>
+          <td>Los compases difíciles no mejoran.</td>
+          <td>Aísla el compás problemático (apoyo 5) y vuelve a unirlo con los vecinos.</td>
+        </tr>
+        <tr>
+          <td><strong>Pensar que el patrón dicta la armonía</strong></td>
+          <td>Se fuerza un acorde porque cae un golpe de batería.</td>
+          <td>El patrón es rítmico. El acorde responde a la progresión y a la melodía.</td>
+        </tr>
+        <tr>
+          <td><strong>Usar el pedal sin control</strong></td>
+          <td>El acorde anterior se mezcla con el siguiente.</td>
+          <td>Cambia el pedal en cada cambio de acorde, justo después del ataque.</td>
+        </tr>
+        <tr>
+          <td><strong>Acelerar al subir de densidad</strong></td>
+          <td>La mano tiende a correr cuando hay más notas.</td>
+          <td>Baja el tempo, toca con metrónomo y sube con la regla de los cuatro puntos.</td>
+        </tr>
+        <tr>
+          <td><strong>Ignorar el feeling original</strong></td>
+          <td>Un shuffle tocado recto o un 12/8 en corcheas simples pierde su carácter.</td>
+          <td>Antes de tocar, cuenta «1 la li» y palmea el patrón con esa sensación.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <p><strong>Regla general:</strong> si algo suena mal, casi siempre hay una sola causa. Aísla la variable —pulso, registro, densidad o articulación— y cámbiala sola. Cambiar todo a la vez impide aprender qué funcionaba.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     6 · RESUMEN
+     ============================================================ -->
+<section class="tabp" id="t6" data-t="RESUMEN">
+  <h2>Resumen: del ritmo escrito a tu propio lenguaje pianístico</h2>
+  <p class="lead">Una partitura de batería puede ser mucho más que una guía para percusionistas. También puede convertirse en un laboratorio de ritmo para pianistas y compositores.</p>
+
+  <div class="card">
+    <h3>El proceso en siete pasos</h3>
+    <ol>
+      <li>Leer y contar el patrón.</li>
+      <li>Identificar sus ataques, acentos y silencios.</li>
+      <li>Crear una primera versión con bajo y acordes.</li>
+      <li>Añadir subdivisiones solo cuando sean útiles.</li>
+      <li>Probar armonías, inversiones y voicings.</li>
+      <li>Organizar las variaciones en frases musicales.</li>
+      <li>Escuchar, grabar y corregir.</li>
+    </ol>
+    <p>No busques una traducción única y definitiva. Busca varias soluciones posibles y aprende a elegir la que mejor sirve a la música.</p>
+  </div>
+
+  <div class="callout">
+    <p><strong>La partitura de batería te ofrece el mapa temporal; tú decides cómo convertirlo en armonía, textura y expresión pianística.</strong></p>
+  </div>
+
+  <h2>Las cuatro capas, en una tabla</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Capa</th><th>Qué es</th><th>Qué decide en el piano</th></tr></thead>
+      <tbody>
+        <tr><td>Pulso</td><td>Referencia regular con la que cuentas</td><td>La estabilidad de todo el acompañamiento</td></tr>
+        <tr><td>Subdivisión</td><td>Cómo se parte cada pulso</td><td>Densidad y textura (corcheas, semicorcheas, tresillos)</td></tr>
+        <tr><td>Acentos</td><td>Qué ataques destacan</td><td>Dónde poner los acordes y qué notas reforzar</td></tr>
+        <tr><td>Densidad</td><td>Cuántos ataques hay y cuánto espacio queda</td><td>Cuántas notas tocar y cuántos silencios dejar</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Paquetes de voicings de referencia</h2>
+  <h3>Paquete A · Tríadas con movimiento mínimo (C - Am - F - G)</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Acorde</th><th>Mano derecha</th><th>Bajo (MI)</th></tr></thead>
+      <tbody>
+        <tr><td>C</td><td>Do4-Mi4-Sol4</td><td>Do3</td></tr>
+        <tr><td>Am</td><td>Do4-Mi4-La4</td><td>La2</td></tr>
+        <tr><td>F</td><td>Do4-Fa4-La4</td><td>Fa2</td></tr>
+        <tr><td>G</td><td>Si3-Re4-Sol4</td><td>Sol2</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>Paquete B · Séptimas con tres notas</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Acorde</th><th>Mano derecha</th><th>Bajo (MI)</th></tr></thead>
+      <tbody>
+        <tr><td>Cmaj7</td><td>Mi4-Sol4-Si4</td><td>Do3</td></tr>
+        <tr><td>Am7</td><td>Mi4-Sol4-Do5</td><td>La2</td></tr>
+        <tr><td>Fmaj7</td><td>Mi4-La4-Do5</td><td>Fa2</td></tr>
+        <tr><td>G7</td><td>Fa4-Si4-Re4</td><td>Sol2</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Lista de comprobación final</h2>
+  <p>Marca cada casilla solo cuando puedas hacerlo de forma consistente. El estado se guarda en tu navegador.</p>
+  <ul class="ck">
+    <li><label><input type="checkbox" data-ck="rs1"><span>Mantengo el pulso sin tocar todos los tiempos.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs2"><span>Leo y cuento el patrón sin perder el tiempo 1.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs3"><span>Puedo tocar el bajo por separado.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs4"><span>Puedo tocar los acordes por separado.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs5"><span>Puedo combinar las manos lentamente.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs6"><span>Mantengo los silencios escritos o planificados.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs7"><span>Puedo añadir corcheas sin acelerar.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs8"><span>Puedo cambiar de acorde sin detenerme.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs9"><span>Puedo usar inversiones cercanas.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs10"><span>Puedo anticipar un acorde sin mover el pulso.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs11"><span>Puedo contar un patrón de 6/8 o 12/8.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs12"><span>Puedo tocar tres versiones del mismo patrón con distinta densidad.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs13"><span>Puedo grabarme y detectar al menos un aspecto mejorable.</span></label></li>
+    <li><label><input type="checkbox" data-ck="rs14"><span>Puedo explicar qué decisión rítmica o armónica estoy practicando.</span></label></li>
+  </ul>
+
+  <h2>Glosario</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Término</th><th>Definición</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Acento</strong></td><td>Énfasis perceptible sobre un sonido o ataque.</td></tr>
+        <tr><td><strong>Anticipación</strong></td><td>Ataque de una nota o acorde antes del momento en que se esperaría, a menudo para preparar el siguiente cambio de armonía.</td></tr>
+        <tr><td><strong>Aro (cross-stick o rim click)</strong></td><td>Golpe con la baqueta sobre el borde de la caja. Suena seco y se usa mucho en la bossa nova y el reggae.</td></tr>
+        <tr><td><strong>Articulación</strong></td><td>Modo en que se empieza, se mantiene y se termina un sonido.</td></tr>
+        <tr><td><strong>Backbeat</strong></td><td>Acento en los tiempos 2 y 4, típico del rock y del pop.</td></tr>
+        <tr><td><strong>Bombo (kick)</strong></td><td>Instrumento grave de la batería que suele marcar el peso del pulso.</td></tr>
+        <tr><td><strong>Caja (snare)</strong></td><td>Tambor que aporta los acentos característicos del groove.</td></tr>
+        <tr><td><strong>Clave</strong></td><td>Patrón rítmico de cinco golpes repartido en dos compases, que organiza el resto de la música. En la bossa nova se toca habitualmente 3-2.</td></tr>
+        <tr><td><strong>Corchea</strong></td><td>Figura que equivale normalmente a la mitad de una negra.</td></tr>
+        <tr><td><strong>Crash</strong></td><td>Platillo de ataque fuerte que marca comienzos de sección y acentos.</td></tr>
+        <tr><td><strong>Densidad</strong></td><td>Cantidad de acontecimientos musicales en un periodo de tiempo.</td></tr>
+        <tr><td><strong>Groove</strong></td><td>Sensación rítmica de conjunto que hace que un patrón se perciba con un pulso propio.</td></tr>
+        <tr><td><strong>Half-time</strong></td><td>Feeling en el que la caja cae solo en el tiempo 3, de modo que el compás se siente como si fuese la mitad de rápido.</td></tr>
+        <tr><td><strong>Hi-hat</strong></td><td>Par de platillos que se pueden tocar cerrados, abiertos o con el pie.</td></tr>
+        <tr><td><strong>Inversión</strong></td><td>Disposición de un acorde en la que una nota distinta de la fundamental ocupa el registro más grave.</td></tr>
+        <tr><td><strong>Nota fantasma</strong></td><td>Golpe o nota muy suave, casi inaudible, que da textura al ritmo.</td></tr>
+        <tr><td><strong>One drop</strong></td><td>Patrón de reggae con el tiempo 1 vacío y bombo y caja juntos en el 3.</td></tr>
+        <tr><td><strong>Ostinato</strong></td><td>Figura rítmica o melódica que se repite de forma constante.</td></tr>
+        <tr><td><strong>Paquete A / Paquete B</strong></td><td>Conjuntos de voicings de este tutorial para C - Am - F - G: A para tríadas, B para séptimas con tres notas (capítulo 10).</td></tr>
+        <tr><td><strong>Pulso</strong></td><td>Referencia temporal regular que organiza el ritmo.</td></tr>
+        <tr><td><strong>Relleno (fill)</strong></td><td>Pequeña frase, normalmente en toms, que enlaza dos secciones o prepara un cambio.</td></tr>
+        <tr><td><strong>Ride</strong></td><td>Platillo grande que se toca para marcar el pulso con un sonido continuo.</td></tr>
+        <tr><td><strong>Semicorchea</strong></td><td>Figura que equivale a la cuarta parte de una negra.</td></tr>
+        <tr><td><strong>Shuffle</strong></td><td>Feeling en el que cada pulso se divide en tres y solo se tocan el primer y el tercer tresillo.</td></tr>
+        <tr><td><strong>Síncopa</strong></td><td>Efecto rítmico que desplaza o prolonga acentos respecto de los puntos métricos esperados.</td></tr>
+        <tr><td><strong>Skank</strong></td><td>Acorde corto en el contratiempo, típico del reggae.</td></tr>
+        <tr><td><strong>Subdivisión</strong></td><td>División del pulso en unidades más pequeñas.</td></tr>
+        <tr><td><strong>Tresillo</strong></td><td>Grupo de tres notas que ocupan el tiempo de dos de la misma figura.</td></tr>
+        <tr><td><strong>Tríada</strong></td><td>Acorde básico de tres notas formado por terceras.</td></tr>
+        <tr><td><strong>Voicing</strong></td><td>Disposición concreta de las notas de un acorde.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================
+     7 · FUENTES
+     ============================================================ -->
+<section class="tabp" id="t7" data-t="FUENTES">
+  <h2>Fuentes y notas de método</h2>
+
+  <div class="card">
+    <h3>Documento fuente principal</h3>
+    <p><strong>«Cómo convertir partituras de batería en acompañamientos de piano»</strong>, de Rubén Sbarsky. Texto completo en Markdown, base de todo el contenido de este tutorial: los 20 capítulos, los 24 ejemplos resueltos, los 12 ejercicios de apoyo, el plan de ocho semanas, la rutina de 30 minutos, la tabla de errores frecuentes, el glosario y las 33 preguntas y respuestas.</p>
+    <p class="src">Todo el contenido didáctico de esta página proviene de ese documento. No se ha añadido material teórico externo.</p>
+  </div>
+
+  <div class="card">
+    <h3>Sobre los patrones</h3>
+    <p>Los patrones de este tutorial son <strong>didácticos</strong>. No son transcripciones de ninguna grabación concreta. Están construidos para aislar un problema rítmico cada vez y que el lector pueda practicarlo sin distracciones.</p>
+  </div>
+
+  <div class="card">
+    <h3>Sobre la notación de batería</h3>
+    <p>Las convenciones de escritura para batería <strong>no son idénticas entre ediciones</strong>: la posición del ride, del crash y de los toms varía según el libro y la escuela. La tabla del capítulo 2 recoge la convención más extendida, pero la propia fuente advierte de que <strong>la leyenda de cada partitura manda sobre cualquier tabla</strong>, incluida la de este tutorial.</p>
+  </div>
+
+  <div class="card">
+    <h3>Sobre las notas y los acordes</h3>
+    <p>Las notas se nombran en español (Do, Re, Mi, Fa, Sol, La, Si) con número de octava, tomando <strong>Do4 como Do central</strong>. Los acordes usan cifrado americano. Las equivalencias entre ambos sistemas se explican en la pestaña INICIO.</p>
+    <p>Los registros empleados (bajos entre Do2 y Sol3; acordes de la mano derecha entre Si3 y Do5, salvo indicación contraria) están elegidos para que todo quepa en un teclado de 61 teclas.</p>
+  </div>
+
+  <div class="card">
+    <h3>Criterios de calidad aplicados a la construcción de esta página</h3>
+    <ul>
+      <li><strong>Exactitud documental:</strong> no se han inventado datos, procedimientos ni resultados. El contenido se ha reorganizado en pestañas y se ha maquetado, pero no se ha alterado su significado.</li>
+      <li><strong>Pedagogía:</strong> la secuencia es <em>qué es → para qué sirve → por qué importa → cómo se hace → ejemplo → práctica → errores → resumen</em>.</li>
+      <li><strong>Autonomía técnica:</strong> el archivo es único y no tiene dependencias externas: sin CDN, sin fuentes remotas, sin bibliotecas. Todo el CSS, el JavaScript y el SVG están incluidos en el documento.</li>
+      <li><strong>Verificación honesta:</strong> las comprobaciones realizadas sobre este archivo son <strong>inspecciones estáticas</strong> del código (estructura HTML, cierre de etiquetas, identificadores únicos, coherencia de las referencias, sintaxis del JavaScript y de las animaciones CSS). No se ha ejecutado en un navegador real ni se ha generado un PDF desde este entorno, por lo que el comportamiento final en pantalla, la impresión y el guardado como PDF quedan pendientes de verificación por parte de quien abra el archivo.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Cómo seguir practicando por tu cuenta</h3>
+    <ul>
+      <li>Transcribe de oído la batería de canciones que conozcas (ejercicio 12).</li>
+      <li>Convierte cada transcripción en tres versiones —mínima, media y densa— y compara.</li>
+      <li>Toca con metrónomo sonando solo en 2 y 4 para comprobar la estabilidad del pulso.</li>
+      <li>Grábate cada semana y compara dos grabaciones separadas por siete días.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     8 · CRÉDITOS
+     ============================================================ -->
+<section class="tabp" id="t8" data-t="CRÉDITOS">
+  <h2>Créditos</h2>
+
+  <div class="hero">
+    <div class="hsvg" role="img" aria-label="Ilustración animada: una partitura de batería en un pentagrama se transforma, a través de líneas de energía, en un teclado de piano con teclas que se iluminan y notas que ascienden."></div>
+  </div>
+
+  <div class="card">
+    <h3>Sobre la ilustración</h3>
+    <p>El dibujo resume el método en una sola imagen: a la izquierda, un pentagrama de batería con sus golpes marcados en forma de <span class="kbd">x</span>; en el centro, tres líneas de energía que descienden; abajo, un teclado de piano cuyas teclas se encienden al ritmo del patrón. Las notas que ascienden desde el teclado completan la metáfora: el ritmo escrito se convierte en música.</p>
+  </div>
+
+  <div class="card" style="text-align:center">
+    <p style="font-size:2.1em;font-weight:900;letter-spacing:-.02em;margin:.2em 0 .1em;color:var(--ac);line-height:1.1">Rubén Sbarsky</p>
+    <p class="meta" style="margin:0 0 12px">Autor del tutorial</p>
+    <p class="src">Método, textos, ejemplos y ejercicios.</p>
+  </div>
+
+  <div class="card">
+    <h3>Información del documento</h3>
+    <p><strong>Versión:</strong> V001</p>
+    <p><strong>Fecha y hora de creación:</strong> 28/10/2026 — 20:15:05</p>
+    <p><strong>Formato:</strong> archivo HTML único, autónomo, sin dependencias externas.</p>
+    <p><strong>Nombre del archivo:</strong> <span class="kbd">tutorial_partituras_bateria_piano_V001.html</span></p>
+    <p class="src">La fecha y la hora son fijas y no se recalculan al abrir el documento.</p>
+  </div>
+
+  <div class="card">
+    <h3>Funciones incluidas en esta página</h3>
+    <ul>
+      <li>Navegación por pestañas con 9 secciones independientes.</li>
+      <li>Índice lateral generado automáticamente desde las secciones reales.</li>
+      <li>Buscador interno sobre todos los títulos del tutorial.</li>
+      <li>Ajuste del tamaño de letra y cambio entre tema oscuro y claro.</li>
+      <li>Botones COPIAR en todos los bloques de cuadrícula y de código.</li>
+      <li>Listas de comprobación con guardado del progreso en el navegador.</li>
+      <li>Barra de progreso de lectura y botón de volver arriba.</li>
+      <li>Hoja de estilos de impresión preparada para A4.</li>
+      <li>SVG animado generado desde una única plantilla y montado en INICIO y en CRÉDITOS con identificadores únicos por instancia.</li>
+      <li>Respeto de la preferencia <span class="kbd">prefers-reduced-motion</span>.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<button id="top" type="button" aria-label="Volver arriba">↑</button>
+
+<script>
+(function () {
+  'use strict';
+
+  var D = document;
+  var W = window;
+
+  /* ---------------------------------------------------------
+     UTILIDADES
+     --------------------------------------------------------- */
+  function $(sel, ctx) { return (ctx || D).querySelector(sel); }
+  function $$(sel, ctx) {
+    return Array.prototype.slice.call((ctx || D).querySelectorAll(sel));
+  }
+  function store(key, value) {
+    try { W.localStorage.setItem(key, String(value)); } catch (e) { /* almacenamiento no disponible */ }
+  }
+  function load(key) {
+    try { return W.localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  var tabs = $$('.tabp');
+  var chips = $$('#nav .chip[data-t]');
+  var dr = $('#dr');
+  var mb = $('#mb');
+  var nav = $('#nav');
+  var schp = $('#schp');
+  var schBtn = $('#sch');
+  var schi = $('#schi');
+  var schr = $('#schr');
+  var prog = $('#prog');
+  var topBtn = $('#top');
+  var current = 0;
+
+  /* ---------------------------------------------------------
+     PESTAÑAS
+     --------------------------------------------------------- */
+  function go(i, sinScroll) {
+    if (i < 0 || i >= tabs.length) { return; }
+    current = i;
+
+    tabs.forEach(function (t, j) { t.classList.toggle('on', j === i); });
+    chips.forEach(function (c, j) { c.classList.toggle('on', j === i); });
+    $$('#dr a').forEach(function (a, j) { a.classList.toggle('on', j === i); });
+
+    if (!sinScroll) { W.scrollTo(0, 0); }
+
+    try { W.history.replaceState(null, '', '#t' + i); } catch (e) { /* file:// en algunos navegadores */ }
+
+    store('bp_tab', i);
+    mountSvg();
+    updateProgress();
+  }
+
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () { go(parseInt(c.getAttribute('data-t'), 10)); });
+  });
+
+  /* ---------------------------------------------------------
+     ÍNDICE LATERAL
+     --------------------------------------------------------- */
+  function toggleDrawer(force) {
+    var open = (typeof force === 'boolean') ? force : !dr.classList.contains('o');
+    dr.classList.toggle('o', open);
+    mb.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  (function buildIndex() {
+    var h = D.createElement('div');
+    h.className = 'drh';
+    h.textContent = 'Índice';
+    dr.appendChild(h);
+
+    tabs.forEach(function (s, i) {
+      var a = D.createElement('a');
+      var titulo = s.getAttribute('data-t');
+      if (!titulo) {
+        var h2 = s.querySelector('h2');
+        titulo = h2 ? h2.textContent : ('Sección ' + (i + 1));
+      }
+      a.textContent = (i ? (i + '. ') : '') + titulo;
+      a.setAttribute('href', '#t' + i);
+      a.setAttribute('role', 'link');
+      a.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        go(i);
+        toggleDrawer(false);
+      });
+      dr.appendChild(a);
+    });
+  })();
+
+  mb.addEventListener('click', function () { toggleDrawer(); });
+
+  D.addEventListener('click', function (e) {
+    if (!e.target.closest('#dr') && !e.target.closest('#mb')) { toggleDrawer(false); }
+    if (!e.target.closest('#schp') && !e.target.closest('#sch')) { closeSearch(); }
+  });
+
+  D.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { toggleDrawer(false); closeSearch(); }
+  });
+
+  var ixBtn = $('#ix');
+  if (ixBtn) { ixBtn.addEventListener('click', function () { toggleDrawer(true); }); }
+
+  /* ---------------------------------------------------------
+     BUSCADOR
+     --------------------------------------------------------- */
+  var indiceBusqueda = [];
+
+  (function buildSearch() {
+    tabs.forEach(function (s, i) {
+      var titulo = s.getAttribute('data-t') || ('Sección ' + (i + 1));
+      $$('h2, h3', s).forEach(function (h) {
+        var txt = (h.textContent || '').trim();
+        if (txt.length > 2) {
+          indiceBusqueda.push({ tab: i, el: h, texto: txt, seccion: titulo });
+        }
+      });
+    });
+  })();
+
+  function closeSearch() {
+    schp.classList.remove('o');
+    schBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleSearch(force) {
+    var open = (typeof force === 'boolean') ? force : !schp.classList.contains('o');
+    schp.classList.toggle('o', open);
+    schBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) {
+      toggleDrawer(false);
+      schi.focus();
+      if (!schi.value) { renderResults(''); }
+    }
+  }
+
+  function normaliza(s) {
+    return (s || '').toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function renderResults(q) {
+    schr.innerHTML = '';
+    var nq = normaliza(q).trim();
+    if (!nq) {
+      var p = D.createElement('div');
+      p.className = 'empty';
+      p.textContent = 'Escribe para buscar entre todos los títulos del tutorial.';
+      schr.appendChild(p);
+      return;
+    }
+    var found = indiceBusqueda.filter(function (it) {
+      return normaliza(it.texto).indexOf(nq) !== -1;
+    }).slice(0, 40);
+
+    if (!found.length) {
+      var e = D.createElement('div');
+      e.className = 'empty';
+      e.textContent = 'Sin resultados para «' + q + '».';
+      schr.appendChild(e);
+      return;
+    }
+
+    found.forEach(function (it) {
+      var a = D.createElement('a');
+      a.href = '#t' + it.tab;
+      var small = D.createElement('small');
+      small.textContent = it.seccion;
+      a.appendChild(small);
+      a.appendChild(D.createTextNode(it.texto));
+      a.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        go(it.tab);
+        closeSearch();
+        var det = it.el.closest('details');
+        if (det) { det.open = true; }
+        W.setTimeout(function () {
+          it.el.scrollIntoView({ block: 'start' });
+        }, 60);
+      });
+      schr.appendChild(a);
+    });
+  }
+
+  schBtn.addEventListener('click', function () { toggleSearch(); });
+  schi.addEventListener('input', function () { renderResults(schi.value); });
+
+  /* ---------------------------------------------------------
+     TEMA Y TAMAÑO DE LETRA
+     --------------------------------------------------------- */
+  var thmBtn = $('#thm');
+
+  function applyTheme(t) {
+    D.documentElement.setAttribute('data-theme', t);
+    thmBtn.textContent = (t === 'light') ? '🌙' : '☀';
+    thmBtn.setAttribute('aria-label', (t === 'light') ? 'Cambiar a tema oscuro' : 'Cambiar a tema claro');
+    store('bp_theme', t);
+  }
+
+  thmBtn.addEventListener('click', function () {
+    var actual = D.documentElement.getAttribute('data-theme');
+    applyTheme(actual === 'light' ? 'dark' : 'light');
+  });
+
+  var fontSize = 16;
+
+  function applyFontSize(v) {
+    fontSize = Math.max(13, Math.min(21, v));
+    D.documentElement.style.setProperty('--fs', fontSize + 'px');
+    store('bp_fs', fontSize);
+  }
+
+  $('#fsm').addEventListener('click', function () { applyFontSize(fontSize - 1); });
+  $('#fsp').addEventListener('click', function () { applyFontSize(fontSize + 1); });
+
+  /* ---------------------------------------------------------
+     BOTONES COPIAR
+     --------------------------------------------------------- */
+  function copiarTexto(texto, boton) {
+    function ok() {
+      boton.classList.add('ok');
+      var previo = boton.textContent;
+      boton.textContent = 'COPIADO';
+      W.setTimeout(function () {
+        boton.classList.remove('ok');
+        boton.textContent = previo;
+      }, 1600);
+    }
+    function fallo() {
+      var previo = boton.textContent;
+      boton.textContent = 'COPIA MANUAL';
+      W.setTimeout(function () { boton.textContent = previo; }, 2200);
+      W.prompt('Copia el texto manualmente:', texto);
+    }
+    if (W.navigator && W.navigator.clipboard && W.navigator.clipboard.writeText) {
+      W.navigator.clipboard.writeText(texto).then(ok, fallbackSeleccion);
+    } else {
+      fallbackSeleccion();
+    }
+    function fallbackSeleccion() {
+      try {
+        var ta = D.createElement('textarea');
+        ta.value = texto;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        ta.style.opacity = '0';
+        D.body.appendChild(ta);
+        ta.select();
+        var exito = D.execCommand('copy');
+        D.body.removeChild(ta);
+        if (exito) { ok(); } else { fallo(); }
+      } catch (err) { fallo(); }
+    }
+  }
+
+  $$('.code').forEach(function (bloque) {
+    var pre = bloque.querySelector('pre');
+    if (!pre) { return; }
+    var barra = D.createElement('div');
+    barra.className = 'cbar';
+    var btn = D.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cp';
+    btn.textContent = 'COPIAR';
+    btn.setAttribute('aria-label', 'Copiar el contenido de este bloque');
+    btn.addEventListener('click', function () {
+      copiarTexto(pre.textContent, btn);
+    });
+    barra.appendChild(btn);
+    bloque.insertBefore(barra, bloque.firstChild);
+  });
+
+  /* ---------------------------------------------------------
+     TABLAS RESPONSIVE
+     --------------------------------------------------------- */
+  $$('table').forEach(function (t) {
+    if (t.parentElement && t.parentElement.classList.contains('tw')) { return; }
+    var w = D.createElement('div');
+    w.className = 'tw';
+    t.parentNode.insertBefore(w, t);
+    w.appendChild(t);
+  });
+
+  /* ---------------------------------------------------------
+     LISTAS DE COMPROBACIÓN CON PERSISTENCIA
+     --------------------------------------------------------- */
+  $$('input[type="checkbox"][data-ck]').forEach(function (cb) {
+    var clave = 'bp_ck_' + cb.getAttribute('data-ck');
+    var guardado = load(clave);
+    if (guardado === '1') { cb.checked = true; }
+    cb.addEventListener('change', function () {
+      store(clave, cb.checked ? '1' : '0');
+    });
+  });
+
+  /* ---------------------------------------------------------
+     PROGRESO DE LECTURA Y VOLVER ARRIBA
+     --------------------------------------------------------- */
+  function updateProgress() {
+    var alto = D.documentElement.scrollHeight - W.innerHeight;
+    var pct = alto > 0 ? (W.scrollY / alto) * 100 : 0;
+    prog.style.width = Math.max(0, Math.min(100, pct)) + '%';
+    topBtn.classList.toggle('o', W.scrollY > 400);
+  }
+
+  W.addEventListener('scroll', updateProgress, { passive: true });
+  W.addEventListener('resize', updateProgress);
+
+  topBtn.addEventListener('click', function () {
+    W.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ---------------------------------------------------------
+     SVG ANIMADO COMPARTIDO
+     --------------------------------------------------------- */
+  var SVG_TPL = [
+'<svg viewBox="0 0 800 1000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">',
+'<defs>',
+'<linearGradient id="bg__U__" x1="0" y1="0" x2="0" y2="1">',
+'<stop offset="0" stop-color="#0b1426"/><stop offset=".5" stop-color="#0a0e1a"/><stop offset="1" stop-color="#0c1a2e"/>',
+'</linearGradient>',
+'<radialGradient id="halo__U__" cx=".5" cy=".5" r=".5">',
+'<stop offset="0" stop-color="#38bdf8" stop-opacity=".55"/>',
+'<stop offset=".55" stop-color="#38bdf8" stop-opacity=".14"/>',
+'<stop offset="1" stop-color="#38bdf8" stop-opacity="0"/>',
+'</radialGradient>',
+'<linearGradient id="wk__U__" x1="0" y1="0" x2="0" y2="1">',
+'<stop offset="0" stop-color="#f1f5f9"/><stop offset="1" stop-color="#9fb0c6"/>',
+'</linearGradient>',
+'<linearGradient id="beam__U__" x1="0" y1="300" x2="0" y2="700" gradientUnits="userSpaceOnUse">',
+'<stop offset="0" stop-color="#38bdf8" stop-opacity=".05"/>',
+'<stop offset="1" stop-color="#38bdf8" stop-opacity=".6"/>',
+'</linearGradient>',
+'</defs>',
+
+'<rect width="800" height="1000" fill="url(#bg__U__)"/>',
+
+'<g opacity=".2" stroke="#1e3a5f" stroke-width="1">',
+'<path d="M100 0V1000M200 0V1000M300 0V1000M400 0V1000M500 0V1000M600 0V1000M700 0V1000"/>',
+'<path d="M0 100H800M0 200H800M0 300H800M0 400H800M0 500H800M0 600H800M0 700H800M0 800H800M0 900H800"/>',
+'</g>',
+
+'<ellipse class="halo" cx="400" cy="790" rx="340" ry="150" fill="url(#halo__U__)"/>',
+'<ellipse class="halo" cx="400" cy="210" rx="310" ry="120" fill="url(#halo__U__)" style="animation-delay:1.6s"/>',
+
+'<g fill="#38bdf8" opacity=".7">',
+'<circle class="pt" cx="90" cy="420" r="3" style="animation-delay:0s"/>',
+'<circle class="pt" cx="150" cy="500" r="2.5" style="animation-delay:.7s"/>',
+'<circle class="pt" cx="690" cy="430" r="3" style="animation-delay:1.2s"/>',
+'<circle class="pt" cx="730" cy="520" r="2.5" style="animation-delay:.4s"/>',
+'<circle class="pt" cx="120" cy="620" r="2" style="animation-delay:1.9s"/>',
+'<circle class="pt" cx="700" cy="610" r="2" style="animation-delay:2.4s"/>',
+'<circle class="pt" cx="60" cy="330" r="2.5" style="animation-delay:3s"/>',
+'<circle class="pt" cx="750" cy="330" r="2.5" style="animation-delay:1.5s"/>',
+'<circle class="pt" cx="250" cy="640" r="2" style="animation-delay:2.1s"/>',
+'<circle class="pt" cx="560" cy="650" r="2" style="animation-delay:.9s"/>',
+'</g>',
+
+'<g fill="#a78bfa">',
+'<circle class="spark" cx="180" cy="180" r="2.5" style="animation-delay:.2s"/>',
+'<circle class="spark" cx="640" cy="150" r="2.5" style="animation-delay:1.1s"/>',
+'<circle class="spark" cx="400" cy="90" r="2" style="animation-delay:2s"/>',
+'<circle class="spark" cx="720" cy="260" r="2" style="animation-delay:.6s"/>',
+'<circle class="spark" cx="80" cy="270" r="2" style="animation-delay:2.6s"/>',
+'</g>',
+
+'<g stroke="#1e3a5f" stroke-width="2" opacity=".9" fill="none">',
+'<path d="M70 110H730"/><path d="M70 150H730"/><path d="M70 190H730"/>',
+'<path d="M70 230H730"/><path d="M70 270H730"/>',
+'</g>',
+'<path class="beam" d="M70 190H730" stroke="#38bdf8" stroke-width="2" fill="none" opacity=".45" stroke-dasharray="12 20"/>',
+
+'<g stroke="#38bdf8" stroke-width="6" stroke-linecap="round" fill="none">',
+'<g class="hit" style="animation-delay:0s"><path d="M128 253L152 277"/><path d="M128 277L152 253"/></g>',
+'<g class="hit" style="animation-delay:.25s"><path d="M203 178L227 202"/><path d="M203 202L227 178"/></g>',
+'<g class="hit" style="animation-delay:.5s"><path d="M278 84L302 108"/><path d="M278 108L302 84"/></g>',
+'<g class="hit" style="animation-delay:.75s"><path d="M353 253L377 277"/><path d="M353 277L377 253"/></g>',
+'<g class="hit" style="animation-delay:1s"><path d="M428 178L452 202"/><path d="M428 202L452 178"/></g>',
+'<g class="hit" style="animation-delay:1.25s"><path d="M503 84L527 108"/><path d="M503 108L527 84"/></g>',
+'<g class="hit" style="animation-delay:1.5s"><path d="M578 253L602 277"/><path d="M578 277L602 253"/></g>',
+'<g class="hit" style="animation-delay:1.75s"><path d="M653 178L677 202"/><path d="M653 202L677 178"/></g>',
+'</g>',
+
+'<g stroke="url(#beam__U__)" stroke-width="3" fill="none" stroke-dasharray="14 18">',
+'<path class="beam" d="M250 300V694"/>',
+'<path class="beam" d="M400 300V694" style="animation-delay:.4s"/>',
+'<path class="beam" d="M550 300V694" style="animation-delay:.8s"/>',
+'</g>',
+
+'<g fill="#7dd3fc">',
+'<circle class="dot" cx="250" cy="320" r="6" style="animation-delay:0s"/>',
+'<circle class="dot" cx="400" cy="320" r="6" style="animation-delay:.8s"/>',
+'<circle class="dot" cx="550" cy="320" r="6" style="animation-delay:1.6s"/>',
+'</g>',
+
+'<g fill="none" stroke="#38bdf8" stroke-width="2">',
+'<ellipse class="ring" cx="400" cy="790" rx="230" ry="86" opacity=".5"/>',
+'<ellipse class="ring" cx="400" cy="790" rx="230" ry="86" opacity=".5" style="animation-delay:.85s"/>',
+'<ellipse class="ring" cx="400" cy="790" rx="230" ry="86" opacity=".5" style="animation-delay:1.7s"/>',
+'</g>',
+
+'<rect x="72" y="694" width="656" height="212" rx="16" fill="#0f172a" stroke="#1e3a5f" stroke-width="2"/>',
+'<rect x="86" y="704" width="628" height="10" rx="5" fill="#1e3a5f" opacity=".8"/>',
+
+'<g fill="url(#wk__U__)" stroke="#7f93ab" stroke-width="1.5">',
+'<rect x="100" y="736" width="50" height="150" rx="3"/>',
+'<rect x="150" y="736" width="50" height="150" rx="3"/>',
+'<rect x="200" y="736" width="50" height="150" rx="3"/>',
+'<rect x="250" y="736" width="50" height="150" rx="3"/>',
+'<rect x="300" y="736" width="50" height="150" rx="3"/>',
+'<rect x="350" y="736" width="50" height="150" rx="3"/>',
+'<rect x="400" y="736" width="50" height="150" rx="3"/>',
+'<rect x="450" y="736" width="50" height="150" rx="3"/>',
+'<rect x="500" y="736" width="50" height="150" rx="3"/>',
+'<rect x="550" y="736" width="50" height="150" rx="3"/>',
+'<rect x="600" y="736" width="50" height="150" rx="3"/>',
+'<rect x="650" y="736" width="50" height="150" rx="3"/>',
+'</g>',
+
+'<g fill="#0a0e1a" stroke="#1e3a5f" stroke-width="1.5">',
+'<rect x="135" y="736" width="30" height="90" rx="3"/>',
+'<rect x="185" y="736" width="30" height="90" rx="3"/>',
+'<rect x="285" y="736" width="30" height="90" rx="3"/>',
+'<rect x="335" y="736" width="30" height="90" rx="3"/>',
+'<rect x="385" y="736" width="30" height="90" rx="3"/>',
+'<rect x="485" y="736" width="30" height="90" rx="3"/>',
+'<rect x="535" y="736" width="30" height="90" rx="3"/>',
+'<rect x="585" y="736" width="30" height="90" rx="3"/>',
+'</g>',
+
+'<g fill="#38bdf8">',
+'<rect class="led" x="110" y="748" width="30" height="8" rx="4" style="animation-delay:0s"/>',
+'<rect class="led" x="210" y="748" width="30" height="8" rx="4" style="animation-delay:.25s"/>',
+'<rect class="led" x="310" y="748" width="30" height="8" rx="4" style="animation-delay:.5s"/>',
+'<rect class="led" x="410" y="748" width="30" height="8" rx="4" style="animation-delay:.75s"/>',
+'<rect class="led" x="510" y="748" width="30" height="8" rx="4" style="animation-delay:1s"/>',
+'<rect class="led" x="610" y="748" width="30" height="8" rx="4" style="animation-delay:1.25s"/>',
+'</g>',
+
+'<g>',
+'<g transform="translate(150,712)"><g class="note" style="animation-delay:0s">',
+'<ellipse cx="0" cy="0" rx="8" ry="5.5" fill="#38bdf8" transform="rotate(-20)"/>',
+'<line x1="8" y1="0" x2="8" y2="-30" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>',
+'</g></g>',
+'<g transform="translate(260,712)"><g class="note" style="animation-delay:.9s">',
+'<ellipse cx="0" cy="0" rx="8" ry="5.5" fill="#a78bfa" transform="rotate(-20)"/>',
+'<line x1="8" y1="0" x2="8" y2="-30" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round"/>',
+'</g></g>',
+'<g transform="translate(370,712)"><g class="note" style="animation-delay:1.8s">',
+'<ellipse cx="0" cy="0" rx="8" ry="5.5" fill="#38bdf8" transform="rotate(-20)"/>',
+'<line x1="8" y1="0" x2="8" y2="-30" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>',
+'</g></g>',
+'<g transform="translate(480,712)"><g class="note" style="animation-delay:2.7s">',
+'<ellipse cx="0" cy="0" rx="8" ry="5.5" fill="#7dd3fc" transform="rotate(-20)"/>',
+'<line x1="8" y1="0" x2="8" y2="-30" stroke="#7dd3fc" stroke-width="2.5" stroke-linecap="round"/>',
+'</g></g>',
+'<g transform="translate(590,712)"><g class="note" style="animation-delay:3.4s">',
+'<ellipse cx="0" cy="0" rx="8" ry="5.5" fill="#a78bfa" transform="rotate(-20)"/>',
+'<line x1="8" y1="0" x2="8" y2="-30" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round"/>',
+'</g></g>',
+'<g transform="translate(690,712)"><g class="note" style="animation-delay:1.3s">',
+'<ellipse cx="0" cy="0" rx="8" ry="5.5" fill="#38bdf8" transform="rotate(-20)"/>',
+'<line x1="8" y1="0" x2="8" y2="-30" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round"/>',
+'</g></g>',
+'</g>',
+
+'<rect x="72" y="694" width="656" height="6" rx="3" fill="#38bdf8" opacity=".35"/>',
+'</svg>'
+  ].join('');
+
+  var contadorMontajes = 0;
+
+  function mountSvg() {
+    $$('.hsvg').forEach(function (caja) {
+      if (caja.querySelector('svg')) { return; }
+      contadorMontajes += 1;
+      var uid = 'i' + contadorMontajes;
+      caja.innerHTML = SVG_TPL.replace(/__U__/g, uid);
+    });
+  }
+
+  /* Reparación periódica: si un contenedor visible se queda vacío, se vuelve a montar. */
+  W.setInterval(function () {
+    $$('.hsvg').forEach(function (caja) {
+      if (!caja.querySelector('svg') && caja.offsetParent !== null) {
+        contadorMontajes += 1;
+        caja.innerHTML = SVG_TPL.replace(/__U__/g, 'r' + contadorMontajes);
+      }
+    });
+  }, 1500);
+
+  /* ---------------------------------------------------------
+     IMPRESIÓN
+     --------------------------------------------------------- */
+  var estadoPrevio = null;
+
+  function prepararImpresion() {
+    estadoPrevio = { tab: current, abiertos: [], detalles: $$('details') };
+    estadoPrevio.detalles.forEach(function (d) {
+      estadoPrevio.abiertos.push(d.open);
+      d.open = true;
+    });
+    /* Mostrar todas las pestañas para que se imprima el contenido completo. */
+    tabs.forEach(function (t) { t.classList.add('on'); });
+    mountSvg();
+  }
+
+  function restaurarTrasImpresion() {
+    if (!estadoPrevio) { return; }
+    estadoPrevio.detalles.forEach(function (d, i) {
+      d.open = estadoPrevio.abiertos[i];
+    });
+    tabs.forEach(function (t, i) { t.classList.toggle('on', i === current); });
+    estadoPrevio = null;
+  }
+
+  W.addEventListener('beforeprint', prepararImpresion);
+  W.addEventListener('afterprint', restaurarTrasImpresion);
+
+  $('#prt').addEventListener('click', function () {
+    try {
+      prepararImpresion();
+      W.print();
+      W.setTimeout(restaurarTrasImpresion, 400);
+    } catch (e) {
+      restaurarTrasImpresion();
+      W.alert('Este entorno no permite imprimir directamente.\n\nAbre este archivo directamente en el navegador y utiliza Ctrl+P o Cmd+P.');
+    }
+  });
+
+  /* ---------------------------------------------------------
+     ARRANQUE
+     --------------------------------------------------------- */
+  (function init() {
+    /* Tema */
+    var tGuardado = load('bp_theme');
+    applyTheme(tGuardado === 'light' ? 'light' : 'dark');
+
+    /* Tamaño de letra */
+    var fGuardado = parseInt(load('bp_fs'), 10);
+    applyFontSize(isNaN(fGuardado) ? 16 : fGuardado);
+
+    /* Pestaña inicial: hash > memoria > 0 */
+    var inicial = 0;
+    var hash = W.location.hash || '';
+    var mHash = hash.match(/^#t(\d+)$/);
+    if (mHash) {
+      var n = parseInt(mHash[1], 10);
+      if (n >= 0 && n < tabs.length) { inicial = n; }
+    } else {
+      var tMem = parseInt(load('bp_tab'), 10);
+      if (!isNaN(tMem) && tMem >= 0 && tMem < tabs.length) { inicial = tMem; }
+    }
+
+    go(inicial, true);
+    mountSvg();
+    updateProgress();
+  })();
+
+})();
+</script>
+</body>
+</html>
