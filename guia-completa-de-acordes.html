@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>(anonymous)</title>
+<style>
+/* pdf2html base stylesheet — fixed-layout, faithful page reproduction. */
+html, body { margin: 0; padding: 0; }
+body { background: #e8e8e8; }
+
+/* One page = a positioning context sized to the PDF page box (CSS px). isolation:isolate makes it a
+   stacking context so each page's per-element paint-order z-indexes stay self-contained (and the fixed
+   sidebars keep sitting above every page's content, form fields included). */
+.page {
+	position: relative;
+	isolation: isolate;
+	margin: 8px auto;
+	background: #fff;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+	overflow: hidden;
+}
+
+/* The text-suppressed background raster (vectors + images), behind the text. */
+.bg {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 0;
+	user-select: none;
+	-webkit-user-select: none;
+	pointer-events: none;
+}
+
+/* Type3-only transparent overlay (Type3Mode.IMAGE): Type3 glyph shapes above the background, below text. */
+.t3o {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 0;
+	user-select: none;
+	-webkit-user-select: none;
+	pointer-events: none;
+	image-orientation: none;
+}
+
+/* A positioned text run. transform + font-size carry position/rotation/scale; the pooled style class
+   carries font-family/size/color. Runs are emitted in logical reading order (tagged PDFs) but carry an
+   inline z-index equal to their paint sequence, so visual stacking is unaffected by the DOM order. */
+.t {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 1;
+	white-space: pre;
+	line-height: 1;
+	transform-origin: 0 0;
+	display: inline-block;
+}
+
+/* An extracted image. Each element carries an inline z-index equal to its paint sequence (this class value
+   is only a fallback), so images stack correctly over/under text and vectors no matter the DOM order. */
+.im {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 1;
+	transform-origin: 0 0;
+	display: block;
+	/* PDF placement ignores EXIF Orientation; browsers honour it by default. Pass-through JPEGs may carry
+	   an Orientation tag, so pin it off to match the PDF (no-op for re-encoded images, which have no EXIF). */
+	image-orientation: none;
+}
+
+/* An extracted vector layer (SVG). Carries an inline z-index equal to its group's paint sequence (this
+   class value is only a fallback), so it layers correctly against text and images regardless of DOM order. */
+.vec {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 1;
+	overflow: visible;
+	pointer-events: none;
+}
+
+/* Zero-size internal-link target anchor at a destination's exact Y; scroll lands here, not the page top. */
+.dst {
+	position: absolute;
+	left: 0;
+	width: 0;
+	height: 0;
+	scroll-margin-top: 8px;
+}
+
+/* Zero-size holder for <clipPath> defs referenced by clipped vector paths; takes no layout space. */
+.cdefs {
+	position: absolute;
+	width: 0;
+	height: 0;
+	overflow: hidden;
+}
+
+/* A detected ruled table (opt-in): a real, copyable/accessible <table> sized to the grid, laid over the
+   visual layer. Cells are transparent and border-less so the ruling lines and fills underneath show. */
+.tbl {
+	position: absolute;
+	z-index: 1000000000; /* above the paint-order content band (runs/images/vectors carry z-index = paint seq) */
+	border-collapse: collapse;
+	table-layout: fixed;
+	margin: 0;
+	color: #000;
+	line-height: 1.1;
+}
+.tbl td {
+	border: 0;
+	padding: 1px 2px;
+	overflow: hidden;
+	vertical-align: middle;
+	text-align: left;
+	white-space: normal;
+	word-break: break-word;
+}
+
+/* Interactive link boxes and form controls, above the text/image/table layer (which uses a paint-order
+   z-index band). Kept below the fixed sidebars (z-index:10 in the root context; each .page isolates its
+   own high z-indexes). */
+.lnk {
+	position: absolute;
+	z-index: 2000000000;
+	display: block;
+}
+
+.fld {
+	position: absolute;
+	z-index: 2000000000;
+	box-sizing: border-box;
+	font-size: 12px;
+	margin: 0;
+}
+
+/* Collapsible navigation sidebars (opt-in): outline (bookmarks) on the left, thumbnails on the right.
+   Both are fixed, scroll independently, sit above the pages and are hidden when printing. */
+.toc, .thumbs {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	z-index: 10;
+	background: rgba(250, 250, 250, .97);
+	box-shadow: 0 0 6px rgba(0, 0, 0, .25);
+	overflow: auto;
+	font-family: sans-serif;
+	font-size: 13px;
+	-webkit-user-select: none;
+	user-select: none;
+}
+.toc {
+	left: 0;
+	width: 250px;
+}
+.thumbs {
+	right: 0;
+	width: 172px;
+}
+.toc summary, .thumbs summary {
+	cursor: pointer;
+	padding: 8px 10px;
+	font-weight: bold;
+	position: sticky;
+	top: 0;
+	background: inherit;
+	border-bottom: 1px solid #ddd;
+}
+.toc ul {
+	list-style: none;
+	margin: 0;
+	padding-left: 12px;
+}
+.toc li {
+	margin: 1px 0;
+}
+.toc a, .toc span {
+	display: block;
+	padding: 2px 6px;
+	text-decoration: none;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.toc a {
+	color: #06c;
+}
+.toc a:hover {
+	text-decoration: underline;
+	background: #eef4ff;
+}
+.toc span {
+	color: #333;
+}
+.thumbs ol {
+	list-style: none;
+	margin: 0;
+	padding: 8px;
+}
+.thumbs li {
+	margin: 0 0 10px;
+	text-align: center;
+}
+.thumbs a {
+	text-decoration: none;
+	color: #666;
+	font-size: 11px;
+}
+.thumbs img {
+	display: block;
+	width: 140px;
+	height: auto;
+	margin: 0 auto 2px;
+	border: 1px solid #bbb;
+	background: #fff;
+}
+.thumbs a:hover img {
+	border-color: #06c;
+	box-shadow: 0 0 0 2px #cfe0ff;
+}
+
+/* Print / PDF round-trip: one source page per printed page, no chrome margins or shadow.
+   The exact paper size is pinned by a generated @page rule when all pages share one size. */
+@media print {
+	body { background: #fff; }
+	.toc, .thumbs { display: none; }
+	.page { margin: 0; box-shadow: none; break-after: page; }
+	.page:last-child { break-after: auto; }
+}
+.c0{font-family:"f0", sans-serif;font-size:10.67px;color:#7f8c8d}
+.c1{font-family:"f1", sans-serif;font-size:29.33px;color:#1a2b4c}
+.c2{font-family:"f0", sans-serif;font-size:14.67px;color:#d9534f}
+.c3{font-family:"f1", sans-serif;font-size:18.67px;color:#1a2b4c}
+.c4{font-family:"f0", sans-serif;font-size:13.33px;color:#2c3e50}
+.c5{font-family:"f1", sans-serif;font-size:13.33px;color:#2c3e50}
+.c6{font-family:"f2", sans-serif;font-size:13.33px;color:#2c3e50}
+.c7{font-family:"f1", sans-serif;font-size:13.33px;color:#1a2b4c}
+.c8{font-family:"f1", sans-serif;font-size:14.67px;color:#1a2b4c}
+.c9{font-family:"f1", sans-serif;font-size:12.67px;color:#ffffff}
+.c10{font-family:"f1", sans-serif;font-size:12px;color:#1a2b4c}
+.c11{font-family:"f0", sans-serif;font-size:12px;color:#2c3e50}
+@page{size:816px 1056px;margin:0}
+</style>
+</head>
+<body>
+<style>
+@font-face{font-family:"f0";src:url(data:font/woff;base64,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) format("woff");ascent-override:92.77%;descent-override:7.23%;line-gap-override:0%;}
+@font-face{font-family:"f1";src:url(data:font/woff;base64,d09GRgABAAAAABvQAAoAAAAAJcgAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABPUy8yAAAA9AAAAFcAAABgm/uyKmNtYXAAAAFMAAABNQAABBzAIMQ4Z2x5ZgAAAoQAABY1AAAdDHCqQwdoZWFkAAAYvAAAADYAAAA2ApsHp2hoZWEAABj0AAAAIAAAACQQnQsHaG10eAAAGRQAAAFjAAABuL+zIgNsb2NhAAAaeAAAAN4AAADekB+IxG1heHAAABtYAAAAHQAAACAAkgEsbmFtZQAAG3gAAABCAAAAYAQWFFRwb3N0AAAbvAAAABMAAAAg/20AZHjaY2BhWcm0h4GVgYF1FqsxAwOjPIRmvsiQxsTAwADCEPCAgel/AINiPZCpCOK7+/u7MygwMPz/z5H09yoDA0cSk7YCA+N8kByLFesGIKXAwAwAxloPZgB42u2T1zIccByFP8OMC6stlij7WzY6KaIsonerd5JoQYqaoiTIA3kJT5CrvMBPS2zsYi25cPO3vIWJ8825+G7PzAFCCA0WLISFxdxqUMKD7iCdDJw8JpMssskhlzzyKaCQJzzlGc8p4gXFlFBKGS7KqaCSl1RRTQ211FFPA4000UwLrbTRjpsOOumimx566aOfAQYZYpgRRhnjFa95wzgTTDLFNG+ZYZY53vGeD3xkngUWWWKZFT7xmS98ZZU11tngG9/ZZIttfrDDLj/5xR4efPgJcK1ohFo0UqM0WmM0Vq0ap/GaoDZN1CR9pMmaoqmapnYVYx4WMN57zbhxmxLjMk5jNzaTZKzG4giRf3IllxKQC/HLuZzJqfjEKyfyVzxyLH/ktxzJoRzI/t0n/uvcAKR8UeUAAAB42mV5CVxU1fv+fc+9d8ZdhmEgrcxhgMkUS4ZhEFfcEgwBVzbBBUHcAEXFNUW/maVFaqVoCi5ppYmmYqm4JLilKaDmEpBbmmiIWwL35feee8Hs///gHeTcc97tvO/zPueMIAvxgiC+KecKoqATGgvNhJaCYDOYDY2ZCAbZAKIZ4tkxJQsYwC1wVrZCs5tMxDo5tzpMnqVsYLFKrDJHbtSsxomlK7EsVqirEz4XBLZe35l5CXZBEPTCBCEAOtP4BzS+TH5I4xNpXCdMePOhwOf3rauQdDqBxkO0+eBQx3vReG91PLp+PEwdT6JxJ3V8VP14iDoeRONv6IDGw+vHOwkgMOEj9oPYQj4mtBIsggBeVp3F3cvu62mz+1rcTVZfP5uPq8ng4ubp4+ewW9x1Jhc2oqkuZE76AugzI+2j7d8uW5jdGrPfHPLq2OFh7Ehbj0FzE//Q2d4f02Lsoo+XYGFCaIZnqw97t4/gNowXBMlJVsiGKNXHSYMU+s2Efvi+eEYKFZoKnmSDi2YC1wxmF51eR0ptpN6sk7QXDvph+RFBwRERwUEReA2E7kN7x2T1iQdwF7H2UPGDrHi/li3FvYEREYE9IyNx2eJNA3umDPoqPOrc8ZOHFuXF+vjauD3D6irkt/V+ZE+X+pgUgR/ZM6euEg6r+96c7BEtoujrR2Fw0bl7QZ75oblRxMoI+ifn1jqJldW/BUZGBvaMiBBUX3qKV1moDgSJMoavNdhk/gFNrBtPQV/rhpPyDIxnXh/xD3U+xWQt6XpVeEMQzEaLaDFa7Gb1sYk2/pgs6gM2o4UN7n+kf17/G8A63QF90N6go0F5QVerO5Vhf3xwtNMRyMIEyNoOr22HbBzJn+14czsmsHfhNdrtmLp2kr9ulfCWGmW9yWL38rCbXVwpunZfL6uXGly7zeTqajL7etFuu7i6ubpK/ld2r/8an4F5yaC4kXGpxyov/7B++xksix8cNSgi/WgVZOT+6lJY6Hzp4SfjRg8YNKp98NFj314yXrzc6uHxGeljV8a9HfIzxUYW4ijemXIBVZKT0EboIAQIglHLMIptWy+7J1hB1syxq/pN8OI133rbf97Fbcj6av16PLVR6q50XsaOK07denbv2q1H927wbGPW2uzsrDWbjvQJeNfWvXuPbtKqOTt3zgmZtXPnrJU1n7wnTSn3DQvzDbGHh9trz8zeuXN2CP/wDQ+nsbAwXpq0+/3r7sntyN7XBKvQiXanvjj8HF71+Wly0euNfnabk94NXNwcfpplIjfTAZS44h8DNpy/VrcireeAy3u+PXk0tqbr04VXatdFjhnUt0effrGToxNjsdzkbx424c6e978ZPCxr0Pbi00t2L+2N19KW4vXvUQoOSgvsNtQ7dJhiHJoSACEtO0WSbUB5dgWMOkqe+iwD4+t7i+VJOImnFb2fi53ZFl24YKAYOzk7O9x0TDQ5ObvpvRgzzF1zO9U/5RgrSPVPvb2GhUFr2ALNbWuH4Fhc2x6XY9yw1T7QHLZCKy7rTZI1WpMFTozprX7ORrsTszpcnZ0NbHT2gzT/5AJ2cpJ/2oNs1hkrcTje81k9GNZBfHuYDJsGZ9nwHg3+TbJeZd3ElZTvLcguo6dDFm2ip5ts1Ivi3MtY0BX8jD+7wDtd8PD5dXv3sB/AKXLPXIjBr2blReKzVLDgbUH1r7OwXHpD2kuYIYDZ8OJHegO/xAf4OUwAZ0hi7TERVoMMH+AsWuOBy2G+8JRXpiftDvlB6Q7zASYP+8LaE56eSP0jOLT/0sQrNDcZalgOu0VZIIDJbGc5yll266+/VN3z6p5AAbzF5TheIMO8yC8iIr6I/LRXZGQvQgSaV/eobiG7ruKIAGABdl25c4m9Iuc+L9Z589ofSZjsIOxtJrTmkRXaCga7k2DzEYyeaiLpDWrCOyQHVlGF/w0tr10FJ8Cy8aPixsOEUXFJwKIxD6+AFwQp0B88sBT3W46u/uIgbvt57ep8snUrJbJZ3kVoKwAFSLZ7imYsw60sSt5VPVCKnvDXb6pP71IqBVGuv0KxIX/Brz6ZCQkENdOZHqSg2lfh0vjBo6ITJ2EZtLx36/F3K7H27t1CeDptdeColKXjC6D174czUVlDm63lKfloI7lv0h92DWg0qR42H4kCpyewceHA7vUCiSzwUdakCaPiQ6eREtfjv4MhbfysWXj599k3PgP3mTGJaZVs+o1JMeFJESG7rxT/Evtdp/Y7Z5wpj/oxMzxpctRlFYf9yZ+RFPsmaqZRihCG8gTxNBv0/iwOPDZvxjLlO8qS3i7wUDxUm3YXC6DLXSZbVLvHk929aP1r9IfVaDaZRSp4ZwqDxd3DanZ94QlMuz1YfEfJ94ifXnKnsuYgXpChjfGnSXFT0kOHsZX+7GYlFjoQ/zyKV8pPHflqytRlNm7fWJIfJh8STII7R2PB4q5uvpnMpJan58pkl3/V6KUwfFJ+F+/CBzCy3evH09Jfmbbz7DnFb+ao2NTU+JDJraC8BMuhD8/cUXDogTg64fsZeDU7K+vzKWlfhDq4T90oJtwnngsmMIPZLvVSzuCvzKZ0kHNzqh9Kx+9y3ItT87JAcBXMhNJkndTWowH2/t020HbSxdXHz+jrpf6PzKVcvYtReGtuUsx4kE6cBnFCTNIcPBI9KCw6elNkm5S9yckjYibBp2cvXDg7c4/PO5uTCouKCsdv6uSzm7kNHTc2Ytj48crV0Skpo0dNnqz11OF1DyVvsseF7OF1IlvsNipdQmNm59kpGDy1QtFiJXnj57jc45XLlwxpX5y5Co3L/oDmSnBC0rsJraZHxI0TW+BXGCxVQd62FGhVVAJv44/4eHBKdpDvtDWrvxNUvjSHavxnaYTgJbRGzg1a16Foo/EAwpBdNG6lkfuijWL5iiuPrUNYIq4gDkOx9QQ78UNZXFG7SYxRTjD/JTD5HkzCu2dOav4sgQBJL16kSOs1dOGPpK/NEOfRc7GiAkPv3SOZ6SSzXJNppA0zeHqmi+NqV7G+yn4pFFdU4ApwPXdKk9mx7rG4i7DEjfMIMHcXOYHT6c1+Hmr1cholEFRxpGLRdQL03tbvq+7xDEtFkPOLKlaM9n8Trw/nvGY4HF7yzaqEHt+ERZ0rPH1w4Y4YnxQ8GhGRQRSHCX2wi+6m/KHgI3QlPTqdpa1gdHb2MLcVRB2jHVF7pMOZY4abqFN3xVkwu0tMzwQz/QGMDxlpn6TKfkUjMA2HOjX7HRaCBIthtUGOPrhqR5/4nOXZxtdAzk1b2M23Sf8Oo6frnPA33PcLXtzSxEBJbovY3QNfdVvrOdL9LWu7clzp3QEuwUEwwI7n+BpOW1InbM5c9vQ0CPB2r/bKofge5ZsgCD4+i2tu4Er8wNqGLcBHfcfChebkUyMiJyOoLvSEFoKNF4ZoFo1msRFrA67MjIfjlYfxe2DSXs7soQOWsDeYhXYvg+rpgNrLTMLrap3oCWFe1IfB5mP3tYKvlQ/6SQfw8T/KKahToE38xPkptY+KHtwEuRBvgTB1Mmwvuszk3KO/jPm6fdt9bAsu371Xqn10TI8zJqp4RFxVqqEa4J3CrBPMWq+gX25mLy9LW1GrPvEsdGiJ5/Ex3sF8CAYjRcTdhCVN5n6O1xotyf7kf3CrlDTOhN5x0Btm4+/lGR9jePr1mwsoDtyfa+RPY8GonnRIh4l0iIb62rJmwBFqNVNxGV7MzNz5I9uRK+fifDwRiCdwgXSw1n774nul13m7U2UNJllNVUkmc/2TIZ5V4lgP5QjbJOc+ws33cHaV0DDfoep+aX6GuEdJZz2Vw3zuh1XKdq2nxBKPFCkWbXhPo1PB/xsLfT0amO2y6IvPKvEWboSBVEGvQotX8Jphzod42Rm+2zZx4itYyRRlf/dPIBnCh0M4pGJlyeRFOO7T23c6udVcExpskz00X16iGgbxHyUPi8GbBUEHlqJkyrnKLjawOkxdQ+c8OFLf+2kuHMES9VyYS+/a1VWI1RoHosbEu59KwwnrGe0f3jl3Ee+Dd8K2BH7CuFJ99c9p0dMn1tvhReuakR2gV21wULaCeAQ/WsstWQhTIVWpZS4saCvGkT2TdkOZMqv24gs/pPa0XlZ7PK2W2tcOB++qKjm3ppf2Xjev3i6VVBmJtRi5HnE+TIMlWNwG089iehvStQQypbZUDZ+wbTWFUoAyBKeovnEbLdo+kt/cdfqQLVii7FNj1Z9HgdptIPnWUzysYpd6DiPsasrZxwseRJ9Eg9rSOUXbTvlt3KJcw00QxTwgGs99jUWb4OtVX24Eloc/YAbMg5BACIH3cQH+wG4+uHe9/42HD/6oz+tSlQs4a7tBqUKkg1vn40ctA3ZgMetMx3jOjBAfQ7MFU6YsYExBSu/K88XVbD86ZuV/xm0dgrWyN9nqzHFW1nvq/s0+AydJotauyea2ZLJnPp72CyBCSlYT1TBC1KI0/6+//GIz8e2OGyH6m+eN/2N24Ck8F8W+/Nd4NT7c/ofqvrjxnVd5jIYyvCvUcwTxe6z8m/xoUwNvLE2HLrX5D6fPSJvJXJW/5Nw/Lq076qdsayEdxAEzRo+doeVDP8KUjeQLnRiomXtYG9q7uaGzu9WTM48GciZOj8f3l66AjhVVRDZLps+cPnXlsr+fYHnlZ1j1PXivX5CWDPOCRs0dk5ifV64ci5k+pl//ke2Dru0+dCGhZPP/JsZyve3In1Mq3gpGu1rrhnZSDvbGEungo0c1vaWDmn1pZN95muek1QnnSHaayy0xipvAG49VPcFC8F4ys0bH0wmxGnQoHq7tmZkBsiaDY7u9nvNwZAeQ7SgRXunhPeoIwVpR1vwk9dPmE/vTlWk1RvNFkZYYjTajUVeG+Vh0/z4W4QFoX1CJlcfUTD5b60PLn0mN+UPr3fhBV8OKxszMVfJ/MJuA2AkiMRJ24UZiSHcIkX7ACMqvpvBE6ai4AyJjpaxIUG9lBKmSZDTSZHD4gAHQkX6C0Izn0EyVncIya0cqlcxJzFbtDqY167S64zEFM6cVwVIfxcZ+r9nGzlFkt9U8qMqVmmt+puN21k63XmMgdH6kXWDtPv0UQ3Xry56fLtVX0RyhbqG4WMMwmbxgI5VssLKRc3Xez4u5jOa4HfI1GaTTYLbbDM1hJ4ZmyofL/mlRqrPTHG92WRyixd8INrCIoje0L4K3bn2/g11ml5R2cAL9aR7UtREz1VO3wE0XM2tTr1+ncV/pNLPr1HEwWgBSCu5jhU7A02BXa0O9H5MGqmd0wdxwf+Vns6lckFJZu8FydTP9e4Xlyq47N03auqak9tmCkMFrsKy6aP8z1k65H5ToOn3q+AFeXablLft2f48BkRnLTufnY5vMUMPJQOuBUe/69eM6k0lnd7KppdqN+ZHAyhu/QT0hgLveUM/bpe7ni3OTmmMNuI/dcOE8GpbY7R/PHDyYGR/hL4un6gTlShqeqoSuqTgkdWfO/APkby/qDc/IH5Ls2XDpxex2X2dOqHh70xzoFJoAdBZH5UDN839qjj9nWAmxEfMGhlwYHrytFLrdfu0WdL/5c2jywdVzD3Kb+X2hocFm9SajXqobTy/1xsKgXl40azHh25OlpafXJYC7MjhmyqLOjkWpcVMXg3+F6Rn4TGPWaoE5ZeSlwPaUfRo+qXeLZLMLPy15Eid0F6wqMXc2mcyu6mUIp6J2Ly+pkW/Julq8CWC4c/exEtryw+TNI/F4THxLWM5G5AbPgk6/vfUEAvBa5eykBTOZ25x41+FTea4Rv2JlOhPpEFQApCOAegfjpier9SYby7uEpTk5F/P6DRS9bNniJTGxdrWYWBz74zGX8sbLxqi5gsMkixpbjnjuXlaHdp/Eg2HVguHg/filcJhY69H3+s2fsHbq/ISck3+xe7/8MKYpgUwZxk+Ysiig88LUyThs0PDc9NlTAqaA753XKUSzEmrulVWKP2XkxUPhmB8/UOstid99Uvz5HYq71rt5ZvLo+3qxwHmd6axrTs1dXwBYGiXGj6pVKD0Klhy4oYSzbUmhapwn0dqd8h2q8ebqzVn9zYNMMiZpV5Lgi6XyoMChQwN7Dh36G2/MtK4uGwfANnWd68vr3MhXztjt5K09SeP+ruB+ZMd7fTt2XPiSmI/yjhpuNV6q+pFCfkTr4P/nIC3wr0Tugz+4UHeeBd/ArkTco4Pa7f2hD3ZXPtRw5336yKmvZ555OViqE6pVeBaSOf+g/Xn9RYzc+A7/GyeLOkrx6pXeGUvBqUlqwfmByRfX5lPQhg+Yb8OyCDE+QWFSwIyPN2/eV64Es10T+81UTCx3QpCmX72DJh2G/+ho2Ides7vyi40maT+vPkAyI8X4cYokBczJ3HudyxoXLDTUUm+S0VxoxePJT6Amk9qerJ4vndl7QbPHz6AJPn3yCJ9IhAGzZ44dO3tWPLNWQBcsqDBVUPPy+bP5oh/3ZS04eECrpWQcKXUn2Wqdyu7WBguplFzYS9jCsjYkUgiaN0385uzly/jnYl+/xamxo1ymIshXkuZi0TMSf0xMT8K+E/av/mCPajfJNjTI5tF/CQUcLyW9ZMDShPWnf792dvs4ZwwfMWWRv9+i1JFSQLUX1KZAAAeCdxYmK79l7B8PhxP21u8dKybZzf67dyJL3GgjOw2Nh651uIuib7LSRQpY8HlzvKfthz/hXRGt81A5iPXFzep/OYiK6iqUsB+HLt1y8dap4iosCxvaP3xYWu6dp+dvVIJRmhayFTp07NHGY9XHi08Wftl9UG+fjl3dLJk5nx64u2hosKavSV0FWyb3pRMbIRWXypHEoF0PqRFgy8JHfLJ1/Xow79vn7+jwpv7VldtYl2Joik+KlRt9OjTS5Kjfs1B5GRruha31zMTBTwZCo/H5649T6x/We4U/uCcv/KmEHVZ6RQ1IZLU1hWrvpBKoofUNvMRoFGtwBd7H5fD2yRNSgEqq27FLfC6hqnyE5qqchDqopZ6TyEfwftXZMw+xAtw+PXa+cBlfxr5RhtPSMJZLyLFDtZWqXhJpPb8rNRrN9bwGIGrnXrDjLxCIp48ewpP0+xcpgM6NvZS/lUswFL9j7ZiB1ks4QALNVyPBhRv1JQc3wQwt2FP//t5DB5na4v/AcfIEiQs1Bn+MA4xXwdF1sNRViWUbajz8FsTUcxSRNPyXo0SJYxRkhtp5UCeG3/1Wibyby3K0GL+Dq1iGrhvPVqPdx86voNx0OioEPf9KwJWg34sG39mVddY/OnDXrsBo/7NZTPy1pHDd84CctpsnHL0VFXXr6ITNbTcEVK8rLFZlfo9VMKLhXGYxwIgdcu7zXrp8/s6d9KVp+sDkzr914FfEpMLB9fB2wfWyNK4wpue+fT1juMKiX4sL11UHbCCFx25ERdz+mRTmBDxfV1ii4g2kSwViV55vYFPzWM1r7Zs1lVJXXti/fOCczX279L/002cDF2zs3WWA2Dr/Ztc1Y0PEw9e6ZY1T7U4gHjRWw00e+IRjBCH3JGJBeFp9T10GtlJsG3B1K5ZqSUTvpkt/iAmcgNE7twYb6k0gC9ihLfPH9BgSbB+yZf7osBkDLD46odnkte3bxzWemD3Mh8T/H4KX7ygAAAAAAQAAAAIjVD3KbB9fDzz1ABkIAAAAAADE7/UOAAAAANVNo//4sv3VEHwIcwABAAkAAgAAAAAAAHjaY2BkYGDP+cfDwCDw6cem37MEahiAIiggDwCbAga7eNodkctLglEQxY/zzU2JXIVF2AOsRQZGQpAZgVgpSbvMNmGFFSREQRFCbyOhqEUv2taictWqf6F10NJF0C6oVtIutPN54cfMnTvDzJxrnWIBPJLCtQRR0ATGtICobmFZJzFuneGEftb6Q8wUkHJUmBvAtpwjoi/kBjPmE7MmgrhjAhF5xY68odu6g1fTGHT8osvyYlWS2JVKtcz8OVIkcWLXh0iWLJJhkibTEmWPFoS1EQN6hWP1IccZep1+jJgMXMaLvBlGyvQjr/skw/s60qaIvL2L5uA3HsankHcK3x4J5zc9NZu06/ULMS0zbxQbZgguJ9BpmtDMmGgJCQmz5zz3DcNt7SNgXcIhD+ivaXSAVQ1Qp0NCneQdbXrBOHWTDqyIp3qrMazR36v7YS41rOlq1x0hKt+07QjJM+prWjfAbT7Qyn2b1EBpE3KPPnHiidZngshKEUv2H1klbP4Dl/dZQQAAAAAqACoANgBCAE4AWgBmAHIAqAC0APAA/AD8ARoBMgFoAagCAAJOAl4ChAKqAs4C6AL+AwwDIAMwA2IDdgOiA94D/gQuBGgEfATEBP4FCgUWBSwFQAVWBYoF9AYQBkYGeAaeBrYGzAcEBx4HLAdIB2gHeAeaB7QH5AgKCEQIcAisCMAI4gj6CRoJPAlWCW4JgAmQCaIJtgnCCdIKDAo6CmYKlArGCugLJgtIC2QLiguqC7gL6gwMDDoMaAyWDLIM6g0ODS4NRA1kDYQNqA3ADeoN+A4iDkYOVg5kDoYAAHjaY2BkYGDIY7jFIMbgz8DOAOIhABsDEwAqQgG/AAAAeNpjYGBgYTBjYGZgZOFkYASyGaBsJgY+IA/CZmEQYRCCstmAPDWGNAZDhiCGVIZ0hlKGHIZEhiKwiAKmGADdPgh7AAB42mNgZgCD/1kMKQxYAAAqHwHRAA==) format("woff");ascent-override:92.77%;descent-override:7.23%;line-gap-override:0%;}
+@font-face{font-family:"f2";src:url(data:font/woff;base64,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) format("woff");ascent-override:92.77%;descent-override:7.23%;line-gap-override:0%;}
+#p0{width:816px;height:1056px}
+</style>
+<div class="page" id="p0">
+<svg class="vec" style="z-index:1;left:-1.33px;top:-1.33px;overflow:hidden" width="818.67" height="1000" viewBox="-1.33 -1.33 818.67 1000"><path d="M0 16H816V0H0Z" fill="#1a2b4c" fill-rule="evenodd"/><path d="M72 997.3H744" fill="none" stroke="#f8f9fa" stroke-width="0.67"/></svg>
+<svg class="vec" style="z-index:136;left:78px;top:179.33px;overflow:hidden" width="676" height="4" viewBox="78 179.33 676 4"><path d="M80 181.3H752" fill="none" stroke="#d9534f" stroke-width="2"/></svg>
+<svg class="vec" style="z-index:963;left:79px;top:511px;overflow:hidden" width="674" height="120.67" viewBox="79 511 674 120.67"><path d="M80 630.7H752V512H80Z" fill="#f8f9fa" fill-rule="evenodd"/><path d="M80 630.7H88V512H80Z" fill="#d9534f" fill-rule="evenodd"/></svg>
+<svg class="vec" style="z-index:1964;left:71px;top:876.33px;overflow:hidden" width="674" height="90" viewBox="71 876.33 674 90"><path d="M72 877.3H744V906.7H72Z" fill="#1a2b4c" fill-rule="evenodd"/><path d="M72 936H744V965.3H72Z" fill="#f8f9fa" fill-rule="evenodd"/></svg>
+<svg class="vec" style="z-index:2165;left:70.67px;top:876px;overflow:hidden" width="674.67" height="90.67" viewBox="70.67 876 674.67 90.67"><path d="M72 877.3H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 965.3V877.3" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M744 965.3V877.3" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 965.3H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 906.7H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 936H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M193 965.3V877.3" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M361 965.3V877.3" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M596.2 965.3V877.3" fill="none" stroke="#7f8c8d" stroke-width="0.67"/></svg>
+<div class="t c0" style="z-index:3;transform:matrix(1,0,0,1,72,1000.77)">Guía de Acordes y Cifrado Musical</div>
+<div class="t c0" style="z-index:36;transform:matrix(1,0,0,1,702.55,1000.77)">Página 1</div>
+<div class="t c1" style="z-index:44;transform:matrix(1,0,0,1,80,95.45)">GUÍA COMPLETA DE ACORDES</div>
+<div class="t c2" style="z-index:68;transform:matrix(1,0,0,1,80,137.06)">Tríadas, Extensiones y Cifrado de Acordes (add vs. Números Directos)</div>
+<div class="t c3" style="z-index:137;transform:matrix(1,0,0,1,80,222.68)">1. La Tríada Básica: El Cimiento Armónico</div>
+<div class="t c4" style="z-index:178;transform:matrix(1,0,0,1,80,256.96)">Un </div>
+<div class="t c5" style="z-index:181;transform:matrix(1,0,0,1,99.15,256.96)">acorde básico</div>
+<div class="t c4" style="z-index:194;transform:matrix(1,0,0,1,183.1,256.96)"> (tríada mayor o menor) se compone de tres notas fundamentales construidas sobre la raíz: la</div>
+<div class="t c5" style="z-index:286;transform:matrix(1,0,0,1,80,275.63)">tónica (raíz o </div>
+<div class="t c6" style="z-index:301;transform:matrix(1,0,0,1,166.22,275.63)">root</div>
+<div class="t c5" style="z-index:305;transform:matrix(1,0,0,1,189.59,275.63)">)</div>
+<div class="t c4" style="z-index:306;transform:matrix(1,0,0,1,194.29,275.63)">, la </div>
+<div class="t c5" style="z-index:311;transform:matrix(1,0,0,1,216.97,275.63)">tercera</div>
+<div class="t c4" style="z-index:318;transform:matrix(1,0,0,1,259.74,275.63)"> (mayor o menor) y la </div>
+<div class="t c5" style="z-index:340;transform:matrix(1,0,0,1,397.67,275.63)">quinta justa</div>
+<div class="t c4" style="z-index:352;transform:matrix(1,0,0,1,469.57,275.63)">. Esta estructura de tres notas constituye el</div>
+<div class="t c4" style="z-index:397;transform:matrix(1,0,0,1,80,294.3)">cimiento </div>
+<div class="t c4" style="z-index:406;transform:matrix(1,0,0,1,139.3,294.3)">elemental </div>
+<div class="t c4" style="z-index:416;transform:matrix(1,0,0,1,205.41,294.3)">sobre </div>
+<div class="t c4" style="z-index:422;transform:matrix(1,0,0,1,246.71,294.3)">el </div>
+<div class="t c4" style="z-index:425;transform:matrix(1,0,0,1,264.76,294.3)">cual </div>
+<div class="t c4" style="z-index:430;transform:matrix(1,0,0,1,297.33,294.3)">se </div>
+<div class="t c4" style="z-index:433;transform:matrix(1,0,0,1,319.02,294.3)">edifican </div>
+<div class="t c4" style="z-index:442;transform:matrix(1,0,0,1,374.07,294.3)">o </div>
+<div class="t c4" style="z-index:444;transform:matrix(1,0,0,1,389.41,294.3)">superponen </div>
+<div class="t c4" style="z-index:455;transform:matrix(1,0,0,1,467.35,294.3)">todas </div>
+<div class="t c4" style="z-index:461;transform:matrix(1,0,0,1,508.71,294.3)">las </div>
+<div class="t c4" style="z-index:465;transform:matrix(1,0,0,1,533.83,294.3)">notas </div>
+<div class="t c4" style="z-index:471;transform:matrix(1,0,0,1,575.03,294.3)">adicionales </div>
+<div class="t c4" style="z-index:483;transform:matrix(1,0,0,1,650.43,294.3)">y </div>
+<div class="t c4" style="z-index:485;transform:matrix(1,0,0,1,664.48,294.3)">extensiones</div>
+<div class="t c4" style="z-index:496;transform:matrix(1,0,0,1,80,312.96)">superiores.</div>
+<div class="t c5" style="z-index:507;transform:matrix(1,0,0,1,80,339.63)">Ejemplo en Do Mayor (C):</div>
+<div class="t c4" style="z-index:531;transform:matrix(1,0,0,1,236.32,339.63)"> La tríada básica de Do mayor consta de C (tónica / 1ª), E (tercera mayor / 3ª) y G</div>
+<div class="t c4" style="z-index:614;transform:matrix(1,0,0,1,80,358.3)">(quinta justa / 5ª).</div>
+<div class="t c3" style="z-index:634;transform:matrix(1,0,0,1,80,414.68)">2. Regla Fundamental: Cifrado 'add' vs. Números Directos</div>
+<div class="t c4" style="z-index:690;transform:matrix(1,0,0,1,80,448.96)">Existe una confusión recurrente en la teoría y el cifrado musical entre los acordes que contienen la indicación</div>
+<div class="t c5" style="z-index:801;transform:matrix(1,0,0,1,80,467.63)">'add'</div>
+<div class="t c4" style="z-index:806;transform:matrix(1,0,0,1,106.51,467.63)"> y aquellos representados únicamente por un número directo (como 9 u 11). La distinción clave y absoluta</div>
+<div class="t c4" style="z-index:910;transform:matrix(1,0,0,1,80,486.3)">reside en la </div>
+<div class="t c5" style="z-index:923;transform:matrix(1,0,0,1,151.15,486.3)">presencia o ausencia de la séptima (7ª)</div>
+<div class="t c4" style="z-index:962;transform:matrix(1,0,0,1,387.84,486.3)">:</div>
+<div class="t c7" style="z-index:965;transform:matrix(1,0,0,1,101.33,526.3)">REGLA DE ORO DE LA NOMENCLATURA</div>
+<div class="t c4" style="z-index:996;transform:matrix(1,0,0,1,101.33,543.63)">• </div>
+<div class="t c5" style="z-index:998;transform:matrix(1,0,0,1,109.74,543.63)">Acordes 'add' (añadir):</div>
+<div class="t c4" style="z-index:1021;transform:matrix(1,0,0,1,244.86,543.63)"> Indican que se suma la nota de extensión directamente sobre la tríada básica </div>
+<div class="t c5" style="z-index:1099;transform:matrix(1,0,0,1,717.16,543.63)">SIN</div>
+<div class="t c5" style="z-index:1102;transform:matrix(1,0,0,1,101.33,562.3)">incluir ninguna séptima</div>
+<div class="t c4" style="z-index:1125;transform:matrix(1,0,0,1,241.82,562.3)">.</div>
+<div class="t c4" style="z-index:1126;transform:matrix(1,0,0,1,101.33,580.96)">• </div>
+<div class="t c5" style="z-index:1128;transform:matrix(1,0,0,1,109.52,580.96)">Acordes con número directo (ej. 9, 11):</div>
+<div class="t c4" style="z-index:1167;transform:matrix(1,0,0,1,345.76,580.96)"> La presencia del número solo implica teóricamente que el acorde</div>
+<div class="t c5" style="z-index:1231;transform:matrix(1,0,0,1,101.33,599.63)">INCLUYE la séptima</div>
+<div class="t c4" style="z-index:1249;transform:matrix(1,0,0,1,220.75,599.63)"> (y las extensiones inferiores) junto con la tríada base.</div>
+<div class="t c8" style="z-index:1306;transform:matrix(1,0,0,1,80,658.39)">¿Por qué se llama Novena (9ª) y no Segunda (2ª)?</div>
+<div class="t c4" style="z-index:1354;transform:matrix(1,0,0,1,80,683.63)">Para hallar la novena, se cuenta a partir de la tónica definida como la nota 1. En la tonalidad de Do (C): 1=Do,</div>
+<div class="t c4" style="z-index:1466;transform:matrix(1,0,0,1,80,702.3)">2=Re, 3=Mi, 4=Fa, 5=Sol, 6=La, 7=Si, 8=Do, 9=Re. Se identifica como </div>
+<div class="t c5" style="z-index:1534;transform:matrix(1,0,0,1,502.72,702.3)">novena</div>
+<div class="t c4" style="z-index:1540;transform:matrix(1,0,0,1,546.3,702.3)"> y no como segunda porque la</div>
+<div class="t c4" style="z-index:1568;transform:matrix(1,0,0,1,80,720.96)">segunda </div>
+<div class="t c4" style="z-index:1576;transform:matrix(1,0,0,1,138.02,720.96)">nota </div>
+<div class="t c4" style="z-index:1581;transform:matrix(1,0,0,1,171.69,720.96)">suele </div>
+<div class="t c4" style="z-index:1587;transform:matrix(1,0,0,1,210.39,720.96)">ubicarse </div>
+<div class="t c4" style="z-index:1596;transform:matrix(1,0,0,1,268.27,720.96)">en </div>
+<div class="t c4" style="z-index:1599;transform:matrix(1,0,0,1,289.79,720.96)">la </div>
+<div class="t c4" style="z-index:1602;transform:matrix(1,0,0,1,307.38,720.96)">parte </div>
+<div class="t c4" style="z-index:1608;transform:matrix(1,0,0,1,345.16,720.96)">inferior </div>
+<div class="t c4" style="z-index:1617;transform:matrix(1,0,0,1,394.44,720.96)">sustituyendo </div>
+<div class="t c4" style="z-index:1630;transform:matrix(1,0,0,1,477.83,720.96)">a </div>
+<div class="t c4" style="z-index:1632;transform:matrix(1,0,0,1,492.17,720.96)">la </div>
+<div class="t c4" style="z-index:1635;transform:matrix(1,0,0,1,509.76,720.96)">tercera </div>
+<div class="t c4" style="z-index:1643;transform:matrix(1,0,0,1,558.62,720.96)">(acordes </div>
+<div class="t c4" style="z-index:1652;transform:matrix(1,0,0,1,618.1,720.96)">suspendidos </div>
+<div class="t c6" style="z-index:1664;transform:matrix(1,0,0,1,700.99,720.96)">sus2</div>
+<div class="t c4" style="z-index:1668;transform:matrix(1,0,0,1,728.73,720.96)">),</div>
+<div class="t c4" style="z-index:1670;transform:matrix(1,0,0,1,80,739.63)">mientras que la novena se apila en la parte superior manteniendo la tercera de la tríada.</div>
+<div class="t c3" style="z-index:1759;transform:matrix(1,0,0,1,80,798.68)">3. Catálogo Estructurado de Acordes con Novena (9ª)</div>
+<div class="t c4" style="z-index:1810;transform:matrix(1,0,0,1,80,832.96)">A continuación se detalla la estructura armónica precisa de las diferentes variantes de acordes con novena,</div>
+<div class="t c4" style="z-index:1917;transform:matrix(1,0,0,1,80,851.63)">tomando la tonalidad de Do (C) como referencia:</div>
+<div class="t c9" style="z-index:1967;transform:matrix(1,0,0,1,80,884.92)">Cifrado</div>
+<div class="t c9" style="z-index:1974;transform:matrix(1,0,0,1,200.96,884.92)">Nombre del Acorde</div>
+<div class="t c9" style="z-index:1991;transform:matrix(1,0,0,1,368.96,884.92)">Estructura de Notas</div>
+<div class="t c9" style="z-index:2010;transform:matrix(1,0,0,1,604.16,884.92)">Presencia de Séptima</div>
+<div class="t c10" style="z-index:2030;transform:matrix(1,0,0,1,80,914.2)">C(add9)</div>
+<div class="t c11" style="z-index:2037;transform:matrix(1,0,0,1,200.96,914.2)">Do add 9</div>
+<div class="t c11" style="z-index:2045;transform:matrix(1,0,0,1,368.96,914.2)">C - E - G - D (1 - 3 - 5 - 9)</div>
+<div class="t c11" style="z-index:2074;transform:matrix(1,0,0,1,604.16,914.2)">SIN séptima</div>
+<div class="t c10" style="z-index:2085;transform:matrix(1,0,0,1,80,943.53)">C9</div>
+<div class="t c11" style="z-index:2087;transform:matrix(1,0,0,1,200.96,943.53)">Do 9 (Dominante)</div>
+<div class="t c11" style="z-index:2103;transform:matrix(1,0,0,1,368.96,943.53)">C - E - (G) - B - D (1 - 3 - 5 - 7 - 9)</div>
+<div class="t c11" style="z-index:2144;transform:matrix(1,0,0,1,604.16,943.53)">Incluye 7ª Menor (7)</div>
+</div>
+<style>
+#p1{width:816px;height:1056px}
+</style>
+<div class="page" id="p1">
+<svg class="vec" style="z-index:1;left:-1.33px;top:-1.33px;overflow:hidden" width="818.67" height="1000" viewBox="-1.33 -1.33 818.67 1000"><path d="M0 16H816V0H0Z" fill="#1a2b4c" fill-rule="evenodd"/><path d="M72 997.3H744" fill="none" stroke="#f8f9fa" stroke-width="0.67"/></svg>
+<svg class="vec" style="z-index:44;left:71px;top:92.33px;overflow:hidden" width="674" height="148.67" viewBox="71 92.33 674 148.67"><path d="M72 93.3H744V122.7H72Z" fill="#1a2b4c" fill-rule="evenodd"/><path d="M72 152H744V181.3H72Z" fill="#f8f9fa" fill-rule="evenodd"/><path d="M72 210.7H744V240H72Z" fill="#f8f9fa" fill-rule="evenodd"/></svg>
+<svg class="vec" style="z-index:406;left:70.67px;top:92px;overflow:hidden" width="682.67" height="262.67" viewBox="70.67 92 682.67 262.67"><path d="M72 93.3H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 122.7V93.3" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 240V122.7" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M744 122.7V93.3" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M744 240V122.7" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 240H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 122.7H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M193 122.7V93.3" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M361 122.7V93.3" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M596.2 122.7V93.3" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 152H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 181.3H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 210.7H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M193 240V122.7" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M361 240V122.7" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M596.2 240V122.7" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M80 353.3H752V253.3H80Z" fill="#f8f9fa" fill-rule="evenodd"/><path d="M80 353.3H88V253.3H80Z" fill="#d9534f" fill-rule="evenodd"/></svg>
+<svg class="vec" style="z-index:1028;left:71px;top:467px;overflow:hidden" width="674" height="106" viewBox="71 467 674 106"><path d="M72 468H744V497.3H72Z" fill="#1a2b4c" fill-rule="evenodd"/><path d="M72 526.7H744V572H72Z" fill="#f8f9fa" fill-rule="evenodd"/></svg>
+<svg class="vec" style="z-index:1216;left:70.67px;top:466.67px;overflow:hidden" width="674.67" height="106.67" viewBox="70.67 466.67 674.67 106.67"><path d="M72 468H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 572H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 572V468" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M744 572V468" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 497.3H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M72 526.7H744" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M193 572V468" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M361 572V468" fill="none" stroke="#7f8c8d" stroke-width="0.67"/><path d="M596.2 572V468" fill="none" stroke="#7f8c8d" stroke-width="0.67"/></svg>
+<div class="t c0" style="z-index:3;transform:matrix(1,0,0,1,72,1000.77)">Guía de Acordes y Cifrado Musical</div>
+<div class="t c0" style="z-index:36;transform:matrix(1,0,0,1,702.55,1000.77)">Página 1</div>
+<div class="t c9" style="z-index:49;transform:matrix(1,0,0,1,80,100.92)">Cifrado</div>
+<div class="t c9" style="z-index:56;transform:matrix(1,0,0,1,200.96,100.92)">Nombre del Acorde</div>
+<div class="t c9" style="z-index:73;transform:matrix(1,0,0,1,368.96,100.92)">Estructura de Notas</div>
+<div class="t c9" style="z-index:92;transform:matrix(1,0,0,1,604.16,100.92)">Presencia de Séptima</div>
+<div class="t c10" style="z-index:112;transform:matrix(1,0,0,1,80,130.2)">Cmaj9</div>
+<div class="t c11" style="z-index:117;transform:matrix(1,0,0,1,200.96,130.2)">Do Mayor 9</div>
+<div class="t c11" style="z-index:127;transform:matrix(1,0,0,1,368.96,130.2)">C - E - G - B - D (1 - 3 - 5 - 7 - 9)</div>
+<div class="t c11" style="z-index:164;transform:matrix(1,0,0,1,604.16,130.2)">Incluye 7ª Mayor (7)</div>
+<div class="t c10" style="z-index:184;transform:matrix(1,0,0,1,80,159.53)">Cm(add9)</div>
+<div class="t c11" style="z-index:192;transform:matrix(1,0,0,1,200.96,159.53)">Do Menor add 9</div>
+<div class="t c11" style="z-index:206;transform:matrix(1,0,0,1,368.96,159.53)">C - E - G - D (1 - 3 - 5 - 9)</div>
+<div class="t c11" style="z-index:237;transform:matrix(1,0,0,1,604.16,159.53)">SIN séptima</div>
+<div class="t c10" style="z-index:248;transform:matrix(1,0,0,1,80,188.87)">Cm9</div>
+<div class="t c11" style="z-index:251;transform:matrix(1,0,0,1,200.96,188.87)">Do Menor 9</div>
+<div class="t c11" style="z-index:261;transform:matrix(1,0,0,1,368.96,188.87)">C - E - G - B - D (1 - 3 - 5 - 7 - 9)</div>
+<div class="t c11" style="z-index:302;transform:matrix(1,0,0,1,604.16,188.87)">Incluye 7ª Menor (7)</div>
+<div class="t c10" style="z-index:323;transform:matrix(1,0,0,1,80,218.2)">Cm(maj9)</div>
+<div class="t c11" style="z-index:331;transform:matrix(1,0,0,1,200.96,218.2)">Do Menor Mayor 9</div>
+<div class="t c11" style="z-index:347;transform:matrix(1,0,0,1,368.96,218.2)">C - E - G - B - D (1 - 3 - 5 - 7 - 9)</div>
+<div class="t c11" style="z-index:386;transform:matrix(1,0,0,1,604.16,218.2)">Incluye 7ª Mayor (7)</div>
+<div class="t c7" style="z-index:424;transform:matrix(1,0,0,1,101.33,267.63)">ACLARACIÓN DE EJECUCIÓN: OMISIÓN DE LA 5ª</div>
+<div class="t c5" style="z-index:465;transform:matrix(1,0,0,1,101.33,284.96)">Consejo </div>
+<div class="t c5" style="z-index:473;transform:matrix(1,0,0,1,157.14,284.96)">de </div>
+<div class="t c5" style="z-index:476;transform:matrix(1,0,0,1,178.85,284.96)">Ejecución </div>
+<div class="t c5" style="z-index:486;transform:matrix(1,0,0,1,243.95,284.96)">Práctica:</div>
+<div class="t c4" style="z-index:495;transform:matrix(1,0,0,1,297.44,284.96)"> </div>
+<div class="t c4" style="z-index:496;transform:matrix(1,0,0,1,304.42,284.96)">En </div>
+<div class="t c4" style="z-index:499;transform:matrix(1,0,0,1,326.34,284.96)">el </div>
+<div class="t c4" style="z-index:502;transform:matrix(1,0,0,1,343.62,284.96)">acorde </div>
+<div class="t c4" style="z-index:509;transform:matrix(1,0,0,1,391.54,284.96)">de </div>
+<div class="t c4" style="z-index:512;transform:matrix(1,0,0,1,413.11,284.96)">dominante </div>
+<div class="t c5" style="z-index:522;transform:matrix(1,0,0,1,483.55,284.96)">C9</div>
+<div class="t c4" style="z-index:524;transform:matrix(1,0,0,1,499.93,284.96)"> </div>
+<div class="t c4" style="z-index:525;transform:matrix(1,0,0,1,506.91,284.96)">(y </div>
+<div class="t c4" style="z-index:528;transform:matrix(1,0,0,1,524.76,284.96)">acordes </div>
+<div class="t c4" style="z-index:536;transform:matrix(1,0,0,1,579.56,284.96)">extendidos </div>
+<div class="t c4" style="z-index:547;transform:matrix(1,0,0,1,651.78,284.96)">pesados), </div>
+<div class="t c4" style="z-index:557;transform:matrix(1,0,0,1,716.72,284.96)">con</div>
+<div class="t c4" style="z-index:560;transform:matrix(1,0,0,1,101.33,303.63)">frecuencia los músicos omiten la quinta (G) para evitar un sonido turbio o demasiado cargado (</div>
+<div class="t c6" style="z-index:654;transform:matrix(1,0,0,1,673.04,303.63)">muddy</div>
+<div class="t c4" style="z-index:659;transform:matrix(1,0,0,1,712.22,303.63)">). La</div>
+<div class="t c4" style="z-index:664;transform:matrix(1,0,0,1,101.33,322.3)">5ª justa es armónicamente neutra y su omisión aclara la sonoridad sin perder la identidad del acorde.</div>
+<div class="t c3" style="z-index:765;transform:matrix(1,0,0,1,80,389.35)">4. Acordes con Oncena (11ª) y Extensiones Superiores</div>
+<div class="t c4" style="z-index:817;transform:matrix(1,0,0,1,80,423.63)">En la tonalidad de Do (C), la oncena corresponde a la nota Fa (F) (1=C, 2=D, 3=E, 4=F, 5=G, 6=A, 7=B, 8=C, 9=D,</div>
+<div class="t c4" style="z-index:928;transform:matrix(1,0,0,1,80,442.3)">10=E, 11=F). Su construcción sigue exactamente el mismo principio lógico que los acordes con novena:</div>
+<div class="t c9" style="z-index:1031;transform:matrix(1,0,0,1,80,475.58)">Cifrado</div>
+<div class="t c9" style="z-index:1038;transform:matrix(1,0,0,1,200.96,475.58)">Nombre</div>
+<div class="t c9" style="z-index:1044;transform:matrix(1,0,0,1,368.96,475.58)">Estructura Teórica</div>
+<div class="t c9" style="z-index:1062;transform:matrix(1,0,0,1,604.16,475.58)">Notas Incluidas</div>
+<div class="t c10" style="z-index:1077;transform:matrix(1,0,0,1,80,504.87)">C(add11)</div>
+<div class="t c11" style="z-index:1085;transform:matrix(1,0,0,1,200.96,504.87)">Do add 11</div>
+<div class="t c11" style="z-index:1094;transform:matrix(1,0,0,1,368.96,504.87)">Tríada mayor + 11ª (Fa / F)</div>
+<div class="t c11" style="z-index:1121;transform:matrix(1,0,0,1,604.16,504.87)">SIN séptima ni novena</div>
+<div class="t c10" style="z-index:1142;transform:matrix(1,0,0,1,80,542.2)">C11</div>
+<div class="t c11" style="z-index:1145;transform:matrix(1,0,0,1,200.96,542.2)">Do 11</div>
+<div class="t c11" style="z-index:1150;transform:matrix(1,0,0,1,368.96,542.2)">Tríada mayor + 7ª menor + 9ª + 11ª</div>
+<div class="t c11" style="z-index:1184;transform:matrix(1,0,0,1,604.16,534.2)">Incluye 7ª (7) y 9ª</div>
+<div class="t c11" style="z-index:1204;transform:matrix(1,0,0,1,604.16,550.2)">superpuestas</div>
+<div class="t c6" style="z-index:1225;transform:matrix(1,0,0,1,80,586.3)">Nota sobre la ejecución de C11:</div>
+<div class="t c4" style="z-index:1256;transform:matrix(1,0,0,1,272.07,586.3)"> Teóricamente, C11 engloba todas las notas inferiores (1-3-5-7-9-11). En la</div>
+<div class="t c4" style="z-index:1332;transform:matrix(1,0,0,1,80,604.96)">práctica en instrumentos como la guitarra o el piano, no siempre es necesario ni posible tocar todas las notas</div>
+<div class="t c4" style="z-index:1442;transform:matrix(1,0,0,1,80,623.63)">simultáneamente.</div>
+<div class="t c3" style="z-index:1458;transform:matrix(1,0,0,1,80,685.35)">5. Variaciones y Contexto Musical</div>
+<div class="t c4" style="z-index:1491;transform:matrix(1,0,0,1,80,719.63)">Es importante destacar que no existe una única autoridad universal que regule de manera absoluta la notación</div>
+<div class="t c4" style="z-index:1599;transform:matrix(1,0,0,1,80,738.3)">y el cifrado musical. Debido a esto, en partituras, cancioneros o publicaciones es posible encontrar ligeras</div>
+<div class="t c4" style="z-index:1707;transform:matrix(1,0,0,1,80,756.96)">variaciones </div>
+<div class="t c4" style="z-index:1719;transform:matrix(1,0,0,1,155.01,756.96)">o </div>
+<div class="t c4" style="z-index:1721;transform:matrix(1,0,0,1,169.77,756.96)">aparentes </div>
+<div class="t c4" style="z-index:1731;transform:matrix(1,0,0,1,236.17,756.96)">contradicciones </div>
+<div class="t c4" style="z-index:1747;transform:matrix(1,0,0,1,338.28,756.96)">entre </div>
+<div class="t c4" style="z-index:1753;transform:matrix(1,0,0,1,375.81,756.96)">autores. </div>
+<div class="t c4" style="z-index:1762;transform:matrix(1,0,0,1,431.52,756.96)">Sin </div>
+<div class="t c4" style="z-index:1766;transform:matrix(1,0,0,1,457.19,756.96)">embargo, </div>
+<div class="t c4" style="z-index:1775;transform:matrix(1,0,0,1,520.07,756.96)">las </div>
+<div class="t c4" style="z-index:1779;transform:matrix(1,0,0,1,544.59,756.96)">reglas </div>
+<div class="t c4" style="z-index:1786;transform:matrix(1,0,0,1,588.19,756.96)">expuestas </div>
+<div class="t c4" style="z-index:1796;transform:matrix(1,0,0,1,656.31,756.96)">en </div>
+<div class="t c4" style="z-index:1799;transform:matrix(1,0,0,1,677.89,756.96)">esta </div>
+<div class="t c4" style="z-index:1804;transform:matrix(1,0,0,1,710.61,756.96)">guía</div>
+<div class="t c4" style="z-index:1808;transform:matrix(1,0,0,1,80,775.63)">constituyen el estándar teórico más universal y consistente para interpretar y construir acordes extendidos.</div>
+</div>
+</body>
+</html>
