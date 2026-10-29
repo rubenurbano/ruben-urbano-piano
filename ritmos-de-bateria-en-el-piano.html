@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Guía maestra para transformar el piano en una sección rítmica completa: bombo, caja, hi-hat y pulgares alternados. Basada en el método de Raúl Blanco.">
+<meta name="theme-color" content="#0a0e1a">
+<title>Ritmos de Batería en el Piano — Guía Maestra</title>
+<style>
+/* ============================================================
+   1. TOKENS Y BASE
+   ============================================================ */
+:root{
+  --bg:#0a0e1a;
+  --card:#0f172a;
+  --card2:#0c1526;
+  --line:#1e3a5f;
+  --txt:#e2e8f0;
+  --mut:#94a3b8;
+  --acc:#38bdf8;
+  --acc2:#00d4ff;
+  --ok:#22c55e;
+  --warn:#f59e0b;
+  --bad:#ef4444;
+  --shadow:0 8px 28px rgba(0,0,0,.45);
+}
+html[data-theme="light"]{
+  --bg:#eef2f7;
+  --card:#ffffff;
+  --card2:#f7fafc;
+  --line:#c7d4e2;
+  --txt:#0d1b2a;
+  --mut:#4a5b6d;
+  --acc:#0b74b8;
+  --acc2:#0e7490;
+  --shadow:0 8px 24px rgba(15,40,70,.12);
+}
+*{box-sizing:border-box}
+html{
+  font-size:16px;
+  -webkit-text-size-adjust:100%;
+  scroll-behavior:smooth;
+}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--txt);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:1rem;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{line-height:1.25;margin:0 0 .5em;font-weight:700;letter-spacing:-.01em}
+h1{font-size:1.85rem}
+h2{font-size:1.3rem;margin-top:1.6em}
+h3{font-size:1.06rem;margin-top:1.3em;color:var(--acc)}
+p{margin:0 0 1em}
+a{color:var(--acc)}
+ul,ol{margin:0 0 1em;padding-left:1.3em}
+li{margin:.35em 0}
+strong{color:var(--txt)}
+small{font-size:.86em}
+hr{border:0;border-top:1px solid var(--line);margin:22px 0}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px;border-radius:6px}
+
+/* ============================================================
+   2. BARRA DE PROGRESO + NAVEGACIÓN
+   ============================================================ */
+#bar{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,var(--acc),var(--acc2));
+  z-index:60;transition:width .1s linear;
+}
+#nav{
+  position:fixed;top:0;left:0;right:0;height:58px;
+  display:flex;align-items:center;gap:8px;
+  padding:0 10px;
+  background:var(--card);
+  border-bottom:1px solid var(--line);
+  overflow-x:auto;overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  z-index:30;
+}
+#nav::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:42px;padding:0 14px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--card2);
+  color:var(--mut);
+  font:inherit;font-size:.86rem;font-weight:600;
+  cursor:pointer;white-space:nowrap;
+  transition:background .18s,color .18s,border-color .18s;
+}
+.chip:hover{color:var(--txt);border-color:var(--acc)}
+.chip.on{
+  background:rgba(56,189,248,.16);
+  border-color:var(--acc);
+  color:var(--acc);
+}
+#mb{font-weight:700}
+
+/* ============================================================
+   3. PANEL LATERAL DE ÍNDICE
+   ============================================================ */
+#dr{
+  position:fixed;top:58px;left:0;bottom:0;
+  width:min(330px,88vw);
+  background:#0f172a;
+  border-right:1px solid #1e3a5f;
+  transform:translateX(-105%);
+  transition:transform .25s ease;
+  z-index:25;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:10px;
+  box-shadow:6px 0 26px rgba(0,0,0,.5);
+  -webkit-overflow-scrolling:touch;
+}
+#dr.o{transform:none}
+#dr a{
+  display:block;
+  padding:12px;
+  border-radius:8px;
+  color:#e2e8f0;
+  cursor:pointer;
+  min-height:44px;
+  font-size:.92rem;
+  line-height:1.35;
+  text-decoration:none;
+  border:0;
+}
+#dr a:hover{background:#ffffff0d}
+#dr a.on{background:#00d4ff22;color:#00d4ff;font-weight:700}
+
+/* ============================================================
+   4. CONTENIDO PRINCIPAL
+   ============================================================ */
+main{
+  padding:74px 14px 96px;
+  max-width:900px;
+  margin:0 auto;
+}
+section{display:none}
+section.on{display:block;animation:fadeIn .28s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px 16px 6px;
+  margin:14px 0;
+  box-shadow:var(--shadow);
+}
+.card.tight{padding-bottom:16px}
+.card h3:first-child,.card h4:first-child{margin-top:0}
+.lead{font-size:1.06rem;color:var(--mut)}
+.kicker{
+  display:inline-block;
+  font-size:.74rem;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--acc);
+  margin-bottom:.4em;
+}
+.note{
+  border-left:3px solid var(--acc);
+  background:rgba(56,189,248,.09);
+  border-radius:0 10px 10px 0;
+  padding:12px 14px;
+  margin:14px 0;
+  font-size:.95rem;
+}
+.note.warn{border-left-color:var(--warn);background:rgba(245,158,11,.10)}
+.note.bad{border-left-color:var(--bad);background:rgba(239,68,68,.10)}
+.note.ok{border-left-color:var(--ok);background:rgba(34,197,94,.10)}
+.note p:last-child{margin-bottom:0}
+.note strong{color:var(--acc)}
+.note.warn strong{color:var(--warn)}
+.note.bad strong{color:var(--bad)}
+.note.ok strong{color:var(--ok)}
+
+.grid{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:620px){
+  .grid.two{grid-template-columns:1fr 1fr}
+  .grid.three{grid-template-columns:repeat(3,1fr)}
+}
+
+/* Tablas */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:14px 0;border-radius:12px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.9rem}
+th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:rgba(56,189,248,.10);color:var(--acc);font-weight:700;font-size:.82rem;letter-spacing:.03em;text-transform:uppercase}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+
+/* Acordeones */
+details{
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--card);
+  margin:10px 0;
+  overflow:hidden;
+}
+summary{
+  cursor:pointer;
+  padding:13px 14px;
+  font-weight:600;
+  font-size:.96rem;
+  list-style:none;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  min-height:44px;
+}
+summary::-webkit-details-marker{display:none}
+summary::before{
+  content:"▸";
+  color:var(--acc);
+  flex:0 0 auto;
+  transition:transform .2s;
+  line-height:1.5;
+}
+details[open] summary::before{transform:rotate(90deg)}
+details .ans{padding:0 14px 14px;color:var(--mut);font-size:.95rem}
+details .ans p:last-child{margin-bottom:0}
+
+/* Botones */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:0 18px;
+  border-radius:999px;
+  border:1px solid var(--acc);
+  background:rgba(56,189,248,.14);
+  color:var(--acc);
+  font:inherit;font-size:.92rem;font-weight:700;
+  cursor:pointer;
+  transition:background .18s,transform .12s;
+  text-decoration:none;
+}
+.btn:hover{background:rgba(56,189,248,.26)}
+.btn:active{transform:scale(.97)}
+.btn.solid{background:var(--acc);color:#04121f;border-color:var(--acc)}
+.btn.solid:hover{background:var(--acc2);border-color:var(--acc2)}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--txt)}
+.btn.ghost:hover{border-color:var(--acc);color:var(--acc)}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+
+/* Bloques copiables */
+.cbox{position:relative;margin:14px 0}
+.cbox pre{
+  margin:0;
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px 14px 14px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.86rem;
+  line-height:1.6;
+  white-space:pre-wrap;
+  word-break:break-word;
+  color:var(--txt);
+}
+.cbox .copy{
+  position:absolute;top:8px;right:8px;
+  min-height:36px;padding:0 12px;
+  font-size:.76rem;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--mut);
+  cursor:pointer;
+  font-family:inherit;font-weight:700;
+}
+.cbox .copy:hover{border-color:var(--acc);color:var(--acc)}
+.cbox .copy.done{background:rgba(34,197,94,.18);border-color:var(--ok);color:var(--ok)}
+
+/* Checklist */
+.check{list-style:none;padding:0;margin:12px 0}
+.check li{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--card2);
+  margin:8px 0;
+  min-height:44px;
+}
+.check input[type="checkbox"]{
+  width:22px;height:22px;flex:0 0 auto;margin-top:2px;
+  accent-color:var(--acc);cursor:pointer;
+}
+.check label{cursor:pointer;font-size:.94rem;line-height:1.5}
+.check input:checked + label{color:var(--mut);text-decoration:line-through}
+
+/* Pasos numerados */
+.step{
+  display:grid;
+  grid-template-columns:44px 1fr;
+  gap:14px;
+  align-items:start;
+  padding:16px 0;
+  border-bottom:1px solid var(--line);
+}
+.step:last-child{border-bottom:0}
+.step .num{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(56,189,248,.14);
+  border:1px solid var(--acc);
+  color:var(--acc);font-weight:800;font-size:1rem;
+  flex:0 0 auto;
+}
+.step h4{margin:0 0 .35em;font-size:1rem;color:var(--txt)}
+.step p{margin:0 0 .5em;font-size:.94rem;color:var(--mut)}
+.step p:last-child{margin-bottom:0}
+.step .why{
+  font-size:.86rem;color:var(--acc);font-weight:600;
+  display:block;margin-top:2px;
+}
+.step .res{
+  font-size:.86rem;color:var(--ok);font-weight:600;
+  display:block;margin-top:2px;
+}
+
+/* SVG Hero */
+.hero{
+  width:100%;
+  max-width:420px;
+  aspect-ratio:4/5;
+  margin:6px auto 18px;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:#050a14;
+  box-shadow:var(--shadow);
+}
+.hero svg{display:block;width:100%;height:100%}
+
+/* Pestaña de créditos */
+.author{
+  font-size:clamp(1.8rem,7vw,2.8rem);
+  font-weight:800;
+  letter-spacing:-.02em;
+  line-height:1.1;
+  margin:.1em 0 .15em;
+  background:linear-gradient(120deg,var(--acc),var(--acc2));
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;
+}
+.role{color:var(--mut);font-size:1rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin:0 0 18px}
+.meta{font-size:.86rem;color:var(--mut);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+
+/* Botones flotantes */
+#fab{
+  position:fixed;right:10px;bottom:14px;
+  display:flex;flex-direction:column;gap:6px;
+  z-index:35;
+}
+#fab button{
+  width:42px;height:42px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--txt);
+  font-size:1rem;font-weight:700;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow);
+  padding:0;
+  transition:border-color .18s,color .18s,background .18s;
+}
+#fab button:hover{border-color:var(--acc);color:var(--acc)}
+#fab button[hidden]{display:none}
+#fab #top.hide{opacity:0;pointer-events:none}
+
+/* Overlay de búsqueda */
+#search{
+  position:fixed;inset:0;
+  background:rgba(3,7,15,.82);
+  z-index:70;
+  display:none;
+  padding:70px 14px 20px;
+  overflow-y:auto;
+}
+#search.on{display:block}
+#search .panel{
+  max-width:640px;margin:0 auto;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+#search input{
+  width:100%;
+  min-height:48px;
+  padding:0 14px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:var(--card2);
+  color:var(--txt);
+  font:inherit;font-size:1rem;
+}
+#search input:focus{outline:2px solid var(--acc);outline-offset:1px}
+#sres{margin-top:12px}
+#sres .r{
+  display:block;width:100%;text-align:left;
+  padding:12px;border-radius:10px;
+  border:1px solid var(--line);
+  background:var(--card2);
+  color:var(--txt);
+  margin:8px 0;
+  cursor:pointer;
+  font:inherit;font-size:.9rem;
+  min-height:44px;
+}
+#sres .r:hover{border-color:var(--acc)}
+#sres .r b{color:var(--acc);display:block;margin-bottom:2px;font-size:.94rem}
+#sres .r span{color:var(--mut);font-size:.84rem}
+#sres .r mark{background:rgba(56,189,248,.3);color:var(--txt);border-radius:3px;padding:0 2px}
+#sres .empty{color:var(--mut);font-size:.9rem;padding:10px 2px}
+
+/* ============================================================
+   5. ANIMACIONES DEL SVG
+   ============================================================ */
+.sv-w{animation:svWave 3.2s ease-out infinite}
+.sv-w.d1{animation-delay:1.05s}
+.sv-w.d2{animation-delay:2.1s}
+@keyframes svWave{
+  0%{transform:scale(.35);opacity:.9}
+  100%{transform:scale(3.4);opacity:0}
+}
+.sv-link{animation:svDash 2.4s linear infinite}
+.sv-link.d1{animation-delay:.5s}
+.sv-link.d2{animation-delay:1s}
+@keyframes svDash{to{stroke-dashoffset:-24}}
+
+.sv-pulse{animation:svPulse 1.15s ease-out infinite}
+@keyframes svPulse{
+  0%{transform:scale(1);opacity:.85}
+  100%{transform:scale(1.62);opacity:0}
+}
+.sv-core{animation:svCore .8s ease-in-out infinite}
+@keyframes svCore{
+  0%,100%{transform:scale(1);opacity:.35}
+  50%{transform:scale(1.16);opacity:.75}
+}
+.sv-hat{animation:svHat 1.15s ease-in-out infinite}
+@keyframes svHat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-5px)}
+}
+.sv-snare{animation:svSnare 1.15s ease-in-out infinite}
+@keyframes svSnare{
+  0%,100%{transform:translateY(0)}
+  12%{transform:translateY(-3px)}
+  24%{transform:translateY(0)}
+}
+.sv-thumb{animation:svTap 1.15s ease-in-out infinite}
+.sv-thumbR .sv-thumb{animation-delay:.575s}
+@keyframes svTap{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(17px)}
+}
+.k{animation:keyPress 2.3s ease-in-out infinite}
+.k:nth-child(2n){animation-delay:.28s}
+.k:nth-child(3n){animation-delay:.62s}
+.k:nth-child(5n){animation-delay:.95s}
+@keyframes keyPress{
+  0%,100%{transform:translateY(0)}
+  9%{transform:translateY(3.5px)}
+  18%{transform:translateY(0)}
+}
+.sv-note{animation:svNote 6s ease-in-out infinite}
+.sv-note.n2{animation-delay:1.6s}
+.sv-note.n3{animation-delay:3.1s}
+.sv-note.n4{animation-delay:4.4s}
+@keyframes svNote{
+  0%{transform:translateY(0) rotate(0);opacity:0}
+  12%{opacity:.85}
+  80%{opacity:.5}
+  100%{transform:translateY(-120px) rotate(22deg);opacity:0}
+}
+.sv-pt{animation:svPt 5s ease-in-out infinite}
+@keyframes svPt{
+  0%,100%{transform:translateY(0);opacity:.15}
+  50%{transform:translateY(-22px);opacity:.85}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  .sv-pt,.sv-note{opacity:.55}
+}
+
+/* ============================================================
+   6. IMPRESIÓN
+   ============================================================ */
+@page{size:A4 portrait;margin:14mm 12mm}
+@media print{
+  #nav,#dr,#fab,#bar,#search,.noprint{display:none!important}
+  html,body{background:#fff!important;color:#000!important;font-size:11pt}
+  main{padding:0!important;max-width:none!important}
+  section{display:block!important;break-inside:auto}
+  section::before{content:"";display:block;height:0}
+  h1,h2,h3,h4,.kicker{color:#000!important;background:none!important;-webkit-text-fill-color:#000!important}
+  .card,.note,details,.cbox pre,.check li,.step{
+    background:#fff!important;border:1px solid #bbb!important;
+    box-shadow:none!important;color:#000!important;
+  }
+  .note{border-left-width:3px!important;border-left-style:solid!important}
+  th{background:#eee!important;color:#000!important}
+  td,th{border-bottom:1px solid #bbb!important;color:#000!important}
+  .tw{overflow:visible!important;border:1px solid #bbb}
+  table{min-width:0!important;width:100%!important;font-size:9.5pt}
+  .hero{max-width:260px;border:1px solid #bbb;box-shadow:none;break-inside:avoid}
+  .author{-webkit-text-fill-color:#000!important;color:#000!important;background:none!important}
+  .sv-w,.sv-pulse,.sv-pt,.sv-note{opacity:.35!important}
+  details>summary{list-style:none}
+  details .ans{display:block!important}
+  .check input{accent-color:#000}
+  .cbox .copy{display:none!important}
+  .cbox pre{white-space:pre-wrap;word-break:break-word}
+  .step .num{border:1px solid #666;background:#fff;color:#000}
+  a{color:#000;text-decoration:underline}
+}
+</style>
+</head>
+<body>
+
+<div id="bar" aria-hidden="true"></div>
+
+<nav id="nav" aria-label="Navegación principal">
+  <button class="chip" id="mb" type="button" aria-label="Abrir índice" aria-expanded="false" aria-controls="dr">☰ Índice</button>
+</nav>
+
+<div id="dr" aria-label="Índice de secciones"></div>
+
+<main id="main">
+
+<!-- ============================================================
+     SECCIÓN 0 — INICIO
+     ============================================================ -->
+<section id="inicio" class="on" data-t="Inicio">
+  <span class="kicker">Guía maestra · Nivel principiante a PRO</span>
+  <h1>Ritmos de Batería en el Piano</h1>
+  <p class="lead">Transforma el teclado en una sección rítmica completa: bombo, caja, hi-hat y adornos, ejecutados con dos manos y diez dedos.</p>
+
+  <div class="hero" id="heroInicio" data-svg="a" role="img"
+       aria-label="Ilustración animada: sobre un teclado de piano flotan un bombo, una caja y un hi-hat conectados por líneas luminosas; dos pulgares alternan sobre las teclas y ondas sonoras y notas musicales se elevan desde el centro."></div>
+
+  <div class="btns">
+    <button class="btn solid" id="ix" type="button">☰ Ver índice</button>
+    <button class="btn ghost" type="button" data-goto="conceptos">Empezar por los conceptos →</button>
+  </div>
+
+  <div class="card">
+    <h3>¿Qué es el «piano-batería»?</h3>
+    <p>Es una forma de acompañar en la que el pianista asume, simultáneamente, los tres roles que en una banda reparten tres instrumentos distintos:</p>
+    <ul>
+      <li><strong>El bajo</strong> — mano izquierda en el registro grave.</li>
+      <li><strong>La armonía</strong> — acordes repartidos entre ambas manos.</li>
+      <li><strong>La batería</strong> — coordinación rítmica y articulación entre las dos manos.</li>
+    </ul>
+    <p>El método de referencia de esta guía es el del pianista y compositor cubano <strong>Raúl Blanco</strong>, que sistematiza el mapeo de las frecuencias de la batería sobre la arquitectura del piano.</p>
+  </div>
+
+  <div class="grid two">
+    <div class="card">
+      <h3>¿Para qué sirve?</h3>
+      <p>Para que un piano solo —o acompañando a un cantante— suene como una banda completa, sin necesidad de bajista ni baterista.</p>
+    </div>
+    <div class="card">
+      <h3>¿Por qué importa?</h3>
+      <p>Sin una base rítmica clara, el acompañamiento se vuelve estático. El groove es lo que hace que la música «camino» y se sienta viva.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Qué vas a aprender</h3>
+    <ol>
+      <li>Mapear el <strong>bombo</strong>, la <strong>caja</strong>, el <strong>hi-hat</strong> y los <strong>toms</strong> sobre el teclado.</li>
+      <li>Formar tríadas e inversiones para que la mano no salte y el ritmo no se rompa.</li>
+      <li>Ejecutar el patrón <strong>D-I-D-I</strong> (derecha–izquierda) con los pulgares.</li>
+      <li>Construir una jerarquía de volúmenes realista.</li>
+      <li>Adaptar el acompañamiento según toques solo o con banda.</li>
+      <li>Practicar un proyecto completo de balada/pop en tres niveles progresivos.</li>
+    </ol>
+  </div>
+
+  <div class="note">
+    <p><strong>Cómo usar este tutorial:</strong> las pestañas superiores te llevan a cada bloque. El botón «☰ Índice» abre el panel lateral con todas las secciones. Puedes ajustar el tamaño de letra, cambiar entre tema oscuro y claro, buscar dentro del contenido e imprimir o guardar en PDF.</p>
+  </div>
+
+  <noscript>
+    <div class="note bad">
+      <p><strong>JavaScript desactivado.</strong> El contenido completo está en el HTML, pero la navegación por pestañas, el índice lateral y la búsqueda necesitan JavaScript para funcionar. Actívalo para aprovechar el tutorial.</p>
+    </div>
+  </noscript>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 1 — CONCEPTOS
+     ============================================================ -->
+<section id="conceptos" data-t="Conceptos">
+  <span class="kicker">Bloque 1 y 2</span>
+  <h1>Conceptos fundamentales</h1>
+  <p class="lead">Antes de tocar, hay que entender qué se está imitando y dónde vive cada sonido dentro del teclado.</p>
+
+  <h2>1.1 Requisitos del sistema musical</h2>
+  <div class="card">
+    <p>Para trabajar el piano como batería necesitas tres condiciones mínimas:</p>
+    <ol>
+      <li><strong>Instrumento:</strong> un piano acústico o un teclado digital con teclas sensibles a la velocidad (<em>velocity</em>). Sin dinámica, la jerarquía de volúmenes —pieza central del método— no se puede ejecutar.</li>
+      <li><strong>Postura:</strong> espalda apoyada, antebrazos paralelos al suelo, muñecas ligeramente por encima de las teclas. Los pulgares deben poder rebotar sin tensión.</li>
+      <li><strong>Independencia:</strong> capacidad de que cada mano —y cada dedo— haga una cosa distinta al mismo tiempo. Es la habilidad que se entrena en todo el tutorial.</li>
+    </ol>
+  </div>
+
+  <h2>1.2 El piano como batería o caja de ritmos</h2>
+  <div class="card">
+    <p>El piano abarca el rango de frecuencias de casi todos los instrumentos de una orquesta o banda. Esa amplitud es precisamente lo que permite <strong>repartir las funciones de una batería</strong> entre las distintas zonas del teclado y entre los distintos dedos de la mano.</p>
+    <p>En una agrupación convencional:</p>
+    <ul>
+      <li>La <strong>batería</strong> marca el pulso y el patrón rítmico (<em>groove</em>).</li>
+      <li>El <strong>bajo</strong> define la raíz armónica y el ritmo grave.</li>
+      <li>Los <strong>instrumentos armónicos</strong> colocan los acordes.</li>
+    </ul>
+    <p>Cuando un pianista toca en solitario, debe asumir los tres roles a la vez. El piano se convierte así en una <strong>caja de ritmos</strong>: un único instrumento que estructura y coordina independientemente el bajo, los acentos medios y la subdivisión rápida.</p>
+  </div>
+
+  <h2>1.3 Mapeo de componentes de batería en el teclado</h2>
+  <p>Cada elemento de la batería tiene una zona, una mano y una función asignadas:</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Elemento</th><th>Zona del teclado</th><th>Mano / dedo</th><th>Función rítmica</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Bombo</strong> (Kick Drum)</td><td>Registro grave; fundamental sola o en octavas</td><td>Mano izquierda</td><td>Peso del ritmo y pulso grave</td></tr>
+        <tr><td><strong>Caja / Redoblante</strong> (Snare)</td><td>Registro medio; acorde completo o parcial</td><td>Mano derecha (y/o izquierda)</td><td>Acento en los tiempos 2 y 4</td></tr>
+        <tr><td><strong>Hi-Hat / Checker / Maraca</strong></td><td>Notas internas del acorde</td><td>Pulgares alternados</td><td>Subdivisión constante</td></tr>
+        <tr><td><strong>Toms y platillos</strong></td><td>Quintas, octavas y saltos de décima</td><td>Mano izquierda</td><td>Adornos y <em>fills</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>1.3.1 El bombo</h3>
+    <p>Se ejecuta con la mano izquierda, principalmente con la <strong>nota fundamental del acorde tocada en octava</strong> —o como nota individual profunda— en el registro grave. Produce el golpe sordo y potente en las frecuencias bajas que sostiene el peso del ritmo.</p>
+  </div>
+  <div class="card">
+    <h3>1.3.2 La caja o redoblante</h3>
+    <p>Se simula mediante toques <strong>acentuados en el registro medio</strong>. Se logra tocando el acorde completo —o parte de él— con la mano derecha en los tiempos 2 y 4 (o en los contratiempos, según el estilo). Debe sonar nítido y acentuado.</p>
+  </div>
+  <div class="card">
+    <h3>1.3.3 El hi-hat, checker o maraca</h3>
+    <p>Se genera mediante un movimiento <strong>alternado y sutil entre los dos pulgares</strong>. Estos ejecutan notas internas suaves del acorde a velocidad constante —corcheas o semicorcheas— aportando propulsión rítmica.</p>
+  </div>
+  <div class="card">
+    <h3>1.3.4 Los toms y platillos</h3>
+    <p>Se utilizan intervalos de <strong>quinta, octava o saltos de décima</strong> en la mano izquierda, intercalados antes del golpe principal del bombo o la caja, para simular redobles o rellenos de batería.</p>
+  </div>
+
+  <h2>2.1 Formación de tríadas y sus inversiones</h2>
+  <p>Para que la simulación rítmica funcione sin saltos bruscos, es fundamental dominar las inversiones. Si solo se usan acordes en posición fundamental, la mano derecha debe recorrer distancias enormes y el <em>groove</em> se rompe.</p>
+
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Acorde</th><th>Posición fundamental</th><th>2.ª inversión (compacta)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Do mayor (C)</td><td>Do – Mi – Sol</td><td>Sol – Do – Mi</td></tr>
+        <tr><td>Sol mayor (G)</td><td>Sol – Si – Re</td><td>Re – Sol – Si</td></tr>
+        <tr><td>La menor (Am)</td><td>La – Do – Mi</td><td>Mi – La – Do</td></tr>
+        <tr><td>Fa mayor (F)</td><td>Fa – La – Do</td><td>Do – Fa – La</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid three">
+    <div class="card tight">
+      <h4>Posición fundamental</h4>
+      <p>La fundamental ocupa la nota más grave. Suena abierta, pero obliga a saltos grandes al cambiar de acorde.</p>
+    </div>
+    <div class="card tight">
+      <h4>Primera inversión</h4>
+      <p>La tercera queda en el bajo. Aporta una conducción armónica suave en determinadas transiciones.</p>
+    </div>
+    <div class="card tight">
+      <h4>Segunda inversión</h4>
+      <p>La quinta queda en el bajo. Sonido denso, compacto y enfocado. Es la opción recomendada para el registro medio-bajo.</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <p><strong>Regla de oro:</strong> utilizar la segunda inversión en la región media-baja del piano permite obtener un sonido más denso, compacto y enfocado, ideal para simular el impacto del redoblante sin empastar los graves del bombo.</p>
+  </div>
+
+  <h2>2.2 Conexión suave entre acordes</h2>
+  <div class="card">
+    <p>La secuencia de práctica del método es <strong>Do mayor → Sol mayor → La menor → Fa mayor</strong>. Con las segundas inversiones, las manos se mueven distancias cortas y el pulso nunca se interrumpe:</p>
+    <div class="cbox">
+      <button class="copy" type="button">Copiar</button>
+      <pre>Do mayor  (2.ª inv.): Sol – Do – Mi
+Sol mayor (2.ª inv.): Re – Sol – Si
+La menor  (2.ª inv.): Mi – La – Do
+Fa mayor  (2.ª inv.): Do – Fa – La</pre>
+    </div>
+    <p>Observa que hay <strong>notas comunes</strong> entre acordes consecutivos: Do y Mi sobreviven del C al Am; Do sobrevive del C al F. Aprovecharlas es lo que produce la sensación de fluidez.</p>
+  </div>
+
+  <h2>4. Contexto interpretativo: piano solo vs. banda</h2>
+  <div class="grid two">
+    <div class="card">
+      <h3>Piano solo</h3>
+      <p>No hay más instrumentos rítmicos: el pianista es responsable del <strong>100 % de la sección rítmica</strong>.</p>
+      <ul>
+        <li>Bajo firme en la mano izquierda.</li>
+        <li>Subdivisión constante con los pulgares.</li>
+        <li>Acentuación de la caja con la derecha.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Con banda</h3>
+      <p>Si ya existen bajista y baterista, tu trabajo cambia:</p>
+      <ul>
+        <li><strong>Reduce el bajo grave:</strong> no satures el registro con octavas profundas, entorpecen la línea del bajista.</li>
+        <li><strong>Simplifica el patrón:</strong> no hagas una intercalación densa de pulgares salvo que busques un efecto deliberado.</li>
+        <li>Limítate a rellenar armónicamente y deja que la batería real lidere el <em>groove</em>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="btns">
+    <button class="btn solid" type="button" data-goto="procedimiento">Continuar: Procedimiento →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 2 — PROCEDIMIENTO
+     ============================================================ -->
+<section id="procedimiento" data-t="Procedimiento">
+  <span class="kicker">Bloque 3 · Paso a paso</span>
+  <h1>Procedimiento: de cero al groove</h1>
+  <p class="lead">Siete pasos ordenados. No avances al siguiente hasta que el anterior suene estable a 60 bpm.</p>
+
+  <div class="card">
+    <div class="step">
+      <div class="num">1</div>
+      <div>
+        <h4>Prepara el cuerpo y el metrónomo</h4>
+        <p>Siéntate con la espalda apoyada y las muñecas ligeramente por encima del teclado. Pon un metrónomo a <strong>60 bpm</strong> en compás de 4/4.</p>
+        <span class="why">Por qué: a velocidad lenta puedes oír cada capa por separado y detectar tensiones antes de que se conviertan en lesión.</span>
+        <span class="res">Resultado esperado: cuatro clics por compás, cómodos, sin prisa.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">2</div>
+      <div>
+        <h4>Aprende las cuatro tríadas en 2.ª inversión</h4>
+        <p>Toca en la mano derecha, sin ritmo todavía: <strong>Sol–Do–Mi</strong>, <strong>Re–Sol–Si</strong>, <strong>Mi–La–Do</strong>, <strong>Do–Fa–La</strong>. Repite la secuencia en bucle.</p>
+        <span class="why">Por qué: sin este automatismo, la mano saltará en el momento menos oportuno y romperá el pulso.</span>
+        <span class="res">Resultado esperado: enlazar los cuatro acordes sin mirar el teclado y sin cortar el sonido.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">3</div>
+      <div>
+        <h4>Coloca el bombo en los tiempos 1 y 3</h4>
+        <p>Con la mano izquierda, toca la fundamental grave del acorde en el tiempo 1 y en el tiempo 3. Solo eso. Nada más.</p>
+        <span class="why">Por qué: el bombo es el esqueleto. Si la base no está firme, todo lo que se construya encima se tambalea.</span>
+        <span class="res">Resultado esperado: sentir el peso del compás en el cuerpo, no solo oírlo.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">4</div>
+      <div>
+        <h4>Añade la caja en los tiempos 2 y 4</h4>
+        <p>Mantén el bombo y añade ahora el acorde completo —en 2.ª inversión— en los tiempos 2 y 4, con un ataque <strong>acentuado</strong>.</p>
+        <span class="why">Por qué: los tiempos 2 y 4 son el «revés» del compás; ahí es donde la batería responde y el groove cobra vida.</span>
+        <span class="res">Resultado esperado: un patrón reconocible de «fuerte-débil-fuerte-débil» con carácter.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">5</div>
+      <div>
+        <h4>Establece la jerarquía de volúmenes</h4>
+        <p>Ajusta la dinámica antes de añadir nada más. Debe haber <strong>tres niveles claramente distintos</strong>:</p>
+        <div class="tw">
+          <table>
+            <thead><tr><th>Nivel</th><th>Elemento</th><th>Volumen</th><th>Sensación</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Caja / Redoblante</td><td>Fuerte (acento)</td><td>Ataque nítido</td></tr>
+              <tr><td>2</td><td>Bombo</td><td>Medio / sólido</td><td>Peso</td></tr>
+              <tr><td>3</td><td>Hi-Hat (pulgares)</td><td>Muy suave (pianissimo)</td><td>Flujo continuo</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="why">Por qué: en una batería real el hi-hat suena mucho más bajo que el bombo y la caja. Si igualas volúmenes, el resultado suena tosco.</span>
+        <span class="res">Resultado esperado: puedes distinguir las tres capas con los ojos cerrados.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">6</div>
+      <div>
+        <h4>Introduce el patrón D-I-D-I con los pulgares</h4>
+        <p>Con las manos colocadas sobre el acorde, deja que los dedos externos sostengan las notas y haz que los <strong>dos pulgares reboten suavemente</strong> sobre las notas internas del acorde, alternándose:</p>
+        <p><strong>Izquierdo → Derecho → Izquierdo → Derecho…</strong> a corcheas constantes.</p>
+        <span class="why">Por qué: es la única forma de simular el hi-hat continuo sin una tercera mano.</span>
+        <span class="res">Resultado esperado: una capa fina y regular de subdivisión por debajo del bombo y la caja.</span>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="num">7</div>
+      <div>
+        <h4>Añade síncopas y micropatrones</h4>
+        <p>Anticipa el golpe de caja una corchea antes del tiempo 1 o del tiempo 3, manteniendo el bombo a tiempo. Prueba también con un pequeño adorno de quinta o décima en la mano izquierda justo antes del golpe principal.</p>
+        <span class="why">Por qué: la síncopa es lo que separa un acompañamiento correcto de un groove moderno.</span>
+        <span class="res">Resultado esperado: el patrón deja de sonar mecánico y empieza a «respirar».</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="note warn">
+    <p><strong>Importante:</strong> el patrón D-I-D-I debe nacer de un peso relajado del brazo y de una articulación suelta de la muñeca. Nunca de una contracción rígida de la mano. Si notas tensión en el pulgar, para, sacude la mano y vuelve a empezar más lento.</p>
+  </div>
+
+  <div class="btns">
+    <button class="btn solid" type="button" data-goto="practica">Ir a la práctica →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 3 — PRÁCTICA
+     ============================================================ -->
+<section id="practica" data-t="Práctica">
+  <span class="kicker">Bloque 6 · Proyecto integrador</span>
+  <h1>Práctica guiada</h1>
+  <p class="lead">Acompañamiento de balada/pop en 4/4 sobre la secuencia Do – Sol – La m – Fa, en tres niveles progresivos.</p>
+
+  <div class="cbox">
+    <button class="copy" type="button">Copiar</button>
+    <pre>Secuencia armónica (4/4):
+||: Do Mayor (C) | Sol Mayor (G) | La Menor (Am) | Fa Mayor (F) :||
+
+Acordes en 2.ª inversión:
+C  = Sol – Do – Mi
+G  = Re – Sol – Si
+Am = Mi – La – Do
+F  = Do – Fa – La</pre>
+  </div>
+
+  <h2>Nivel 1 — Paso básico</h2>
+  <div class="card">
+    <ul>
+      <li><strong>Mano izquierda:</strong> toca la nota grave (bombo) en los tiempos 1 y 3.</li>
+      <li><strong>Mano derecha:</strong> toca el acorde en 2.ª inversión (caja) en los tiempos 2 y 4.</li>
+    </ul>
+    <p>Sin pulgares, sin adornos. Solo el esqueleto. Objetivo: <strong>60 bpm durante un minuto sin parar</strong>.</p>
+  </div>
+
+  <h2>Nivel 2 — Hi-hat básico con pulgar</h2>
+  <div class="card">
+    <p>Mantén el Nivel 1 y añade <strong>un solo toque suave con el pulgar derecho</strong> sobre la nota interna del acorde (por ejemplo, el Mi del acorde de Do mayor), justo entre los tiempos 1 y 2.</p>
+    <p>Objetivo: que ese pulgar suene <em>casi inaudible</em>. Si lo oyes tan fuerte como el acorde, estás en el nivel de volumen equivocado.</p>
+  </div>
+
+  <h2>Nivel 3 — Groove completo D-I-D-I</h2>
+  <div class="card">
+    <p>Mantén el bombo en el tiempo 1, la caja en el tiempo 2 y haz que <strong>los dos pulgares mantengan un pulso continuo</strong> en corcheas o semicorcheas, alternándose sin interrupción.</p>
+    <p>Objetivo: 60 bpm → 70 bpm → 80 bpm, siempre sin perder la jerarquía de volúmenes.</p>
+  </div>
+
+  <h2>Rutina de práctica sugerida</h2>
+  <div class="cbox">
+    <button class="copy" type="button">Copiar</button>
+    <pre>Rutina diaria (20 minutos):
+1. Calentamiento: tríadas en 2.ª inversión, 2 min (sin ritmo).
+2. Nivel 1 a 60 bpm, 4 min.
+3. Nivel 2 a 60 bpm, 4 min.
+4. Nivel 3 a 60 bpm, 4 min.
+5. Nivel 3 a 70 bpm, 3 min.
+6. Nivel 3 a 80 bpm, 2 min.
+7. Vuelta a la calma: Nivel 1 a 50 bpm, 1 min.</pre>
+  </div>
+
+  <h2>Lista de comprobación</h2>
+  <p>Marca tu progreso. El estado se guarda en este navegador.</p>
+  <ul class="check" id="cklist">
+    <li><input type="checkbox" id="ck1" data-ck="ck1"><label for="ck1">Toco las cuatro tríadas en 2.ª inversión sin mirar el teclado.</label></li>
+    <li><input type="checkbox" id="ck2" data-ck="ck2"><label for="ck2">Mantengo el bombo en 1 y 3 a 60 bpm durante un minuto.</label></li>
+    <li><input type="checkbox" id="ck3" data-ck="ck3"><label for="ck3">Añado la caja en 2 y 4 sin perder el bombo.</label></li>
+    <li><input type="checkbox" id="ck4" data-ck="ck4"><label for="ck4">Distingo tres niveles de volumen entre caja, bombo y pulgares.</label></li>
+    <li><input type="checkbox" id="ck5" data-ck="ck5"><label for="ck5">Ejecuto el patrón D-I-D-I durante un minuto seguido a 60 bpm.</label></li>
+    <li><input type="checkbox" id="ck6" data-ck="ck6"><label for="ck6">Cambio C → G → Am → F sin cortar el pulso de los pulgares.</label></li>
+    <li><input type="checkbox" id="ck7" data-ck="ck7"><label for="ck7">Toco el Nivel 3 completo a 70 bpm.</label></li>
+    <li><input type="checkbox" id="ck8" data-ck="ck8"><label for="ck8">Toco el Nivel 3 completo a 80 bpm con la jerarquía intacta.</label></li>
+  </ul>
+  <div class="btns">
+    <button class="btn ghost" type="button" id="ckreset">Reiniciar progreso</button>
+  </div>
+
+  <div class="note ok">
+    <p><strong>Consejo de práctica:</strong> es mejor tocar diez minutos perfectos a 60 bpm que treinta minutos sucios a 100 bpm. La velocidad es una consecuencia de la precisión, nunca un objetivo en sí mismo.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 4 — 33 PREGUNTAS (Q&A)
+     ============================================================ -->
+<section id="qa" data-t="33 Preguntas (Q&amp;A)">
+  <span class="kicker">Banco de preguntas</span>
+  <h1>33 Preguntas y Respuestas</h1>
+  <p class="lead">Organizadas por nivel de dificultad: básico, avanzado y PRO. Pulsa cada pregunta para desplegar la respuesta.</p>
+
+  <h2>Nivel Básico (11 preguntas)</h2>
+
+  <details><summary>1. ¿Qué elementos de la batería se pueden imitar en el piano?</summary>
+  <div class="ans"><p>El bombo (bajos graves), la caja/redoblante (acordes medios acentuados) y el hi-hat/maraca (pulgares en notas internas).</p></div></details>
+
+  <details><summary>2. ¿Con qué mano y dedo se ejecuta habitualmente el sonido de bombo?</summary>
+  <div class="ans"><p>Con la mano izquierda, utilizando la nota fundamental del acorde sola o en octavas en el registro grave.</p></div></details>
+
+  <details><summary>3. ¿Cómo se simula el sonido de la caja o redoblante?</summary>
+  <div class="ans"><p>Con un ataque acentuado del acorde completo en la mano derecha (y/o izquierda) en los tiempos 2 y 4.</p></div></details>
+
+  <details><summary>4. ¿Cuál es la función de las inversiones de acordes en este estilo de acompañamiento?</summary>
+  <div class="ans"><p>Permiten conectar acordes con movimientos mínimos de la mano, logrando un sonido más compacto y fluido sin saltos bruscos.</p></div></details>
+
+  <details><summary>5. ¿Qué inversión se recomienda para obtener un sonido compacto en el registro medio-bajo?</summary>
+  <div class="ans"><p>La segunda inversión del acorde.</p></div></details>
+
+  <details><summary>6. ¿Qué dedos se utilizan para realizar el patrón de hi-hat continuo?</summary>
+  <div class="ans"><p>Los dos pulgares (mano derecha e izquierda) intercalados.</p></div></details>
+
+  <details><summary>7. ¿A qué volumen debe sonar el patrón de los pulgares en comparación con la caja y el bombo?</summary>
+  <div class="ans"><p>A un volumen mucho menor (muy suave / pianissimo), para no tapar la armonía ni los acentos principales.</p></div></details>
+
+  <details><summary>8. ¿Qué ocurre si tocamos los pulgares al mismo volumen que el acorde principal?</summary>
+  <div class="ans"><p>El ritmo suena tosco, pesado, ruidoso y sin coherencia musical.</p></div></details>
+
+  <details><summary>9. ¿Qué acordes componen la secuencia típica de práctica mencionada en la fuente?</summary>
+  <div class="ans"><p>Do Mayor (C), Sol Mayor (G), La Menor (Am) y Fa Mayor (F).</p></div></details>
+
+  <details><summary>10. ¿Cuál es la ventaja de utilizar la segunda inversión al enlazar acordes?</summary>
+  <div class="ans"><p>Evita saltos largos entre la posición fundamental de un acorde y el siguiente, manteniendo las manos en una zona de confort.</p></div></details>
+
+  <details><summary>11. ¿Por qué es necesario imitar la batería cuando se toca piano solo?</summary>
+  <div class="ans"><p>Porque no hay otros instrumentos rítmicos que sostengan el movimiento y el estilo de la canción.</p></div></details>
+
+  <h2>Nivel Avanzado (11 preguntas)</h2>
+
+  <details><summary>12. ¿Cómo se debe ajustar la técnica del piano-batería al tocar en una banda con bajista y baterista?</summary>
+  <div class="ans"><p>Se debe reducir la cantidad de bajos profundos y simplificar los patrones de pulgar para no invadir el espacio del bajista y del baterista.</p></div></details>
+
+  <details><summary>13. ¿Por qué no es recomendable usar quintas armónicas en la mano izquierda en acordes graves como Fa o Sol?</summary>
+  <div class="ans"><p>Porque en ese registro tan grave las quintas generan una saturación acústica turbia y empastada.</p></div></details>
+
+  <details><summary>14. ¿Qué alternativa armónica en la mano izquierda reemplaza a la octava grave para dar un sonido más abierto?</summary>
+  <div class="ans"><p>La extensión de décima (fundamental y tercera arriba).</p></div></details>
+
+  <details><summary>15. ¿Cómo se realiza la alternancia de pulgares en el patrón D-I-D-I?</summary>
+  <div class="ans"><p>Se intercala el toque del pulgar derecho con el del pulgar izquierdo entre los golpes principales de bajo y acorde.</p></div></details>
+
+  <details><summary>16. ¿Qué es un «checker» o «maraca» en este contexto rítmico?</summary>
+  <div class="ans"><p>Un patrón de subdivisión rápida y constante que aporta propulsión rítmica al acompañamiento.</p></div></details>
+
+  <details><summary>17. ¿Cómo se pueden armonizar las notas de una melodía mientras se mantiene el groove de batería?</summary>
+  <div class="ans"><p>Ubicando la melodía en la voz superior (dedos externos de la mano derecha) mientras los pulgares e índices mantienen el ritmo interno.</p></div></details>
+
+  <details><summary>18. ¿Qué ajuste se hace en la mano izquierda al tocar un pasaje con movimiento rítmico más rápido?</summary>
+  <div class="ans"><p>Se marcan los bajos en cada cambio o pulso principal para consolidar la base del bombo.</p></div></details>
+
+  <details><summary>19. ¿De qué manera influye la primera inversión en la fluidez del acompañamiento?</summary>
+  <div class="ans"><p>Aporta una conducción armónica suave que conecta mejor ciertas transiciones entre la posición fundamental y la segunda inversión.</p></div></details>
+
+  <details><summary>20. ¿Qué función cumplen las notas de paso o pequeños saltos antes de la nota principal del bombo?</summary>
+  <div class="ans"><p>Simulan redobles cortitos o golpes preparatorios de los toms de la batería.</p></div></details>
+
+  <details><summary>21. ¿Por qué se considera al piano como una «caja de ritmos» en la metodología de Raúl Blanco?</summary>
+  <div class="ans"><p>Porque permite estructurar y coordinar independientemente el bajo, los acentos medios y la subdivisión rápida en una sola ejecución.</p></div></details>
+
+  <details><summary>22. ¿Qué rol juega la relajación de la muñeca en la ejecución sostenida de los pulgares?</summary>
+  <div class="ans"><p>Evita lesiones por tensión repetitiva y permite controlar los matices de volumen pianissimo.</p></div></details>
+
+  <h2>Nivel PRO (11 preguntas)</h2>
+
+  <details><summary>23. ¿Cómo se estructura el equilibrio micro-dinámico entre el bajo (bombo), el acorde (caja) y la intercalación interna (hi-hat)?</summary>
+  <div class="ans"><p>El bajo aporta el peso en el tiempo 1; la caja aplica un acento dinámico alto en el 2 y 4; los pulgares rebotan con mínimo peso en una capa dinámica inferior.</p></div></details>
+
+  <details><summary>24. ¿De qué manera se aplica la disociación digital entre el pulgar y los dedos 4-5 de la misma mano?</summary>
+  <div class="ans"><p>Los dedos 4 y 5 sostienen las notas agudas de la armonía o melodía mientras el pulgar trabaja de manera independiente con un ataque suave.</p></div></details>
+
+  <details><summary>25. ¿Cómo se resuelve el dilema del hi-hat en tempos rápidos sin fatigarse?</summary>
+  <div class="ans"><p>Pasando de un movimiento activo de pulgares a un ligero balanceo de muñeca (micro-rotación) a menor volumen.</p></div></details>
+
+  <details><summary>26. ¿Qué ventaja técnica ofrece pasar del bajo en octava a un bajo en décima en pasajes de balada sofisticada?</summary>
+  <div class="ans"><p>Libera espacio en la región central del piano para que la mano derecha despliegue voces armónicas más ricas sin saturar los medios-graves.</p></div></details>
+
+  <details><summary>27. ¿Cómo se integra la síncopa en el acorde de caja para generar un groove más moderno?</summary>
+  <div class="ans"><p>Anticipando el golpe del acorde una corchea antes del tiempo 3 o del tiempo 1, manteniendo el bajo de bombo a tiempo.</p></div></details>
+
+  <details><summary>28. ¿Cuál es la estrategia para adaptar ritmos latinos o de timba usando esta misma filosofía de piano-batería?</summary>
+  <div class="ans"><p>Asignar la mano izquierda a la cáscara/tumbao del bajo y adaptar los pulgares para simular el güiro, la campana o la maraca.</p></div></details>
+
+  <details><summary>29. ¿Cómo se corrige la tendencia natural del pianista a acentuar el pulgar izquierdo junto con el bajo?</summary>
+  <div class="ans"><p>Aislando la mano izquierda y practicando el bajo fuerte con el meñique/octava mientras el pulgar izquierdo toca estrictamente pianissimo.</p></div></details>
+
+  <details><summary>30. ¿De qué forma las inversiones de 4 notas (acordes de séptima o novena) modifican la técnica de pulgares?</summary>
+  <div class="ans"><p>El pulgar pasa a tocar la tercera o séptima del acorde como nota de hi-hat, enriqueciendo la textura armónica mientras mantiene el ritmo.</p></div></details>
+
+  <details><summary>31. ¿Cómo influye el registro acústico del piano en la elección de la altura de la caja?</summary>
+  <div class="ans"><p>Si se toca muy arriba, la caja pierde peso y suena chirriante; si se toca muy abajo, se confunde con el bombo. La zona ideal es alrededor del Do central (C4).</p></div></details>
+
+  <details><summary>32. ¿Qué ejercicio técnico específico recomienda el autor para consolidar la mano izquierda independizada?</summary>
+  <div class="ans"><p>Ejercicios de independencia y velocidad para mano izquierda (como los desarrollados en su literatura técnica de timba/piano).</p></div></details>
+
+  <details><summary>33. ¿Cómo se logra una transición imperceptible entre el acompañamiento tipo balada y un pasaje más agitado?</summary>
+  <div class="ans"><p>Aumentando progresivamente la subdivisión de los pulgares (de corcheas a semicorcheas) y añadiendo síncopas en la caja sin alterar el tempo base.</p></div></details>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 5 — ERRORES
+     ============================================================ -->
+<section id="errores" data-t="Errores">
+  <span class="kicker">Bloque 5 y 7</span>
+  <h1>Errores, limitaciones y seguridad</h1>
+  <p class="lead">Los fallos más frecuentes tienen causa identificable y solución técnica concreta.</p>
+
+  <h2>Tabla de diagnóstico</h2>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Síntoma</th><th>Causa raíz</th><th>Solución técnica</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>El ritmo suena pesado y robótico</td>
+          <td>El pulgar (hi-hat) se toca al mismo volumen que la caja o el bombo</td>
+          <td>Reduce drásticamente la fuerza del pulgar. Toca el pulgar casi rozando las teclas (pianissimo)</td>
+        </tr>
+        <tr>
+          <td>Choque de frecuencias con el bajista</td>
+          <td>Tocar octavas graves continuas en la mano izquierda cuando hay banda</td>
+          <td>Mueve la mano izquierda a una zona más central o toca solo notas sencillas sin duplicar en octavas</td>
+        </tr>
+        <tr>
+          <td>Sonido sucio o empastado en acordes de Fa y Sol</td>
+          <td>Tocar la quinta del acorde demasiado abajo en el registro grave</td>
+          <td>Sustituir la quinta por una décima o usar la segunda inversión más arriba</td>
+        </tr>
+        <tr>
+          <td>Tropezones rítmicos al cambiar de acorde</td>
+          <td>Saltar en posición fundamental entre acordes distantes</td>
+          <td>Usar inversiones (1.ª o 2.ª) para mantener la mano cerca de las notas comunes</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Prevención y seguridad ergonómica</h2>
+
+  <div class="card">
+    <h3>Fatiga y tensión en los pulgares</h3>
+    <p>El movimiento de los pulgares debe provenir de un <strong>peso relajado del brazo</strong> y de una articulación suelta de la muñeca, jamás de una contracción rígida de la mano.</p>
+    <p>Si aparece dolor o tensión: detente, sacude la mano, baja la velocidad y reduce el tiempo de práctica en pulsos cortos de dos minutos con descanso.</p>
+  </div>
+
+  <div class="card">
+    <h3>Saturación acústica en el registro grave</h3>
+    <p>Si se utilizan quintas completas muy abajo en el teclado (por debajo del Do central), el sonido se vuelve opaco y empastado. En esas zonas es preferible utilizar:</p>
+    <ul>
+      <li>La nota fundamental sola.</li>
+      <li>La octava.</li>
+      <li>Una extensión de décima.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Acentos indeseados en el hi-hat</h3>
+    <p>Si el pulgar suena demasiado fuerte, la textura rítmica se vuelve tosca y desagradable. Practica el pulgar solo, sin el resto del acorde, hasta que puedas tocarlo a un volumen constante y mínimo. Después reincorpóralo al patrón.</p>
+  </div>
+
+  <div class="card">
+    <h3>Desincronización del tiempo</h3>
+    <p>Practica siempre a velocidad lenta con metrónomo antes de acelerar el movimiento D-I-D-I. La velocidad sin control solo consolida el error.</p>
+  </div>
+
+  <div class="note bad">
+    <p><strong>El error más común de todos:</strong> tocar todas las notas al mismo volumen. Es la causa del 80 % de los acompañamientos que suenan «duros». Antes de añadir notas, asegúrate de tener la jerarquía de tres niveles.</p>
+  </div>
+
+  <h2>Limitaciones del método</h2>
+  <div class="card">
+    <ul>
+      <li>Requiere un instrumento con <strong>sensibilidad a la velocidad</strong>. En un teclado sin dinámica la jerarquía de volúmenes no se puede ejecutar.</li>
+      <li>La técnica de pulgares <strong>no sustituye a un baterista</strong>: en contextos de alta densidad rítmica, el resultado puede saturarse.</li>
+      <li>El método está documentado para estilos concretos (balada/pop y ritmos cubanos). Su extrapolación a otros géneros requiere adaptación, no es automática.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 6 — RESUMEN
+     ============================================================ -->
+<section id="resumen" data-t="Resumen">
+  <span class="kicker">Síntesis</span>
+  <h1>Resumen y glosario</h1>
+
+  <h2>Las siete ideas clave</h2>
+  <div class="card">
+    <ol>
+      <li><strong>Un piano, tres roles.</strong> Bajo, armonía y batería se ejecutan simultáneamente.</li>
+      <li><strong>Cada elemento tiene su zona.</strong> Bombo en los graves, caja en los medios, hi-hat en las notas internas.</li>
+      <li><strong>Las inversiones lo son todo.</strong> La segunda inversión evita saltos y da un sonido compacto.</li>
+      <li><strong>Los pulgares son el hi-hat.</strong> Alternancia D-I-D-I constante y muy suave.</li>
+      <li><strong>Tres volúmenes, no uno.</strong> Caja fuerte, bombo medio, pulgares pianissimo.</li>
+      <li><strong>El contexto manda.</strong> Solo o con banda, el rol del pianista cambia por completo.</li>
+      <li><strong>Lento primero.</strong> La precisión a 60 bpm vale más que la velocidad a 100.</li>
+    </ol>
+  </div>
+
+  <h2>Glosario técnico</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Término</th><th>Definición</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Bombo (Kick Drum)</strong></td><td>Instrumento de percusión grave de la batería. En piano se simula con el bajo en la mano izquierda.</td></tr>
+        <tr><td><strong>Caja / Redoblante</strong></td><td>Instrumento de percusión de frecuencia media. En piano se simula acentuando el acorde en la mano derecha.</td></tr>
+        <tr><td><strong>Hi-Hat</strong></td><td>Platillos de alta frecuencia que marcan la subdivisión rítmica. En piano se simulan con los pulgares alternados.</td></tr>
+        <tr><td><strong>Groove</strong></td><td>Sensación rítmica coordinada y contagiosa que sostiene un patrón musical.</td></tr>
+        <tr><td><strong>Inversión de acorde</strong></td><td>Disposición de las notas de un acorde donde una nota distinta a la fundamental ocupa la posición más grave.</td></tr>
+        <tr><td><strong>Segunda inversión</strong></td><td>Disposición de un acorde donde la quinta se encuentra en el bajo.</td></tr>
+        <tr><td><strong>Décima (extensión)</strong></td><td>Intervalo musical de octava más una tercera. Permite tocar el bajo y la tercera del acorde con un amplio espacio armónico.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Referencia rápida</h2>
+  <div class="cbox">
+    <button class="copy" type="button">Copiar</button>
+    <pre>REFERENCIA RÁPIDA — Piano como batería
+
+BOMBO      → Mano izq. · fundamental en octava · tiempos 1 y 3 · volumen medio
+CAJA       → Mano der. · acorde 2.ª inv. · tiempos 2 y 4 · volumen fuerte
+HI-HAT     → Ambos pulgares · D-I-D-I constante · volumen pianissimo
+TOMS/FILLS → Mano izq. · quintas, octavas, décimas · antes del golpe principal
+
+JERARQUÍA DE VOLUMEN
+1. Caja (fuerte)  ·  2. Bombo (medio)  ·  3. Pulgares (muy suave)
+
+SECUENCIA DE PRÁCTICA
+C (Sol-Do-Mi) → G (Re-Sol-Si) → Am (Mi-La-Do) → F (Do-Fa-La)
+
+TEMPO DE TRABAJO
+60 bpm → 70 bpm → 80 bpm</pre>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 7 — FUENTES
+     ============================================================ -->
+<section id="fuentes" data-t="Fuentes">
+  <span class="kicker">Documentación</span>
+  <h1>Fuentes y documentación</h1>
+  <p class="lead">Todo el contenido técnico de este tutorial proviene del material de referencia indicado a continuación.</p>
+
+  <div class="card">
+    <h3>Fuente principal</h3>
+    <p><strong>Título:</strong> «Ritmos para Acompañar | Cómo hacer el piano una batería»</p>
+    <p><strong>Autor / Canal:</strong> Raúl Blanco — Raúl Blanco Music (pianista y compositor cubano).</p>
+    <p><strong>Conceptos aportados:</strong></p>
+    <ul>
+      <li>Mapeo de frecuencias de batería en la arquitectura del piano.</li>
+      <li>Técnica de pulgares alternados para simular hi-hat / maraca.</li>
+      <li>Inversiones armónicas para un acompañamiento compacto.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Recursos complementarios del autor</h3>
+    <ul>
+      <li><strong>Sitio web oficial:</strong> Raúl Blanco Music.</li>
+      <li><strong>Literatura técnica:</strong> libros de ejercicios para el desarrollo de la independencia y velocidad en la mano izquierda (música y timba cubana).</li>
+    </ul>
+  </div>
+
+  <div class="note warn">
+    <p><strong>Nota de verificación:</strong> los enlaces y recursos externos mencionados provienen del documento fuente y no han sido comprobados desde este archivo. Este tutorial es autónomo y funciona sin conexión; las referencias se ofrecen únicamente como atribución documental.</p>
+  </div>
+
+  <div class="card">
+    <h3>Sobre la fidelidad del contenido</h3>
+    <p>La organización pedagógica, los ejemplos ampliados, las listas de comprobación, el glosario y el banco de preguntas son una reorganización del material original. No se han añadido procedimientos, datos ni resultados que no estuvieran contenidos en la fuente.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECCIÓN 8 — CRÉDITOS
+     ============================================================ -->
+<section id="creditos" data-t="Créditos">
+  <h1>Créditos</h1>
+
+  <div class="hero" id="heroCreditos" data-svg="b" role="img"
+       aria-label="Ilustración animada: sobre un teclado de piano flotan un bombo, una caja y un hi-hat conectados por líneas luminosas; dos pulgares alternan sobre las teclas y ondas sonoras y notas musicales se elevan desde el centro."></div>
+
+  <p class="lead">Esta ilustración representa el concepto central del tutorial: un teclado de piano que se convierte en una batería completa. El bombo, la caja y el hi-hat flotan sobre las teclas conectados por líneas de energía; dos pulgares luminosos alternan sobre el teclado marcando el patrón D-I-D-I, mientras las ondas sonoras y las notas se elevan desde el centro.</p>
+
+  <hr>
+
+  <p class="author">Rubén Sbarsky</p>
+  <p class="role">Autor del tutorial</p>
+
+  <div class="card">
+    <p><strong>Título:</strong> Ritmos de Batería en el Piano — Guía Maestra</p>
+    <p><strong>Contenido técnico basado en:</strong> el método de Raúl Blanco Music.</p>
+    <p><strong>Versión:</strong> V001</p>
+    <p class="meta">Fecha de creación: 28/10/2026 — 09:04:05</p>
+  </div>
+
+  <div class="note">
+    <p>Archivo HTML único y autónomo. No utiliza dependencias externas, CDN, fuentes remotas ni recursos de red. Funciona sin conexión una vez descargado.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     BOTONES FLOTANTES
+     ============================================================ -->
+<div id="fab">
+  <button type="button" id="bs" aria-label="Buscar en el tutorial" title="Buscar">🔍</button>
+  <button type="button" id="bminus" aria-label="Reducir el tamaño de letra" title="Letra más pequeña">A−</button>
+  <button type="button" id="bplus" aria-label="Aumentar el tamaño de letra" title="Letra más grande">A+</button>
+  <button type="button" id="btheme" aria-label="Cambiar entre tema oscuro y claro" title="Tema">☀️</button>
+  <button type="button" id="bprint" aria-label="Imprimir o guardar como PDF" title="Imprimir / PDF">🖨</button>
+  <button type="button" id="top" class="hide" aria-label="Volver arriba" title="Volver arriba">↑</button>
+</div>
+
+<!-- ============================================================
+     PANEL DE BÚSQUEDA
+     ============================================================ -->
+<div id="search" role="dialog" aria-modal="true" aria-label="Buscar en el tutorial">
+  <div class="panel">
+    <label for="sinput" class="kicker">Buscar en el tutorial</label>
+    <input id="sinput" type="search" placeholder="Escribe una palabra: inversión, pulgar, bombo…" autocomplete="off">
+    <div id="sres" aria-live="polite"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ==========================================================
+     A. PLANTILLA SVG ÚNICA
+     ========================================================== */
+  var SVG_TEMPLATE = `
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="bgG__UID__" cx="50%" cy="40%" r="78%">
+      <stop offset="0%" stop-color="#123055"/>
+      <stop offset="50%" stop-color="#0a1526"/>
+      <stop offset="100%" stop-color="#050a14"/>
+    </radialGradient>
+    <radialGradient id="haloG__UID__" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity=".32"/>
+      <stop offset="55%" stop-color="#38bdf8" stop-opacity=".07"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="accG__UID__" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#00d4ff"/>
+    </linearGradient>
+    <linearGradient id="keyG__UID__" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f2f8ff"/>
+      <stop offset="100%" stop-color="#8fb2d0"/>
+    </linearGradient>
+    <linearGradient id="blkG__UID__" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22304a"/>
+      <stop offset="100%" stop-color="#080f1a"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="500" fill="url(#bgG__UID__)"/>
+  <circle cx="200" cy="240" r="190" fill="url(#haloG__UID__)"/>
+
+  <g fill="#1e3a5f" opacity=".5">
+    <circle cx="40" cy="60" r="1.6"/><circle cx="120" cy="40" r="1.3"/>
+    <circle cx="300" cy="70" r="1.6"/><circle cx="360" cy="150" r="1.3"/>
+    <circle cx="60" cy="250" r="1.3"/><circle cx="345" cy="255" r="1.6"/>
+    <circle cx="30" cy="400" r="1.3"/><circle cx="372" cy="410" r="1.6"/>
+    <circle cx="150" cy="90" r="1.2"/><circle cx="250" cy="55" r="1.2"/>
+  </g>
+
+  <g transform="translate(200,248)">
+    <circle class="sv-w" r="26" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+    <circle class="sv-w d1" r="26" fill="none" stroke="#38bdf8" stroke-width="1.2"/>
+    <circle class="sv-w d2" r="26" fill="none" stroke="#00d4ff" stroke-width="1"/>
+  </g>
+
+  <g fill="none" stroke="#38bdf8" stroke-width="1.1" opacity=".42" stroke-dasharray="5 7">
+    <path class="sv-link" d="M78 196 C86 262 106 322 130 364"/>
+    <path class="sv-link d1" d="M200 178 C200 250 200 312 200 364"/>
+    <path class="sv-link d2" d="M200 306 C200 334 244 346 274 364"/>
+  </g>
+
+  <g transform="translate(78,170)">
+    <ellipse cx="0" cy="5" rx="44" ry="11" fill="#0d1a2c" stroke="#38bdf8" stroke-width="1.4"/>
+    <g class="sv-hat">
+      <ellipse cx="0" cy="-6" rx="44" ry="11" fill="#0f172a" stroke="#38bdf8" stroke-width="1.7"/>
+      <ellipse cx="0" cy="-6" rx="44" ry="11" fill="url(#accG__UID__)" opacity=".16"/>
+      <ellipse cx="0" cy="-6" rx="28" ry="6" fill="none" stroke="#38bdf8" stroke-width=".8" opacity=".55"/>
+    </g>
+    <rect x="-1.6" y="14" width="3.2" height="30" fill="#38bdf8" opacity=".6"/>
+  </g>
+
+  <g transform="translate(200,120)">
+    <ellipse cx="0" cy="11" rx="48" ry="14" fill="#0b1626" stroke="#38bdf8" stroke-width="1.4"/>
+    <g class="sv-snare">
+      <ellipse cx="0" cy="0" rx="48" ry="14" fill="#122a45" stroke="#38bdf8" stroke-width="1.7"/>
+      <ellipse cx="0" cy="0" rx="34" ry="9" fill="none" stroke="#38bdf8" stroke-width=".9" opacity=".6"/>
+      <path d="M-30 0 L30 0 M0 -8 L0 8" stroke="#38bdf8" stroke-width=".9" opacity=".5"/>
+    </g>
+  </g>
+
+  <g transform="translate(200,252)">
+    <circle class="sv-pulse" r="52" fill="none" stroke="#00d4ff" stroke-width="2"/>
+    <circle r="52" fill="#0c1626" stroke="#38bdf8" stroke-width="2"/>
+    <circle r="40" fill="none" stroke="#38bdf8" stroke-width="1" opacity=".45"/>
+    <circle r="52" fill="none" stroke="#38bdf8" stroke-width="1" opacity=".22"/>
+    <circle class="sv-core" r="24" fill="url(#accG__UID__)" opacity=".35"/>
+  </g>
+
+  <g transform="translate(0,368)">
+    <rect x="20" y="-6" width="360" height="104" rx="9" fill="#0b1526" stroke="#1e3a5f" stroke-width="1.6"/>
+    <g>
+      <rect class="k" x="31"  y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="57"  y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="83"  y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="109" y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="135" y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="161" y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="187" y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="213" y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="239" y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="265" y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="291" y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="317" y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+      <rect class="k" x="343" y="0" width="26" height="88" rx="3" fill="url(#keyG__UID__)"/>
+    </g>
+    <g fill="url(#blkG__UID__)" stroke="#0a1220" stroke-width=".8">
+      <rect x="49.5"  y="0" width="15" height="56" rx="2"/>
+      <rect x="75.5"  y="0" width="15" height="56" rx="2"/>
+      <rect x="127.5" y="0" width="15" height="56" rx="2"/>
+      <rect x="153.5" y="0" width="15" height="56" rx="2"/>
+      <rect x="179.5" y="0" width="15" height="56" rx="2"/>
+      <rect x="231.5" y="0" width="15" height="56" rx="2"/>
+      <rect x="257.5" y="0" width="15" height="56" rx="2"/>
+      <rect x="309.5" y="0" width="15" height="56" rx="2"/>
+      <rect x="335.5" y="0" width="15" height="56" rx="2"/>
+    </g>
+  </g>
+
+  <g transform="translate(112,340)">
+    <g class="sv-thumb">
+      <circle r="19" fill="#38bdf8" opacity=".16"/>
+      <circle r="12" fill="url(#accG__UID__)" opacity=".92"/>
+      <circle r="12" fill="none" stroke="#eaf6ff" stroke-width="1" opacity=".7"/>
+    </g>
+  </g>
+  <g class="sv-thumbR" transform="translate(288,340)">
+    <g class="sv-thumb">
+      <circle r="19" fill="#38bdf8" opacity=".16"/>
+      <circle r="12" fill="url(#accG__UID__)" opacity=".92"/>
+      <circle r="12" fill="none" stroke="#eaf6ff" stroke-width="1" opacity=".7"/>
+    </g>
+  </g>
+
+  <g fill="#38bdf8" font-family="system-ui,sans-serif" font-size="17" opacity=".9">
+    <text class="sv-note"    x="46"  y="330">♪</text>
+    <text class="sv-note n2" x="348" y="312">♫</text>
+    <text class="sv-note n3" x="72"  y="286">♩</text>
+    <text class="sv-note n4" x="330" y="352">♪</text>
+  </g>
+
+  <g fill="#00d4ff">
+    <circle class="sv-pt" cx="130" cy="240" r="2.4"/>
+    <circle class="sv-pt" cx="292" cy="196" r="2"   style="animation-delay:-1.2s"/>
+    <circle class="sv-pt" cx="66"  cy="120" r="2.2" style="animation-delay:-2.4s"/>
+    <circle class="sv-pt" cx="330" cy="110" r="2.6" style="animation-delay:-3.1s"/>
+    <circle class="sv-pt" cx="160" cy="80"  r="2"   style="animation-delay:-.7s"/>
+    <circle class="sv-pt" cx="250" cy="330" r="2.2" style="animation-delay:-4.2s"/>
+    <circle class="sv-pt" cx="112" cy="180" r="1.8" style="animation-delay:-1.9s"/>
+    <circle class="sv-pt" cx="300" cy="270" r="2"   style="animation-delay:-3.7s"/>
+  </g>
+</svg>`;
+
+  /* ==========================================================
+     B. UTILIDADES DE ALMACENAMIENTO SEGURO
+     ========================================================== */
+  var store = {
+    get: function(k, def){
+      try{
+        var v = window.localStorage.getItem(k);
+        return v === null ? def : v;
+      }catch(e){ return def; }
+    },
+    set: function(k, v){
+      try{ window.localStorage.setItem(k, String(v)); }catch(e){ /* silencioso */ }
+    },
+    del: function(k){
+      try{ window.localStorage.removeItem(k); }catch(e){ /* silencioso */ }
+    }
+  };
+
+  /* ==========================================================
+     C. REFERENCIAS DEL DOM
+     ========================================================== */
+  var secs   = Array.prototype.slice.call(document.querySelectorAll('main > section'));
+  var nav    = document.getElementById('nav');
+  var dr     = document.getElementById('dr');
+  var mb     = document.getElementById('mb');
+  var bar    = document.getElementById('bar');
+  var topBtn = document.getElementById('top');
+  var searchBox = document.getElementById('search');
+  var sinput = document.getElementById('sinput');
+  var sres   = document.getElementById('sres');
+  var cur    = 0;
+
+  /* ==========================================================
+     D. MONTAJE DEL SVG
+     ========================================================== */
+  function buildSVG(uid){
+    return SVG_TEMPLATE.replace(/__UID__/g, uid);
+  }
+
+  function mountHost(host){
+    if(!host || host.querySelector('svg')) return;
+    var uid = host.getAttribute('data-svg') || 'x';
+    host.innerHTML = buildSVG(uid + '_' + Math.random().toString(36).slice(2, 8));
+  }
+
+  function mountSection(section){
+    if(!section) return;
+    var hosts = section.querySelectorAll('[data-svg]');
+    for(var i = 0; i < hosts.length; i++) mountHost(hosts[i]);
+  }
+
+  /* Reparación periódica de contenedores visibles vacíos */
+  window.setInterval(function(){
+    var hosts = document.querySelectorAll('[data-svg]');
+    for(var i = 0; i < hosts.length; i++){
+      var h = hosts[i];
+      if(h.offsetParent !== null && !h.querySelector('svg')) mountHost(h);
+    }
+  }, 1500);
+
+  /* ==========================================================
+     E. CONSTRUCCIÓN DEL ÍNDICE Y DE LOS CHIPS
+     ========================================================== */
+  var chips = [];
+  var links = [];
+
+  secs.forEach(function(s, i){
+    var title = s.getAttribute('data-t') || (s.querySelector('h2') ? s.querySelector('h2').textContent : s.id);
+
+    var chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'chip';
+    chip.textContent = title;
+    chip.setAttribute('data-i', String(i));
+    chip.addEventListener('click', function(){ go(i); });
+    nav.appendChild(chip);
+    chips.push(chip);
+
+    var a = document.createElement('a');
+    a.href = '#';
+    a.textContent = (i ? i + '. ' : '') + title;
+    a.addEventListener('click', function(ev){
+      ev.preventDefault();
+      go(i);
+      closeDrawer();
+    });
+    dr.appendChild(a);
+    links.push(a);
+  });
+
+  /* ==========================================================
+     F. NAVEGACIÓN ENTRE SECCIONES
+     ========================================================== */
+  var lastHashSet = 0;
+
+  function go(i, fromHash){
+    if(isNaN(i)) return;
+    i = Math.max(0, Math.min(secs.length - 1, i));
+    cur = i;
+
+    secs.forEach(function(s, j){ s.classList.toggle('on', j === i); });
+    chips.forEach(function(c, j){ c.classList.toggle('on', j === i); });
+    links.forEach(function(a, j){ a.classList.toggle('on', j === i); });
+
+    mountSection(secs[i]);
+    store.set('pb.tab', i);
+
+    if(!fromHash){
+      lastHashSet = Date.now();
+      if(history && history.replaceState){
+        try{ history.replaceState(null, '', '#' + secs[i].id); }catch(e){ location.hash = secs[i].id; }
+      }else{
+        location.hash = secs[i].id;
+      }
+    }
+
+    window.scrollTo(0, 0);
+    updateBar();
+    closeSearch();
+  }
+
+  window.addEventListener('hashchange', function(){
+    if(Date.now() - lastHashSet < 120) return;
+    var id = location.hash.replace('#', '');
+    for(var i = 0; i < secs.length; i++){
+      if(secs[i].id === id){ go(i, true); return; }
+    }
+  });
+
+  /* Botones con data-goto */
+  document.querySelectorAll('[data-goto]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var id = b.getAttribute('data-goto');
+      for(var i = 0; i < secs.length; i++){
+        if(secs[i].id === id){ go(i); return; }
+      }
+    });
+  });
+
+  /* ==========================================================
+     G. PANEL LATERAL DE ÍNDICE
+     ========================================================== */
+  function setDrawer(open){
+    dr.classList.toggle('o', open);
+    mb.setAttribute('aria-expanded', open ? 'true' : 'false');
+    mb.setAttribute('aria-label', open ? 'Cerrar índice' : 'Abrir índice');
+  }
+  function closeDrawer(){ setDrawer(false); }
+
+  mb.addEventListener('click', function(ev){
+    ev.stopPropagation();
+    setDrawer(!dr.classList.contains('o'));
+  });
+
+  document.addEventListener('click', function(ev){
+    if(!ev.target.closest('#dr') && !ev.target.closest('#mb')) closeDrawer();
+  });
+
+  window.addEventListener('keydown', function(ev){
+    if(ev.key === 'Escape'){
+      setDrawer(false);
+      closeSearch();
+    }
+  });
+
+  /* Botón de HOME */
+  var ixBtn = document.getElementById('ix');
+  if(ixBtn) ixBtn.addEventListener('click', function(){ setDrawer(true); });
+
+  /* ==========================================================
+     H. BARRA DE PROGRESO Y BOTÓN «VOLVER ARRIBA»
+     ========================================================== */
+  function updateBar(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+    bar.style.width = p.toFixed(2) + '%';
+    topBtn.classList.toggle('hide', h.scrollTop < 320);
+  }
+  window.addEventListener('scroll', updateBar, { passive: true });
+  window.addEventListener('resize', updateBar);
+
+  topBtn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ==========================================================
+     I. TAMAÑO DE LETRA Y TEMA
+     ========================================================== */
+  var FS_MIN = 13, FS_MAX = 22;
+  var fs = parseInt(store.get('pb.fs', '16'), 10);
+  if(isNaN(fs)) fs = 16;
+  fs = Math.max(FS_MIN, Math.min(FS_MAX, fs));
+  document.documentElement.style.fontSize = fs + 'px';
+
+  function setFS(v){
+    fs = Math.max(FS_MIN, Math.min(FS_MAX, v));
+    document.documentElement.style.fontSize = fs + 'px';
+    store.set('pb.fs', fs);
+    updateBar();
+  }
+  document.getElementById('bplus').addEventListener('click', function(){ setFS(fs + 1); });
+  document.getElementById('bminus').addEventListener('click', function(){ setFS(fs - 1); });
+
+  var themeBtn = document.getElementById('btheme');
+  function setTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    themeBtn.textContent = (t === 'dark') ? '☀️' : '🌙';
+    themeBtn.setAttribute('aria-label', (t === 'dark') ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
+    store.set('pb.theme', t);
+  }
+  setTheme(store.get('pb.theme', 'dark') === 'light' ? 'light' : 'dark');
+  themeBtn.addEventListener('click', function(){
+    setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ==========================================================
+     J. IMPRESIÓN
+     ========================================================== */
+  var printState = null;
+
+  function preparePrint(){
+    secs.forEach(mountSection);
+    printState = Array.prototype.map.call(document.querySelectorAll('details'), function(d){ return d.open; });
+    document.querySelectorAll('details').forEach(function(d){ d.open = true; });
+  }
+  function restorePrint(){
+    if(printState){
+      document.querySelectorAll('details').forEach(function(d, i){
+        if(i < printState.length) d.open = printState[i];
+      });
+      printState = null;
+    }
+  }
+
+  window.addEventListener('beforeprint', preparePrint);
+  window.addEventListener('afterprint', restorePrint);
+
+  document.getElementById('bprint').addEventListener('click', function(){
+    try{
+      preparePrint();
+      window.print();
+    }catch(e){
+      alert('No se pudo abrir el diálogo de impresión.\n\nAbre este archivo directamente en el navegador y utiliza Ctrl+P (Windows/Linux) o Cmd+P (Mac).');
+    }
+  });
+
+  /* ==========================================================
+     K. BOTONES COPIAR
+     ========================================================== */
+  function feedback(btn, msg, ok){
+    var original = btn.getAttribute('data-orig');
+    if(original === null){
+      original = btn.textContent;
+      btn.setAttribute('data-orig', original);
+    }
+    btn.textContent = msg;
+    btn.classList.toggle('done', !!ok);
+    window.setTimeout(function(){
+      btn.textContent = original;
+      btn.classList.remove('done');
+    }, 1800);
+  }
+
+  function copyText(text, btn){
+    function fallback(){
+      try{
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        if(!ok) throw new Error('execCommand falló');
+        feedback(btn, '¡Copiado!', true);
+      }catch(e2){
+        feedback(btn, 'No se pudo copiar', false);
+        window.alert('No se pudo copiar automáticamente. Selecciona el texto manualmente:\n\n' + text);
+      }
+    }
+
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        feedback(btn, '¡Copiado!', true);
+      }).catch(fallback);
+    }else{
+      fallback();
+    }
+  }
+
+  document.querySelectorAll('.cbox .copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.parentElement.querySelector('pre');
+      if(!pre) return;
+      copyText(pre.textContent, btn);
+    });
+  });
+
+  /* ==========================================================
+     L. LISTA DE COMPROBACIÓN CON PERSISTENCIA
+     ========================================================== */
+  var checks = document.querySelectorAll('#cklist input[type="checkbox"]');
+
+  checks.forEach(function(c){
+    var key = 'pb.' + c.getAttribute('data-ck');
+    if(store.get(key, '0') === '1') c.checked = true;
+    c.addEventListener('change', function(){
+      store.set(key, c.checked ? '1' : '0');
+    });
+  });
+
+  var ckReset = document.getElementById('ckreset');
+  if(ckReset){
+    ckReset.addEventListener('click', function(){
+      checks.forEach(function(c){
+        c.checked = false;
+        store.del('pb.' + c.getAttribute('data-ck'));
+      });
+    });
+  }
+
+  /* ==========================================================
+     M. BUSCADOR INTERNO
+     ========================================================== */
+  function escapeHTML(s){
+    return s.replace(/[&<>"']/g, function(ch){
+      return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[ch];
+    });
+  }
+
+  function escapeReg(s){
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function openSearch(){
+    searchBox.classList.add('on');
+    window.setTimeout(function(){ sinput.focus(); }, 30);
+  }
+  function closeSearch(){
+    searchBox.classList.remove('on');
+  }
+
+  document.getElementById('bs').addEventListener('click', openSearch);
+
+  searchBox.addEventListener('click', function(ev){
+    if(ev.target === searchBox) closeSearch();
+  });
+
+  function runSearch(q){
+    sres.innerHTML = '';
+    q = q.trim();
+    if(q.length < 2){
+      var p0 = document.createElement('div');
+      p0.className = 'empty';
+      p0.textContent = 'Escribe al menos dos caracteres para buscar.';
+      sres.appendChild(p0);
+      return;
+    }
+
+    var re = new RegExp(escapeReg(q), 'i');
+    var found = 0;
+
+    secs.forEach(function(s, i){
+      if(found >= 24) return;
+      var text = (s.textContent || '').replace(/\s+/g, ' ');
+      var m = text.search(re);
+      if(m < 0) return;
+
+      var start = Math.max(0, m - 55);
+      var end = Math.min(text.length, m + q.length + 75);
+      var snippet = (start > 0 ? '…' : '') + text.slice(start, end) + (end < text.length ? '…' : '');
+      var safe = escapeHTML(snippet);
+      try{
+        safe = safe.replace(new RegExp('(' + escapeReg(escapeHTML(q)) + ')', 'ig'), '<mark>$1</mark>');
+      }catch(e){ /* si falla el marcado, se muestra sin resaltar */ }
+
+      var title = s.getAttribute('data-t') || s.id;
+
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'r';
+      b.innerHTML = '<b>' + escapeHTML(title) + '</b><span>' + safe + '</span>';
+      b.addEventListener('click', function(){
+        go(i);
+        closeSearch();
+      });
+      sres.appendChild(b);
+      found++;
+    });
+
+    if(found === 0){
+      var empty = document.createElement('div');
+      empty.className = 'empty';
+      empty.textContent = 'Sin resultados para «' + q + '». Prueba con: bombo, caja, inversión, pulgar, hi-hat, groove.';
+      sres.appendChild(empty);
+    }
+  }
+
+  var searchTimer = null;
+  sinput.addEventListener('input', function(){
+    window.clearTimeout(searchTimer);
+    var v = sinput.value;
+    searchTimer = window.setTimeout(function(){ runSearch(v); }, 140);
+  });
+
+  /* ==========================================================
+     N. INICIALIZACIÓN
+     ========================================================== */
+  (function init(){
+    var start = 0;
+    var hashId = location.hash.replace('#', '');
+    var hashIdx = -1;
+
+    for(var i = 0; i < secs.length; i++){
+      if(secs[i].id === hashId){ hashIdx = i; break; }
+    }
+
+    if(hashIdx >= 0){
+      start = hashIdx;
+    }else{
+      var saved = parseInt(store.get('pb.tab', '0'), 10);
+      if(!isNaN(saved) && saved >= 0 && saved < secs.length) start = saved;
+    }
+
+    go(start, true);
+    updateBar();
+  })();
+
+})();
+</script>
+</body>
+</html>
