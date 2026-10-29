@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Guía maestra y tutorial integral de AulaChord e Inteligencia Artificial por Rubén Sbarsky.">
+<title>AulaChord + IA · Guía Maestra y Tutorial Integral</title>
+<style>
+/* ============ VARIABLES Y RESET ============ */
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --card2:#111c30; --border:#1e3a5f;
+  --text:#e2e8f0; --text2:#94a3b8; --accent:#38bdf8; --accent-2:#00d4ff;
+  --success:#34d399; --warn:#fbbf24; --danger:#f87171; --purple:#a78bfa;
+  --nav-h:58px; --base-font:16px; --radius:14px; --radius-sm:10px;
+  --shadow:0 4px 24px rgba(0,0,0,.35); --shadow-lg:0 12px 48px rgba(0,0,0,.5);
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+[data-theme="light"]{
+  --bg:#f8fafc; --card:#ffffff; --card2:#f1f5f9; --border:#cbd5e1;
+  --text:#0f172a; --text2:#475569; --accent:#0284c7; --accent-2:#0369a1;
+  --shadow:0 4px 24px rgba(15,23,42,.08); --shadow-lg:0 12px 48px rgba(15,23,42,.15);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--text); font-family:var(--font);
+  font-size:var(--base-font); line-height:1.65; padding-top:var(--nav-h);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  transition:background .3s, color .3s;
+}
+h1,h2,h3,h4{line-height:1.25; margin:0 0 .6em; font-weight:700; letter-spacing:-.01em}
+h1{font-size:clamp(1.6rem, 4.2vw, 2.4rem)}
+h2{font-size:clamp(1.35rem, 3vw, 1.85rem); padding-bottom:.35em; border-bottom:1px solid var(--border); margin-bottom:1.2em}
+h3{font-size:clamp(1.1rem, 2.4vw, 1.3rem); margin-top:1.6em}
+h4{font-size:1.02rem; color:var(--accent); margin-top:1.4em}
+p{margin:0 0 1em; color:var(--text)}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:var(--text); font-weight:600}
+code{font-family:var(--mono); font-size:.92em; background:var(--card2); padding:2px 6px; border-radius:5px; border:1px solid var(--border)}
+ul,ol{padding-left:1.4em; margin:0 0 1em}
+li{margin-bottom:.4em}
+img,svg{max-width:100%}
+
+/* ============ PROGRESO ============ */
+#progress{position:fixed; top:0; left:0; height:3px; width:0; background:linear-gradient(90deg,var(--accent),var(--purple)); z-index:60; transition:width .15s ease-out; pointer-events:none}
+
+/* ============ NAV FIJA ============ */
+#nav{
+  position:fixed; top:0; left:0; right:0; height:var(--nav-h);
+  background:color-mix(in srgb, var(--card) 92%, transparent);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:8px; padding:0 10px;
+  overflow-x:auto; overflow-y:hidden; z-index:40;
+  scrollbar-width:none;
+}
+#nav::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto; min-height:42px; padding:0 16px; border-radius:999px;
+  background:transparent; color:var(--text); border:1px solid var(--border);
+  font:inherit; font-size:.92rem; cursor:pointer; white-space:nowrap;
+  display:inline-flex; align-items:center; gap:6px;
+  transition:background .2s, color .2s, border-color .2s, transform .15s;
+  user-select:none;
+}
+.chip:hover{background:var(--card2); border-color:var(--accent)}
+.chip:active{transform:scale(.97)}
+.chip:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.chip.on{background:color-mix(in srgb, var(--accent) 22%, transparent); border-color:var(--accent); color:var(--accent); font-weight:600}
+#mb{font-weight:600; background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 18%,transparent), transparent)}
+.nav-sep{flex:0 0 auto; width:1px; height:26px; background:var(--border); margin:0 2px}
+
+/* ============ ÍNDICE LATERAL ============ */
+#dr{
+  position:fixed; top:var(--nav-h); left:0; bottom:0;
+  width:min(330px, 88vw); background:#0f172a;
+  border-right:1px solid #1e3a5f;
+  transform:translateX(-105%); transition:transform .25s ease;
+  z-index:35; overflow-y:auto; padding:12px 10px;
+  box-shadow:var(--shadow-lg);
+  color:#e2e8f0;
+}
+#dr.o{transform:none}
+#dr .dr-title{
+  font-size:.78rem; text-transform:uppercase; letter-spacing:.12em;
+  color:#94a3b8; padding:6px 12px 10px; font-weight:700;
+}
+#dr a{
+  display:block; padding:12px 14px; border-radius:8px; color:#e2e8f0;
+  cursor:pointer; min-height:44px; display:flex; align-items:center;
+  font-size:.94rem; line-height:1.4; transition:background .15s, color .15s;
+  border:1px solid transparent;
+}
+#dr a:hover{background:#ffffff0d}
+#dr a.on{background:#00d4ff22; color:#00d4ff; border-color:#00d4ff55; font-weight:600}
+#dr a:focus-visible{outline:2px solid #38bdf8; outline-offset:2px}
+#dr .num{display:inline-block; min-width:1.6em; color:#94a3b8; font-variant-numeric:tabular-nums}
+#dr a.on .num{color:#00d4ff}
+
+/* ============ CONTENIDO ============ */
+main{max-width:1080px; margin:0 auto; padding:24px 16px 96px}
+section[data-t]{display:none; animation:fadeIn .35s ease}
+section[data-t].active{display:block}
+@keyframes fadeIn{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+
+/* ============ TARJETAS ============ */
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:20px 22px; margin:0 0 18px; box-shadow:var(--shadow);
+}
+.card.accent{border-left:3px solid var(--accent)}
+.card.warn{border-left:3px solid var(--warn)}
+.card.danger{border-left:3px solid var(--danger)}
+.card.success{border-left:3px solid var(--success)}
+.card h3:first-child, .card h4:first-child{margin-top:0}
+.grid-2{display:grid; grid-template-columns:1fr; gap:16px}
+.grid-3{display:grid; grid-template-columns:1fr; gap:16px}
+@media(min-width:720px){
+  .grid-2{grid-template-columns:1fr 1fr}
+  .grid-3{grid-template-columns:1fr 1fr 1fr}
+}
+
+/* ============ HERO ============ */
+.hero-section{
+  display:grid; grid-template-columns:1fr; gap:24px;
+  align-items:center; margin-bottom:32px;
+}
+@media(min-width:820px){
+  .hero-section{grid-template-columns:minmax(0, 380px) 1fr; gap:40px}
+}
+.hero-visual{display:flex; justify-content:center}
+.svg-mount{
+  width:100%; max-width:380px; aspect-ratio:4/5; margin:0 auto;
+  border-radius:18px; overflow:hidden;
+  background:#060a14; border:1px solid var(--border); box-shadow:var(--shadow-lg);
+}
+.svg-mount svg{width:100%; height:100%; display:block}
+.svg-caption{font-size:.86rem; color:var(--text2); text-align:center; margin-top:10px; font-style:italic}
+.hero-text h1{margin-top:0}
+.hero-text .lead{font-size:1.08rem; color:var(--text2); margin-bottom:1.2em}
+.hero-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+
+/* ============ BOTONES ============ */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:44px; padding:0 20px; border-radius:10px;
+  background:var(--accent); color:#06121e; border:none;
+  font:inherit; font-weight:600; cursor:pointer;
+  transition:transform .15s, background .2s, box-shadow .2s;
+  text-decoration:none;
+}
+.btn:hover{background:var(--accent-2); text-decoration:none; box-shadow:0 6px 20px color-mix(in srgb,var(--accent) 30%,transparent)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.btn.ghost{background:transparent; color:var(--text); border:1px solid var(--border)}
+.btn.ghost:hover{background:var(--card2); border-color:var(--accent); box-shadow:none}
+.btn.sm{min-height:38px; padding:0 14px; font-size:.88rem}
+
+/* ============ BLOQUES DE CÓDIGO / PROMPT ============ */
+.code-block{position:relative; margin:14px 0}
+.code-block pre{
+  background:var(--card2); border:1px solid var(--border); border-radius:var(--radius-sm);
+  padding:16px 48px 16px 16px; overflow-x:auto; margin:0;
+  font-family:var(--mono); font-size:.88rem; line-height:1.6;
+  color:var(--text); white-space:pre-wrap; word-wrap:break-word;
+}
+.code-block .copy{
+  position:absolute; top:8px; right:8px; min-height:32px; padding:0 10px;
+  background:var(--card); color:var(--text2); border:1px solid var(--border);
+  border-radius:7px; font:inherit; font-size:.78rem; cursor:pointer;
+  display:inline-flex; align-items:center; gap:4px;
+  transition:background .2s, color .2s, border-color .2s;
+}
+.code-block .copy:hover{background:var(--accent); color:#06121e; border-color:var(--accent)}
+.code-block .copy.done{background:var(--success); color:#06121e; border-color:var(--success)}
+
+/* ============ TABLAS ============ */
+.table-wrap{overflow-x:auto; margin:14px 0; border-radius:var(--radius-sm); border:1px solid var(--border)}
+table{border-collapse:collapse; width:100%; font-size:.93rem; min-width:520px}
+th,td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top}
+th{background:var(--card2); font-weight:700; color:var(--text); position:sticky; top:0}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:color-mix(in srgb,var(--accent) 4%, transparent)}
+
+/* ============ DETAILS / ACORDEONES ============ */
+details{
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm);
+  margin:0 0 12px; overflow:hidden; transition:border-color .2s;
+}
+details[open]{border-color:var(--accent)}
+details summary{
+  padding:14px 18px; cursor:pointer; font-weight:600; list-style:none;
+  display:flex; align-items:center; gap:10px; min-height:44px;
+  transition:background .2s;
+}
+details summary::-webkit-details-marker{display:none}
+details summary::before{
+  content:"▸"; display:inline-block; transition:transform .2s; color:var(--accent);
+  font-size:1.05em; line-height:1;
+}
+details[open] summary::before{transform:rotate(90deg)}
+details summary:hover{background:var(--card2)}
+details summary:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+details .det-body{padding:4px 18px 18px; border-top:1px solid var(--border); padding-top:14px}
+
+/* ============ CALLOUTS ============ */
+.callout{
+  border-radius:var(--radius-sm); padding:14px 18px; margin:14px 0;
+  border-left:3px solid var(--accent); background:color-mix(in srgb,var(--accent) 7%,var(--card));
+  font-size:.95rem;
+}
+.callout.warn{border-color:var(--warn); background:color-mix(in srgb,var(--warn) 8%,var(--card))}
+.callout.danger{border-color:var(--danger); background:color-mix(in srgb,var(--danger) 8%,var(--card))}
+.callout.success{border-color:var(--success); background:color-mix(in srgb,var(--success) 8%,var(--card))}
+.callout .ct{font-weight:700; margin-bottom:4px; display:block}
+
+/* ============ CHECKLIST ============ */
+.checklist{list-style:none; padding:0; margin:14px 0}
+.checklist li{
+  display:flex; align-items:flex-start; gap:12px; padding:10px 12px;
+  border:1px solid var(--border); border-radius:8px; margin-bottom:8px;
+  background:var(--card2); min-height:44px;
+}
+.checklist li input[type="checkbox"]{
+  flex:0 0 auto; width:20px; height:20px; margin-top:1px; accent-color:var(--accent); cursor:pointer;
+}
+.checklist li label{cursor:pointer; flex:1; line-height:1.5; font-size:.95rem}
+.checklist li:has(input:checked){opacity:.7}
+.checklist li:has(input:checked) label{text-decoration:line-through; text-decoration-color:var(--text2)}
+
+/* ============ PASOS NUMERADOS ============ */
+.steps{counter-reset:step; list-style:none; padding:0; margin:14px 0}
+.steps > li{
+  position:relative; padding:16px 18px 16px 56px; margin-bottom:12px;
+  background:var(--card2); border:1px solid var(--border); border-radius:var(--radius-sm);
+}
+.steps > li::before{
+  counter-increment:step; content:counter(step);
+  position:absolute; left:14px; top:14px; width:30px; height:30px; border-radius:50%;
+  background:var(--accent); color:#06121e; font-weight:700; font-size:.9rem;
+  display:flex; align-items:center; justify-content:center;
+}
+.steps > li strong{display:block; margin-bottom:4px}
+
+/* ============ FAQ (Q&A) ============ */
+.qa-level{margin:22px 0}
+.qa-level h3{margin-top:0; color:var(--accent)}
+.qa-item{
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm);
+  padding:16px 18px; margin-bottom:12px;
+}
+.qa-item .q{
+  font-weight:700; color:var(--text); margin-bottom:8px; display:flex; gap:10px;
+}
+.qa-item .q .n{
+  flex:0 0 auto; color:var(--accent); font-variant-numeric:tabular-nums; font-weight:700;
+}
+.qa-item .a{color:var(--text); font-size:.95rem}
+.qa-item .a a{word-break:break-word}
+
+/* ============ UTILIDADES FLOTANTES ============ */
+#utils{
+  position:fixed; right:14px; bottom:14px; z-index:30;
+  display:flex; flex-direction:column; gap:8px;
+}
+#utils button{
+  width:46px; height:46px; border-radius:50%;
+  background:var(--card); color:var(--text); border:1px solid var(--border);
+  font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--shadow); transition:transform .15s, background .2s, color .2s, border-color .2s;
+}
+#utils button:hover{background:var(--accent); color:#06121e; border-color:var(--accent)}
+#utils button:active{transform:scale(.93)}
+#utils button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+#utils #backTop{opacity:0; pointer-events:none; transition:opacity .25s}
+#utils #backTop.show{opacity:1; pointer-events:auto}
+
+/* ============ MODAL BUSCADOR ============ */
+#searchModal{
+  position:fixed; inset:0; z-index:70; display:none;
+  background:rgba(2,6,15,.75); backdrop-filter:blur(6px);
+  align-items:flex-start; justify-content:center; padding:70px 16px 16px;
+}
+#searchModal.o{display:flex}
+#searchBox{
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  width:100%; max-width:560px; box-shadow:var(--shadow-lg); overflow:hidden;
+  display:flex; flex-direction:column; max-height:calc(100vh - 100px);
+}
+#searchBox .sb-head{
+  display:flex; align-items:center; gap:10px; padding:12px 16px;
+  border-bottom:1px solid var(--border);
+}
+#searchBox input{
+  flex:1; min-height:40px; background:transparent; border:none; outline:none;
+  color:var(--text); font:inherit; font-size:1rem;
+}
+#searchBox input::placeholder{color:var(--text2)}
+#searchBox .sb-close{
+  width:34px; height:34px; border-radius:50%; background:transparent; border:1px solid var(--border);
+  color:var(--text); cursor:pointer; font-size:1.1rem;
+}
+#searchResults{overflow-y:auto; padding:6px}
+#searchResults a{
+  display:block; padding:12px 14px; border-radius:8px; color:var(--text);
+  cursor:pointer; border:1px solid transparent; min-height:44px;
+}
+#searchResults a:hover{background:var(--card2); border-color:var(--border)}
+#searchResults .empty{padding:18px; color:var(--text2); font-size:.92rem; text-align:center}
+#searchResults .snippet{color:var(--text2); font-size:.85rem; margin-top:4px}
+
+/* ============ CRÉDITOS ============ */
+.author-card{
+  text-align:center; padding:28px 18px; margin:22px 0;
+  background:linear-gradient(180deg, color-mix(in srgb,var(--accent) 10%,var(--card)), var(--card));
+  border:1px solid var(--border); border-radius:var(--radius);
+}
+.author-name{
+  font-size:clamp(1.8rem, 5vw, 2.6rem); font-weight:800;
+  background:linear-gradient(90deg, var(--accent), var(--purple));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  margin:0 0 4px; letter-spacing:-.02em;
+}
+.author-role{color:var(--text2); font-size:1.05rem; margin:0 0 4px}
+.meta-line{color:var(--text2); font-size:.9rem; margin-top:14px}
+.meta-line code{background:var(--card2)}
+
+/* ============ VARIOS ============ */
+.kbd{display:inline-block; padding:2px 8px; border:1px solid var(--border); border-bottom-width:2px; border-radius:5px; font-family:var(--mono); font-size:.82rem; background:var(--card2); color:var(--text)}
+.lead{font-size:1.05rem; color:var(--text2)}
+.tag{display:inline-block; padding:2px 10px; border-radius:999px; font-size:.78rem; font-weight:600; letter-spacing:.02em; background:color-mix(in srgb,var(--accent) 15%, transparent); color:var(--accent); border:1px solid color-mix(in srgb,var(--accent) 30%, transparent)}
+.tag.warn{background:color-mix(in srgb,var(--warn) 15%, transparent); color:var(--warn); border-color:color-mix(in srgb,var(--warn) 30%, transparent)}
+.tag.pro{background:color-mix(in srgb,var(--purple) 18%, transparent); color:var(--purple); border-color:color-mix(in srgb,var(--purple) 35%, transparent)}
+hr{border:none; border-top:1px solid var(--border); margin:26px 0}
+
+/* ============ ANIMACIONES SVG ============ */
+@keyframes svgPulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes svgPulseFast{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes svgDash{to{stroke-dashoffset:-56}}
+@keyframes svgBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes svgRot{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes svgRotRev{from{transform:rotate(360deg)}to{transform:rotate(0)}}
+.svg-pulse{animation:svgPulse 3.2s ease-in-out infinite}
+.svg-pulse-fast{animation:svgPulseFast 1.8s ease-in-out infinite}
+.svg-dash{stroke-dasharray:6 10; animation:svgDash 3s linear infinite}
+.svg-bob{animation:svgBob 3s ease-in-out infinite; transform-box:fill-box; transform-origin:center}
+.svg-rot{animation:svgRot 26s linear infinite; transform-box:view-box; transform-origin:200px 250px}
+.svg-rot-rev{animation:svgRotRev 34s linear infinite; transform-box:view-box; transform-origin:200px 250px}
+.svg-drift{animation:svgBob 6s ease-in-out infinite; transform-box:fill-box; transform-origin:center}
+
+@media(prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important}
+}
+
+/* ============ IMPRESIÓN ============ */
+@media print{
+  @page{size:A4 portrait; margin:14mm 12mm}
+  :root{--bg:#fff; --card:#fff; --card2:#f7f7f7; --border:#bbb; --text:#000; --text2:#333; --accent:#005a8c; --shadow:none; --shadow-lg:none}
+  html,body{background:#fff !important; color:#000 !important; padding:0 !important}
+  #nav,#dr,#utils,#progress,#searchModal,.hero-actions,.code-block .copy,.btn{display:none !important}
+  main{padding:0 !important; max-width:100% !important}
+  section[data-t]{display:block !important; page-break-inside:auto; margin-bottom:18px}
+  section[data-t]:not(.active){display:block !important}
+  section[data-t].active{display:block !important}
+  h1,h2,h3,h4{color:#000 !important; page-break-after:avoid}
+  a{color:#000 !important; text-decoration:underline}
+  .card,details,.qa-item,.author-card,.steps>li,.checklist li{
+    background:#fff !important; border:1px solid #999 !important; box-shadow:none !important;
+    page-break-inside:avoid;
+  }
+  details{display:block}
+  details>summary{list-style:none; cursor:default}
+  details>summary::before{content:"" !important}
+  details .det-body{display:block !important}
+  table{page-break-inside:auto; min-width:0}
+  tr,td,th{page-break-inside:avoid}
+  pre{white-space:pre-wrap; word-break:break-word; border:1px solid #999 !important}
+  .svg-mount{border:1px solid #999; page-break-inside:avoid; max-width:320px; margin:0 auto}
+  .tag,.callout{background:#f0f0f0 !important; color:#000 !important; border-color:#999 !important}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<!-- ============ NAV FIJA ============ -->
+<nav id="nav" aria-label="Navegación principal">
+  <button class="chip" id="mb" type="button" aria-label="Abrir índice" aria-expanded="false" aria-controls="dr">☰ Índice</button>
+  <span class="nav-sep" aria-hidden="true"></span>
+  <!-- Los chips de sección se generan por JS -->
+</nav>
+
+<!-- ============ PANEL ÍNDICE ============ -->
+<aside id="dr" role="navigation" aria-label="Índice del tutorial">
+  <div class="dr-title">Índice del tutorial</div>
+  <!-- Entradas generadas por JS -->
+</aside>
+
+<!-- ============ MAIN ============ -->
+<main id="main">
+
+<!-- ===================== INICIO ===================== -->
+<section data-t="INICIO" id="inicio" class="active">
+  <div class="hero-section">
+    <div class="hero-visual">
+      <div>
+        <div class="svg-mount" id="svgInicio" aria-hidden="false"></div>
+        <p class="svg-caption">Núcleo armónico neural: la IA fluye por la red MCP, AulaChord valida cada acorde en tiempo real.</p>
+      </div>
+    </div>
+    <div class="hero-text">
+      <span class="tag">Guía maestra · V001</span>
+      <h1 style="margin-top:10px">AulaChord + Inteligencia Artificial</h1>
+      <p class="lead">Guía maestra y tutorial integral para conectar agentes de IA con el motor armónico determinista de AulaChord mediante el protocolo MCP. Aprende a escribir partituras con comandos de voz o texto, validadas teóricamente al instante.</p>
+      <p class="lead" style="margin-bottom:0"><strong>Por Rubén Sbarsky</strong> · AulaMusical | Armonía Eficiente</p>
+      <div class="hero-actions">
+        <button class="btn" type="button" id="ix">☰ Ver índice</button>
+        <button class="btn ghost" type="button" onclick="go(2)">Empezar por el procedimiento →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card accent">
+      <h3 style="margin-top:0">🎼 AulaChord</h3>
+      <p style="margin-bottom:0">Aplicación de escritorio determinista que valida acordes, intervalos y conducción de voces con reglas matemáticas e históricas estrictas.</p>
+    </div>
+    <div class="card accent">
+      <h3 style="margin-top:0">🔌 MCP</h3>
+      <p style="margin-bottom:0">Protocolo que conecta tu agente de IA (ChatGPT, Claude, Antigravity) con AulaChord como un puente digital bidireccional.</p>
+    </div>
+    <div class="card accent">
+      <h3 style="margin-top:0">🧠 Criterio humano</h3>
+      <p style="margin-bottom:0">Tú decides. La IA acelera la escritura, AulaChord garantiza la técnica y tú aportas la sensibilidad musical.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-top:0">¿Qué vas a aprender aquí?</h2>
+    <ul>
+      <li>Entender qué es AulaChord, qué es MCP y cómo se combinan con un agente de IA.</li>
+      <li>Instalar y configurar el sistema completo paso a paso, incluso sin experiencia previa.</li>
+      <li>Escribir partituras con comandos de voz o texto en formato SATB y piano estricto.</li>
+      <li>Usar el Laboratorio de Voicing, aplicar Drop 2 / Drop 3, armonizar modos y resolver sustituciones tritonales sin infracciones.</li>
+      <li>Exportar, imprimir y reutilizar tus arreglos para clase, ensayo o publicación.</li>
+      <li>Resolver los problemas más habituales de conexión MCP, permisos y alertas armónicas.</li>
+      <li>Desarrollar cuatro proyectos integradores completos con enunciado, pasos y verificación.</li>
+    </ul>
+  </div>
+
+  <div class="card success">
+    <h3 style="margin-top:0">Ruta de aprendizaje recomendada</h3>
+    <ol>
+      <li><strong>CONCEPTOS</strong> — entiende la trinidad Agente IA · AulaChord · Criterio humano.</li>
+      <li><strong>PROCEDIMIENTO</strong> — instala, vincula MCP y haz tu primer prompt.</li>
+      <li><strong>PRÁCTICA</strong> — voicings, drops, modos, sustituciones y proyectos.</li>
+      <li><strong>33 Preguntas (Q&amp;A)</strong> — afianza y profundiza según tu nivel.</li>
+      <li><strong>ERRORES</strong> — aprende a diagnosticar y resolver.</li>
+      <li><strong>RESUMEN</strong> — repasa con glosario y checklist.</li>
+    </ol>
+  </div>
+
+  <div class="callout">
+    <span class="ct">Consejo rápido</span>
+    AulaChord debe estar abierto en tu ordenador antes de enviar cualquier comando al agente de IA. Es la regla de oro del sistema.
+  </div>
+</section>
+
+<!-- ===================== CONCEPTOS ===================== -->
+<section data-t="CONCEPTOS" id="conceptos">
+  <h2>0 · Conceptos fundamentales</h2>
+  <p class="lead">Antes de instalar nada, entiende las tres piezas que forman este flujo de trabajo.</p>
+
+  <div class="card accent">
+    <h3 style="margin-top:0">0.1 · ¿Qué es AulaChord?</h3>
+    <p><strong>AulaChord</strong> es una aplicación de escritorio para la teoría musical y la validación armónica rigurosa, desarrollada bajo la dirección metodológica de <strong>Rubén Sbarsky</strong> en el canal <strong>AulaMusical | Armonía Eficiente</strong>.</p>
+    <p>No es un simple editor de notación. Es un <strong>validador armónico determinista</strong>: evalúa notas, intervalos, acordes y conducciones de voces con reglas matemáticas e históricas estrictas, sin margen para la adivinanza ni la especulación.</p>
+    <p>Cuando introduces una progresión, AulaChord analiza al instante:</p>
+    <ul>
+      <li>La posición de cada voz (Soprano, Contralto, Tenor, Bajo).</li>
+      <li>La distancia entre voces.</li>
+      <li>La duplicación de factores del acorde.</li>
+      <li>La presencia de faltas de conducción: octavas o quintas paralelas.</li>
+    </ul>
+  </div>
+
+  <div class="card accent">
+    <h3 style="margin-top:0">0.2 · ¿Qué es MCP y cómo une la IA con AulaChord?</h3>
+    <p>El <strong>Model Context Protocol (MCP)</strong> es una especificación tecnológica que permite a los modelos de lenguaje (LLM) alojados en agentes de escritorio conectarse e interactuar directamente con programas locales.</p>
+    <p>En AulaChord, MCP actúa como un <strong>puente digital</strong> entre el agente de IA y la aplicación:</p>
+    <ul>
+      <li><strong>El agente de IA</strong> es el asistente operativo: procesa lenguaje natural, interpreta órdenes y redacta la propuesta musical.</li>
+      <li><strong>AulaChord</strong> es el cerebro validador: aporta la estructura determinista, las reglas de composición y renderiza la partitura.</li>
+    </ul>
+  </div>
+
+  <div class="card accent">
+    <h3 style="margin-top:0">0.3 · La Santísima Trinidad del Flujo Musical</h3>
+    <div class="grid-3" style="margin-top:14px">
+      <div class="card" style="margin:0; background:var(--card2)">
+        <h4 style="margin-top:0">🤖 Agente de IA</h4>
+        <p style="margin-bottom:0; font-size:.93rem">Rapidez, ejecución operativa y estructuración inicial de datos.</p>
+      </div>
+      <div class="card" style="margin:0; background:var(--card2)">
+        <h4 style="margin-top:0">🎼 AulaChord</h4>
+        <p style="margin-bottom:0; font-size:.93rem">Rigor teórico, validación determinista y retroalimentación inmediata.</p>
+      </div>
+      <div class="card" style="margin:0; background:var(--card2)">
+        <h4 style="margin-top:0">🎭 Criterio humano</h4>
+        <p style="margin-bottom:0; font-size:.93rem">Sensibilidad, contexto sonoro, gusto estético y decisiones finales.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card accent">
+    <h3 style="margin-top:0">0.4 · Generación especulativa vs. validación estricta</h3>
+    <p>Cuando pides una progresión a un chat de IA sin conexión MCP, recibes <strong>texto plano</strong>: cifrado o nombres de notas. No se puede escuchar, no se ve en un pentagrama y suele contener errores graves porque los modelos de lenguaje tienden a especular.</p>
+    <p>Con MCP, la IA ya no "inventa" a ciegas: recibe retroalimentación inmediata del validador técnico y corrige automáticamente los errores antes de presentar la versión final.</p>
+    <div class="callout success">
+      <span class="ct">En una frase</span>
+      La IA propone, AulaChord verifica, tú decides.
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PROCEDIMIENTO ===================== -->
+<section data-t="PROCEDIMIENTO" id="procedimiento">
+  <h2>Instalación y configuración paso a paso</h2>
+  <p class="lead">Si nunca has configurado un agente de IA de escritorio, sigue esta secuencia sin omitir ningún paso.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">Requisitos del sistema</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Componente</th><th>Mínimo recomendado</th></tr></thead>
+        <tbody>
+          <tr><td>Sistema operativo</td><td>Windows 10/11 (64 bits) o macOS 10.15 Catalina o posterior</td></tr>
+          <tr><td>Procesador</td><td>Intel Core i3 / AMD Ryzen 3 o superior (Apple Silicon M1/M2/M3 en macOS)</td></tr>
+          <tr><td>Memoria RAM</td><td>4 GB mínimo · 8 GB recomendado (AulaChord + agente abiertos)</td></tr>
+          <tr><td>Disco</td><td>500 MB libres</td></tr>
+          <tr><td>Periféricos</td><td>Micrófono habilitado (para comandos de voz)</td></tr>
+          <tr><td>Software</td><td>Licencia válida de AulaChord con módulo MCP habilitado</td></tr>
+          <tr><td>Agentes compatibles</td><td>ChatGPT Desktop · Claude Desktop · Antigravity</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Modelo de conectividad híbrido</h3>
+    <div class="grid-2">
+      <div class="card" style="margin:0; background:var(--card2)">
+        <h4 style="margin-top:0">🖥️ Procesamiento local</h4>
+        <p style="margin-bottom:0; font-size:.93rem">Creación, renderizado, validación, edición y reproducción de partituras: <strong>100% local</strong> en tu ordenador mediante AulaChord.</p>
+      </div>
+      <div class="card" style="margin:0; background:var(--card2)">
+        <h4 style="margin-top:0">☁️ Procesamiento en la nube</h4>
+        <p style="margin-bottom:0; font-size:.93rem">Solo la comunicación con el agente de IA (traducir voz/texto a instrucciones) requiere internet.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>Procedimiento de instalación</h3>
+  <ol class="steps">
+    <li>
+      <strong>Instala y verifica AulaChord</strong>
+      Descarga el instalador oficial desde el sitio autorizado de Rubén Sbarsky, ejecútalo y acepta los términos. Abre AulaChord y comprueba que la interfaz carga con pentagrama, botonera modal inferior y herramientas de voicing.
+    </li>
+    <li>
+      <strong>Instala tu agente de IA de escritorio</strong>
+      Descarga e instala la aplicación oficial de tu preferencia (ChatGPT Desktop, Claude Desktop o Antigravity) e inicia sesión. Puede ser una cuenta gratuita.
+    </li>
+    <li>
+      <strong>Abre AulaChord antes de pedir la conexión</strong>
+      Con AulaChord ya abierto en segundo plano, abre tu agente de IA y escribe o pronuncia por voz la orden inicial de vinculación.
+    </li>
+    <li>
+      <strong>Aprobación de permisos "Permitir siempre"</strong>
+      Durante la primera solicitud de edición, el agente mostrará un cuadro de diálogo del sistema. Pulsa <strong>"Permitir siempre"</strong> (o <em>Always Allow</em>) para evitar confirmaciones manuales en cada acorde.
+    </li>
+  </ol>
+
+  <div class="card">
+    <h3 style="margin-top:0">Comando inicial de vinculación MCP</h3>
+    <p>Escribe o dicta exactamente esto en tu agente:</p>
+    <div class="code-block">
+      <button class="copy" type="button" aria-label="Copiar comando">📋 Copiar</button>
+      <pre>Por favor, conéctate por MCP con AulaChord.</pre>
+    </div>
+    <p style="margin-bottom:0">El agente detectará el servidor local MCP expuesto por AulaChord y establecerá el enlace.</p>
+  </div>
+
+  <h3>Primer prompt armónico: SATB</h3>
+  <div class="code-block">
+    <button class="copy" type="button" aria-label="Copiar prompt SATB">📋 Copiar</button>
+    <pre>Escribe los acordes de la primera estrofa de la canción Yesterday de The Beatles y la escribes en formato soprano, alto, tenor y bajo.</pre>
+  </div>
+  <div class="card success">
+    <h4 style="margin-top:0">Comportamiento esperado</h4>
+    <ol style="margin-bottom:0">
+      <li>El agente procesa la canción y busca la progresión correcta.</li>
+      <li>Envía la estructura a AulaChord por el enlace MCP.</li>
+      <li>AulaChord ubica la tonalidad (por ejemplo, Fa Mayor), coloca la armadura correspondiente con los bemoles necesarios y distribuye las cuatro voces.</li>
+    </ol>
+  </div>
+
+  <h3>Primer prompt armónico: piano estricto</h3>
+  <div class="code-block">
+    <button class="copy" type="button" aria-label="Copiar prompt piano">📋 Copiar</button>
+    <pre>Escribe los acordes de la introducción de la canción Hotel California y escríbela en formato para piano estricto.</pre>
+  </div>
+  <div class="card success">
+    <h4 style="margin-top:0">Comportamiento esperado</h4>
+    <ol style="margin-bottom:0">
+      <li>El agente propone la estructura en la tonalidad de Si menor.</li>
+      <li>AulaChord configura la armadura de Si menor (dos sostenidos) y dispone el rango de notas para teclado.</li>
+    </ol>
+  </div>
+
+  <h3>Alertas armónicas en tiempo real</h3>
+  <p>Cuando la IA genera la primera propuesta, es habitual que contenga fallas técnicas: duplicaciones incorrectas, octavas o quintas paralelas. El flujo es:</p>
+  <ol>
+    <li>AulaChord muestra una marca visual o señal de advertencia en el pentagrama.</li>
+    <li>La IA recibe el mensaje de alerta.</li>
+    <li>La IA reescribe la disposición de las notas y emite un informe de confirmación del tipo: <em>"AulaChord corrigió una octava paralela y dejó la conducción con cero infracciones en modo piano estricto."</em></li>
+  </ol>
+  <div class="callout warn">
+    <span class="ct">Regla de oro</span>
+    Si AulaChord no está abierto, el agente no podrá conectarse por MCP y no se generará ninguna partitura.
+  </div>
+</section>
+
+<!-- ===================== PRÁCTICA ===================== -->
+<section data-t="PRÁCTICA" id="practica">
+  <h2>Herramientas avanzadas y proyectos integradores</h2>
+  <p class="lead">Una vez dominas la conexión MCP, estas son las funciones que marcan la diferencia.</p>
+
+  <div class="card accent">
+    <h3 style="margin-top:0">Laboratorio de Voicing</h3>
+    <p>Panel especializado de AulaChord que permite modificar la disposición vertical de las notas de un acorde (voicing) sin alterar su identidad armónica funcional.</p>
+  </div>
+
+  <div class="card accent">
+    <h3 style="margin-top:0">Voicings abiertos: Drop 2, Drop 3, Drop 2-4, Drop 2-3</h3>
+    <ul>
+      <li><strong>Drop 2:</strong> baja una octava la segunda voz más aguda. Sonoridad amplia, ideal para jazz, vientos y teclado/guitarra.</li>
+      <li><strong>Drop 3:</strong> baja la tercera voz desde arriba una octava hacia el bajo.</li>
+      <li><strong>Drop 2-4 y Drop 2-3:</strong> bajan varias voces simultáneamente para una dispersión orquestal más profunda.</li>
+    </ul>
+    <div class="code-block">
+      <button class="copy" type="button" aria-label="Copiar prompt Drop 2">📋 Copiar</button>
+      <pre>Por favor, redistribuye las tríadas utilizando el recurso del drop 2 manteniendo la melodía como nota superior.</pre>
+    </div>
+  </div>
+
+  <div class="card accent">
+    <h3 style="margin-top:0">Armonización modal: Mi frigio</h3>
+    <div class="code-block">
+      <button class="copy" type="button" aria-label="Copiar prompt Mi frigio">📋 Copiar</button>
+      <pre>Escríbeme la escala de Mi frigio armonizando en tríadas y todo en clave de Sol.</pre>
+    </div>
+    <p style="margin-bottom:0">AulaChord conmuta su selector inferior al modo Mi frigio, ajusta la clave a Sol y dibuja la secuencia completa de ocho tríadas.</p>
+  </div>
+
+  <div class="card accent">
+    <h3 style="margin-top:0">Sustituciones tritonales sin infracciones</h3>
+    <p>La sustitución tritonal reemplaza un acorde de dominante (V7) por otro situado a distancia de tritono. Es un recurso avanzado que conlleva riesgo de quintas u octavas paralelas por el movimiento cromático.</p>
+    <div class="code-block">
+      <button class="copy" type="button" aria-label="Copiar prompt sustituciones">📋 Copiar</button>
+      <pre>Escribe cuatro ejemplos de sustituciones tritonales en la tonalidad de Do mayor y después de cada ejemplo los separas con doble barra.</pre>
+    </div>
+    <p style="margin-bottom:0">Resultado: AulaChord y la IA generan las sustituciones resolviendo hacia I, II, V y VI grado con conducción impecable y separadas por barras dobles.</p>
+  </div>
+
+  <div class="card accent">
+    <h3 style="margin-top:0">Panel interactivo de guitarra</h3>
+    <div class="code-block">
+      <button class="copy" type="button" aria-label="Copiar prompt guitarra">📋 Copiar</button>
+      <pre>¿Puedes mostrarme en el panel de guitarra cómo tocar el acorde Do maj7?</pre>
+    </div>
+    <p style="margin-bottom:0">La aplicación abre el panel de guitarra y resalta digitaciones y trastes exactos para ejecutar <code>Cmaj7</code>.</p>
+  </div>
+
+  <hr>
+  <h2>Proyectos integradores</h2>
+
+  <details>
+    <summary>Proyecto 1 · Arreglo coral SATB de "Yesterday" (The Beatles)</summary>
+    <div class="det-body">
+      <p><strong>Objetivo didáctico:</strong> generar una partitura a 4 voces para coro mixto a partir de una obra popular.</p>
+      <ol>
+        <li>Inicia AulaChord en tu ordenador.</li>
+        <li>Dicta al agente: <em>"Escribe los acordes de la primera estrofa de la canción Yesterday de The Beatles en formato soprano, alto, tenor y bajo."</em></li>
+        <li>Observa cómo AulaChord fija la tonalidad en Fa Mayor, añade la armadura de un bemol y dispone la conducción coral.</li>
+        <li>Escucha la reproducción y ajusta matices dinámicos si lo deseas.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details>
+    <summary>Proyecto 2 · Introducción en piano estricto de "Hotel California" (Eagles)</summary>
+    <div class="det-body">
+      <p><strong>Objetivo didáctico:</strong> crear un acompañamiento de teclado respetando tesitura y leyes de piano estricto.</p>
+      <ol>
+        <li>Dicta: <em>"Escribe los acordes de la introducción de la canción Hotel California en formato para piano estricto."</em></li>
+        <li>El sistema establece Si menor con dos sostenidos.</li>
+        <li>Verifica en el panel informativo que se reporte "cero infracciones".</li>
+      </ol>
+    </div>
+  </details>
+
+  <details>
+    <summary>Proyecto 3 · Secuencia didáctica de sustituciones tritonales</summary>
+    <div class="det-body">
+      <p><strong>Objetivo didáctico:</strong> preparar material docente para una clase de armonía sobre acordes sustitutos.</p>
+      <ol>
+        <li>Dicta: <em>"Escribe cuatro ejemplos de sustituciones tritonales en la tonalidad de Do mayor y sepáralos con doble barra."</em></li>
+        <li>Revisa las resoluciones hacia I, II, V y VI grado sin faltas paralelas.</li>
+        <li>Exporta el archivo o proyéctalo en pantalla durante la clase.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details>
+    <summary>Proyecto 4 · Reorganización modal de Mi frigio en Drop 2</summary>
+    <div class="det-body">
+      <p><strong>Objetivo didáctico:</strong> expandir un arreglo modal cerrado hacia voicings abiertos tipo jazz.</p>
+      <ol>
+        <li>Dicta: <em>"Escríbeme la escala de Mi frigio armonizando en tríadas y todo en clave de Sol."</em></li>
+        <li>A continuación: <em>"Aplica drop 2 a las tríadas de Mi frigio manteniendo la melodía como nota superior."</em></li>
+        <li>Abre el Laboratorio de Voicing para inspeccionar distancias y probar variantes Drop 3 o Drop 2-4.</li>
+      </ol>
+    </div>
+  </details>
+
+  <hr>
+  <h3>Checklist de práctica</h3>
+  <ul class="checklist" data-checklist="practica">
+    <li><input type="checkbox" id="ck1"><label for="ck1">He conectado el agente por MCP con AulaChord abierto.</label></li>
+    <li><input type="checkbox" id="ck2"><label for="ck2">He generado un arreglo SATB completo sin alertas rojas.</label></li>
+    <li><input type="checkbox" id="ck3"><label for="ck3">He generado un arreglo en piano estricto sin infracciones.</label></li>
+    <li><input type="checkbox" id="ck4"><label for="ck4">He aplicado Drop 2 conservando la melodía superior.</label></li>
+    <li><input type="checkbox" id="ck5"><label for="ck5">He armonizado Mi frigio en tríadas en clave de Sol.</label></li>
+    <li><input type="checkbox" id="ck6"><label for="ck6">He generado cuatro sustituciones tritonales separadas por doble barra.</label></li>
+    <li><input type="checkbox" id="ck7"><label for="ck7">He visualizado un acorde en el panel de guitarra.</label></li>
+  </ul>
+</section>
+
+<!-- ===================== 33 PREGUNTAS (Q&A) ===================== -->
+<section data-t="33 Preguntas (Q&amp;A)" id="qa">
+  <h2>33 Preguntas y Respuestas</h2>
+  <p class="lead">Banco completo organizado por nivel: Básico (1–11), Avanzado (12–22) y PRO (23–33).</p>
+
+  <div class="qa-level">
+    <h3>Nivel Básico <span class="tag">1–11</span></h3>
+
+    <div class="qa-item"><div class="q"><span class="n">1.</span> ¿Necesito saber programar para utilizar AulaChord con IA?</div><div class="a">No. La conexión se realiza enteramente mediante lenguaje natural (hablado o escrito) a través del agente de IA.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">2.</span> ¿Qué es AulaChord?</div><div class="a">Una aplicación de escritorio dedicada a la teoría musical y la validación armónica determinista.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">3.</span> ¿Tengo que pagar una suscripción de ChatGPT para usar este sistema?</div><div class="a">No. El enlace MCP funciona perfectamente con la versión gratuita de ChatGPT Desktop.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">4.</span> ¿Qué hace el botón "Permitir siempre"?</div><div class="a">Autoriza al agente de IA a comunicarse libremente con AulaChord sin solicitar permisos manuales en cada comando.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">5.</span> ¿Puedo usar comandos de voz para escribir música?</div><div class="a">Sí. Puedes hablar directamente al micrófono de tu ordenador para dictar acordes o instrucciones.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">6.</span> ¿Qué significa SATB en la notación de AulaChord?</div><div class="a">Soprano, Alto, Tenor y Bajo: la distribución estándar de 4 voces para coro o ensamble.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">7.</span> ¿Qué ocurre si no tengo AulaChord abierto al enviar un prompt?</div><div class="a">El agente de IA no podrá comunicarse con el programa local y no se generará la partitura.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">8.</span> ¿AulaChord funciona sin conexión a internet?</div><div class="a">Sí. El procesamiento y análisis de partituras es 100% local; internet solo se necesita para el agente de IA.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">9.</span> ¿Puedo escuchar lo que la IA escribe en AulaChord?</div><div class="a">Sí. AulaChord permite reproducir inmediatamente la música renderizada.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">10.</span> ¿Qué programas de IA de escritorio son compatibles con AulaChord?</div><div class="a">ChatGPT Desktop, Claude Desktop y Antigravity.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">11.</span> ¿Quién es el creador de AulaChord?</div><div class="a">Rubén Sbarsky, a través del proyecto educativo AulaMusical | Armonía Eficiente.</div></div>
+  </div>
+
+  <div class="qa-level">
+    <h3>Nivel Avanzado <span class="tag warn">12–22</span></h3>
+
+    <div class="qa-item"><div class="q"><span class="n">12.</span> ¿Cómo detecta AulaChord un error de octavas paralelas?</div><div class="a">Mediante su motor determinista interno, que analiza los intervalos entre voces consecutivas en tiempo real.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">13.</span> ¿Qué es el protocolo MCP y cuál es su función aquí?</div><div class="a">Es el protocolo de enlace que conecta el agente de IA (asistente) con AulaChord (validador armónico).</div></div>
+    <div class="qa-item"><div class="q"><span class="n">14.</span> ¿En qué consiste la técnica Drop 2?</div><div class="a">En bajar una octava la segunda voz más aguda de un acorde para lograr una disposición más abierta.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">15.</span> ¿Qué diferencia existe entre piano estricto y disposición SATB?</div><div class="a">Piano estricto adapta las voces a la tesitura ejecutable en teclado por dos manos; SATB separa el rango para cuatro registros vocales independientes.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">16.</span> ¿Cómo se aplica la sustitución tritonal en una progresión?</div><div class="a">Reemplazando un acorde de dominante por el acorde dominante ubicado a un intervalo de tritono (por ejemplo, Reb7 en lugar de Sol7 para resolver a Do).</div></div>
+    <div class="qa-item"><div class="q"><span class="n">17.</span> ¿Qué es el Laboratorio de Voicing en AulaChord?</div><div class="a">El panel donde se configuran y prueban distribuciones de acordes como Drop 2, Drop 3, Drop 2-4 y Drop 2-3.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">18.</span> ¿Puedo armonizar escalas modales de forma automática?</div><div class="a">Sí, pidiendo al sistema que configure modos como Mi frigio y los armonice en tríadas o tétradas.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">19.</span> ¿Por qué la IA sola suele cometer errores al dar acordes en texto?</div><div class="a">Porque los modelos de IA son especulativos y no poseen un motor determinista de teoría musical por sí mismos.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">20.</span> ¿Cómo reacciona la IA cuando AulaChord detecta una falta armónica?</div><div class="a">Recibe la alerta de AulaChord y reescribe la conducción de voces hasta lograr cero infracciones.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">21.</span> ¿Qué ventaja ofrece el Panel de Guitarra de AulaChord?</div><div class="a">Traduce las notas del pentagrama a posiciones de diapasón y esquemas de trastes para guitarristas.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">22.</span> ¿Se pueden separar ejemplos armónicos didácticos en una misma pantalla?</div><div class="a">Sí, solicitando a la IA que incluya barras dobles entre cada ejercicio o progresión.</div></div>
+  </div>
+
+  <div class="qa-level">
+    <h3>Nivel PRO <span class="tag pro">23–33</span></h3>
+
+    <div class="qa-item"><div class="q"><span class="n">23.</span> ¿Cómo interactúa el protocolo MCP a nivel de proceso en la memoria del sistema?</div><div class="a">AulaChord actúa como un servidor MCP local expuesto en un puerto seguro de bucle local (localhost), mientras el cliente de IA de escritorio consume sus herramientas expuestas mediante llamadas estructuradas.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">24.</span> ¿Por qué la conducción de sustituciones tritonales suele generar quintas/octavas paralelas en modelos no guiados?</div><div class="a">Porque el movimiento de raíz a medio tono hacia la tónica involucra resoluciones cromáticas paralelas si no se invierte o redistribuye la estructura interna de la guía de voces.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">25.</span> ¿Cuál es el comportamiento de los voicings Drop 2-4 en tétradas con tensiones disponibles (9ª, 11ª, 13ª)?</div><div class="a">El algoritmo desciende la segunda y cuarta voz superior una octava, generando un intervalo amplio en la zona media del espectro que evita el emborronamiento de frecuencias graves.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">26.</span> ¿Es posible utilizar la IA para automatizar la creación de libros de texto musicales o guías docentes con AulaChord?</div><div class="a">Sí, porque permite solicitar secuencias didácticas completas (cadencias, sustituciones) ya ordenadas, corregidas y formateadas para impresión.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">27.</span> ¿Cómo gestiona AulaChord las alteraciones accidentales en modos como Frigio o Locrio al vincularse vía MCP?</div><div class="a">Configura internamente la armadura modal básica y aplica las alteraciones accidentales necesarias nota por nota respetando la tonalidad madre.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">28.</span> ¿Qué ocurre con la conducción armónica si el usuario edita manualmente una nota corregida por la IA?</div><div class="a">AulaChord vuelve a evaluar la estructura modificada al instante, mostrando alertas inmediatas si el cambio manual reintroduce una falta teórica.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">29.</span> ¿Por qué Rubén Sbarsky enfatiza el concepto de "música local" frente a "procesamiento en la nube"?</div><div class="a">Para garantizar soberanía de datos, latencia cero en la renderización gráfica de audio y estabilidad operativa sin depender del ancho de banda.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">30.</span> ¿Cómo optimiza un arreglo de jazz el uso combinado del Laboratorio de Voicing con el Panel de Guitarra?</div><div class="a">Permite al arreglista probar distribuciones Drop 2 en tétradas y verificar simultáneamente si las digitaciones resultantes en guitarra son ergonómicamente ejecutables.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">31.</span> ¿Qué diferencia existe entre un enlace API tradicional y el protocolo MCP en software de música?</div><div class="a">El enlace API requiere desarrollo a medida y rutas fijas; MCP expone un protocolo estandarizado de contexto donde la IA descubre dinámicamente las herramientas que AulaChord ofrece.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">32.</span> ¿Puedo procesar partituras multimodales complejas combinando piano estricto con secciones SATB en la misma sesión?</div><div class="a">Sí, solicitando cambios de plantilla o redistribución de sistemas en comandos sucesivos.</div></div>
+    <div class="qa-item"><div class="q"><span class="n">33.</span> ¿Cuál es la visión del futuro de la docencia musical según la metodología de AulaMusical?</div><div class="a">Una sinergia donde la IA absorbe el trabajo repetitivo de escritura, AulaChord garantiza la exactitud técnica y el ser humano se enfoca en la interpretación artística y pedagógica.</div></div>
+  </div>
+</section>
+
+<!-- ===================== ERRORES ===================== -->
+<section data-t="ERRORES" id="errores">
+  <h2>Matriz de resolución de problemas</h2>
+  <p class="lead">Diagnóstico y solución de los fallos más habituales.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Problema / Síntoma</th><th>Causa probable</th><th>Solución paso a paso</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>El agente dice que no puede conectarse a AulaChord.</td>
+          <td>AulaChord no está abierto o no se ejecutó la orden MCP inicial.</td>
+          <td>1. Abre AulaChord.<br>2. En el agente escribe: <em>"Conéctate por MCP con AulaChord"</em>.</td>
+        </tr>
+        <tr>
+          <td>Aparecen ventanas emergentes pidiendo permiso constantemente.</td>
+          <td>No se seleccionó la autorización permanente.</td>
+          <td>Haz clic en <strong>"Permitir siempre"</strong> en el cuadro de diálogo.</td>
+        </tr>
+        <tr>
+          <td>El pentagrama muestra marcas de alerta rojas o de error.</td>
+          <td>La conducción inicial generada por la IA tiene faltas armónicas.</td>
+          <td>Espera unos segundos a que la IA reciba la retroalimentación y aplique la autocorrección.</td>
+        </tr>
+        <tr>
+          <td>Las notas suenan demasiado juntas o apretadas.</td>
+          <td>El acorde está en posición cerrada estándar.</td>
+          <td>Pide a la IA o selecciona manualmente Drop 2 o Drop 3 en el Laboratorio de Voicing.</td>
+        </tr>
+        <tr>
+          <td>No aparece sonido al reproducir la partitura.</td>
+          <td>Dispositivo de audio secundario no configurado.</td>
+          <td>Revisa la salida de audio del sistema operativo y reconecta auriculares o altavoces.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Lo que la IA puede y NO puede hacer</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>✅ Sí puede</th><th>❌ No puede por sí sola</th></tr></thead>
+      <tbody>
+        <tr><td>Escribir partituras directamente en el pentagrama en segundos.</td><td>Sustituir la sensibilidad y el oído del creador humano.</td></tr>
+        <tr><td>Garantizar conducción de voces sin octavas ni quintas paralelas.</td><td>Tomar decisiones artísticas basadas en emoción o contexto cultural.</td></tr>
+        <tr><td>Configurar claves, armaduras y modos automáticos.</td><td>Evaluar la intención expresiva de una interpretación en vivo.</td></tr>
+        <tr><td>Redistribuir voicings complejos (Drop 2, Drop 3).</td><td>Funcionar si AulaChord no está abierto en el ordenador.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout danger">
+    <span class="ct">Si nada de lo anterior funciona</span>
+    Cierra AulaChord y el agente, vuelve a abrirlos en el orden correcto (primero AulaChord, luego el agente) y repite el comando de vinculación MCP. Verifica que la licencia de AulaChord tenga el módulo MCP habilitado.
+  </div>
+</section>
+
+<!-- ===================== RESUMEN ===================== -->
+<section data-t="RESUMEN" id="resumen">
+  <h2>Resumen ejecutivo y glosario</h2>
+
+  <div class="card success">
+    <h3 style="margin-top:0">Ideas clave</h3>
+    <ul style="margin-bottom:0">
+      <li>AulaChord es un <strong>validador armónico determinista</strong>, no un simple editor.</li>
+      <li>MCP es el <strong>puente</strong> entre el agente de IA y AulaChord.</li>
+      <li>El flujo perfecto es <strong>Agente IA + AulaChord + Criterio humano</strong>.</li>
+      <li>AulaChord debe estar abierto <strong>antes</strong> de enviar cualquier prompt.</li>
+      <li>El botón <strong>"Permitir siempre"</strong> es clave para un flujo fluido.</li>
+      <li>El <strong>bucle de autocorrección</strong> garantiza cero infracciones armónicas.</li>
+      <li>Las cuentas gratuitas de los agentes son suficientes para empezar.</li>
+    </ul>
+  </div>
+
+  <h3>Glosario exhaustivo</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Término</th><th>Definición</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Agente de IA</strong></td><td>Aplicación basada en IA (ChatGPT, Claude, Antigravity) capaz de procesar lenguaje natural y ejecutar instrucciones.</td></tr>
+        <tr><td><strong>Armadura de clave</strong></td><td>Conjunto de alteraciones al inicio del pentagrama que definen la tonalidad.</td></tr>
+        <tr><td><strong>AulaChord</strong></td><td>Aplicación de escritorio determinista de teoría y validación armónica creada por Rubén Sbarsky.</td></tr>
+        <tr><td><strong>Criterio determinista</strong></td><td>Método de análisis computacional basado en reglas lógicas fijas, sin adivinación.</td></tr>
+        <tr><td><strong>Drop 2</strong></td><td>Técnica de voicing que baja una octava la segunda nota más aguda.</td></tr>
+        <tr><td><strong>Drop 3</strong></td><td>Técnica que baja una octava la tercera nota más aguda.</td></tr>
+        <tr><td><strong>Laboratorio de Voicing</strong></td><td>Panel de AulaChord para modificar y experimentar con la distribución vertical de las notas.</td></tr>
+        <tr><td><strong>MCP</strong></td><td>Model Context Protocol: protocolo que permite a modelos de IA interactuar con aplicaciones locales.</td></tr>
+        <tr><td><strong>Octavas paralelas</strong></td><td>Infracción armónica tradicional: dos voces avanzan en octava consecutivamente.</td></tr>
+        <tr><td><strong>Panel de Guitarra</strong></td><td>Interfaz visual dentro de AulaChord que representa digitaciones sobre el diapasón.</td></tr>
+        <tr><td><strong>Piano estricto</strong></td><td>Disposición de notación adaptada al teclado, respetando conducción y tesitura.</td></tr>
+        <tr><td><strong>Quintas paralelas</strong></td><td>Progresión prohibida en armonía tradicional: dos voces se mueven paralelas en quinta justa.</td></tr>
+        <tr><td><strong>SATB</strong></td><td>Soprano, Alto, Tenor y Bajo: disposición estándar para cuarteto vocal o coro.</td></tr>
+        <tr><td><strong>Sustitución tritonal</strong></td><td>Reemplazo de un acorde dominante por otro a distancia de tritono que comparte el mismo intervalo guía.</td></tr>
+        <tr><td><strong>Voicing</strong></td><td>La manera específica de ordenar y distribuir las notas de un acorde verticalmente.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Checklist final del tutorial</h3>
+  <ul class="checklist" data-checklist="resumen">
+    <li><input type="checkbox" id="rk1"><label for="rk1">Entiendo qué es AulaChord y qué es MCP.</label></li>
+    <li><input type="checkbox" id="rk2"><label for="rk2">He instalado AulaChord y el agente de IA.</label></li>
+    <li><input type="checkbox" id="rk3"><label for="rk3">He configurado la conexión MCP y los permisos.</label></li>
+    <li><input type="checkbox" id="rk4"><label for="rk4">He generado mi primer prompt SATB y piano estricto.</label></li>
+    <li><input type="checkbox" id="rk5"><label for="rk5">Sé interpretar alertas armónicas y esperar la autocorrección.</label></li>
+    <li><input type="checkbox" id="rk6"><label for="rk6">He practicado con Drop 2, modos y sustituciones tritonales.</label></li>
+    <li><input type="checkbox" id="rk7"><label for="rk7">Puedo exportar o imprimir mis partituras.</label></li>
+  </ul>
+</section>
+
+<!-- ===================== FUENTES ===================== -->
+<section data-t="FUENTES" id="fuentes">
+  <h2>Fuentes documentales y recursos</h2>
+
+  <div class="card">
+    <h3 style="margin-top:0">Canal oficial</h3>
+    <p><strong>AulaMusical | Armonía Eficiente</strong> — <code>@AulaMusical</code> en YouTube.</p>
+    <p style="margin-bottom:0">Vídeo de referencia: <em>"ChatGPT escribe partituras con comandos de voz en AulaChord"</em>.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Autor y docente</h3>
+    <p><strong>Rubén Sbarsky</strong>, creador del proyecto AulaMusical y de la metodología de armonía eficiente.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Sitio web oficial de AulaChord</h3>
+    <p>El enlace de descarga, licencias con descuento, especificaciones del software y contacto para clases personalizadas están disponibles en la descripción del canal de YouTube y el perfil de AulaMusical.</p>
+    <p style="margin-bottom:0" class="callout">Este tutorial no inventa URLs: consulta la descripción oficial del canal <code>@AulaMusical</code> para obtener el enlace vigente.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Documentación técnica relacionada</h3>
+    <ul style="margin-bottom:0">
+      <li><strong>Model Context Protocol (MCP):</strong> especificación pública del protocolo de contexto para modelos de lenguaje.</li>
+      <li><strong>ChatGPT Desktop:</strong> documentación oficial de la aplicación de escritorio.</li>
+      <li><strong>Claude Desktop:</strong> documentación oficial de Anthropic.</li>
+      <li><strong>Antigravity:</strong> documentación oficial del agente.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== CRÉDITOS ===================== -->
+<section data-t="CRÉDITOS" id="creditos">
+  <h2>Créditos</h2>
+
+  <div class="svg-mount" id="svgCreditos"></div>
+  <p class="svg-caption">Núcleo armónico neural: la IA fluye por la red MCP, AulaChord valida cada acorde en tiempo real y el criterio humano decide.</p>
+
+  <div class="author-card">
+    <div class="author-name">Rubén Sbarsky</div>
+    <p class="author-role">Autor del tutorial</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Información del proyecto</h3>
+    <p><strong>Canal:</strong> AulaMusical | Armonía Eficiente (<code>@AulaMusical</code>)</p>
+    <p><strong>Herramienta:</strong> AulaChord — validación armónica determinista</p>
+    <p><strong>Protocolo:</strong> Model Context Protocol (MCP)</p>
+    <p><strong>Agentes compatibles:</strong> ChatGPT Desktop, Claude Desktop, Antigravity</p>
+    <p class="meta-line">Versión del documento: <code>V001</code></p>
+    <p class="meta-line">Fecha y hora de creación: <code>27/10/2026 — 11:24:05</code></p>
+  </div>
+
+  <div class="callout">
+    <span class="ct">Nota de verificación</span>
+    Este archivo ha sido construido mediante inspección estática del código y revisión cruzada de contenido. Las pruebas de interacción en navegador real, generación de PDF y comportamiento exacto del portapapeles deben verificarse manualmente abriendo el archivo en un navegador actualizado.
+  </div>
+</section>
+
+</main>
+
+<!-- ============ UTILIDADES FLOTANTES ============ -->
+<div id="utils" aria-label="Utilidades">
+  <button id="btnSearch" type="button" aria-label="Buscar (Ctrl+K)" title="Buscar (Ctrl+K)">🔍</button>
+  <button id="btnFontDown" type="button" aria-label="Reducir tamaño de letra" title="Reducir letra">A−</button>
+  <button id="btnFontUp" type="button" aria-label="Aumentar tamaño de letra" title="Aumentar letra">A+</button>
+  <button id="btnTheme" type="button" aria-label="Cambiar tema" title="Cambiar tema">🌗</button>
+  <button id="btnPrint" type="button" aria-label="Imprimir o guardar como PDF" title="Imprimir / PDF">🖨</button>
+  <button id="backTop" type="button" aria-label="Volver arriba" title="Volver arriba">↑</button>
+</div>
+
+<!-- ============ MODAL BUSCADOR ============ -->
+<div id="searchModal" role="dialog" aria-modal="true" aria-label="Buscador interno">
+  <div id="searchBox">
+    <div class="sb-head">
+      <span aria-hidden="true">🔍</span>
+      <input id="searchInput" type="search" placeholder="Buscar en el tutorial…" autocomplete="off" aria-label="Término de búsqueda">
+      <button class="sb-close" type="button" id="searchClose" aria-label="Cerrar buscador">✕</button>
+    </div>
+    <div id="searchResults"></div>
+  </div>
+</div>
+
+<!-- ============ SVG TEMPLATE (oculto) ============ -->
+<div id="svgSource" hidden aria-hidden="true">
+  <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="__ID__title">
+    <title id="__ID__title">Núcleo armónico neural: la IA fluye por una red de nodos hasta un pentagrama central que valida los acordes en tiempo real.</title>
+    <defs>
+      <radialGradient id="__ID__bg" cx="50%" cy="45%" r="75%">
+        <stop offset="0%" stop-color="#0a2642"/>
+        <stop offset="55%" stop-color="#061525"/>
+        <stop offset="100%" stop-color="#060a14"/>
+      </radialGradient>
+      <radialGradient id="__ID__coreGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.85"/>
+        <stop offset="40%" stop-color="#38bdf8" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="__ID__coreInner" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ffffff"/>
+        <stop offset="45%" stop-color="#7dd3fc"/>
+        <stop offset="100%" stop-color="#0ea5e9"/>
+      </radialGradient>
+      <linearGradient id="__ID__staffLine" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.08"/>
+        <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.75"/>
+        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.08"/>
+      </linearGradient>
+      <linearGradient id="__ID__link" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#a78bfa" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#a78bfa" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="__ID__particle" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#7dd3fc"/>
+        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="__ID__soft" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur stdDeviation="4"/>
+      </filter>
+      <filter id="__ID__soft2" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur stdDeviation="1.4"/>
+      </filter>
+    </defs>
+    <rect width="400" height="500" fill="url(#__ID__bg)"/>
+    <circle cx="200" cy="250" r="190" fill="url(#__ID__coreGlow)" class="svg-pulse" filter="url(#__ID__soft)"/>
+
+    <!-- Red neuronal: líneas -->
+    <g stroke="url(#__ID__link)" stroke-width="1.1" fill="none" class="svg-dash" opacity="0.85">
+      <line x1="70" y1="110" x2="200" y2="250"/>
+      <line x1="330" y1="130" x2="200" y2="250"/>
+      <line x1="50" y1="340" x2="200" y2="250"/>
+      <line x1="350" y1="380" x2="200" y2="250"/>
+      <line x1="110" y1="60" x2="200" y2="250"/>
+      <line x1="290" y1="55" x2="200" y2="250"/>
+      <line x1="200" y1="460" x2="200" y2="250"/>
+      <line x1="80" y1="240" x2="200" y2="250"/>
+      <line x1="320" y1="260" x2="200" y2="250"/>
+      <line x1="110" y1="60" x2="70" y2="110"/>
+      <line x1="290" y1="55" x2="330" y2="130"/>
+      <line x1="50" y1="340" x2="80" y2="240"/>
+      <line x1="320" y1="260" x2="350" y2="380"/>
+    </g>
+
+    <!-- Nodos -->
+    <g>
+      <circle cx="70" cy="110" r="4.5" fill="#a78bfa" class="svg-pulse-fast"/>
+      <circle cx="330" cy="130" r="4.5" fill="#a78bfa" class="svg-pulse-fast" style="animation-delay:.4s"/>
+      <circle cx="50" cy="340" r="4" fill="#a78bfa" class="svg-pulse-fast" style="animation-delay:.8s"/>
+      <circle cx="350" cy="380" r="4" fill="#a78bfa" class="svg-pulse-fast" style="animation-delay:1.2s"/>
+      <circle cx="110" cy="60" r="3.5" fill="#7dd3fc" class="svg-pulse-fast" style="animation-delay:.6s"/>
+      <circle cx="290" cy="55" r="3.5" fill="#7dd3fc" class="svg-pulse-fast" style="animation-delay:1.4s"/>
+      <circle cx="200" cy="460" r="3.5" fill="#7dd3fc" class="svg-pulse-fast" style="animation-delay:.2s"/>
+      <circle cx="80" cy="240" r="3.5" fill="#7dd3fc" class="svg-pulse-fast" style="animation-delay:1.8s"/>
+      <circle cx="320" cy="260" r="3.5" fill="#7dd3fc" class="svg-pulse-fast" style="animation-delay:1s"/>
+    </g>
+
+    <!-- Anillos de onda -->
+    <g fill="none" stroke="#38bdf8" stroke-width="1">
+      <circle cx="200" cy="250" r="20" opacity="0">
+        <animate attributeName="r" values="20;140" dur="4.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.65;0" dur="4.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="200" cy="250" r="20" opacity="0">
+        <animate attributeName="r" values="20;140" dur="4.5s" begin="1.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.65;0" dur="4.5s" begin="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="200" cy="250" r="20" opacity="0">
+        <animate attributeName="r" values="20;140" dur="4.5s" begin="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.65;0" dur="4.5s" begin="3s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <!-- Pentagrama -->
+    <g transform="rotate(-4 200 250)">
+      <line x1="40" y1="216" x2="360" y2="216" stroke="url(#__ID__staffLine)" stroke-width="1"/>
+      <line x1="40" y1="228" x2="360" y2="228" stroke="url(#__ID__staffLine)" stroke-width="1"/>
+      <line x1="40" y1="240" x2="360" y2="240" stroke="url(#__ID__staffLine)" stroke-width="1"/>
+      <line x1="40" y1="252" x2="360" y2="252" stroke="url(#__ID__staffLine)" stroke-width="1"/>
+      <line x1="40" y1="264" x2="360" y2="264" stroke="url(#__ID__staffLine)" stroke-width="1"/>
+
+      <!-- Notas -->
+      <g class="svg-bob">
+        <ellipse cx="82" cy="252" rx="6" ry="4.5" fill="#7dd3fc" transform="rotate(-22 82 252)"/>
+        <line x1="87" y1="252" x2="87" y2="228" stroke="#7dd3fc" stroke-width="1.4"/>
+      </g>
+      <g class="svg-bob" style="animation-delay:.6s">
+        <ellipse cx="140" cy="228" rx="6" ry="4.5" fill="#a78bfa" transform="rotate(-22 140 228)"/>
+        <line x1="145" y1="228" x2="145" y2="204" stroke="#a78bfa" stroke-width="1.4"/>
+      </g>
+      <g class="svg-bob" style="animation-delay:1.2s">
+        <ellipse cx="200" cy="240" rx="6" ry="4.5" fill="#7dd3fc" transform="rotate(-22 200 240)"/>
+        <line x1="205" y1="240" x2="205" y2="216" stroke="#7dd3fc" stroke-width="1.4"/>
+      </g>
+      <g class="svg-bob" style="animation-delay:1.8s">
+        <ellipse cx="260" cy="252" rx="6" ry="4.5" fill="#a78bfa" transform="rotate(-22 260 252)"/>
+        <line x1="265" y1="252" x2="265" y2="228" stroke="#a78bfa" stroke-width="1.4"/>
+      </g>
+      <g class="svg-bob" style="animation-delay:2.4s">
+        <ellipse cx="320" cy="228" rx="6" ry="4.5" fill="#7dd3fc" transform="rotate(-22 320 228)"/>
+        <line x1="325" y1="228" x2="325" y2="204" stroke="#7dd3fc" stroke-width="1.4"/>
+      </g>
+    </g>
+
+    <!-- Núcleo central -->
+    <g>
+      <circle cx="200" cy="250" r="46" fill="url(#__ID__coreGlow)" filter="url(#__ID__soft)"/>
+      <circle cx="200" cy="250" r="26" fill="url(#__ID__coreInner)" filter="url(#__ID__soft2)"/>
+      <circle cx="200" cy="250" r="26" fill="none" stroke="#ffffff" stroke-opacity="0.6" stroke-width="1"/>
+      <text x="200" y="255" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="700" fill="#06121e">Cmaj7</text>
+    </g>
+
+    <!-- Cifrados flotantes -->
+    <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600">
+      <text x="60" y="92" fill="#a78bfa" class="svg-drift">G7</text>
+      <text x="315" y="112" fill="#7dd3fc" class="svg-drift" style="animation-delay:.8s">Dm7</text>
+      <text x="52" y="420" fill="#7dd3fc" class="svg-drift" style="animation-delay:1.6s">Am7</text>
+      <text x="312" y="430" fill="#a78bfa" class="svg-drift" style="animation-delay:2.4s">Fmaj7</text>
+      <text x="180" y="472" fill="#7dd3fc" class="svg-drift" style="animation-delay:.4s">Bm7♭5</text>
+    </g>
+
+    <!-- Partículas -->
+    <g>
+      <circle cx="120" cy="380" r="2" fill="url(#__ID__particle)" class="svg-pulse-fast"/>
+      <circle cx="290" cy="330" r="2.2" fill="url(#__ID__particle)" class="svg-pulse-fast" style="animation-delay:.7s"/>
+      <circle cx="180" cy="120" r="1.8" fill="url(#__ID__particle)" class="svg-pulse-fast" style="animation-delay:1.4s"/>
+      <circle cx="320" cy="220" r="2" fill="url(#__ID__particle)" class="svg-pulse-fast" style="animation-delay:.3s"/>
+      <circle cx="60" cy="280" r="1.8" fill="url(#__ID__particle)" class="svg-pulse-fast" style="animation-delay:1.9s"/>
+      <circle cx="250" cy="410" r="1.6" fill="url(#__ID__particle)" class="svg-pulse-fast" style="animation-delay:1.1s"/>
+    </g>
+
+    <!-- Destellos de validación -->
+    <g stroke="#34d399" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.9">
+      <g class="svg-pulse" style="animation-duration:4s">
+        <path d="M310 200 l5 5 l9 -10"/>
+      </g>
+      <g class="svg-pulse" style="animation-duration:4s; animation-delay:2s">
+        <path d="M80 300 l5 5 l9 -10"/>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ============ DATOS BASE ============ */
+const secs = Array.from(document.querySelectorAll('section[data-t]'));
+const nav  = document.getElementById('nav');
+const dr   = document.getElementById('dr');
+const mb   = document.getElementById('mb');
+const main = document.getElementById('main');
+
+/* ============ STORAGE SEGURO ============ */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v===null ? d : v; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+
+/* ============ GENERAR CHIPS DE NAV ============ */
+secs.forEach((s, i) => {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'chip' + (i === 0 ? ' on' : '');
+  b.textContent = s.dataset.t;
+  b.dataset.idx = i;
+  b.addEventListener('click', () => go(i));
+  nav.appendChild(b);
+});
+
+/* ============ GENERAR ÍNDICE ============ */
+const titleOf = (s, i) => (i ? (i + '. ') : '') + (s.dataset.t || (s.querySelector('h2') ? s.querySelector('h2').textContent : 'Sección'));
+secs.forEach((s, i) => {
+  const a = document.createElement('a');
+  a.href = '#';
+  a.dataset.idx = i;
+  a.innerHTML = '<span class="num">' + (i ? i + '.' : '·') + '</span><span>' + (s.dataset.t || (s.querySelector('h2') ? s.querySelector('h2').textContent : 'Sección')) + '</span>';
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    go(i);
+    tg(false);
+  });
+  dr.appendChild(a);
+});
+
+/* ============ FUNCIÓN GO ============ */
+function go(i){
+  if (i < 0 || i >= secs.length) return;
+  secs.forEach((s, j) => s.classList.toggle('active', i === j));
+  nav.querySelectorAll('.chip').forEach((b, j) => b.classList.toggle('on', j === i));
+  dr.querySelectorAll('a').forEach((a, j) => a.classList.toggle('on', j === i));
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  store.set('ac_tab', String(i));
+  requestAnimationFrame(() => {
+    const m = secs[i].querySelector('.svg-mount');
+    if (m && !m.dataset.mounted) mountSVG(m);
+    else if (m && m.dataset.mounted) restartSVG(m);
+  });
+}
+
+/* ============ PANEL ÍNDICE ============ */
+function tg(force){
+  const open = typeof force === 'boolean' ? force : !dr.classList.contains('o');
+  dr.classList.toggle('o', open);
+  mb.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+mb.addEventListener('click', () => tg());
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape'){ tg(false); closeSearch(); }
+});
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#dr, #mb, #ix')) tg(false);
+});
+
+/* ============ BOTÓN HOME ============ */
+document.getElementById('ix').addEventListener('click', () => tg(true));
+
+/* ============ SVG COMPARTIDO ============ */
+const source = document.getElementById('svgSource');
+let svgTemplate = source.innerHTML.trim();
+source.remove();
+let svgCounter = 0;
+
+function mountSVG(container){
+  if (!container) return;
+  const id = 's' + (++svgCounter) + '_';
+  container.innerHTML = svgTemplate.replace(/__ID__/g, id);
+  container.dataset.mounted = '1';
+  const svg = container.querySelector('svg');
+  if (svg){
+    svg.style.width = '100%';
+    svg.style.height = '100%';
+    svg.style.display = 'block';
+    // Accesibilidad del SVG
+    const t = container.querySelector('title');
+    if (t){
+      const titleId = t.getAttribute('id');
+      svg.setAttribute('role', 'img');
+      svg.setAttribute('aria-labelledby', titleId);
+      svg.removeAttribute('aria-hidden');
+    }
+    // Reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches && svg.pauseAnimations){
+      try{ svg.pauseAnimations(); }catch(e){}
+    }
+  }
+}
+function restartSVG(container){
+  const svg = container.querySelector('svg');
+  if (!svg) return;
+  // Reinicia animaciones SMIL si el navegador lo permite
+  try{
+    if (svg.setCurrentTime) svg.setCurrentTime(0);
+    if (svg.unpauseAnimations && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) svg.unpauseAnimations();
+  }catch(e){}
+}
+
+/* ============ COPIAR ============ */
+function fallbackCopy(text){
+  try{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){ return false; }
+}
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.copy');
+  if (!btn) return;
+  const block = btn.closest('.code-block');
+  if (!block) return;
+  const pre = block.querySelector('pre');
+  if (!pre) return;
+  const text = pre.innerText;
+  let ok = false;
+  try{
+    if (navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+      ok = true;
+    } else {
+      ok = fallbackCopy(text);
+    }
+  }catch(err){
+    ok = fallbackCopy(text);
+  }
+  const original = btn.textContent;
+  btn.textContent = ok ? '✓ Copiado' : '⚠ Selecciona y copia';
+  btn.classList.add('done');
+  setTimeout(() => { btn.textContent = original; btn.classList.remove('done'); }, 1600);
+  if (!ok){
+    // Selección manual como alternativa
+    const sel = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(pre);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+});
+
+/* ============ TEMA ============ */
+const html = document.documentElement;
+function setTheme(t){
+  html.setAttribute('data-theme', t);
+  store.set('ac_theme', t);
+}
+setTheme(store.get('ac_theme', 'dark'));
+document.getElementById('btnTheme').addEventListener('click', () => {
+  setTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+/* ============ TAMAÑO DE LETRA ============ */
+function setFont(px){
+  px = Math.max(14, Math.min(22, px));
+  document.documentElement.style.setProperty('--base-font', px + 'px');
+  store.set('ac_font', String(px));
+}
+setFont(parseInt(store.get('ac_font', '16'), 10) || 16);
+document.getElementById('btnFontUp').addEventListener('click', () => {
+  const cur = parseInt(getComputedStyle(document.body).fontSize, 10) || 16;
+  setFont(cur + 1);
+});
+document.getElementById('btnFontDown').addEventListener('click', () => {
+  const cur = parseInt(getComputedStyle(document.body).fontSize, 10) || 16;
+  setFont(cur - 1);
+});
+
+/* ============ PROGRESO Y VOLVER ARRIBA ============ */
+const progress = document.getElementById('progress');
+const backTop = document.getElementById('backTop');
+function onScroll(){
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+  progress.style.width = pct + '%';
+  backTop.classList.toggle('show', h.scrollTop > 400);
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+onScroll();
+backTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+/* ============ BUSCADOR ============ */
+const searchModal = document.getElementById('searchModal');
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+function openSearch(){
+  searchModal.classList.add('o');
+  setTimeout(() => searchInput.focus(), 30);
+  searchInput.value = '';
+  runSearch('');
+}
+function closeSearch(){
+  searchModal.classList.remove('o');
+}
+document.getElementById('btnSearch').addEventListener('click', openSearch);
+document.getElementById('searchClose').addEventListener('click', closeSearch);
+searchModal.addEventListener('click', (e) => { if (e.target === searchModal) closeSearch(); });
+searchInput.addEventListener('input', () => runSearch(searchInput.value));
+
+function runSearch(q){
+  q = q.trim().toLowerCase();
+  searchResults.innerHTML = '';
+  if (q.length < 2){
+    const p = document.createElement('p');
+    p.className = 'empty';
+    p.textContent = 'Escribe al menos 2 caracteres para buscar en todo el tutorial.';
+    searchResults.appendChild(p);
+    return;
+  }
+  let total = 0;
+  secs.forEach((s, i) => {
+    const text = s.textContent.toLowerCase();
+    if (text.indexOf(q) !== -1){
+      total++;
+      const idx = text.indexOf(q);
+      const start = Math.max(0, idx - 40);
+      const snippet = s.textContent.substring(start, start + 120).replace(/\s+/g, ' ');
+      const a = document.createElement('a');
+      a.href = '#';
+      a.innerHTML = '<strong>' + (s.dataset.t || 'Sección') + '</strong><div class="snippet">… ' + snippet + ' …</div>';
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        go(i);
+        closeSearch();
+        setTimeout(() => highlightFirst(q), 250);
+      });
+      searchResults.appendChild(a);
+    }
+  });
+  if (!total){
+    const p = document.createElement('p');
+    p.className = 'empty';
+    p.textContent = 'Sin resultados para "' + q + '".';
+    searchResults.appendChild(p);
+  }
+}
+function highlightFirst(q){
+  const active = secs.find(s => s.classList.contains('active'));
+  if (!active) return;
+  try{
+    window.find && window.find(q, false, false, true, false, true, false);
+  }catch(e){}
+}
+
+/* Atajo Ctrl/Cmd+K */
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault();
+    openSearch();
+  }
+});
+
+/* ============ PERSISTENCIA: TABS ============ */
+const savedTab = parseInt(store.get('ac_tab', '0'), 10);
+if (!isNaN(savedTab) && savedTab >= 0 && savedTab < secs.length) go(savedTab);
+else { go(0); }
+
+/* ============ PERSISTENCIA: CHECKLISTS ============ */
+document.querySelectorAll('input[type="checkbox"]').forEach(ck => {
+  const key = 'ac_ck_' + ck.id;
+  ck.checked = store.get(key, '0') === '1';
+  ck.addEventListener('change', () => store.set(key, ck.checked ? '1' : '0'));
+});
+
+/* ============ PERSISTENCIA: DETAILS ============ */
+document.querySelectorAll('details').forEach((d, i) => {
+  const key = 'ac_det_' + i;
+  d.open = store.get(key, '0') === '1';
+  d.addEventListener('toggle', () => store.set(key, d.open ? '1' : '0'));
+});
+
+/* ============ IMPRESIÓN ============ */
+let printState = null;
+document.getElementById('btnPrint').addEventListener('click', () => {
+  try{
+    if (window.print) window.print();
+    else alert('Abre este archivo directamente en el navegador y utiliza Ctrl+P o Cmd+P.');
+  }catch(e){
+    alert('No se pudo abrir el diálogo de impresión. Abre este archivo directamente en el navegador y utiliza Ctrl+P o Cmd+P.');
+  }
+});
+window.addEventListener('beforeprint', () => {
+  printState = { open: [] };
+  document.querySelectorAll('details').forEach((d, i) => {
+    if (!d.open) printState.open.push(i);
+    d.open = true;
+  });
+  // Montar todos los SVG no montados
+  document.querySelectorAll('.svg-mount').forEach(m => {
+    if (!m.dataset.mounted) mountSVG(m);
+  });
+});
+window.addEventListener('afterprint', () => {
+  if (printState){
+    document.querySelectorAll('details').forEach((d, i) => {
+      if (printState.open.indexOf(i) !== -1) d.open = false;
+    });
+    printState = null;
+  }
+});
+
+/* ============ REPARACIÓN PERIÓDICA DE SVG VISIBLE ============ */
+setInterval(() => {
+  const active = secs.find(s => s.classList.contains('active'));
+  if (!active) return;
+  const m = active.querySelector('.svg-mount');
+  if (m && !m.querySelector('svg') && !m.dataset.mounted){
+    mountSVG(m);
+  }
+}, 2500);
+
+/* ============ MONTAJE INICIAL DE SVG ============ */
+window.addEventListener('DOMContentLoaded', () => {
+  const inicio = document.getElementById('svgInicio');
+  const creditos = document.getElementById('svgCreditos');
+  if (inicio) mountSVG(inicio);
+  if (creditos) mountSVG(creditos);
+});
+
+/* Ejecución inmediata por si DOMContentLoaded ya pasó */
+(function init(){
+  const inicio = document.getElementById('svgInicio');
+  const creditos = document.getElementById('svgCreditos');
+  if (inicio && !inicio.dataset.mounted) mountSVG(inicio);
+  if (creditos && !creditos.dataset.mounted) mountSVG(creditos);
+})();
+
+/* ============ SALIDA LIMPIA ============ */
+window.go = go; // expuesto para uso puntual desde la consola o botones inline
+})();
+</script>
+</body>
+</html>
