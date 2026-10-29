@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explorador Universal de Acordes — Tutorial · V001</title>
+<style>
+:root{
+  --bg:#0a0e1a; --card:#0f172a; --card2:#131d33; --border:#1e3a5f;
+  --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8; --accent2:#a855f7;
+  --accent-dim:rgba(56,189,248,.15); --warn:#fbbf24; --ok:#34d399; --bad:#f87171;
+  --nav-h:58px; --fs:16px;
+}
+body.light{
+  --bg:#f4f7fc; --card:#ffffff; --card2:#eef3fa; --border:#cdd7e6;
+  --text:#0f1c2e; --muted:#475569; --accent:#0284c7; --accent2:#7c3aed;
+  --accent-dim:rgba(2,132,199,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:var(--fs); line-height:1.6;
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:var(--card2);padding:1px 6px;border-radius:4px;font-size:.92em;color:var(--accent)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+/* ====== Barra de progreso ====== */
+#progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:1000;transition:width .1s linear}
+
+/* ====== Nav superior ====== */
+#nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:30;
+  background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;padding:0 10px;overflow:hidden;
+}
+#nav .chip{
+  flex:0 0 auto;height:42px;padding:0 14px;border-radius:999px;
+  background:var(--card);border:1px solid var(--border);color:var(--text);
+  font-size:.92rem;display:inline-flex;align-items:center;justify-content:center;
+  white-space:nowrap;transition:background .2s,border-color .2s,color .2s;
+}
+#nav .chip:hover{background:var(--card2)}
+#nav .chip[aria-selected="true"]{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);font-weight:600}
+#mb{border-color:var(--accent);color:var(--accent);font-weight:600}
+#chips{
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1 1 auto;
+  padding:4px 2px;min-width:0;
+}
+#chips::-webkit-scrollbar{display:none}
+
+/* ====== Drawer (Índice) ====== */
+#dr{
+  position:fixed;top:var(--nav-h);left:0;bottom:0;
+  width:min(330px,88vw);background:#0f172a;border-right:1px solid #1e3a5f;
+  transform:translateX(-105%);transition:transform .25s ease;z-index:25;
+  overflow-y:auto;padding:10px;color:#e2e8f0;
+}
+#dr.o{transform:none;box-shadow:8px 0 24px rgba(0,0,0,.35)}
+#dr a{
+  display:flex;align-items:center;padding:12px;border-radius:8px;
+  color:#e2e8f0;cursor:pointer;min-height:44px;font-size:.95rem;
+  text-decoration:none;
+}
+#dr a:hover{background:rgba(255,255,255,.06)}
+#dr a.on{background:rgba(56,189,248,.18);color:#38bdf8;font-weight:600}
+.dr-search{
+  width:100%;padding:10px 12px;margin-bottom:10px;border-radius:8px;
+  background:#0a1830;border:1px solid #1e3a5f;color:#e2e8f0;font-size:.92rem;
+}
+.dr-search::placeholder{color:#64748b}
+.dr-tools{margin-top:14px;padding-top:14px;border-top:1px solid #1e3a5f}
+.dr-tools h4{margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;font-weight:600}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tools-grid button{
+  min-height:44px;padding:8px;border-radius:8px;border:1px solid #1e3a5f;
+  background:#0a1830;color:#e2e8f0;font-size:.9rem;
+}
+.tools-grid button:hover{background:#131d33;border-color:#38bdf8}
+
+/* ====== Contenido principal ====== */
+main{padding:calc(var(--nav-h) + 16px) 16px 80px;max-width:980px;margin:0 auto}
+main > section{display:none}
+main > section.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+h1,h2,h3,h4{line-height:1.25;color:var(--text);margin:0 0 .6em}
+h1{font-size:1.9rem;letter-spacing:-.02em}
+h2{font-size:1.5rem;margin-top:1.4em}
+h3{font-size:1.15rem;margin-top:1.2em;color:var(--accent)}
+h4{font-size:1rem;margin-top:1em}
+p{margin:0 0 1em}
+.lead{font-size:1.08rem;color:var(--muted)}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.75rem;color:var(--accent);font-weight:700;margin:0 0 8px}
+.byline{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:18px;margin:0 0 16px;
+}
+.card h3:first-child,.card h4:first-child{margin-top:0}
+.card ul,.card ol{padding-left:1.3em;margin:.4em 0}
+.card li{margin:.25em 0}
+
+.grid-2{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:700px){.grid-2{grid-template-columns:1fr 1fr}}
+
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;
+  background:var(--accent);color:#04121e;border:none;font-weight:700;font-size:1rem;
+  transition:transform .15s,filter .15s;min-height:44px;
+}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;
+  background:transparent;color:var(--accent);border:1px solid var(--accent);
+  font-weight:600;font-size:.95rem;min-height:44px;
+}
+.btn-secondary:hover{background:var(--accent-dim)}
+
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}
+th,td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--card2);color:var(--accent);font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+tr:last-child td{border-bottom:none}
+@media(max-width:600px){
+  table{font-size:.86rem}
+  th,td{padding:7px 8px}
+}
+
+/* Acordeones */
+details.acc{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  margin:0 0 10px;overflow:hidden;
+}
+details.acc summary{
+  padding:14px 16px;cursor:pointer;font-weight:600;color:var(--text);
+  list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;
+  min-height:44px;
+}
+details.acc summary::-webkit-details-marker{display:none}
+details.acc summary::after{
+  content:"▾";color:var(--accent);transition:transform .2s;flex:0 0 auto;
+}
+details.acc[open] summary::after{transform:rotate(180deg)}
+details.acc > :not(summary){padding:0 16px 14px}
+details.acc[open] summary{border-bottom:1px solid var(--border)}
+
+/* Callouts */
+.note,.warn,.tip{
+  padding:12px 14px;border-radius:10px;margin:12px 0;border-left:3px solid var(--accent);
+  background:var(--accent-dim);font-size:.95rem;
+}
+.note strong{color:var(--accent)}
+.warn{border-left-color:var(--warn);background:rgba(251,191,36,.1)}
+.warn strong{color:var(--warn)}
+.tip{border-left-color:var(--ok);background:rgba(52,211,153,.1)}
+.tip strong{color:var(--ok)}
+
+/* Checklist */
+.checklist{list-style:none;padding:0}
+.checklist li{
+  display:flex;align-items:flex-start;gap:10px;padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+.checklist li:last-child{border-bottom:none}
+.checklist input[type="checkbox"]{
+  width:22px;height:22px;margin:2px 0 0;accent-color:var(--accent);flex:0 0 auto;cursor:pointer;
+}
+.checklist label{cursor:pointer;flex:1;line-height:1.5}
+
+/* Hero */
+.hero{display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:22px;align-items:center}
+@media(min-width:780px){.hero{grid-template-columns:minmax(0,340px) 1fr}}
+.hero-svg{
+  width:100%;aspect-ratio:4/5;max-width:340px;margin:0 auto;
+  border-radius:14px;overflow:hidden;border:1px solid var(--border);
+  background:#05080f;
+}
+.hero-svg svg{display:block;width:100%;height:100%}
+
+/* Botón arriba */
+#top{
+  position:fixed;right:16px;bottom:16px;width:46px;height:46px;border-radius:50%;
+  background:var(--accent);color:#04121e;border:none;font-size:1.2rem;font-weight:700;
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .15s;z-index:20;
+  box-shadow:0 6px 20px rgba(56,189,248,.35);
+}
+#top.show{opacity:1;pointer-events:auto}
+#top:hover{transform:translateY(-2px)}
+
+/* Tab nav */
+.tab-nav{display:flex;justify-content:space-between;gap:10px;margin-top:24px;padding-top:16px;border-top:1px solid var(--border)}
+.tab-nav button{
+  padding:10px 16px;border-radius:10px;border:1px solid var(--border);
+  background:var(--card);color:var(--text);font-weight:600;min-height:44px;
+}
+.tab-nav button:hover{background:var(--card2);border-color:var(--accent);color:var(--accent)}
+
+/* Q&A */
+.qa-group{margin-bottom:22px}
+.qa-group h3{margin-top:0;padding-bottom:8px;border-bottom:2px solid var(--accent)}
+.qa{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin:0 0 10px}
+.qa-q{font-weight:700;color:var(--accent);margin:0 0 6px;font-size:1rem}
+.qa-a{margin:0;color:var(--text)}
+
+/* Ejercicios */
+.ex{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--accent2);border-radius:10px;padding:16px;margin:0 0 14px}
+.ex h3{margin-top:0;color:var(--accent2)}
+.ex ol{padding-left:1.3em;margin:.5em 0}
+.ex ol li{margin:.3em 0}
+
+/* Ajustes del hero en móvil */
+@media(max-width:480px){
+  h1{font-size:1.55rem}
+  h2{font-size:1.3rem}
+  main{padding-left:12px;padding-right:12px}
+}
+
+/* Reducción de movimiento */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;scroll-behavior:auto!important;
+  }
+}
+
+/* Impresión */
+@media print{
+  @page{size:A4 portrait;margin:14mm 12mm}
+  body{background:#fff!important;color:#000!important;font-size:11pt!important}
+  #nav,#dr,#top,#progress,.tab-nav,.dr-search,.dr-tools,.btn-primary,.btn-secondary{display:none!important}
+  main{padding:0!important;max-width:none!important}
+  main > section{display:block!important;page-break-after:auto}
+  .card,.ex,.qa,.note,.warn,.tip,details.acc{background:#fff!important;border:1px solid #999!important;color:#000!important;page-break-inside:avoid}
+  details{display:block!important}
+  details.acc > summary{border-bottom:1px solid #ccc}
+  h1,h2,h3,h4,.qa-q,.eyebrow,.byline{color:#000!important}
+  a{color:#000!important;text-decoration:underline}
+  table{border:1px solid #999;page-break-inside:avoid}
+  th{background:#eee!important;color:#000!important}
+  th,td{border:1px solid #999}
+  code{background:#f0f0f0!important;color:#000!important}
+  .hero-svg{max-width:90mm;margin:0 auto 6mm;border:1px solid #ccc}
+  *{animation:none!important;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .a-twinkle,.a-spin-slow,.a-spin-medium,.a-wave,.a-pulse-soft,.a-core-breathe,.a-note-rise,.a-key{animation:none!important;opacity:1!important}
+}
+
+/* ===== Animaciones SVG (respetan prefers-reduced-motion) ===== */
+@keyframes svgTwinkle{0%,100%{opacity:.15}50%{opacity:1}}
+@keyframes svgSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes svgSpinRev{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
+@keyframes svgWaveScale{0%{transform:scale(.18);opacity:.85}100%{transform:scale(1);opacity:0}}
+@keyframes svgPulseSoft{0%,100%{opacity:.5}50%{opacity:.95}}
+@keyframes svgBreathe{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.12);opacity:.55}}
+@keyframes svgNoteRise{0%{opacity:0;transform:translateY(0)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translateY(-70px)}}
+@keyframes svgKeyFlash{0%,100%{opacity:0}5%,15%{opacity:.75}22%{opacity:0}}
+.a-twinkle{animation:svgTwinkle 3s ease-in-out infinite}
+.a-spin-slow{animation:svgSpin 60s linear infinite;transform-origin:center;transform-box:fill-box}
+.a-spin-medium{animation:svgSpinRev 45s linear infinite;transform-origin:center;transform-box:fill-box}
+.a-wave{animation:svgWaveScale 4.5s linear infinite;transform-origin:center;transform-box:fill-box}
+.a-pulse-soft{animation:svgPulseSoft 3s ease-in-out infinite}
+.a-core-breathe{animation:svgBreathe 3.5s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+.a-note-rise{animation:svgNoteRise 6s linear infinite;opacity:0}
+.a-key{opacity:0;animation:svgKeyFlash 4s linear infinite}
+</style>
+</head>
+<body>
+
+<a href="#main" style="position:absolute;left:-9999px;top:0;padding:8px 12px;background:var(--accent);color:#04121e;z-index:9999" onfocus="this.style.left='8px'" onblur="this.style.left='-9999px'">Saltar al contenido</a>
+
+<div id="progress" aria-hidden="true"></div>
+
+<nav id="nav" aria-label="Navegación principal">
+  <button id="mb" class="chip" aria-label="Abrir índice" aria-expanded="false" aria-controls="dr">☰ Índice</button>
+  <div id="chips" role="tablist" aria-label="Secciones del tutorial">
+    <button class="chip" role="tab" data-t="Inicio" aria-selected="true" tabindex="0">Inicio</button>
+    <button class="chip" role="tab" data-t="Conceptos" aria-selected="false" tabindex="-1">Conceptos</button>
+    <button class="chip" role="tab" data-t="Procedimiento" aria-selected="false" tabindex="-1">Procedimiento</button>
+    <button class="chip" role="tab" data-t="Práctica" aria-selected="false" tabindex="-1">Práctica</button>
+    <button class="chip" role="tab" data-t="33 Preguntas (Q&amp;A)" aria-selected="false" tabindex="-1">33 Preguntas (Q&amp;A)</button>
+    <button class="chip" role="tab" data-t="Errores y solución de problemas" aria-selected="false" tabindex="-1">Errores</button>
+    <button class="chip" role="tab" data-t="Resumen" aria-selected="false" tabindex="-1">Resumen</button>
+    <button class="chip" role="tab" data-t="Fuentes" aria-selected="false" tabindex="-1">Fuentes</button>
+    <button class="chip" role="tab" data-t="Créditos" aria-selected="false" tabindex="-1">Créditos</button>
+  </div>
+</nav>
+
+<div id="dr" role="navigation" aria-label="Índice del tutorial"></div>
+
+<main id="main">
+
+<!-- ============================================================
+     INICIO
+     ============================================================ -->
+<section id="s0" data-t="Inicio" class="active">
+  <div class="hero">
+    <div class="hero-svg" id="svgHome" role="img" aria-labelledby="ttlHome">
+      <!-- montado por JS -->
+    </div>
+    <div>
+      <p class="eyebrow">Tutorial completo para principiantes · V002</p>
+      <h1>Explorador Universal de Acordes</h1>
+      <p class="lead">Aprende a usar todas las funciones de la aplicación paso a paso, sin conocimientos previos de música.</p>
+      <p class="byline">by Rubén Sbarsky · Tutorial V001</p>
+      <button id="ix" class="btn-primary" aria-label="Abrir índice">☰ Ver índice</button>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>¿Qué vas a aprender?</h3>
+      <ul>
+        <li>Qué es un acorde y cómo está formado</li>
+        <li>Cómo buscar acordes que contienen una nota</li>
+        <li>Cómo consultar o construir un acorde concreto</li>
+        <li>Cómo visualizar las notas en el piano</li>
+        <li>Cómo hacer búsquedas inversas por función</li>
+        <li>Cómo estudiar una tonalidad</li>
+        <li>Cómo guardar, exportar e importar favoritos</li>
+        <li>Cómo usar el glosario y las pruebas internas</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Cómo usar este tutorial</h3>
+      <p>Este tutorial es un archivo HTML autónomo. No necesita conexión a Internet después de abrirlo.</p>
+      <ul>
+        <li>Usa las pestañas superiores para navegar</li>
+        <li>El botón «☰ Índice» abre un panel lateral</li>
+        <li>Cada sección está pensada para leerse en orden</li>
+        <li>Tu progreso y preferencias se guardan automáticamente</li>
+        <li>Puedes imprimirlo o guardarlo como PDF</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>La aplicación que aprenderás a usar</h3>
+    <p>El <strong>Explorador Universal de Acordes</strong> es una herramienta interactiva para investigar acordes musicales. Un acorde es un grupo de notas que suenan juntas o que se entienden como una unidad armónica.</p>
+    <p>Funciona como una herramienta de <strong>consulta y estudio</strong>: presenta nombres, fórmulas, notas y relaciones armónicas. No sustituye la escucha, la práctica instrumental ni el estudio musical.</p>
+    <h4>Lo que la aplicación hace</h4>
+    <ul>
+      <li>Descubre qué acordes contienen una nota determinada.</li>
+      <li>Muestra qué función desempeña una nota dentro de un acorde.</li>
+      <li>Escribe el nombre de un acorde y muestra sus notas.</li>
+      <li>Construye acordes seleccionando fundamental y tipo.</li>
+      <li>Resalta las notas del acorde en un teclado de piano.</li>
+      <li>Encuentra acordes donde una nota cumple una función concreta.</li>
+      <li>Investiga acordes dentro de una tonalidad y distingue diatónicos de no diatónicos.</li>
+      <li>Filtra por familia, función, cantidad de notas, tensiones y tipo de estructura.</li>
+      <li>Ordena resultados y muestra grandes listas progresivamente.</li>
+      <li>Guarda favoritos, los etiqueta, los exporta y los importa.</li>
+      <li>Ofrece un glosario musical y pruebas internas del motor.</li>
+    </ul>
+    <h4>Lo que la aplicación no hace</h4>
+    <ul>
+      <li>No reproduce sonido al pulsar las teclas del piano: el teclado es visual.</li>
+      <li>No graba lo que tocas en un piano real.</li>
+      <li>No escucha una canción para identificar sus acordes.</li>
+      <li>No crea automáticamente una progresión musical ni una partitura.</li>
+      <li>No envía tus favoritos a una cuenta en Internet: los guarda localmente en el navegador cuando el almacenamiento está disponible.</li>
+      <li>No muestra todas las variantes teóricas imaginables: trabaja con el catálogo de fórmulas incluido en la versión V002.</li>
+    </ul>
+  </div>
+
+  <div class="tab-nav">
+    <button id="prevTab" aria-label="Sección anterior">← Anterior</button>
+    <button id="nextTab" aria-label="Sección siguiente">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONCEPTOS
+     ============================================================ -->
+<section id="s1" data-t="Conceptos">
+  <h2>Conceptos musicales mínimos</h2>
+  <p class="lead">No necesitas memorizar estos términos antes de abrir la aplicación. Puedes volver a esta sección cuando aparezca una palabra desconocida.</p>
+
+  <details class="acc" open>
+    <summary>Nota</summary>
+    <p>Una nota es una altura musical, como DO, RE o MI. La aplicación trabaja con las <strong>doce clases de altura</strong> habituales de la música occidental.</p>
+  </details>
+
+  <details class="acc">
+    <summary>Notación latina e internacional</summary>
+    <p>La misma nota puede escribirse de dos formas:</p>
+    <table>
+      <thead><tr><th>Notación latina</th><th>Notación internacional</th></tr></thead>
+      <tbody>
+        <tr><td>DO</td><td>C</td></tr>
+        <tr><td>RE</td><td>D</td></tr>
+        <tr><td>MI</td><td>E</td></tr>
+        <tr><td>FA</td><td>F</td></tr>
+        <tr><td>SOL</td><td>G</td></tr>
+        <tr><td>LA</td><td>A</td></tr>
+        <tr><td>SI</td><td>B</td></tr>
+      </tbody>
+    </table>
+    <p>En cifrado internacional, por ejemplo, <code>C</code> significa DO y <code>Am</code> significa LA menor.</p>
+  </details>
+
+  <details class="acc">
+    <summary>Sostenidos y bemoles</summary>
+    <ul>
+      <li><strong>Sostenido (♯):</strong> indica una altura un semitono más alta que la nota natural.</li>
+      <li><strong>Bemol (♭):</strong> indica una altura un semitono más baja que la nota natural.</li>
+      <li><strong>Enarmonía:</strong> dos nombres distintos que representan el mismo sonido en el sistema de afinación habitual. Por ejemplo, DO♯ y RE♭.</li>
+    </ul>
+    <p>La aplicación permite escoger cómo mostrar las alteraciones. La grafía es la forma de escribir una nota; no debe confundirse con el sonido que representa.</p>
+  </details>
+
+  <details class="acc">
+    <summary>Fundamental</summary>
+    <p>Es la nota que da nombre al acorde. En <code>Cmaj7</code>, la fundamental es C (DO).</p>
+  </details>
+
+  <details class="acc">
+    <summary>Fórmula del acorde</summary>
+    <p>La fórmula describe las funciones o intervalos que componen el acorde. Por ejemplo, una tríada mayor se representa como:</p>
+    <ul>
+      <li><code>1</code>: fundamental.</li>
+      <li><code>3</code>: tercera mayor.</li>
+      <li><code>5</code>: quinta justa.</li>
+    </ul>
+    <p>La fórmula no es una melodía ni una secuencia obligatoria de octavas. Describe las notas en relación con la fundamental.</p>
+  </details>
+
+  <details class="acc">
+    <summary>Intervalo y semitono</summary>
+    <p>Un <strong>intervalo</strong> es la distancia musical entre dos notas. Un <strong>semitono</strong> es la distancia más pequeña entre dos alturas consecutivas en el sistema de doce semitonos; un tono equivale a dos semitonos.</p>
+    <table>
+      <thead><tr><th>Intervalo</th><th>Semitonos</th></tr></thead>
+      <tbody>
+        <tr><td>Tercera mayor</td><td>4</td></tr>
+        <tr><td>Tercera menor</td><td>3</td></tr>
+        <tr><td>Quinta justa</td><td>7</td></tr>
+        <tr><td>Quinta disminuida</td><td>6</td></tr>
+        <tr><td>Quinta aumentada</td><td>8</td></tr>
+        <tr><td>Séptima menor</td><td>10</td></tr>
+        <tr><td>Séptima mayor</td><td>11</td></tr>
+      </tbody>
+    </table>
+  </details>
+
+  <details class="acc">
+    <summary>Familias de acordes</summary>
+    <p>La aplicación organiza las fórmulas en familias como mayores, menores, dominantes, aumentados, disminuidos, suspendidos y acordes sin tercera.</p>
+    <ul>
+      <li><strong>Mayor:</strong> normalmente tiene fundamental, tercera mayor y quinta justa.</li>
+      <li><strong>Menor:</strong> normalmente tiene fundamental, tercera menor y quinta justa.</li>
+      <li><strong>Dominante:</strong> en su forma básica contiene fundamental, tercera mayor, quinta justa y séptima menor.</li>
+      <li><strong>Aumentado:</strong> incluye una quinta aumentada.</li>
+      <li><strong>Disminuido:</strong> incluye una quinta disminuida; hay varias fórmulas de esta familia.</li>
+      <li><strong>Suspendido:</strong> sustituye la tercera por una segunda o una cuarta.</li>
+      <li><strong>Quinta sin tercera:</strong> no tiene tercera mayor ni menor, por lo que no se clasifica como mayor o menor de la forma habitual.</li>
+      <li><strong>Nota añadida:</strong> incorpora una nota adicional, por ejemplo, una novena.</li>
+      <li><strong>Tensión:</strong> una nota de extensión, como la novena, la oncena o la trecena, o una de sus variantes alteradas.</li>
+    </ul>
+  </details>
+
+  <details class="acc">
+    <summary>Diatónico y no diatónico</summary>
+    <p>Un acorde es <strong>diatónico</strong> en una tonalidad cuando todas sus clases de altura pertenecen a la escala de esa tonalidad. Un acorde <strong>no diatónico</strong> contiene al menos una nota ajena a esa escala.</p>
+    <p>La clasificación depende de la tonalidad seleccionada. Un mismo acorde puede ser diatónico en una tonalidad y no diatónico en otra.</p>
+  </details>
+
+  <div class="tab-nav">
+    <button id="prevTab" aria-label="Sección anterior">← Anterior</button>
+    <button id="nextTab" aria-label="Sección siguiente">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     PROCEDIMIENTO
+     ============================================================ -->
+<section id="s2" data-t="Procedimiento">
+  <h2>Procedimiento: recorrido por las pestañas de la aplicación</h2>
+  <p class="lead">La aplicación «Explorador Universal de Acordes V002» tiene nueve pestañas. Aquí tienes qué hace cada una y cómo usarla paso a paso.</p>
+
+  <div class="note"><strong>Antes de empezar:</strong> abre el archivo <code>Explorador Universal de Acordes V002.html</code> con un navegador moderno. No necesitas instalar nada, crear una cuenta ni conectarte a Internet.</div>
+
+  <h3>1 · Pestaña «Inicio»: acordes que contienen una nota</h3>
+  <p>Es la forma más sencilla de empezar. Permite investigar una nota sin conocer nombres de acordes.</p>
+  <ol>
+    <li>En la parte superior, elige la <strong>notación</strong> (Latina o Internacional).</li>
+    <li>Elige la <strong>grafía de alteraciones</strong>: sostenidos, bemoles, automática o ambas.</li>
+    <li>En la cuadrícula, pulsa una nota (por ejemplo, DO).</li>
+    <li>Lee el contador de resultados y despliega los grupos por familia.</li>
+    <li>Usa los filtros del panel «2 · Filtros»: familia, función de la nota, complejidad, tensiones, estructuras y orden.</li>
+    <li>Pulsa «Mostrar más» si hay muchos resultados y quieres ver otra tanda.</li>
+  </ol>
+  <p><strong>Importante:</strong> «Restablecer configuración» no borra favoritos; solo reinicia preferencias y estados. Para vaciar favoritos, usa la pestaña Favoritos.</p>
+
+  <h3>2 · Pestaña «Explorador»: consultar o construir un acorde</h3>
+  <p>Tienes tres formas de llegar a un acorde concreto:</p>
+  <ul>
+    <li><strong>Método A — Escribir:</strong> escribe el nombre en el campo (<code>Cmaj7</code>, <code>Am</code>, <code>Dbm7b5</code>…) y pulsa «Buscar» o Enter. Si no se reconoce, la app muestra un mensaje y sugerencias.</li>
+    <li><strong>Método B — Construir:</strong> elige la <em>fundamental</em> y el <em>tipo de acorde</em> en los selectores y pulsa «Construir».</li>
+    <li><strong>Método C — Desde otra sección:</strong> pulsa «Explorar» en cualquier tarjeta para abrir ese acorde aquí.</li>
+  </ul>
+  <p>Debajo de los detalles aparece el panel <strong>«Acordes que comparten notas»</strong>: pulsa un chip para explorar otro acorde emparentado. Compartir notas no significa tener la misma función musical.</p>
+  <p>Puedes pulsar «★ Añadir a favoritos» para guardar el acorde actual; la app evita duplicados.</p>
+
+  <h3>3 · Pestaña «Piano»: ver las notas de forma visual</h3>
+  <ul>
+    <li>El teclado muestra las doce clases de altura.</li>
+    <li>La casilla «Mostrar nombres» activa o desactiva los nombres de las teclas (activada por defecto).</li>
+    <li>Al pulsar una tecla, la app te lleva a <strong>Inicio</strong> con esa nota seleccionada.</li>
+    <li>Para cargar un acorde completo, usa «Ver en piano» desde una tarjeta o desde el Explorador.</li>
+  </ul>
+  <p>Colores de la leyenda:</p>
+  <ul>
+    <li><strong>Dorado:</strong> fundamental.</li>
+    <li><strong>Verde:</strong> tercera / segunda / sexta.</li>
+    <li><strong>Azul:</strong> quinta.</li>
+    <li><strong>Morado:</strong> séptima.</li>
+    <li><strong>Rosa:</strong> tensiones (9, 11, 13).</li>
+  </ul>
+  <div class="warn"><strong>Atención:</strong> el piano es visual. No reproduce sonido. Para oír el acorde, usa un instrumento real o un programa externo.</div>
+
+  <h3>4 · Pestaña «Por función»: búsqueda inversa</h3>
+  <p>Responde a: «Quiero encontrar acordes en los que esta nota cumpla una función determinada».</p>
+  <ol>
+    <li>Elige la <strong>nota</strong>.</li>
+    <li>Elige la <strong>función exacta</strong> (fundamental, ♭3, 3, 5, ♯5, ♭7, 7, ♭9, 9, ♯9, 11, ♯11, ♭13, 13…).</li>
+    <li>Opcionalmente, limita la <strong>familia</strong>.</li>
+    <li>Pulsa «Buscar».</li>
+    <li>Revisa las tarjetas en tandas y pulsa «Mostrar más» si aparece.</li>
+  </ol>
+  <p><strong>Ejemplo:</strong> para saber qué acordes contienen MI como tercera menor, selecciona MI, elige «Tercera menor», deja la familia en «Todas» y pulsa Buscar. La pregunta no es «¿qué acordes contienen MI?», sino «¿en qué acordes MI funciona específicamente como tercera menor?».</p>
+
+  <h3>5 · Pestaña «Tonalidad»: acordes dentro de una escala</h3>
+  <ol>
+    <li>Selecciona una <strong>tonalidad</strong> (mayor o menor natural).</li>
+    <li>Selecciona la <strong>nota a investigar</strong>.</li>
+    <li>Opcionalmente, limita la <strong>familia</strong>.</li>
+    <li>Pulsa «Analizar».</li>
+    <li>Compara los acordes <strong>diatónicos</strong> (todas sus notas pertenecen a la escala) y <strong>no diatónicos</strong> (al menos una nota fuera).</li>
+  </ol>
+  <p>La herramienta <strong>no afirma</strong> que los diatónicos sean más importantes ni que los no diatónicos estén prohibidos: la función musical depende del contexto.</p>
+
+  <h3>6 · Pestaña «Favoritos»: guardar y organizar</h3>
+  <ul>
+    <li>Pulsa «★ Favorito» en una tarjeta o «★ Añadir a favoritos» en el Explorador.</li>
+    <li>Cada ficha guarda nombre, familia, fórmula y notas, y ofrece un campo «Etiqueta personal…», un botón «Piano» y un botón «Eliminar».</li>
+    <li><strong>Exportar JSON:</strong> descarga <code>favoritos-acordes.json</code> con tu colección.</li>
+    <li><strong>Importar JSON:</strong> añade los favoritos válidos que no estén ya; los duplicados se omiten y los registros inválidos se rechazan.</li>
+    <li><strong>Vaciar favoritos:</strong> pide confirmación y elimina toda la colección local.</li>
+  </ul>
+  <div class="note"><strong>¿Dónde se guardan?</strong> En <code>localStorage</code> del navegador. No se sincronizan entre dispositivos. Exporta el JSON para conservar una copia.</div>
+
+  <h3>7 · Pestaña «Ayuda»: glosario integrado</h3>
+  <p>Contiene 18 definiciones desplegables: fundamental, intervalo, semitono y tono, tercera mayor y menor, quinta justa/disminuida/aumentada, sexta, séptima, novena/oncena/trecena, tensión, dominante, aumentado y disminuido, suspendido, nota añadida, inversión y voicing, enarmonía, diatónico/cromático, grados e intervalos, nomenclatura latina e internacional. Pulsa el título de cada una para abrirla o cerrarla.</p>
+
+  <h3>8 · Pestaña «Pruebas»: comprobar el motor musical</h3>
+  <ol>
+    <li>Abre la pestaña «Pruebas».</li>
+    <li>Pulsa «Ejecutar pruebas del motor musical».</li>
+    <li>Revisa cuántas se aprobaron y cuántas fallaron.</li>
+    <li>Lee el detalle si necesitas saber qué comprobó cada prueba.</li>
+  </ol>
+  <div class="warn"><strong>Importante:</strong> que una prueba pase no garantiza que toda la interfaz esté libre de errores. Son casos aislados del motor musical.</div>
+
+  <h3>9 · Pestaña «Créditos»</h3>
+  <p>Identifica la aplicación como <strong>Explorador Universal de Acordes — by Rubén Sbarsky · V002</strong>, indica que es una herramienta autónoma en HTML, CSS y JavaScript y resume sus usos.</p>
+
+  <div class="tab-nav">
+    <button id="prevTab" aria-label="Sección anterior">← Anterior</button>
+    <button id="nextTab" aria-label="Sección siguiente">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     PRÁCTICA
+     ============================================================ -->
+<section id="s3" data-t="Práctica">
+  <h2>Práctica: ejercicios y lista de comprobación</h2>
+  <p class="lead">Estos ejercicios te permiten recorrer todas las funciones esenciales en una sola sesión.</p>
+
+  <div class="ex">
+    <h3>Ejercicio A · Encuentra acordes que contienen DO</h3>
+    <ol>
+      <li>Abre la pestaña Inicio de la app.</li>
+      <li>Deja la notación que prefieras.</li>
+      <li>Pulsa <strong>DO</strong> o <strong>C</strong>.</li>
+      <li>Observa el contador y abre el grupo «Mayores».</li>
+      <li>Busca una tarjeta de DO mayor, lee su fórmula y sus notas.</li>
+      <li>Pulsa «Ver en piano».</li>
+    </ol>
+  </div>
+
+  <div class="ex">
+    <h3>Ejercicio B · Limita los resultados</h3>
+    <ol>
+      <li>Vuelve a Inicio y selecciona la misma nota.</li>
+      <li>En «Familia», elige «Menores».</li>
+      <li>En «Complejidad», elige «Tríadas (3 notas)».</li>
+      <li>Comprueba que la lista se reduce a los que cumplen ambos filtros.</li>
+      <li>Pulsa «Limpiar filtros».</li>
+    </ol>
+  </div>
+
+  <div class="ex">
+    <h3>Ejercicio C · Explora un acorde por nombre</h3>
+    <ol>
+      <li>Abre el Explorador.</li>
+      <li>Escribe <code>Cmaj7</code> y pulsa Buscar.</li>
+      <li>Lee las notas y las funciones.</li>
+      <li>Busca «Acordes que comparten notas» y pulsa uno.</li>
+      <li>Pulsa «★ Añadir a favoritos».</li>
+    </ol>
+  </div>
+
+  <div class="ex">
+    <h3>Ejercicio D · Construye el mismo acorde con los menús</h3>
+    <ol>
+      <li>En el Explorador, elige <strong>C</strong> como fundamental.</li>
+      <li>Selecciona la fórmula «Mayor séptima».</li>
+      <li>Pulsa «Construir».</li>
+      <li>Cambia la notación entre latina e internacional y observa los nombres.</li>
+    </ol>
+  </div>
+
+  <div class="ex">
+    <h3>Ejercicio E · Busca una función</h3>
+    <ol>
+      <li>Abre «Por función».</li>
+      <li>Elige <strong>MI</strong> como nota.</li>
+      <li>Selecciona «Tercera menor».</li>
+      <li>Deja la familia en «Todas» y pulsa Buscar.</li>
+      <li>Abre una tarjeta y lee por qué MI cumple esa función.</li>
+    </ol>
+  </div>
+
+  <div class="ex">
+    <h3>Ejercicio F · Investiga una tonalidad</h3>
+    <ol>
+      <li>Abre «Tonalidad».</li>
+      <li>Elige <strong>FA mayor</strong>.</li>
+      <li>Selecciona <strong>SI♭</strong> como nota.</li>
+      <li>Deja la familia en «Todas» y pulsa Analizar.</li>
+      <li>Compara los contadores diatónico y no diatónico y abre tarjetas de ambos grupos.</li>
+    </ol>
+  </div>
+
+  <div class="ex">
+    <h3>Ejercicio G · Organiza tu colección</h3>
+    <ol>
+      <li>En una tarjeta, pulsa «★ Favorito».</li>
+      <li>Abre Favoritos, escribe una etiqueta personal.</li>
+      <li>Pulsa «Piano» para cargarlo.</li>
+      <li>Regresa a Favoritos y pulsa «Exportar JSON».</li>
+    </ol>
+    <div class="warn"><strong>No pulses «Vaciar favoritos»</strong> salvo que quieras borrar la colección.</div>
+  </div>
+
+  <div class="ex">
+    <h3>Ejercicio H · Consulta el glosario y las pruebas</h3>
+    <ol>
+      <li>Abre Ayuda y despliega «Enarmonía».</li>
+      <li>Regresa al Explorador y compara una grafía con sostenido y otra con bemol.</li>
+      <li>Abre Pruebas y ejecuta la batería interna.</li>
+      <li>Lee el resumen.</li>
+    </ol>
+  </div>
+
+  <h2>Lista de comprobación final</h2>
+  <p>Antes de dar por terminado tu primer recorrido, marca las tareas que ya sabes hacer. Tu progreso se guarda automáticamente.</p>
+  <ul class="checklist">
+    <li><input type="checkbox" id="ck1" data-ck="ck1"><label for="ck1">Abrir la aplicación desde un archivo HTML.</label></li>
+    <li><input type="checkbox" id="ck2" data-ck="ck2"><label for="ck2">Cambiar entre notación latina e internacional.</label></li>
+    <li><input type="checkbox" id="ck3" data-ck="ck3"><label for="ck3">Cambiar la preferencia de sostenidos y bemoles.</label></li>
+    <li><input type="checkbox" id="ck4" data-ck="ck4"><label for="ck4">Seleccionar una nota en Inicio.</label></li>
+    <li><input type="checkbox" id="ck5" data-ck="ck5"><label for="ck5">Leer una tarjeta de acorde.</label></li>
+    <li><input type="checkbox" id="ck6" data-ck="ck6"><label for="ck6">Abrir y plegar grupos de familias.</label></li>
+    <li><input type="checkbox" id="ck7" data-ck="ck7"><label for="ck7">Usar los filtros de familia, función, complejidad, tensiones y estructuras.</label></li>
+    <li><input type="checkbox" id="ck8" data-ck="ck8"><label for="ck8">Cambiar el orden de los resultados.</label></li>
+    <li><input type="checkbox" id="ck9" data-ck="ck9"><label for="ck9">Limpiar los filtros.</label></li>
+    <li><input type="checkbox" id="ck10" data-ck="ck10"><label for="ck10">Buscar un acorde por nombre.</label></li>
+    <li><input type="checkbox" id="ck11" data-ck="ck11"><label for="ck11">Construir un acorde con los selectores.</label></li>
+    <li><input type="checkbox" id="ck12" data-ck="ck12"><label for="ck12">Consultar acordes que comparten notas.</label></li>
+    <li><input type="checkbox" id="ck13" data-ck="ck13"><label for="ck13">Ver un acorde en el piano interactivo.</label></li>
+    <li><input type="checkbox" id="ck14" data-ck="ck14"><label for="ck14">Buscar por función armónica.</label></li>
+    <li><input type="checkbox" id="ck15" data-ck="ck15"><label for="ck15">Analizar una tonalidad.</label></li>
+    <li><input type="checkbox" id="ck16" data-ck="ck16"><label for="ck16">Añadir, etiquetar y eliminar favoritos.</label></li>
+    <li><input type="checkbox" id="ck17" data-ck="ck17"><label for="ck17">Exportar e importar favoritos en JSON.</label></li>
+    <li><input type="checkbox" id="ck18" data-ck="ck18"><label for="ck18">Consultar el glosario.</label></li>
+    <li><input type="checkbox" id="ck19" data-ck="ck19"><label for="ck19">Ejecutar las pruebas internas.</label></li>
+    <li><input type="checkbox" id="ck20" data-ck="ck20"><label for="ck20">Entender que la aplicación muestra notas y relaciones, pero no reproduce sonido.</label></li>
+  </ul>
+
+  <div class="tab-nav">
+    <button id="prevTab" aria-label="Sección anterior">← Anterior</button>
+    <button id="nextTab" aria-label="Sección siguiente">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     33 PREGUNTAS (Q&A)
+     ============================================================ -->
+<section id="s4" data-t="33 Preguntas (Q&amp;A)">
+  <h2>33 Preguntas y respuestas</h2>
+  <p class="lead">Ordenadas por dificultad creciente. Úsalas como repaso después de seguir el tutorial.</p>
+
+  <div class="qa-group">
+    <h3>Nivel 1 · Principiante absoluto (1–11)</h3>
+
+    <div class="qa"><p class="qa-q">1. ¿Qué es el Explorador Universal de Acordes?</p><p class="qa-a">Es una aplicación para consultar acordes, ver las notas que los forman, investigar la función de una nota, explorar tonalidades, visualizar acordes en un teclado y guardar favoritos.</p></div>
+    <div class="qa"><p class="qa-q">2. ¿Tengo que saber teoría musical para empezar?</p><p class="qa-a">No. Puedes comenzar seleccionando una nota en Inicio y leyendo las tarjetas. El glosario de Ayuda explica los términos cuando los necesites.</p></div>
+    <div class="qa"><p class="qa-q">3. ¿Necesito instalar un programa?</p><p class="qa-a">No para utilizar la aplicación. Guarda el archivo HTML y ábrelo en un navegador moderno.</p></div>
+    <div class="qa"><p class="qa-q">4. ¿Qué diferencia hay entre DO y C?</p><p class="qa-a">Son dos nombres para la misma nota: DO es la notación latina y C la internacional. La aplicación permite elegir cuál mostrar.</p></div>
+    <div class="qa"><p class="qa-q">5. ¿Cómo veo los acordes que contienen una nota?</p><p class="qa-a">Abre Inicio y pulsa una nota de la cuadrícula. La aplicación muestra los acordes del catálogo que contienen esa clase de altura.</p></div>
+    <div class="qa"><p class="qa-q">6. ¿Qué es la fundamental de un acorde?</p><p class="qa-a">Es la nota que da nombre al acorde. En <code>Cmaj7</code>, la fundamental es C, es decir, DO.</p></div>
+    <div class="qa"><p class="qa-q">7. ¿Qué información muestra una tarjeta?</p><p class="qa-a">Muestra el nombre del acorde, su familia, fundamental, fórmula, número de notas distintas, notas con sus funciones, descripción y botones para explorarlo, verlo en el piano o guardarlo.</p></div>
+    <div class="qa"><p class="qa-q">8. ¿Cómo consulto un acorde cuyo nombre ya conozco?</p><p class="qa-a">Abre Explorador, escribe su nombre en el campo de texto y pulsa Buscar. También puedes pulsar Enter en ese campo.</p></div>
+    <div class="qa"><p class="qa-q">9. ¿Qué ocurre si escribo un acorde incorrecto?</p><p class="qa-a">La aplicación muestra un mensaje explicando que no reconoce la entrada o el sufijo. Cuando puede, ofrece sugerencias de sufijos parecidos.</p></div>
+    <div class="qa"><p class="qa-q">10. ¿El piano interactivo reproduce sonido?</p><p class="qa-a">No. Es una visualización de las teclas. Permite seleccionar notas y resaltar las que pertenecen a un acorde, pero no reproduce audio.</p></div>
+    <div class="qa"><p class="qa-q">11. ¿Cómo guardo un acorde para consultarlo más tarde?</p><p class="qa-a">Pulsa «★ Favorito» en una tarjeta o «★ Añadir a favoritos» en el Explorador. Después lo encontrarás en la pestaña Favoritos.</p></div>
+  </div>
+
+  <div class="qa-group">
+    <h3>Nivel 2 · Uso cotidiano (12–22)</h3>
+
+    <div class="qa"><p class="qa-q">12. ¿Para qué sirve la opción «Grafía de alteraciones»?</p><p class="qa-a">Permite preferir sostenidos, preferir bemoles, utilizar una selección automática o mostrar ambas grafías enarmónicas cuando corresponde.</p></div>
+    <div class="qa"><p class="qa-q">13. ¿Qué diferencia hay entre «Limpiar filtros» y «Restablecer configuración»?</p><p class="qa-a">Limpiar filtros restablece los filtros y el orden de Inicio. Restablecer configuración también devuelve otras preferencias y estados a sus valores iniciales. No es el botón para vaciar los favoritos.</p></div>
+    <div class="qa"><p class="qa-q">14. ¿Cómo encuentro solo acordes menores?</p><p class="qa-a">En Inicio, selecciona una nota y cambia el filtro Familia a «Menores». Si quieres, combina ese filtro con complejidad o tensiones.</p></div>
+    <div class="qa"><p class="qa-q">15. ¿Qué significa «Complejidad»?</p><p class="qa-a">En esta aplicación, se refiere al número de clases de altura distintas del acorde: tríadas, cuatro notas, cinco, seis o siete y más. No mide la dificultad técnica para tocarlo.</p></div>
+    <div class="qa"><p class="qa-q">16. ¿Qué es una tensión?</p><p class="qa-a">Es una extensión del acorde, como una novena, oncena o trecena, o una variante alterada de una de ellas. El filtro Tensiones ayuda a encontrar acordes con estas extensiones.</p></div>
+    <div class="qa"><p class="qa-q">17. ¿Qué diferencia hay entre Inicio y Por función?</p><p class="qa-a">Inicio encuentra acordes que contienen una nota. Por función encuentra acordes en los que una nota cumple una función específica, por ejemplo, tercera menor, séptima mayor o novena bemol.</p></div>
+    <div class="qa"><p class="qa-q">18. ¿Cómo veo un acorde en el teclado?</p><p class="qa-a">Pulsa «Ver en piano» en una tarjeta o en la ficha del Explorador. La app abrirá la pestaña Piano y resaltará las clases de altura del acorde.</p></div>
+    <div class="qa"><p class="qa-q">19. ¿Qué hace «Mostrar más»?</p><p class="qa-a">Añade otra tanda de tarjetas a los resultados. No reemplaza la tanda anterior ni significa que las tarjetas restantes no existan.</p></div>
+    <div class="qa"><p class="qa-q">20. ¿Cómo busco una nota como tercera menor?</p><p class="qa-a">Abre Por función, elige la nota, selecciona «Tercera menor», escoge opcionalmente una familia y pulsa Buscar.</p></div>
+    <div class="qa"><p class="qa-q">21. ¿Qué muestra el análisis por tonalidad?</p><p class="qa-a">Muestra las notas de la escala seleccionada y divide los acordes que contienen la nota investigada en diatónicos y no diatónicos.</p></div>
+    <div class="qa"><p class="qa-q">22. ¿Cómo organizo mis favoritos?</p><p class="qa-a">En Favoritos, escribe una etiqueta personal en el campo de cada acorde. También puedes abrirlo en el piano, eliminarlo o exportar la colección a JSON.</p></div>
+  </div>
+
+  <div class="qa-group">
+    <h3>Nivel 3 · Intermedio (23–29)</h3>
+
+    <div class="qa"><p class="qa-q">23. ¿Qué significa que un acorde sea diatónico?</p><p class="qa-a">Significa que todas sus clases de altura pertenecen a la escala de la tonalidad seleccionada. Si contiene alguna clase de altura ajena a esa escala, la aplicación lo clasifica como no diatónico.</p></div>
+    <div class="qa"><p class="qa-q">24. ¿Un acorde no diatónico es incorrecto?</p><p class="qa-a">No. «No diatónico» solo describe su relación con la escala elegida. Puede utilizarse con intención musical; la aplicación no lo declara incorrecto.</p></div>
+    <div class="qa"><p class="qa-q">25. ¿Qué diferencia hay entre una tercera menor y una tercera mayor?</p><p class="qa-a">La tercera menor tiene tres semitonos y la tercera mayor cuatro. Por eso el buscador Por función ofrece opciones separadas para ♭3 y 3.</p></div>
+    <div class="qa"><p class="qa-q">26. ¿Por qué dos acordes diferentes pueden compartir notas?</p><p class="qa-a">Porque distintas fórmulas pueden utilizar algunas de las mismas clases de altura. La sección «Acordes que comparten notas» facilita encontrar estas relaciones, pero compartir notas no hace que los acordes sean idénticos.</p></div>
+    <div class="qa"><p class="qa-q">27. ¿La aplicación me dice cómo colocar los dedos o qué inversión tocar?</p><p class="qa-a">No. Presenta las clases de altura y sus funciones, y las resalta en un teclado. No prescribe una digitación, inversión o voicing específico.</p></div>
+    <div class="qa"><p class="qa-q">28. ¿Qué hace la importación de favoritos?</p><p class="qa-a">Lee un archivo JSON, valida los registros y añade los favoritos válidos que todavía no están guardados. Los duplicados no se añaden y los registros inválidos pueden ser rechazados con un resumen.</p></div>
+    <div class="qa"><p class="qa-q">29. ¿Qué ocurre con mis favoritos si cambio de navegador o dispositivo?</p><p class="qa-a">No se sincronizan automáticamente. Están guardados en el almacenamiento local del navegador. Exporta un archivo JSON en un dispositivo y luego impórtalo en el otro para transferirlos.</p></div>
+  </div>
+
+  <div class="qa-group">
+    <h3>Nivel 4 · Avanzado y comprensión crítica (30–33)</h3>
+
+    <div class="qa"><p class="qa-q">30. ¿Por qué una misma nota puede tener distintos nombres enarmónicos?</p><p class="qa-a">Porque el sistema musical utiliza grafías diferentes para una misma altura sonora, como DO♯ y RE♭. La grafía adecuada depende del contexto armónico y tonal. La aplicación permite elegir una preferencia visual, pero los nombres no son intercambiables sin considerar el contexto musical.</p></div>
+    <div class="qa"><p class="qa-q">31. ¿Qué diferencia hay entre la función de una nota dentro de un acorde y el grado de una escala?</p><p class="qa-a">La función del acorde se mide respecto a la fundamental del acorde; el grado de escala se mide respecto a la tónica de la tonalidad. Una misma nota puede tener una función en el acorde y un grado distinto dentro de la escala.</p></div>
+    <div class="qa"><p class="qa-q">32. ¿Qué garantiza que las pruebas internas pasen?</p><p class="qa-a">Garantiza únicamente que los casos incluidos en la batería interna dieron el resultado esperado en esa ejecución. No demuestra que todas las combinaciones, navegadores o interacciones posibles estén libres de errores.</p></div>
+    <div class="qa"><p class="qa-q">33. ¿Cuál es una forma eficaz de usar la app para estudiar armonía de verdad?</p><p class="qa-a">Formula una pregunta concreta, encuentra los acordes, abre sus detalles, compara sus notas y funciones, escucha o toca los resultados en un instrumento externo, y guarda los acordes interesantes con una etiqueta personal. Usa Inicio para descubrir, Explorador para analizar, Por función para investigar una función específica y Tonalidad para estudiar el contexto de una escala.</p></div>
+  </div>
+
+  <div class="tab-nav">
+    <button id="prevTab" aria-label="Sección anterior">← Anterior</button>
+    <button id="nextTab" aria-label="Sección siguiente">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     ERRORES
+     ============================================================ -->
+<section id="s5" data-t="Errores y solución de problemas">
+  <h2>Errores y solución de problemas</h2>
+  <p class="lead">Problemas habituales y cómo resolverlos.</p>
+
+  <details class="acc" open>
+    <summary>«No aparece ningún acorde»</summary>
+    <ul>
+      <li>Comprueba que has seleccionado una nota en Inicio.</li>
+      <li>Revisa si has combinado demasiados filtros.</li>
+      <li>Pulsa «Limpiar filtros».</li>
+      <li>En «Por función» o «Tonalidad», confirma que has pulsado «Buscar» o «Analizar» después de elegir las opciones.</li>
+    </ul>
+  </details>
+
+  <details class="acc">
+    <summary>«No encuentro todas las tarjetas»</summary>
+    <ul>
+      <li>Revisa si hay grupos plegados en Inicio.</li>
+      <li>En búsquedas progresivas, pulsa «Mostrar más».</li>
+      <li>Comprueba el contador para conocer el número total de coincidencias.</li>
+    </ul>
+  </details>
+
+  <details class="acc">
+    <summary>«El nombre de acorde no se reconoce»</summary>
+    <ul>
+      <li>Revisa la fundamental y el sufijo.</li>
+      <li>Prueba un alias habitual incluido en la aplicación, como <code>Cmaj7</code>, <code>Cm</code>, <code>G7</code>, <code>F#dim7</code> o <code>Cø7</code>.</li>
+      <li>Lee las sugerencias del mensaje de error.</li>
+      <li>Ten presente que el parser no reconoce necesariamente todos los símbolos usados por todos los músicos.</li>
+    </ul>
+  </details>
+
+  <details class="acc">
+    <summary>«Quiero cambiar DO por C»</summary>
+    <p>Abre Inicio y cambia «Notación» entre «Latina» e «Internacional». Es una preferencia de visualización.</p>
+  </details>
+
+  <details class="acc">
+    <summary>«Quiero ver sostenidos y bemoles»</summary>
+    <p>En Inicio, cambia «Grafía de alteraciones» a «Mostrar ambas grafías (enarmónicas)».</p>
+  </details>
+
+  <details class="acc">
+    <summary>«Pulsé una tecla del piano y desapareció el teclado»</summary>
+    <p>Al pulsar una tecla, la aplicación te lleva a Inicio para mostrar los acordes que contienen esa nota. Es el comportamiento previsto. Para cargar un acorde completo, usa «Ver en piano» desde una tarjeta o desde el Explorador.</p>
+  </details>
+
+  <details class="acc">
+    <summary>«No escucho ningún sonido»</summary>
+    <p>El piano de la app es visual y no reproduce audio. Usa un instrumento real o un programa musical para escuchar las notas.</p>
+  </details>
+
+  <details class="acc">
+    <summary>«Mis favoritos no aparecen en otro dispositivo»</summary>
+    <p>Los favoritos se guardan en el almacenamiento local del navegador, no en una cuenta sincronizada. Exporta el archivo JSON en el dispositivo de origen e impórtalo en el otro.</p>
+  </details>
+
+  <details class="acc">
+    <summary>«La importación informa de registros rechazados»</summary>
+    <p>El archivo puede incluir elementos incompletos o identificadores de fórmula que esta versión no reconoce. Usa un archivo exportado por la propia aplicación y revisa el mensaje de importación.</p>
+  </details>
+
+  <details class="acc">
+    <summary>«Las pruebas pasan, ¿significa que todo es infalible?»</summary>
+    <p>No. Las pruebas indican que los casos incluidos en la batería han dado el resultado esperado. No prueban todas las combinaciones posibles ni sustituyen una revisión completa de la interfaz.</p>
+  </details>
+
+  <h2>Consejos para obtener mejores resultados</h2>
+  <ul class="checklist">
+    <li><span style="flex:1"><strong>Empieza con una pregunta concreta.</strong> Decide qué quieres averiguar antes de tocar todos los controles.</span></li>
+    <li><span style="flex:1"><strong>Cambia un filtro cada vez.</strong> Si aplicas cinco a la vez y no aparece nada, no sabrás cuál fue demasiado restrictivo.</span></li>
+    <li><span style="flex:1"><strong>Distingue una nota de su función.</strong> Una nota puede aparecer en muchos acordes y desempeñar funciones distintas.</span></li>
+    <li><span style="flex:1"><strong>No confundas las notas con la disposición del acorde.</strong> La app indica clases de altura, no digitación, inversión ni voicing.</span></li>
+    <li><span style="flex:1"><strong>Usa la búsqueda progresiva.</strong> «Mostrar más» permite explorar por tandas.</span></li>
+    <li><span style="flex:1"><strong>Exporta antes de cambios importantes.</strong> Mantén una copia JSON si has construido una colección valiosa.</span></li>
+  </ul>
+
+  <div class="tab-nav">
+    <button id="prevTab" aria-label="Sección anterior">← Anterior</button>
+    <button id="nextTab" aria-label="Sección siguiente">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     RESUMEN
+     ============================================================ -->
+<section id="s6" data-t="Resumen">
+  <h2>Resumen</h2>
+  <p class="lead">El Explorador Universal de Acordes es una herramienta de consulta y estudio que presenta nombres, fórmulas, notas y relaciones armónicas. No sustituye la escucha, la práctica instrumental ni el estudio musical.</p>
+
+  <div class="card">
+    <h3>Ideas clave</h3>
+    <ul>
+      <li>La app tiene <strong>nueve pestañas</strong>: Inicio, Explorador, Piano, Por función, Tonalidad, Favoritos, Ayuda, Pruebas y Créditos.</li>
+      <li><strong>Inicio</strong> busca acordes que contienen una nota; <strong>Por función</strong> busca acordes donde una nota cumple una función exacta.</li>
+      <li><strong>Explorador</strong> permite escribir un acorde o construirlo con selectores; muestra notas y funciones.</li>
+      <li><strong>Piano</strong> es una visualización, no reproduce sonido.</li>
+      <li><strong>Tonalidad</strong> clasifica acordes en diatónicos y no diatónicos según la escala elegida.</li>
+      <li><strong>Favoritos</strong> se guardan en <code>localStorage</code> y se pueden exportar e importar en JSON.</li>
+      <li>El <strong>parser</strong> no reconoce necesariamente todos los símbolos usados por todos los músicos.</li>
+      <li>Las <strong>pruebas internas</strong> validan casos aislados del motor musical, no todas las combinaciones posibles.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Qué necesitas recordar para empezar</h3>
+    <ol>
+      <li>Elige notación y grafía de alteraciones en Inicio.</li>
+      <li>Pulsa una nota para descubrir acordes que la contienen.</li>
+      <li>Usa filtros de familia, función, complejidad y tensiones.</li>
+      <li>Pulsa «Explorar» para ver los detalles de un acorde.</li>
+      <li>Pulsa «Ver en piano» para visualizar sus notas.</li>
+      <li>Guarda los acordes interesantes con «★ Favorito».</li>
+      <li>Exporta el JSON periódicamente como copia de seguridad.</li>
+    </ol>
+  </div>
+
+  <div class="note"><strong>Nota final:</strong> la aplicación determina y presenta resultados a partir de su catálogo de fórmulas. La interpretación musical final depende del contexto, la progresión, la melodía y la forma de tocar el acorde.</div>
+
+  <div class="tab-nav">
+    <button id="prevTab" aria-label="Sección anterior">← Anterior</button>
+    <button id="nextTab" aria-label="Sección siguiente">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     FUENTES
+     ============================================================ -->
+<section id="s7" data-t="Fuentes">
+  <h2>Fuentes</h2>
+
+  <div class="card">
+    <h3>Documento de origen</h3>
+    <p>Este tutorial se basa íntegramente en el siguiente documento:</p>
+    <p style="padding-left:1em;border-left:3px solid var(--accent)"><strong>Tutorial_Explorador_Universal_de_Acordes_by_Ruben_Sbarsky.md</strong><br>
+    «Explorador Universal de Acordes — Tutorial completo para principiantes: cómo usar todas las funciones — by Rubén Sbarsky», versión de la aplicación explicada: <strong>V002</strong>.</p>
+    <p>El contenido se ha reorganizado en pestañas, se ha adaptado al formato interactivo y se ha completado con listas de comprobación persistente, un índice lateral y un SVG animado. No se han añadido datos, funciones ni procedimientos que no figuren en el documento de origen.</p>
+  </div>
+
+  <div class="card">
+    <h3>Alcance y verificación</h3>
+    <ul>
+      <li>El documento de origen describe la aplicación «Explorador Universal de Acordes V002» y no incluye el archivo HTML de la app. Este tutorial explica su uso, pero <strong>no es la aplicación en sí misma</strong>.</li>
+      <li>Las funciones interactivas descritas (búsqueda, filtros, exportación, pruebas, etc.) corresponden a lo que el documento indica que hace la aplicación. No se ha ejecutado la app desde este tutorial porque no se ha distribuido con el material de origen.</li>
+      <li>El SVG animado es original y no reproduce ningún recurso gráfico del documento de origen.</li>
+      <li>La fecha y hora de creación son fijas y figuran en Créditos: <strong>28/10/2026 — 17:15:05</strong>.</li>
+      <li>El número de versión de este tutorial es <strong>V001</strong> y coincide con el nombre del archivo.</li>
+    </ul>
+  </div>
+
+  <div class="tab-nav">
+    <button id="prevTab" aria-label="Sección anterior">← Anterior</button>
+    <button id="nextTab" aria-label="Sección siguiente">Siguiente →</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     CRÉDITOS
+     ============================================================ -->
+<section id="s8" data-t="Créditos">
+  <h2>Créditos</h2>
+
+  <div class="hero-svg" id="svgCredits" role="img" aria-labelledby="ttlCredits">
+    <!-- montado por JS -->
+  </div>
+
+  <p class="lead" style="text-align:center;max-width:560px;margin:14px auto 24px">
+    Ilustración animada del Explorador Universal de Acordes: doce clases de altura girando alrededor de un acorde luminoso, con ondas sonoras, notas flotantes y un teclado de piano que se ilumina en secuencia.
+  </p>
+
+  <div class="card" style="text-align:center">
+    <p style="margin:0 0 6px;color:var(--muted);font-size:.82rem;letter-spacing:.16em;text-transform:uppercase">Tutorial creado por</p>
+    <p style="font-size:2rem;font-weight:800;margin:0 0 6px;color:var(--accent);letter-spacing:-.02em">Rubén Sbarsky</p>
+    <p style="margin:0 0 18px;color:var(--muted)">Autor del tutorial</p>
+    <p style="margin:0;color:var(--text);max-width:520px;margin-left:auto;margin-right:auto">
+      Este tutorial interactivo explica el uso de la aplicación <strong>Explorador Universal de Acordes V002</strong>. El contenido se ha construido a partir del documento de origen y se ha enriquecido con un índice lateral, listas de comprobación persistentes y un SVG animado.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Información de versión</h3>
+    <table>
+      <tbody>
+        <tr><th>Tutorial</th><td>Explorador Universal de Acordes — Tutorial V001</td></tr>
+        <tr><th>Autor</th><td>Rubén Sbarsky</td></tr>
+        <tr><th>Versión del tutorial</th><td><strong>V001</strong></td></tr>
+        <tr><th>Fecha y hora de creación</th><td><strong>28/10/2026 — 17:15:05</strong></td></tr>
+        <tr><th>Fuente</th><td>Documento del tutorial de la app V002</td></tr>
+        <tr><th>Formato</th><td>HTML autónomo, sin dependencias externas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tab-nav">
+    <button id="prevTab" aria-label="Sección anterior">← Anterior</button>
+    <button id="nextTab" aria-label="Sección siguiente">Siguiente →</button>
+  </div>
+</section>
+
+</main>
+
+<button id="top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+<script>
+(function(){
+  'use strict';
+
+  /* =========================================================
+     1. PLANTILLA SVG COMPARTIDA (INICIO + CRÉDITOS)
+     ========================================================= */
+  const SVG_TEMPLATE = `
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ttl-__U__ desc-__U__" preserveAspectRatio="xMidYMid meet">
+  <title id="ttl-__U__">Explorador Universal de Acordes — ilustración animada</title>
+  <desc id="desc-__U__">Doce clases de altura giran alrededor de un acorde luminoso, con ondas sonoras expandiéndose, notas musicales flotantes y un teclado de piano que se ilumina en secuencia.</desc>
+  <defs>
+    <radialGradient id="bgGrad-__U__" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#122a52"/>
+      <stop offset="55%" stop-color="#0a1830"/>
+      <stop offset="100%" stop-color="#05080f"/>
+    </radialGradient>
+    <linearGradient id="ringGrad-__U__" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <radialGradient id="coreGrad-__U__" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff5cc"/>
+      <stop offset="45%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#92400e" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="keyWhite-__U__" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f1f8ff"/>
+      <stop offset="100%" stop-color="#a6c4de"/>
+    </linearGradient>
+    <linearGradient id="keyBlack-__U__" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#233252"/>
+      <stop offset="100%" stop-color="#080f1c"/>
+    </linearGradient>
+    <filter id="glow-__U__" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow-__U__" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+  </defs>
+  <rect width="400" height="500" fill="url(#bgGrad-__U__)"/>
+
+  <g fill="#38bdf8">
+    <circle cx="30" cy="60" r="1.4" class="a-twinkle"/>
+    <circle cx="370" cy="90" r="1.8" class="a-twinkle" style="animation-delay:.7s"/>
+    <circle cx="50" cy="430" r="1.2" class="a-twinkle" style="animation-delay:1.4s"/>
+    <circle cx="355" cy="410" r="1.6" class="a-twinkle" style="animation-delay:2.1s"/>
+    <circle cx="30" cy="240" r="1.5" class="a-twinkle" style="animation-delay:.9s"/>
+    <circle cx="375" cy="280" r="1.3" class="a-twinkle" style="animation-delay:1.8s"/>
+    <circle cx="200" cy="30" r="1.6" class="a-twinkle" style="animation-delay:.4s"/>
+    <circle cx="90" cy="150" r="1.2" class="a-twinkle" style="animation-delay:2.6s"/>
+    <circle cx="320" cy="180" r="1.5" class="a-twinkle" style="animation-delay:3.2s"/>
+    <circle cx="200" cy="470" r="1.4" class="a-twinkle" style="animation-delay:1.1s"/>
+  </g>
+
+  <g transform="translate(200,210)">
+    <circle r="175" fill="none" stroke="#1e3a5f" stroke-width="0.6" opacity="0.5"/>
+    <g class="a-spin-slow">
+      <g fill="#7dd3fc">
+        <circle cx="0" cy="-175" r="3.2"/>
+        <circle cx="87.5" cy="-151.55" r="3.2" opacity="0.9"/>
+        <circle cx="151.55" cy="-87.5" r="3.2" opacity="0.8"/>
+        <circle cx="175" cy="0" r="3.2" opacity="0.7"/>
+        <circle cx="151.55" cy="87.5" r="3.2" opacity="0.6"/>
+        <circle cx="87.5" cy="151.55" r="3.2" opacity="0.6"/>
+        <circle cx="0" cy="175" r="3.2" opacity="0.6"/>
+        <circle cx="-87.5" cy="151.55" r="3.2" opacity="0.6"/>
+        <circle cx="-151.55" cy="87.5" r="3.2" opacity="0.7"/>
+        <circle cx="-175" cy="0" r="3.2" opacity="0.8"/>
+        <circle cx="-151.55" cy="-87.5" r="3.2" opacity="0.9"/>
+        <circle cx="-87.5" cy="-151.55" r="3.2"/>
+      </g>
+    </g>
+  </g>
+
+  <g transform="translate(200,210)">
+    <g class="a-spin-medium">
+      <circle r="138" fill="none" stroke="url(#ringGrad-__U__)" stroke-width="1" stroke-dasharray="3 9" opacity="0.7"/>
+    </g>
+  </g>
+
+  <g transform="translate(200,210)">
+    <circle r="160" fill="none" stroke="#38bdf8" stroke-width="1.4" class="a-wave" style="animation-delay:0s"/>
+    <circle r="160" fill="none" stroke="#38bdf8" stroke-width="1.4" class="a-wave" style="animation-delay:1.5s"/>
+    <circle r="160" fill="none" stroke="#38bdf8" stroke-width="1.4" class="a-wave" style="animation-delay:3s"/>
+  </g>
+
+  <g transform="translate(200,210)">
+    <polygon points="0,-110 95.3,55 -95.3,55" fill="rgba(56,189,248,0.06)" stroke="#38bdf8" stroke-width="2" stroke-linejoin="round" filter="url(#glow-__U__)" class="a-pulse-soft"/>
+    <circle cx="0" cy="-110" r="6.5" fill="#fff5cc" filter="url(#glow-__U__)"/>
+    <circle cx="95.3" cy="55" r="6.5" fill="#fff5cc" filter="url(#glow-__U__)"/>
+    <circle cx="-95.3" cy="55" r="6.5" fill="#fff5cc" filter="url(#glow-__U__)"/>
+    <text x="0" y="-120" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="700" font-family="system-ui,sans-serif">1</text>
+    <text x="108" y="63" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="700" font-family="system-ui,sans-serif">3</text>
+    <text x="-108" y="63" text-anchor="middle" font-size="11" fill="#fbbf24" font-weight="700" font-family="system-ui,sans-serif">5</text>
+  </g>
+
+  <g transform="translate(200,210)">
+    <circle r="58" fill="url(#coreGrad-__U__)" opacity="0.35" filter="url(#softGlow-__U__)" class="a-core-breathe"/>
+    <circle r="32" fill="url(#coreGrad-__U__)"/>
+    <circle r="24" fill="#fde68a" opacity="0.92"/>
+    <text y="8" text-anchor="middle" font-family="Georgia,serif" font-size="26" font-weight="700" fill="#3b2001">C</text>
+  </g>
+
+  <g font-family="Georgia,serif" fill="#7dd3fc" font-size="26" aria-hidden="true">
+    <text x="42" y="150" class="a-note-rise" style="animation-delay:0s">♪</text>
+    <text x="335" y="130" class="a-note-rise" style="animation-delay:1.6s">♫</text>
+    <text x="345" y="310" class="a-note-rise" style="animation-delay:2.8s">♪</text>
+    <text x="48" y="300" class="a-note-rise" style="animation-delay:4.1s">♫</text>
+    <text x="200" y="90" class="a-note-rise" style="animation-delay:5.2s">♪</text>
+  </g>
+
+  <g transform="translate(42,415)">
+    <g>
+      <rect x="0" y="0" width="44" height="60" rx="3" fill="url(#keyWhite-__U__)" stroke="#0a1830" stroke-width="0.6"/>
+      <rect x="0" y="0" width="44" height="60" rx="3" fill="#fbbf24" class="a-key" style="animation-delay:0s"/>
+    </g>
+    <g>
+      <rect x="45" y="0" width="44" height="60" rx="3" fill="url(#keyWhite-__U__)" stroke="#0a1830" stroke-width="0.6"/>
+      <rect x="45" y="0" width="44" height="60" rx="3" fill="#fbbf24" class="a-key" style="animation-delay:.25s"/>
+    </g>
+    <g>
+      <rect x="90" y="0" width="44" height="60" rx="3" fill="url(#keyWhite-__U__)" stroke="#0a1830" stroke-width="0.6"/>
+      <rect x="90" y="0" width="44" height="60" rx="3" fill="#fbbf24" class="a-key" style="animation-delay:.5s"/>
+    </g>
+    <g>
+      <rect x="135" y="0" width="44" height="60" rx="3" fill="url(#keyWhite-__U__)" stroke="#0a1830" stroke-width="0.6"/>
+      <rect x="135" y="0" width="44" height="60" rx="3" fill="#fbbf24" class="a-key" style="animation-delay:.75s"/>
+    </g>
+    <g>
+      <rect x="180" y="0" width="44" height="60" rx="3" fill="url(#keyWhite-__U__)" stroke="#0a1830" stroke-width="0.6"/>
+      <rect x="180" y="0" width="44" height="60" rx="3" fill="#fbbf24" class="a-key" style="animation-delay:1s"/>
+    </g>
+    <g>
+      <rect x="225" y="0" width="44" height="60" rx="3" fill="url(#keyWhite-__U__)" stroke="#0a1830" stroke-width="0.6"/>
+      <rect x="225" y="0" width="44" height="60" rx="3" fill="#fbbf24" class="a-key" style="animation-delay:1.25s"/>
+    </g>
+    <g>
+      <rect x="270" y="0" width="44" height="60" rx="3" fill="url(#keyWhite-__U__)" stroke="#0a1830" stroke-width="0.6"/>
+      <rect x="270" y="0" width="44" height="60" rx="3" fill="#fbbf24" class="a-key" style="animation-delay:1.5s"/>
+    </g>
+    <g>
+      <rect x="31" y="0" width="28" height="36" rx="2" fill="url(#keyBlack-__U__)"/>
+      <rect x="76" y="0" width="28" height="36" rx="2" fill="url(#keyBlack-__U__)"/>
+      <rect x="166" y="0" width="28" height="36" rx="2" fill="url(#keyBlack-__U__)"/>
+      <rect x="211" y="0" width="28" height="36" rx="2" fill="url(#keyBlack-__U__)"/>
+      <rect x="256" y="0" width="28" height="36" rx="2" fill="url(#keyBlack-__U__)"/>
+    </g>
+  </g>
+</svg>`;
+
+  /* =========================================================
+     2. UTILIDADES
+     ========================================================= */
+  function renderHero(container, prefix){
+    if(!container) return;
+    const uid = prefix + '-' + Math.random().toString(36).slice(2, 8);
+    container.innerHTML = SVG_TEMPLATE.split('__U__').join(uid);
+  }
+
+  function mountAllHeroes(){
+    document.querySelectorAll('.hero-svg').forEach(function(el){
+      if(!el.firstElementChild) renderHero(el, 'hero');
+    });
+  }
+
+  function safeStorage(){
+    try{
+      localStorage.setItem('__t','1');
+      localStorage.removeItem('__t');
+      return localStorage;
+    }catch(e){ return null; }
+  }
+  const storage = safeStorage();
+
+  function loadPref(key, fallback){
+    if(!storage) return fallback;
+    try{
+      const v = storage.getItem(key);
+      return v === null ? fallback : v;
+    }catch(e){ return fallback; }
+  }
+  function savePref(key, value){
+    if(!storage) return;
+    try{ storage.setItem(key, value); }catch(e){}
+  }
+
+  /* =========================================================
+     3. TABS
+     ========================================================= */
+  const chips    = Array.prototype.slice.call(document.querySelectorAll('#chips .chip'));
+  const sections = Array.prototype.slice.call(document.querySelectorAll('main > section'));
+  let currentTab = 0;
+
+  function showTab(index){
+    if(index < 0 || index >= sections.length) return;
+    sections.forEach(function(s,i){ s.classList.toggle('active', i === index); });
+    chips.forEach(function(c,i){
+      c.classList.toggle('active', i === index);
+      c.setAttribute('aria-selected', i === index ? 'true' : 'false');
+      c.setAttribute('tabindex', i === index ? '0' : '-1');
+    });
+    drawerLinks.forEach(function(a,i){ a.classList.toggle('on', i === index); });
+    currentTab = index;
+    savePref('tutorial-tab', String(index));
+
+    const active = sections[index];
+    const hero = active.querySelector('.hero-svg');
+    if(hero && !hero.firstElementChild) renderHero(hero, 'hero-' + index);
+
+    window.scrollTo({top:0, behavior:'auto'});
+    updateProgress();
+  }
+
+  chips.forEach(function(chip, i){
+    chip.addEventListener('click', function(){ showTab(i); });
+    chip.addEventListener('keydown', function(e){
+      let next = -1;
+      if(e.key === 'ArrowRight') next = (i + 1) % chips.length;
+      else if(e.key === 'ArrowLeft') next = (i - 1 + chips.length) % chips.length;
+      else if(e.key === 'Home') next = 0;
+      else if(e.key === 'End') next = chips.length - 1;
+      if(next >= 0){
+        e.preventDefault();
+        showTab(next);
+        chips[next].focus();
+      }
+    });
+  });
+
+  /* =========================================================
+     4. DRAWER / ÍNDICE
+     ========================================================= */
+  const dr = document.getElementById('dr');
+  const mb = document.getElementById('mb');
+  const drawerLinks = [];
+
+  function toggleDrawer(force){
+    if(typeof force === 'undefined'){
+      dr.classList.toggle('o');
+    }else{
+      dr.classList.toggle('o', force);
+    }
+    mb.setAttribute('aria-expanded', dr.classList.contains('o') ? 'true' : 'false');
+  }
+
+  // Buscador del drawer
+  const searchInput = document.createElement('input');
+  searchInput.type = 'search';
+  searchInput.className = 'dr-search';
+  searchInput.id = 'searchInput';
+  searchInput.placeholder = 'Buscar en el tutorial…';
+  searchInput.setAttribute('aria-label', 'Buscar en el tutorial');
+  dr.appendChild(searchInput);
+
+  // Enlaces a secciones
+  sections.forEach(function(s, i){
+    const a = document.createElement('a');
+    a.href = '#';
+    a.textContent = (i ? i + '. ' : '') + (s.dataset.t || (s.querySelector('h2') && s.querySelector('h2').textContent) || ('Sección ' + i));
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      showTab(i);
+      toggleDrawer(false);
+    });
+    dr.appendChild(a);
+    drawerLinks.push(a);
+  });
+
+  // Herramientas
+  const tools = document.createElement('div');
+  tools.className = 'dr-tools';
+  tools.innerHTML =
+    '<h4>Herramientas</h4>' +
+    '<div class="tools-grid">' +
+      '<button id="fsDown" aria-label="Reducir tamaño de letra">A−</button>' +
+      '<button id="fsUp" aria-label="Aumentar tamaño de letra">A+</button>' +
+      '<button id="themeBtn" aria-label="Cambiar tema">Tema</button>' +
+      '<button id="printBtn" aria-label="Imprimir o guardar como PDF">Imprimir</button>' +
+    '</div>';
+  dr.appendChild(tools);
+
+  mb.addEventListener('click', function(){ toggleDrawer(); });
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('#dr, #mb')) toggleDrawer(false);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') toggleDrawer(false);
+  });
+
+  // Botón "Ver índice" en INICIO
+  document.getElementById('ix').addEventListener('click', function(){ toggleDrawer(true); });
+
+  // Búsqueda
+  searchInput.addEventListener('keydown', function(e){
+    if(e.key !== 'Enter') return;
+    const q = searchInput.value.trim().toLowerCase();
+    if(!q) return;
+    for(let i = 0; i < sections.length; i++){
+      if(sections[i].textContent.toLowerCase().indexOf(q) !== -1){
+        showTab(i);
+        toggleDrawer(false);
+        setTimeout(function(){ scrollToMatch(sections[i], q); }, 180);
+        return;
+      }
+    }
+    alert('No se encontró «' + q + '» en el tutorial.');
+  });
+
+  function scrollToMatch(section, query){
+    const walker = document.createTreeWalker(section, NodeFilter.SHOW_TEXT, null);
+    let node;
+    while((node = walker.nextNode())){
+      if(node.nodeValue && node.nodeValue.toLowerCase().indexOf(query) !== -1 && node.parentElement){
+        node.parentElement.scrollIntoView({behavior:'smooth', block:'center'});
+        const prevOutline = node.parentElement.style.outline;
+        const prevOffset = node.parentElement.style.outlineOffset;
+        node.parentElement.style.outline = '2px solid #38bdf8';
+        node.parentElement.style.outlineOffset = '4px';
+        setTimeout(function(){
+          node.parentElement.style.outline = prevOutline;
+          node.parentElement.style.outlineOffset = prevOffset;
+        }, 2500);
+        return;
+      }
+    }
+  }
+
+  /* =========================================================
+     5. HERRAMIENTAS
+     ========================================================= */
+  let fontSize = parseInt(loadPref('tutorial-fs', '16'), 10) || 16;
+
+  function applyFontSize(){
+    fontSize = Math.max(14, Math.min(20, fontSize));
+    document.documentElement.style.setProperty('--fs', fontSize + 'px');
+    savePref('tutorial-fs', String(fontSize));
+  }
+
+  document.getElementById('fsDown').addEventListener('click', function(){ fontSize -= 1; applyFontSize(); });
+  document.getElementById('fsUp').addEventListener('click',   function(){ fontSize += 1; applyFontSize(); });
+
+  // Tema
+  function applyTheme(light){
+    document.body.classList.toggle('light', !!light);
+    savePref('tutorial-theme', light ? 'light' : 'dark');
+    const btn = document.getElementById('themeBtn');
+    if(btn) btn.textContent = light ? 'Oscuro' : 'Claro';
+  }
+  const storedTheme = loadPref('tutorial-theme', 'dark');
+  applyTheme(storedTheme === 'light');
+  document.getElementById('themeBtn').addEventListener('click', function(){
+    applyTheme(!document.body.classList.contains('light'));
+  });
+
+  // Imprimir
+  function doPrint(){
+    document.querySelectorAll('details').forEach(function(d){
+      d.dataset.wasOpen = d.open ? '1' : '0';
+      d.open = true;
+    });
+    mountAllHeroes();
+    try{
+      window.print();
+    }catch(err){
+      alert('La impresión no está disponible. Abre este archivo directamente en el navegador y usa Ctrl+P o Cmd+P.');
+    }
+  }
+  window.addEventListener('afterprint', function(){
+    document.querySelectorAll('details').forEach(function(d){
+      if(d.dataset.wasOpen !== undefined){
+        d.open = d.dataset.wasOpen === '1';
+        delete d.dataset.wasOpen;
+      }
+    });
+  });
+  document.getElementById('printBtn').addEventListener('click', function(){
+    toggleDrawer(false);
+    setTimeout(doPrint, 100);
+  });
+
+  /* =========================================================
+     6. VOLVER ARRIBA Y PROGRESO
+     ========================================================= */
+  const topBtn = document.getElementById('top');
+  const progress = document.getElementById('progress');
+
+  function updateProgress(){
+    const h = document.documentElement;
+    const max = (h.scrollHeight - h.clientHeight) || 1;
+    const pct = Math.min(100, Math.max(0, (h.scrollTop / max) * 100));
+    progress.style.width = pct + '%';
+    topBtn.classList.toggle('show', h.scrollTop > 400);
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  topBtn.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  /* =========================================================
+     7. NAVEGACIÓN ANTERIOR / SIGUIENTE (cada bloque .tab-nav)
+     ========================================================= */
+  document.querySelectorAll('.tab-nav').forEach(function(nav){
+    const prev = nav.querySelector('#prevTab');
+    const next = nav.querySelector('#nextTab');
+    if(prev) prev.addEventListener('click', function(){
+      showTab((currentTab - 1 + sections.length) % sections.length);
+    });
+    if(next) next.addEventListener('click', function(){
+      showTab((currentTab + 1) % sections.length);
+    });
+  });
+
+  /* =========================================================
+     8. CHECKLIST CON PERSISTENCIA
+     ========================================================= */
+  const CHECKLIST_KEY = 'tutorial-checklist';
+  let checklistState = {};
+  try{
+    const raw = loadPref(CHECKLIST_KEY, '{}');
+    checklistState = JSON.parse(raw) || {};
+  }catch(e){ checklistState = {}; }
+
+  document.querySelectorAll('input[type="checkbox"][data-ck]').forEach(function(cb){
+    const id = cb.dataset.ck;
+    if(checklistState[id]) cb.checked = true;
+    cb.addEventListener('change', function(){
+      checklistState[id] = cb.checked;
+      savePref(CHECKLIST_KEY, JSON.stringify(checklistState));
+    });
+  });
+
+  /* =========================================================
+     9. MONTAJE INICIAL
+     ========================================================= */
+  renderHero(document.getElementById('svgHome'), 'home');
+  renderHero(document.getElementById('svgCredits'), 'credits');
+
+  // Restaurar pestaña previa si existe
+  const savedTab = parseInt(loadPref('tutorial-tab', '0'), 10);
+  if(!isNaN(savedTab) && savedTab >= 0 && savedTab < sections.length){
+    showTab(savedTab);
+  }else{
+    showTab(0);
+  }
+
+  // Reparación periódica de héroes vacíos
+  setInterval(function(){
+    document.querySelectorAll('.hero-svg').forEach(function(el){
+      if(el.offsetParent !== null && !el.firstElementChild) renderHero(el, 'repair');
+    });
+  }, 2000);
+
+  // Detectar fallo si innerHTML no soportado (muy improbable)
+  if(typeof SVG_TEMPLATE !== 'string' || !SVG_TEMPLATE){
+    console.warn('SVG template no disponible');
+  }
+})();
+</script>
+</body>
+</html>
