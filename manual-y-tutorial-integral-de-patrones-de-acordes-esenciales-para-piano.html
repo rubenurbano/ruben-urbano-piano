@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Manual de Patrones de Acordes Esenciales para Piano by Rubén Sbarsky</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tone.js para audio real de acordes de piano -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            900: '#1e1b4b',
+                        },
+                        accent: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Optimización de rendimiento para Samsung Galaxy A02s (720x1600px, fluidez a 60fps) */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #080b12;
+            color: #f1f5f9;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        /* Ocultar barra de scroll en la barra de pestañas manteniendo funcionalidad */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Estilo de agencia digital premium */
+        .glass-header {
+            background: rgba(8, 11, 18, 0.90);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .premium-card {
+            background: linear-gradient(145deg, rgba(17, 24, 39, 0.92), rgba(11, 15, 25, 0.96));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+
+        .premium-card-highlight {
+            background: linear-gradient(145deg, rgba(46, 16, 101, 0.35), rgba(15, 23, 42, 0.95));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        /* Botones flotantes arrastrables */
+        .draggable-fab {
+            position: fixed;
+            z-index: 90;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: grab;
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        .draggable-fab:active {
+            cursor: grabbing;
+            transform: scale(1.08);
+        }
+
+        /* Teclado de piano virtual interactivo */
+        .piano-key-white {
+            height: 95px;
+            flex: 1;
+            background: linear-gradient(to bottom, #ffffff 0%, #e2e8f0 100%);
+            border: 1px solid #94a3b8;
+            border-radius: 0 0 6px 6px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.12s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 6px;
+            color: #1e293b;
+            font-weight: 700;
+            font-size: 10px;
+        }
+        .piano-key-white.active {
+            background: linear-gradient(to bottom, #a78bfa 0%, #7c3aed 100%);
+            color: #ffffff;
+            transform: translateY(2px);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.7);
+        }
+        .piano-key-black {
+            height: 58px;
+            width: 7%;
+            background: linear-gradient(to bottom, #1e293b 0%, #090d16 100%);
+            border: 1px solid #000;
+            border-radius: 0 0 4px 4px;
+            position: absolute;
+            top: 0;
+            z-index: 2;
+            transition: all 0.12s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 4px;
+            color: #cbd5e1;
+            font-size: 8px;
+            font-weight: 600;
+        }
+        .piano-key-black.active {
+            background: linear-gradient(to bottom, #f59e0b 0%, #d97706 100%);
+            color: #000;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+        }
+
+        /* Animación de entrada de pestañas */
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-animate {
+            animation: fadeInSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+    <!-- CABECERA FIJA PERMANENTE + BARRA DE PESTAÑAS HORIZONTAL -->
+    <header class="sticky top-0 z-50 glass-header w-full">
+        <!-- Fila Superior: Menú Sándwich (Índice) + Marca + Estado de Audio -->
+        <div class="max-w-4xl mx-auto px-3 py-2.5 flex items-center justify-between gap-2">
+            <button id="btn-open-drawer" aria-label="Abrir Índice Completo" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-brand-600/30 border border-slate-700/80 text-white font-semibold text-xs sm:text-sm transition active:scale-95 shadow-sm">
+                <i class="ph-bold ph-list text-lg text-brand-400"></i>
+                <span>ÍNDICE</span>
+            </button>
+
+            <div class="flex items-center gap-1.5 truncate">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-display font-bold text-xs sm:text-sm tracking-wide bg-gradient-to-r from-white via-slate-200 to-brand-400 bg-clip-text text-transparent truncate">
+                    PIANO PRO MASTERCLASS
+                </span>
+            </div>
+
+            <button id="btn-piano-modal" class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-bold hover:bg-amber-500/25 active:scale-95 transition">
+                <i class="ph-fill ph-piano-keys text-base"></i>
+                <span class="hidden xs:inline">PIANO</span>
+            </button>
+        </div>
+
+        <!-- Barra de Pestañas Visible de Forma Permanente con Desplazamiento Táctil Horizontal y Auto-centrado -->
+        <div class="border-t border-slate-800/80 bg-slate-950/70">
+            <nav id="tabs-bar" class="max-w-4xl mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar px-3 py-2 scroll-smooth" role="tablist">
+                <!-- Generado dinámicamente por JS -->
+            </nav>
+        </div>
+    </header>
+
+    <!-- MENÚ SÁNDWICH (DRAWER VERTICAL COMPLETO CON ÍNDICE JERÁRQUICO) -->
+    <div id="drawer-backdrop" class="fixed inset-0 bg-black/75 z-50 hidden opacity-0 transition-opacity duration-200"></div>
+    <aside id="drawer-menu" class="fixed top-0 left-0 bottom-0 w-[86vw] max-w-sm bg-slate-950 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col">
+        <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+            <div class="flex items-center gap-2">
+                <i class="ph-fill ph-books text-brand-400 text-xl"></i>
+                <div>
+                    <h2 class="font-display font-bold text-sm text-white leading-tight">ÍNDICE MAESTRO</h2>
+                    <p class="text-[11px] text-slate-400">Acceso directo a las 14 secciones</p>
+                </div>
+            </div>
+            <button id="btn-close-drawer" class="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white active:scale-95">
+                <i class="ph-bold ph-x text-lg"></i>
+            </button>
+        </div>
+        <div id="drawer-links" class="flex-1 overflow-y-auto p-3 space-y-1.5 divide-y divide-slate-800/40">
+            <!-- Generado dinámicamente por JS -->
+        </div>
+        <div class="p-3 border-t border-slate-800 bg-slate-900/80 text-center">
+            <p class="text-[11px] text-slate-400 font-medium">Optimizado para Samsung Galaxy A02s • Edición Agencia</p>
+        </div>
+    </aside>
+
+    <!-- MODAL SINTETIZADOR DE PIANO INTERACTIVO (TONE.JS) -->
+    <div id="piano-drawer" class="fixed bottom-0 left-0 right-0 z-50 bg-slate-950/95 border-t border-brand-500/40 shadow-2xl transform translate-y-full transition-transform duration-300">
+        <div class="max-w-3xl mx-auto p-3">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded bg-brand-600 text-[10px] font-bold uppercase">Sintetizador Real</span>
+                    <span id="chord-display-label" class="text-xs font-mono text-amber-400 font-semibold">Toca un acorde o tecla</span>
+                </div>
+                <button id="btn-close-piano" class="p-1.5 rounded-lg bg-slate-800 text-slate-300 text-xs font-bold flex items-center gap-1">
+                    <i class="ph-bold ph-caret-down"></i> Ocultar
+                </button>
+            </div>
+            <!-- Botones rápidos de acordes del tutorial -->
+            <div class="flex gap-1.5 overflow-x-auto no-scrollbar pb-2 mb-2">
+                <button onclick="playNamedChord('Am(i)', ['A3','C4','E4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-600 text-xs font-mono font-bold shrink-0 border border-slate-700">Am(i)</button>
+                <button onclick="playNamedChord('C(bIII / I)', ['C4','E4','G4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-600 text-xs font-mono font-bold shrink-0 border border-slate-700">C(I/bIII)</button>
+                <button onclick="playNamedChord('G(bVII / V)', ['G3','B3','D4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-600 text-xs font-mono font-bold shrink-0 border border-slate-700">G(V/bVII)</button>
+                <button onclick="playNamedChord('D(IV Dórico)', ['D4','F#4','A4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-600 text-xs font-mono font-bold shrink-0 border border-slate-700">D(IV)</button>
+                <button onclick="playNamedChord('Dm(ii / iv)', ['D4','F4','A4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-600 text-xs font-mono font-bold shrink-0 border border-slate-700">Dm(ii/iv)</button>
+                <button onclick="playNamedChord('Em(v)', ['E3','G3','B3'])" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-600 text-xs font-mono font-bold shrink-0 border border-slate-700">Em(v)</button>
+                <button onclick="playNamedChord('F(IV / bVI)', ['F3','A3','C4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-600 text-xs font-mono font-bold shrink-0 border border-slate-700">F(IV/bVI)</button>
+                <button onclick="playNamedChord('Gm(v Mix)', ['G3','Bb3','D4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-600 text-xs font-mono font-bold shrink-0 border border-slate-700">Gm(v)</button>
+                <button onclick="playNamedChord('Bb(bVII Mix)', ['Bb3','D4','F4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-600 text-xs font-mono font-bold shrink-0 border border-slate-700">Bb(bVII)</button>
+            </div>
+            <!-- Teclado visual -->
+            <div id="virtual-piano" class="relative flex w-full select-none overflow-hidden rounded-lg border border-slate-700">
+                <!-- Generado por JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL DE CONTENIDO DE CADA PESTAÑA -->
+    <main id="main-content" class="flex-1 max-w-4xl w-full mx-auto px-3.5 pt-4 pb-28">
+        <!-- El contenido de la pestaña activa se inyecta aquí -->
+    </main>
+
+    <!-- BOTONES FLOTANTES MÓVILES (ARRASTRABLES / DRAGGABLE) -->
+    <!-- 1. Botón Flotante Movible: Ir a INICIO desde cualquier lugar -->
+    <button id="fab-home" title="Arrastrar o pulsar para ir a INICIO" style="bottom: 92px; left: 14px;" class="draggable-fab flex items-center gap-1.5 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-brand-600 to-indigo-600 text-white font-display font-bold text-xs shadow-lg shadow-brand-600/40 border border-brand-400/50">
+        <i class="ph-fill ph-house text-base"></i>
+        <span>INICIO</span>
+        <i class="ph ph-dots-six-vertical text-xs opacity-60 ml-0.5"></i>
+    </button>
+
+    <!-- 2. Botón Flotante Movible: Ir ARRIBA (al comienzo de la pestaña actual) -->
+    <button id="fab-top" title="Arrastrar o pulsar para ir al comienzo de la pestaña actual" style="bottom: 92px; right: 14px;" class="draggable-fab flex items-center gap-1.5 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-slate-950 font-display font-extrabold text-xs shadow-lg shadow-amber-500/30 border border-amber-300/60">
+        <i class="ph-bold ph-arrow-up text-base"></i>
+        <span>ARRIBA</span>
+        <i class="ph ph-dots-six-vertical text-xs opacity-60 ml-0.5"></i>
+    </button>
+
+    <!-- Notificación Toast para Copiar Prompts -->
+    <div id="toast-msg" class="fixed top-28 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-xl hidden items-center gap-2">
+        <i class="ph-bold ph-check-circle text-base"></i>
+        <span id="toast-text">Copiado al portapapeles</span>
+    </div>
+
+    <script>
+        /* =========================================================================
+           1. HELPER PARA TODOS LOS ENLACES URL CON BOTÓN "Abrir en otra Ventana"
+           ========================================================================= */
+        function renderUrlCard(title, url, subtitle = "Recurso Externo Verificado") {
+            return `
+                <div class="my-3 p-3.5 rounded-2xl bg-slate-900/95 border border-brand-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-brand-400 mb-0.5">
+                            <i class="ph-fill ph-link-simple"></i>
+                            <span>${subtitle}</span>
+                        </div>
+                        <p class="font-bold text-white text-sm truncate">${title}</p>
+                        <p class="text-xs font-mono text-slate-400 truncate mt-0.5">${url}</p>
+                    </div>
+                    <a href="${url}" target="_blank" rel="noopener noreferrer" onclick="window.open('${url}', '_blank', 'noopener,noreferrer'); return false;" class="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-display font-bold text-xs shadow-md shadow-brand-600/20 active:scale-95 transition">
+                        <span>Abrir en otra Ventana</span>
+                        <i class="ph-bold ph-arrow-square-out text-base"></i>
+                    </a>
+                </div>
+            `;
+        }
+
+        /* =========================================================================
+           2. BASE DE DATOS COMPLETA DEL MANUAL POR PESTAÑAS (0 a 13)
+           ========================================================================= */
+        const TABS_DATA = [
+            {
+                id: 'inicio',
+                shortLabel: 'INICIO',
+                badge: 'PORTADA & ÍNDICE',
+                // REGLA ESTRICTA: Solo en la pestaña de INICIO el título agrega "by Rubén Sbarsky"
+                title: 'MANUAL Y TUTORIAL INTEGRAL DE PATRONES DE ACORDES ESENCIALES PARA PIANO by Rubén Sbarsky',
+                subtitle: 'Edición Digital Interactiva • Armonía Funcional, Modos, Voz, Ejemplos Comerciales y Práctica',
+                content: `
+                    <!-- Hero Impactante -->
+                    <div class="relative overflow-hidden rounded-3xl premium-card-highlight p-5 sm:p-7 mb-6 border border-brand-500/40">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 border border-brand-400/30 text-brand-300 text-xs font-bold mb-3">
+                            <i class="ph-fill ph-sparkle"></i>
+                            <span>EXPERIENCIA INTERACTIVA DE AGENCIA DIGITAL</span>
+                        </div>
+                        <h1 class="font-display font-black text-2xl sm:text-4xl text-white leading-tight mb-3">
+                            MANUAL Y TUTORIAL INTEGRAL DE PATRONES DE ACORDES ESENCIALES PARA PIANO <span class="text-amber-400 underline decoration-amber-500/50">by Rubén Sbarsky</span>
+                        </h1>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-5">
+                            Domina los <strong>5 patrones armónicos cerrados</strong> y las <strong>3 progresiones bonus</strong> en modo Dórico, Mayor, Eólico y Mixolidio con los que se han compuesto miles de éxitos internacionales. Incluye sintetizador de piano en vivo para escuchar cada acorde e inversión al instante.
+                        </p>
+                        <div class="flex flex-wrap gap-2.5">
+                            <button onclick="selectTab(1)" class="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-display font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-amber-500/25 active:scale-95 transition">
+                                <span>EMPEZAR MÓDULO 0</span>
+                                <i class="ph-bold ph-arrow-right"></i>
+                            </button>
+                            <button onclick="togglePianoDrawer(true); playProgressionDemo([['A3','C4','E4'],['C4','E4','G4'],['G3','B3','D4'],['D4','F#4','A4']], 'Cascada Plagal: Am - C - G - D')" class="px-4 py-3 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 border border-slate-600 active:scale-95 transition">
+                                <i class="ph-fill ph-play-circle text-lg text-brand-400"></i>
+                                <span>Escuchar Demo Patrón 1</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Resumen de Características Rápidas -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-6">
+                        <div class="premium-card p-3.5 rounded-2xl text-center">
+                            <p class="text-2xl font-display font-black text-brand-400">5 + 3</p>
+                            <p class="text-xs text-slate-400 mt-0.5">Patrones y Bonus</p>
+                        </div>
+                        <div class="premium-card p-3.5 rounded-2xl text-center">
+                            <p class="text-2xl font-display font-black text-amber-400">4 Modos</p>
+                            <p class="text-xs text-slate-400 mt-0.5">Dórico, Mayor, Eólico, Mix.</p>
+                        </div>
+                        <div class="premium-card p-3.5 rounded-2xl text-center">
+                            <p class="text-2xl font-display font-black text-emerald-400">33 Q&A</p>
+                            <p class="text-xs text-slate-400 mt-0.5">Básico, Avanzado y PRO</p>
+                        </div>
+                        <div class="premium-card p-3.5 rounded-2xl text-center">
+                            <p class="text-2xl font-display font-black text-sky-400">Audio Real</p>
+                            <p class="text-xs text-slate-400 mt-0.5">Piano Sintetizado</p>
+                        </div>
+                    </div>
+
+                    <!-- ÍNDICE MAESTRO JERÁRQUICO Y NUMERADO -->
+                    <div class="premium-card rounded-3xl p-4 sm:p-6 mb-6">
+                        <div class="flex items-center gap-2.5 mb-4 pb-3 border-b border-slate-800">
+                            <i class="ph-fill ph-list-numbers text-2xl text-brand-400"></i>
+                            <div>
+                                <h2 class="font-display font-extrabold text-lg text-white">ÍNDICE MAESTRO JERÁRQUICO Y NUMERADO</h2>
+                                <p class="text-xs text-slate-400">Pulsa sobre cualquier módulo para abrir directamente su pestaña</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 text-xs sm:text-sm">
+                            <div onclick="selectTab(1)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800/80 border border-slate-800 cursor-pointer transition">
+                                <p class="font-bold text-brand-400 mb-1">1.0 MÓDULO 0: FUNDAMENTOS DEL PIANO Y TEORÍA INICIAL</p>
+                                <ul class="text-slate-300 space-y-1 pl-3 border-l border-slate-700 text-xs">
+                                    <li>1.1 Introducción a la armonía funcional en el piano</li>
+                                    <li>1.2 Sistema americano de notación musical</li>
+                                    <li>1.3 Tipos de progresiones armónicas: Abiertas vs. Cerradas (Bucles) [1, 2]</li>
+                                    <li>1.4 Concepto de atonicidad, triadas y acordes de intercambio modal [1, 2]</li>
+                                    <li>1.5 Modos armónicos primarios: Modo Eólico vs. Modo Dórico vs. Modo Mixolidio [3, 6, 11]</li>
+                                </ul>
+                            </div>
+
+                            <div onclick="selectTab(2)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800/80 border border-slate-800 cursor-pointer transition">
+                                <p class="font-bold text-amber-400 mb-1">2.0 MÓDULO 1: PATRÓN 1 - LA CASCADA PLAGAL EN MODO DÓRICO</p>
+                                <ul class="text-slate-300 space-y-1 pl-3 border-l border-slate-700 text-xs">
+                                    <li>2.1 Definición y fórmula del Patrón 1: i - bIII - bVII - IV [3]</li>
+                                    <li>2.2 Análisis tonal: El rol del cuarto grado mayor IV y la cadencia plagal [3]</li>
+                                    <li>2.3 Movimiento de fundamentales por cuartas descendentes [3]</li>
+                                    <li>2.4 Construcción nota por nota en tonalidad de A(I) menor dórico</li>
+                                    <li>2.5 Ejemplos del repertorio comercial e internacional [4]</li>
+                                    <li>2.6 Guía de ejecución en piano paso a paso</li>
+                                </ul>
+                            </div>
+
+                            <div onclick="selectTab(3)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800/80 border border-slate-800 cursor-pointer transition">
+                                <p class="font-bold text-emerald-400 mb-1">3.0 MÓDULO 2: PATRÓN 2 - LA PROGRESIÓN PLAGAL EN MODO MAYOR</p>
+                                <ul class="text-slate-300 space-y-1 pl-3 border-l border-slate-700 text-xs">
+                                    <li>3.1 Definición y fórmula del Patrón 2: I - V - ii - IV [5]</li>
+                                    <li>3.2 Transformación del modo menor al modo mayor [5]</li>
+                                    <li>3.3 Análisis de cadencias: Cadencia rota (V al ii) y resolución plagal (IV al I) [5]</li>
+                                    <li>3.4 Construcción nota por nota en tonalidad de C(I) mayor</li>
+                                    <li>3.5 Ejemplos en canciones populares e internacionales [5, 6]</li>
+                                    <li>3.6 Práctica guiada e independencia de manos</li>
+                                </ul>
+                            </div>
+
+                            <div onclick="selectTab(4)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800/80 border border-slate-800 cursor-pointer transition">
+                                <p class="font-bold text-purple-400 mb-1">4.0 MÓDULO 3: PATRÓN 3 - EL CLÁSICO EÓLICO TRASCENDENTE</p>
+                                <ul class="text-slate-300 space-y-1 pl-3 border-l border-slate-700 text-xs">
+                                    <li>4.1 Definición y fórmula del Patrón 3: i - bVII - v - bVI [6]</li>
+                                    <li>4.2 La identidad del modo eólico: El quinto menor v y grados bemoles [6, 7]</li>
+                                    <li>4.3 Dinámica y expresividad: De la melancolía a la energía/agresividad [7]</li>
+                                    <li>4.4 Construcción paso a paso en tonalidad de A(I) menor eólico</li>
+                                    <li>4.5 Ejemplos históricos y contemporáneos [7]</li>
+                                    <li>4.6 Ejercicio técnico de acompañamiento e inversión de acordes</li>
+                                </ul>
+                            </div>
+
+                            <div onclick="selectTab(5)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800/80 border border-slate-800 cursor-pointer transition">
+                                <p class="font-bold text-pink-400 mb-1">5.0 MÓDULO 4: PATRÓN 4 - LA PROGRESIÓN SENSUAL Y TRASCENDENTAL</p>
+                                <ul class="text-slate-300 space-y-1 pl-3 border-l border-slate-700 text-xs">
+                                    <li>5.1 Definición y fórmula del Patrón 4: i - bIII - bVII - bVI [8]</li>
+                                    <li>5.2 Propiedades sonoras: Trascendencia, sensualidad y fluidez [8]</li>
+                                    <li>5.3 Construcción nota por nota en tonalidad de A(I) menor eólico</li>
+                                    <li>5.4 Ejemplos de uso comercial [9]</li>
+                                    <li>5.5 Esquemas rítmicos para piano y conducción de voces (Voice Leading)</li>
+                                </ul>
+                            </div>
+
+                            <div onclick="selectTab(6)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800/80 border border-slate-800 cursor-pointer transition">
+                                <p class="font-bold text-sky-400 mb-1">6.0 MÓDULO 5: PATRÓN 5 - LA VARIANTE EÓLICA CÍCLICA</p>
+                                <ul class="text-slate-300 space-y-1 pl-3 border-l border-slate-700 text-xs">
+                                    <li>6.1 Definición y fórmula del Patrón 5: i - bVI - bVII - v [9]</li>
+                                    <li>6.2 Comparativa sintáctica con el Patrón 3 (Reordenamiento de acordes) [9]</li>
+                                    <li>6.3 Carácter dramático y tensión armónica [9]</li>
+                                    <li>6.4 Construcción paso a paso en tonalidad de A(I) menor</li>
+                                    <li>6.5 Ejemplos en el repertorio [10]</li>
+                                    <li>6.6 Taller de arreglos para mano izquierda y derecha</li>
+                                </ul>
+                            </div>
+
+                            <div onclick="selectTab(7)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800/80 border border-slate-800 cursor-pointer transition">
+                                <p class="font-bold text-orange-400 mb-1">7.0 MÓDULO 6: PATRONES BONUS (DÓRICO, MIXOLIDIO Y EÓLICO ALTERNATIVO)</p>
+                                <ul class="text-slate-300 space-y-1 pl-3 border-l border-slate-700 text-xs">
+                                    <li>7.1 Bonus 1 (Modo Dórico): i - v - bVII - IV [10, 11]</li>
+                                    <li>7.2 Bonus 2 (Modo Mixolidio): I - v - bVII - IV [11]</li>
+                                    <li>7.3 Bonus 3 (Modo Eólico Secuencial): i - iv - bVII - v [12]</li>
+                                </ul>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                                <div onclick="selectTab(8)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 cursor-pointer">
+                                    <p class="font-bold text-teal-400">8.0 MÓDULO 7: PROYECTOS INTEGRADORES PRÁCTICOS</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">8.1 Pop/Rock • 8.2 Balada Eólica • 8.3 Arreglo Dórico</p>
+                                </div>
+                                <div onclick="selectTab(9)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 cursor-pointer">
+                                    <p class="font-bold text-rose-400">9.0 MÓDULO 8: BUENAS PRÁCTICAS Y TROUBLESHOOTING</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">9.1 Voice Leading • 9.2 Pedal • 9.3 Manos • 9.4 Matriz Errores</p>
+                                </div>
+                                <div onclick="selectTab(10)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 cursor-pointer">
+                                    <p class="font-bold text-indigo-400">10.0 MÓDULO 9: GLOSARIO DE TÉRMINOS</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">Definiciones técnicas esenciales</p>
+                                </div>
+                                <div onclick="selectTab(11)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 cursor-pointer">
+                                    <p class="font-bold text-yellow-400">11.0 MÓDULO 10: BANCO DE 33 PREGUNTAS Y RESPUESTAS</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">11.1 Básico • 11.2 Avanzado • 11.3 PRO</p>
+                                </div>
+                                <div onclick="selectTab(12)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 cursor-pointer">
+                                    <p class="font-bold text-cyan-400">12.0 MÓDULO 11: GUÍA DE PROMPTS PRÁCTICOS IA</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">Prompts listos para copiar y entrenar</p>
+                                </div>
+                                <div onclick="selectTab(13)" class="p-3 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 cursor-pointer">
+                                    <p class="font-bold text-lime-400">13.0 MÓDULO 12: FUENTES FIABLES Y DOCUMENTACIÓN</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">Vídeo Tutorial Oficial y enlaces externos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enlace directo destacado desde el Inicio -->
+                    ${renderUrlCard("Vídeo Tutorial Oficial: 5 PATRONES DE ACORDES QUE HAS DE CONOCER!", "https://youtube.com/watch?v=OUYHbsK3iLo&is=KOtuawDZEicSU9Xk", "Fuente Principal YouTube [13]")}
+                `
+            },
+            {
+                id: 'mod-0',
+                shortLabel: '1.0 MÓD. 0',
+                badge: '1.0 MÓDULO 0',
+                title: 'FUNDAMENTOS DEL PIANO Y TEORÍA INICIAL',
+                subtitle: 'Armonía funcional, cifrado americano, bucles armónicos y modos primarios',
+                content: `
+                    <!-- 1.1 -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-lg text-brand-400 mb-2">1.1 Introducción a la armonía funcional en el piano</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            La armonía en el piano es la base sobre la cual se sostiene cualquier melodía. Una melodía sin un acompañamiento de acordes es comparable a un maniquí sin vestir: le falta el sustento armónico para transmitir emoción completa [1]. Al armonizar una melodía, la selección de acordes determina de forma directa el carácter, el color y la sonoridad final de la pieza musical [1].
+                        </p>
+                    </section>
+
+                    <!-- 1.2 -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-lg text-amber-400 mb-2">1.2 Sistema americano de notación musical</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed mb-3">
+                            Para este manual utilizaremos exclusivamente el sistema de cifrado americano, el cual asigna una letra del alfabeto a cada nota musical:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4 text-xs font-mono">
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex justify-between"><span class="text-brand-400 font-bold">A(I)</span><span>nota La (grado fundamental en A(I))</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex justify-between"><span class="text-brand-400 font-bold">B(II)</span><span>nota Si</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex justify-between"><span class="text-brand-400 font-bold">C(I) o C(bIII)</span><span>nota Do</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex justify-between"><span class="text-brand-400 font-bold">D(IV)</span><span>nota Re</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex justify-between"><span class="text-brand-400 font-bold">E(V)</span><span>nota Mi</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex justify-between"><span class="text-brand-400 font-bold">F(IV) o F(bVI)</span><span>nota Fa</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex justify-between sm:col-span-2"><span class="text-brand-400 font-bold">G(V) o G(bVII)</span><span>nota Sol</span></div>
+                        </div>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Cada nota dentro de una escala cumple un papel específico denominado <strong>grado armónico</strong>, representado por números romanos. Por ejemplo, en la escala de C(I) mayor, la nota C(I) es el primer grado (I), D(II) es el segundo (II), E(III) es el tercero (III), F(IV) es el cuarto (IV), G(V) es el quinto (V), A(VI) es el sexto (VI) y B(VII) es el séptimo (VII).
+                        </p>
+                    </section>
+
+                    <!-- 1.3 -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-lg text-emerald-400 mb-2">1.3 Tipos de progresiones armónicas: Abiertas vs. Cerradas (Bucles)</h3>
+                        <p class="text-sm text-slate-300 mb-3">Las progresiones armónicas en la música se dividen principalmente en dos grandes categorías [1, 2]:</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800">
+                                <span class="text-xs font-bold text-sky-400 uppercase">1. Progresiones Abiertas</span>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">La cadena de acordes evoluciona continuamente sin repetir un esquema idéntico fija o cíclicamente a lo largo de la obra [2].</p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-brand-950/40 border border-brand-500/40">
+                                <span class="text-xs font-bold text-amber-400 uppercase">2. Progresiones Cerradas (Patrones o Bucles)</span>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">Combinan una secuencia fija de tres o cuatro acordes que se repiten en forma de bucle (<em>loop</em>) continuo a lo largo de toda la canción [1, 2]. Estos patrones cerrados son la estructura fundamental de miles de canciones populares [1].</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 1.4 -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-lg text-purple-400 mb-2">1.4 Concepto de atonicidad, triadas y acordes de intercambio modal</h3>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            Las melodías se pueden armonizar utilizando acordes diatónicos triada (formados por tres notas: fundamental, tercera y quinta) o acordes cuatriadas [1]. Además, es posible enriquecer la sonoridad incorporando recursos avanzados como dominantes secundarios, acordes disminuidos de paso y <strong>acordes de intercambio modal</strong> [1, 2]. El intercambio modal consiste en importar acordes pertenecientes a un modo paralelo (especialmente del modo menor) hacia el modo mayor o viceversa, modificando drásticamente el color armónico [2].
+                        </p>
+                    </section>
+
+                    <!-- 1.5 -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6">
+                        <h3 class="font-display font-bold text-lg text-pink-400 mb-3">1.5 Modos armónicos primarios: Modo Eólico vs. Modo Dórico vs. Modo Mixolidio</h3>
+                        <div class="space-y-3">
+                            <div class="p-3.5 rounded-2xl bg-slate-900 border-l-4 border-purple-500">
+                                <h4 class="font-bold text-white text-sm">Modo Eólico (Escala Menor Natural)</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">Caracterizado por presentar los grados <code class="text-purple-300">i(I), ii(II), bIII(bIII), iv(IV), v(V), bVI(bVI) y bVII(bVII)</code>. Otorga una sonoridad melancólica, nostálgica, sombría o trascendente [6, 7].</p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-slate-900 border-l-4 border-amber-500">
+                                <h4 class="font-bold text-white text-sm">Modo Dórico</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">Modalidad menor que destaca por tener el cuarto grado mayor <code class="text-amber-300">IV(IV)</code> en lugar de menor <code class="text-slate-400">iv(IV)</code> [3]. Su secuencia de grados es <code class="text-amber-300">i(I), ii(II), bIII(bIII), IV(IV), v(V), viº(VI), bVII(bVII)</code> [3].</p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-slate-900 border-l-4 border-emerald-500">
+                                <h4 class="font-bold text-white text-sm">Modo Mixolidio</h4>
+                                <p class="text-xs text-slate-300 mt-1 leading-relaxed">Modalidad mayor caracterizada por presentar el séptimo grado menor o bemol <code class="text-emerald-300">bVII(bVII)</code> en lugar de la sensible mayor <code class="text-slate-400">VII(VII)</code> [11].</p>
+                            </div>
+                        </div>
+                    </section>
+                `
+            },
+            {
+                id: 'mod-1',
+                shortLabel: '2.0 PATRÓN 1',
+                badge: '2.0 MÓDULO 1 • MODO DÓRICO',
+                title: 'PATRÓN 1 - LA CASCADA PLAGAL EN MODO DÓRICO',
+                subtitle: 'Fórmula i → bIII → bVII → IV • El brillo del cuarto grado mayor y caída por cuartas',
+                content: `
+                    <!-- Fórmula Interactiva -->
+                    <div class="premium-card-highlight rounded-3xl p-4 sm:p-6 mb-4 text-center">
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-amber-400">2.1 Definición y fórmula del Patrón 1 [3]</span>
+                        <div class="my-3 py-3 px-4 rounded-2xl bg-slate-950/90 border border-brand-500/30 font-mono font-extrabold text-xl sm:text-3xl text-white tracking-wider">
+                            i &longrightarrow; bIII &longrightarrow; bVII &longrightarrow; IV
+                        </div>
+                        <button onclick="togglePianoDrawer(true); playProgressionDemo([['A3','C4','E4'],['C4','E4','G4'],['G3','B3','D4'],['D4','F#4','A4']], 'Patrón 1: Am(i) → C(bIII) → G(bVII) → D(IV)')" class="mt-1 px-4 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-display font-bold text-xs inline-flex items-center gap-2 shadow-md active:scale-95">
+                            <i class="ph-fill ph-speaker-high text-base"></i>
+                            <span>Escuchar Patrón 1 en Piano (A menor dórico)</span>
+                        </button>
+                    </div>
+
+                    <!-- Acordes en A menor dórico -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-base text-white mb-3">Acordes en la tonalidad de A(I) menor dórico (Pulsa para escuchar):</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            <button onclick="playNamedChord('Am(i): A - C - E', ['A3','C4','E4'])" class="p-3 rounded-2xl bg-slate-900 hover:bg-brand-900/40 border border-slate-700 text-left transition">
+                                <span class="text-xs text-brand-400 font-bold">Grado i</span>
+                                <p class="text-lg font-display font-black text-white">Am(i)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">A(I) - C(bIII) - E(V)</p>
+                            </button>
+                            <button onclick="playNamedChord('C(bIII): C - E - G', ['C4','E4','G4'])" class="p-3 rounded-2xl bg-slate-900 hover:bg-brand-900/40 border border-slate-700 text-left transition">
+                                <span class="text-xs text-brand-400 font-bold">Grado bIII</span>
+                                <p class="text-lg font-display font-black text-white">C(bIII)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">C(bIII) - E(V) - G(bVII)</p>
+                            </button>
+                            <button onclick="playNamedChord('G(bVII): G - B - D', ['G3','B3','D4'])" class="p-3 rounded-2xl bg-slate-900 hover:bg-brand-900/40 border border-slate-700 text-left transition">
+                                <span class="text-xs text-brand-400 font-bold">Grado bVII</span>
+                                <p class="text-lg font-display font-black text-white">G(bVII)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">G(bVII) - B(II) - D(IV)</p>
+                            </button>
+                            <button onclick="playNamedChord('D(IV Dórico): D - F# - A', ['D4','F#4','A4'])" class="p-3 rounded-2xl bg-amber-950/40 hover:bg-amber-900/40 border border-amber-500/50 text-left transition">
+                                <span class="text-xs text-amber-400 font-bold">Grado IV (Dórico)</span>
+                                <p class="text-lg font-display font-black text-amber-300">D(IV)</p>
+                                <p class="text-[11px] font-mono text-amber-200/80 mt-1">D(IV) - F#(VI) - A(I)</p>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- 2.2 y 2.3 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <section class="premium-card rounded-3xl p-4 sm:p-5">
+                            <h3 class="font-display font-bold text-base text-amber-400 mb-2">2.2 Análisis tonal: El rol del cuarto grado mayor IV y la cadencia plagal</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                La presencia del acorde mayor <strong>D(IV)</strong> (cuarto grado mayor) define la sonoridad del <strong>modo dórico</strong> [3]. Si este acorde fuera menor, la progresión pertenecería al modo eólico tradicional [3]. El acorde <strong>D(IV)</strong> cumple una función clave: genera una <strong>cadencia plagal</strong> al resolver directamente sobre el primer grado menor <strong>Am(i)</strong> cada vez que el bucle se reinicia [3].
+                            </p>
+                        </section>
+                        <section class="premium-card rounded-3xl p-4 sm:p-5">
+                            <h3 class="font-display font-bold text-base text-brand-400 mb-2">2.3 Movimiento de fundamentales por cuartas descendentes</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                Entre los tres últimos acordes del patrón y el primero al reiniciar el bucle (<code class="text-amber-300">bIII &rightarrow; bVII &rightarrow; IV &rightarrow; i</code>), se produce un movimiento de las notas fundamentales por intervalos de cuarta descendente [3]. Debido a este encadenamiento constante de resolución plagal y movimiento descendente, esta progresión recibe el nombre de <strong>Cascada Plagal</strong> [3].
+                            </p>
+                        </section>
+                    </div>
+
+                    <!-- 2.4 Construcción nota por nota -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-base text-emerald-400 mb-3">2.4 Construcción nota por nota en tonalidad de A(I) menor dórico</h3>
+                        <ol class="space-y-2 text-xs sm:text-sm text-slate-300 list-decimal list-inside">
+                            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800"><strong>Acorde 1 - Am(i)</strong>: Mano izquierda toca el bajo A(I). Mano derecha toca <code class="text-brand-300 font-mono">A(I) - C(bIII) - E(V)</code>.</li>
+                            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800"><strong>Acorde 2 - C(bIII)</strong>: Mano izquierda toca el bajo C(bIII). Mano derecha toca <code class="text-brand-300 font-mono">C(bIII) - E(V) - G(bVII)</code>.</li>
+                            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800"><strong>Acorde 3 - G(bVII)</strong>: Mano izquierda toca el bajo G(bVII). Mano derecha toca <code class="text-brand-300 font-mono">G(bVII) - B(II) - D(IV)</code>.</li>
+                            <li class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800"><strong>Acorde 4 - D(IV)</strong>: Mano izquierda toca el bajo D(IV). Mano derecha toca <code class="text-amber-300 font-mono">D(IV) - F#(VI) - A(I)</code>.</li>
+                        </ol>
+                    </section>
+
+                    <!-- 2.5 Repertorio -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-base text-purple-400 mb-2">2.5 Ejemplos del repertorio comercial e internacional [4]</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-music-notes text-amber-400"></i><span><em>"Wonderwall"</em> — Oasis [4]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-music-notes text-amber-400"></i><span><em>"Riding"</em> — Travis [4]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-music-notes text-amber-400"></i><span><em>"Numb / Encore"</em> o prod. Justin Timberlake [4]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-music-notes text-amber-400"></i><span><em>"Boulevard of Broken Dreams"</em> (secciones) — Green Day [4]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-music-notes text-amber-400"></i><span><em>"Pumped Up Kicks" / "Helena Beat"</em> — Foster the People [4]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-music-notes text-amber-400"></i><span><em>"Radioactive" / "Demons"</em> — Imagine Dragons [4]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-music-notes text-amber-400"></i><span><em>"Pictures of Matchstick Men"</em> (var. mayor) — Status Quo [4]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-music-notes text-amber-400"></i><span><em>"Hey Joe"</em> (cuartas descendentes) — Jimi Hendrix [4]</span></div>
+                        </div>
+                    </section>
+
+                    <!-- 2.6 Guía paso a paso -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6">
+                        <h3 class="font-display font-bold text-base text-sky-400 mb-2">2.6 Guía de ejecución en piano paso a paso</h3>
+                        <ol class="space-y-2 text-xs sm:text-sm text-slate-300 list-decimal list-inside">
+                            <li>Posiciona la mano izquierda en octava baja sobre la nota fundamental <strong>A(I)</strong>.</li>
+                            <li>Mantén un pulso constante de 4 tiempos por acorde (compás de 4/4).</li>
+                            <li>Pasa de <strong>Am(i)</strong> a <strong>C(bIII)</strong> deslizando únicamente la mano para mantener fluidez.</li>
+                            <li>Al llegar al cuarto acorde <strong>D(IV)</strong>, escucha la tensión brillante del modo dórico impulsada por la nota <strong>F#(VI)</strong>, la cual resuelve suavemente al volver a iniciar en <strong>Am(i)</strong> [3].</li>
+                        </ol>
+                    </section>
+                `
+            },
+            {
+                id: 'mod-2',
+                shortLabel: '3.0 PATRÓN 2',
+                badge: '3.0 MÓDULO 2 • MODO MAYOR',
+                title: 'PATRÓN 2 - LA PROGRESIÓN PLAGAL EN MODO MAYOR',
+                subtitle: 'Fórmula I → V → ii → IV • Cadencia rota y resolución plagal luminosa',
+                content: `
+                    <!-- Fórmula Interactiva -->
+                    <div class="premium-card-highlight rounded-3xl p-4 sm:p-6 mb-4 text-center">
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-emerald-400">3.1 Definición y fórmula del Patrón 2 [5]</span>
+                        <div class="my-3 py-3 px-4 rounded-2xl bg-slate-950/90 border border-emerald-500/30 font-mono font-extrabold text-xl sm:text-3xl text-white tracking-wider">
+                            I &longrightarrow; V &longrightarrow; ii &longrightarrow; IV
+                        </div>
+                        <button onclick="togglePianoDrawer(true); playProgressionDemo([['C4','E4','G4'],['G3','B3','D4'],['D4','F4','A4'],['F3','A3','C4']], 'Patrón 2: C(I) → G(V) → Dm(ii) → F(IV)')" class="mt-1 px-4 py-2.5 rounded-xl bg-emerald-500 text-slate-950 font-display font-bold text-xs inline-flex items-center gap-2 shadow-md active:scale-95">
+                            <i class="ph-fill ph-speaker-high text-base"></i>
+                            <span>Escuchar Patrón 2 en Piano (C Mayor)</span>
+                        </button>
+                    </div>
+
+                    <!-- Acordes en C mayor -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-base text-white mb-3">3.4 Construcción nota por nota en tonalidad de C(I) mayor (Pulsa para oír):</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            <button onclick="playNamedChord('C(I): C - E - G', ['C4','E4','G4'])" class="p-3 rounded-2xl bg-slate-900 hover:bg-emerald-900/30 border border-slate-700 text-left">
+                                <span class="text-xs text-emerald-400 font-bold">1. Acorde I</span>
+                                <p class="text-lg font-display font-black text-white">C(I)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">C(I) - E(III) - G(V)</p>
+                            </button>
+                            <button onclick="playNamedChord('G(V): G - B - D', ['G3','B3','D4'])" class="p-3 rounded-2xl bg-slate-900 hover:bg-emerald-900/30 border border-slate-700 text-left">
+                                <span class="text-xs text-emerald-400 font-bold">2. Acorde V</span>
+                                <p class="text-lg font-display font-black text-white">G(V)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">G(V) - B(VII) - D(II)</p>
+                            </button>
+                            <button onclick="playNamedChord('Dm(ii): D - F - A', ['D4','F4','A4'])" class="p-3 rounded-2xl bg-slate-900 hover:bg-emerald-900/30 border border-slate-700 text-left">
+                                <span class="text-xs text-amber-400 font-bold">3. Acorde ii</span>
+                                <p class="text-lg font-display font-black text-white">Dm(ii)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">D(II) - F(IV) - A(VI)</p>
+                            </button>
+                            <button onclick="playNamedChord('F(IV): F - A - C', ['F3','A3','C4'])" class="p-3 rounded-2xl bg-slate-900 hover:bg-emerald-900/30 border border-slate-700 text-left">
+                                <span class="text-xs text-emerald-400 font-bold">4. Acorde IV</span>
+                                <p class="text-lg font-display font-black text-white">F(IV)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">F(IV) - A(VI) - C(I)</p>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- 3.2 y 3.3 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <section class="premium-card rounded-3xl p-4 sm:p-5">
+                            <h3 class="font-display font-bold text-base text-brand-400 mb-2">3.2 Transformación del modo menor al modo mayor [5]</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                Todos los acordes resultantes son estrictamente diatónicos dentro de la escala mayor [5]. Sin embargo, la sonoridad cambia sustancialmente: adquiere un marcado sabor a subdominante, ya que la segunda mitad del patrón está ocupada por los acordes <strong>Dm(ii)</strong> y <strong>F(IV)</strong> [5].
+                            </p>
+                        </section>
+                        <section class="premium-card rounded-3xl p-4 sm:p-5">
+                            <h3 class="font-display font-bold text-base text-amber-400 mb-2">3.3 Análisis de cadencias: Rota y Plagal [5]</h3>
+                            <ul class="text-xs sm:text-sm text-slate-300 space-y-2">
+                                <li>• <strong>Cadencia Rota</strong>: El quinto grado dominante <strong>G(V)</strong> no resuelve directamente al primer grado <strong>C(I)</strong>, sino que realiza una cadencia rota hacia el segundo grado menor <strong>Dm(ii)</strong> [5].</li>
+                                <li>• <strong>Resolución Plagal</strong>: El cuarto grado mayor <strong>F(IV)</strong> cierra el bucle enlazando directamente con el primer grado mayor <strong>C(I)</strong> al reiniciarse la secuencia [5].</li>
+                            </ul>
+                        </section>
+                    </div>
+
+                    <!-- 3.5 Canciones -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-base text-emerald-400 mb-2">3.5 Ejemplos en canciones populares e internacionales [5, 6]</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-star text-emerald-400"></i><span><em>"Unwritten"</em> / temas de Katy Perry (<em>"Unconditionally"</em>) [5]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-star text-emerald-400"></i><span><em>"All Star"</em> — Smash Mouth [6]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-star text-emerald-400"></i><span><em>"White Horse" / "You Belong With Me"</em> — Taylor Swift [6]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-star text-emerald-400"></i><span><em>"Just Like Heaven"</em> — The Cure [6]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-star text-emerald-400"></i><span><em>"Irreplaceable"</em> — Beyoncé [6]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 flex items-center gap-2"><i class="ph-fill ph-star text-emerald-400"></i><span><em>"Who Knew" / "So What"</em> — Pink [6]</span></div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 sm:col-span-2 flex items-center gap-2"><i class="ph-fill ph-star text-emerald-400"></i><span>Estribillos de Demi Lovato, Shakira (<em>"Las de la Intuición"</em>) y Nelly Furtado (<em>"I'm Like a Bird"</em>) [6]</span></div>
+                        </div>
+                    </section>
+
+                    <!-- 3.6 Práctica -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6">
+                        <h3 class="font-display font-bold text-base text-sky-400 mb-2">3.6 Práctica guiada e independencia de manos</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Toca con la mano izquierda notas negras en redondas (4 tiempos) sobre las fundamentales <code class="text-emerald-300 font-mono">C(I), G(V), D(II), F(IV)</code>, mientras la mano derecha ejecuta un patrón rítmico de corcheas (8 golpeteos por compás) marcando los acordes en posición fundamental.
+                        </p>
+                    </section>
+                `
+            },
+            {
+                id: 'mod-3',
+                shortLabel: '4.0 PATRÓN 3',
+                badge: '4.0 MÓDULO 3 • MODO EÓLICO',
+                title: 'PATRÓN 3 - EL CLÁSICO EÓLICO TRASCENDENTE',
+                subtitle: 'Fórmula i → bVII → v → bVI • De la melancolía íntima a la energía épica',
+                content: `
+                    <!-- Fórmula Interactiva -->
+                    <div class="premium-card-highlight rounded-3xl p-4 sm:p-6 mb-4 text-center">
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-purple-400">4.1 Definición y fórmula del Patrón 3 [6]</span>
+                        <div class="my-3 py-3 px-4 rounded-2xl bg-slate-950/90 border border-purple-500/30 font-mono font-extrabold text-xl sm:text-3xl text-white tracking-wider">
+                            i &longrightarrow; bVII &longrightarrow; v &longrightarrow; bVI
+                        </div>
+                        <button onclick="togglePianoDrawer(true); playProgressionDemo([['A3','C4','E4'],['G3','B3','D4'],['E3','G3','B3'],['F3','A3','C4']], 'Patrón 3: Am(i) → G(bVII) → Em(v) → F(bVI)')" class="mt-1 px-4 py-2.5 rounded-xl bg-purple-500 text-white font-display font-bold text-xs inline-flex items-center gap-2 shadow-md active:scale-95">
+                            <i class="ph-fill ph-speaker-high text-base"></i>
+                            <span>Escuchar Patrón 3 en Piano (A menor eólico)</span>
+                        </button>
+                    </div>
+
+                    <!-- 4.4 Construcción -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-base text-white mb-3">4.4 Construcción paso a paso en A(I) menor eólico:</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            <button onclick="playNamedChord('Am(i): A - C - E', ['A3','C4','E4'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-purple-400 font-bold">1. Grado i</span>
+                                <p class="text-lg font-display font-black text-white">Am(i)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">A(I) - C(bIII) - E(V)</p>
+                            </button>
+                            <button onclick="playNamedChord('G(bVII): G - B - D', ['G3','B3','D4'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-purple-400 font-bold">2. Grado bVII</span>
+                                <p class="text-lg font-display font-black text-white">G(bVII)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">G(bVII) - B(II) - D(IV)</p>
+                            </button>
+                            <button onclick="playNamedChord('Em(v): E - G - B', ['E3','G3','B3'])" class="p-3 rounded-2xl bg-purple-950/40 border border-purple-500/50 text-left">
+                                <span class="text-xs text-amber-400 font-bold">3. Grado v (Eólico)</span>
+                                <p class="text-lg font-display font-black text-amber-300">Em(v)</p>
+                                <p class="text-[11px] font-mono text-slate-300 mt-1">E(V) - G(bVII) - B(II)</p>
+                            </button>
+                            <button onclick="playNamedChord('F(bVI): F - A - C', ['F3','A3','C4'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-purple-400 font-bold">4. Grado bVI</span>
+                                <p class="text-lg font-display font-black text-white">F(bVI)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">F(bVI) - A(I) - C(bIII)</p>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- 4.2 y 4.3 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <section class="premium-card rounded-3xl p-4 sm:p-5">
+                            <h3 class="font-display font-bold text-base text-purple-400 mb-2">4.2 La identidad del modo eólico [6, 7]</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                El toque estrictamente eólico lo aporta la presencia del quinto grado menor <strong>Em(v)</strong> junto con los acordes mayores levantados sobre los grados bemoles <strong>G(bVII)</strong> y <strong>F(bVI)</strong> [6, 7].
+                            </p>
+                        </section>
+                        <section class="premium-card rounded-3xl p-4 sm:p-5">
+                            <h3 class="font-display font-bold text-base text-amber-400 mb-2">4.3 Dinámica y expresividad [7]</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                A velocidades moderadas o lentas, este patrón ofrece una sonoridad tranquila, melancólica y reflexiva [7]. No obstante, al incrementarse la velocidad del tempo, transmite una atmósfera de trascendencia, fuerza e incluso agresividad rítmica [7].
+                            </p>
+                        </section>
+                    </div>
+
+                    <!-- 4.5 Ejemplos -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-base text-emerald-400 mb-2">4.5 Ejemplos históricos y contemporáneos [7]</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
+                            <div class="p-2.5 rounded-xl bg-slate-900">• Estribillos de <em>"Sweet Dreams (Are Made of This)"</em> — Eurythmics [7]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"Hello" / "Rolling in the Deep"</em> — Adele [7]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"Royals"</em> — Lorde / <em>"Ricochet"</em> [7]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"Attention"</em> — Charlie Puth / Hollywood Undead [7]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"Can't Hold Us"</em> — Macklemore & Ryan Lewis [7]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"Tell Me Baby" / "Dani California"</em> — Red Hot Chili Peppers [7]</div>
+                        </div>
+                    </section>
+
+                    <!-- 4.6 Ejercicio Técnico -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6">
+                        <h3 class="font-display font-bold text-base text-sky-400 mb-2">4.6 Ejercicio técnico de acompañamiento e inversión de acordes</h3>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            Para evitar saltos abruptos en el teclado, aplica la <strong>primera inversión</strong> en el acorde <strong>Em(v)</strong> tocando <code class="text-amber-300 font-mono">G(bVII) - B(II) - E(V)</code>, manteniendo la mano derecha dentro de una misma región de tres a cuatro teclas vecinas.
+                        </p>
+                    </section>
+                `
+            },
+            {
+                id: 'mod-4',
+                shortLabel: '5.0 PATRÓN 4',
+                badge: '5.0 MÓDULO 4 • EÓLICO SENSUAL',
+                title: 'PATRÓN 4 - LA PROGRESIÓN SENSUAL Y TRASCENDENTAL',
+                subtitle: 'Fórmula i → bIII → bVII → bVI • Fluidez, sensualidad envolvente y carácter épico',
+                content: `
+                    <!-- Fórmula Interactiva -->
+                    <div class="premium-card-highlight rounded-3xl p-4 sm:p-6 mb-4 text-center">
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-pink-400">5.1 Definición y fórmula del Patrón 4 [8]</span>
+                        <div class="my-3 py-3 px-4 rounded-2xl bg-slate-950/90 border border-pink-500/30 font-mono font-extrabold text-xl sm:text-3xl text-white tracking-wider">
+                            i &longrightarrow; bIII &longrightarrow; bVII &longrightarrow; bVI
+                        </div>
+                        <button onclick="togglePianoDrawer(true); playProgressionDemo([['A3','C4','E4'],['C4','E4','G4'],['G3','B3','D4'],['F3','A3','C4']], 'Patrón 4: Am(i) → C(bIII) → G(bVII) → F(bVI)')" class="mt-1 px-4 py-2.5 rounded-xl bg-pink-500 text-white font-display font-bold text-xs inline-flex items-center gap-2 shadow-md active:scale-95">
+                            <i class="ph-fill ph-speaker-high text-base"></i>
+                            <span>Escuchar Patrón 4 en Piano</span>
+                        </button>
+                    </div>
+
+                    <!-- 5.3 Construcción -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-base text-white mb-3">5.3 Construcción nota por nota en A(I) menor eólico:</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            <button onclick="playNamedChord('Am(i): A - C - E', ['A3','C4','E4'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-pink-400 font-bold">1. Grado i</span>
+                                <p class="text-lg font-display font-black text-white">Am(i)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">A(I) - C(bIII) - E(V)</p>
+                            </button>
+                            <button onclick="playNamedChord('C(bIII): C - E - G', ['C4','E4','G4'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-pink-400 font-bold">2. Grado bIII</span>
+                                <p class="text-lg font-display font-black text-white">C(bIII)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">C(bIII) - E(V) - G(bVII)</p>
+                            </button>
+                            <button onclick="playNamedChord('G(bVII): G - B - D', ['G3','B3','D4'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-pink-400 font-bold">3. Grado bVII</span>
+                                <p class="text-lg font-display font-black text-white">G(bVII)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">G(bVII) - B(II) - D(IV)</p>
+                            </button>
+                            <button onclick="playNamedChord('F(bVI): F - A - C', ['F3','A3','C4'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-pink-400 font-bold">4. Grado bVI</span>
+                                <p class="text-lg font-display font-black text-white">F(bVI)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">F(bVI) - A(I) - C(bIII)</p>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- 5.2 y 5.5 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <section class="premium-card rounded-3xl p-4 sm:p-5">
+                            <h3 class="font-display font-bold text-base text-pink-400 mb-2">5.2 Propiedades sonoras: Trascendencia, sensualidad y fluidez [8]</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                Esta progresión invita a una atmósfera trascendental y profunda [8]. Dependiendo del tempo y la articulación, puede transmitir desde una sensualidad envolvente hasta un carácter festivo o épico [8].
+                            </p>
+                        </section>
+                        <section class="premium-card rounded-3xl p-4 sm:p-5">
+                            <h3 class="font-display font-bold text-base text-amber-400 mb-2">5.5 Esquemas rítmicos y Voice Leading</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                Toca la nota común <code class="text-amber-300 font-mono">C(bIII)</code> presente en <strong>Am(i)</strong>, <strong>C(bIII)</strong> y <strong>F(bVI)</strong> sosteniéndola con el dedo meñique de la mano derecha mientras los dedos inferiores realizan los cambios de acorde.
+                            </p>
+                        </section>
+                    </div>
+
+                    <!-- 5.4 Ejemplos comerciales -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6">
+                        <h3 class="font-display font-bold text-base text-emerald-400 mb-2">5.4 Ejemplos de uso comercial [9]</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"Dynamite" / "Hangover"</em> — Taio Cruz [9]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"Alejandro" / "Poker Face" / "Bad Romance"</em> — Lady Gaga [9]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"The Nights" / "Levels"</em> — Avicii [9]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"Cheap Thrills"</em> — Sia / <em>"Impossible"</em> — James Arthur [9]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 sm:col-span-2">• <em>"Angel Eyes"</em> / temas de Within Temptation y Chantal Janzen [9]</div>
+                        </div>
+                    </section>
+                `
+            },
+            {
+                id: 'mod-5',
+                shortLabel: '6.0 PATRÓN 5',
+                badge: '6.0 MÓDULO 5 • VARIANTE CÍCLICA',
+                title: 'PATRÓN 5 - LA VARIANTE EÓLICA CÍCLICA',
+                subtitle: 'Fórmula i → bVI → bVII → v • Curva de tensión ascendente y dramatismo',
+                content: `
+                    <!-- Fórmula Interactiva -->
+                    <div class="premium-card-highlight rounded-3xl p-4 sm:p-6 mb-4 text-center">
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-sky-400">6.1 Definición y fórmula del Patrón 5 [9]</span>
+                        <div class="my-3 py-3 px-4 rounded-2xl bg-slate-950/90 border border-sky-500/30 font-mono font-extrabold text-xl sm:text-3xl text-white tracking-wider">
+                            i &longrightarrow; bVI &longrightarrow; bVII &longrightarrow; v
+                        </div>
+                        <button onclick="togglePianoDrawer(true); playProgressionDemo([['A3','C4','E4'],['F3','A3','C4'],['G3','B3','D4'],['E3','G3','B3']], 'Patrón 5: Am(i) → F(bVI) → G(bVII) → Em(v)')" class="mt-1 px-4 py-2.5 rounded-xl bg-sky-500 text-slate-950 font-display font-bold text-xs inline-flex items-center gap-2 shadow-md active:scale-95">
+                            <i class="ph-fill ph-speaker-high text-base"></i>
+                            <span>Escuchar Patrón 5 en Piano</span>
+                        </button>
+                    </div>
+
+                    <!-- 6.4 Construcción -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4">
+                        <h3 class="font-display font-bold text-base text-white mb-3">6.4 Construcción paso a paso en A(I) menor:</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            <button onclick="playNamedChord('Am(i): A - C - E', ['A3','C4','E4'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-sky-400 font-bold">1. Grado i</span>
+                                <p class="text-lg font-display font-black text-white">Am(i)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">A(I) - C(bIII) - E(V)</p>
+                            </button>
+                            <button onclick="playNamedChord('F(bVI): F - A - C', ['F3','A3','C4'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-sky-400 font-bold">2. Grado bVI</span>
+                                <p class="text-lg font-display font-black text-white">F(bVI)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">F(bVI) - A(I) - C(bIII)</p>
+                            </button>
+                            <button onclick="playNamedChord('G(bVII): G - B - D', ['G3','B3','D4'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-sky-400 font-bold">3. Grado bVII</span>
+                                <p class="text-lg font-display font-black text-white">G(bVII)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">G(bVII) - B(II) - D(IV)</p>
+                            </button>
+                            <button onclick="playNamedChord('Em(v): E - G - B', ['E3','G3','B3'])" class="p-3 rounded-2xl bg-slate-900 border border-slate-700 text-left">
+                                <span class="text-xs text-sky-400 font-bold">4. Grado v</span>
+                                <p class="text-lg font-display font-black text-white">Em(v)</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-1">E(V) - G(bVII) - B(II)</p>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- 6.2 y 6.3 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                        <section class="premium-card rounded-3xl p-4 sm:p-5">
+                            <h3 class="font-display font-bold text-base text-sky-400 mb-2">6.2 Comparativa sintáctica con el Patrón 3 [9]</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                Mientras el Patrón 3 coloca el acorde <strong>G(bVII)</strong> inmediatamente después del <strong>Am(i)</strong>, el Patrón 5 desciende primero hacia el subdominante relativo <strong>F(bVI)</strong>, creando una curva de tensión ascendente hacia <strong>G(bVII)</strong> que luego cae al quinto menor <strong>Em(v)</strong> [9].
+                            </p>
+                        </section>
+                        <section class="premium-card rounded-3xl p-4 sm:p-5">
+                            <h3 class="font-display font-bold text-base text-amber-400 mb-2">6.3 Carácter dramático y 6.6 Taller de arreglos</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-2">
+                                Produce matices de tristeza, melancolía, agresividad o energía según la velocidad y la dinámica aplicada en el teclado [9].
+                            </p>
+                            <p class="text-xs text-brand-300">
+                                <strong>Taller (6.6):</strong> Ejecuta octavas en la mano izquierda marcando la fundamental en tiempos 1 y 3, mientras la mano derecha arpegia las triadas en corcheas constantes.
+                            </p>
+                        </section>
+                    </div>
+
+                    <!-- 6.5 Ejemplos -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6">
+                        <h3 class="font-display font-bold text-base text-emerald-400 mb-2">6.5 Ejemplos en el repertorio [10]</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
+                            <div class="p-2.5 rounded-xl bg-slate-900">• Intro de piano en <em>"Paper Gangsta"</em> — Lady Gaga [10]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"Psycho"</em> — Muse / producciones de Genesis [10]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"Save Tonight"</em> — Eagle-Eye Cherry / <em>"All Night Long"</em> [10]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900">• <em>"All of Me"</em> (secciones) — John Legend [10]</div>
+                            <div class="p-2.5 rounded-xl bg-slate-900 sm:col-span-2">• <em>"Let Her Go"</em> — Passenger / <em>"Dance Monkey"</em> — Tones and I [10]</div>
+                        </div>
+                    </section>
+                `
+            },
+            {
+                id: 'mod-6',
+                shortLabel: '7.0 BONUS (x3)',
+                badge: '7.0 MÓDULO 6 • PATRONES BONUS',
+                title: 'PATRONES BONUS (DÓRICO, MIXOLIDIO Y EÓLICO ALTERNATIVO)',
+                subtitle: '3 progresiones selectas para expandir tu paleta armónica profesional',
+                content: `
+                    <!-- 7.1 Bonus 1 -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4 border-l-4 border-amber-500">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <div>
+                                <span class="text-xs font-bold text-amber-400 uppercase">7.1 Bonus 1 (Modo Dórico) [10, 11]</span>
+                                <h3 class="font-display font-black text-xl text-white font-mono mt-0.5">i &rightarrow; v &rightarrow; bVII &rightarrow; IV</h3>
+                            </div>
+                            <button onclick="togglePianoDrawer(true); playProgressionDemo([['A3','C4','E4'],['E3','G3','B3'],['G3','B3','D4'],['D4','F#4','A4']], 'Bonus 1 Dórico: Am → Em → G → D')" class="px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1.5">
+                                <i class="ph-fill ph-play"></i> Oír Bonus 1
+                            </button>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-300 mb-2">
+                            <strong>Notas en A(I) menor dórico:</strong> <code class="text-amber-300 font-mono">Am(i) &rightarrow; Em(v) &rightarrow; G(bVII) &rightarrow; D(IV)</code>.
+                        </p>
+                        <p class="text-xs sm:text-sm text-slate-300 mb-2">
+                            <strong>7.1.1 Análisis y repertorio:</strong> El salto del <strong>v</strong> menor al <strong>bVII</strong> y luego al <strong>IV</strong> mayor resalta el matiz característico del modo dórico [10].
+                        </p>
+                        <div class="p-2.5 rounded-xl bg-slate-900 text-xs text-slate-200">
+                            <strong>Ejemplos:</strong> <em>"Downtown"</em> de Petula Clark / Peaches, estribillos de <em>"Blinding Lights"</em> de The Weeknd y estribillos de Shakira [11].
+                        </div>
+                    </section>
+
+                    <!-- 7.2 Bonus 2 -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 mb-4 border-l-4 border-emerald-500">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <div>
+                                <span class="text-xs font-bold text-emerald-400 uppercase">7.2 Bonus 2 (Modo Mixolidio) [11]</span>
+                                <h3 class="font-display font-black text-xl text-white font-mono mt-0.5">I &rightarrow; v &rightarrow; bVII &rightarrow; IV</h3>
+                            </div>
+                            <button onclick="togglePianoDrawer(true); playProgressionDemo([['C4','E4','G4'],['G3','Bb3','D4'],['Bb3','D4','F4'],['F3','A3','C4']], 'Bonus 2 Mixolidio: C → Gm → Bb → F')" class="px-3.5 py-2 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs flex items-center gap-1.5">
+                                <i class="ph-fill ph-play"></i> Oír Bonus 2
+                            </button>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-300 mb-2">
+                            <strong>Notas en C(I) mixolidio:</strong> <code class="text-emerald-300 font-mono">C(I) &rightarrow; Gm(v) &rightarrow; Bb(bVII) &rightarrow; F(IV)</code>.
+                        </p>
+                        <p class="text-xs sm:text-sm text-slate-300 mb-2">
+                            <strong>7.2.1 Análisis y repertorio:</strong> Al combinar el primer grado mayor <strong>C(I)</strong> con el quinto menor <strong>Gm(v)</strong> y el séptimo bemol <strong>Bb(bVII)</strong>, genera un color épico y nostálgico propio de la música britpop y rock clásico [11].
+                        </p>
+                        <div class="p-2.5 rounded-xl bg-slate-900 text-xs text-slate-200">
+                            <strong>Ejemplo emblemático:</strong> <em>"Bitter Sweet Symphony"</em> de The Verve [11].
+                        </div>
+                    </section>
+
+                    <!-- 7.3 Bonus 3 -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6 border-l-4 border-purple-500">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <div>
+                                <span class="text-xs font-bold text-purple-400 uppercase">7.3 Bonus 3 (Modo Eólico Secuencial) [12]</span>
+                                <h3 class="font-display font-black text-xl text-white font-mono mt-0.5">i &rightarrow; iv &rightarrow; bVII &rightarrow; v</h3>
+                            </div>
+                            <button onclick="togglePianoDrawer(true); playProgressionDemo([['A3','C4','E4'],['D4','F4','A4'],['G3','B3','D4'],['E3','G3','B3']], 'Bonus 3 Eólico: Am → Dm → G → Em')" class="px-3.5 py-2 rounded-xl bg-purple-500 text-white font-bold text-xs flex items-center gap-1.5">
+                                <i class="ph-fill ph-play"></i> Oír Bonus 3
+                            </button>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-300 mb-2">
+                            <strong>Notas en A(I) menor eólico:</strong> <code class="text-purple-300 font-mono">Am(i) &rightarrow; Dm(iv) &rightarrow; G(bVII) &rightarrow; Em(v)</code>.
+                        </p>
+                        <p class="text-xs sm:text-sm text-slate-300 mb-2">
+                            <strong>7.3.1 Análisis y repertorio:</strong> Progresión oscura y melancólica con resolución suave del subdominante menor al dominante menor [12].
+                        </p>
+                        <div class="p-2.5 rounded-xl bg-slate-900 text-xs text-slate-200">
+                            <strong>Ejemplo destacado:</strong> <em>"Dancing in Circles"</em> de Lady Gaga [12].
+                        </div>
+                    </section>
+                `
+            },
+            {
+                id: 'mod-7',
+                shortLabel: '8.0 PROYECTOS',
+                badge: '8.0 MÓDULO 7 • TALLER PRÁCTICO',
+                title: 'PROYECTOS INTEGRADORES PRÁCTICOS',
+                subtitle: 'Aplica los patrones en composiciones reales con contraste dinámico',
+                content: `
+                    <div class="space-y-4">
+                        <section class="premium-card rounded-3xl p-5">
+                            <span class="px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 text-xs font-bold">PROYECTO 1</span>
+                            <h3 class="font-display font-bold text-lg text-white mt-2 mb-2">8.1 Composición de un tema Pop/Rock en bucle utilizando el Patrón 2</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 mb-3"><strong>Objetivo:</strong> Crear una base armónica sólida para un tema pop en tonalidad de C(I) mayor.</p>
+                            <div class="space-y-2 text-xs sm:text-sm">
+                                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                                    <strong class="text-emerald-400">Estrofa (Mezzopiano):</strong> Patrón 2 (<code class="font-mono">C(I) &rightarrow; G(V) &rightarrow; Dm(ii) &rightarrow; F(IV)</code>) a volumen suave y acordes cerrados.
+                                </div>
+                                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                                    <strong class="text-amber-400">Estribillo (Forte):</strong> Patrón 2 con mano izquierda tocando octavas retumbantes y mano derecha en acordes abiertos a volumen fuerte.
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="premium-card rounded-3xl p-5">
+                            <span class="px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 text-xs font-bold">PROYECTO 2</span>
+                            <h3 class="font-display font-bold text-lg text-white mt-2 mb-2">8.2 Creación de una balada melancólica eólica combinando Patrones 3 y 4</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 mb-3"><strong>Objetivo:</strong> Transicionar entre la melancolía introspectiva y la fuerza emotiva.</p>
+                            <div class="space-y-2 text-xs sm:text-sm">
+                                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                                    <strong class="text-purple-400">Verso:</strong> Patrón 3 (<code class="font-mono">Am(i) &rightarrow; G(bVII) &rightarrow; Em(v) &rightarrow; F(bVI)</code>).
+                                </div>
+                                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                                    <strong class="text-pink-400">Coro:</strong> Patrón 4 (<code class="font-mono">Am(i) &rightarrow; C(bIII) &rightarrow; G(bVII) &rightarrow; F(bVI)</code>).
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="premium-card rounded-3xl p-5">
+                            <span class="px-2.5 py-1 rounded-md bg-amber-500/20 text-amber-300 text-xs font-bold">PROYECTO 3</span>
+                            <h3 class="font-display font-bold text-lg text-white mt-2 mb-2">8.3 Arreglo rítmico dinámico en modo dórico con el Patrón 1</h3>
+                            <p class="text-xs sm:text-sm text-slate-300 mb-3"><strong>Objetivo:</strong> Dominar el ritmo bailable y épico del modo dórico.</p>
+                            <div class="space-y-2 text-xs sm:text-sm">
+                                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                                    • Usar la Cascada Plagal (<code class="font-mono text-amber-300">Am(i) &rightarrow; C(bIII) &rightarrow; G(bVII) &rightarrow; D(IV)</code>).
+                                </div>
+                                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
+                                    • Aplicar un patrón rítmico sincopado en la mano derecha acentuando el acorde <strong>D(IV)</strong> en el tiempo 4 y su resolución hacia <strong>Am(i)</strong> [3].
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                `
+            },
+            {
+                id: 'mod-8',
+                shortLabel: '9.0 PRÁCTICAS',
+                badge: '9.0 MÓDULO 8 • TROUBLESHOOTING',
+                title: 'BUENAS PRÁCTICAS Y SOLUCIÓN DE PROBLEMAS',
+                subtitle: 'Conducción de voces, control del pedal Sustain, independencia y matriz de errores',
+                content: `
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h3 class="font-display font-bold text-sm text-brand-400 mb-2">9.1 Conducción de voces (Voice Leading)</h3>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                <strong>Regla de oro:</strong> Mantén las notas comunes entre acordes contiguos en la misma voz (dedo). Al pasar de <strong>Am(i)</strong> (A-C-E) a <strong>C(bIII)</strong> (C-E-G), conserva C y E estáticos y cambia solo A por G.
+                            </p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h3 class="font-display font-bold text-sm text-amber-400 mb-2">9.2 Control del pedal de resonancia (Sustain)</h3>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                <strong>Error habitual:</strong> Pisotear el pedal continuamente mezclando acordes de forma turbia.<br>
+                                <strong>Solución:</strong> Levanta y vuelve a presionar el pedal en el instante preciso en que cambias de acorde.
+                            </p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h3 class="font-display font-bold text-sm text-emerald-400 mb-2">9.3 Independencia rítmica de manos</h3>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Comienza practicando a tempo muy lento (<strong>60 BPM</strong>) con metrónomo. Toca primero solo la mano izquierda en pulsos de negra (1, 2, 3, 4) y luego añade la mano derecha.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 9.4 Matriz de errores comunes -->
+                    <section class="premium-card rounded-3xl p-4 sm:p-6">
+                        <h3 class="font-display font-bold text-base text-rose-400 mb-3">9.4 Matriz de errores comunes y soluciones prácticas</h3>
+                        <div class="space-y-3">
+                            <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800">
+                                <p class="text-xs font-bold text-rose-400">❌ Error Detectado: El cambio entre G(bVII) y D(IV) suena desconectado</p>
+                                <p class="text-xs text-slate-400 mt-1"><strong>Causa Principal:</strong> Salto excesivo de posición en la mano derecha.</p>
+                                <p class="text-xs text-emerald-300 mt-1"><strong>✔ Solución Práctica:</strong> Utiliza la primera inversión de <strong>D(IV)</strong>: <code class="font-mono">F#(VI) - A(I) - D(IV)</code>.</p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800">
+                                <p class="text-xs font-bold text-rose-400">❌ Error Detectado: El tono menor suena aburrido o plano</p>
+                                <p class="text-xs text-slate-400 mt-1"><strong>Causa Principal:</strong> Falta de contraste dinámico y rítmico.</p>
+                                <p class="text-xs text-emerald-300 mt-1"><strong>✔ Solución Práctica:</strong> Alterna entre arpegios lentos y marcaciones rítmicas acentuadas.</p>
+                            </div>
+                            <div class="p-3.5 rounded-2xl bg-slate-900 border border-slate-800">
+                                <p class="text-xs font-bold text-rose-400">❌ Error Detectado: Confusión entre Modo Dórico y Modo Eólico</p>
+                                <p class="text-xs text-slate-400 mt-1"><strong>Causa Principal:</strong> Equivocación en la cualidad del cuarto grado.</p>
+                                <p class="text-xs text-emerald-300 mt-1"><strong>✔ Solución Práctica:</strong> Recuerda: <strong>IV mayor = Dórico</strong> [3]; <strong>iv menor = Eólico</strong> [3].</p>
+                            </div>
+                        </div>
+                    </section>
+                `
+            },
+            {
+                id: 'mod-9',
+                shortLabel: '10.0 GLOSARIO',
+                badge: '10.0 MÓDULO 9 • DICCIONARIO TÉCNICO',
+                title: 'GLOSARIO DE TÉRMINOS MUSICALES Y TÉCNICOS',
+                subtitle: 'Conceptos clave explicados de forma directa y rigurosa',
+                content: `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h4 class="font-display font-bold text-sm text-brand-400">Acorde Triada</h4>
+                            <p class="text-xs text-slate-300 mt-1">Conjunto armónico de tres notas (fundamental, tercera y quinta) [1].</p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h4 class="font-display font-bold text-sm text-brand-400">Acorde Diatónico</h4>
+                            <p class="text-xs text-slate-300 mt-1">Acorde cuyas notas pertenecen estrictamente a la escala de la tonalidad principal [1].</p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h4 class="font-display font-bold text-sm text-amber-400">Cadencia Plagal</h4>
+                            <p class="text-xs text-slate-300 mt-1">Enlace armónico que resuelve desde el cuarto grado (IV o iv) directo al primer grado (I o i) [3, 5].</p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h4 class="font-display font-bold text-sm text-amber-400">Cadencia Rota</h4>
+                            <p class="text-xs text-slate-300 mt-1">Resolución inesperada de un acorde dominante (V) hacia un grado distinto del esperado primer grado (por ejemplo, al ii o vi) [5].</p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h4 class="font-display font-bold text-sm text-emerald-400">Intercambio Modal</h4>
+                            <p class="text-xs text-slate-300 mt-1">Recurso armónico que consiste en tomar prestados acordes de otro modo paralelo [2].</p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h4 class="font-display font-bold text-sm text-emerald-400">Modo Dórico</h4>
+                            <p class="text-xs text-slate-300 mt-1">Modo menor caracterizado por poseer un sexto grado mayor y un cuarto grado mayor IV(IV) [3].</p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h4 class="font-display font-bold text-sm text-purple-400">Modo Eólico</h4>
+                            <p class="text-xs text-slate-300 mt-1">Escala menor natural caracterizada por presentar el quinto grado menor v(V) y grados bemoles bIII, bVI, bVII [6, 7].</p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h4 class="font-display font-bold text-sm text-purple-400">Modo Mixolidio</h4>
+                            <p class="text-xs text-slate-300 mt-1">Modo mayor con el séptimo grado menor bVII(bVII) [11].</p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h4 class="font-display font-bold text-sm text-sky-400">Progresión Cerrada (Bucle/Loop)</h4>
+                            <p class="text-xs text-slate-300 mt-1">Secuencia armónica fija de 3 o 4 acordes que se repite de manera cíclica en una canción [1, 2].</p>
+                        </div>
+                        <div class="premium-card p-4 rounded-2xl">
+                            <h4 class="font-display font-bold text-sm text-sky-400">Voice Leading (Conducción de voces)</h4>
+                            <p class="text-xs text-slate-300 mt-1">Técnica de enlace suave de acordes minimizando la distancia de movimiento entre los dedos.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'mod-10',
+                shortLabel: '11.0 33 Q&A',
+                badge: '11.0 MÓDULO 10 • EVALUACIÓN INTEGRAL',
+                title: 'BANCO DE 33 PREGUNTAS Y RESPUESTAS (BÁSICO, AVANZADO Y PRO)',
+                subtitle: 'Filtra por nivel o despliega cada respuesta para verificar tu dominio',
+                content: `
+                    <!-- Filtros de Nivel Q&A -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button onclick="filterQA('all')" class="qa-filter-btn px-3.5 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold">Todas (33)</button>
+                        <button onclick="filterQA('basico')" class="qa-filter-btn px-3.5 py-2 rounded-xl bg-slate-800 text-emerald-400 text-xs font-bold border border-emerald-500/30">11.1 Básico (1-11)</button>
+                        <button onclick="filterQA('avanzado')" class="qa-filter-btn px-3.5 py-2 rounded-xl bg-slate-800 text-amber-400 text-xs font-bold border border-amber-500/30">11.2 Avanzado (12-22)</button>
+                        <button onclick="filterQA('pro')" class="qa-filter-btn px-3.5 py-2 rounded-xl bg-slate-800 text-purple-400 text-xs font-bold border border-purple-500/30">11.3 PRO (23-33)</button>
+                    </div>
+
+                    <div id="qa-list-container" class="space-y-2.5">
+                        <!-- Generado por JS con las 33 preguntas íntegras -->
+                    </div>
+                `
+            },
+            {
+                id: 'mod-11',
+                shortLabel: '12.0 PROMPTS IA',
+                badge: '12.0 MÓDULO 11 • ENTRENAMIENTO IA',
+                title: 'GUÍA DE PROMPTS PRÁCTICOS PARA ENTRENAMIENTO E IA',
+                subtitle: 'Pulsa en "Copiar Prompt" para usarlos en tus sesiones de estudio autodidacta',
+                content: `
+                    <div class="space-y-3.5">
+                        <div class="premium-card p-4 sm:p-5 rounded-3xl">
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-xs font-bold text-brand-400 uppercase">Prompt 1 • Ejercicios de calentamiento</span>
+                                <button onclick="copyPromptText('Genera una rutina de calentamiento de 10 minutos para piano enfocada en la transición fluida de los acordes Am(i), C(bIII), G(bVII) y D(IV) usando conducción de voces en el sistema americano.')" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold flex items-center gap-1 active:scale-95">
+                                    <i class="ph-bold ph-copy"></i> Copiar Prompt
+                                </button>
+                            </div>
+                            <p class="text-xs sm:text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                "Genera una rutina de calentamiento de 10 minutos para piano enfocada en la transición fluida de los acordes Am(i), C(bIII), G(bVII) y D(IV) usando conducción de voces en el sistema americano."
+                            </p>
+                        </div>
+
+                        <div class="premium-card p-4 sm:p-5 rounded-3xl">
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-xs font-bold text-emerald-400 uppercase">Prompt 2 • Creación de acompañamientos rítmicos</span>
+                                <button onclick="copyPromptText('Escribe 3 patrones rítmicos en compás de 4/4 para acompañar la progresión I - V - ii - IV en C(I) mayor, indicando la acentuación para mano izquierda y derecha.')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1 active:scale-95">
+                                    <i class="ph-bold ph-copy"></i> Copiar Prompt
+                                </button>
+                            </div>
+                            <p class="text-xs sm:text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                "Escribe 3 patrones rítmicos en compás de 4/4 para acompañar la progresión I - V - ii - IV en C(I) mayor, indicando la acentuación para mano izquierda y derecha."
+                            </p>
+                        </div>
+
+                        <div class="premium-card p-4 sm:p-5 rounded-3xl">
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-xs font-bold text-amber-400 uppercase">Prompt 3 • Composición con Intercambio Modal</span>
+                                <button onclick="copyPromptText('Diseña una progresión armónica de 8 compases que comience en C(I) mayor y aplique intercambio modal importando el acorde bVI(bVI) del modo eólico.')" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold flex items-center gap-1 active:scale-95">
+                                    <i class="ph-bold ph-copy"></i> Copiar Prompt
+                                </button>
+                            </div>
+                            <p class="text-xs sm:text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                "Diseña una progresión armónica de 8 compases que comience en C(I) mayor y aplique intercambio modal importando el acorde bVI(bVI) del modo eólico."
+                            </p>
+                        </div>
+
+                        <div class="premium-card p-4 sm:p-5 rounded-3xl">
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-xs font-bold text-purple-400 uppercase">Prompt 4 • Análisis de Canciones</span>
+                                <button onclick="copyPromptText('Analiza la estructura armónica del tema Bitter Sweet Symphony identificando sus grados en modo mixolidio I - v - bVII - IV y explica su sonoridad.')" class="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold flex items-center gap-1 active:scale-95">
+                                    <i class="ph-bold ph-copy"></i> Copiar Prompt
+                                </button>
+                            </div>
+                            <p class="text-xs sm:text-sm font-mono text-slate-200 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                                "Analiza la estructura armónica del tema 'Bitter Sweet Symphony' identificando sus grados en modo mixolidio I - v - bVII - IV y explica su sonoridad."
+                            </p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'mod-12',
+                shortLabel: '13.0 FUENTES',
+                badge: '13.0 MÓDULO 12 • DOCUMENTACIÓN OFICIAL',
+                title: 'FUENTES FIABLES Y DOCUMENTACIÓN OFICIAL [13]',
+                subtitle: 'Todos los enlaces URL cuentan con su botón dedicado para abrir en otra ventana',
+                content: `
+                    <section class="premium-card rounded-3xl p-5 mb-4">
+                        <div class="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase mb-2">
+                            <i class="ph-fill ph-youtube-logo text-lg"></i>
+                            <span>1. Vídeo Tutorial Oficial en YouTube</span>
+                        </div>
+                        <h3 class="font-display font-extrabold text-lg text-white mb-1">5 PATRONES DE ACORDES QUE HAS DE CONOCER!</h3>
+                        <p class="text-xs text-slate-300 mb-2"><strong>Canal / Autor:</strong> Pere Hernàndez Music / Rubén Sbarsky [1, 2, 13]</p>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            <strong>Descripción de contenido:</strong> Explicación teórica y práctica de los 5 patrones armónicos cerrados en modo dórico y eólico, análisis de cadencias, ejemplos de canciones populares y progresiones bonus [1, 3, 5, 7, 10, 11].
+                        </p>
+
+                        ${renderUrlCard("Vídeo Oficial: 5 PATRONES DE ACORDES QUE HAS DE CONOCER!", "https://youtube.com/watch?v=OUYHbsK3iLo&is=KOtuawDZEicSU9Xk", "URL Directa Oficial [13]")}
+                    </section>
+
+                    <section class="premium-card rounded-3xl p-5">
+                        <h4 class="font-display font-bold text-sm text-brand-400 mb-2">Recursos Complementarios de Consulta Armónica</h4>
+                        <p class="text-xs text-slate-400 mb-3">Enlaces adicionales de referencia musical con apertura garantizada en otra ventana:</p>
+                        ${renderUrlCard("YouTube - Plataforma de Vídeo Musical", "https://www.youtube.com/watch?v=OUYHbsK3iLo", "Enlace espejo limpio")}
+                        ${renderUrlCard("Teoría Musical: Modos Griegos y Armonía Moderna (Wikipedia)", "https://es.wikipedia.org/wiki/Modo_musical", "Documentación Enciclopédica")}
+                    </section>
+                `
+            }
+        ];
+
+        /* =========================================================================
+           3. BANCO DE LAS 33 PREGUNTAS Y RESPUESTAS
+           ========================================================================= */
+        const QA_ITEMS = [
+            // Nivel Básico (1 a 11)
+            { n: 1, level: 'basico', label: 'Básico', q: '¿Qué es una progresión armónica cerrada?', a: 'Es una secuencia fija de 3 o 4 acordes que se repite cíclicamente en forma de bucle a lo largo de una canción [1, 2].' },
+            { n: 2, level: 'basico', label: 'Básico', q: '¿Qué notación musical se utiliza en este tutorial?', a: 'El sistema americano, que emplea las letras A(I), B(II), C(I), D(IV), E(V), F(IV) y G(V).' },
+            { n: 3, level: 'basico', label: 'Básico', q: '¿Cuál es la fórmula del Patrón 1 (Cascada Plagal)?', a: 'i - bIII - bVII - IV [3].' },
+            { n: 4, level: 'basico', label: 'Básico', q: '¿Qué notas forman el acorde Am(i)?', a: 'A(I), C(bIII) y E(V).' },
+            { n: 5, level: 'basico', label: 'Básico', q: '¿Qué notas forman el acorde C(bIII)?', a: 'C(bIII), E(V) y G(bVII).' },
+            { n: 6, level: 'basico', label: 'Básico', q: '¿Qué notas forman el acorde G(bVII)?', a: 'G(bVII), B(II) y D(IV).' },
+            { n: 7, level: 'basico', label: 'Básico', q: '¿Qué notas forman el acorde D(IV)?', a: 'D(IV), F#(VI) y A(I).' },
+            { n: 8, level: 'basico', label: 'Básico', q: '¿Cuál es la fórmula del Patrón 2 en modo mayor?', a: 'I - V - ii - IV [5].' },
+            { n: 9, level: 'basico', label: 'Básico', q: '¿Qué diferencia al modo eólico del modo dórico?', a: 'El modo dórico posee el cuarto grado mayor IV(IV) [3], mientras que el eólico tiene el cuarto grado menor iv(IV) y el quinto menor v(V) [6, 7].' },
+            { n: 10, level: 'basico', label: 'Básico', q: '¿Qué es un acorde triada?', a: 'Un acorde compuesto por tres notas: fundamental, tercera y quinta [1].' },
+            { n: 11, level: 'basico', label: 'Básico', q: '¿Para qué sirve el pedal de sostenimiento (Sustain) en el piano?', a: 'Para mantener resonando las notas después de soltar las teclas. Se debe cambiar en cada acorde para no ensuciar la armonía.' },
+            // Nivel Avanzado (12 a 22)
+            { n: 12, level: 'avanzado', label: 'Avanzado', q: '¿Por qué el Patrón 1 recibe el nombre de "Cascada Plagal"?', a: 'Debido al movimiento descendente de fundamentales por cuartas en sus acordes y la cadencia plagal constante que realiza el acorde IV sobre el i al reiniciar el bucle [3].' },
+            { n: 13, level: 'avanzado', label: 'Avanzado', q: '¿Qué cadencia especial ocurre en el Patrón 2 entre el segundo y tercer acorde?', a: 'Una cadencia rota entre el quinto grado V y el segundo menor ii [5].' },
+            { n: 14, level: 'avanzado', label: 'Avanzado', q: '¿Qué canción famosa de Oasis utiliza el Patrón 1?', a: '"Wonderwall" [4].' },
+            { n: 15, level: 'avanzado', label: 'Avanzado', q: '¿Qué canción emblemática de Katy Perry utiliza el Patrón 2?', a: '"Unconditionally" / temas como "Hong Kong" [5, 6].' },
+            { n: 16, level: 'avanzado', label: 'Avanzado', q: '¿Cuál es la fórmula del Patrón 3 eólico?', a: 'i - bVII - v - bVI [6].' },
+            { n: 17, level: 'avanzado', label: 'Avanzado', q: '¿Qué cualidades emocionales evoca el Patrón 3 a velocidad rápida?', a: 'Sensación de trascendencia, fuerza y un toque de agresividad [7].' },
+            { n: 18, level: 'avanzado', label: 'Avanzado', q: '¿Cuál es la fórmula del Patrón 4 eólico?', a: 'i - bIII - bVII - bVI [8].' },
+            { n: 19, level: 'avanzado', label: 'Avanzado', q: '¿Qué artista pop famosa utiliza masivamente el Patrón 4 en temas como "Poker Face"?', a: 'Lady Gaga [9].' },
+            { n: 20, level: 'avanzado', label: 'Avanzado', q: '¿Cómo se diferencia el Patrón 5 del Patrón 3?', a: 'Utilizan los mismos acordes eólicos, pero el Patrón 5 los reordena como i - bVI - bVII - v [9].' },
+            { n: 21, level: 'avanzado', label: 'Avanzado', q: '¿Qué canción utiliza la introducción de piano del Patrón 5?', a: '"Paper Gangsta" de Lady Gaga [10].' },
+            { n: 22, level: 'avanzado', label: 'Avanzado', q: '¿Qué es la conducción de voces (Voice Leading)?', a: 'Es la técnica de enlazar acordes enlazando notas comunes y moviendo las voces la menor distancia posible en el teclado.' },
+            // Nivel PRO (23 a 33)
+            { n: 23, level: 'pro', label: 'PRO', q: '¿Cuál es la fórmula armónica de la progresión bonus en modo Mixolidio?', a: 'I - v - bVII - IV [11].' },
+            { n: 24, level: 'pro', label: 'PRO', q: '¿Qué tema del grupo The Verve es el ejemplo máximo del uso de la progresión Mixolidia?', a: '"Bitter Sweet Symphony" [11].' },
+            { n: 25, level: 'pro', label: 'PRO', q: '¿Cuál es la estructura del patrón bonus en modo dórico?', a: 'i - v - bVII - IV [10].' },
+            { n: 26, level: 'pro', label: 'PRO', q: '¿Qué estructura presenta la progresión bonus usada por Lady Gaga en "Dancing in Circles"?', a: 'i - iv - bVII - v [12].' },
+            { n: 27, level: 'pro', label: 'PRO', q: '¿Cómo se aplica el intercambio modal al importar acordes menores al modo mayor?', a: 'Se toman prestados acordes propios del modo menor paralelo (como bVI o bVII) e introducirlos en una progresión en modo mayor para alterar el color armónico [2].' },
+            { n: 28, level: 'pro', label: 'PRO', q: '¿Por qué el acorde IV mayor en el modo dórico genera una resolución tan suave hacia el i menor?', a: 'Porque contiene la nota F#(VI) (sexta mayor del modo), la cual crea una tensión melódica descendente o ascendente muy fluida hacia las notas del acorde i (A(I)-C(bIII)-E(V)) [3].' },
+            { n: 29, level: 'pro', label: 'PRO', q: '¿Qué diferencia funcional existe entre una progresión abierta y una cerrada en la composición para cine o videojuegos?', a: 'Las progresiones cerradas son ideales para crear motivos dinámicos y loops repetitivos memorables [1], mientras que las abiertas permiten acompañar cambios narrativos y dramáticos complejos sin ciclo fijo [2].' },
+            { n: 30, level: 'pro', label: 'PRO', q: '¿Cómo se puede transformar la sonoridad de una progresión dórica a una eólica cambiando una sola nota en el piano?', a: 'Cambiando la tercera del cuarto grado: alterando la nota F#(VI) (que hace al acorde D(IV) mayor) por F(bVI) (haciendo el acorde Dm(iv) menor) [3, 6].' },
+            { n: 31, level: 'pro', label: 'PRO', q: '¿Cuál es la función del movimiento por cuartas descendentes en el análisis armónico avanzado?', a: 'Proporciona un impulso tonal natural muy fuerte, imitando la fuerza resolutiva de las cadenas de dominantes pero con color plagal subdominante [3].' },
+            { n: 32, level: 'pro', label: 'PRO', q: 'En una producción musical profesional, ¿cómo se compensa la repetición constante de un bucle de 4 acordes?', a: 'Mediante variaciones en la textura rítmica, cambios de octava, capas melódicas, instrumentación progresiva y dinámicas de interpretación en el piano.' },
+            { n: 33, level: 'pro', label: 'PRO', q: '¿Por qué se considera que dominar estos 5 patrones esenciales equivale a poder tocar miles de canciones comerciales?', a: 'Porque la gran mayoría de los éxitos de la música popular contemporánea están construidos sobre variaciones directas o bucles idénticos de estos mismos 5 esquemas armónicos [1, 4, 6, 8, 9].' }
+        ];
+
+        /* =========================================================================
+           4. LÓGICA DE NAVEGACIÓN DE PESTAÑAS, AUTO-CENTRADO Y BOTONES ANTERIOR/PRÓXIMA
+           ========================================================================= */
+        let currentTabIndex = 0;
+
+        function buildNavigation() {
+            const tabsBar = document.getElementById('tabs-bar');
+            const drawerLinks = document.getElementById('drawer-links');
+            tabsBar.innerHTML = '';
+            drawerLinks.innerHTML = '';
+
+            TABS_DATA.forEach((tab, idx) => {
+                // Botón en la barra superior horizontal
+                const btn = document.createElement('button');
+                btn.id = `tab-btn-${idx}`;
+                btn.setAttribute('role', 'tab');
+                btn.onclick = () => selectTab(idx);
+                btn.className = `shrink-0 px-3.5 py-2 rounded-xl font-display font-bold text-xs transition-all duration-200 flex items-center gap-1.5 border ${
+                    idx === currentTabIndex
+                        ? 'bg-gradient-to-r from-brand-600 to-indigo-600 text-white border-brand-400 shadow-md shadow-brand-600/30 scale-[1.02]'
+                        : 'bg-slate-900/90 text-slate-400 border-slate-800 hover:text-white hover:bg-slate-800'
+                }`;
+                btn.innerHTML = `<span>${tab.shortLabel}</span>`;
+                tabsBar.appendChild(btn);
+
+                // Elemento en el menú sándwich vertical
+                const dItem = document.createElement('button');
+                dItem.onclick = () => {
+                    selectTab(idx);
+                    toggleDrawer(false);
+                };
+                dItem.className = `w-full text-left p-3 rounded-xl transition flex items-center justify-between gap-2 ${
+                    idx === currentTabIndex
+                        ? 'bg-brand-600/25 text-white border border-brand-500/40 font-bold'
+                        : 'text-slate-300 hover:bg-slate-900'
+                }`;
+                dItem.innerHTML = `
+                    <div class="min-w-0">
+                        <span class="text-[10px] font-mono uppercase text-brand-400 block">${tab.shortLabel}</span>
+                        <span class="text-xs sm:text-sm block truncate">${idx === 0 ? 'INICIO (Portada + Índice Maestro)' : tab.title}</span>
+                    </div>
+                    <i class="ph-bold ph-caret-right text-slate-500 shrink-0"></i>
+                `;
+                drawerLinks.appendChild(dItem);
+            });
+        }
+
+        function selectTab(index) {
+            if (index < 0 || index >= TABS_DATA.length) return;
+            currentTabIndex = index;
+            const tab = TABS_DATA[index];
+            const main = document.getElementById('main-content');
+
+            // Cabecera de pestaña (En INICIO el título ya está en el hero con "by Rubén Sbarsky"; en las demás pestañas NO lleva "by Rubén Sbarsky")
+            const headerBlock = index === 0 ? '' : `
+                <div class="mb-5 pb-4 border-b border-slate-800/90">
+                    <span class="inline-block px-2.5 py-1 rounded-md bg-brand-500/15 border border-brand-500/30 text-brand-400 font-mono font-bold text-[11px] mb-2">
+                        ${tab.badge}
+                    </span>
+                    <h1 class="font-display font-black text-xl sm:text-3xl text-white leading-tight">${tab.title}</h1>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">${tab.subtitle}</p>
+                </div>
+            `;
+
+            // Botones fijos al final de cada pestaña: Anterior (si la hay) y Próxima (si la hay)
+            const hasPrev = index > 0;
+            const hasNext = index < TABS_DATA.length - 1;
+            const prevTab = hasPrev ? TABS_DATA[index - 1] : null;
+            const nextTab = hasNext ? TABS_DATA[index + 1] : null;
+
+            const footerNav = `
+                <div class="mt-8 pt-5 border-t border-slate-800">
+                    <p class="text-[11px] font-mono uppercase tracking-wider text-slate-500 text-center mb-3">
+                        Navegación de Pestaña (${index + 1} de ${TABS_DATA.length})
+                    </p>
+                    <div class="grid grid-cols-2 gap-3">
+                        ${hasPrev ? `
+                            <button onclick="selectTab(${index - 1})" class="p-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-left flex items-center gap-2.5 active:scale-95 transition shadow-md">
+                                <i class="ph-bold ph-arrow-left text-lg text-brand-400 shrink-0"></i>
+                                <div class="min-w-0">
+                                    <span class="block text-[10px] uppercase text-slate-400 font-bold">Pestaña Anterior</span>
+                                    <span class="block text-xs sm:text-sm font-display font-bold text-white truncate">${prevTab.shortLabel}</span>
+                                </div>
+                            </button>
+                        ` : `<div></div>`}
+
+                        ${hasNext ? `
+                            <button onclick="selectTab(${index + 1})" class="p-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 border border-brand-400/40 text-right flex items-center justify-end gap-2.5 active:scale-95 transition shadow-lg shadow-brand-600/25">
+                                <div class="min-w-0">
+                                    <span class="block text-[10px] uppercase text-brand-200 font-bold">Próxima Pestaña</span>
+                                    <span class="block text-xs sm:text-sm font-display font-bold text-white truncate">${nextTab.shortLabel}</span>
+                                </div>
+                                <i class="ph-bold ph-arrow-right text-lg text-white shrink-0"></i>
+                            </button>
+                        ` : `
+                            <button onclick="selectTab(0)" class="p-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-right flex items-center justify-end gap-2.5 active:scale-95 transition shadow-lg">
+                                <div class="min-w-0">
+                                    <span class="block text-[10px] uppercase text-emerald-100 font-bold">Tutorial Completado</span>
+                                    <span class="block text-xs sm:text-sm font-display font-bold text-white truncate">Volver a INICIO</span>
+                                </div>
+                                <i class="ph-bold ph-house text-lg text-white shrink-0"></i>
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+
+            main.innerHTML = `<div class="tab-animate">${headerBlock}${tab.content}${footerNav}</div>`;
+
+            // Si estamos en la pestaña de 33 Q&A, renderizar preguntas
+            if (tab.id === 'mod-10') {
+                filterQA('all');
+            }
+
+            // Actualizar estilos de botones y auto-centrar pestaña activa en la barra horizontal
+            buildNavigation();
+            centerActiveTabButton(index);
+
+            // Llevar siempre al comienzo de la pestaña recién abierta
+            scrollToCurrentTabTop();
+        }
+
+        function centerActiveTabButton(index) {
+            const tabsBar = document.getElementById('tabs-bar');
+            const activeBtn = document.getElementById(`tab-btn-${index}`);
+            if (tabsBar && activeBtn) {
+                const barWidth = tabsBar.clientWidth;
+                const btnLeft = activeBtn.offsetLeft;
+                const btnWidth = activeBtn.offsetWidth;
+                const scrollTarget = btnLeft - (barWidth / 2) + (btnWidth / 2);
+                tabsBar.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+            }
+        }
+
+        function scrollToCurrentTabTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+            document.body.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* =========================================================================
+           5. RENDERIZADO DE LAS 33 PREGUNTAS Y RESPUESTAS
+           ========================================================================= */
+        function filterQA(level) {
+            const container = document.getElementById('qa-list-container');
+            if (!container) return;
+
+            const filtered = level === 'all' ? QA_ITEMS : QA_ITEMS.filter(item => item.level === level);
+            container.innerHTML = filtered.map(item => {
+                const badgeColor = item.level === 'basico'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                    : item.level === 'avanzado'
+                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                        : 'bg-purple-500/20 text-purple-300 border-purple-500/30';
+
+                return `
+                    <details class="group premium-card rounded-2xl overflow-hidden border border-slate-800 open:border-brand-500/50 transition">
+                        <summary class="list-none cursor-pointer p-3.5 sm:p-4 flex items-center justify-between gap-3 select-none">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <span class="shrink-0 w-7 h-7 rounded-lg bg-slate-800 font-mono font-bold text-xs flex items-center justify-center text-brand-400">#${item.n}</span>
+                                <span class="text-xs sm:text-sm font-bold text-white leading-snug">${item.q}</span>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${badgeColor}">${item.label}</span>
+                                <i class="ph-bold ph-caret-down text-slate-400 group-open:rotate-180 transition-transform"></i>
+                            </div>
+                        </summary>
+                        <div class="px-4 pb-4 pt-2 text-xs sm:text-sm text-slate-300 border-t border-slate-800/80 bg-slate-950/50 leading-relaxed">
+                            <strong class="text-brand-400">Respuesta:</strong> ${item.a}
+                        </div>
+                    </details>
+                `;
+            }).join('');
+        }
+
+        /* =========================================================================
+           6. BOTONES FLOTANTES MOVIBLES (DRAGGABLE EN TÁCTIL Y RATÓN)
+           ========================================================================= */
+        function makeDraggable(el, onClickAction) {
+            let isDragging = false;
+            let hasMoved = false;
+            let startX = 0, startY = 0;
+            let initialLeft = 0, initialTop = 0;
+
+            function onStart(clientX, clientY) {
+                isDragging = true;
+                hasMoved = false;
+                startX = clientX;
+                startY = clientY;
+                const rect = el.getBoundingClientRect();
+                initialLeft = rect.left;
+                initialTop = rect.top;
+                el.style.bottom = 'auto';
+                el.style.right = 'auto';
+                el.style.left = `${initialLeft}px`;
+                el.style.top = `${initialTop}px`;
+            }
+
+            function onMove(clientX, clientY) {
+                if (!isDragging) return;
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+                if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+                    hasMoved = true;
+                }
+                if (hasMoved) {
+                    const maxX = window.innerWidth - el.offsetWidth - 6;
+                    const maxY = window.innerHeight - el.offsetHeight - 6;
+                    const newLeft = Math.max(6, Math.min(maxX, initialLeft + dx));
+                    const newTop = Math.max(6, Math.min(maxY, initialTop + dy));
+                    el.style.left = `${newLeft}px`;
+                    el.style.top = `${newTop}px`;
+                }
+            }
+
+            function onEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+                if (!hasMoved && typeof onClickAction === 'function') {
+                    onClickAction();
+                }
+            }
+
+            // Eventos Touch (Samsung Galaxy A02s)
+            el.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    onStart(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchmove', (e) => {
+                if (isDragging && e.touches.length === 1) {
+                    onMove(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+
+            window.addEventListener('touchend', () => onEnd());
+
+            // Eventos Mouse (Escritorio)
+            el.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                onStart(e.clientX, e.clientY);
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (isDragging) onMove(e.clientX, e.clientY);
+            });
+            window.addEventListener('mouseup', () => onEnd());
+        }
+
+        /* =========================================================================
+           7. SINTETIZADOR DE PIANO REAL (TONE.JS)
+           ========================================================================= */
+        let synth = null;
+        const PIANO_NOTES = [
+            { note: 'E3', type: 'white', label: 'E' },
+            { note: 'F3', type: 'white', label: 'F' },
+            { note: 'F#3', type: 'black', label: 'F#', left: '10.5%' },
+            { note: 'G3', type: 'white', label: 'G' },
+            { note: 'G#3', type: 'black', label: 'G#', left: '20.5%' },
+            { note: 'A3', type: 'white', label: 'A' },
+            { note: 'Bb3', type: 'black', label: 'Bb', left: '30.5%' },
+            { note: 'B3', type: 'white', label: 'B' },
+            { note: 'C4', type: 'white', label: 'C' },
+            { note: 'C#4', type: 'black', label: 'C#', left: '50.5%' },
+            { note: 'D4', type: 'white', label: 'D' },
+            { note: 'D#4', type: 'black', label: 'D#', left: '60.5%' },
+            { note: 'E4', type: 'white', label: 'E' },
+            { note: 'F4', type: 'white', label: 'F' },
+            { note: 'F#4', type: 'black', label: 'F#', left: '80.5%' },
+            { note: 'G4', type: 'white', label: 'G' },
+            { note: 'A4', type: 'white', label: 'A' }
+        ];
+
+        function initAudio() {
+            if (!synth && window.Tone) {
+                synth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: 'triangle' },
+                    envelope: { attack: 0.02, decay: 0.3, sustain: 0.4, release: 1.1 }
+                }).toDestination();
+            }
+        }
+
+        function buildVirtualPiano() {
+            const container = document.getElementById('virtual-piano');
+            container.innerHTML = '';
+            PIANO_NOTES.forEach(item => {
+                const key = document.createElement('button');
+                key.dataset.note = item.note;
+                if (item.type === 'white') {
+                    key.className = 'piano-key-white';
+                } else {
+                    key.className = 'piano-key-black';
+                    key.style.left = item.left;
+                }
+                key.innerHTML = `<span>${item.label}</span>`;
+                key.onclick = () => playSingleNote(item.note);
+                container.appendChild(key);
+            });
+        }
+
+        async function playSingleNote(note) {
+            try {
+                await Tone.start();
+                initAudio();
+                synth.triggerAttackRelease(note, '8n');
+                highlightKeys([note]);
+                document.getElementById('chord-display-label').textContent = `Nota: ${note}`;
+            } catch (e) {}
+        }
+
+        async function playNamedChord(label, notes) {
+            try {
+                await Tone.start();
+                initAudio();
+                synth.triggerAttackRelease(notes, '2n');
+                highlightKeys(notes);
+                document.getElementById('chord-display-label').textContent = label;
+            } catch (e) {}
+        }
+
+        async function playProgressionDemo(chordsArray, title) {
+            try {
+                await Tone.start();
+                initAudio();
+                document.getElementById('chord-display-label').textContent = title;
+                chordsArray.forEach((chord, i) => {
+                    setTimeout(() => {
+                        synth.triggerAttackRelease(chord, '2n');
+                        highlightKeys(chord);
+                    }, i * 750);
+                });
+            } catch (e) {}
+        }
+
+        function highlightKeys(notes) {
+            document.querySelectorAll('#virtual-piano button').forEach(btn => {
+                btn.classList.remove('active');
+                if (notes.includes(btn.dataset.note)) {
+                    btn.classList.add('active');
+                }
+            });
+            setTimeout(() => {
+                document.querySelectorAll('#virtual-piano button.active').forEach(btn => btn.classList.remove('active'));
+            }, 650);
+        }
+
+        /* =========================================================================
+           8. UTILIDADES (DRAWER, COPIAR PORTAPAPELES, INICIALIZACIÓN)
+           ========================================================================= */
+        function toggleDrawer(open) {
+            const drawer = document.getElementById('drawer-menu');
+            const backdrop = document.getElementById('drawer-backdrop');
+            if (open) {
+                backdrop.classList.remove('hidden');
+                setTimeout(() => backdrop.classList.add('opacity-100'), 10);
+                drawer.classList.remove('-translate-x-full');
+            } else {
+                backdrop.classList.remove('opacity-100');
+                drawer.classList.add('-translate-x-full');
+                setTimeout(() => backdrop.classList.add('hidden'), 250);
+            }
+        }
+
+        function togglePianoDrawer(open) {
+            const pDrawer = document.getElementById('piano-drawer');
+            if (open) {
+                pDrawer.classList.remove('translate-y-full');
+            } else {
+                pDrawer.classList.add('translate-y-full');
+            }
+        }
+
+        function copyPromptText(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const toast = document.getElementById('toast-msg');
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            }, 2200);
+        }
+
+        window.onload = function () {
+            buildVirtualPiano();
+            selectTab(0);
+
+            // Eventos Menú Sándwich (Índice)
+            document.getElementById('btn-open-drawer').onclick = () => toggleDrawer(true);
+            document.getElementById('btn-close-drawer').onclick = () => toggleDrawer(false);
+            document.getElementById('drawer-backdrop').onclick = () => toggleDrawer(false);
+
+            // Eventos Modal Piano
+            document.getElementById('btn-piano-modal').onclick = () => {
+                const isHidden = document.getElementById('piano-drawer').classList.contains('translate-y-full');
+                togglePianoDrawer(isHidden);
+            };
+            document.getElementById('btn-close-piano').onclick = () => togglePianoDrawer(false);
+
+            // Inicializar los dos botones flotantes movibles (INICIO y ARRIBA)
+            makeDraggable(document.getElementById('fab-home'), () => {
+                selectTab(0);
+            });
+            makeDraggable(document.getElementById('fab-top'), () => {
+                scrollToCurrentTabTop();
+            });
+        };
+    </script>
+</body>
+</html>
