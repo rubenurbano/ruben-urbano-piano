@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Mapa de rutas armónicas: cómo llegar a cada grado de la escala mayor by Rubén Sbarsky</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Tone.js para previsualización sonora opcional de acordes en el laboratorio -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: '#07090E',
+                        slateCard: '#111622',
+                        amberGold: '#F59E0B',
+                        cyanGlow: '#06B6D4',
+                        violetAccent: '#8B5CF6',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Optimizaciones para Samsung Galaxy A02s (720x1600px, ratio 20:9, fluidez táctil) */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #07090E;
+            color: #F1F5F9;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        /* Ocultar barra de scroll en carrusel horizontal pero mantener desplazamiento táctil suave */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Estilo de pestaña activa en barra superior */
+        .tab-btn-active {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+            color: #07090E !important;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+            border-color: #FBBF24 !important;
+        }
+        /* Tarjetas estilo Agencia Digital Premium */
+        .glass-card {
+            background: rgba(17, 22, 34, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .chord-pill {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #FCD34D;
+            padding: 0.1rem 0.45rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.88em;
+            display: inline-block;
+        }
+        /* Botones flotantes arrastrables */
+        .draggable-fab {
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: grab;
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+        }
+        .draggable-fab:active {
+            cursor: grabbing;
+            transform: scale(1.08);
+        }
+        /* Animación sutil para cambio de pestaña */
+        @keyframes fadeInTab {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-panel {
+            animation: fadeInTab 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-amber-500 selection:text-black">
+
+    <!-- CABECERA PERMANENTE FIJA: Botón Sándwich + Barra de Pestañas Horizontal Auto-Centrable -->
+    <header class="sticky top-0 z-40 w-full bg-[#07090E]/95 backdrop-blur-md border-b border-slate-800/90 shadow-xl">
+        <div class="max-w-4xl mx-auto flex items-center px-2 py-2 gap-1.5">
+            <!-- Botón ÍNDICE (Menú Sándwich) -->
+            <button id="openDrawerBtn" onclick="toggleDrawer(true)" aria-label="Abrir Índice Completo"
+                class="flex-shrink-0 flex items-center gap-1.5 px-3 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-amber-400 border border-amber-500/30 font-bold text-xs tracking-wide shadow-md active:scale-95 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                <span>ÍNDICE</span>
+            </button>
+
+            <!-- Barra de pestañas con desplazamiento táctil horizontal y auto-centrado -->
+            <nav id="topTabBar" class="flex-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-1 scroll-smooth" role="tablist">
+                <!-- Generado dinámicamente por JS para sincronización exacta -->
+            </nav>
+        </div>
+        <!-- Indicador de progreso de lectura de pestañas -->
+        <div class="w-full h-0.5 bg-slate-900">
+            <div id="tabProgressBar" class="h-full bg-gradient-to-r from-amber-500 via-cyan-400 to-violet-500 transition-all duration-300" style="width: 5.5%;"></div>
+        </div>
+    </header>
+
+    <!-- MENÚ SÁNDWICH (DRAWER VERTICAL COMPLETO CON LAS 18 PESTAÑAS) -->
+    <div id="indexDrawerBackdrop" onclick="toggleDrawer(false)" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    <aside id="indexDrawer" class="fixed top-0 left-0 bottom-0 w-[86vw] max-w-sm bg-[#0B0F19] border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+        <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+            <div class="flex items-center gap-2.5">
+                <span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span>
+                <div>
+                    <h2 class="font-extrabold text-sm text-white tracking-wider uppercase">Índice del Tutorial</h2>
+                    <p class="text-[11px] text-slate-400">18 Pestañas • Navegación Directa</p>
+                </div>
+            </div>
+            <button onclick="toggleDrawer(false)" class="p-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white active:scale-95">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div id="drawerList" class="flex-1 overflow-y-auto p-3 space-y-1.5 divide-y divide-slate-800/40">
+            <!-- Lista vertical generada por JS -->
+        </div>
+        <div class="p-3 bg-slate-950 border-t border-slate-800/80 text-center">
+            <p class="text-[11px] text-slate-400 font-mono">Optimizado • Samsung Galaxy A02s</p>
+        </div>
+    </aside>
+
+    <!-- CONTENEDOR PRINCIPAL DE PESTAÑAS -->
+    <main id="mainContentContainer" class="flex-1 w-full max-w-3xl mx-auto px-3.5 sm:px-6 pt-5 pb-28">
+
+        <!-- ==========================================
+             PESTAÑA 0: INICIO (PORTADA + ÍNDICE)
+             Solo aquí el título lleva "by Rubén Sbarsky"
+             ========================================== -->
+        <section id="tab-0" class="tab-panel space-y-6">
+            <!-- Hero Card Agencia Premium -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-[#121829] to-[#090D16] border border-amber-500/30 p-5 sm:p-8 shadow-2xl">
+                <div class="absolute -right-12 -top-12 w-44 h-44 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -left-12 -bottom-12 w-44 h-44 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-semibold mb-4">
+                    <span>🎵 LAB ARMÓNICO INTERACTIVO</span>
+                </div>
+
+                <!-- Título exclusivo de la pestaña INICIO con "by Rubén Sbarsky" -->
+                <h1 class="text-2xl sm:text-4xl font-black text-white leading-tight tracking-tight mb-4">
+                    Mapa de rutas armónicas: cómo llegar a cada grado de la escala mayor <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-cyan-400">by Rubén Sbarsky</span>
+                </h1>
+
+                <!-- Bloque de cita original íntegro -->
+                <blockquote class="border-l-4 border-amber-500 bg-slate-950/70 p-4 rounded-r-2xl text-slate-200 text-sm sm:text-base space-y-1.5 shadow-inner">
+                    <p class="font-bold text-amber-400">Tutorial práctico de armonía tonal, cromática y funcional</p>
+                    <p><span class="text-slate-400">Nivel:</span> desde fundamentos hasta recursos avanzados</p>
+                    <p><span class="text-slate-400">Centro de estudio:</span> DO mayor (C), transportable a cualquier tonalidad.</p>
+                </blockquote>
+            </div>
+
+            <!-- Tarjeta del Índice Original con acceso directo a cada pestaña -->
+            <div class="glass-card rounded-3xl p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h2 class="text-lg sm:text-xl font-extrabold text-white flex items-center gap-2">
+                        <span class="w-2.5 h-6 rounded-full bg-amber-500 inline-block"></span>
+                        Índice
+                    </h2>
+                    <span class="text-xs font-mono text-slate-400">Toca un capítulo para ir</span>
+                </div>
+
+                <ol class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-sm">
+                    <li><button onclick="switchTab(1)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">1</span><span class="font-medium text-slate-100">Qué vamos a investigar</span></button></li>
+                    <li><button onclick="switchTab(2)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">2</span><span class="font-medium text-slate-100">El laboratorio: DO mayor</span></button></li>
+                    <li><button onclick="switchTab(3)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">3</span><span class="font-medium text-slate-100">Qué significa «llegar» a un acorde</span></button></li>
+                    <li><button onclick="switchTab(4)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">4</span><span class="font-medium text-slate-100">El mapa de los siete destinos</span></button></li>
+                    <li><button onclick="switchTab(5)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">5</span><span class="font-medium text-slate-100">Familias de acordes que amplían las rutas</span></button></li>
+                    <li><button onclick="switchTab(6)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">6</span><span class="font-medium text-slate-100">Rutas para llegar a cada grado</span></button></li>
+                    <li><button onclick="switchTab(7)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">7</span><span class="font-medium text-slate-100">Cómo construir rutas nuevas</span></button></li>
+                    <li><button onclick="switchTab(8)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">8</span><span class="font-medium text-slate-100">Conducción de voces: el verdadero motor</span></button></li>
+                    <li><button onclick="switchTab(9)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">9</span><span class="font-medium text-slate-100">Inversiones, bajos y acordes de paso</span></button></li>
+                    <li><button onclick="switchTab(10)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">10</span><span class="font-medium text-slate-100">Cómo organizar un catálogo sin perderse</span></button></li>
+                    <li><button onclick="switchTab(11)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">11</span><span class="font-medium text-slate-100">Método de trabajo autodidacta</span></button></li>
+                    <li><button onclick="switchTab(12)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">12</span><span class="font-medium text-slate-100">Ejercicios prácticos</span></button></li>
+                    <li><button onclick="switchTab(13)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">13</span><span class="font-medium text-slate-100">33 preguntas y respuestas por dificultad</span></button></li>
+                    <li><button onclick="switchTab(14)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">14</span><span class="font-medium text-slate-100">Glosario</span></button></li>
+                    <li><button onclick="switchTab(15)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">15</span><span class="font-medium text-slate-100">Fuentes y bibliografía en línea</span></button></li>
+                    <li><button onclick="switchTab(16)" class="w-full text-left p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center gap-3 transition active:scale-[0.99]"><span class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 font-mono font-bold flex items-center justify-center text-xs">★</span><span class="font-medium text-slate-100">Conclusión: pensar en rutas, no en recetas</span></button></li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 1: 1. Qué vamos a investigar
+             ========================================== -->
+        <section id="tab-1" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 01</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">1. Qué vamos a investigar</h2>
+                <p class="text-slate-300 leading-relaxed">La pregunta central de este tutorial es:</p>
+                <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 to-cyan-500/10 border border-amber-500/40 text-amber-200 font-bold text-base sm:text-lg shadow-md">
+                    ¿Qué caminos armónicos puedo utilizar para llegar a cada uno de los siete grados de una tonalidad mayor?
+                </div>
+                <p class="text-slate-300 leading-relaxed">
+                    No buscamos solamente las progresiones más conocidas. Queremos explorar las posibilidades que aparecen al combinar:
+                </p>
+                <ul class="space-y-2.5 text-slate-200 text-sm sm:text-base pl-1">
+                    <li class="flex items-start gap-2.5"><span class="text-amber-400 font-bold">•</span><span>Los siete acordes diatónicos de la tonalidad.</span></li>
+                    <li class="flex items-start gap-2.5"><span class="text-amber-400 font-bold">•</span><span>Tríadas mayores, menores, disminuidas y aumentadas.</span></li>
+                    <li class="flex items-start gap-2.5"><span class="text-amber-400 font-bold">•</span><span>Acordes de séptima: maj7, 7, m7, m7♭5 y °7.</span></li>
+                    <li class="flex items-start gap-2.5"><span class="text-amber-400 font-bold">•</span><span>Dominantes secundarios y sus sustitutos por tritono.</span></li>
+                    <li class="flex items-start gap-2.5"><span class="text-amber-400 font-bold">•</span><span>Acordes de sensible secundarios.</span></li>
+                    <li class="flex items-start gap-2.5"><span class="text-amber-400 font-bold">•</span><span>Acordes prestados del modo menor paralelo.</span></li>
+                    <li class="flex items-start gap-2.5"><span class="text-amber-400 font-bold">•</span><span>Disminuidos de paso, de aproximación y de nota común.</span></li>
+                    <li class="flex items-start gap-2.5"><span class="text-amber-400 font-bold">•</span><span>Acordes aumentados y dominantes alterados.</span></li>
+                    <li class="flex items-start gap-2.5"><span class="text-amber-400 font-bold">•</span><span>Acordes napolitanos y de sexta aumentada.</span></li>
+                    <li class="flex items-start gap-2.5"><span class="text-amber-400 font-bold">•</span><span>Inversiones, bajos cromáticos, notas comunes y conducción de voces.</span></li>
+                </ul>
+                <p class="text-slate-300 leading-relaxed">
+                    El objetivo no es afirmar que existe una cantidad cerrada y universal de rutas. <strong class="text-white">No existe un número único</strong> si permitimos cadenas de cualquier longitud, inversiones, extensiones, rearmonizaciones, enarmonías y modulaciones. Podemos crear progresiones cada vez más largas y combinarlas de muchas maneras.
+                </p>
+                <p class="text-slate-300 leading-relaxed">
+                    Lo que sí podemos hacer es construir un <strong class="text-amber-300">mapa sistemático, clasificable y ampliable</strong>, que permita saber qué recursos conducen a cada destino, por qué funcionan y qué sonido producen.
+                </p>
+            </div>
+
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4 border-l-4 border-l-cyan-400">
+                <h3 class="text-xl font-extrabold text-white">Tres preguntas para analizar cualquier ruta</h3>
+                <ol class="space-y-3 text-sm sm:text-base">
+                    <li class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800">
+                        <span class="font-mono font-bold text-amber-400">1. Destino:</span> ¿a qué acorde o grado quiero llegar?
+                    </li>
+                    <li class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800">
+                        <span class="font-mono font-bold text-cyan-400">2. Mecanismo:</span> ¿qué relación hace que el acorde anterior conduzca al destino?
+                    </li>
+                    <li class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800">
+                        <span class="font-mono font-bold text-violet-400">3. Voces:</span> ¿cómo se desplazan las notas de un acorde al siguiente?
+                    </li>
+                </ol>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    La tercera pregunta es decisiva. Dos progresiones con los mismos símbolos pueden sonar muy diferentes según la disposición, el registro, el ritmo y el movimiento de las voces.
+                </p>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 2: 2. El laboratorio: DO mayor
+             ========================================== -->
+        <section id="tab-2" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 02</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">2. El laboratorio: DO mayor</h2>
+                <p class="text-slate-300 leading-relaxed">
+                    Usaremos DO mayor porque permite ver con claridad las notas naturales. Después transportaremos el procedimiento a otras tonalidades.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+                        <span class="text-xs uppercase text-slate-400 block mb-1">Escala</span>
+                        <p class="font-mono font-bold text-base sm:text-lg text-amber-400">C – D – E – F – G – A – B</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+                        <span class="text-xs uppercase text-slate-400 block mb-1">Grados</span>
+                        <p class="font-mono font-bold text-base sm:text-lg text-cyan-400">1 – 2 – 3 – 4 – 5 – 6 – 7</p>
+                    </div>
+                </div>
+                <!-- Sintetizador Interactivo Opcional para escuchar los acordes del laboratorio -->
+                <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs text-amber-200 font-medium">🎹 Toca cualquier botón para escuchar el acorde en DO mayor:</span>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button onclick="playChord(['C4','E4','G4','B4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-black text-amber-300 font-mono text-xs border border-amber-500/40 transition">Cmaj7</button>
+                        <button onclick="playChord(['D4','F4','A4','C5'])" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-black text-amber-300 font-mono text-xs border border-amber-500/40 transition">Dm7</button>
+                        <button onclick="playChord(['E4','G4','B4','D5'])" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-black text-amber-300 font-mono text-xs border border-amber-500/40 transition">Em7</button>
+                        <button onclick="playChord(['F4','A4','C5','E5'])" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-black text-amber-300 font-mono text-xs border border-amber-500/40 transition">Fmaj7</button>
+                        <button onclick="playChord(['G3','B3','D4','F4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-black text-amber-300 font-mono text-xs border border-amber-500/40 transition">G7</button>
+                        <button onclick="playChord(['A3','C4','E4','G4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-black text-amber-300 font-mono text-xs border border-amber-500/40 transition">Am7</button>
+                        <button onclick="playChord(['B3','D4','F4','A4'])" class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-black text-amber-300 font-mono text-xs border border-amber-500/40 transition">Bm7♭5</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2.1 Tríadas diatónicas -->
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <h3 class="text-xl font-extrabold text-white">2.1 Tríadas diatónicas</h3>
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-900 text-amber-400 font-mono text-xs uppercase">
+                            <tr>
+                                <th class="py-3 px-3">Grado</th>
+                                <th class="py-3 px-3">Acorde</th>
+                                <th class="py-3 px-3">Notas</th>
+                                <th class="py-3 px-3">Calidad</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/80 font-mono text-xs sm:text-sm">
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">I</td><td class="py-2.5 px-3 text-amber-300">C</td><td class="py-2.5 px-3">C–E–G</td><td class="py-2.5 px-3 font-sans">Mayor</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">ii</td><td class="py-2.5 px-3 text-amber-300">Dm</td><td class="py-2.5 px-3">D–F–A</td><td class="py-2.5 px-3 font-sans">Menor</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">iii</td><td class="py-2.5 px-3 text-amber-300">Em</td><td class="py-2.5 px-3">E–G–B</td><td class="py-2.5 px-3 font-sans">Menor</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">IV</td><td class="py-2.5 px-3 text-amber-300">F</td><td class="py-2.5 px-3">F–A–C</td><td class="py-2.5 px-3 font-sans">Mayor</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">V</td><td class="py-2.5 px-3 text-amber-300">G</td><td class="py-2.5 px-3">G–B–D</td><td class="py-2.5 px-3 font-sans">Mayor</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">vi</td><td class="py-2.5 px-3 text-amber-300">Am</td><td class="py-2.5 px-3">A–C–E</td><td class="py-2.5 px-3 font-sans">Menor</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">vii°</td><td class="py-2.5 px-3 text-amber-300">Bdim</td><td class="py-2.5 px-3">B–D–F</td><td class="py-2.5 px-3 font-sans">Disminuido</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    La nomenclatura tradicional usa números romanos mayúsculos para acordes mayores y minúsculos para menores; el símbolo ° identifica la tríada disminuida.
+                </p>
+            </div>
+
+            <!-- 2.2 Acordes de séptima diatónicos -->
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <h3 class="text-xl font-extrabold text-white">2.2 Acordes de séptima diatónicos</h3>
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-900 text-cyan-400 font-mono text-xs uppercase">
+                            <tr>
+                                <th class="py-3 px-3">Grado</th>
+                                <th class="py-3 px-3">Acorde</th>
+                                <th class="py-3 px-3">Notas</th>
+                                <th class="py-3 px-3">Calidad</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/80 font-mono text-xs sm:text-sm">
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">Imaj7</td><td class="py-2.5 px-3 text-cyan-300">Cmaj7</td><td class="py-2.5 px-3">C–E–G–B</td><td class="py-2.5 px-3 font-sans">Mayor séptima</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">iim7</td><td class="py-2.5 px-3 text-cyan-300">Dm7</td><td class="py-2.5 px-3">D–F–A–C</td><td class="py-2.5 px-3 font-sans">Menor séptima</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">iiim7</td><td class="py-2.5 px-3 text-cyan-300">Em7</td><td class="py-2.5 px-3">E–G–B–D</td><td class="py-2.5 px-3 font-sans">Menor séptima</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">IVmaj7</td><td class="py-2.5 px-3 text-cyan-300">Fmaj7</td><td class="py-2.5 px-3">F–A–C–E</td><td class="py-2.5 px-3 font-sans">Mayor séptima</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">V7</td><td class="py-2.5 px-3 text-cyan-300">G7</td><td class="py-2.5 px-3">G–B–D–F</td><td class="py-2.5 px-3 font-sans">Séptima de dominante</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">vim7</td><td class="py-2.5 px-3 text-cyan-300">Am7</td><td class="py-2.5 px-3">A–C–E–G</td><td class="py-2.5 px-3 font-sans">Menor séptima</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">viiø7</td><td class="py-2.5 px-3 text-cyan-300">Bm7♭5</td><td class="py-2.5 px-3">B–D–F–A</td><td class="py-2.5 px-3 font-sans">Semidisminuido</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-sm text-rose-200">
+                    <strong>Atención:</strong> el acorde diatónico del séptimo grado con séptima es semidisminuido (Bm7♭5), no disminuido completo (Bdim7). Bdim7 contiene B–D–F–A♭ y requiere una nota cromática.
+                </div>
+            </div>
+
+            <!-- 2.3 Funciones armónicas -->
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <h3 class="text-xl font-extrabold text-white">2.3 Funciones armónicas: una brújula, no una jaula</h3>
+                <p class="text-slate-300 text-sm sm:text-base">Una clasificación inicial muy útil es:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30">
+                        <span class="font-bold text-emerald-400 block mb-1">Área de tónica:</span>
+                        <span class="font-mono text-white">I, iii y vi.</span>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30">
+                        <span class="font-bold text-cyan-400 block mb-1">Área predominante o subdominante:</span>
+                        <span class="font-mono text-white">ii y IV.</span>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30">
+                        <span class="font-bold text-amber-400 block mb-1">Área dominante:</span>
+                        <span class="font-mono text-white">V y vii°.</span>
+                    </div>
+                </div>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Las funciones describen tendencias y parentescos, no leyes inquebrantables. Un acorde puede adquirir otra función por el contexto, el bajo, la melodía o la duración.
+                </p>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 3: 3. Qué significa «llegar» a un acorde
+             ========================================== -->
+        <section id="tab-3" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 03</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">3. Qué significa «llegar» a un acorde</h2>
+                <p class="text-slate-300 leading-relaxed">
+                    En este estudio, una ruta es una sucesión de acordes que prepara un destino. Conviene distinguir cuatro situaciones.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <!-- 3.1 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2">
+                        <h3 class="text-lg font-bold text-amber-400">3.1 Llegada directa</h3>
+                        <p class="text-sm text-slate-300">Un acorde conduce inmediatamente al destino:</p>
+                        <ul class="space-y-1.5 font-mono text-sm text-white pt-1">
+                            <li>• G7 → C</li>
+                            <li>• Bdim → C</li>
+                            <li>• Fm → C</li>
+                        </ul>
+                    </div>
+
+                    <!-- 3.2 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2">
+                        <h3 class="text-lg font-bold text-cyan-400">3.2 Llegada preparada</h3>
+                        <p class="text-sm text-slate-300">Dos o más acordes preparan el destino:</p>
+                        <ul class="space-y-1.5 font-mono text-sm text-white pt-1">
+                            <li>• Dm7 → G7 → Cmaj7</li>
+                            <li>• Fmaj7 → G7 → Cmaj7</li>
+                            <li>• Am7 → Dm7 → G7 → Cmaj7</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3.3 -->
+                <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2">
+                    <h3 class="text-lg font-bold text-violet-400">3.3 Llegada cromática</h3>
+                    <p class="text-sm text-slate-300">Aparecen notas ajenas a la escala para crear atracción por semitono, alterar una función o colorear la resolución:</p>
+                    <ul class="space-y-2 text-sm text-slate-200 pt-1">
+                        <li>• <span class="chord-pill">D♭7 → Cmaj7</span> (sustitución por tritono de G7).</li>
+                        <li>• <span class="chord-pill">D♭maj7 → Cmaj7</span> (aproximación cromática por deslizamiento; efecto de color, no dominante funcional automática).</li>
+                        <li>• <span class="chord-pill">D♭dim7 → C</span> (posible aproximación por conducción de voces; debe comprobarse la disposición concreta).</li>
+                    </ul>
+                </div>
+
+                <!-- 3.4 -->
+                <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2">
+                    <h3 class="text-lg font-bold text-emerald-400">3.4 Llegada por reinterpretación</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Un mismo conjunto de notas puede entenderse de otra manera según lo que viene antes y después. Esto ocurre especialmente con acordes disminuidos de séptima y aumentados, que son simétricos y admiten varias lecturas enarmónicas.
+                    </p>
+                </div>
+
+                <!-- Advertencia -->
+                <div class="p-5 rounded-2xl bg-amber-500/10 border-l-4 border-amber-500 space-y-1.5">
+                    <h3 class="text-base font-extrabold text-amber-300 uppercase tracking-wide">Una advertencia importante</h3>
+                    <p class="text-sm sm:text-base text-slate-200 leading-relaxed">
+                        No todo acorde que precede a C es, por ese solo hecho, un «dominante de C». Puede ser una aproximación cromática, un acorde de paso, una sonoridad de color, una sustitución o una preparación predominante. <strong class="text-white">La proximidad no equivale a función.</strong>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 4: 4. El mapa de los siete destinos
+             ========================================== -->
+        <section id="tab-4" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 04</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">4. El mapa de los siete destinos</h2>
+                <p class="text-slate-300 leading-relaxed">
+                    Antes de ampliar las rutas, memoriza qué acorde representa cada destino en DO mayor:
+                </p>
+
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-900 text-amber-400 font-mono text-xs uppercase">
+                            <tr>
+                                <th class="py-3 px-3">Destino</th>
+                                <th class="py-3 px-3">Acorde básico</th>
+                                <th class="py-3 px-3">Función habitual</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/80 text-xs sm:text-sm">
+                            <tr class="bg-slate-950/40"><td class="py-3 px-3 font-mono font-bold text-white">I</td><td class="py-3 px-3 font-mono text-amber-300">C / Cmaj7</td><td class="py-3 px-3">Tónica</td></tr>
+                            <tr><td class="py-3 px-3 font-mono font-bold text-white">ii</td><td class="py-3 px-3 font-mono text-amber-300">Dm / Dm7</td><td class="py-3 px-3">Predominante</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-3 px-3 font-mono font-bold text-white">iii</td><td class="py-3 px-3 font-mono text-amber-300">Em / Em7</td><td class="py-3 px-3">Área de tónica, mediación</td></tr>
+                            <tr><td class="py-3 px-3 font-mono font-bold text-white">IV</td><td class="py-3 px-3 font-mono text-amber-300">F / Fmaj7</td><td class="py-3 px-3">Predominante</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-3 px-3 font-mono font-bold text-white">V</td><td class="py-3 px-3 font-mono text-amber-300">G / G7</td><td class="py-3 px-3">Dominante</td></tr>
+                            <tr><td class="py-3 px-3 font-mono font-bold text-white">vi</td><td class="py-3 px-3 font-mono text-amber-300">Am / Am7</td><td class="py-3 px-3">Área de tónica, relativo menor</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-3 px-3 font-mono font-bold text-white">vii°</td><td class="py-3 px-3 font-mono text-amber-300">Bdim / Bm7♭5</td><td class="py-3 px-3">Dominante / sensible</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="text-slate-300 leading-relaxed text-sm sm:text-base">
+                    El destino no tiene por qué ser siempre la tríada en posición fundamental. Podemos llegar a C/E, Dm/F, G/B, etc. El acorde sigue siendo el mismo en cuanto a identidad básica, pero el bajo cambia el movimiento y la sensación de llegada.
+                </p>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 5: 5. Familias de acordes que amplían las rutas
+             ========================================== -->
+        <section id="tab-5" class="tab-panel hidden space-y-4">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-3">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 05</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">5. Familias de acordes que amplían las rutas</h2>
+                <p class="text-slate-300 leading-relaxed">
+                    Esta sección es el vocabulario que utilizaremos para construir el mapa.
+                </p>
+            </div>
+
+            <!-- 5.1 -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+                <h3 class="text-lg font-extrabold text-amber-400">5.1 Dominante principal y dominantes secundarios</h3>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    Un dominante es un acorde de séptima de dominante (o una variante) que tiende a resolver en un acorde situado una quinta justa por debajo de su fundamental.
+                </p>
+                <p class="text-sm text-slate-400">En DO mayor:</p>
+                <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 font-mono text-xs sm:text-sm text-white">
+                    <li class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">• G7 → C (V7 → I).</li>
+                    <li class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">• A7 → Dm (V7/ii → ii).</li>
+                    <li class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">• B7 → Em (V7/iii → iii).</li>
+                    <li class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">• C7 → F (V7/IV → IV).</li>
+                    <li class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">• D7 → G (V7/V → V).</li>
+                    <li class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">• E7 → Am (V7/vi → vi).</li>
+                </ul>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    La notación <strong class="text-white">V7/x</strong> significa «dominante séptima del acorde x». El acorde puede incluir notas que no pertenecen a DO mayor: son cromatismos funcionales que tonicizan temporalmente el destino.
+                </p>
+            </div>
+
+            <!-- 5.2 -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+                <h3 class="text-lg font-extrabold text-cyan-400">5.2 Acordes de sensible secundarios</h3>
+                <p class="text-sm sm:text-base text-slate-300">Además del dominante secundario, se puede preparar un acorde con su acorde de sensible:</p>
+                <ul class="space-y-1.5 text-sm text-slate-200 font-mono">
+                    <li>• C♯dim o C♯dim7 → Dm.</li>
+                    <li>• D♯dim o D♯dim7 → Em.</li>
+                    <li>• E dim / E°7 (con la escritura correcta según función) → F, si se construye como sensible de F.</li>
+                    <li>• F♯dim o F♯dim7 → G.</li>
+                    <li>• G♯dim o G♯dim7 → Am.</li>
+                </ul>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    La regla práctica para construirlo: imagina que el acorde de destino es una tónica provisional; construye el acorde de sensible de esa tonalidad y escribe las alteraciones necesarias. Comprueba siempre las notas y la resolución. En análisis, se etiqueta <strong class="text-white">vii°/x</strong> o <strong class="text-white">vii°7/x</strong> según el caso.
+                </p>
+                <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs sm:text-sm text-amber-200">
+                    <strong>Importante:</strong> la sensible secundaria no es un comodín intercambiable sin más. Su resolución depende de la calidad del destino y del estilo. Los acordes mayores y menores se tonicizan con más claridad que los disminuidos o aumentados.
+                </div>
+            </div>
+
+            <!-- 5.3 -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+                <h3 class="text-lg font-extrabold text-violet-400">5.3 Disminuido completo y semidisminuido</h3>
+                <ul class="space-y-2 text-sm text-slate-200">
+                    <li>• <strong class="text-white">Disminuido (°):</strong> tríada de fundamental, tercera menor y quinta disminuida. Ejemplo: B–D–F.</li>
+                    <li>• <strong class="text-white">Disminuido de séptima (°7):</strong> añade una séptima disminuida. Ejemplo: B–D–F–A♭.</li>
+                    <li>• <strong class="text-white">Semidisminuido (ø7 o m7♭5):</strong> tríada disminuida más séptima menor. Ejemplo: B–D–F–A.</li>
+                </ul>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    No son equivalentes. El °7 es simétrico: está formado por tres terceras menores y puede reinterpretarse enarmónicamente desde cuatro fundamentales. Esa simetría facilita modulaciones y aproximaciones, pero la escritura y la función dependen del contexto.
+                </p>
+            </div>
+
+            <!-- 5.4 -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+                <h3 class="text-lg font-extrabold text-amber-400">5.4 Disminuidos de paso y de nota común</h3>
+                <p class="text-sm text-slate-300">Un disminuido puede aparecer:</p>
+                <ul class="space-y-1.5 text-sm text-slate-200">
+                    <li>• Como acorde de sensible que resuelve a un destino.</li>
+                    <li>• Como acorde de paso entre dos armonías, con movimiento cromático o conjunto en varias voces.</li>
+                    <li>• Como acorde de nota común (CT°7), que conserva una nota del acorde que va a adornar y genera tensión ornamental.</li>
+                </ul>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    Ejemplo de acorde de nota común hacia C: un <strong class="text-white">C°7</strong> escrito C–E♭–G♭–A (enarmonía posible de otras grafías) comparte C con C y puede funcionar como sonoridad de embellecimiento. No debe confundirse automáticamente con vii°7 de C, que sería B–D–F–A♭.
+                </p>
+            </div>
+
+            <!-- 5.5 -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+                <h3 class="text-lg font-extrabold text-cyan-400">5.5 Acordes aumentados</h3>
+                <p class="text-sm text-slate-300">Una tríada aumentada contiene fundamental, tercera mayor y quinta aumentada:</p>
+                <ul class="space-y-1 text-sm font-mono text-white">
+                    <li>• Caug: C–E–G♯.</li>
+                    <li>• Eaug: E–G♯–B♯ (enarmónicamente E–G♯–C).</li>
+                    <li>• G♯aug: G♯–B♯–D𝄪 (enarmónicamente G♯–C–E).</li>
+                </ul>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    La tríada aumentada es simétrica: sus intervalos son dos terceras mayores. Un mismo conjunto de alturas puede tener tres fundamentales posibles por enarmonía.
+                </p>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    En una dominante alterada, por ejemplo <strong class="text-white">G7♯5 = G–B–D♯–F</strong>, la quinta aumentada D♯ tiende a subir hacia E, tercera del acorde C (C–E–G). El acorde aumentado puede intensificar una resolución, pero no significa que cualquier aumentado resuelva automáticamente a cualquier grado. Hay que estudiar las notas reales y su conducción.
+                </p>
+            </div>
+
+            <!-- 5.6 y 5.7 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                    <h3 class="text-lg font-extrabold text-amber-400">5.6 Dominantes alterados</h3>
+                    <p class="text-sm text-slate-300">Un dominante puede incorporar ♭5, ♯5, ♭9, ♯9, etc. Ejemplos para llegar a C:</p>
+                    <ul class="font-mono text-sm text-white space-y-1">
+                        <li>• G7♭5 → C.</li>
+                        <li>• G7♯5 → C.</li>
+                        <li>• G7♭9 → C.</li>
+                        <li>• G7♯9 → C.</li>
+                    </ul>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Son colores de dominante; su eficacia depende de que las notas alteradas encuentren una resolución convincente. En jazz, estas sonoridades se combinan con sustituciones y extensiones.
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                    <h3 class="text-lg font-extrabold text-cyan-400">5.7 Sustitución por tritono</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        G7 y D♭7 comparten el tritono formado por B y F (en D♭7, las notas equivalentes son F y C♭, que suena como B). Por eso D♭7 puede sustituir a G7:
+                    </p>
+                    <div class="p-2.5 rounded-xl bg-slate-900 font-mono font-bold text-amber-300 text-center">D♭7 → Cmaj7</div>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        El bajo baja un semitono (D♭ → C), y las notas guía del dominante se mueven por semitono hacia notas del acorde de destino. La sustitución también se aplica a dominantes secundarios, si el contexto y la conducción lo permiten.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 5.8, 5.9, 5.10, 5.11 -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+                <h3 class="text-lg font-extrabold text-violet-400">5.8 Intercambio modal: acordes prestados del modo menor paralelo</h3>
+                <p class="text-sm text-slate-300">En DO mayor podemos tomar acordes de DO menor. Los más habituales incluyen:</p>
+                <ul class="space-y-1.5 text-sm text-slate-200">
+                    <li>• <strong class="text-white">Fm (iv):</strong> color predominante oscuro antes de G7 o C.</li>
+                    <li>• <strong class="text-white">A♭ (♭VI):</strong> color de submediante; puede enlazar con C por notas comunes y movimiento de voces.</li>
+                    <li>• <strong class="text-white">B♭ (♭VII):</strong> color modal, frecuente en pop/rock.</li>
+                    <li>• <strong class="text-white">E♭ (♭III):</strong> color de mediante bemol.</li>
+                    <li>• <strong class="text-white">Ddim (ii°)</strong> en determinados contextos derivados del menor.</li>
+                </ul>
+                <p class="text-sm text-slate-300">Ejemplos: Fm → C; A♭ → C; B♭ → C. No todos son cadencias funcionales clásicas; pueden ser enlaces modales o de color.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                    <h3 class="text-lg font-extrabold text-amber-400">5.9 Napolitano (♭II)</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        En DO, el acorde napolitano es D♭ mayor: D♭–F–A♭. Suele aparecer en primera inversión, D♭/F, y funciona normalmente como predominante que conduce a G o G7:
+                    </p>
+                    <div class="p-2.5 rounded-xl bg-slate-900 font-mono font-bold text-amber-300 text-center">D♭/F → G7 → C</div>
+                    <p class="text-sm text-slate-300">No es correcto describirlo como un dominante directo de C. Su función característica es preparar el dominante.</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                    <h3 class="text-lg font-extrabold text-cyan-400">5.10 Acordes de sexta aumentada</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Los acordes de sexta aumentada (italiano, francés y alemán) contienen el intervalo característico de sexta aumentada que se abre hacia la octava de la fundamental del dominante. En DO, suelen conducir a G o G7, y desde allí a C.
+                    </p>
+                    <p class="text-xs text-slate-400">Esquema general:</p>
+                    <div class="p-2.5 rounded-xl bg-slate-900 font-mono font-bold text-cyan-300 text-center text-xs sm:text-sm">It+6 / Fr+6 / Ger+6 → G(7) → C</div>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Su ortografía es funcional: por ejemplo, A♭ y F♯ forman una sexta aumentada que se abre hacia G. No basta con mirar el sonido enarmónico; la escritura muestra la dirección de las voces.
+                    </p>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+                <h3 class="text-lg font-extrabold text-emerald-400">5.11 Extensiones y acordes de color</h3>
+                <p class="text-sm text-slate-300">Se pueden ampliar los acordes con 9, 11 y 13, especialmente en lenguaje jazzístico. Por ejemplo:</p>
+                <ul class="font-mono text-sm text-white space-y-1">
+                    <li>• Dm9 → G13 → Cmaj9.</li>
+                    <li>• D♭9 → Cmaj9 (sustitución por tritono, según voicing).</li>
+                    <li>• G7alt → Cmaj7.</li>
+                </ul>
+                <p class="text-sm text-slate-300">Las extensiones no crean automáticamente una nueva función. A menudo enriquecen una función ya existente.</p>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 6: 6. Rutas para llegar a cada grado
+             ========================================== -->
+        <section id="tab-6" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-3">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 06</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">6. Rutas para llegar a cada grado</h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Las rutas siguientes son un <strong class="text-white">catálogo inicial de posibilidades</strong>, no una lista exhaustiva ni una afirmación de que todas sean igualmente habituales. Las flechas se leen de izquierda a derecha. La última armonía es el destino.
+                </p>
+            </div>
+
+            <!-- 6.1 Llegar al I -->
+            <div class="glass-card rounded-2xl p-5 space-y-3 border-l-4 border-amber-500">
+                <h3 class="text-xl font-black text-white">6.1 Llegar al I: C o Cmaj7</h3>
+                <p class="text-xs font-bold uppercase tracking-wider text-amber-400">Rutas funcionales básicas</p>
+                <ol class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>G → C (V–I).</li>
+                    <li>G7 → Cmaj7 (V7–I).</li>
+                    <li>Bdim → C (vii°–I).</li>
+                    <li>Bm7♭5 → Cmaj7 (viiø7–I, con conducción apropiada).</li>
+                    <li>Dm7 → G7 → Cmaj7 (ii–V–I).</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400 pt-2">Rutas cromáticas y alternativas</p>
+                <ol start="6" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>D♭7 → Cmaj7 (sustituto tritonal de G7).</li>
+                    <li>G7♭9 → Cmaj7.</li>
+                    <li>G7♯5 → Cmaj7.</li>
+                    <li>Fm → C (iv–I, intercambio modal).</li>
+                    <li>A♭ → C (♭VI–I, enlace modal/color).</li>
+                    <li>B♭ → C (♭VII–I, color modal/pop).</li>
+                    <li>C°7 → C (acorde de nota común, si se dispone como embellecimiento).</li>
+                    <li>Dm7♭5 → G7 → C (color predominante prestado, según contexto).</li>
+                    <li>A♭maj7 → D♭7 → C (cadena cromática; estudiar voces y estilo).</li>
+                </ol>
+                <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 mt-2">
+                    <span class="text-xs uppercase text-amber-400 font-bold block">Ruta extendida de ejemplo</span>
+                    <span class="font-mono text-sm text-white">Am7 → Dm7 → G7 → Cmaj7.</span>
+                </div>
+            </div>
+
+            <!-- 6.2 Llegar al ii -->
+            <div class="glass-card rounded-2xl p-5 space-y-3 border-l-4 border-cyan-500">
+                <h3 class="text-xl font-black text-white">6.2 Llegar al ii: Dm o Dm7</h3>
+                <p class="text-xs font-bold uppercase tracking-wider text-amber-400">Dominante secundario</p>
+                <ol class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>A7 → Dm (V/ii–ii).</li>
+                    <li>A7♭9 → Dm7.</li>
+                    <li>Em7 → A7 → Dm7 (ii–V/ii–ii, con Em7 como preparación).</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400 pt-2">Sensible secundaria y aproximación</p>
+                <ol start="4" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>C♯dim → Dm.</li>
+                    <li>C♯dim7 → Dm.</li>
+                    <li>E♭dim7 → Dm, posible por reinterpretación/enarmonía y conducción; no etiquetar sin analizar.</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-violet-400 pt-2">Otras rutas</p>
+                <ol start="7" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>F → Dm (IV–ii, enlace predominante).</li>
+                    <li>C → Dm (I–ii).</li>
+                    <li>B♭ → A7 → Dm (color modal + dominante secundario).</li>
+                    <li>E♭ → A7 → Dm (preparación cromática/modal).</li>
+                </ol>
+            </div>
+
+            <!-- 6.3 Llegar al iii -->
+            <div class="glass-card rounded-2xl p-5 space-y-3 border-l-4 border-violet-500">
+                <h3 class="text-xl font-black text-white">6.3 Llegar al iii: Em o Em7</h3>
+                <p class="text-xs font-bold uppercase tracking-wider text-amber-400">Dominante secundario</p>
+                <ol class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>B7 → Em (V/iii–iii).</li>
+                    <li>B7♭9 → Em7.</li>
+                    <li>F♯m7♭5 → B7 → Em7 (preparación iiø–V/iii–iii, con lenguaje tomado del menor o jazzístico).</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400 pt-2">Sensible secundaria</p>
+                <ol start="4" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>D♯dim → Em.</li>
+                    <li>D♯dim7 → Em.</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-violet-400 pt-2">Otras rutas</p>
+                <ol start="6" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>C → Em (I–iii, notas comunes).</li>
+                    <li>Am → Em (vi–iii, enlace de área de tónica).</li>
+                    <li>F♯7 → B7 → Em (cadena de dominantes, con tonicización sucesiva).</li>
+                    <li>F → B7 → Em (predominante cromática/diatónica seguida de dominante aplicado).</li>
+                </ol>
+            </div>
+
+            <!-- 6.4 Llegar al IV -->
+            <div class="glass-card rounded-2xl p-5 space-y-3 border-l-4 border-emerald-500">
+                <h3 class="text-xl font-black text-white">6.4 Llegar al IV: F o Fmaj7</h3>
+                <p class="text-xs font-bold uppercase tracking-wider text-amber-400">Dominante secundario</p>
+                <ol class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>C7 → F (V/IV–IV).</li>
+                    <li>C7♭9 → Fmaj7.</li>
+                    <li>Gm7 → C7 → Fmaj7 (ii–V/IV–IV; Gm7 es prestado de DO menor).</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400 pt-2">Sensible secundaria</p>
+                <ol start="4" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>E° → F.</li>
+                    <li>E°7 → F (según conducción y grafía funcional).</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-violet-400 pt-2">Otras rutas</p>
+                <ol start="6" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>C → F (I–IV).</li>
+                    <li>Dm → F (ii–IV).</li>
+                    <li>B♭ → F (♭VII–IV, color modal).</li>
+                    <li>A♭ → F (♭VI–IV, enlace modal/cromático).</li>
+                    <li>Gm → C7 → F (preparación modal y dominante aplicado).</li>
+                </ol>
+            </div>
+
+            <!-- 6.5 Llegar al V -->
+            <div class="glass-card rounded-2xl p-5 space-y-3 border-l-4 border-amber-400">
+                <h3 class="text-xl font-black text-white">6.5 Llegar al V: G o G7</h3>
+                <p class="text-xs font-bold uppercase tracking-wider text-amber-400">Dominante secundario</p>
+                <ol class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>D7 → G (V/V–V).</li>
+                    <li>D7♭9 → G7.</li>
+                    <li>Am7 → D7 → G (ii–V/V–V).</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400 pt-2">Sensible secundaria</p>
+                <ol start="4" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>F♯dim → G.</li>
+                    <li>F♯dim7 → G.</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-rose-400 pt-2">Predominantes cromáticas</p>
+                <ol start="6" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>D♭/F → G (napolitano en primera inversión hacia V).</li>
+                    <li>A♭–F♯ (sexta aumentada) → G.</li>
+                    <li>It+6 → G.</li>
+                    <li>Fr+6 → G.</li>
+                    <li>Ger+6 → G, con cuidado de la conducción de voces.</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-violet-400 pt-2">Otras rutas</p>
+                <ol start="11" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>C → G (I–V).</li>
+                    <li>Dm → G (ii–V).</li>
+                    <li>F → G (IV–V).</li>
+                    <li>Cm → G (iv prestado del modo menor, según estilo).</li>
+                </ol>
+            </div>
+
+            <!-- 6.6 Llegar al vi -->
+            <div class="glass-card rounded-2xl p-5 space-y-3 border-l-4 border-cyan-400">
+                <h3 class="text-xl font-black text-white">6.6 Llegar al vi: Am o Am7</h3>
+                <p class="text-xs font-bold uppercase tracking-wider text-amber-400">Dominante secundario</p>
+                <ol class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>E7 → Am (V/vi–vi).</li>
+                    <li>E7♭9 → Am7.</li>
+                    <li>Bm7♭5 → E7 → Am7 (iiø–V/vi–vi).</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-cyan-400 pt-2">Sensible secundaria</p>
+                <ol start="4" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>G♯dim → Am.</li>
+                    <li>G♯dim7 → Am.</li>
+                </ol>
+                <p class="text-xs font-bold uppercase tracking-wider text-violet-400 pt-2">Otras rutas</p>
+                <ol start="6" class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>C → Am (I–vi).</li>
+                    <li>F → Am (IV–vi).</li>
+                    <li>Dm → Am (ii–vi).</li>
+                    <li>C♯dim7 → Dm → E7 → Am (cadena de aproximaciones).</li>
+                    <li>B♭ → E7 → Am (color modal seguido de dominante aplicado).</li>
+                </ol>
+            </div>
+
+            <!-- 6.7 Llegar al vii° -->
+            <div class="glass-card rounded-2xl p-5 space-y-3 border-l-4 border-rose-500">
+                <h3 class="text-xl font-black text-white">6.7 Llegar al vii°: Bdim o Bm7♭5</h3>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                    Este destino requiere una precaución especial. Los acordes disminuidos son inestables y no suelen comportarse como tónicas ordinarias. Se puede llegar a ellos por conducción cromática, por función de paso o como objetivo momentáneo, pero no conviene aplicar mecánicamente la fórmula V/x.
+                </p>
+                <p class="text-xs font-bold uppercase tracking-wider text-rose-400">Aproximaciones posibles</p>
+                <ol class="space-y-1.5 text-sm font-mono text-slate-200 list-decimal list-inside">
+                    <li>C → Bdim (bajo C–B, movimiento descendente por semitono; comprobar voces).</li>
+                    <li>Am → Bdim (enlace por notas comunes y movimiento conjunto).</li>
+                    <li>F → Bdim (movimiento de voces; puede funcionar como enlace, no como dominante funcional).</li>
+                    <li>C♯dim7 → Bm7♭5 (aproximación cromática/enarmónica según disposición).</li>
+                    <li>C7 → Bm7♭5 (enlace cromático de color, no resolución estándar).</li>
+                    <li>F♯7 → Bm7♭5 (dominante de B como raíz, pero el acorde de destino es disminuido; requiere análisis cuidadoso y no equivale a una tonicización tonal convencional).</li>
+                </ol>
+                <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-sm text-rose-200">
+                    <strong>Idea esencial:</strong> para un destino disminuido, el movimiento de las voces y el contexto son más determinantes que una etiqueta funcional automática.
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 7: 7. Cómo construir rutas nuevas
+             ========================================== -->
+        <section id="tab-7" class="tab-panel hidden space-y-4">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-2">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 07</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">7. Cómo construir rutas nuevas</h2>
+                <p class="text-slate-300">En vez de memorizar cientos de progresiones, aprende a generarlas.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Método A -->
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                    <h3 class="text-lg font-extrabold text-amber-400">Método A: dominante del destino</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-slate-200">
+                        <li>Escribe el acorde de destino.</li>
+                        <li>Busca su fundamental.</li>
+                        <li>Sube una quinta justa desde esa fundamental para encontrar la raíz de su dominante.</li>
+                        <li>Construye un acorde de séptima de dominante.</li>
+                        <li>Resuelve las notas guía y escucha.</li>
+                    </ol>
+                    <p class="text-xs sm:text-sm text-slate-300 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                        Ejemplo: destino Dm. Una quinta por encima de D es A. Construimos A7: A–C♯–E–G. C♯ tiende a D y G tiende a F. Resultado: A7 → Dm.
+                    </p>
+                </div>
+
+                <!-- Método B -->
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                    <h3 class="text-lg font-extrabold text-cyan-400">Método B: acorde de sensible del destino</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-slate-200">
+                        <li>Trata el destino como tónica temporal.</li>
+                        <li>Localiza su séptimo grado (un semitono por debajo de la tónica).</li>
+                        <li>Construye una tríada disminuida o un acorde de sensible apropiado.</li>
+                        <li>Comprueba que las voces resuelvan hacia el acorde de destino.</li>
+                    </ol>
+                    <p class="text-xs sm:text-sm text-slate-300 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                        Ejemplo: para Dm, la sensible es C♯. C♯–E–G es C♯dim; puede resolver a Dm.
+                    </p>
+                </div>
+
+                <!-- Método C -->
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                    <h3 class="text-lg font-extrabold text-violet-400">Método C: sustitución por tritono</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-slate-200">
+                        <li>Localiza el dominante del destino.</li>
+                        <li>Sube o baja su raíz un tritono.</li>
+                        <li>Construye otro acorde de séptima de dominante.</li>
+                        <li>Comprueba el tritono común y la resolución cromática.</li>
+                    </ol>
+                    <p class="text-xs sm:text-sm text-slate-300 bg-slate-900 p-3 rounded-xl border border-slate-800">
+                        Ejemplo: G7 puede ser sustituido por D♭7 para llegar a C.
+                    </p>
+                </div>
+
+                <!-- Método D -->
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                    <h3 class="text-lg font-extrabold text-emerald-400">Método D: aproximación cromática</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-slate-200">
+                        <li>Elige una nota del acorde de destino.</li>
+                        <li>Crea movimiento por semitono hacia esa nota.</li>
+                        <li>Busca una armonía que contenga esa nota o que permita ese movimiento en varias voces.</li>
+                        <li>Evita asignarle función dominante si no existe una relación funcional real.</li>
+                    </ol>
+                </div>
+
+                <!-- Método E -->
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                    <h3 class="text-lg font-extrabold text-amber-300">Método E: intercambio modal</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-slate-200">
+                        <li>Identifica la tonalidad mayor.</li>
+                        <li>Toma acordes del modo menor paralelo.</li>
+                        <li>Escucha cuáles conservan notas comunes con el destino.</li>
+                        <li>Prueba el movimiento de las notas alteradas, especialmente ♭6, ♭3 y ♭7.</li>
+                    </ol>
+                </div>
+
+                <!-- Método F -->
+                <div class="glass-card rounded-2xl p-5 space-y-3">
+                    <h3 class="text-lg font-extrabold text-rose-400">Método F: simetría disminuida y aumentada</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-sm text-slate-200">
+                        <li>Escribe las notas exactas del acorde simétrico.</li>
+                        <li>Reinterpreta enarmónicamente su fundamental.</li>
+                        <li>Para cada lectura, busca una resolución posible.</li>
+                        <li>Anota qué nota sube, cuál baja y cuál se mantiene.</li>
+                    </ol>
+                    <p class="text-xs sm:text-sm text-amber-200 bg-amber-500/10 p-3 rounded-xl border border-amber-500/30">
+                        No confundas «el mismo teclado» con «la misma función»: una enarmonía puede cambiar la interpretación y la dirección de las voces.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 8: 8. Conducción de voces: el verdadero motor
+             ========================================== -->
+        <section id="tab-8" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 08</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">8. Conducción de voces: el verdadero motor</h2>
+                <p class="text-slate-300 leading-relaxed">
+                    Una ruta no se entiende del todo mirando solamente los nombres de los acordes. Hay que observar cada nota.
+                </p>
+
+                <!-- 8.1 -->
+                <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                    <h3 class="text-lg font-extrabold text-amber-400">8.1 Notas guía de G7 → C</h3>
+                    <div class="flex flex-wrap gap-3 font-mono text-sm">
+                        <span class="px-3 py-1.5 rounded-xl bg-slate-950 border border-amber-500/30 text-amber-300">G7 = G–B–D–F</span>
+                        <span class="px-3 py-1.5 rounded-xl bg-slate-950 border border-cyan-500/30 text-cyan-300">C = C–E–G</span>
+                    </div>
+                    <p class="text-sm text-slate-300">Resoluciones típicas:</p>
+                    <ul class="space-y-1.5 text-sm text-slate-200">
+                        <li>• <strong class="text-white">B</strong> (sensible de C) sube a <strong class="text-amber-300">C</strong>.</li>
+                        <li>• <strong class="text-white">F</strong> (séptima de G7) baja a <strong class="text-amber-300">E</strong>.</li>
+                        <li>• <strong class="text-white">G</strong> puede mantenerse como nota común.</li>
+                        <li>• <strong class="text-white">D</strong> puede bajar a C o subir a E, según la disposición.</li>
+                    </ul>
+                    <p class="text-sm text-slate-300 leading-relaxed pt-1">
+                        El tritono B–F se contrae hacia C–E. Esa resolución explica buena parte de la fuerza de V7–I.
+                    </p>
+                </div>
+
+                <!-- 8.2 -->
+                <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                    <h3 class="text-lg font-extrabold text-cyan-400">8.2 Notas guía de D♭7 → C</h3>
+                    <p class="text-sm text-slate-200 font-mono">D♭7 = D♭–F–A♭–C♭ (C♭ suena como B).</p>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        La tercera F y la séptima C♭/B forman el mismo tritono enarmónico que F–B de G7. En una disposición típica:
+                    </p>
+                    <ul class="space-y-1.5 text-sm text-slate-200">
+                        <li>• <strong class="text-white">D♭</strong> baja a C.</li>
+                        <li>• <strong class="text-white">F</strong> puede mantenerse como E♯ enarmónico o desplazarse según el voicing; en una conducción habitual F baja a E.</li>
+                        <li>• <strong class="text-white">A♭</strong> puede bajar a G.</li>
+                        <li>• <strong class="text-white">C♭/B</strong> puede resolver a C.</li>
+                    </ul>
+                    <p class="text-sm text-slate-300">La escritura enarmónica debe adaptarse a la función y a la voz concreta.</p>
+                </div>
+
+                <!-- 8.3 -->
+                <div class="p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-amber-500/30 space-y-3">
+                    <h3 class="text-lg font-extrabold text-white">8.3 Regla práctica</h3>
+                    <p class="text-sm text-slate-300">Cuando compares dos rutas, cuenta:</p>
+                    <ul class="space-y-1.5 text-sm text-slate-200">
+                        <li>• Cuántas notas permanecen comunes.</li>
+                        <li>• Cuántas voces se mueven por semitono.</li>
+                        <li>• Cuántos saltos grandes aparecen.</li>
+                        <li>• Si las notas de tensión resuelven de forma comprensible.</li>
+                        <li>• Si el bajo refuerza o contradice la sensación de destino.</li>
+                    </ul>
+                    <p class="text-sm text-amber-200 font-medium pt-1">
+                        Una ruta con pocos movimientos puede sonar muy elegante; otra con muchos semitonos puede resultar intensa. Ninguna es universalmente mejor.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 9: 9. Inversiones, bajos y acordes de paso
+             ========================================== -->
+        <section id="tab-9" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 09</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">9. Inversiones, bajos y acordes de paso</h2>
+                <p class="text-slate-300">La misma armonía puede aparecer con diferentes notas en el bajo:</p>
+                <div class="grid grid-cols-3 gap-2.5 font-mono text-xs sm:text-sm text-center">
+                    <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-amber-300">C: C–E–G.</div>
+                    <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-cyan-300">C/E: E–G–C.</div>
+                    <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-violet-300">C/G: G–C–E.</div>
+                </div>
+                <p class="text-slate-300 text-sm sm:text-base">Las inversiones permiten crear líneas de bajo más fluidas. Por ejemplo:</p>
+                <div class="p-4 rounded-2xl bg-slate-950 border border-amber-500/40 font-mono text-sm sm:text-base text-amber-300 text-center shadow-inner">
+                    C → G/B → Am → Am/G → F → C/E → Dm7 → G7
+                </div>
+                <p class="text-slate-300 text-sm sm:text-base">
+                    El destino armónico puede ser el mismo, pero la línea de bajo construye una melodía propia.
+                </p>
+                <p class="text-slate-300 text-sm sm:text-base">También podemos usar:</p>
+                <ul class="space-y-2 text-sm sm:text-base text-slate-200">
+                    <li>• <strong class="text-white">Pedales:</strong> una nota sostenida bajo distintos acordes.</li>
+                    <li>• <strong class="text-white">Acordes de paso:</strong> armonías breves que conectan dos destinos.</li>
+                    <li>• <strong class="text-white">Retardos y anticipaciones:</strong> notas que se mantienen o se adelantan respecto al cambio de acorde.</li>
+                    <li>• <strong class="text-white">Bajo cromático:</strong> por ejemplo C–B–B♭–A.</li>
+                    <li>• <strong class="text-white">Slash chords:</strong> acordes con bajo distinto de la fundamental.</li>
+                </ul>
+                <div class="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-sm text-cyan-200">
+                    <strong>No cuentes cada inversión como una nueva función armónica.</strong> Regístrala como una variante de disposición o bajo, salvo que el contexto justifique otra interpretación.
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 10: 10. Cómo organizar un catálogo sin perderse
+             ========================================== -->
+        <section id="tab-10" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 10</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">10. Cómo organizar un catálogo sin perderse</h2>
+                <p class="text-slate-300">Para convertir el estudio en un mapa útil, registra cada ruta con esta ficha:</p>
+
+                <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead class="bg-slate-900 text-amber-400 font-mono uppercase">
+                            <tr>
+                                <th class="py-3 px-3">Campo</th>
+                                <th class="py-3 px-3">Qué anotar</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/80">
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">Destino</td><td class="py-2.5 px-3 font-mono text-amber-300">I, ii, iii, IV, V, vi o vii°</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">Tonalidad</td><td class="py-2.5 px-3">DO mayor, RE mayor, etc.</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">Ruta</td><td class="py-2.5 px-3 font-mono">Ej. Dm7–G7–Cmaj7</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">Familia</td><td class="py-2.5 px-3">Diatónica, secundaria, disminuida, aumentada, modal, tritonal…</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">Tipo</td><td class="py-2.5 px-3">Directa, dos acordes, tres acordes, cadena…</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">Bajo</td><td class="py-2.5 px-3">Fundamentales e inversiones</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">Notas cromáticas</td><td class="py-2.5 px-3 font-mono">C♯, F♯, A♭, etc.</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">Conducción</td><td class="py-2.5 px-3">Semitonos, notas comunes, saltos</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">Carácter</td><td class="py-2.5 px-3">Reposo, tensión, sorpresa, lirismo, oscuridad…</td></tr>
+                            <tr><td class="py-2.5 px-3 font-bold text-white">Estilo</td><td class="py-2.5 px-3">Clásico, jazz, pop, rock, gospel, etc.</td></tr>
+                            <tr class="bg-slate-950/40"><td class="py-2.5 px-3 font-bold text-white">Ejemplo propio</td><td class="py-2.5 px-3">Compás o progresión creada por ti</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+                    <h3 class="text-lg font-extrabold text-amber-400">Cómo evitar duplicados</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Una ruta como Dm7–G7–Cmaj7 y otra como Dm9–G13–Cmaj9 pueden ser variantes de color de la misma estructura funcional ii–V–I. Conviene guardar una como ruta base y las demás como variantes.
+                    </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+                    <h3 class="text-lg font-extrabold text-cyan-400">Tres niveles de catálogo</h3>
+                    <ol class="space-y-2 text-sm text-slate-200 list-decimal list-inside">
+                        <li><strong class="text-white">Nivel estructural:</strong> funciones y grados (ii–V–I).</li>
+                        <li><strong class="text-white">Nivel de acorde:</strong> calidades concretas (Dm7–G7–Cmaj7).</li>
+                        <li><strong class="text-white">Nivel de voicing:</strong> notas exactas, inversiones, registro y disposición.</li>
+                    </ol>
+                    <p class="text-sm text-slate-300">Esta separación evita confundir una nueva ruta con una simple modificación de voicing.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 11: 11. Método de trabajo autodidacta
+             ========================================== -->
+        <section id="tab-11" class="tab-panel hidden space-y-4">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-3">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 11</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">11. Método de trabajo autodidacta</h2>
+                <p class="text-slate-300">Se recomienda trabajar con el piano o teclado y avanzar de forma acumulativa.</p>
+            </div>
+
+            <div class="space-y-3.5">
+                <div class="glass-card rounded-2xl p-5 space-y-2 border-l-4 border-amber-500">
+                    <h3 class="text-lg font-extrabold text-white">Semana 1: mapa diatónico</h3>
+                    <ul class="space-y-1.5 text-sm text-slate-200">
+                        <li>• Construye las siete tríadas en DO mayor.</li>
+                        <li>• Construye los siete acordes de séptima.</li>
+                        <li>• Toca todas las llegadas directas posibles entre los siete acordes.</li>
+                        <li>• Identifica las funciones de tónica, predominante y dominante.</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 space-y-2 border-l-4 border-cyan-500">
+                    <h3 class="text-lg font-extrabold text-white">Semana 2: dominantes secundarios</h3>
+                    <ul class="space-y-1.5 text-sm text-slate-200">
+                        <li>• Construye V/ii, V/iii, V/IV, V/V y V/vi.</li>
+                        <li>• Resuelve cada uno hacia su destino.</li>
+                        <li>• Añade una preparación antes de cada dominante.</li>
+                        <li>• Canta la tercera y la séptima de cada dominante mientras tocas.</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 space-y-2 border-l-4 border-violet-500">
+                    <h3 class="text-lg font-extrabold text-white">Semana 3: disminuidos</h3>
+                    <ul class="space-y-1.5 text-sm text-slate-200">
+                        <li>• Construye vii° y vii°7 de distintos destinos.</li>
+                        <li>• Diferencia °7 de ø7.</li>
+                        <li>• Practica disminuidos de paso y de nota común.</li>
+                        <li>• Reescribe enarmónicamente un mismo °7 y escucha sus posibles resoluciones.</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 space-y-2 border-l-4 border-emerald-500">
+                    <h3 class="text-lg font-extrabold text-white">Semana 4: cromatismo y sustituciones</h3>
+                    <ul class="space-y-1.5 text-sm text-slate-200">
+                        <li>• Practica G7 → C y D♭7 → C.</li>
+                        <li>• Prueba G7♭9, G7♯5 y G7alt.</li>
+                        <li>• Incorpora Fm, A♭ y B♭ como acordes prestados.</li>
+                        <li>• Prueba el napolitano y las sextas aumentadas hacia G7.</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 space-y-2 border-l-4 border-rose-500">
+                    <h3 class="text-lg font-extrabold text-white">Semana 5: composición</h3>
+                    <ul class="space-y-1.5 text-sm text-slate-200">
+                        <li>• Elige un destino por día.</li>
+                        <li>• Crea cinco rutas diferentes para llegar a él.</li>
+                        <li>• Graba cada ruta con el mismo tempo y duración.</li>
+                        <li>• Compara bajo, conducción de voces y carácter.</li>
+                        <li>• Elige una ruta y conviértela en una frase de ocho compases.</li>
+                    </ul>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-amber-500/15 border border-amber-500/40 space-y-1">
+                    <h3 class="text-base font-extrabold text-amber-300 uppercase">Regla de estudio</h3>
+                    <p class="text-sm sm:text-base text-white leading-relaxed">
+                        No basta con tocar la progresión. Di en voz alta qué grado representa cada acorde, qué familia estás usando y qué nota provoca la resolución.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 12: 12. Ejercicios prácticos
+             ========================================== -->
+        <section id="tab-12" class="tab-panel hidden space-y-4">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-2">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 12</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">12. Ejercicios prácticos</h2>
+            </div>
+
+            <!-- Ejercicio 1 -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+                <h3 class="text-lg font-extrabold text-amber-400">Ejercicio 1: completar dominantes secundarios</h3>
+                <p class="text-sm text-slate-300">Escribe el dominante de cada destino:</p>
+                <ul class="font-mono text-sm text-white space-y-1.5 bg-slate-900 p-4 rounded-xl border border-slate-800">
+                    <li>• ii = Dm → ______ → Dm</li>
+                    <li>• iii = Em → ______ → Em</li>
+                    <li>• IV = F → ______ → F</li>
+                    <li>• V = G → ______ → G</li>
+                    <li>• vi = Am → ______ → Am</li>
+                </ul>
+                <div class="pt-1">
+                    <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="px-3.5 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition">
+                        Mostrar / Ocultar Soluciones
+                    </button>
+                    <p class="mt-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-mono">
+                        <strong>Soluciones:</strong> A7, B7, C7, D7, E7.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Ejercicio 2 -->
+            <div class="glass-card rounded-2xl p-5 space-y-2">
+                <h3 class="text-lg font-extrabold text-cyan-400">Ejercicio 2: sensibles secundarias</h3>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    Construye el acorde de sensible de Dm, Em, F, G y Am. Escribe las notas y después resuelve cada acorde.
+                </p>
+            </div>
+
+            <!-- Ejercicio 3 -->
+            <div class="glass-card rounded-2xl p-5 space-y-2">
+                <h3 class="text-lg font-extrabold text-violet-400">Ejercicio 3: llegar al I de cinco maneras</h3>
+                <p class="text-sm text-slate-300">Crea cinco rutas diferentes para llegar a C. Deben incluir:</p>
+                <ul class="space-y-1 text-sm text-slate-200">
+                    <li>• Una ruta diatónica.</li>
+                    <li>• Una ruta con dominante secundario o cadena de dominantes.</li>
+                    <li>• Una ruta con disminuido.</li>
+                    <li>• Una ruta cromática o sustitución por tritono.</li>
+                    <li>• Una ruta con intercambio modal.</li>
+                </ul>
+            </div>
+
+            <!-- Ejercicio 4 -->
+            <div class="glass-card rounded-2xl p-5 space-y-2">
+                <h3 class="text-lg font-extrabold text-emerald-400">Ejercicio 4: compara el bajo</h3>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    Toca Dm7–G7–Cmaj7 en posición fundamental. Después cambia las inversiones para crear un bajo descendente o ascendente. ¿Se mantiene la función? ¿Cambia el carácter?
+                </p>
+            </div>
+
+            <!-- Ejercicio 5 -->
+            <div class="glass-card rounded-2xl p-5 space-y-2">
+                <h3 class="text-lg font-extrabold text-amber-300">Ejercicio 5: ruta al IV</h3>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    Crea tres progresiones que terminen en Fmaj7. Una debe usar C7; otra, E°7; la tercera debe ser modal o diatónica.
+                </p>
+            </div>
+
+            <!-- Ejercicio 6 -->
+            <div class="glass-card rounded-2xl p-5 space-y-2">
+                <h3 class="text-lg font-extrabold text-rose-400">Ejercicio 6: simetría</h3>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    Toca Caug y escribe sus tres interpretaciones enarmónicas. Después intenta resolver cada escritura a un acorde distinto. Explica qué nota se mueve por semitono.
+                </p>
+            </div>
+
+            <!-- Ejercicio 7 -->
+            <div class="glass-card rounded-2xl p-5 space-y-3">
+                <h3 class="text-lg font-extrabold text-cyan-300">Ejercicio 7: transportar</h3>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    Transporta la ruta Dm7–G7–Cmaj7 a SOL mayor. Identifica los grados y escribe las notas reales.
+                </p>
+                <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-mono">
+                    <strong>Solución orientativa:</strong> Am7–D7–Gmaj7 (ii–V–I en SOL mayor).
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 13: 13. 33 preguntas y respuestas por nivel de dificultad
+             ========================================== -->
+        <section id="tab-13" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-3">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 13</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">13. 33 preguntas y respuestas por nivel de dificultad</h2>
+            </div>
+
+            <!-- Nivel 1 -->
+            <div class="glass-card rounded-3xl p-5 space-y-3 border-t-4 border-emerald-500">
+                <h3 class="text-xl font-black text-emerald-400">Nivel 1 — Fundamentos</h3>
+                <div class="space-y-3 text-sm sm:text-base">
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">1. ¿Qué significa llegar a un grado?</p><p class="text-slate-300 mt-1">Significa conducir la progresión hacia el acorde construido sobre ese grado, ya sea directamente o mediante una cadena de acordes.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">2. ¿Cuáles son los siete acordes diatónicos de DO mayor?</p><p class="text-slate-300 mt-1">C, Dm, Em, F, G, Am y Bdim.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">3. ¿Qué diferencia hay entre grado y acorde?</p><p class="text-slate-300 mt-1">El grado es la posición de una nota dentro de la escala; el acorde es la armonía construida sobre esa nota.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">4. ¿Qué significa V–I?</p><p class="text-slate-300 mt-1">Dominante que resuelve a tónica. En DO mayor: G o G7 → C.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">5. ¿Qué es una tríada aumentada?</p><p class="text-slate-300 mt-1">Un acorde de tres notas formado por fundamental, tercera mayor y quinta aumentada.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">6. ¿Qué es una tríada disminuida?</p><p class="text-slate-300 mt-1">Una tríada formada por fundamental, tercera menor y quinta disminuida.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">7. ¿Bdim7 y Bm7♭5 son lo mismo?</p><p class="text-slate-300 mt-1">No. Bdim7 es B–D–F–A♭; Bm7♭5 es B–D–F–A.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">8. ¿Qué es una inversión?</p><p class="text-slate-300 mt-1">Una disposición en la que una nota distinta de la fundamental ocupa el bajo.</p></div>
+                </div>
+            </div>
+
+            <!-- Nivel 2 -->
+            <div class="glass-card rounded-3xl p-5 space-y-3 border-t-4 border-cyan-500">
+                <h3 class="text-xl font-black text-cyan-400">Nivel 2 — Intermedio</h3>
+                <div class="space-y-3 text-sm sm:text-base">
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">9. ¿Qué es un dominante secundario?</p><p class="text-slate-300 mt-1">Un acorde dominante que toniciza temporalmente un grado distinto de la tónica principal.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">10. ¿Qué significa V7/ii?</p><p class="text-slate-300 mt-1">El dominante séptima del acorde ii. En DO mayor: A7 → Dm.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">11. ¿Cómo se construye un dominante secundario?</p><p class="text-slate-300 mt-1">Se busca la quinta superior de la fundamental del destino y se construye sobre ella un acorde de dominante.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">12. ¿Qué es una sensible secundaria?</p><p class="text-slate-300 mt-1">Un acorde disminuido construido sobre la sensible de un destino temporal, con tendencia a resolver hacia él.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">13. ¿Qué significa vii°7/V?</p><p class="text-slate-300 mt-1">Un acorde de séptima disminuida de sensible del dominante V. En DO, F♯–A–C–E♭ puede conducir a G.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">14. ¿Qué diferencia hay entre tonicización y modulación?</p><p class="text-slate-300 mt-1">La tonicización hace que un acorde parezca tónica temporalmente; la modulación establece una nueva tonalidad de forma más sostenida.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">15. ¿Qué es una sustitución por tritono?</p><p class="text-slate-300 mt-1">Reemplazar un dominante por otro dominante cuya fundamental está a un tritono, conservando el tritono de las notas guía.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">16. ¿Por qué D♭7 puede sustituir a G7 para llegar a C?</p><p class="text-slate-300 mt-1">Porque ambos contienen enarmónicamente el tritono B–F, que puede resolver hacia C–E.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">17. ¿Qué es el intercambio modal?</p><p class="text-slate-300 mt-1">Tomar acordes de un modo paralelo, por ejemplo de DO menor dentro de DO mayor.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">18. ¿Fm → C es una cadencia dominante?</p><p class="text-slate-300 mt-1">No. Es un enlace de intercambio modal, normalmente interpretado como iv–I, con color plagal.</p></div>
+                </div>
+            </div>
+
+            <!-- Nivel 3 -->
+            <div class="glass-card rounded-3xl p-5 space-y-3 border-t-4 border-amber-500">
+                <h3 class="text-xl font-black text-amber-400">Nivel 3 — Avanzado</h3>
+                <div class="space-y-3 text-sm sm:text-base">
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">19. ¿Por qué el acorde disminuido de séptima es simétrico?</p><p class="text-slate-300 mt-1">Porque está formado por cuatro notas separadas por terceras menores iguales. Su simetría permite varias interpretaciones enarmónicas.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">20. ¿Cuántas fundamentales enarmónicas puede sugerir un °7?</p><p class="text-slate-300 mt-1">Cuatro lecturas posibles como fundamentales, aunque la función real depende de la escritura y del contexto.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">21. ¿Qué es un disminuido de nota común?</p><p class="text-slate-300 mt-1">Un acorde °7 que comparte una nota —normalmente la fundamental— con el acorde que embellece, funcionando como expansión ornamental.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">22. ¿Qué es una tríada aumentada simétrica?</p><p class="text-slate-300 mt-1">Una tríada con dos terceras mayores iguales; su conjunto de alturas puede interpretarse desde tres fundamentales enarmónicas.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">23. ¿Cómo suele resolver la quinta aumentada de un dominante alterado?</p><p class="text-slate-300 mt-1">A menudo sube por semitono hacia la tercera del acorde de destino, aunque la resolución depende del voicing y del contexto.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">24. ¿Qué es el acorde napolitano?</p><p class="text-slate-300 mt-1">Una tríada mayor construida sobre el segundo grado rebajado (♭II), normalmente en primera inversión y con función predominante.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">25. ¿El napolitano suele resolver directamente a la tónica?</p><p class="text-slate-300 mt-1">No es su resolución típica. Habitualmente conduce al dominante: ♭II6 → V → I.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">26. ¿Qué son los acordes de sexta aumentada?</p><p class="text-slate-300 mt-1">Acordes cromáticos predominantes que contienen una sexta aumentada entre ♭6 y ♯4 y suelen resolver hacia V.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">27. ¿Cuáles son los tipos clásicos principales de sexta aumentada?</p><p class="text-slate-300 mt-1">Italiana, francesa y alemana; algunas fuentes y repertorios también estudian la suiza.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">28. ¿Por qué la conducción de voces puede ser más importante que el nombre del acorde?</p><p class="text-slate-300 mt-1">Porque la sensación de dirección nace del movimiento concreto de cada nota: semitonos, notas comunes, resolución de disonancias y bajo.</p></div>
+                </div>
+            </div>
+
+            <!-- Nivel 4 -->
+            <div class="glass-card rounded-3xl p-5 space-y-3 border-t-4 border-rose-500">
+                <h3 class="text-xl font-black text-rose-400">Nivel 4 — Experto y pensamiento analítico</h3>
+                <div class="space-y-3 text-sm sm:text-base">
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">29. ¿Existe un número finito de rutas para llegar a cada grado?</p><p class="text-slate-300 mt-1">No si no limitamos la longitud, las inversiones, las extensiones, las reinterpretaciones y las modulaciones. El catálogo debe definir reglas y límites para que el recuento tenga sentido.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">30. ¿Toda progresión que termina en C es una resolución a la tónica?</p><p class="text-slate-300 mt-1">No necesariamente. C puede ser un acorde de paso, una llegada momentánea, una tónica local o incluso un acorde con otra función según la tonalidad y el contexto.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">31. ¿Se puede tonicizar un acorde disminuido o aumentado como si fuera una tríada mayor o menor?</p><p class="text-slate-300 mt-1">No de manera automática. La tonicización tonal convencional se aplica con más claridad a destinos mayores y menores; los destinos disminuidos o aumentados requieren análisis específico.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">32. ¿Cómo distinguir una dominante real de una simple aproximación cromática?</p><p class="text-slate-300 mt-1">Busca la estructura de dominante, su relación de quinta con el destino, el tritono y la resolución de las notas guía. Si solo hay proximidad cromática, no la etiquetes como dominante sin más pruebas.</p></div>
+                    <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800"><p class="font-bold text-white">33. ¿Cuál es el método más eficaz para descubrir nuevas rutas?</p><p class="text-slate-300 mt-1">Elegir un destino, generar su dominante y sensible, probar sustituciones y acordes prestados, experimentar con aproximaciones cromáticas y verificar cada opción mediante conducción de voces y escucha.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 14: 14. Glosario
+             ========================================== -->
+        <section id="tab-14" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 14</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">14. Glosario</h2>
+
+                <div class="grid grid-cols-1 gap-3 text-sm sm:text-base">
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Acorde diatónico:</strong> acorde construido exclusivamente con notas de la escala de referencia.</div>
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Acorde prestado:</strong> acorde tomado de un modo paralelo.</div>
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Acorde de sensible:</strong> acorde construido sobre el séptimo grado de una tonalidad y dirigido hacia su tónica.</div>
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Acorde simétrico:</strong> acorde cuya estructura interválica permite varias transposiciones o interpretaciones equivalentes.</div>
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Dominante secundario:</strong> dominante aplicado a un grado distinto de la tónica principal.</div>
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Enarmonía:</strong> dos grafías distintas que, en afinación temperada, suenan igual.</div>
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Función armónica:</strong> papel de un acorde en el movimiento tonal: tónica, predominante o dominante, entre otros.</div>
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Intercambio modal:</strong> uso de acordes de un modo paralelo.</div>
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Tonicización:</strong> énfasis temporal de un acorde como si fuera una tónica.</div>
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Tritono:</strong> intervalo de tres tonos, equivalente a una cuarta aumentada o quinta disminuida.</div>
+                    <div class="p-4 rounded-2xl bg-slate-900/90 border border-slate-800"><strong class="text-amber-400">Voicing:</strong> disposición concreta de las notas de un acorde.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 15: 15. Fuentes y bibliografía en línea
+             TODOS los enlaces URL tienen su botón "Abrir en otra Ventana"
+             ========================================== -->
+        <section id="tab-15" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Capítulo 15</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">15. Fuentes y bibliografía en línea</h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    Las siguientes fuentes se han utilizado como base conceptual y como material de consulta. Están en inglés, pero ofrecen explicaciones, ejemplos musicales y capítulos de teoría que permiten profundizar.
+                </p>
+
+                <div class="space-y-4 pt-2">
+                    <!-- Fuente 1 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">1. Open Music Theory — Triads and Seventh Chords</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://open-musictheory.github.io/docs/fundamentals/triads/</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Construcción de tríadas y acordes de séptima, cualidades y numeración romana.</p>
+                        <a href="https://open-musictheory.github.io/docs/fundamentals/triads/" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- Fuente 2 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">2. Open Music Theory — Tonicization</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://pressbooks.nebraska.edu/openmusictheory/chapter/tonicization/</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Dominantes secundarios, acordes de sensible secundarios y análisis de tonicización.</p>
+                        <a href="https://pressbooks.nebraska.edu/openmusictheory/chapter/tonicization/" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- Fuente 3 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">3. Open Music Theory — Substitutions</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://viva.pressbooks.pub/openmusictheory/chapter/substitutions/</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Sustituciones armónicas, intercambio modal y sustitución por tritono.</p>
+                        <a href="https://viva.pressbooks.pub/openmusictheory/chapter/substitutions/" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- Fuente 4 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">4. Open Music Theory — Altered and Extended Dominant Chords</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://pressbooks.nebraska.edu/openmusictheory/chapter/altered-and-extended-dominant-chords/</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Dominantes con quinta aumentada o disminuida y extensiones.</p>
+                        <a href="https://pressbooks.nebraska.edu/openmusictheory/chapter/altered-and-extended-dominant-chords/" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- Fuente 5 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">5. Open Music Theory — Common-Tone Chords (CT°7 & CT+6)</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://viva.pressbooks.pub/openmusictheorycopy/chapter/common-tone-chords/</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Disminuidos de nota común y acordes de sexta aumentada con función ornamental.</p>
+                        <a href="https://viva.pressbooks.pub/openmusictheorycopy/chapter/common-tone-chords/" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- Fuente 6 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">6. Open Music Theory — Neapolitan Sixth Chords (♭II6)</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://viva.pressbooks.pub/openmusictheory/chapter/bii6/</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Construcción, función predominante y resolución del napolitano.</p>
+                        <a href="https://viva.pressbooks.pub/openmusictheory/chapter/bii6/" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- Fuente 7 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">7. Open Music Theory — Augmented Sixth Chords</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://pressbooks.nebraska.edu/openmusictheory/chapter/augmented-sixth-chords/</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Sextas aumentadas italiana, francesa y alemana y su resolución hacia V.</p>
+                        <a href="https://pressbooks.nebraska.edu/openmusictheory/chapter/augmented-sixth-chords/" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- Fuente 8 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">8. Open Music Theory — Chromatically Altered Subdominant Chords</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://openmusictheory.github.io/alteredSubdominants.html</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Napolitano y acordes de sexta aumentada como predominantes cromáticos.</p>
+                        <a href="https://openmusictheory.github.io/alteredSubdominants.html" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- Fuente 9 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">9. University of Puget Sound — Secondary Diminished Chords in Major and Minor</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://musictheory.pugetsound.edu/mt21c/SecondaryDiminishedChordsInMajorAndMinor.html</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Acordes disminuidos secundarios y tonicización de acordes mayores y menores.</p>
+                        <a href="https://musictheory.pugetsound.edu/mt21c/SecondaryDiminishedChordsInMajorAndMinor.html" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- Fuente 10 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">10. Berklee Online — Voice Leading for Guitar</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://online.berklee.edu/takenote/voice-leading-for-guitar/</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Funciones armónicas, sustituciones y conducción de voces.</p>
+                        <a href="https://online.berklee.edu/takenote/voice-leading-for-guitar/" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+
+                    <!-- Fuente 11 -->
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 space-y-2.5">
+                        <p class="font-bold text-white text-sm sm:text-base">11. OpenStax / Music in Theory and Practice — material de referencia sobre acordes y armonía</p>
+                        <p class="font-mono text-xs text-cyan-400 break-all">https://www.hchsmusic.com/uploads/2/0/4/7/20479636/music_theory_and_practice_textbook.pdf</p>
+                        <p class="text-xs sm:text-sm text-slate-300">Conceptos básicos de armonía, tríadas, acordes disminuidos y aumentados, inversiones y numeración romana.</p>
+                        <a href="https://www.hchsmusic.com/uploads/2/0/4/7/20479636/music_theory_and_practice_textbook.pdf" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href, '_blank', 'noopener,noreferrer'); return false;"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-extrabold text-xs uppercase tracking-wider shadow-lg active:scale-95 transition">
+                            <span>Abrir en otra Ventana</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 16: Conclusión: pensar en rutas, no en recetas
+             ========================================== -->
+        <section id="tab-16" class="tab-panel hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-7 space-y-4 border border-amber-500/30">
+                <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Síntesis Final</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white">Conclusión: pensar en rutas, no en recetas</h2>
+                <p class="text-slate-300 leading-relaxed">
+                    La armonía puede estudiarse como un sistema de navegación. Cada grado es un destino; los acordes son caminos posibles; las funciones explican las tendencias; y la conducción de voces determina cómo se materializa el viaje.
+                </p>
+                <p class="text-slate-300 leading-relaxed">
+                    La pregunta productiva no es solamente «¿qué acorde puedo poner antes?», sino:
+                </p>
+                <ol class="space-y-2.5 text-sm sm:text-base text-slate-100 list-decimal list-inside bg-slate-900/90 p-5 rounded-2xl border border-slate-800">
+                    <li>¿Qué notas contiene el acorde de destino?</li>
+                    <li>¿Qué notas del acorde anterior pueden resolver por semitono?</li>
+                    <li>¿Qué notas pueden permanecer comunes?</li>
+                    <li>¿Qué función cumple el acorde de aproximación?</li>
+                    <li>¿Qué carácter expresivo produce el enlace?</li>
+                </ol>
+                <p class="text-slate-300 leading-relaxed">
+                    Cuando puedas responder estas preguntas, dejarás de depender de listas de progresiones. Podrás <strong class="text-amber-300">inventar, analizar, comparar y transformar rutas armónicas</strong> en cualquier tonalidad.
+                </p>
+                <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-500/20 to-cyan-500/20 border border-amber-500/40 text-center font-extrabold text-white">
+                    Fin del tutorial — Mapa de rutas armónicas by Rubén Sbarsky.
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             PESTAÑA 17: CRÉDITOS (Última pestaña obligatoria)
+             ========================================== -->
+        <section id="tab-17" class="tab-panel hidden space-y-5">
+            <div class="relative overflow-hidden glass-card rounded-3xl p-6 sm:p-10 text-center space-y-6 border-2 border-amber-500/40 shadow-2xl">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg">
+                    RS
+                </div>
+                <div class="space-y-2">
+                    <span class="text-xs font-mono uppercase tracking-widest text-amber-400">Ficha Oficial de Autoría</span>
+                    <h2 class="text-2xl sm:text-3xl font-black text-white">CRÉDITOS</h2>
+                </div>
+
+                <div class="max-w-md mx-auto space-y-3 text-left">
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 flex items-center justify-between">
+                        <span class="text-xs uppercase font-mono text-slate-400">Autor</span>
+                        <span class="font-extrabold text-base sm:text-lg text-amber-400">Rubén Sbarsky</span>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 flex items-center justify-between">
+                        <span class="text-xs uppercase font-mono text-slate-400">Fecha 📆</span>
+                        <span class="font-mono font-bold text-base text-white">10/11/2026</span>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-slate-900/95 border border-slate-800 flex items-center justify-between">
+                        <span class="text-xs uppercase font-mono text-slate-400">Hora 🕰</span>
+                        <span class="font-mono font-bold text-base text-cyan-400">18:55:07</span>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-400 font-mono pt-2">
+                    CRÉDITOS: Rubén Sbarsky, Fecha 📆: 10/11/2026, Hora 🕰: 18:55:07
+                </p>
+            </div>
+        </section>
+
+        <!-- NAVEGACIÓN INFERIOR AL FINAL DE CADA PESTAÑA (ANTERIOR / PRÓXIMA) -->
+        <div id="bottomTabNav" class="mt-8 pt-4 border-t border-slate-800/80">
+            <!-- Barra fija en la parte inferior de la pantalla para comodidad táctil en Samsung Galaxy A02s -->
+            <div class="fixed bottom-0 left-0 right-0 z-30 bg-[#07090E]/95 backdrop-blur-md border-t border-slate-800 px-3 py-2.5 shadow-2xl">
+                <div class="max-w-3xl mx-auto flex items-center justify-between gap-2.5">
+                    <button id="prevTabBtn" onclick="navigateRelative(-1)"
+                        class="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold text-xs sm:text-sm border border-slate-700 active:scale-95 transition">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+                        <span id="prevTabLabel" class="truncate">Anterior</span>
+                    </button>
+
+                    <div id="pageCounterBadge" class="px-2.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs text-amber-400 font-bold flex-shrink-0">
+                        1 / 18
+                    </div>
+
+                    <button id="nextTabBtn" onclick="navigateRelative(1)"
+                        class="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg active:scale-95 transition">
+                        <span id="nextTabLabel" class="truncate">Próxima</span>
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ==========================================
+         BOTONES FLOTANTES MOVIBLES (DRAGGABLE FABs)
+         1. Botón INICIO (lleva a la Pestaña 0 desde cualquier lugar)
+         2. Botón ARRIBA (lleva al comienzo de la pestaña actual)
+         ========================================== -->
+    <button id="fabInicio" title="Arrástrame o toca para ir a INICIO"
+        style="position: fixed; right: 14px; bottom: 138px; z-index: 45;"
+        class="draggable-fab flex items-center gap-1.5 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black text-xs shadow-[0_6px_20px_rgba(245,158,11,0.5)] border-2 border-amber-200">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        <span>INICIO</span>
+    </button>
+
+    <button id="fabArriba" title="Arrástrame o toca para subir al comienzo de esta pestaña"
+        style="position: fixed; right: 14px; bottom: 82px; z-index: 45;"
+        class="draggable-fab flex items-center gap-1.5 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black text-xs shadow-[0_6px_20px_rgba(6,182,212,0.5)] border-2 border-cyan-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 15l7-7 7 7"/></svg>
+        <span>ARRIBA</span>
+    </button>
+
+    <!-- SCRIPTS DE NAVEGACIÓN, AUTO-CENTRADO, SONIDO Y BOTONES FLOTANTES ARRASTRABLES -->
+    <script>
+        // Definición de las 18 pestañas del tutorial
+        const TABS = [
+            { id: 0, short: "INICIO", full: "INICIO • Portada e Índice" },
+            { id: 1, short: "1. Investigación", full: "1. Qué vamos a investigar" },
+            { id: 2, short: "2. Lab DO Mayor", full: "2. El laboratorio: DO mayor" },
+            { id: 3, short: "3. Llegar", full: "3. Qué significa «llegar» a un acorde" },
+            { id: 4, short: "4. 7 Destinos", full: "4. El mapa de los siete destinos" },
+            { id: 5, short: "5. Familias", full: "5. Familias de acordes que amplían las rutas" },
+            { id: 6, short: "6. Rutas x Grado", full: "6. Rutas para llegar a cada grado" },
+            { id: 7, short: "7. Crear Rutas", full: "7. Cómo construir rutas nuevas" },
+            { id: 8, short: "8. Voces", full: "8. Conducción de voces: el verdadero motor" },
+            { id: 9, short: "9. Inversiones", full: "9. Inversiones, bajos y acordes de paso" },
+            { id: 10, short: "10. Catálogo", full: "10. Cómo organizar un catálogo sin perderse" },
+            { id: 11, short: "11. Autodidacta", full: "11. Método de trabajo autodidacta" },
+            { id: 12, short: "12. Ejercicios", full: "12. Ejercicios prácticos" },
+            { id: 13, short: "13. 33 Preguntas", full: "13. 33 preguntas y respuestas por dificultad" },
+            { id: 14, short: "14. Glosario", full: "14. Glosario" },
+            { id: 15, short: "15. Fuentes", full: "15. Fuentes y bibliografía en línea" },
+            { id: 16, short: "Conclusión", full: "Conclusión: pensar en rutas, no en recetas" },
+            { id: 17, short: "CRÉDITOS", full: "CRÉDITOS: Rubén Sbarsky" }
+        ];
+
+        let currentTabIndex = 0;
+
+        // Inicializar Barra Superior y Menú Sándwich Vertical
+        function initNavigation() {
+            const topBar = document.getElementById('topTabBar');
+            const drawerList = document.getElementById('drawerList');
+
+            topBar.innerHTML = '';
+            drawerList.innerHTML = '';
+
+            TABS.forEach((tab, idx) => {
+                // Botón en barra horizontal superior
+                const btn = document.createElement('button');
+                btn.id = `top-tab-btn-${idx}`;
+                btn.setAttribute('role', 'tab');
+                btn.className = `flex-shrink-0 px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-800 bg-slate-900/90 text-slate-300 hover:text-white transition whitespace-nowrap`;
+                btn.textContent = tab.short;
+                btn.onclick = () => switchTab(idx);
+                topBar.appendChild(btn);
+
+                // Elemento en menú sándwich (índice vertical completo)
+                const item = document.createElement('button');
+                item.id = `drawer-item-${idx}`;
+                item.className = `w-full text-left px-3.5 py-3 rounded-xl flex items-center justify-between gap-2 text-xs sm:text-sm font-medium text-slate-300 hover:bg-slate-800/80 transition`;
+                item.innerHTML = `
+                    <span class="truncate">${tab.full}</span>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-amber-400">${idx + 1}/18</span>
+                `;
+                item.onclick = () => {
+                    switchTab(idx);
+                    toggleDrawer(false);
+                };
+                drawerList.appendChild(item);
+            });
+
+            updateUIForTab(0);
+        }
+
+        // Cambiar de pestaña con auto-centrado horizontal y subida al tope
+        function switchTab(index) {
+            if (index < 0 || index >= TABS.length) return;
+
+            // Ocultar todas las secciones
+            TABS.forEach((_, idx) => {
+                const sec = document.getElementById(`tab-${idx}`);
+                if (sec) sec.classList.add('hidden');
+            });
+
+            // Mostrar pestaña seleccionada
+            const targetSec = document.getElementById(`tab-${index}`);
+            if (targetSec) targetSec.classList.remove('hidden');
+
+            currentTabIndex = index;
+            updateUIForTab(index);
+            scrollToTopOfCurrentTab();
+        }
+
+        // Actualizar estado activo, auto-centrado en barra horizontal y botones Anterior/Próxima
+        function updateUIForTab(index) {
+            TABS.forEach((_, idx) => {
+                const topBtn = document.getElementById(`top-tab-btn-${idx}`);
+                const drawerItem = document.getElementById(`drawer-item-${idx}`);
+
+                if (idx === index) {
+                    topBtn.classList.add('tab-btn-active');
+                    drawerItem.classList.add('bg-amber-500/15', 'text-amber-300', 'font-bold', 'border', 'border-amber-500/30');
+                    // Auto-centrado horizontal suave en la pestaña activa
+                    topBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                } else {
+                    topBtn.classList.remove('tab-btn-active');
+                    drawerItem.classList.remove('bg-amber-500/15', 'text-amber-300', 'font-bold', 'border', 'border-amber-500/30');
+                }
+            });
+
+            // Barra de progreso
+            const progress = ((index + 1) / TABS.length) * 100;
+            document.getElementById('tabProgressBar').style.width = `${progress}%`;
+            document.getElementById('pageCounterBadge').textContent = `${index + 1} / ${TABS.length}`;
+
+            // Botón Anterior (oculto si estamos en la primera pestaña)
+            const prevBtn = document.getElementById('prevTabBtn');
+            const prevLabel = document.getElementById('prevTabLabel');
+            if (index === 0) {
+                prevBtn.classList.add('invisible', 'pointer-events-none');
+            } else {
+                prevBtn.classList.remove('invisible', 'pointer-events-none');
+                prevLabel.textContent = `Anterior: ${TABS[index - 1].short}`;
+            }
+
+            // Botón Próxima (oculto si estamos en la última pestaña CRÉDITOS)
+            const nextBtn = document.getElementById('nextTabBtn');
+            const nextLabel = document.getElementById('nextTabLabel');
+            if (index === TABS.length - 1) {
+                nextBtn.classList.add('invisible', 'pointer-events-none');
+            } else {
+                nextBtn.classList.remove('invisible', 'pointer-events-none');
+                nextLabel.textContent = `Próxima: ${TABS[index + 1].short}`;
+            }
+        }
+
+        function navigateRelative(delta) {
+            switchTab(currentTabIndex + delta);
+        }
+
+        // Subir siempre al comienzo de la pestaña actual
+        function scrollToTopOfCurrentTab() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        }
+
+        // Abrir / Cerrar menú sándwich (Drawer)
+        function toggleDrawer(open) {
+            const drawer = document.getElementById('indexDrawer');
+            const backdrop = document.getElementById('indexDrawerBackdrop');
+            if (open) {
+                backdrop.classList.remove('hidden');
+                setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+                drawer.classList.remove('-translate-x-full');
+            } else {
+                backdrop.classList.add('opacity-0');
+                drawer.classList.add('-translate-x-full');
+                setTimeout(() => backdrop.classList.add('hidden'), 300);
+            }
+        }
+
+        // Hacer arrastrables (movibles) los botones flotantes para móvil y escritorio
+        function makeDraggable(el, onClickCallback) {
+            let isDragging = false;
+            let hasMoved = false;
+            let startX = 0, startY = 0;
+            let initialLeft = 0, initialTop = 0;
+
+            function onPointerDown(e) {
+                isDragging = true;
+                hasMoved = false;
+                const rect = el.getBoundingClientRect();
+                initialLeft = rect.left;
+                initialTop = rect.top;
+
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                startX = clientX;
+                startY = clientY;
+
+                el.style.right = 'auto';
+                el.style.bottom = 'auto';
+                el.style.left = `${initialLeft}px`;
+                el.style.top = `${initialTop}px`;
+            }
+
+            function onPointerMove(e) {
+                if (!isDragging) return;
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+
+                if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+                    hasMoved = true;
+                }
+
+                if (hasMoved) {
+                    if (e.cancelable) e.preventDefault();
+                    const maxX = window.innerWidth - el.offsetWidth - 6;
+                    const maxY = window.innerHeight - el.offsetHeight - 6;
+                    const newX = Math.max(6, Math.min(maxX, initialLeft + dx));
+                    const newY = Math.max(6, Math.min(maxY, initialTop + dy));
+                    el.style.left = `${newX}px`;
+                    el.style.top = `${newY}px`;
+                }
+            }
+
+            function onPointerUp() {
+                if (!isDragging) return;
+                isDragging = false;
+                if (!hasMoved && typeof onClickCallback === 'function') {
+                    onClickCallback();
+                }
+            }
+
+            el.addEventListener('mousedown', onPointerDown);
+            window.addEventListener('mousemove', onPointerMove, { passive: false });
+            window.addEventListener('mouseup', onPointerUp);
+
+            el.addEventListener('touchstart', onPointerDown, { passive: true });
+            window.addEventListener('touchmove', onPointerMove, { passive: false });
+            window.addEventListener('touchend', onPointerUp);
+        }
+
+        // Sintetizador polifónico con Tone.js para el laboratorio de DO mayor
+        let synth = null;
+        async function playChord(notes) {
+            try {
+                await Tone.start();
+                if (!synth) {
+                    synth = new Tone.PolySynth(Tone.Synth, {
+                        oscillator: { type: "triangle" },
+                        envelope: { attack: 0.03, decay: 0.3, sustain: 0.2, release: 1.2 }
+                    }).toDestination();
+                    synth.volume.value = -8;
+                }
+                synth.triggerAttackRelease(notes, "1.1n");
+            } catch (err) {
+                console.log("Audio preventivo:", err);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            // Activar arrastre y acción en los dos botones flotantes
+            makeDraggable(document.getElementById('fabInicio'), () => switchTab(0));
+            makeDraggable(document.getElementById('fabArriba'), () => scrollToTopOfCurrentTab());
+        });
+    </script>
+</body>
+</html>
