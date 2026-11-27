@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cómo actúa el micrófono de una guitarra eléctrica Fender y Gibson by Rubén Sbarsky</title>
+<style>
+:root{--bg:#0d171b;--card:#14242a;--line:#25404a;--tx:#e8f0ea;--mu:#9db3b0;--cu:#e0924a;--fi:#62d6c9;--fe:#f0be4d;--gi:#d2404a;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(1200px 500px at 70% -10%,#1b3a40 0,transparent 60%),var(--bg);color:var(--tx);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{font-family:"Iowan Old Style",Georgia,serif;font-weight:700;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(1.7rem,6vw,3rem)}h2{font-size:1.5rem}h3{font-size:1.15rem}
+.by{display:block;margin-top:.4em;font-size:.55em;font-weight:400;font-style:italic;color:var(--cu)}
+main{max-width:860px;margin:0 auto;padding:0 14px 60px}
+nav{position:sticky;top:0;z-index:5;background:#0d171bee;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding:8px 10px}
+nav button{flex:none;background:none;border:1px solid transparent;color:var(--mu);font:inherit;font-size:.92rem;padding:8px 14px;border-radius:99px;cursor:pointer}
+nav button[aria-selected=true]{color:#101a1c;background:var(--cu);font-weight:600}
+nav button:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--fi);outline-offset:2px}
+.p{display:none;padding-top:22px}.p.on{display:block}
+.art{border-radius:20px;overflow:hidden;background:#0a1114;border:1px solid var(--line);margin-bottom:22px;aspect-ratio:16/9}
+.art svg,.art img{display:block;width:100%;height:100%}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px}
+.lead{font-size:1.1rem;color:#cfe0dc}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:0 0 10px}
+summary{cursor:pointer;padding:14px 16px;font-weight:600;list-style:none;display:flex;gap:10px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary i{flex:none;width:28px;height:28px;border-radius:50%;background:var(--cu);color:#111;display:grid;place-items:center;font-style:normal;font-size:.85rem}
+details[open] summary{color:var(--cu)}details>div{padding:0 16px 16px 54px;color:#cfdcd8}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.row label{flex:1 1 150px;font-size:.88rem;color:var(--mu);display:grid;gap:4px}
+select,input[type=range]{width:100%;font:inherit}
+select{background:#0d171b;color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:8px}
+input[type=range]{accent-color:var(--cu)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button,.btn{font:inherit;color:var(--tx);background:#0d171b;border:1px solid var(--line);padding:9px 14px;border-radius:10px;cursor:pointer}
+.seg button[aria-pressed=true]{border-color:var(--cu);background:#2a1d12;color:var(--cu)}
+canvas{width:100%;height:auto;display:block;background:#0a1114;border-radius:12px;border:1px solid var(--line)}
+.stat{font-size:.95rem;margin:10px 0 0;min-height:3em}
+.bars{display:flex;align-items:flex-end;gap:6px;height:120px;margin-top:12px}
+.bars div{flex:1;background:linear-gradient(var(--fi),#2a7f78);border-radius:6px 6px 0 0;transition:height .15s;position:relative;min-height:2px}
+.bars span{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:.72rem;color:var(--mu)}
+.cmp{display:grid;gap:14px}@media(min-width:700px){.cmp{grid-template-columns:1fr 1fr}}
+.fe{border-top:5px solid var(--fe)}.gi{border-top:5px solid var(--gi)}
+dl{margin:0}dt{color:var(--mu);font-size:.85rem;margin-top:10px}dd{margin:0}
+.ghost{color:var(--mu);font-size:.9rem}
+@media print{nav{display:none}.p{display:block!important}}
+</style></head><body>
+<nav role="tablist" id="nav">
+<button role="tab" data-t="home" aria-selected="true">Inicio</button>
+<button role="tab" data-t="how" aria-selected="false">Cómo funciona</button>
+<button role="tab" data-t="sim" aria-selected="false">Simulador</button>
+<button role="tab" data-t="vs" aria-selected="false">Fender y Gibson</button>
+<button role="tab" data-t="cred" aria-selected="false">Créditos</button>
+</nav>
+<main>
+
+<section class="p on" id="home">
+<h1>Cómo actúa el micrófono de una guitarra eléctrica Fender y Gibson <span class="by">by Rubén Sbarsky </span></h1>
+<div class="art" data-art></div>
+<p class="lead">Lo que se llama micrófono en una guitarra eléctrica es en realidad una pastilla (pickup). No capta aire ni sonido: capta el movimiento de la cuerda de acero a través de un campo magnético.</p>
+<div class="card"><h3>Qué vas a ver</h3><p>Primero el proceso paso a paso. Después un simulador donde cambias la nota, la fuerza de pulsación y el tipo de pastilla para ver la señal y el zumbido. Y al final, la diferencia entre la bobina simple de Fender y el humbucker de Gibson.</p></div>
+</section>
+
+<section class="p" id="how">
+<h2>De la cuerda al amplificador</h2>
+<details open><summary><i>1</i>La cuerda se magnetiza</summary><div>Bajo la cuerda hay un imán, normalmente de Alnico (aluminio, níquel y cobalto). Su campo atraviesa la cuerda de acero y la convierte en un imán débil. Por eso las cuerdas de nailon no suenan en una eléctrica y las de acero sí.</div></details>
+<details><summary><i>2</i>La cuerda vibra y deforma el campo</summary><div>Al pulsar, la cuerda se acerca y se aleja de la pastilla cientos de veces por segundo. Con cada ida y vuelta, el flujo magnético que atraviesa la bobina sube y baja. Una nota La (110 Hz) hace oscilar ese flujo 110 veces por segundo.</div></details>
+<details><summary><i>3</i>La bobina genera tensión (ley de Faraday)</summary><div>Un cambio de flujo dentro de una bobina induce una tensión: e = −N · dΦ/dt, donde N es el número de vueltas. Con una sola vuelta no saldría casi nada. Por eso una pastilla lleva entre 5.000 y 8.000 vueltas de hilo de cobre esmaltado más fino que un cabello (unos 0,06 mm). El resultado son decenas o centenares de milivoltios.</div></details>
+<details><summary><i>4</i>La señal copia a la cuerda</summary><div>La frecuencia de la tensión es la de la nota, y sus armónicos son los de la cuerda. Si pulsas más fuerte, la cuerda se mueve más rápido y sale más tensión. Si la pastilla está muy cerca, el imán frena la cuerda y puede dar notas desafinadas, algo que se nota en las pastillas Strat muy altas.</div></details>
+<details><summary><i>5</i>El circuito da el color final</summary><div>La bobina es una inductancia: unos 2 a 3 henrios en una Stratocaster y unos 4 a 6 en un humbucker. Junto con la capacidad del cable y los potenciómetros forma un circuito resonante que crea un pico en los agudos, aproximadamente entre 2 y 5 kHz. Ese pico es gran parte del carácter de cada guitarra. El control de tono lo recorta con un condensador a masa.</div></details>
+</section>
+
+<section class="p" id="sim">
+<h2>Simulador de señal</h2>
+<div class="card">
+<div class="row">
+<label>Nota de la cuerda<select id="note"><option value="82.4">Mi grave (82 Hz)</option><option value="110" selected>La (110 Hz)</option><option value="146.8">Re (147 Hz)</option><option value="196">Sol (196 Hz)</option><option value="246.9">Si (247 Hz)</option><option value="329.6">Mi agudo (330 Hz)</option></select></label>
+<label>Fuerza de pulsación<input type="range" id="vol" min="10" max="100" value="60"></label>
+</div>
+<div class="seg" id="mode"><button data-m="s" aria-pressed="true">Fender (bobina simple)</button><button data-m="h" aria-pressed="false">Gibson (humbucker)</button></div>
+<div class="seg" style="margin-top:8px"><button id="hum" aria-pressed="true">Ruido eléctrico de la red: activado</button></div>
+<div style="margin-top:12px"><canvas id="cv" width="640" height="220"></canvas></div>
+<p class="stat" id="stat"></p>
+</div>
+
+<h2>Dónde se coloca la pastilla</h2>
+<div class="card">
+<p>La pastilla solo oye lo que la cuerda hace justo encima de ella. Cerca del puente, los armónicos agudos pesan más; cerca del mástil, domina el tono fundamental.</p>
+<label class="ghost">Posición: del puente al mástil<input type="range" id="pos" min="5" max="25" value="8"></label>
+<div class="bars" id="bars"></div>
+<p class="stat" id="ptxt" style="margin-top:28px"></p>
+</div>
+</section>
+
+<section class="p" id="vs">
+<h2>Fender frente a Gibson</h2>
+<div class="cmp">
+<div class="card fe"><h3>Fender: bobina simple</h3><dl>
+<dt>Diseño</dt><dd>Una bobina de unas 8.000 vueltas. Seis imanes cilíndricos de Alnico, uno bajo cada cuerda.</dd>
+<dt>Resistencia</dt><dd>Entre 5,5 y 6,5 kΩ en una Stratocaster; una Telecaster de puente llega a 7 u 8 kΩ.</dd>
+<dt>Sonido</dt><dd>Claro, brillante, con ataque nítido. Es el tono de campanilla del funk y del blues eléctrico.</dd>
+<dt>Defecto</dt><dd>La bobina actúa como antena y recoge el zumbido de 50 o 60 Hz de la red.</dd></dl></div>
+<div class="card gi"><h3>Gibson: humbucker</h3><dl>
+<dt>Diseño</dt><dd>Dos bobinas de unas 5.000 vueltas cada una, con polaridad magnética opuesta y conectadas en contrafase. Un imán de barra y tornillos como polos.</dd>
+<dt>Resistencia</dt><dd>Entre 7,5 y 8,5 kΩ en las PAF clásicas.</dd>
+<dt>Sonido</dt><dd>Cálido, grueso, con más medios y más salida. Empuja antes el amplificador a la saturación.</dd>
+<dt>Ventaja</dt><dd>La señal de la cuerda se suma y el zumbido se cancela. Lo diseñó Seth Lover; la patente se concedió en 1959.</dd></dl></div>
+</div>
+<div class="card"><h3>Cómo cancela el zumbido</h3><p>Las dos bobinas reciben el mismo ruido externo, pero con signo contrario por estar en contrafase, así que se anula. La cuerda, en cambio, produce señales opuestas en cada bobina porque sus imanes están al revés, y al invertirse la conexión esas señales se suman. Gibson también fabricó una bobina simple ancha, la P-90 (desde 1946), con un sonido intermedio entre ambos mundos.</p></div>
+</section>
+
+<section class="p" id="cred">
+<h1>Créditos</h1>
+<div class="art" data-art></div>
+<div class="card"><h3>Cómo actúa el micrófono de una guitarra eléctrica Fender y Gibson</h3><p>by Rubén Sbarsky</p><p class="ghost">Versión V001. Los valores son aproximados y varían según el año y el modelo.</p></div>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+/* ---- SVG animado ---- */
+function wave(){let p='M0 0';for(let x=0;x<=720;x+=6)p+=' L'+x+' '+(Math.sin(x/40*Math.PI)*16).toFixed(1);return p}
+const SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360"><defs>'
++'<linearGradient id="cu{ID}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f0a860"/><stop offset="1" stop-color="#8e4f1c"/></linearGradient>'
++'<linearGradient id="mg{ID}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#8a98a0"/><stop offset="1" stop-color="#3b484f"/></linearGradient>'
++'<pattern id="co{ID}" width="6" height="10" patternUnits="userSpaceOnUse"><rect width="6" height="10" fill="url(#cu{ID})"/><path d="M0 0V10" stroke="#5a2f10" stroke-width="1.4"/></pattern>'
++'<clipPath id="cl{ID}"><rect x="360" y="262" width="250" height="70"/></clipPath></defs>'
++'<rect width="640" height="360" fill="#0a1114"/>'
++'<g fill="none" stroke="#62d6c9" stroke-width="2" stroke-dasharray="7 9" stroke-linecap="round">'
++'<path d="M270 205C150 190 150 70 270 75"><animate attributeName="stroke-dashoffset" values="0;-32" dur="1.2s" repeatCount="indefinite"/></path>'
++'<path d="M370 205C490 190 490 70 370 75"><animate attributeName="stroke-dashoffset" values="0;32" dur="1.2s" repeatCount="indefinite"/></path>'
++'<path d="M290 205C210 190 210 90 290 85" opacity=".6"><animate attributeName="stroke-dashoffset" values="0;-32" dur="1.2s" repeatCount="indefinite"/></path>'
++'<path d="M350 205C430 190 430 90 350 85" opacity=".6"><animate attributeName="stroke-dashoffset" values="0;32" dur="1.2s" repeatCount="indefinite"/></path></g>'
++'<path d="M20 90H620" stroke="#ffffff22" stroke-width="2"/>'
++'<path d="M20 90Q320 90 620 90" stroke="#f3e9d2" stroke-width="3" fill="none"><animate attributeName="d" dur=".4s" repeatCount="indefinite" values="M20 90Q320 90 620 90;M20 90Q320 56 620 90;M20 90Q320 90 620 90;M20 90Q320 124 620 90;M20 90Q320 90 620 90"/></path>'
++'<text x="30" y="70" fill="#9db3b0" font-size="15" font-family="sans-serif">cuerda de acero</text>'
++'<rect x="215" y="196" width="210" height="76" rx="10" fill="url(#co{ID})" stroke="#5a2f10"/>'
++'<rect x="238" y="214" width="164" height="40" rx="6" fill="url(#mg{ID})"/>'
++'<g fill="#c9d3d8"><rect x="258" y="188" width="14" height="16" rx="3"/><rect x="313" y="188" width="14" height="16" rx="3"/><rect x="368" y="188" width="14" height="16" rx="3"/></g>'
++'<text x="320" y="240" fill="#e8f0ea" font-size="14" text-anchor="middle" font-family="sans-serif">imán</text>'
++'<text x="320" y="296" fill="#e0924a" font-size="15" text-anchor="middle" font-family="sans-serif">bobina de cobre</text>'
++'<path d="M425 240H470V300H360" stroke="#e0924a" stroke-width="2" fill="none"/>'
++'<rect x="360" y="262" width="250" height="70" rx="10" fill="#0e1a1f" stroke="#25404a"/>'
++'<g clip-path="url(#cl{ID})"><g transform="translate(0 297)"><path d="'+wave()+'" stroke="#62d6c9" stroke-width="2.5" fill="none"><animateTransform attributeName="transform" type="translate" from="0 0" to="-80 0" dur=".9s" repeatCount="indefinite"/></path></g></g>'
++'<text x="485" y="350" fill="#9db3b0" font-size="14" text-anchor="middle" font-family="sans-serif">señal eléctrica</text></svg>';
+let uid=0;
+function mount(el){el.innerHTML=SVG.split('{ID}').join('m'+(++uid));const s=el.querySelector('svg');
+ try{s.unpauseAnimations();s.setCurrentTime(0)}catch(e){}
+ setTimeout(()=>{const v=el.querySelector('svg');try{if(v&&v.getCurrentTime()<.05)el.innerHTML='<img alt="" src="data:image/svg+xml;utf8,'+encodeURIComponent(SVG.split('{ID}').join('f'))+'">'}catch(e){}},1300)}
+function mountVisible(){$$('.p.on [data-art]').forEach(mount)}
+setInterval(()=>{$$('.p.on [data-art]').forEach(e=>{if(!e.children.length)mount(e)})},1500);
+addEventListener('beforeprint',()=>$$('[data-art]').forEach(mount));
+/* ---- pestañas ---- */
+function show(id){$$('.p').forEach(p=>p.classList.toggle('on',p.id===id));$$('#nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===id));scrollTo(0,0);mountVisible()}
+$$('#nav button').forEach(b=>b.onclick=()=>show(b.dataset.t));
+mountVisible();
+/* ---- simulador de señal ---- */
+let mode='s',noise=true;
+$$('#mode button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;$$('#mode button').forEach(x=>x.setAttribute('aria-pressed',x===b))});
+$('#hum').onclick=e=>{noise=!noise;e.target.setAttribute('aria-pressed',noise);e.target.textContent='Ruido eléctrico de la red: '+(noise?'activado':'desactivado')};
+const cv=$('#cv'),cx=cv.getContext('2d');
+function sig(f,t){return(Math.sin(2*Math.PI*f*t)+.5*Math.sin(4*Math.PI*f*t)+.25*Math.sin(6*Math.PI*f*t))/1.75}
+function draw(ts){const W=cv.width,H=cv.height,f=+$('#note').value,a=$('#vol').value/100,win=.04,off=ts/1000*.004;
+ cx.clearRect(0,0,W,H);cx.strokeStyle='#25404a';cx.lineWidth=1;cx.beginPath();cx.moveTo(0,H/2);cx.lineTo(W,H/2);cx.stroke();
+ const k=mode==='h'?.03:1;
+ if(noise){cx.strokeStyle='#d2404a55';cx.lineWidth=2;cx.beginPath();
+  for(let x=0;x<=W;x+=3){const t=x/W*win+off,n=.3*(Math.sin(2*Math.PI*50*t)+.4*Math.sin(2*Math.PI*150*t));const y=H/2-n*k*H*.4;x?cx.lineTo(x,y):cx.moveTo(x,y)}cx.stroke()}
+ cx.strokeStyle=mode==='h'?'#d2404a':'#f0be4d';cx.lineWidth=3;cx.beginPath();
+ for(let x=0;x<=W;x+=2){const t=x/W*win+off,n=noise?k*.3*(Math.sin(2*Math.PI*50*t)+.4*Math.sin(2*Math.PI*150*t)):0;const s=sig(f,t)*a*(mode==='h'?1.25:1);const y=H/2-(s+n)*H*.4;x?cx.lineTo(x,y):cx.moveTo(x,y)}cx.stroke();
+ requestAnimationFrame(draw)}
+requestAnimationFrame(draw);
+function stat(){const h=mode==='h';$('#stat').textContent=(h?'Humbucker Gibson: dos bobinas en contrafase. La señal de la cuerda se suma y el zumbido casi desaparece. Salida algo mayor.':'Bobina simple Fender: la señal es limpia y brillante, pero el zumbido de la red se mezcla con ella.')+(noise?'':' (Ruido desactivado)')}
+['click','input','change'].forEach(e=>document.addEventListener(e,stat));stat();
+/* ---- posición ---- */
+const bars=$('#bars');for(let n=1;n<=8;n++)bars.insertAdjacentHTML('beforeend','<div><span>'+n+'</span></div>');
+function pos(){const x=$('#pos').value/100;$$('#bars div').forEach((d,i)=>d.style.height=Math.max(2,Math.abs(Math.sin((i+1)*Math.PI*x))*100)+'%');
+ $('#ptxt').textContent=x<.11?'Cerca del puente: más armónicos agudos, sonido fino y punzante (el estilo de una Telecaster de puente).':x<.18?'Posición intermedia: equilibrio entre ataque y cuerpo (la posición central de una Stratocaster).':'Cerca del mástil: domina la nota fundamental, sonido redondo y cálido.'}
+$('#pos').oninput=pos;pos();
+</script></body></html>
