@@ -1,0 +1,2631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="artifact-type" content="narrative">
+<meta name="design-style" content="nocturne">
+<title>Cómo funciona una pastilla de guitarra eléctrica — Física e Inducción</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..700;1,400..600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+
+  /* 1. Nocturne palette & surfaces */
+  --background: #0a101d;
+  --surface-container-low: #0e1626;
+  --surface-container: #111b2e;
+  --surface-container-high: #17243c;
+
+  /* Text */
+  --on-surface: #f2ece1;
+  --on-surface-variant: #9ba8bf;
+
+  /* Borders */
+  --outline: #384d73;
+  --outline-variant: #21304d;
+
+  /* Accents */
+  --primary: #dfaa5b;
+  --on-primary: #0a101d;
+  --primary-container: #2b261c;
+  --on-primary-container: #f5dcb0;
+  --secondary: #687a99;
+  --tertiary: #7cc4e8;
+  --error: #f27474;
+  --on-error: #1a0606;
+
+  /* Data series */
+  --data-1: #dfaa5b;
+  --data-2: #7cc4e8;
+  --data-3: #52d19c;
+  --data-4: #e07a5f;
+  --data-context: #4a5d80;
+
+  /* Fonts */
+  --font-headline: 'EB Garamond', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-label: 'JetBrains Mono', monospace;
+
+  /* Shape */
+  --rounded: 0.25rem;
+  --rounded-lg: 0.375rem;
+  --rounded-full: 9999px;
+
+  /* Style effects */
+  --hairline: 1px solid var(--outline-variant);
+  --hairline-strong: 1px solid var(--outline);
+  --panel-highlight: inset 0 1px 0 rgba(242, 236, 225, 0.05);
+  --brass-glow: radial-gradient(circle at 86% 14%, rgba(223, 170, 91, 0.09), transparent 48%);
+  --heading-tracking: -0.015em;
+  --label-tracking: 0.06em;
+  --sky-tint: color-mix(in srgb, var(--tertiary) 12%, transparent);
+  --sky-border: color-mix(in srgb, var(--tertiary) 35%, transparent);
+  --brass-tint: color-mix(in srgb, var(--primary) 14%, transparent);
+  --brass-border: color-mix(in srgb, var(--primary) 35%, transparent);
+  --mint-tint: color-mix(in srgb, var(--data-3) 14%, transparent);
+  --mint-border: color-mix(in srgb, var(--data-3) 38%, transparent);
+  --coral-tint: color-mix(in srgb, var(--data-4) 15%, transparent);
+  --coral-border: color-mix(in srgb, var(--data-4) 40%, transparent);
+
+  /* 3. Shared tokens */
+  --positive: #52d19c;
+  --warning: #dfaa5b;
+  --focus: #dfaa5b;
+
+  /* Narrative Type Scale */
+  --display-size:  clamp(2.5rem, 1.4rem + 3.6vw, 4.25rem);
+  --headline-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.5rem);
+  --subhead-size:  clamp(1.2rem, 1.05rem + 0.5vw, 1.45rem);
+  --body-size:     clamp(1.025rem, 0.98rem + 0.2vw, 1.125rem);
+  --label-size:    clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+
+  /* Spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 5.5rem;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+}
+
+/* Base reset */
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  overflow-x: clip;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background);
+  color: var(--on-surface);
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+header { position: static !important; }
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.page-shell {
+  width: 100%;
+  background-color: var(--background);
+}
+
+.hero-header {
+  background-color: var(--background);
+  background-image: var(--brass-glow);
+  border-bottom: var(--hairline);
+  padding: var(--space-2xl) var(--space-lg) var(--space-xl);
+}
+
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.container * { min-width: 0; }
+
+/* Typography voices */
+.coord-label {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--tertiary);
+  margin: 0 0 var(--space-sm);
+}
+
+.hero-title {
+  font-family: var(--font-headline);
+  font-size: var(--display-size);
+  font-weight: 500;
+  letter-spacing: var(--heading-tracking);
+  line-height: 1.07;
+  color: var(--on-surface);
+  margin: 0;
+  max-width: 18ch;
+}
+
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--primary);
+}
+
+.deck-brass {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--primary);
+  margin: var(--space-md) 0 0;
+}
+
+.hero-lede {
+  margin: var(--space-md) 0 0;
+  max-width: 64ch;
+  color: var(--on-surface-variant);
+  font-size: var(--body-size);
+}
+
+/* Quick index strip */
+.atlas-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.atlas-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--rounded);
+  border: var(--hairline);
+  background: var(--surface-container-low);
+  color: var(--on-surface-variant);
+  text-decoration: none;
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+}
+
+.atlas-link:hover {
+  background: var(--surface-container-high);
+  color: var(--on-surface);
+  border-color: var(--outline);
+}
+
+/* Hero metrics */
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.panel {
+  background: var(--surface-container);
+  border: var(--hairline);
+  box-shadow: var(--panel-highlight);
+  border-radius: var(--rounded-lg);
+  padding: var(--space-lg);
+}
+
+.metric-panel {
+  background: var(--surface-container);
+  border: var(--hairline);
+  box-shadow: var(--panel-highlight);
+  border-radius: var(--rounded-lg);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.metric-value {
+  font-family: var(--font-headline);
+  font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--on-surface);
+  line-height: 1.15;
+  margin: var(--space-xs) 0;
+}
+
+.metric-note {
+  font-size: 0.9rem;
+  color: var(--on-surface-variant);
+  margin: 0;
+}
+
+/* Main narrative sections */
+.main-flow {
+  padding: var(--space-xl) var(--space-lg) var(--space-3xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+}
+
+.chapter {
+  border-top: var(--hairline);
+  padding-top: var(--space-xl);
+}
+
+.chapter:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.chapter-header {
+  max-width: 68ch;
+  margin-bottom: var(--space-lg);
+}
+
+.section-title {
+  font-family: var(--font-headline);
+  font-size: var(--headline-size);
+  font-weight: 500;
+  letter-spacing: var(--heading-tracking);
+  line-height: 1.12;
+  color: var(--on-surface);
+  margin: 0;
+}
+
+.section-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--primary);
+}
+
+.prose {
+  max-width: 65ch;
+  color: var(--on-surface);
+  margin: var(--space-md) 0 0;
+}
+
+.prose p {
+  margin: 0 0 var(--space-md);
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.term-brass {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.term-sky {
+  color: var(--tertiary);
+  font-weight: 600;
+}
+
+.term-mint {
+  color: var(--data-3);
+  font-weight: 600;
+}
+
+.term-coral {
+  color: var(--data-4);
+  font-weight: 600;
+}
+
+/* Two-column asymmetric layout for labs */
+.lab-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+.lab-grid-reverse {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+/* Observation wells */
+.observation-well {
+  background: var(--background);
+  border: var(--hairline);
+  border-radius: var(--rounded);
+  padding: var(--space-md);
+  position: relative;
+}
+
+.well-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  padding-bottom: var(--space-sm);
+  border-bottom: var(--hairline);
+}
+
+.well-title {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  margin: 0;
+}
+
+.canvas-frame {
+  width: 100%;
+  position: relative;
+}
+
+canvas.sim-canvas {
+  display: block;
+  width: 100%;
+  border-radius: var(--rounded);
+  background: var(--background);
+}
+
+/* Controls */
+.controls-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.control-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-sm);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+}
+
+.control-val {
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+
+select.nocturne-select {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-sm) var(--space-xl) var(--space-sm) var(--space-md);
+  background-color: var(--background);
+  color: var(--on-surface);
+  border: var(--hairline-strong);
+  border-radius: var(--rounded);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+input[type="range"].nocturne-range {
+  width: 100%;
+  min-height: 44px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  margin: 0;
+}
+
+.segmented-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  min-height: 44px;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--rounded);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  cursor: pointer;
+  border: var(--hairline-strong);
+  background: transparent;
+  color: var(--on-surface);
+  transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+}
+
+.btn:hover {
+  background: var(--surface-container-high);
+  border-color: var(--tertiary);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background: var(--on-primary-container);
+  border-color: var(--on-primary-container);
+  color: var(--on-primary);
+}
+
+.btn-toggle[aria-pressed="true"] {
+  background: var(--brass-tint);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-toggle-sky[aria-pressed="true"] {
+  background: var(--sky-tint);
+  border-color: var(--tertiary);
+  color: var(--tertiary);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  border-radius: var(--rounded);
+  padding: var(--space-xs) var(--space-sm);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+}
+
+.badge-sky {
+  background: var(--sky-tint);
+  color: var(--tertiary);
+  border: 1px solid var(--sky-border);
+}
+
+.badge-brass {
+  background: var(--brass-tint);
+  color: var(--primary);
+  border: 1px solid var(--brass-border);
+}
+
+.badge-mint {
+  background: var(--mint-tint);
+  color: var(--data-3);
+  border: 1px solid var(--mint-border);
+}
+
+.badge-coral {
+  background: var(--coral-tint);
+  color: var(--data-4);
+  border: 1px solid var(--coral-border);
+}
+
+/* Readout strip */
+.readout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.readout-box {
+  background: var(--surface-container-low);
+  border: var(--hairline);
+  border-radius: var(--rounded);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.readout-label {
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: var(--label-tracking);
+  color: var(--on-surface-variant);
+}
+
+.readout-num {
+  font-family: var(--font-label);
+  font-size: 1.15rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--on-surface);
+  margin-top: var(--space-xs);
+}
+
+/* Formula callout */
+.formula-card {
+  background: var(--surface-container-low);
+  border: var(--hairline);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--rounded);
+  padding: var(--space-md) var(--space-lg);
+  margin: var(--space-md) 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.formula-math {
+  font-family: var(--font-headline);
+  font-size: clamp(1.5rem, 1.25rem + 0.8vw, 2rem);
+  font-style: italic;
+  color: var(--on-surface);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  font-size: 0.82em;
+  line-height: 1.15;
+}
+
+.frac-num {
+  border-bottom: 1px solid var(--on-surface);
+  padding: 0 var(--space-xs) 2px;
+}
+
+.frac-den {
+  padding: 2px var(--space-xs) 0;
+}
+
+.formula-legend {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  color: var(--on-surface-variant);
+  line-height: 1.6;
+}
+
+/* Status note box */
+.status-note {
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--rounded);
+  border: var(--hairline);
+  background: var(--surface-container-low);
+  font-size: 0.94rem;
+  color: var(--on-surface-variant);
+}
+
+.status-note.status-warn {
+  border-color: var(--brass-border);
+  background: var(--brass-tint);
+  color: var(--on-primary-container);
+}
+
+.status-note.status-ok {
+  border-color: var(--mint-border);
+  background: var(--mint-tint);
+  color: var(--on-surface);
+}
+
+.status-note.status-bad {
+  border-color: var(--coral-border);
+  background: var(--coral-tint);
+  color: var(--on-surface);
+}
+
+/* Dual coil builder grid */
+.coil-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+.coil-subpanel {
+  background: var(--surface-container-low);
+  border: var(--hairline);
+  border-radius: var(--rounded);
+  padding: var(--space-md);
+}
+
+/* Table */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table.nocturne-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+table.nocturne-table th {
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--tertiary);
+  text-align: left;
+  padding: var(--space-sm) var(--space-md) var(--space-sm) 0;
+  border-bottom: var(--hairline-strong);
+}
+
+table.nocturne-table td {
+  padding: var(--space-md) var(--space-md) var(--space-md) 0;
+  border-bottom: var(--hairline);
+  vertical-align: top;
+  color: var(--on-surface);
+}
+
+table.nocturne-table .num {
+  text-align: right;
+  font-family: var(--font-label);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Legend row inside charts */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+  font-family: var(--font-label);
+  font-size: var(--label-size);
+  color: var(--on-surface-variant);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.legend-swatch {
+  width: 14px;
+  height: 3px;
+  border-radius: var(--rounded-full);
+}
+
+.swatch-brass { background: var(--data-1); }
+.swatch-sky { background: var(--data-2); }
+.swatch-mint { background: var(--data-3); }
+.swatch-coral { background: var(--data-4); }
+
+/* Footer */
+.site-footer {
+  border-top: var(--hairline);
+  padding: var(--space-xl) var(--space-lg);
+  background: var(--surface-container-low);
+  color: var(--on-surface-variant);
+  font-size: 0.9rem;
+}
+
+.sources-list {
+  margin: var(--space-sm) 0 0;
+  padding-left: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .lab-grid,
+  .lab-grid-reverse {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-header {
+    padding: var(--space-xl) var(--space-md);
+  }
+  .main-flow {
+    padding: var(--space-lg) var(--space-md) var(--space-2xl);
+    gap: var(--space-xl);
+  }
+  .hero-metrics {
+    grid-template-columns: 1fr;
+  }
+  .coil-compare-grid {
+    grid-template-columns: 1fr;
+  }
+  .panel {
+    padding: var(--space-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+</style>
+</head>
+<body>
+<div class="page-shell">
+
+  <header class="hero-header">
+    <div class="container">
+      <p class="coord-label">Electromagnetismo aplicado · Transductores pasivos · Ley de Faraday</p>
+      <h1 class="hero-title">Cómo convierte una pastilla el vibrar de una <em>cuerda</em> en electricidad</h1>
+      <p class="deck-brass">Del dominio ferromagnético a la cancelación de ruido RWRP</p>
+      <p class="hero-lede">
+        Una pastilla de guitarra eléctrica no es un micrófono acústico: no escucha el aire. Es un generador electromagnético pasivo que magnetiza la cuerda metálica, convierte su vibración en variaciones de flujo magnético e induce una corriente alterna fiel en miles de espiras de cobre.
+      </p>
+
+      <nav class="atlas-nav" aria-label="Secciones de la guía">
+        <a class="atlas-link" href="#sec-magnetizacion">1. Anatomía y magnetización</a>
+        <a class="atlas-link" href="#sec-faraday">2. Ley de Faraday</a>
+        <a class="atlas-link" href="#sec-resonancia">3. Tono y pico resonante</a>
+        <a class="atlas-link" href="#sec-humbucker">4. Single-Coil vs. Humbucker</a>
+        <a class="atlas-link" href="#sec-comparativa">5. Tabla técnica</a>
+      </nav>
+
+      <div class="hero-metrics">
+        <div class="metric-panel">
+          <p class="coord-label">Bobinado de cobre</p>
+          <p class="metric-value">4.000 – 7.000</p>
+          <p class="metric-note">Espiras típicas en una pastilla simple; cada vuelta multiplica el voltaje inducido.</p>
+        </div>
+        <div class="metric-panel">
+          <p class="coord-label">Señal generada</p>
+          <p class="metric-value">100 – 500 mV</p>
+          <p class="metric-note">Voltaje alterno pasivo producido sin batería, listo para viajar al amplificador.</p>
+        </div>
+        <div class="metric-panel">
+          <p class="coord-label">Interferencia externa</p>
+          <p class="metric-value">50 / 60 Hz</p>
+          <p class="metric-note">Zumbido eléctrico ambiental (<em>hum</em>) que las bobinas dobles RWRP logran anular.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-flow">
+    <div class="container">
+
+      <!-- SECCIÓN 1: ANATOMÍA Y MAGNETIZACIÓN -->
+      <section id="sec-magnetizacion" class="chapter reveal">
+        <div class="chapter-header">
+          <p class="coord-label">01 · Estructura física y dipolos atómicos</p>
+          <h2 class="section-title">El imán permanente convierte a la cuerda en un <em>imán móvil</em></h2>
+          <div class="prose">
+            <p>
+              Una pastilla simple esencial consta de <strong>uno o varios imanes permanentes</strong> (o piezas polares de hierro conectadas a una barra magnética inferior), rodeados por un carrete con miles de vueltas de finísimo hilo de cobre esmaltado cuyos extremos salen como <span class="term-brass">Vivo (V)</span> y <strong>Tierra (T)</strong>.
+            </p>
+            <p>
+              ¿Por qué la Ley de Faraday exige movimiento pero el imán de la pastilla está fijo? Porque el imán <strong>magnetiza el tramo de cuerda ferromagnética</strong> (acero o níquel) situado justo encima, alineando sus momentos dipolares atómicos. Al pulsarla, la cuerda ya magnetizada oscila como un pequeño dipolo en movimiento frente a la bobina. Si colocas una cuerda de nailon o una cuerda desmagnetizada, el flujo no varía y no hay señal.
+            </p>
+          </div>
+        </div>
+
+        <div class="lab-grid">
+          <div class="panel">
+            <div class="observation-well">
+              <div class="well-header">
+                <h3 class="well-title">Corte transversal: campo magnético y dominios de la cuerda</h3>
+                <span id="mag-badge" class="badge badge-sky">Ferromagnética · Norte ↑</span>
+              </div>
+              <div class="canvas-frame">
+                <canvas id="canvas-mag" class="sim-canvas" height="360" style="min-height: 320px;" aria-label="Simulación de campo magnético y alineación de dipolos en la cuerda"></canvas>
+              </div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-swatch swatch-sky"></span>Líneas de campo B</span>
+                <span class="legend-item"><span class="legend-swatch swatch-mint"></span>Dipolos alineados en cuerda</span>
+                <span class="legend-item"><span class="legend-swatch swatch-brass"></span>Bobina de cobre</span>
+              </div>
+            </div>
+
+            <div class="readout-grid">
+              <div class="readout-box">
+                <div class="readout-label">Alineación dipolar</div>
+                <div class="readout-num" id="mag-readout-align">86 %</div>
+              </div>
+              <div class="readout-box">
+                <div class="readout-label">Flujo en cuerda</div>
+                <div class="readout-num" id="mag-readout-gauss">740 G</div>
+              </div>
+              <div class="readout-box">
+                <div class="readout-label">Brújula de prueba</div>
+                <div class="readout-num" id="mag-readout-compass">Atrae Sur</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel controls-stack">
+            <p class="coord-label">Banco de magnetización</p>
+
+            <div class="control-group">
+              <label class="control-label" for="sel-string-mat">Material de la cuerda</label>
+              <select id="sel-string-mat" class="nocturne-select" onchange="updateMagLab()">
+                <option value="steel" selected>Acero / Níquel (Ferromagnética)</option>
+                <option value="brass">Bronce / Latón puro (Paramagnética débil)</option>
+                <option value="nylon">Nailon (No ferromagnética)</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="sel-magnet-type">Aleación del imán permanente</label>
+              <select id="sel-magnet-type" class="nocturne-select" onchange="updateMagLab()">
+                <option value="alnico2">Alnico II (Campo suave, mayor sustain)</option>
+                <option value="alnico5" selected>Alnico V (Campo intenso y definido)</option>
+                <option value="ceramic">Cerámico (Alta densidad de flujo)</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <span class="control-label">Polaridad superior (hacia las cuerdas)</span>
+              <div class="segmented-row">
+                <button type="button" id="btn-pole-n" class="btn btn-toggle-sky" aria-pressed="true" onclick="setMagPolarity('N')">Polo Norte ↑</button>
+                <button type="button" id="btn-pole-s" class="btn btn-toggle-sky" aria-pressed="false" onclick="setMagPolarity('S')">Polo Sur ↑</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="rng-mag-dist">
+                <span>Distancia cuerda – pieza polar</span>
+                <span class="control-val" id="val-mag-dist">2.5 mm</span>
+              </label>
+              <input type="range" id="rng-mag-dist" class="nocturne-range" min="1.2" max="5.0" step="0.1" value="2.5" oninput="updateMagLab()">
+            </div>
+
+            <div id="mag-status-note" class="status-note status-ok">
+              La cuerda de acero queda magnetizada frente a la pieza polar. Una brújula externa acercada desde arriba apuntará su polo Sur hacia el Norte de la pastilla.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 2: LEY DE FARADAY Y OSCILOSCOPIO -->
+      <section id="sec-faraday" class="chapter reveal">
+        <div class="chapter-header">
+          <p class="coord-label">02 · Inducción electromagnética y señal alterna</p>
+          <h2 class="section-title">La señal nace de la <em>velocidad</em> con que cambia el flujo magnético</h2>
+          <div class="prose">
+            <p>
+              Al vibrar, la cuerda magnetizada perturba las líneas de campo que atraviesan la bobina de cobre. Según la <strong>Ley de Faraday-Lenz</strong>, la fuerza electromotriz (<span class="term-brass">FEM</span>) inducida es proporcional al número de espiras y a la rapidez con que varía el flujo magnético:
+            </p>
+          </div>
+
+          <div class="formula-card">
+            <div class="formula-math" aria-label="Fórmula de la Ley de Faraday: épsilon igual a menos N por d phi sub B sobre d t">
+              <span>&varepsilon;(t) = &minus;N &middot;</span>
+              <span class="frac">
+                <span class="frac-num">d&Phi;<sub>B</sub></span>
+                <span class="frac-den">dt</span>
+              </span>
+            </div>
+            <div class="formula-legend">
+              <strong>&varepsilon;</strong>: Voltaje inducido (mV) &nbsp;·&nbsp;
+              <strong>N</strong>: Espiras de cobre &nbsp;·&nbsp;
+              <strong>d&Phi;<sub>B</sub>/dt</strong>: Tasa de variación de flujo
+            </div>
+          </div>
+
+          <div class="prose">
+            <p>
+              Observa el desfase fundamental en el osciloscopio: cuando la cuerda llega al extremo de su oscilación y se detiene un instante, la variación de flujo vale cero y <strong>el voltaje cruza por cero</strong>. Cuando atraviesa el centro sobre el imán a máxima velocidad, el voltaje alcanza su <span class="term-brass">pico máximo</span>, invirtiendo su signo en el viaje de vuelta (corriente alterna 1:1 con la frecuencia de la cuerda).
+            </p>
+          </div>
+        </div>
+
+        <div class="lab-grid-reverse">
+          <div class="panel controls-stack">
+            <p class="coord-label">Parámetros del transductor</p>
+
+            <div class="segmented-row">
+              <button type="button" id="btn-pluck" class="btn btn-primary" onclick="pluckString()">Pulsar cuerda</button>
+              <button type="button" id="btn-sustain" class="btn btn-toggle" aria-pressed="true" onclick="toggleContinuous()">Oscilación continua</button>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="rng-freq">
+                <span>Frecuencia de vibración (Nota)</span>
+                <span class="control-val" id="val-freq">110 Hz (La2)</span>
+              </label>
+              <input type="range" id="rng-freq" class="nocturne-range" min="82" max="330" step="1" value="110" oninput="updateFaradayParams()">
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="rng-turns">
+                <span>Vueltas de la bobina (N)</span>
+                <span class="control-val" id="val-turns">6.000 espiras</span>
+              </label>
+              <input type="range" id="rng-turns" class="nocturne-range" min="3000" max="10000" step="250" value="6000" oninput="updateFaradayParams()">
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="rng-amp">
+                <span>Intensidad de pulsación / Calibre</span>
+                <span class="control-val" id="val-amp">75 %</span>
+              </label>
+              <input type="range" id="rng-amp" class="nocturne-range" min="0" max="100" step="1" value="75" oninput="updateFaradayParams()">
+            </div>
+
+            <div class="control-group">
+              <span class="control-label">Audio sintetizado en tiempo real</span>
+              <button type="button" id="btn-faraday-audio" class="btn btn-toggle-sky" aria-pressed="false" onclick="toggleFaradayAudio()">Activar audio inducido</button>
+            </div>
+
+            <div class="readout-grid">
+              <div class="readout-box">
+                <div class="readout-label">Pico FEM inducido</div>
+                <div class="readout-num" id="faraday-mv">264 mV</div>
+              </div>
+              <div class="readout-box">
+                <div class="readout-label">Inductancia (L)</div>
+                <div class="readout-num" id="faraday-ind">3.1 H</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="observation-well">
+              <div class="well-header">
+                <h3 class="well-title">Osciloscopio de inducción: movimiento mecánico vs. voltaje alterno</h3>
+                <span id="faraday-state-badge" class="badge badge-brass">Oscilando · d&Phi;/dt activo</span>
+              </div>
+              <div class="canvas-frame">
+                <canvas id="canvas-faraday" class="sim-canvas" height="400" style="min-height: 360px;" aria-label="Simulación en tiempo real de la vibración de la cuerda, líneas de flujo y osciloscopio de voltaje inducido"></canvas>
+              </div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-swatch swatch-sky"></span>Desplazamiento cuerda y(t)</span>
+                <span class="legend-item"><span class="legend-swatch swatch-brass"></span>Voltaje inducido &varepsilon;(t) = &minus;N&middot;d&Phi;/dt</span>
+                <span class="legend-item"><span class="legend-swatch swatch-mint"></span>Corriente en bobina</span>
+              </div>
+            </div>
+            <div id="faraday-status-note" class="status-note">
+              Prueba bajar la intensidad a 0 %: si la cuerda deja de moverse, el flujo se vuelve constante (d&Phi;/dt = 0) y el voltaje cae instantáneamente a 0 mV.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3: TONO, IMPEDANCIA Y PICO RESONANTE -->
+      <section id="sec-resonancia" class="chapter reveal">
+        <div class="chapter-header">
+          <p class="coord-label">03 · Circuito RLC, impedancia y carácter tonal</p>
+          <h2 class="section-title">Por qué más vueltas dan más volumen pero un sonido más <em>cálido</em></h2>
+          <div class="prose">
+            <p>
+              Aunque la resistencia en corriente continua (<span class="term-sky">DCR</span>, medida en k&Omega;) da una pista rápida sobre la salida de una pastilla, su tono real proviene de la <strong>impedancia dependiente de la frecuencia</strong>. La bobina actúa como un inductor (<em>L</em>) en paralelo con su propia capacitancia parásita y la del cable (<em>C</em>), formando un filtro paso-bajo resonante.
+            </p>
+            <p>
+              Al añadir más vueltas de cobre sube la inductancia: se refuerzan los medios-graves y la salida en mV, pero el <strong>pico resonante</strong> se desplaza hacia frecuencias más bajas, recortando el brillo extremo. Asimismo, un potenciómetro de <span class="term-brass">500 k&Omega;</span> amortigua menos ese pico que uno de <strong>250 k&Omega;</strong>, conservando más agudos.
+            </p>
+          </div>
+        </div>
+
+        <div class="lab-grid">
+          <div class="panel">
+            <div class="observation-well">
+              <div class="well-header">
+                <h3 class="well-title">Curva de respuesta en frecuencia (20 Hz – 15 kHz)</h3>
+                <span id="res-peak-badge" class="badge badge-brass">Pico: 3.7 kHz · +4.8 dB</span>
+              </div>
+              <div class="canvas-frame">
+                <canvas id="canvas-resonance" class="sim-canvas" height="330" style="min-height: 300px;" aria-label="Gráfica de respuesta en frecuencia y pico resonante de la pastilla"></canvas>
+              </div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-swatch swatch-brass"></span>Curva activa seleccionada</span>
+                <span class="legend-item"><span class="legend-swatch swatch-sky"></span>Referencia Single-Coil Vintage (250 k&Omega;)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel controls-stack">
+            <p class="coord-label">Selector de arquitectura y carga</p>
+
+            <div class="control-group">
+              <label class="control-label" for="sel-res-model">Modelo de bobinado</label>
+              <select id="sel-res-model" class="nocturne-select" onchange="updateResonance()">
+                <option value="sc_vintage" selected>Single-Coil Vintage (2.2 H · 6.0 k&Omega;)</option>
+                <option value="p90">P-90 Bobina ancha (5.5 H · 8.2 k&Omega;)</option>
+                <option value="paf">Humbucker PAF clásico (4.2 H · 8.0 k&Omega;)</option>
+                <option value="high_hb">Humbucker High-Output (8.5 H · 15.5 k&Omega;)</option>
+              </select>
+            </div>
+
+            <div class="control-group">
+              <span class="control-label">Potenciómetro de volumen</span>
+              <div class="segmented-row">
+                <button type="button" id="btn-pot-250" class="btn btn-toggle" aria-pressed="true" onclick="setPotLoad(250)">250 k&Omega; (Suave)</button>
+                <button type="button" id="btn-pot-500" class="btn btn-toggle" aria-pressed="false" onclick="setPotLoad(500)">500 k&Omega; (Brillante)</button>
+                <button type="button" id="btn-pot-1000" class="btn btn-toggle" aria-pressed="false" onclick="setPotLoad(1000)">1 M&Omega; (Abierto)</button>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label class="control-label" for="rng-cable-cap">
+                <span>Longitud / Capacitancia de cable</span>
+                <span class="control-val" id="val-cable-cap">550 pF (~4.5 m)</span>
+              </label>
+              <input type="range" id="rng-cable-cap" class="nocturne-range" min="250" max="1100" step="50" value="550" oninput="updateResonance()">
+            </div>
+
+            <div class="readout-grid">
+              <div class="readout-box">
+                <div class="readout-label">Frecuencia resonante</div>
+                <div class="readout-num" id="res-freq-val">3.72 kHz</div>
+              </div>
+              <div class="readout-box">
+                <div class="readout-label">Corte (-3 dB)</div>
+                <div class="readout-num" id="res-cutoff-val">5.40 kHz</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 4: SINGLE-COIL VS HUMBUCKER Y RWRP -->
+      <section id="sec-humbucker" class="chapter reveal">
+        <div class="chapter-header">
+          <p class="coord-label">04 · Polaridad, fase y cancelación de ruido (RWRP)</p>
+          <h2 class="section-title">El truco de la <em>humbucker</em>: invertir dos veces la cuerda, una sola vez el ruido</h2>
+          <div class="prose">
+            <p>
+              Toda bobina simple actúa como antena y recoge interferencias electromagnéticas externas de la red eléctrica (<span class="term-coral">hum de 50 o 60 Hz</span>). Para eliminarlo sin perder la señal musical, debemos comprender las dos propiedades independientes de una pastilla: su <strong>polaridad magnética</strong> (Norte o Sur hacia las cuerdas) y su <strong>fase o sentido de bobinado</strong> (horario o antihorario, desde Tierra hacia el Vivo).
+            </p>
+            <p>
+              Si combinamos dos bobinas con una sola característica invertida, las señales de la cuerda quedan <strong>fuera de fase</strong> y se anulan entre sí produciendo un sonido débil y sin graves. El escenario ideal es <span class="term-mint">RWRP (Reversed Wound, Reversed Polarity)</span>: la segunda bobina invierte tanto el imán como el sentido del hilo de cobre. Para la cuerda, dos inversiones equivalen a una suma en fase; para el ruido ambiental (que ignora los imanes y solo depende del bobinado), la señal entra invertida y <strong>se cancela</strong>.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="control-group" style="margin-bottom: var(--space-md);">
+            <span class="control-label">Escenarios rápidos de cableado y polaridad</span>
+            <div class="segmented-row">
+              <button type="button" id="preset-sc" class="btn btn-toggle" aria-pressed="false" onclick="applyHumbuckerPreset('single')">1. Single-Coil (1 bobina)</button>
+              <button type="button" id="preset-same" class="btn btn-toggle" aria-pressed="false" onclick="applyHumbuckerPreset('same')">2. Misma polaridad + mismo bobinado</button>
+              <button type="button" id="preset-oof" class="btn btn-toggle" aria-pressed="false" onclick="applyHumbuckerPreset('oof')">3. Fuera de fase (1 inversión)</button>
+              <button type="button" id="preset-rwrp" class="btn btn-toggle" aria-pressed="true" onclick="applyHumbuckerPreset('rwrp')">4. Humbucker / RWRP (Ideal)</button>
+            </div>
+          </div>
+
+          <div class="lab-grid">
+            <div class="observation-well">
+              <div class="well-header">
+                <h3 class="well-title">Suma de señales y cancelación de zumbido (50/60 Hz)</h3>
+                <span id="hb-verdict-badge" class="badge badge-mint">En fase · Hum cancelado (RWRP)</span>
+              </div>
+              <div class="canvas-frame">
+                <canvas id="canvas-humbucker" class="sim-canvas" height="410" style="min-height: 360px;" aria-label="Osciloscopio comparativo entre bobina A, bobina B y señal resultante con ruido de red"></canvas>
+              </div>
+              <div class="chart-legend">
+                <span class="legend-item"><span class="legend-swatch swatch-brass"></span>Bobina A (Señal + Hum)</span>
+                <span class="legend-item"><span class="legend-swatch swatch-sky"></span>Bobina B (Señal + Hum)</span>
+                <span class="legend-item"><span class="legend-swatch swatch-mint"></span>Salida total al amplificador</span>
+                <span class="legend-item"><span class="legend-swatch swatch-coral"></span>Ruido 50/60 Hz residual</span>
+              </div>
+            </div>
+
+            <div class="controls-stack">
+              <div class="coil-compare-grid">
+                <div class="coil-subpanel">
+                  <p class="coord-label" style="color: var(--primary);">Bobina A (Base)</p>
+                  <div class="control-group" style="margin-bottom: var(--space-sm);">
+                    <span class="control-label">Imán hacia cuerdas</span>
+                    <div class="segmented-row">
+                      <button type="button" id="btn-a-n" class="btn btn-toggle-sky" aria-pressed="true" onclick="setCoilConfig('A', 'pole', 1)">Norte ↑</button>
+                      <button type="button" id="btn-a-s" class="btn btn-toggle-sky" aria-pressed="false" onclick="setCoilConfig('A', 'pole', -1)">Sur ↑</button>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <span class="control-label">Sentido bobinado</span>
+                    <div class="segmented-row">
+                      <button type="button" id="btn-a-cw" class="btn btn-toggle" aria-pressed="true" onclick="setCoilConfig('A', 'wind', 1)">Horario ↻</button>
+                      <button type="button" id="btn-a-ccw" class="btn btn-toggle" aria-pressed="false" onclick="setCoilConfig('A', 'wind', -1)">Antihorario ↺</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="coil-subpanel">
+                  <p class="coord-label" style="color: var(--tertiary);">Bobina B (Pareja)</p>
+                  <div class="control-group" style="margin-bottom: var(--space-sm);">
+                    <span class="control-label">Imán / Estado</span>
+                    <div class="segmented-row">
+                      <button type="button" id="btn-b-off" class="btn btn-toggle" aria-pressed="false" onclick="setCoilConfig('B', 'enabled', false)">Apagada</button>
+                      <button type="button" id="btn-b-n" class="btn btn-toggle-sky" aria-pressed="false" onclick="setCoilConfig('B', 'pole', 1)">Norte ↑</button>
+                      <button type="button" id="btn-b-s" class="btn btn-toggle-sky" aria-pressed="true" onclick="setCoilConfig('B', 'pole', -1)">Sur ↑</button>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <span class="control-label">Sentido bobinado</span>
+                    <div class="segmented-row">
+                      <button type="button" id="btn-b-cw" class="btn btn-toggle" aria-pressed="false" onclick="setCoilConfig('B', 'wind', 1)">Horario ↻</button>
+                      <button type="button" id="btn-b-ccw" class="btn btn-toggle" aria-pressed="true" onclick="setCoilConfig('B', 'wind', -1)">Antihorario ↺</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label class="control-label" for="rng-hum-level">
+                  <span>Interferencia ambiental (50/60 Hz)</span>
+                  <span class="control-val" id="val-hum-level">65 %</span>
+                </label>
+                <input type="range" id="rng-hum-level" class="nocturne-range" min="0" max="100" step="5" value="65" oninput="updateHumbuckerUI()">
+              </div>
+
+              <div class="segmented-row">
+                <button type="button" id="btn-hb-audio" class="btn btn-primary" aria-pressed="false" onclick="toggleHbAudio()">Escuchar señal + zumbido</button>
+              </div>
+
+              <div class="readout-grid">
+                <div class="readout-box">
+                  <div class="readout-label">Señal útil de cuerda</div>
+                  <div class="readout-num" id="hb-signal-pct">200 % (En fase)</div>
+                </div>
+                <div class="readout-box">
+                  <div class="readout-label">Zumbido 50/60 Hz</div>
+                  <div class="readout-num" id="hb-hum-pct">0 % (Cancelado)</div>
+                </div>
+              </div>
+
+              <div id="hb-status-note" class="status-note status-ok">
+                <strong>Escenario ideal RWRP:</strong> Al invertir polo y bobinado respecto a la Bobina A, la cuerda suma el doble de señal en fase mientras las ondas del zumbido de red se oponen exactamente y desaparecen.
+              </div>
+            </div>
+          </div>
+
+          <div class="status-note" style="margin-top: var(--space-md);">
+            <strong>Precaución práctica con pastillas RWRP de distintos fabricantes:</strong> «RWRP» siempre significa opuesto al estándar propio de cada marca. Si un fabricante bobina sus pastillas estándar con Norte arriba y sentido horario, su RWRP será Sur arriba y antihorario; otro fabricante puede usar Sur arriba y horario como base. Comprueba siempre la polaridad con un imán o brújula y el orden Tierra/Vivo antes de combinar marcas.
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 5: TABLA COMPARATIVA -->
+      <section id="sec-comparativa" class="chapter reveal">
+        <div class="chapter-header">
+          <p class="coord-label">05 · Síntesis comparativa de arquitecturas</p>
+          <h2 class="section-title">Cómo se traducen bobinado y geometría en cada familia de pastillas</h2>
+        </div>
+
+        <div class="panel">
+          <div class="table-wrap">
+            <table class="nocturne-table">
+              <thead>
+                <tr>
+                  <th>Arquitectura</th>
+                  <th>Bobinas e imanes</th>
+                  <th class="num">DCR típica</th>
+                  <th class="num">Pico resonante</th>
+                  <th>Ruido 50/60 Hz</th>
+                  <th>Carácter sonoro</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Single-Coil clásica</strong><br><span style="color: var(--on-surface-variant); font-size: 0.85rem;">Tipo Stratocaster / Telecaster</span></td>
+                  <td>1 bobina estrecha; 6 piezas polares imantadas</td>
+                  <td class="num">5.5 – 7.5 k&Omega;</td>
+                  <td class="num">3.4 – 4.5 kHz</td>
+                  <td>Presente (salvo posiciones combinadas RWRP)</td>
+                  <td>Brillante, ataque rápido, gran definición en agudos</td>
+                </tr>
+                <tr>
+                  <td><strong>P-90</strong><br><span style="color: var(--on-surface-variant); font-size: 0.85rem;">Bobina simple ancha</span></td>
+                  <td>1 bobina ancha y plana; 2 barras magnéticas inferiores</td>
+                  <td class="num">7.5 – 9.5 k&Omega;</td>
+                  <td class="num">2.4 – 3.0 kHz</td>
+                  <td>Presente (bobina única)</td>
+                  <td>Medios carnosos y mordida cruda entre single-coil y humbucker</td>
+                </tr>
+                <tr>
+                  <td><strong>Humbucker PAF</strong><br><span style="color: var(--on-surface-variant); font-size: 0.85rem;">Doble bobina RWRP en serie</span></td>
+                  <td>2 bobinas (N+Horario y S+Antihorario) sobre barra Alnico</td>
+                  <td class="num">7.5 – 9.0 k&Omega;</td>
+                  <td class="num">2.1 – 2.8 kHz</td>
+                  <td>Cancelado por oposición RWRP</td>
+                  <td>Cálida, cuerpo en graves/medios, mayor salida y sustain</td>
+                </tr>
+                <tr>
+                  <td><strong>Humbucker High-Output</strong><br><span style="color: var(--on-surface-variant); font-size: 0.85rem;">Bobinado denso / Cerámica</span></td>
+                  <td>2 bobinas RWRP con hasta ~10.000 espiras totales</td>
+                  <td class="num">13.0 – 17.0 k&Omega;</td>
+                  <td class="num">1.5 – 2.0 kHz</td>
+                  <td>Cancelado por oposición RWRP</td>
+                  <td>Alta compresión natural, medios potentes ideales para saturación</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="coord-label">Fuentes y fundamentos de referencia</p>
+      <ul class="sources-list">
+        <li>University of Delaware, Dept. of Physics — <em>Lab 7: Electric Guitar and Faraday's Law</em> (inducción electromagnética, saturación ferromagnética de cuerdas de hierro y análisis con osciloscopio).</li>
+        <li>CircuitBread (Herald Labial) — <em>How does a Guitar Pickup work?</em> (modelado del dipolo móvil, voltaje en milivoltios e impedancia).</li>
+        <li>Santos Guitars — <em>Claves para entender las pastillas</em> (determinación de polaridad con brújula, sentido de bobinado Tierra–Vivo, análisis de fase y RWRP).</li>
+        <li>Thomann España — <em>Guías técnicas: Funcionamiento de pastillas</em> (relación 1:1 de oscilación mecánica a señal eléctrica y piezas polares).</li>
+        <li>Nebula Guitar Parts — <em>The Physics Of Guitar Pickups: A Deep Dive</em> (propiedades de imanes Alnico/Cerámicos, pico resonante, potenciómetros y corrientes parásitas).</li>
+      </ul>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// Resolve CSS tokens at runtime so canvas rendering stays 100% faithful to :root
+function getToken(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function getPalette() {
+  return {
+    bg: getToken('--background'),
+    surface: getToken('--surface-container'),
+    surfaceLow: getToken('--surface-container-low'),
+    text: getToken('--on-surface'),
+    muted: getToken('--on-surface-variant'),
+    outline: getToken('--outline'),
+    grid: getToken('--outline-variant'),
+    brass: getToken('--data-1'),
+    sky: getToken('--data-2'),
+    mint: getToken('--data-3'),
+    coral: getToken('--data-4'),
+    context: getToken('--data-context')
+  };
+}
+
+function setupCanvasDPI(canvas, logicalHeight) {
+  if (!canvas) return null;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.max(280, canvas.clientWidth || 560);
+  const h = logicalHeight || canvas.height || 340;
+  if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+  }
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+
+// =========================================================================
+// STATE
+// =========================================================================
+const state = {
+  mag: {
+    material: 'steel',
+    magnetType: 'alnico5',
+    polarity: 'N',
+    distance: 2.5
+  },
+  faraday: {
+    freq: 110,
+    turns: 6000,
+    amp: 75,
+    continuous: true,
+    pluckTime: 0,
+    audioOn: false
+  },
+  resonance: {
+    model: 'sc_vintage',
+    potKOhm: 250,
+    cablePf: 550
+  },
+  humbucker: {
+    coilA: { pole: 1, wind: 1 },
+    coilB: { enabled: true, pole: -1, wind: -1 },
+    humLevel: 65,
+    audioOn: false
+  }
+};
+
+// =========================================================================
+// 1. MAGNETIZATION LAB
+// =========================================================================
+function setMagPolarity(pol) {
+  state.mag.polarity = pol;
+  const btnN = document.getElementById('btn-pole-n');
+  const btnS = document.getElementById('btn-pole-s');
+  if (btnN) btnN.setAttribute('aria-pressed', pol === 'N' ? 'true' : 'false');
+  if (btnS) btnS.setAttribute('aria-pressed', pol === 'S' ? 'true' : 'false');
+  updateMagLab();
+}
+
+function updateMagLab() {
+  const matEl = document.getElementById('sel-string-mat');
+  const magEl = document.getElementById('sel-magnet-type');
+  const distEl = document.getElementById('rng-mag-dist');
+  if (matEl) state.mag.material = matEl.value;
+  if (magEl) state.mag.magnetType = magEl.value;
+  if (distEl) state.mag.distance = parseFloat(distEl.value);
+
+  const valDist = document.getElementById('val-mag-dist');
+  if (valDist) valDist.textContent = `${state.mag.distance.toFixed(1)} mm`;
+
+  const magStrengthMap = { alnico2: 0.65, alnico5: 0.90, ceramic: 1.05 };
+  const matPermMap = { steel: 1.0, brass: 0.06, nylon: 0.0 };
+
+  const baseStrength = magStrengthMap[state.mag.magnetType] || 0.9;
+  const matPerm = matPermMap[state.mag.material] ?? 1.0;
+  const distFactor = Math.pow(2.5 / state.mag.distance, 1.15);
+
+  const gaussAtString = Math.round(740 * baseStrength * Math.min(1.8, distFactor));
+  const alignPct = Math.round(Math.min(98, 86 * baseStrength * matPerm * Math.pow(2.5 / state.mag.distance, 0.35)));
+
+  const elAlign = document.getElementById('mag-readout-align');
+  const elGauss = document.getElementById('mag-readout-gauss');
+  const elCompass = document.getElementById('mag-readout-compass');
+  const badge = document.getElementById('mag-badge');
+  const note = document.getElementById('mag-status-note');
+
+  if (elAlign) elAlign.textContent = `${alignPct} %`;
+  if (elGauss) elGauss.textContent = `${gaussAtString} G`;
+  if (elCompass) elCompass.textContent = state.mag.polarity === 'N' ? `Atrae polo Sur` : `Atrae polo Norte`;
+
+  const matName = state.mag.material === 'steel' ? `Ferromagnética` : (state.mag.material === 'brass' ? `Paramagnética débil` : `No magnética`);
+  if (badge) {
+    badge.textContent = `${matName} · ${state.mag.polarity === 'N' ? 'Norte ↑' : 'Sur ↑'}`;
+    badge.className = state.mag.material === 'steel' ? 'badge badge-sky' : 'badge badge-coral';
+  }
+
+  if (note) {
+    if (state.mag.material === 'nylon') {
+      note.className = 'status-note status-bad';
+      note.innerHTML = `<strong>Sin señal posible:</strong> El nailon no es ferromagnético. Sus moléculas carecen de dominios magnéticos alineables, por lo que al vibrar no perturba el flujo de la bobina.`;
+    } else if (state.mag.material === 'brass') {
+      note.className = 'status-note status-warn';
+      note.innerHTML = `<strong>Respuesta despreciable (~${alignPct}%):</strong> El bronce o latón puro apenas se magnetiza. Por eso las cuerdas acústicas de bronce fosforado rinden muy poco en pastillas magnéticas frente al acero/níquel.`;
+    } else if (state.mag.distance <= 1.7 && (state.mag.magnetType === 'ceramic' || state.mag.magnetType === 'alnico5')) {
+      note.className = 'status-note status-warn';
+      note.innerHTML = `<strong>Atención (String Pull alto · ${gaussAtString} G):</strong> Un imán potente tan cerca frena la oscilación libre de la cuerda, reduce el <em>sustain</em> y puede generar armónicos disonantes (<em>stratitis</em>).`;
+    } else {
+      note.className = 'status-note status-ok';
+      note.innerHTML = `La cuerda de acero queda magnetizada frente a la pieza polar (${alignPct} % de alineación dipolar). Una brújula acercada arriba apuntará su polo ${state.mag.polarity === 'N' ? 'Sur' : 'Norte'} hacia la pastilla.`;
+    }
+  }
+}
+
+function drawMagCanvas(t) {
+  const canvas = document.getElementById('canvas-mag');
+  const setup = setupCanvasDPI(canvas, 340);
+  if (!setup) return;
+  const { ctx, w, h } = setup;
+  const P = getPalette();
+
+  ctx.clearRect(0, 0, w, h);
+
+  const cx = w * 0.5;
+  const distNorm = (state.mag.distance - 1.2) / (5.0 - 1.2);
+  const stringY = 66 - distNorm * 22 + Math.sin(t * 6) * 2.5;
+  const poleTopY = 128;
+  const poleH = 152;
+  const poleW = 46;
+  const coilW = 148;
+  const coilTopY = 148;
+  const coilH = 112;
+
+  // Background subtle vertical axis
+  ctx.strokeStyle = P.grid;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(cx, 16);
+  ctx.lineTo(cx, h - 16);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Magnetic field lines (intensity scales with magnet alloy)
+  const magMult = state.mag.magnetType === 'alnico2' ? 0.65 : (state.mag.magnetType === 'alnico5' ? 0.9 : 1.1);
+  const isNorthTop = state.mag.polarity === 'N';
+
+  ctx.lineWidth = 1.6;
+  const loops = [42, 76, 114, 152];
+  loops.forEach((spread, idx) => {
+    const alpha = Math.max(0.22, (0.8 - idx * 0.14) * magMult);
+    ctx.strokeStyle = P.sky;
+    ctx.globalAlpha = alpha;
+    [-1, 1].forEach((side) => {
+      ctx.beginPath();
+      const topAnchorX = cx + side * (8 + idx * 5);
+      const bottomAnchorX = cx + side * (8 + idx * 5);
+      ctx.moveTo(topAnchorX, poleTopY);
+      ctx.bezierCurveTo(
+        cx + side * spread, poleTopY - 82 - idx * 6,
+        cx + side * (spread + 26), poleTopY + poleH + 65,
+        bottomAnchorX, poleTopY + poleH
+      );
+      ctx.stroke();
+
+      // Field direction arrow at top arc
+      const arrowX = cx + side * (spread * 0.62);
+      const arrowY = poleTopY - 40 - idx * 3;
+      const dir = isNorthTop ? side : -side;
+      ctx.beginPath();
+      ctx.moveTo(arrowX - dir * 5, arrowY - 4);
+      ctx.lineTo(arrowX + dir * 5, arrowY);
+      ctx.lineTo(arrowX - dir * 5, arrowY + 4);
+      ctx.stroke();
+    });
+  });
+  ctx.globalAlpha = 1;
+
+  // Copper coil cross-section (Left & Right windings around bobbin)
+  ctx.fillStyle = P.surfaceLow;
+  ctx.strokeStyle = P.outline;
+  ctx.lineWidth = 1.5;
+  ctx.fillRect(cx - coilW / 2, coilTopY, coilW, coilH);
+  ctx.strokeRect(cx - coilW / 2, coilTopY, coilW, coilH);
+
+  // Draw copper wire turns inside left and right coil chambers
+  const chamberW = (coilW - poleW) / 2 - 6;
+  [cx - coilW / 2 + 4, cx + poleW / 2 + 2].forEach((startX) => {
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 5; col++) {
+        const wx = startX + col * (chamberW / 5) + 4;
+        const wy = coilTopY + 8 + row * 10;
+        ctx.fillStyle = P.brass;
+        ctx.beginPath();
+        ctx.arc(wx, wy, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  });
+
+  // Central Magnet / Pole Piece
+  const topColor = isNorthTop ? P.coral : P.sky;
+  const botColor = isNorthTop ? P.sky : P.coral;
+
+  ctx.fillStyle = topColor;
+  ctx.fillRect(cx - poleW / 2, poleTopY, poleW, poleH / 2);
+  ctx.fillStyle = botColor;
+  ctx.fillRect(cx - poleW / 2, poleTopY + poleH / 2, poleW, poleH / 2);
+  ctx.strokeStyle = P.text;
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(cx - poleW / 2, poleTopY, poleW, poleH);
+
+  // Pole labels N / S
+  ctx.fillStyle = P.bg;
+  ctx.font = `600 15px "JetBrains Mono", monospace`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(isNorthTop ? 'N' : 'S', cx, poleTopY + 24);
+  ctx.fillText(isNorthTop ? 'S' : 'N', cx, poleTopY + poleH - 24);
+
+  // Leads out of coil (Tierra / Vivo)
+  ctx.strokeStyle = P.muted;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(cx - coilW / 2, coilTopY + coilH - 12);
+  ctx.lineTo(cx - coilW / 2 - 44, coilTopY + coilH - 12);
+  ctx.stroke();
+
+  ctx.strokeStyle = P.brass;
+  ctx.beginPath();
+  ctx.moveTo(cx + coilW / 2, coilTopY + coilH - 12);
+  ctx.lineTo(cx + coilW / 2 + 44, coilTopY + coilH - 12);
+  ctx.stroke();
+
+  ctx.font = `500 11px "JetBrains Mono", monospace`;
+  ctx.fillStyle = P.muted;
+  ctx.textAlign = 'right';
+  ctx.fillText('TIERRA (T)', cx - coilW / 2 - 48, coilTopY + coilH - 12);
+  ctx.fillStyle = P.brass;
+  ctx.textAlign = 'left';
+  ctx.fillText('VIVO (V)', cx + coilW / 2 + 48, coilTopY + coilH - 12);
+
+  // Guitar String cross-section (horizontal bar with magnetic dipoles inside)
+  const strLeft = 36;
+  const strRight = w - 36;
+  const strThick = 14;
+  ctx.fillStyle = state.mag.material === 'nylon' ? P.surface : (state.mag.material === 'brass' ? P.brass : P.surfaceLow);
+  ctx.strokeStyle = state.mag.material === 'nylon' ? P.outline : P.text;
+  ctx.lineWidth = 1.5;
+  ctx.fillRect(strLeft, stringY - strThick / 2, strRight - strLeft, strThick);
+  ctx.strokeRect(strLeft, stringY - strThick / 2, strRight - strLeft, strThick);
+
+  // Draw dipole arrows inside string
+  const numDipoles = 11;
+  for (let i = 0; i < numDipoles; i++) {
+    const dx = strLeft + 24 + (i * (strRight - strLeft - 48)) / (numDipoles - 1);
+    const distFromCenter = Math.abs(dx - cx) / (w * 0.45);
+    let angle = 0;
+    if (state.mag.material === 'steel') {
+      // Aligned vertically along field near pole piece
+      const targetAngle = isNorthTop ? -Math.PI / 2 : Math.PI / 2;
+      const jitter = distFromCenter * 0.5 * Math.sin(i * 2.7 + t * 2);
+      angle = targetAngle + jitter;
+    } else if (state.mag.material === 'brass') {
+      angle = Math.sin(i * 1.9 + t * 1.2) * 1.3;
+    } else {
+      // Random unaligned
+      angle = (i * 1.37) % (Math.PI * 2);
+    }
+
+    ctx.save();
+    ctx.translate(dx, stringY);
+    ctx.rotate(angle);
+    ctx.strokeStyle = state.mag.material === 'steel' ? P.mint : (state.mag.material === 'brass' ? P.brass : P.muted);
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-5, 0);
+    ctx.lineTo(5, 0);
+    ctx.moveTo(2, -3);
+    ctx.lineTo(5, 0);
+    ctx.lineTo(2, 3);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Labels on canvas
+  ctx.fillStyle = P.text;
+  ctx.font = `500 11px "JetBrains Mono", monospace`;
+  ctx.textAlign = 'left';
+  ctx.fillText(`CUERDA (${state.mag.distance.toFixed(1)} mm sobre polo)`, strLeft, stringY - 18);
+
+  // Virtual compass badge in top right
+  const compX = w - 74;
+  const compY = 40;
+  ctx.fillStyle = P.surface;
+  ctx.strokeStyle = P.outline;
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.arc(compX, compY, 20, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  // Compass needle pointing opposite pole down toward pickup
+  ctx.fillStyle = isNorthTop ? P.sky : P.coral;
+  ctx.beginPath();
+  ctx.moveTo(compX - 4, compY);
+  ctx.lineTo(compX + 4, compY);
+  ctx.lineTo(compX, compY + 14);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = isNorthTop ? P.coral : P.sky;
+  ctx.beginPath();
+  ctx.moveTo(compX - 4, compY);
+  ctx.lineTo(compX + 4, compY);
+  ctx.lineTo(compX, compY - 14);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = P.muted;
+  ctx.textAlign = 'center';
+  ctx.font = `500 10px "JetBrains Mono", monospace`;
+  ctx.fillText('BRÚJULA', compX, compY + 32);
+}
+
+// =========================================================================
+// 2. FARADAY'S LAW & OSCILLOSCOPE LAB
+// =========================================================================
+function noteNameFromHz(hz) {
+  const notes = [
+    { f: 82.4, name: 'Mi2' },
+    { f: 110.0, name: 'La2' },
+    { f: 146.8, name: 'Re3' },
+    { f: 196.0, name: 'Sol3' },
+    { f: 246.9, name: 'Si3' },
+    { f: 329.6, name: 'Mi4' }
+  ];
+  let best = notes[0];
+  let minDiff = Math.abs(hz - best.f);
+  for (let i = 1; i < notes.length; i++) {
+    const diff = Math.abs(hz - notes[i].f);
+    if (diff < minDiff) {
+      minDiff = diff;
+      best = notes[i];
+    }
+  }
+  return minDiff < 4 ? best.name : `~${best.name}`;
+}
+
+function updateFaradayParams() {
+  const fEl = document.getElementById('rng-freq');
+  const nEl = document.getElementById('rng-turns');
+  const aEl = document.getElementById('rng-amp');
+
+  if (fEl) state.faraday.freq = parseInt(fEl.value, 10);
+  if (nEl) state.faraday.turns = parseInt(nEl.value, 10);
+  if (aEl) state.faraday.amp = parseInt(aEl.value, 10);
+
+  const valF = document.getElementById('val-freq');
+  const valN = document.getElementById('val-turns');
+  const valA = document.getElementById('val-amp');
+  if (valF) valF.textContent = `${state.faraday.freq} Hz (${noteNameFromHz(state.faraday.freq)})`;
+  if (valN) valN.textContent = `${state.faraday.turns.toLocaleString('es-ES')} espiras`;
+  if (valA) valA.textContent = `${state.faraday.amp} %`;
+
+  // Compute physical peak mV and inductance
+  const peakMv = Math.round(
+    (state.faraday.turns / 6000) *
+    (state.faraday.amp / 75) *
+    Math.pow(state.faraday.freq / 110, 0.35) *
+    264
+  );
+  const indH = (3.1 * Math.pow(state.faraday.turns / 6000, 2)).toFixed(1);
+
+  const mvEl = document.getElementById('faraday-mv');
+  const indEl = document.getElementById('faraday-ind');
+  const badgeEl = document.getElementById('faraday-state-badge');
+
+  if (mvEl) mvEl.textContent = `${peakMv} mV`;
+  if (indEl) indEl.textContent = `${indH} H`;
+
+  if (badgeEl) {
+    if (state.faraday.amp === 0) {
+      badgeEl.textContent = `Cuerda en reposo · 0 mV`;
+      badgeEl.className = 'badge badge-coral';
+    } else {
+      badgeEl.textContent = `Oscilando · dΦ/dt activo`;
+      badgeEl.className = 'badge badge-brass';
+    }
+  }
+
+  updateFaradayAudioParams();
+}
+
+function pluckString() {
+  state.faraday.continuous = false;
+  state.faraday.pluckTime = performance.now();
+  const btnSus = document.getElementById('btn-sustain');
+  if (btnSus) btnSus.setAttribute('aria-pressed', 'false');
+  if (state.faraday.amp === 0) {
+    state.faraday.amp = 80;
+    const aEl = document.getElementById('rng-amp');
+    if (aEl) aEl.value = '80';
+    updateFaradayParams();
+  }
+  triggerPluckSound();
+}
+
+function toggleContinuous() {
+  state.faraday.continuous = !state.faraday.continuous;
+  const btnSus = document.getElementById('btn-sustain');
+  if (btnSus) btnSus.setAttribute('aria-pressed', state.faraday.continuous ? 'true' : 'false');
+  if (state.faraday.continuous) {
+    state.faraday.pluckTime = performance.now();
+  } else if (state.faraday.audioOn && faradayGain && audioCtx) {
+    faradayGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.08);
+  }
+  updateFaradayAudioParams();
+}
+
+function drawFaradayCanvas(tNow) {
+  const canvas = document.getElementById('canvas-faraday');
+  const setup = setupCanvasDPI(canvas, 390);
+  if (!setup) return;
+  const { ctx, w, h } = setup;
+  const P = getPalette();
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Split canvas vertically: Top = Pickup & vibrating string (155px), Bottom = Dual-trace oscilloscope
+  const topH = 155;
+  const scopeTop = topH + 18;
+  const scopeH = h - scopeTop - 16;
+
+  // Envelope
+  let env = state.faraday.amp / 100;
+  if (!state.faraday.continuous) {
+    if (state.faraday.pluckTime === 0) {
+      env = 0;
+    } else {
+      const elapsed = (tNow - state.faraday.pluckTime) / 1000;
+      env *= Math.exp(-elapsed * 0.75);
+      if (env < 0.01) env = 0;
+    }
+  }
+
+  // Visual frequency scaled slowly so human eye can track phase relationship cleanly
+  const visualOmega = 2 * Math.PI * (0.85 + (state.faraday.freq - 82) / 248 * 1.4);
+  const phase = tNow * 0.001 * visualOmega;
+  const dispNorm = Math.sin(phase) * env;         // y(t)
+  const emfNorm = -Math.cos(phase) * env;         // -dPhi/dt ~ -dy/dt
+
+  // --- TOP PANEL: PHYSICAL STRING + FLUX + COIL ---
+  const cx = w * 0.5;
+  const strBaseY = 44;
+  const strCurY = strBaseY - dispNorm * 22;
+
+  // String anchors
+  ctx.strokeStyle = P.outline;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(24, strBaseY);
+  ctx.quadraticCurveTo(cx, strCurY, w - 24, strBaseY);
+  ctx.stroke();
+
+  // Glow on vibrating string
+  ctx.strokeStyle = P.sky;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(24, strBaseY);
+  ctx.quadraticCurveTo(cx, strCurY, w - 24, strBaseY);
+  ctx.stroke();
+
+  // Pickup magnet & coil below string center
+  const poleW = 36;
+  const poleY = 82;
+  const poleH = 62;
+  const coilW = 128;
+
+  // Dynamic flux lines bending toward string position
+  ctx.strokeStyle = P.sky;
+  ctx.lineWidth = 1.4;
+  [-1, 1].forEach((side) => {
+    [28, 52].forEach((spread, idx) => {
+      ctx.globalAlpha = 0.7 - idx * 0.25;
+      ctx.beginPath();
+      ctx.moveTo(cx + side * 8, poleY);
+      ctx.bezierCurveTo(
+        cx + side * (spread + dispNorm * 10), poleY - 36 - dispNorm * 14,
+        cx + side * (spread + 18), poleY + poleH + 14,
+        cx + side * 8, poleY + poleH
+      );
+      ctx.stroke();
+    });
+  });
+  ctx.globalAlpha = 1;
+
+  // Bobbin + windings
+  ctx.fillStyle = P.surfaceLow;
+  ctx.strokeStyle = P.outline;
+  ctx.fillRect(cx - coilW / 2, poleY + 12, coilW, poleH - 18);
+  ctx.strokeRect(cx - coilW / 2, poleY + 12, coilW, poleH - 18);
+
+  // Windings highlight proportional to N and active current
+  const curMag = Math.abs(emfNorm);
+  ctx.fillStyle = P.brass;
+  ctx.globalAlpha = 0.35 + curMag * 0.65;
+  ctx.fillRect(cx - coilW / 2 + 4, poleY + 16, (coilW - poleW) / 2 - 8, poleH - 26);
+  ctx.fillRect(cx + poleW / 2 + 4, poleY + 16, (coilW - poleW) / 2 - 8, poleH - 26);
+  ctx.globalAlpha = 1;
+
+  // Pole piece
+  ctx.fillStyle = P.coral;
+  ctx.fillRect(cx - poleW / 2, poleY, poleW, poleH / 2);
+  ctx.fillStyle = P.sky;
+  ctx.fillRect(cx - poleW / 2, poleY + poleH / 2, poleW, poleH / 2);
+  ctx.strokeStyle = P.text;
+  ctx.strokeRect(cx - poleW / 2, poleY, poleW, poleH);
+
+  // Induced current direction arrow on coil output
+  ctx.font = `500 11px "JetBrains Mono", monospace`;
+  ctx.fillStyle = emfNorm >= 0 ? P.mint : P.coral;
+  ctx.textAlign = 'left';
+  const curDirLabel = env < 0.02 ? `I = 0 mA (sin variación)` : (emfNorm >= 0 ? `I (+) → hacia amplificador` : `I (−) ← retorno alterno`);
+  ctx.fillText(curDirLabel, cx + coilW / 2 + 16, poleY + 34);
+
+  // --- DIVIDER ---
+  ctx.strokeStyle = P.grid;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(12, topH);
+  ctx.lineTo(w - 12, topH);
+  ctx.stroke();
+
+  // --- BOTTOM PANEL: OSCILLOSCOPE ---
+  const midY = scopeTop + scopeH / 2;
+  const plotLeft = 44;
+  const plotRight = w - 16;
+  const plotW = plotRight - plotLeft;
+
+  // Gridlines
+  ctx.strokeStyle = P.grid;
+  ctx.setLineDash([3, 4]);
+  [-0.5, 0, 0.5].forEach((lvl) => {
+    const gy = midY + lvl * (scopeH * 0.72);
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, gy);
+    ctx.lineTo(plotRight, gy);
+    ctx.stroke();
+  });
+  ctx.setLineDash([]);
+
+  // Zero baseline
+  ctx.strokeStyle = P.outline;
+  ctx.beginPath();
+  ctx.moveTo(plotLeft, midY);
+  ctx.lineTo(plotRight, midY);
+  ctx.stroke();
+
+  // Y axis ticks
+  ctx.fillStyle = P.muted;
+  ctx.font = `500 10px "JetBrains Mono", monospace`;
+  ctx.textAlign = 'right';
+  ctx.fillText('+mV', plotLeft - 6, scopeTop + 14);
+  ctx.fillText('0', plotLeft - 6, midY + 3);
+  ctx.fillText('−mV', plotLeft - 6, scopeTop + scopeH - 8);
+
+  const turnsScale = 0.55 + (state.faraday.turns / 10000) * 0.45;
+  const maxAmpPx = scopeH * 0.39;
+
+  // Trace 1: String displacement y(t)
+  ctx.strokeStyle = P.sky;
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  for (let x = 0; x <= plotW; x += 2) {
+    const px = plotLeft + x;
+    const pOffset = ((plotW - x) / plotW) * Math.PI * 4.5;
+    const yVal = Math.sin(phase - pOffset) * env;
+    const py = midY - yVal * (maxAmpPx * 0.75);
+    if (x === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // Trace 2: Induced EMF (-N dPhi/dt)
+  ctx.strokeStyle = P.brass;
+  ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  for (let x = 0; x <= plotW; x += 2) {
+    const px = plotLeft + x;
+    const pOffset = ((plotW - x) / plotW) * Math.PI * 4.5;
+    const eVal = -Math.cos(phase - pOffset) * env * turnsScale;
+    const py = midY - eVal * maxAmpPx;
+    if (x === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // Live endpoint markers on right edge
+  const curYPlot = midY - dispNorm * (maxAmpPx * 0.75);
+  const curEPlot = midY - emfNorm * turnsScale * maxAmpPx;
+
+  ctx.fillStyle = P.sky;
+  ctx.beginPath();
+  ctx.arc(plotRight, curYPlot, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = P.brass;
+  ctx.beginPath();
+  ctx.arc(plotRight, curEPlot, 5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// =========================================================================
+// 3. RESONANCE / FREQUENCY RESPONSE LAB
+// =========================================================================
+const PICKUP_MODELS = {
+  sc_vintage: { name: 'Single-Coil Vintage', L: 2.2, Rdc: 6000, Ccoil: 110e-12 },
+  p90:        { name: 'P-90',                L: 5.5, Rdc: 8200, Ccoil: 160e-12 },
+  paf:        { name: 'Humbucker PAF',       L: 4.2, Rdc: 8000, Ccoil: 150e-12 },
+  high_hb:    { name: 'Humbucker High-Out',  L: 8.5, Rdc: 15500, Ccoil: 210e-12 }
+};
+
+function setPotLoad(kOhm) {
+  state.resonance.potKOhm = kOhm;
+  [250, 500, 1000].forEach((val) => {
+    const btn = document.getElementById(`btn-pot-${val}`);
+    if (btn) btn.setAttribute('aria-pressed', val === kOhm ? 'true' : 'false');
+  });
+  updateResonance();
+}
+
+function computeTransferDb(freqHz, model, potKOhm, cablePf) {
+  const w = 2 * Math.PI * freqHz;
+  const L = model.L;
+  const C = model.Ccoil + cablePf * 1e-12;
+  const Rpot = potKOhm * 1000;
+  const Ramp = 1000000; // 1 MOhm amp input
+  const Rload = (Rpot * Ramp) / (Rpot + Ramp);
+  const Rdc = model.Rdc;
+
+  const realPart = 1 - w * w * L * C + Rdc / Rload;
+  const imagPart = w * (L / Rload + Rdc * C);
+  const mag = 1 / Math.sqrt(realPart * realPart + imagPart * imagPart);
+  return 20 * Math.log10(Math.max(1e-4, mag));
+}
+
+function updateResonance() {
+  const mEl = document.getElementById('sel-res-model');
+  const cEl = document.getElementById('rng-cable-cap');
+  if (mEl) state.resonance.model = mEl.value;
+  if (cEl) state.resonance.cablePf = parseInt(cEl.value, 10);
+
+  const meters = (state.resonance.cablePf / 120).toFixed(1);
+  const valCable = document.getElementById('val-cable-cap');
+  if (valCable) valCable.textContent = `${state.resonance.cablePf} pF (~${meters} m)`;
+
+  const model = PICKUP_MODELS[state.resonance.model] || PICKUP_MODELS.sc_vintage;
+  const Ctotal = model.Ccoil + state.resonance.cablePf * 1e-12;
+  const fRes = 1 / (2 * Math.PI * Math.sqrt(model.L * Ctotal));
+
+  // Find peak dB and -3dB cutoff
+  let peakDb = -99;
+  let peakFreq = fRes;
+  let cutoffFreq = 15000;
+  for (let f = 100; f <= 15000; f += 25) {
+    const db = computeTransferDb(f, model, state.resonance.potKOhm, state.resonance.cablePf);
+    if (db > peakDb) {
+      peakDb = db;
+      peakFreq = f;
+    }
+    if (f > peakFreq && db <= -3.0 && cutoffFreq === 15000) {
+      cutoffFreq = f;
+    }
+  }
+
+  const badge = document.getElementById('res-peak-badge');
+  const fVal = document.getElementById('res-freq-val');
+  const cVal = document.getElementById('res-cutoff-val');
+
+  if (badge) badge.textContent = `Pico: ${(peakFreq / 1000).toFixed(2)} kHz · ${peakDb >= 0 ? '+' : ''}${peakDb.toFixed(1)} dB`;
+  if (fVal) fVal.textContent = `${(peakFreq / 1000).toFixed(2)} kHz`;
+  if (cVal) cVal.textContent = `${(cutoffFreq / 1000).toFixed(2)} kHz`;
+
+  drawResonanceChart(model, peakFreq, peakDb);
+}
+
+function drawResonanceChart(model, peakFreq, peakDb) {
+  const canvas = document.getElementById('canvas-resonance');
+  const setup = setupCanvasDPI(canvas, 310);
+  if (!setup) return;
+  const { ctx, w, h } = setup;
+  const P = getPalette();
+
+  ctx.clearRect(0, 0, w, h);
+
+  const padL = 46;
+  const padR = 20;
+  const padT = 20;
+  const padB = 34;
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+
+  const minF = 100;
+  const maxF = 15000;
+  const minDb = -18;
+  const maxDb = 12;
+
+  function xForFreq(f) {
+    return padL + ((Math.log10(f) - Math.log10(minF)) / (Math.log10(maxF) - Math.log10(minF))) * plotW;
+  }
+  function yForDb(db) {
+    const clamped = Math.max(minDb, Math.min(maxDb, db));
+    return padT + ((maxDb - clamped) / (maxDb - minDb)) * plotH;
+  }
+
+  // Gridlines dB
+  ctx.font = `500 10px "JetBrains Mono", monospace`;
+  [-12, -6, 0, 6].forEach((db) => {
+    const y = yForDb(db);
+    ctx.strokeStyle = db === 0 ? P.outline : P.grid;
+    ctx.setLineDash(db === 0 ? [] : [3, 4]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(w - padR, y);
+    ctx.stroke();
+
+    ctx.fillStyle = P.muted;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`${db > 0 ? '+' : ''}${db} dB`, padL - 6, y);
+  });
+
+  // Gridlines Freq
+  [100, 250, 500, 1000, 2000, 4000, 8000, 15000].forEach((f) => {
+    const x = xForFreq(f);
+    ctx.strokeStyle = P.grid;
+    ctx.setLineDash([3, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x, padT);
+    ctx.lineTo(x, h - padB);
+    ctx.stroke();
+
+    ctx.fillStyle = P.muted;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const lbl = f >= 1000 ? `${f / 1000}k` : `${f}`;
+    ctx.fillText(lbl, x, h - padB + 8);
+  });
+  ctx.setLineDash([]);
+
+  // Reference baseline curve: Single-Coil Vintage with 250k pot & 550pF
+  ctx.strokeStyle = P.sky;
+  ctx.lineWidth = 1.6;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  for (let i = 0; i <= 160; i++) {
+    const f = minF * Math.pow(maxF / minF, i / 160);
+    const db = computeTransferDb(f, PICKUP_MODELS.sc_vintage, 250, 550);
+    const px = xForFreq(f);
+    const py = yForDb(db);
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Active curve
+  ctx.strokeStyle = P.brass;
+  ctx.lineWidth = 2.8;
+  ctx.beginPath();
+  for (let i = 0; i <= 180; i++) {
+    const f = minF * Math.pow(maxF / minF, i / 180);
+    const db = computeTransferDb(f, model, state.resonance.potKOhm, state.resonance.cablePf);
+    const px = xForFreq(f);
+    const py = yForDb(db);
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // Direct annotation at resonant peak
+  const pkX = xForFreq(peakFreq);
+  const pkY = yForDb(peakDb);
+  ctx.fillStyle = P.brass;
+  ctx.beginPath();
+  ctx.arc(pkX, pkY, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = P.brass;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pkX, pkY - 6);
+  ctx.lineTo(pkX, Math.max(padT + 14, pkY - 22));
+  ctx.stroke();
+
+  ctx.fillStyle = P.brass;
+  ctx.textAlign = pkX > w * 0.65 ? 'right' : 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.font = `600 11px "JetBrains Mono", monospace`;
+  ctx.fillText(`Pico ${(peakFreq / 1000).toFixed(2)} kHz`, pkX, Math.max(padT + 13, pkY - 24));
+}
+
+// =========================================================================
+// 4. SINGLE-COIL VS HUMBUCKER & RWRP MATRIX
+// =========================================================================
+function setCoilConfig(coil, prop, val) {
+  if (coil === 'A') {
+    state.humbucker.coilA[prop] = val;
+  } else {
+    if (prop === 'enabled') {
+      state.humbucker.coilB.enabled = val;
+    } else {
+      state.humbucker.coilB.enabled = true;
+      state.humbucker.coilB[prop] = val;
+    }
+  }
+  clearPresetSelection();
+  updateHumbuckerUI();
+}
+
+function clearPresetSelection() {
+  ['preset-sc', 'preset-same', 'preset-oof', 'preset-rwrp'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('aria-pressed', 'false');
+  });
+}
+
+function applyHumbuckerPreset(kind) {
+  clearPresetSelection();
+  if (kind === 'single') {
+    state.humbucker.coilA = { pole: 1, wind: 1 };
+    state.humbucker.coilB = { enabled: false, pole: -1, wind: -1 };
+    const b = document.getElementById('preset-sc');
+    if (b) b.setAttribute('aria-pressed', 'true');
+  } else if (kind === 'same') {
+    state.humbucker.coilA = { pole: 1, wind: 1 };
+    state.humbucker.coilB = { enabled: true, pole: 1, wind: 1 };
+    const b = document.getElementById('preset-same');
+    if (b) b.setAttribute('aria-pressed', 'true');
+  } else if (kind === 'oof') {
+    state.humbucker.coilA = { pole: 1, wind: 1 };
+    state.humbucker.coilB = { enabled: true, pole: 1, wind: -1 };
+    const b = document.getElementById('preset-oof');
+    if (b) b.setAttribute('aria-pressed', 'true');
+  } else {
+    state.humbucker.coilA = { pole: 1, wind: 1 };
+    state.humbucker.coilB = { enabled: true, pole: -1, wind: -1 };
+    const b = document.getElementById('preset-rwrp');
+    if (b) b.setAttribute('aria-pressed', 'true');
+  }
+  updateHumbuckerUI();
+}
+
+function updateHumbuckerUI() {
+  const humSlider = document.getElementById('rng-hum-level');
+  if (humSlider) state.humbucker.humLevel = parseInt(humSlider.value, 10);
+  const valHum = document.getElementById('val-hum-level');
+  if (valHum) valHum.textContent = `${state.humbucker.humLevel} %`;
+
+  const A = state.humbucker.coilA;
+  const B = state.humbucker.coilB;
+
+  // Sync button states
+  const setPressed = (id, cond) => {
+    const el = document.getElementById(id);
+    if (el) el.setAttribute('aria-pressed', cond ? 'true' : 'false');
+  };
+
+  setPressed('btn-a-n', A.pole === 1);
+  setPressed('btn-a-s', A.pole === -1);
+  setPressed('btn-a-cw', A.wind === 1);
+  setPressed('btn-a-ccw', A.wind === -1);
+
+  setPressed('btn-b-off', !B.enabled);
+  setPressed('btn-b-n', B.enabled && B.pole === 1);
+  setPressed('btn-b-s', B.enabled && B.pole === -1);
+  setPressed('btn-b-cw', B.enabled && B.wind === 1);
+  setPressed('btn-b-ccw', B.enabled && B.wind === -1);
+
+  // Calculate physics outcome
+  const sigA = A.pole * A.wind;
+  const humA = A.wind;
+  const sigB = B.enabled ? (B.pole * B.wind) : 0;
+  const humB = B.enabled ? B.wind : 0;
+
+  const totalSigPct = Math.abs(sigA + sigB) * 100;
+  const totalHumPct = Math.round((Math.abs(humA + humB) * state.humbucker.humLevel) / 2) * 2;
+  // Normalize hum display relative to 1 coil = 100% of current ambient level
+  const humRel = B.enabled ? Math.abs(humA + humB) * 100 : 100;
+
+  const sigOut = document.getElementById('hb-signal-pct');
+  const humOut = document.getElementById('hb-hum-pct');
+  const badge = document.getElementById('hb-verdict-badge');
+  const note = document.getElementById('hb-status-note');
+
+  if (!B.enabled) {
+    if (sigOut) sigOut.textContent = `100 % (Simple)`;
+    if (humOut) humOut.textContent = `${state.humbucker.humLevel > 0 ? '100 % (Presente)' : '0 %'}`;
+    if (badge) {
+      badge.textContent = `Single-Coil · Sin cancelación`;
+      badge.className = 'badge badge-brass';
+    }
+    if (note) {
+      note.className = 'status-note status-warn';
+      note.innerHTML = `<strong>Pastilla simple (Single-Coil):</strong> Produce el tono clásico abierto de 1 bobina, pero al no tener segunda bobina inversa actúa como antena frente al ruido de 50/60 Hz.`;
+    }
+  } else {
+    const inPhase = sigA === sigB;
+    const humCancelled = humA === -humB;
+
+    if (inPhase && humCancelled) {
+      if (sigOut) sigOut.textContent = `200 % (En fase)`;
+      if (humOut) humOut.textContent = `0 % (Cancelado)`;
+      if (badge) {
+        badge.textContent = `En fase · Hum cancelado (RWRP)`;
+        badge.className = 'badge badge-mint';
+      }
+      if (note) {
+        note.className = 'status-note status-ok';
+        note.innerHTML = `<strong>Escenario ideal RWRP:</strong> Polaridad magnética opuesta + bobinado opuesto. La doble inversión hace que la señal musical de la cuerda se sume al 200 % en fase, mientras la interferencia ambiental de 50/60 Hz se anula por completo.`;
+      }
+    } else if (inPhase && !humCancelled) {
+      if (sigOut) sigOut.textContent = `200 % (En fase)`;
+      if (humOut) humOut.textContent = `${state.humbucker.humLevel > 0 ? '200 % (Doble ruido)' : '0 %'}`;
+      if (badge) {
+        badge.textContent = `En fase · Sin cancelación de hum`;
+        badge.className = 'badge badge-brass';
+      }
+      if (note) {
+        note.className = 'status-note status-warn';
+        note.innerHTML = `<strong>Misma polaridad y mismo bobinado:</strong> Las dos bobinas están en fase y suenan con fuerza, pero el ruido de 50/60 Hz también se suma al doble porque ambas bobinas están orientadas igual.`;
+      }
+    } else if (!inPhase && humCancelled) {
+      if (sigOut) sigOut.textContent = `0 % (Fuera de fase)`;
+      if (humOut) humOut.textContent = `0 % (Cancelado)`;
+      if (badge) {
+        badge.textContent = `Fuera de fase · Cancelación de señal`;
+        badge.className = 'badge badge-coral';
+      }
+      if (note) {
+        note.className = 'status-note status-bad';
+        note.innerHTML = `<strong>Fuera de fase (solo bobinado invertido):</strong> El zumbido desaparece, pero la señal de la cuerda se opone entre sí. En una guitarra real resulta en un sonido muy débil, nasal y sin graves ni medios.`;
+      }
+    } else {
+      if (sigOut) sigOut.textContent = `0 % (Fuera de fase)`;
+      if (humOut) humOut.textContent = `${state.humbucker.humLevel > 0 ? '200 % (Doble ruido)' : '0 %'}`;
+      if (badge) {
+        badge.textContent = `Fuera de fase · Peor caso`;
+        badge.className = 'badge badge-coral';
+      }
+      if (note) {
+        note.className = 'status-note status-bad';
+        note.innerHTML = `<strong>Solo polaridad magnética invertida:</strong> La señal útil de la cuerda queda fuera de fase (cancelación de graves y volumen), y además el bobinado idéntico duplica el zumbido eléctrico.`;
+      }
+    }
+  }
+
+  updateHbAudioParams();
+}
+
+function drawHumbuckerCanvas(tNow) {
+  const canvas = document.getElementById('canvas-humbucker');
+  const setup = setupCanvasDPI(canvas, 400);
+  if (!setup) return;
+  const { ctx, w, h } = setup;
+  const P = getPalette();
+
+  ctx.clearRect(0, 0, w, h);
+
+  const A = state.humbucker.coilA;
+  const B = state.humbucker.coilB;
+  const humAmp = (state.humbucker.humLevel / 100) * 0.48;
+
+  const t = tNow * 0.001;
+  const sigA = A.pole * A.wind;
+  const humA = A.wind;
+  const sigB = B.enabled ? (B.pole * B.wind) : 0;
+  const humB = B.enabled ? B.wind : 0;
+
+  // Top section: Schematic of Bobina A and Bobina B (115px)
+  const schemH = 112;
+  const drawMiniCoil = (cx, label, pole, wind, active, accentColor) => {
+    ctx.save();
+    ctx.globalAlpha = active ? 1 : 0.28;
+    const boxW = 124;
+    const boxH = 74;
+    const x0 = cx - boxW / 2;
+    const y0 = 24;
+
+    ctx.fillStyle = P.surfaceLow;
+    ctx.strokeStyle = active ? accentColor : P.outline;
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(x0, y0, boxW, boxH);
+    ctx.strokeRect(x0, y0, boxW, boxH);
+
+    // Pole magnet core
+    ctx.fillStyle = pole === 1 ? P.coral : P.sky;
+    ctx.fillRect(cx - 14, y0 + 8, 28, 30);
+    ctx.fillStyle = pole === 1 ? P.sky : P.coral;
+    ctx.fillRect(cx - 14, y0 + 38, 28, 28);
+
+    ctx.fillStyle = P.bg;
+    ctx.font = `600 12px "JetBrains Mono", monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(pole === 1 ? 'N' : 'S', cx, y0 + 23);
+    ctx.fillText(pole === 1 ? 'S' : 'N', cx, y0 + 52);
+
+    // Winding direction label
+    ctx.fillStyle = P.text;
+    ctx.font = `500 11px "JetBrains Mono", monospace`;
+    ctx.fillText(label, cx, 12);
+    ctx.fillStyle = accentColor;
+    ctx.fillText(active ? (wind === 1 ? '↻ Horario' : '↺ Antihorario') : 'Desconectada', cx, y0 + boxH + 14);
+    ctx.restore();
+  };
+
+  drawMiniCoil(w * 0.28, 'BOBINA A', A.pole, A.wind, true, P.brass);
+  drawMiniCoil(w * 0.72, 'BOBINA B', B.pole, B.wind, B.enabled, P.tertiary);
+
+  // Plus sign between coils
+  ctx.fillStyle = P.muted;
+  ctx.font = `600 18px "JetBrains Mono", monospace`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(B.enabled ? '+' : '·', w * 0.5, 62);
+
+  // Divider
+  ctx.strokeStyle = P.grid;
+  ctx.beginPath();
+  ctx.moveTo(12, schemH + 8);
+  ctx.lineTo(w - 12, schemH + 8);
+  ctx.stroke();
+
+  // Three oscilloscope lanes below
+  const laneStart = schemH + 20;
+  const laneH = (h - laneStart - 16) / 3;
+  const plotLeft = 88;
+  const plotRight = w - 16;
+  const plotW = plotRight - plotLeft;
+
+  const drawLane = (idx, title, color, evalFn) => {
+    const midY = laneStart + idx * laneH + laneH * 0.5;
+    const ampPx = laneH * 0.34;
+
+    ctx.strokeStyle = P.grid;
+    ctx.setLineDash([2, 3]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, midY);
+    ctx.lineTo(plotRight, midY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = color;
+    ctx.font = `500 11px "JetBrains Mono", monospace`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(title, 12, midY);
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = idx === 2 ? 2.6 : 1.8;
+    ctx.beginPath();
+    for (let x = 0; x <= plotW; x += 2) {
+      const xNorm = x / plotW;
+      const val = evalFn(xNorm);
+      const px = plotLeft + x;
+      const py = midY - val * ampPx;
+      if (x === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+  };
+
+  const stringWave = (xNorm) => Math.sin((xNorm * 3.0 - t * 1.4) * Math.PI * 2) * 0.65;
+  const humWave = (xNorm) => Math.sin((xNorm * 11.0 - t * 3.6) * Math.PI * 2) * humAmp;
+
+  drawLane(0, 'Bobina A', P.brass, (x) => sigA * stringWave(x) + humA * humWave(x));
+  drawLane(1, B.enabled ? 'Bobina B' : 'B (Off)', B.enabled ? P.tertiary : P.muted, (x) => B.enabled ? (sigB * stringWave(x) + humB * humWave(x)) : 0);
+
+  // Lane 2: Output (scaled cleanly so 200% doesn't clip)
+  drawLane(2, 'Salida A+B', P.mint, (x) => 0.55 * ((sigA + sigB) * stringWave(x) + (humA + humB) * humWave(x)));
+
+  // Overlay residual hum highlight in Lane 2 if hum remains
+  const humRes = Math.abs(humA + humB);
+  if (humRes > 0 && state.humbucker.humLevel > 0) {
+    const midY2 = laneStart + 2 * laneH + laneH * 0.5;
+    const ampPx2 = laneH * 0.34;
+    ctx.strokeStyle = P.coral;
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([2, 2]);
+    ctx.beginPath();
+    for (let x = 0; x <= plotW; x += 2) {
+      const xNorm = x / plotW;
+      const val = 0.55 * (humA + humB) * humWave(xNorm);
+      const px = plotLeft + x;
+      const py = midY2 - val * ampPx2;
+      if (x === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+// =========================================================================
+// WEB AUDIO SYNTHESIS (SELF-CONTAINED, USER-GESTURE TRIGGERED)
+// =========================================================================
+let audioCtx = null;
+let faradayOsc = null;
+let faradayGain = null;
+let hbAudioNodes = null;
+
+function ensureAudioCtx() {
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    audioCtx = new AudioContextClass();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
+
+function toggleFaradayAudio() {
+  state.faraday.audioOn = !state.faraday.audioOn;
+  const btn = document.getElementById('btn-faraday-audio');
+  if (btn) {
+    btn.setAttribute('aria-pressed', state.faraday.audioOn ? 'true' : 'false');
+    btn.textContent = state.faraday.audioOn ? 'Silenciar audio inducido' : 'Activar audio inducido';
+  }
+  if (state.faraday.audioOn) {
+    // Turn off humbucker audio if active so they don't overlap
+    if (state.humbucker.audioOn) toggleHbAudio();
+    const ctx = ensureAudioCtx();
+    if (!ctx) return;
+    if (!faradayOsc) {
+      faradayOsc = ctx.createOscillator();
+      const filter = ctx.createBiquadFilter();
+      faradayGain = ctx.createGain();
+      faradayOsc.type = 'sawtooth';
+      filter.type = 'lowpass';
+      filter.Q.value = 3.2;
+      faradayGain.gain.value = 0;
+      faradayOsc.connect(filter);
+      filter.connect(faradayGain);
+      faradayGain.connect(ctx.destination);
+      faradayOsc._filter = filter;
+      faradayOsc.start();
+    }
+    updateFaradayAudioParams();
+  } else {
+    if (faradayGain && audioCtx) {
+      faradayGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.04);
+    }
+  }
+}
+
+function updateFaradayAudioParams() {
+  if (!state.faraday.audioOn || !faradayOsc || !faradayGain || !audioCtx) return;
+  const now = audioCtx.currentTime;
+  faradayOsc.frequency.setTargetAtTime(state.faraday.freq, now, 0.03);
+  const cutoff = Math.max(800, 4200 - ((state.faraday.turns - 3000) / 7000) * 2400);
+  faradayOsc._filter.frequency.setTargetAtTime(cutoff, now, 0.04);
+  if (state.faraday.continuous) {
+    const g = (state.faraday.amp / 100) * (state.faraday.turns / 10000) * 0.14;
+    faradayGain.gain.setTargetAtTime(g, now, 0.05);
+  }
+}
+
+function triggerPluckSound() {
+  if (!state.faraday.audioOn || !faradayGain || !audioCtx) return;
+  const now = audioCtx.currentTime;
+  const peak = (state.faraday.amp / 100) * (state.faraday.turns / 10000) * 0.22;
+  faradayGain.gain.cancelScheduledValues(now);
+  faradayGain.gain.setValueAtTime(0.001, now);
+  faradayGain.gain.linearRampToValueAtTime(peak, now + 0.015);
+  faradayGain.gain.exponentialRampToValueAtTime(0.0008, now + 1.6);
+}
+
+function toggleHbAudio() {
+  state.humbucker.audioOn = !state.humbucker.audioOn;
+  const btn = document.getElementById('btn-hb-audio');
+  if (btn) {
+    btn.setAttribute('aria-pressed', state.humbucker.audioOn ? 'true' : 'false');
+    btn.textContent = state.humbucker.audioOn ? 'Silenciar señal + zumbido' : 'Escuchar señal + zumbido';
+  }
+  if (state.humbucker.audioOn) {
+    if (state.faraday.audioOn) toggleFaradayAudio();
+    const ctx = ensureAudioCtx();
+    if (!ctx) return;
+    if (!hbAudioNodes) {
+      const sigOsc = ctx.createOscillator();
+      const sigFilter = ctx.createBiquadFilter();
+      const sigGain = ctx.createGain();
+
+      const humOsc = ctx.createOscillator();
+      const humOsc2 = ctx.createOscillator();
+      const humGain = ctx.createGain();
+
+      sigOsc.type = 'triangle';
+      sigOsc.frequency.value = 196; // G3
+      sigFilter.type = 'lowpass';
+      sigFilter.frequency.value = 1800;
+      sigGain.gain.value = 0;
+
+      humOsc.type = 'sawtooth';
+      humOsc.frequency.value = 50; // 50 Hz mains hum
+      humOsc2.type = 'sine';
+      humOsc2.frequency.value = 100; // 2nd harmonic hum
+      humGain.gain.value = 0;
+
+      sigOsc.connect(sigFilter);
+      sigFilter.connect(sigGain);
+      sigGain.connect(ctx.destination);
+
+      humOsc.connect(humGain);
+      humOsc2.connect(humGain);
+      humGain.connect(ctx.destination);
+
+      sigOsc.start();
+      humOsc.start();
+      humOsc2.start();
+
+      hbAudioNodes = { sigGain, sigFilter, humGain };
+    }
+    updateHbAudioParams();
+  } else {
+    if (hbAudioNodes && audioCtx) {
+      const now = audioCtx.currentTime;
+      hbAudioNodes.sigGain.gain.setTargetAtTime(0, now, 0.04);
+      hbAudioNodes.humGain.gain.setTargetAtTime(0, now, 0.04);
+    }
+  }
+}
+
+function updateHbAudioParams() {
+  if (!state.humbucker.audioOn || !hbAudioNodes || !audioCtx) return;
+  const now = audioCtx.currentTime;
+  const A = state.humbucker.coilA;
+  const B = state.humbucker.coilB;
+  const sigSum = Math.abs(A.pole * A.wind + (B.enabled ? B.pole * B.wind : 0));
+  const humSum = Math.abs(A.wind + (B.enabled ? B.wind : 0));
+
+  // If out of phase (sigSum === 0), in a real guitar slight physical spacing leaves a thin 12% hollow signal
+  const targetSigGain = sigSum === 0 ? 0.025 : sigSum * 0.075;
+  const targetCutoff = sigSum === 0 ? 4200 : (sigSum === 2 ? 1650 : 2800);
+  const targetHumGain = humSum * (state.humbucker.humLevel / 100) * 0.045;
+
+  hbAudioNodes.sigGain.gain.setTargetAtTime(targetSigGain, now, 0.04);
+  hbAudioNodes.sigFilter.frequency.setTargetAtTime(targetCutoff, now, 0.04);
+  hbAudioNodes.humGain.gain.setTargetAtTime(targetHumGain, now, 0.04);
+}
+
+// =========================================================================
+// MAIN ANIMATION LOOP & SCROLL REVEAL
+// =========================================================================
+let animId = null;
+function renderLoop(tNow) {
+  drawMagCanvas(tNow * 0.001);
+  drawFaradayCanvas(tNow);
+  drawHumbuckerCanvas(tNow);
+  animId = requestAnimationFrame(renderLoop);
+}
+
+function initScrollReveal() {
+  const els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach((el) => el.classList.add('is-visible'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  els.forEach((el) => io.observe(el));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initScrollReveal();
+  updateMagLab();
+  updateFaradayParams();
+  updateResonance();
+  updateHumbuckerUI();
+
+  if (animId) cancelAnimationFrame(animId);
+  animId = requestAnimationFrame(renderLoop);
+
+  window.addEventListener('resize', () => {
+    updateResonance();
+  });
+});
+</script>
+</body>
+</html>
